@@ -12,12 +12,15 @@
 #ifndef __AUDACITY_MIX__
 #define __AUDACITY_MIX__
 
+#include "audacity/Types.h"
 #include <wx/string.h>
 
-#include "SampleFormat.h"
-#include "WaveTrack.h"
-#include "TimeTrack.h"
-#include "Resample.h"
+class Resample;
+class TimeTrack;
+class TrackList;
+class TrackFactory;
+class WaveTrack;
+class WaveTrackCache;
 
 class DirManager;
 
@@ -117,10 +120,10 @@ class AUDACITY_DLL_API Mixer {
  private:
 
    void Clear();
-   sampleCount MixSameRate(int *channelFlags, WaveTrack *src,
+   sampleCount MixSameRate(int *channelFlags, WaveTrackCache &cache,
                            sampleCount *pos);
 
-   sampleCount MixVariableRates(int *channelFlags, WaveTrack *track,
+   sampleCount MixVariableRates(int *channelFlags, WaveTrackCache &cache,
                                 sampleCount *pos, float *queue,
                                 int *queueStart, int *queueLen,
                                 Resample * pResample);
@@ -128,7 +131,7 @@ class AUDACITY_DLL_API Mixer {
  private:
    // Input
    int              mNumInputTracks;
-   WaveTrack      **mInputTrack;
+   WaveTrackCache  *mInputTrack;
    TimeTrack       *mTimeTrack;
    sampleCount     *mSamplePos;
    bool             mApplyTrackGains;

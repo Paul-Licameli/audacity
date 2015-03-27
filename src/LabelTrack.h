@@ -131,8 +131,9 @@ class AUDACITY_DLL_API LabelTrack : public Track
 
    virtual int GetKind() const { return Label; }
 
-   virtual double GetStartTime();
-   virtual double GetEndTime();
+   virtual double GetOffset() const;
+   virtual double GetStartTime() const;
+   virtual double GetEndTime() const;
 
    virtual Track *Duplicate() { return new LabelTrack(*this); }
 
@@ -169,11 +170,11 @@ class AUDACITY_DLL_API LabelTrack : public Track
    static bool IsTextClipSupported();
 
    // methods to set flags
-   void SetDragXPos(const int d) { mDragXPos = d; };
-   void SetInBox(bool inTextBox) { mInBox = inTextBox; };
-   void SetResetCursorPos(bool resetFlag) { mResetCursorPos = resetFlag; };
-   void SetWrongDragging(bool rightFlag) { mRightDragging = rightFlag; };
-   void SetDrawCursor(bool drawCursorFlag) { mDrawCursor = drawCursorFlag; };
+   void SetDragXPos(const int d) { mDragXPos = d; }
+   void SetInBox(bool inTextBox) { mInBox = inTextBox; }
+   void SetResetCursorPos(bool resetFlag) { mResetCursorPos = resetFlag; }
+   void SetWrongDragging(bool rightFlag) { mRightDragging = rightFlag; }
+   void SetDrawCursor(bool drawCursorFlag) { mDrawCursor = drawCursorFlag; }
 
    bool HandleMouse(const wxMouseEvent & evt, wxRect & r, double h, double pps,
                            SelectedRegion *newSel);
@@ -202,7 +203,7 @@ class AUDACITY_DLL_API LabelTrack : public Track
 
    //get current cursor position
    bool CalcCursorX(wxWindow * parent, int * x);
-   int getCurrentCursorPosition() const { return mCurrentCursorPos; };
+   int getCurrentCursorPosition() const { return mCurrentCursorPos; }
 
    void MayAdjustLabel( int iLabel, int iEdge, bool bAllowSwapping, double fNewTime);
    void MayMoveLabel( int iLabel, int iEdge, double fNewTime);

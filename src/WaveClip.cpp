@@ -25,13 +25,14 @@ drawing).  Cache's the Spectrogram frequency samples.
 
 *//*******************************************************************/
 
+#include "WaveClip.h"
+
 #include <math.h>
 #include <vector>
 #include <wx/log.h>
 
 #include "Spectrum.h"
 #include "Prefs.h"
-#include "WaveClip.h"
 #include "Envelope.h"
 #include "Resample.h"
 #include "Project.h"
@@ -720,10 +721,11 @@ bool WaveClip::GetWaveDisplay(float *min, float *max, float *rms,int* bl,
    return true;
 }
 
-bool WaveClip::GetSpectrogram(float *freq, sampleCount *where,
-                               int numPixels,
-                               double t0, double pixelsPerSecond,
-                               bool autocorrelation)
+bool WaveClip::GetSpectrogram(WaveTrackCache &waveTrackCache,
+                              float *freq, sampleCount *where,
+                              int numPixels,
+                              double t0, double pixelsPerSecond,
+                              bool autocorrelation)
 {
    int minFreq = gPrefs->Read(wxT("/Spectrum/MinFreq"), 0L);
    int maxFreq = gPrefs->Read(wxT("/Spectrum/MaxFreq"), 8000L);
@@ -898,29 +900,36 @@ bool WaveClip::GetSpectrogram(float *freq, sampleCount *where,
             if (start + len*fftSkipPoints1 > mSequence->GetNumSamples()) {
                int newlen = (mSequence->GetNumSamples() - start)/fftSkipPoints1;
                for (i = newlen*fftSkipPoints1; i < (sampleCount)len*fftSkipPoints1; i++)
+                  adj[i] = 0;
+               len = newlen;
+            }
 #else //!EXPERIMENTAL_FFT_SKIP_POINTS
             if (start + len > mSequence->GetNumSamples()) {
                int newlen = mSequence->GetNumSamples() - start;
                for (i = newlen; i < (sampleCount)len; i++)
-#endif //EXPERIMENTAL_FFT_SKIP_POINTS
                   adj[i] = 0;
                len = newlen;
             }
-
-            if (len > 0)
-#ifdef EXPERIMENTAL_FFT_SKIP_POINTS
-               mSequence->Get((samplePtr)adj, floatSample, start, len*fftSkipPoints1);
-            if (fftSkipPoints) {
-               // TODO: (maybe) alternatively change Get to include skipping of points
-               int j=0;
-               for (int i=0; i < len; i++) {
-                  adj[i]=adj[j];
-                  j+=fftSkipPoints1;
-               }
-            }
-#else //!EXPERIMENTAL_FFT_SKIP_POINTS
-               mSequence->Get((samplePtr)adj, floatSample, start, len);
 #endif //EXPERIMENTAL_FFT_SKIP_POINTS
+
+            if (len > 0) {
+#ifdef EXPERIMENTAL_FFT_SKIP_POINTS
+               waveTrackCache.Get((samplePtr)adj, floatSample,
+                                  floor(0.5 + start + mOffset * mRate),
+                                  len * fftSkipPoints1);
+               if (fftSkipPoints) {
+                  // TODO: (maybe) alternatively change Get to include skipping of points
+                  int j=0;
+                  for (int i=0; i < len; i++) {
+                     adj[i]=adj[j];
+                     j+=fftSkipPoints1;
+                  }
+               }
+#else //!EXPERIMENTAL_FFT_SKIP_POINTS
+               waveTrackCache.Get((samplePtr)adj, floatSample,
+                                  floor(0.5 + start + mOffset * mRate), len);
+#endif //EXPERIMENTAL_FFT_SKIP_POINTS
+            }
 
 #ifdef EXPERIMENTAL_USE_REALFFTF
             if(autocorrelation) {

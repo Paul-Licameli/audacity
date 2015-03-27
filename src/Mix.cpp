@@ -22,7 +22,6 @@
 
 
 #include "Audacity.h"
-
 #include "Mix.h"
 
 #include <math.h>
@@ -40,6 +39,7 @@
 #include "Prefs.h"
 #include "Project.h"
 #include "Resample.h"
+#include "TimeTrack.h"
 #include "float_cast.h"
 
 //TODO-MB: wouldn't it make more sense to delete the time track after 'mix and render'?
@@ -237,10 +237,10 @@ Mixer::Mixer(int numInputTracks, WaveTrack **inputTracks,
 
    mHighQuality = highQuality;
    mNumInputTracks = numInputTracks;
-   mInputTrack = new WaveTrack*[mNumInputTracks];
+   mInputTrack = new WaveTrackCache[mNumInputTracks];
    mSamplePos = new sampleCount[mNumInputTracks];
    for(i=0; i<mNumInputTracks; i++) {
-      mInputTrack[i] = inputTracks[i];
+      mInputTrack[i].SetTrack(inputTracks[i]);
       mSamplePos[i] = inputTracks[i]->TimeToLongSamples(startTime);
    }
    mTimeTrack = timeTrack;
@@ -285,7 +285,7 @@ Mixer::Mixer(int numInputTracks, WaveTrack **inputTracks,
    mSampleQueue = new float *[mNumInputTracks];
    mResample = new Resample*[mNumInputTracks];
    for(i=0; i<mNumInputTracks; i++) {
-      double factor = (mRate / mInputTrack[i]->GetRate());
+      double factor = (mRate / mInputTrack[i].GetTrack()->GetRate());
       if (timeTrack) {
          // variable rate resampling
          mResample[i] = new Resample(mHighQuality,
@@ -372,11 +372,12 @@ void MixBuffers(int numChannels, int *channelFlags, float *gains,
    }
 }
 
-sampleCount Mixer::MixVariableRates(int *channelFlags, WaveTrack *track,
+sampleCount Mixer::MixVariableRates(int *channelFlags, WaveTrackCache &cache,
                                     sampleCount *pos, float *queue,
                                     int *queueStart, int *queueLen,
                                     Resample * pResample)
 {
+   const WaveTrack *const track = cache.GetTrack();
    double trackRate = track->GetRate();
    double initialWarp = mRate / trackRate;
    double tstep = 1.0 / trackRate;
@@ -420,7 +421,7 @@ sampleCount Mixer::MixVariableRates(int *channelFlags, WaveTrack *track,
 
          // Nothing to do if past end of track
          if (getLen > 0) {
-            track->Get((samplePtr)&queue[*queueLen],
+            cache.Get((samplePtr)&queue[*queueLen],
                        floatSample,
                        *pos,
                        getLen);
@@ -499,9 +500,10 @@ sampleCount Mixer::MixVariableRates(int *channelFlags, WaveTrack *track,
    return out;
 }
 
-sampleCount Mixer::MixSameRate(int *channelFlags, WaveTrack *track,
+sampleCount Mixer::MixSameRate(int *channelFlags, WaveTrackCache &cache,
                                sampleCount *pos)
 {
+   const WaveTrack *const track = cache.GetTrack();
    int slen = mMaxOut;
    int c;
    double t = *pos / track->GetRate();
@@ -518,7 +520,7 @@ sampleCount Mixer::MixSameRate(int *channelFlags, WaveTrack *track,
    if (slen > mMaxOut)
       slen = mMaxOut;
 
-   track->Get((samplePtr)mFloatBuffer, floatSample, *pos, slen);
+   cache.Get((samplePtr)mFloatBuffer, floatSample, *pos, slen);
    track->GetEnvelopeValues(mEnvValues, slen, t, 1.0 / mRate);
    for(int i=0; i<slen; i++)
       mFloatBuffer[i] *= mEnvValues[i]; // Track gain control will go here?
@@ -553,7 +555,7 @@ sampleCount Mixer::Process(sampleCount maxToProcess)
 
    Clear();
    for(i=0; i<mNumInputTracks; i++) {
-      WaveTrack *track = mInputTrack[i];
+      const WaveTrack *const track = mInputTrack[i].GetTrack();
       for(j=0; j<mNumChannels; j++)
          channelFlags[j] = 0;
 
@@ -582,11 +584,11 @@ sampleCount Mixer::Process(sampleCount maxToProcess)
       }
 
       if (mTimeTrack || track->GetRate() != mRate)
-         out = MixVariableRates(channelFlags, track,
+         out = MixVariableRates(channelFlags, mInputTrack[i],
                                 &mSamplePos[i], mSampleQueue[i],
                                 &mQueueStart[i], &mQueueLen[i], mResample[i]);
       else
-         out = MixSameRate(channelFlags, track, &mSamplePos[i]);
+         out = MixSameRate(channelFlags, mInputTrack[i], &mSamplePos[i]);
 
       if (out > maxOut)
          maxOut = out;
@@ -648,7 +650,7 @@ void Mixer::Restart()
    mTime = mT0;
 
    for(i=0; i<mNumInputTracks; i++)
-      mSamplePos[i] = mInputTrack[i]->TimeToLongSamples(mT0);
+      mSamplePos[i] = mInputTrack[i].GetTrack()->TimeToLongSamples(mT0);
 
    for(i=0; i<mNumInputTracks; i++) {
       mQueueStart[i] = 0;
@@ -667,7 +669,7 @@ void Mixer::Reposition(double t)
       mTime = mT1;
 
    for(i=0; i<mNumInputTracks; i++) {
-      mSamplePos[i] = mInputTrack[i]->TimeToLongSamples(mTime);
+      mSamplePos[i] = mInputTrack[i].GetTrack()->TimeToLongSamples(mTime);
       mQueueStart[i] = 0;
       mQueueLen[i] = 0;
    }

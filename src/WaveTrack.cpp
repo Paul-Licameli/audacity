@@ -159,7 +159,7 @@ WaveTrack::~WaveTrack()
 
 }
 
-double WaveTrack::GetOffset()
+double WaveTrack::GetOffset() const
 {
    return GetStartTime();
 }
@@ -310,7 +310,7 @@ void WaveTrack::VirtualStereoInit()
 }
 #endif
 
-float WaveTrack::GetChannelGain(int channel)
+float WaveTrack::GetChannelGain(int channel) const
 {
    float left = 1.0;
    float right = 1.0;
@@ -1356,18 +1356,34 @@ unsigned int WaveTrack::GetODFlags()
 }
 
 
-sampleCount WaveTrack::GetBestBlockSize(sampleCount s)
+sampleCount WaveTrack::GetBlockStart(sampleCount s) const
+{
+   for (WaveClipList::compatibility_iterator it = const_cast<WaveTrack&>(*this).GetClipIterator();
+      it; it = it->GetNext())
+   {
+      WaveClip* clip = it->GetData();
+      const sampleCount startSample = (sampleCount)floor(0.5 + clip->GetStartTime()*mRate);
+      const sampleCount endSample = startSample + clip->GetNumSamples();
+      if (s >= startSample && s < endSample)
+         return startSample + clip->GetSequence()->GetBlockStart(s - startSample);
+   }
+
+   return -1;
+}
+
+sampleCount WaveTrack::GetBestBlockSize(sampleCount s) const
 {
    sampleCount bestBlockSize = GetMaxBlockSize();
 
-   for (WaveClipList::compatibility_iterator it=GetClipIterator(); it; it=it->GetNext())
+   for (WaveClipList::compatibility_iterator it = const_cast<WaveTrack&>(*this).GetClipIterator();
+      it; it = it->GetNext())
    {
       WaveClip* clip = it->GetData();
       sampleCount startSample = (sampleCount)floor(clip->GetStartTime()*mRate + 0.5);
       sampleCount endSample = startSample + clip->GetNumSamples();
       if (s >= startSample && s < endSample)
       {
-         bestBlockSize = clip->GetSequence()->GetMaxBlockSize();
+         bestBlockSize = clip->GetSequence()->GetBestBlockSize(s - startSample);
          break;
       }
    }
@@ -1375,10 +1391,11 @@ sampleCount WaveTrack::GetBestBlockSize(sampleCount s)
    return bestBlockSize;
 }
 
-sampleCount WaveTrack::GetMaxBlockSize()
+sampleCount WaveTrack::GetMaxBlockSize() const
 {
    int maxblocksize = 0;
-   for (WaveClipList::compatibility_iterator it=GetClipIterator(); it; it=it->GetNext())
+   for (WaveClipList::compatibility_iterator it = const_cast<WaveTrack&>(*this).GetClipIterator();
+      it; it = it->GetNext())
    {
       WaveClip* clip = it->GetData();
       if (clip->GetSequence()->GetMaxBlockSize() > maxblocksize)
@@ -1607,7 +1624,7 @@ double WaveTrack::LongSamplesToTime(sampleCount pos)
    return ((double)pos) / mRate;
 }
 
-double WaveTrack::GetStartTime()
+double WaveTrack::GetStartTime() const
 {
    bool found = false;
    double best = 0.0;
@@ -1615,7 +1632,8 @@ double WaveTrack::GetStartTime()
    if (mClips.IsEmpty())
       return 0;
 
-   for (WaveClipList::compatibility_iterator it=GetClipIterator(); it; it=it->GetNext())
+   for (WaveClipList::compatibility_iterator it = const_cast<WaveTrack&>(*this).GetClipIterator();
+      it; it = it->GetNext())
       if (!found)
       {
          found = true;
@@ -1626,7 +1644,7 @@ double WaveTrack::GetStartTime()
    return best;
 }
 
-double WaveTrack::GetEndTime()
+double WaveTrack::GetEndTime() const
 {
    bool found = false;
    double best = 0.0;
@@ -1634,7 +1652,8 @@ double WaveTrack::GetEndTime()
    if (mClips.IsEmpty())
       return 0;
 
-   for (WaveClipList::compatibility_iterator it=GetClipIterator(); it; it=it->GetNext())
+   for (WaveClipList::compatibility_iterator it = const_cast<WaveTrack&>(*this).GetClipIterator();
+      it; it = it->GetNext())
       if (!found)
       {
          found = true;
@@ -1735,7 +1754,7 @@ bool WaveTrack::GetRMS(float *rms, double t0, double t1)
 }
 
 bool WaveTrack::Get(samplePtr buffer, sampleFormat format,
-                    sampleCount start, sampleCount len, fillFormat fill )
+                    sampleCount start, sampleCount len, fillFormat fill ) const
 {
    // Simple optimization: When this buffer is completely contained within one clip,
    // don't clear anything (because we won't have to). Otherwise, just clear
@@ -1743,9 +1762,9 @@ bool WaveTrack::Get(samplePtr buffer, sampleFormat format,
    WaveClipList::compatibility_iterator it;
 
    bool doClear = true;
-   for (it=GetClipIterator(); it; it=it->GetNext())
+   for (it = const_cast<WaveTrack&>(*this).GetClipIterator(); it; it = it->GetNext())
    {
-      WaveClip *clip = it->GetData();
+      const WaveClip *const clip = it->GetData();
       if (start >= clip->GetStartSample() && start+len <= clip->GetEndSample())
       {
          doClear = false;
@@ -1771,9 +1790,9 @@ bool WaveTrack::Get(samplePtr buffer, sampleFormat format,
       }
    }
 
-   for (it=GetClipIterator(); it; it=it->GetNext())
+   for (it = const_cast<WaveTrack&>(*this).GetClipIterator(); it; it = it->GetNext())
    {
-      WaveClip *clip = it->GetData();
+      const WaveClip *const clip = it->GetData();
 
       sampleCount clipStart = clip->GetStartSample();
       sampleCount clipEnd = clip->GetEndSample();
@@ -1846,7 +1865,7 @@ bool WaveTrack::Set(samplePtr buffer, sampleFormat format,
 }
 
 void WaveTrack::GetEnvelopeValues(double *buffer, int bufferLen,
-                         double t0, double tstep)
+                         double t0, double tstep) const
 {
    // Possibly nothing to do.
    if( bufferLen <= 0 )
@@ -1869,9 +1888,10 @@ void WaveTrack::GetEnvelopeValues(double *buffer, int bufferLen,
 
    double startTime = t0;
    double endTime = t0+tstep*bufferLen;
-   for (WaveClipList::compatibility_iterator it=GetClipIterator(); it; it=it->GetNext())
+   for (WaveClipList::compatibility_iterator it = const_cast<WaveTrack&>(*this).GetClipIterator();
+        it; it = it->GetNext())
    {
-      WaveClip *clip = it->GetData();
+      WaveClip *const clip = it->GetData();
 
       // IF clip intersects startTime..endTime THEN...
       double dClipStartTime = clip->GetStartTime();
@@ -2370,4 +2390,110 @@ void WaveTrack::AddInvalidRegion(sampleCount startSample, sampleCount endSample)
 {
    for (WaveClipList::compatibility_iterator it=GetClipIterator(); it; it=it->GetNext())
       it->GetData()->AddInvalidRegion(startSample,endSample);
+}
+
+WaveTrackCache::~WaveTrackCache()
+{
+   Free();
+}
+
+void WaveTrackCache::SetTrack(const WaveTrack *pTrack)
+{
+   if (mPTrack != pTrack) {
+      if (pTrack) {
+         mBufferSize = pTrack->GetMaxBlockSize();
+         if (!mPTrack ||
+             mPTrack->GetMaxBlockSize() != mBufferSize) {
+            Free();
+            mBuffers[0].data = new float[mBufferSize];
+            mBuffers[1].data = new float[mBufferSize];
+         }
+      }
+      else
+         Free();
+      mPTrack = pTrack;
+      mNValidBuffers = 0;
+   }
+}
+
+bool WaveTrackCache::Get(samplePtr buffer, sampleFormat format,
+   sampleCount start, sampleCount len)
+{
+   if (format == floatSample && len > 0) {
+      const sampleCount end = start + len;
+
+      // Discard cached results that we no longer need
+      if (mNValidBuffers > 0 &&
+          (end <= mBuffers[0].start ||
+           start >= mBuffers[mNValidBuffers - 1].end())) {
+         // Complete miss
+         mNValidBuffers = 0;
+      }
+      else if (mNValidBuffers == 2 &&
+               start >= mBuffers[1].start &&
+               end > mBuffers[1].end()) {
+         // Request starts in the second buffer and extends past it.
+         // Discard the first buffer.
+         // (But don't deallocate the buffer space.)
+         float *save = mBuffers[0].data;
+         mBuffers[0] = mBuffers[1];
+         mBuffers[1].data = save;
+         --mNValidBuffers;
+      }
+
+      // Refill buffers as needed
+      if (mNValidBuffers == 0) {
+         const sampleCount start0 = mPTrack->GetBlockStart(start);
+         if (start0 >= 0) {
+            const sampleCount len0 = mPTrack->GetBestBlockSize(start0);
+            wxASSERT(len0 <= mBufferSize);
+            if (!mPTrack->Get(samplePtr(mBuffers[0].data), floatSample, start0, len0))
+               return false;
+            mBuffers[0].start = start0;
+            mBuffers[0].len = len0;
+            ++mNValidBuffers;
+         }
+      }
+      if (mNValidBuffers == 1 && end > mBuffers[0].end()) {
+         const sampleCount start1 = mPTrack->GetBlockStart(mBuffers[0].end());
+         if (start1 >= 0) {
+            const sampleCount len1 = mPTrack->GetBestBlockSize(start1);
+            wxASSERT(len1 <= mBufferSize);
+            if (!mPTrack->Get(samplePtr(mBuffers[1].data), floatSample, start1, len1))
+               return false;
+            mBuffers[1].start = start1;
+            mBuffers[1].len = len1;
+            ++mNValidBuffers;
+         }
+      }
+
+      // Now satisfy the request from the buffers
+      for (int ii = 0; ii < mNValidBuffers && len > 0; ++ii) {
+         const sampleCount starti = start - mBuffers[ii].start;
+         const sampleCount leni = std::min(len, mBuffers[ii].len - starti);
+         if (leni > 0) {
+            const size_t size = sizeof(float) * leni;
+            memcpy(buffer, mBuffers[ii].data + starti, size);
+            len -= leni;
+            start += leni;
+            buffer += size;
+         }
+      }
+      if (len > 0) {
+         // Very big request!
+         // Fall back to direct fetch
+         if (!mPTrack->Get(buffer, format, start, len))
+            return false;
+      }
+      return true;
+   }
+
+   return mPTrack->Get(buffer, format, start, len);
+}
+
+void WaveTrackCache::Free()
+{
+   mBuffers[0].Free();
+   mBuffers[1].Free();
+   mNValidBuffers = 0;
 }
