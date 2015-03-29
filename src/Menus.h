@@ -258,7 +258,9 @@ void OnSelectAllTracks();
 
 void OnZoomIn();
 void OnZoomOut();
+#if 0
 void OnZoomToggle();
+#endif
 void OnZoomNormal();
 void OnZoomFit();
 void OnZoomFitV();
@@ -297,6 +299,10 @@ void OnShowSpectralSelectionToolBar();
 void OnShowToolsToolBar();
 void OnShowTranscriptionToolBar();
 void OnResetToolBars();
+#ifdef EXPERIMENTAL_FISHEYE
+void OnShowHideFisheye();
+void OnPlayFisheye();
+#endif
 void OnSimplifiedView();
 
         // Transport Menu

@@ -31,7 +31,6 @@
 #include "xml/XMLTagHandler.h"
 #include "toolbars/SelectionBarListener.h"
 #include "toolbars/SpectralSelectionBarListener.h"
-#include "widgets/Meter.h"
 
 #include <wx/defs.h>
 #include <wx/event.h>
@@ -61,6 +60,7 @@ class EffectPlugs;
 
 class TrackPanel;
 class FreqWindow;
+class Meter;
 
 // toolbar classes
 class ControlToolBar;
@@ -110,10 +110,10 @@ enum PlayMode {
 class ImportXMLTagHandler : public XMLTagHandler
 {
  public:
-   ImportXMLTagHandler(AudacityProject* pProject) { mProject = pProject; };
+   ImportXMLTagHandler(AudacityProject* pProject) { mProject = pProject; }
 
    virtual bool HandleXMLTag(const wxChar *tag, const wxChar **attrs);
-   virtual XMLTagHandler *HandleXMLChild(const wxChar * WXUNUSED(tag)) { return NULL; };
+   virtual XMLTagHandler *HandleXMLChild(const wxChar * WXUNUSED(tag)) { return NULL; }
 
    // Don't want a WriteXML method because ImportXMLTagHandler is not a WaveTrack.
    // <import> tags are instead written by AudacityProject::WriteXML.
@@ -135,15 +135,17 @@ class AUDACITY_DLL_API AudacityProject:  public wxFrame,
                    const wxPoint & pos, const wxSize & size);
    virtual ~AudacityProject();
 
-   TrackList *GetTracks() { return mTracks; };
+   TrackList *GetTracks() { return mTracks; }
    UndoManager *GetUndoManager() { return &mUndoManager; }
 
    sampleFormat GetDefaultFormat() { return mDefaultFormat; }
 
    double GetRate() { return mRate; }
-   double GetZoom() { return mViewInfo.zoom; }
+   bool ZoomInAvailable() const { return mViewInfo.ZoomInAvailable(); }
+   bool ZoomOutAvailable() const { return mViewInfo.ZoomOutAvailable(); }
    double GetSel0() { return mViewInfo.selectedRegion.t0(); }
    double GetSel1() { return mViewInfo.selectedRegion.t1(); }
+   const ZoomInfo &GetZoomInfo() const { return mViewInfo; }
 
    Track *GetFirstVisible();
    void UpdateFirstVisible();
@@ -221,7 +223,7 @@ class AUDACITY_DLL_API AudacityProject:  public wxFrame,
    bool GetDirty() { return mDirty; }
    void SetProjectTitle();
 
-   TrackPanel * GetTrackPanel(){return mTrackPanel;};
+   TrackPanel * GetTrackPanel(){return mTrackPanel;}
 
    bool GetIsEmpty() { return mTracks->IsEmpty(); }
 
@@ -297,9 +299,10 @@ class AUDACITY_DLL_API AudacityProject:  public wxFrame,
    void SelectNone();
    void SelectAllIfNone();
    void Zoom(double level);
+   void ZoomBy(double multiplier);
    void Rewind(bool shift);
    void SkipEnd(bool shift);
-   void SetStop(bool bStopped);
+   // void SetStop(bool bStopped);
    void EditByLabel( WaveTrack::EditFunction action, bool bSyncLockedTracks );
    void EditClipboardByLabel( WaveTrack::EditDestFunction action );
    bool IsSyncLocked();
@@ -387,8 +390,8 @@ class AUDACITY_DLL_API AudacityProject:  public wxFrame,
    Meter *GetCaptureMeter();
    void SetCaptureMeter(Meter *capture);
 
-   LyricsWindow* GetLyricsWindow() { return mLyricsWindow; };
-   MixerBoard* GetMixerBoard() { return mMixerBoard; };
+   LyricsWindow* GetLyricsWindow() { return mLyricsWindow; }
+   MixerBoard* GetMixerBoard() { return mMixerBoard; }
 
    // SelectionBarListener callback methods
 
@@ -464,8 +467,8 @@ class AUDACITY_DLL_API AudacityProject:  public wxFrame,
    static bool GetCacheBlockFiles();
 
  public:
-   bool IsSoloSimple() { return mSoloPref == wxT("Simple"); };
-   bool IsSoloNone() { return mSoloPref == wxT("None"); };
+   bool IsSoloSimple() { return mSoloPref == wxT("Simple"); }
+   bool IsSoloNone() { return mSoloPref == wxT("None"); }
 
  private:
 

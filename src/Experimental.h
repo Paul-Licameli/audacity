@@ -173,4 +173,7 @@
 // Define to enable Nyquist time/date property list
 // #define EXPERIMENTAL_NYQUIST_TIME_PROPERTY
 
+// PRL 22 Feb 2015
+#define EXPERIMENTAL_FISHEYE
+
 #endif

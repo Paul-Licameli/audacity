@@ -80,8 +80,7 @@ class Sequence: public XMLTagHandler {
             sampleCount start, sampleCount len);
 
    bool GetWaveDisplay(float *min, float *max, float *rms,int* bl,
-                       int len, sampleCount *where,
-                       double samplesPerPixel);
+                       int len, const sampleCount *where);
 
    bool Copy(sampleCount s0, sampleCount s1, Sequence **dest);
    bool Paste(sampleCount s0, const Sequence *src);
@@ -153,9 +152,10 @@ class Sequence: public XMLTagHandler {
                   float * outRMS) const;
 
    //
-   // Getting block size information
+   // Getting block size and alignment information
    //
 
+   sampleCount GetBlockStart(sampleCount position) const;
    sampleCount GetBestBlockSize(sampleCount start) const;
    sampleCount GetMaxBlockSize() const;
    sampleCount GetIdealBlockSize() const;

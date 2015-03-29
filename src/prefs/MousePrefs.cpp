@@ -146,6 +146,10 @@ void MousePrefs::CreateList()
    // AddItem(_("ESC"),              _("Select"),    _("Toggle center snapping in spectrogram"), _("same as select tool"));
 #endif
 
+#ifdef EXPERIMENTAL_FISHEYE
+   AddItem(_("Right-Click"), _("Any"), _("Recenter pinned fisheye"));
+   AddItem(_("Right-Drag"), _("Any"), _("Fine-adjust fisheye"));
+#endif
    AddItem(_("Wheel-Rotate"),      _("Any"),      _("Scroll up or down"));
    AddItem(_("Shift-Wheel-Rotate"),_("Any"),      _("Scroll left or right"));
    AddItem(_("Ctrl-Wheel-Rotate"), _("Any"),      _("Zoom in or out on Mouse Pointer"));

@@ -27,6 +27,7 @@
 
 #include "Audacity.h"
 #include "Experimental.h"
+#include <math.h>
 
 class AUDACITY_DLL_API SelectedRegion {
 

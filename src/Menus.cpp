@@ -81,6 +81,7 @@ simplifies construction of menu items.
 #include "NoteTrack.h"
 #endif // USE_MIDI
 #include "Tags.h"
+#include "TimeTrack.h"
 #include "Mix.h"
 #include "AboutDialog.h"
 #include "Benchmark.h"
@@ -1311,6 +1312,13 @@ void AudacityProject::CreateMenusAndCommands()
    c->AddCommand(wxT("PlaySpeedInc"), _("Increase playback speed"), FN(OnPlaySpeedInc));
    c->AddCommand(wxT("PlaySpeedDec"), _("Decrease playback speed"), FN(OnPlaySpeedDec));
 
+#ifdef EXPERIMENTAL_FISHEYE
+   c->AddCommand(wxT("ShowHideFisheye"), _("Show/Hide Fisheye"), FN(OnShowHideFisheye),
+      wxT("F"), AlwaysEnabledFlag, AlwaysEnabledFlag);
+   c->AddCommand(wxT("PlayFisheye"), _("Play Fisheye"), FN(OnPlayFisheye),
+      wxT("G"), AlwaysEnabledFlag, AlwaysEnabledFlag);
+#endif
+
    mLastFlags = 0;
 
 #if defined(__WXDEBUG__)
@@ -1912,10 +1920,10 @@ wxUint32 AudacityProject::GetUpdateFlags()
    if (mUndoManager.RedoAvailable())
       flags |= RedoAvailableFlag;
 
-   if (GetZoom() < gMaxZoom && (flags & TracksExistFlag))
+   if (ZoomInAvailable() && (flags & TracksExistFlag))
       flags |= ZoomInAvailableFlag;
 
-   if (GetZoom() > gMinZoom && (flags & TracksExistFlag))
+   if (ZoomOutAvailable() && (flags & TracksExistFlag))
       flags |= ZoomOutAvailableFlag;
 
    if ((flags & LabelTracksExistFlag) && LabelTrack::IsTextClipSupported())
@@ -4910,25 +4918,33 @@ void AudacityProject::OnZoomIn()
 
 void AudacityProject::ZoomInByFactor( double ZoomFactor )
 {
-   // LLL: Handling positioning differently when audio is active
+      // LLL: Handling positioning differently when audio is active
    if (gAudioIO->IsStreamActive(GetAudioIOToken()) != 0) {
-      Zoom(mViewInfo.zoom * ZoomFactor);
+      ZoomBy(ZoomFactor);
       mTrackPanel->ScrollIntoView(gAudioIO->GetStreamTime());
       mTrackPanel->Refresh(false);
       return;
    }
 
+#ifdef EXPERIMENTAL_FISHEYE
+   wxPoint position(mTrackPanel->ScreenToClient(::wxGetMousePosition()));
+   if (mTrackPanel->InFisheyeFocus(position)) {
+      // Don't zoom the background, just change the fisheye magnification
+      if (mViewInfo.ZoomFisheyeBy(position.x, mTrackPanel->GetLeftOffset(), 
+                                  ZoomFactor))
+         mTrackPanel->Refresh(false);
+      return;
+   }
+#endif
+
    // DMM: Here's my attempt to get logical zooming behavior
    // when there's a selection that's currently at least
    // partially on-screen
 
-   bool selectionIsOnscreen =
-      (mViewInfo.selectedRegion.t0() < mViewInfo.h + mViewInfo.screen) &&
-      (mViewInfo.selectedRegion.t1() >= mViewInfo.h);
-
-   bool selectionFillsScreen =
-      (mViewInfo.selectedRegion.t0() < mViewInfo.h) &&
-      (mViewInfo.selectedRegion.t1() > mViewInfo.h + mViewInfo.screen);
+   const double t0 = mViewInfo.selectedRegion.t0(),
+      t1 = mViewInfo.selectedRegion.t1();
+   const bool selectionIsOnscreen = mViewInfo.OverlapsScreen(t0, t1);
+   const bool selectionFillsScreen = mViewInfo.CoversScreen(t0, t1);
 
    if (selectionIsOnscreen && !selectionFillsScreen) {
       // Start with the center of the selection
@@ -4940,36 +4956,36 @@ void AudacityProject::ZoomInByFactor( double ZoomFactor )
       if (selCenter < mViewInfo.h)
          selCenter = mViewInfo.h +
                      (mViewInfo.selectedRegion.t1() - mViewInfo.h) / 2;
-      if (selCenter > mViewInfo.h + mViewInfo.screen)
-         selCenter = mViewInfo.h + mViewInfo.screen -
-            (mViewInfo.h + mViewInfo.screen - mViewInfo.selectedRegion.t0()) / 2;
+      if (selCenter > mViewInfo.h + mViewInfo.GetScreenDuration())
+         selCenter = mViewInfo.h + mViewInfo.GetScreenDuration() -
+            (mViewInfo.h + mViewInfo.GetScreenDuration() - mViewInfo.selectedRegion.t0()) / 2;
 
       // Zoom in
-      Zoom(mViewInfo.zoom *= ZoomFactor);
+      ZoomBy(ZoomFactor);
 
       // Recenter on selCenter
-      TP_ScrollWindow(selCenter - mViewInfo.screen / 2);
+      TP_ScrollWindow(selCenter - mViewInfo.GetScreenDuration() / 2);
       return;
    }
 
 
    double origLeft = mViewInfo.h;
-   double origWidth = mViewInfo.screen;
-   Zoom(mViewInfo.zoom *= ZoomFactor);
+   double origWidth = mViewInfo.GetScreenDuration();
+   ZoomBy(ZoomFactor);
 
-   double newh = origLeft + (origWidth - mViewInfo.screen) / 2;
+   double newh = origLeft + (origWidth - mViewInfo.GetScreenDuration()) / 2;
 
    // MM: Commented this out because it was confusing users
    /*
    // make sure that the *right-hand* end of the selection is
    // no further *left* than 1/3 of the way across the screen
-   if (mViewInfo.selectedRegion.t1() < newh + mViewInfo.screen / 3)
-      newh = mViewInfo.selectedRegion.t1() - mViewInfo.screen / 3;
+   if (mViewInfo.selectedRegion.t1() < newh + mViewInfo.GetScreenDuration() / 3)
+      newh = mViewInfo.selectedRegion.t1() - mViewInfo.GetScreenDuration() / 3;
 
    // make sure that the *left-hand* end of the selection is
    // no further *right* than 2/3 of the way across the screen
-   if (mViewInfo.selectedRegion.t0() > newh + mViewInfo.screen * 2 / 3)
-      newh = mViewInfo.selectedRegion.t0() - mViewInfo.screen * 2 / 3;
+   if (mViewInfo.selectedRegion.t0() > newh + mViewInfo.GetScreenDuration() * 2 / 3)
+      newh = mViewInfo.selectedRegion.t0() - mViewInfo.GetScreenDuration() * 2 / 3;
    */
 
    TP_ScrollWindow(newh);
@@ -4983,23 +4999,35 @@ void AudacityProject::OnZoomOut()
 
 void AudacityProject::ZoomOutByFactor( double ZoomFactor )
 {
+#ifdef EXPERIMENTAL_FISHEYE
+   wxPoint position(mTrackPanel->ScreenToClient(::wxGetMousePosition()));
+   if (mTrackPanel->InFisheyeFocus(position)) {
+      // Don't zoom the background, just change the fisheye magnification
+      if (mViewInfo.ZoomFisheyeBy(position.x, mTrackPanel->GetLeftOffset(),
+                                  ZoomFactor))
+         mTrackPanel->Refresh(false);
+      return;
+   }
+#endif
+
    //Zoom() may change these, so record original values:
    double origLeft = mViewInfo.h;
-   double origWidth = mViewInfo.screen;
+   double origWidth = mViewInfo.GetScreenDuration();
 
-   Zoom(mViewInfo.zoom *=ZoomFactor);
+   ZoomBy(ZoomFactor);
 
-   double newh = origLeft + (origWidth - mViewInfo.screen) / 2;
+   double newh = origLeft + (origWidth - mViewInfo.GetScreenDuration()) / 2;
    // newh = (newh > 0) ? newh : 0;
    TP_ScrollWindow(newh);
 
 }
 
+#if 0
 static double OldZooms[2]={ 44100.0/512.0, 4410.0/512.0 };
 void AudacityProject::OnZoomToggle()
 {
    double origLeft = mViewInfo.h;
-   double origWidth = mViewInfo.screen;
+   double origWidth = mViewInfo.GetScreenDuration();
 
    float f;
    // look at percentage difference.  We add a small fudge factor
@@ -5011,14 +5039,24 @@ void AudacityProject::OnZoomToggle()
       OldZooms[0]=mViewInfo.zoom;
    }
    Zoom( OldZooms[1] );
-   double newh = origLeft + (origWidth - mViewInfo.screen) / 2;
+   double newh = origLeft + (origWidth - mViewInfo.GetScreenDuration()) / 2;
    TP_ScrollWindow(newh);
 }
+#endif
 
 
 void AudacityProject::OnZoomNormal()
 {
-   Zoom(44100.0 / 512.0);
+#ifdef EXPERIMENTAL_FISHEYE
+   wxPoint position(mTrackPanel->ScreenToClient(::wxGetMousePosition()));
+   if (mTrackPanel->InFisheyeFocus(position)) {
+      if(mViewInfo.DefaultFisheyeZoom(position.x, mTrackPanel->GetLeftOffset()))
+         mTrackPanel->Refresh(false);
+      return;
+   }
+#endif
+
+   Zoom(ZoomInfo::GetDefaultZoom());
    mTrackPanel->Refresh(false);
 }
 
@@ -5096,7 +5134,7 @@ void AudacityProject::OnZoomSel()
    //      where the selected region may be scrolled off the left of the screen.
    //      I know this isn't right, but until the real rounding or 1-off issue is
    //      found, this will have to work.
-   Zoom(((mViewInfo.zoom * mViewInfo.screen) - 1) /
+   Zoom((mViewInfo.GetScreenWidth() - 1) /
         (mViewInfo.selectedRegion.t1() - mViewInfo.selectedRegion.t0()));
    TP_ScrollWindow(mViewInfo.selectedRegion.t0());
 }
@@ -5106,7 +5144,7 @@ void AudacityProject::OnGoSelStart()
    if (mViewInfo.selectedRegion.isPoint())
       return;
 
-   TP_ScrollWindow(mViewInfo.selectedRegion.t0() - (mViewInfo.screen / 2));
+   TP_ScrollWindow(mViewInfo.selectedRegion.t0() - (mViewInfo.GetScreenDuration() / 2));
 }
 
 void AudacityProject::OnGoSelEnd()
@@ -5114,7 +5152,7 @@ void AudacityProject::OnGoSelEnd()
    if (mViewInfo.selectedRegion.isPoint())
       return;
 
-   TP_ScrollWindow(mViewInfo.selectedRegion.t1() - (mViewInfo.screen / 2));
+   TP_ScrollWindow(mViewInfo.selectedRegion.t1() - (mViewInfo.GetScreenDuration() / 2));
 }
 
 void AudacityProject::OnShowClipping()
@@ -5267,6 +5305,40 @@ void AudacityProject::OnResetToolBars()
    mToolManager->Reset();
    ModifyToolbarMenus();
 }
+
+#ifdef EXPERIMENTAL_FISHEYE
+void AudacityProject::OnShowHideFisheye()
+{
+   ZoomInfo::FisheyeState state = mViewInfo.GetFisheyeState();
+   switch (state) {
+   case ZoomInfo::HIDDEN:
+      // show, pin, recenter
+      mViewInfo.SetFisheyeState(ZoomInfo::PINNED);
+      GetTrackPanel()->MoveFisheye();
+      break;
+
+   default:
+      // hide
+      mViewInfo.SetFisheyeState(ZoomInfo::HIDDEN);
+      break;
+   };
+
+   // Either way, redraw panel and time ruler
+   GetTrackPanel()->RefreshFisheye();
+}
+
+void AudacityProject::OnPlayFisheye()
+{
+   if (mViewInfo.GetFisheyeState() == ZoomInfo::HIDDEN)
+      return;
+
+   if (!MakeReadyToPlay())
+      return;
+
+   const SelectedRegion selectedRegion(mViewInfo.GetFisheyeFocusRegion());
+   GetControlToolBar()->PlayPlayRegion(selectedRegion.t0(), selectedRegion.t1());
+}
+#endif
 
 void AudacityProject::OnSimplifiedView()
 {

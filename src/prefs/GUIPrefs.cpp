@@ -18,6 +18,7 @@
 *//*******************************************************************/
 
 #include "../Audacity.h"
+#include "GUIPrefs.h"
 
 #include <wx/defs.h>
 
@@ -25,8 +26,9 @@
 #include "../Languages.h"
 #include "../Prefs.h"
 #include "../ShuttleGui.h"
-
-#include "GUIPrefs.h"
+#ifdef EXPERIMENTAL_FISHEYE
+#include "../ViewInfo.h"
+#endif
 
 GUIPrefs::GUIPrefs(wxWindow * parent)
 :  PrefsPanel(parent, _("Interface"))
@@ -67,6 +69,15 @@ void GUIPrefs::Populate()
    // only for testing...
    mLangCodes.Add("kg");   mLangNames.Add("Klingon");
    mLangCodes.Add("ep");   mLangNames.Add("Esperanto");
+#endif
+
+#ifdef EXPERIMENTAL_FISHEYE
+   {
+      mFisheyeStyleChoices = ZoomInfo::GetFisheyeStyleChoices();
+      mFisheyeStyleCodes.Clear();
+      for (unsigned ii = 0; ii < mFisheyeStyleChoices.Count(); ++ii)
+         mFisheyeStyleCodes.Add(ii);
+   }
 #endif
 
    //------------------------- Main section --------------------
@@ -137,8 +148,35 @@ void GUIPrefs::PopulateOrExchange(ShuttleGui & S)
                     wxT("/GUI/MonoAsVirtualStereo"),
                     false);
 #endif
+
    }
    S.EndStatic();
+
+#ifdef EXPERIMENTAL_FISHEYE
+   S.StartStatic(_("Fisheye"));
+   {
+      S.StartMultiColumn(2);
+      {
+         S.TieChoice(_("Style:"),
+            wxT("/GUI/Fisheye/Style"),
+            0,
+            mFisheyeStyleChoices,
+            mFisheyeStyleCodes);
+         S.SetSizeHints(mFisheyeStyleChoices);
+
+         S.TieNumericTextBox(_("Width:"),
+            wxT("/GUI/Fisheye/Width"),
+            ZoomInfo::GetFisheyeDefaultWidth(),
+            9);
+         S.TieNumericTextBox(_("Default Magnification:"),
+            wxT("/GUI/Fisheye/DefaultMagnification"),
+            ZoomInfo::GetFisheyeDefaultMagnification(),
+            9);
+      }
+      S.EndMultiColumn();
+   }
+   S.EndStatic();
+#endif
 }
 
 bool GUIPrefs::Apply()
