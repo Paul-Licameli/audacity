@@ -2422,12 +2422,16 @@ bool WaveTrackCache::Get(samplePtr buffer, sampleFormat format,
    if (format == floatSample && len > 0) {
       const sampleCount end = start + len;
 
+      bool fillFirst = (mNValidBuffers < 1);
+      bool fillSecond = (mNValidBuffers < 2);
+
       // Discard cached results that we no longer need
       if (mNValidBuffers > 0 &&
           (end <= mBuffers[0].start ||
            start >= mBuffers[mNValidBuffers - 1].end())) {
          // Complete miss
-         mNValidBuffers = 0;
+         fillFirst = true;
+         fillSecond = true;
       }
       else if (mNValidBuffers == 2 &&
                start >= mBuffers[1].start &&
@@ -2438,11 +2442,29 @@ bool WaveTrackCache::Get(samplePtr buffer, sampleFormat format,
          float *save = mBuffers[0].data;
          mBuffers[0] = mBuffers[1];
          mBuffers[1].data = save;
-         --mNValidBuffers;
+         fillSecond = true;
+         // Stay consistent!
+         mNValidBuffers = 1;
+      }
+      else if (mNValidBuffers > 0 &&
+         start < mBuffers[0].start &&
+         start == mPTrack->GetBlockStart(start)) {
+         // Request is not a total miss but starts before the cache,
+         // and there is a clip to fetch from.
+         // Not the access pattern for drawing spectrogram or playback,
+         // but maybe scrubbing causes this.
+         // Move the first buffer into second place, and later
+         // refill the first.
+         float *save = mBuffers[1].data;
+         mBuffers[1] = mBuffers[0];
+         mBuffers[0].data = save;
+         fillFirst = true;
+         // Cache is not in a consistent state yet
+         mNValidBuffers = 0;
       }
 
       // Refill buffers as needed
-      if (mNValidBuffers == 0) {
+      if (fillFirst) {
          const sampleCount start0 = mPTrack->GetBlockStart(start);
          if (start0 >= 0) {
             const sampleCount len0 = mPTrack->GetBestBlockSize(start0);
@@ -2451,20 +2473,48 @@ bool WaveTrackCache::Get(samplePtr buffer, sampleFormat format,
                return false;
             mBuffers[0].start = start0;
             mBuffers[0].len = len0;
-            ++mNValidBuffers;
+            if (!fillSecond &&
+                mBuffers[0].end() != mBuffers[1].start)
+               fillSecond = true;
+            // Keep the partially updated state consistent:
+            mNValidBuffers = fillSecond ? 1 : 2;
+         }
+         else {
+            // Request may fall between the clips of a track.
+            // Invalidate all.  WaveTrack::Get() will return zeroes.
+            mNValidBuffers = 0;
+            fillSecond = false;
          }
       }
-      if (mNValidBuffers == 1 && end > mBuffers[0].end()) {
-         const sampleCount start1 = mPTrack->GetBlockStart(mBuffers[0].end());
-         if (start1 >= 0) {
-            const sampleCount len1 = mPTrack->GetBestBlockSize(start1);
-            wxASSERT(len1 <= mBufferSize);
-            if (!mPTrack->Get(samplePtr(mBuffers[1].data), floatSample, start1, len1))
-               return false;
-            mBuffers[1].start = start1;
-            mBuffers[1].len = len1;
-            ++mNValidBuffers;
+      wxASSERT(!fillSecond || mNValidBuffers > 0);
+      if (fillSecond) {
+         mNValidBuffers = 1;
+         const sampleCount end0 = mBuffers[0].end();
+         if (end > end0) {
+            const sampleCount start1 = mPTrack->GetBlockStart(end0);
+            if (start1 == end0) {
+               const sampleCount len1 = mPTrack->GetBestBlockSize(start1);
+               wxASSERT(len1 <= mBufferSize);
+               if (!mPTrack->Get(samplePtr(mBuffers[1].data), floatSample, start1, len1))
+                  return false;
+               mBuffers[1].start = start1;
+               mBuffers[1].len = len1;
+               mNValidBuffers = 2;
+            }
          }
+      }
+      wxASSERT(mNValidBuffers < 2 || mBuffers[0].end() == mBuffers[1].start);
+
+      // Possibly get an initial portion that is uncached
+      const sampleCount initLen =
+         mNValidBuffers < 1 ? len : std::min(len, mBuffers[0].start - start);
+      if (initLen > 0) {
+         // This might be fetching zeroes between clips
+         if (!mPTrack->Get(buffer, format, start, initLen))
+            return false;
+         len -= initLen;
+         start += initLen;
+         buffer += initLen;
       }
 
       // Now satisfy the request from the buffers
@@ -2479,6 +2529,7 @@ bool WaveTrackCache::Get(samplePtr buffer, sampleFormat format,
             buffer += size;
          }
       }
+
       if (len > 0) {
          // Very big request!
          // Fall back to direct fetch
@@ -2488,6 +2539,7 @@ bool WaveTrackCache::Get(samplePtr buffer, sampleFormat format,
       return true;
    }
 
+   // Cache works only for float format.
    return mPTrack->Get(buffer, format, start, len);
 }
 
