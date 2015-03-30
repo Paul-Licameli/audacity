@@ -82,6 +82,7 @@ class LyricsWindow;
 class MixerBoard;
 class MixerBoardFrame;
 
+struct AudioIOStartStreamOptions;
 
 AudacityProject *CreateNewAudacityProject();
 AUDACITY_DLL_API AudacityProject *GetActiveProject();
@@ -110,10 +111,10 @@ enum PlayMode {
 class ImportXMLTagHandler : public XMLTagHandler
 {
  public:
-   ImportXMLTagHandler(AudacityProject* pProject) { mProject = pProject; };
+   ImportXMLTagHandler(AudacityProject* pProject) { mProject = pProject; }
 
    virtual bool HandleXMLTag(const wxChar *tag, const wxChar **attrs);
-   virtual XMLTagHandler *HandleXMLChild(const wxChar * WXUNUSED(tag)) { return NULL; };
+   virtual XMLTagHandler *HandleXMLChild(const wxChar * WXUNUSED(tag)) { return NULL; }
 
    // Don't want a WriteXML method because ImportXMLTagHandler is not a WaveTrack.
    // <import> tags are instead written by AudacityProject::WriteXML.
@@ -135,7 +136,9 @@ class AUDACITY_DLL_API AudacityProject:  public wxFrame,
                    const wxPoint & pos, const wxSize & size);
    virtual ~AudacityProject();
 
-   TrackList *GetTracks() { return mTracks; };
+   AudioIOStartStreamOptions GetDefaultPlayOptions();
+
+   TrackList *GetTracks() { return mTracks; }
    UndoManager *GetUndoManager() { return &mUndoManager; }
 
    sampleFormat GetDefaultFormat() { return mDefaultFormat; }
@@ -221,7 +224,7 @@ class AUDACITY_DLL_API AudacityProject:  public wxFrame,
    bool GetDirty() { return mDirty; }
    void SetProjectTitle();
 
-   TrackPanel * GetTrackPanel(){return mTrackPanel;};
+   TrackPanel * GetTrackPanel(){return mTrackPanel;}
 
    bool GetIsEmpty() { return mTracks->IsEmpty(); }
 
@@ -387,8 +390,8 @@ class AUDACITY_DLL_API AudacityProject:  public wxFrame,
    Meter *GetCaptureMeter();
    void SetCaptureMeter(Meter *capture);
 
-   LyricsWindow* GetLyricsWindow() { return mLyricsWindow; };
-   MixerBoard* GetMixerBoard() { return mMixerBoard; };
+   LyricsWindow* GetLyricsWindow() { return mLyricsWindow; }
+   MixerBoard* GetMixerBoard() { return mMixerBoard; }
 
    // SelectionBarListener callback methods
 
@@ -464,8 +467,8 @@ class AUDACITY_DLL_API AudacityProject:  public wxFrame,
    static bool GetCacheBlockFiles();
 
  public:
-   bool IsSoloSimple() { return mSoloPref == wxT("Simple"); };
-   bool IsSoloNone() { return mSoloPref == wxT("None"); };
+   bool IsSoloSimple() { return mSoloPref == wxT("Simple"); }
+   bool IsSoloNone() { return mSoloPref == wxT("None"); }
 
  private:
 

@@ -31,6 +31,7 @@ simplifies construction of menu items.
 *//*******************************************************************/
 
 #include "Audacity.h"
+#include "Project.h"
 
 #include <iterator>
 #include <limits>
@@ -51,7 +52,6 @@ simplifies construction of menu items.
 #include "FreqWindow.h"
 #include "TrackPanel.h"
 
-#include "Project.h"
 #include "effects/EffectManager.h"
 
 #include "AudacityApp.h"
@@ -2206,7 +2206,8 @@ void AudacityProject::OnPlayOneSecond()
 
    double pos = mTrackPanel->GetMostRecentXPos();
    mLastPlayMode = oneSecondPlay;
-   GetControlToolBar()->PlayPlayRegion(pos - 0.5, pos + 0.5);
+   GetControlToolBar()->PlayPlayRegion
+      (SelectedRegion(pos - 0.5, pos + 0.5), GetDefaultPlayOptions());
 }
 
 
@@ -2249,7 +2250,8 @@ void AudacityProject::OnPlayToSelection()
    // only when playing a short region, less than or equal to a second.
 //   mLastPlayMode = ((t1-t0) > 1.0) ? normalPlay : oneSecondPlay;
 
-   GetControlToolBar()->PlayPlayRegion(t0, t1);
+   GetControlToolBar()->PlayPlayRegion
+      (SelectedRegion(t0, t1), GetDefaultPlayOptions());
 }
 
 void AudacityProject::OnPlayLooped()

@@ -15,6 +15,7 @@
 *//*******************************************************************/
 
 #include "../Audacity.h"
+#include "TranscriptionToolBar.h"
 
 // For compilers that support precompilation, includes "wx/wx.h".
 #include <wx/wxprec.h>
@@ -28,7 +29,6 @@
 #endif // WX_PRECOMP
 
 #include "../Envelope.h"
-#include "TranscriptionToolBar.h"
 
 #include "ControlToolBar.h"
 #include "../AudacityApp.h"
@@ -439,11 +439,13 @@ void TranscriptionToolBar::PlayAtSpeed(bool looped, bool cutPreview)
 #ifdef EXPERIMENTAL_MIDI_OUT
       gAudioIO->SetMidiPlaySpeed(mPlaySpeed);
 #endif
-      p->GetControlToolBar()->PlayPlayRegion(playRegionStart,
-                                             playRegionEnd,
-                                             looped,
-                                             cutPreview,
-                                             mTimeTrack);
+      AudioIOStartStreamOptions options(p->GetDefaultPlayOptions());
+      options.playLooped = looped;
+      options.timeTrack = mTimeTrack;
+      p->GetControlToolBar()->PlayPlayRegion
+         (SelectedRegion(playRegionStart, playRegionEnd),
+          options,
+          cutPreview);
    }
 }
 

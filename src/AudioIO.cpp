@@ -264,6 +264,7 @@ writing audio.
 *//*******************************************************************/
 
 #include "Audacity.h"
+#include "AudioIO.h"
 #include "float_cast.h"
 #include "Experimental.h"
 
@@ -293,7 +294,6 @@ writing audio.
 #include <wx/txtstrm.h>
 
 #include "AudacityApp.h"
-#include "AudioIO.h"
 #include "Mix.h"
 #include "MixerBoard.h"
 #include "Resample.h"
@@ -1148,13 +1148,8 @@ int AudioIO::StartStream(WaveTrackArray playbackTracks,
 #ifdef EXPERIMENTAL_MIDI_OUT
                          NoteTrackArray midiPlaybackTracks,
 #endif
-                         TimeTrack *timeTrack, double sampleRate,
-                         double t0, double t1,
-                         AudioIOListener* listener,
-                         bool playLooped /* = false */,
-                         double cutPreviewGapStart /* = 0.0 */,
-                         double cutPreviewGapLen, /* = 0.0 */
-                         const double *pStartTime /* = 0 */)
+                         double sampleRate, double t0, double t1,
+                         const AudioIOStartStreamOptions &options)
 {
    if( IsBusy() )
       return 0;
@@ -1194,8 +1189,8 @@ int AudioIO::StartStream(WaveTrackArray playbackTracks,
    }
    mSilenceLevel = (silenceLevelDB + dBRange)/(double)dBRange;  // meter goes -dBRange dB -> 0dB
 
-   mTimeTrack = timeTrack;
-   mListener = listener;
+   mTimeTrack = options.timeTrack;
+   mListener = options.listener;
    mRate    = sampleRate;
    mT0      = t0;
    mT1      = t1;
@@ -1207,9 +1202,9 @@ int AudioIO::StartStream(WaveTrackArray playbackTracks,
 #ifdef EXPERIMENTAL_MIDI_OUT
    mMidiPlaybackTracks = midiPlaybackTracks;
 #endif
-   mPlayLooped = playLooped;
-   mCutPreviewGapStart = cutPreviewGapStart;
-   mCutPreviewGapLen = cutPreviewGapLen;
+   mPlayLooped = options.playLooped;
+   mCutPreviewGapStart = options.cutPreviewGapStart;
+   mCutPreviewGapLen = options.cutPreviewGapLen;
    mPlaybackBuffers = NULL;
    mPlaybackMixers = NULL;
    mCaptureBuffers = NULL;
@@ -1412,20 +1407,6 @@ int AudioIO::StartStream(WaveTrackArray playbackTracks,
 #ifdef AUTOMATED_INPUT_LEVEL_ADJUSTMENT
    AILASetStartTime();
 #endif
-
-   if (pStartTime)
-   {
-      // Calculate the new time position
-      mTime = std::max(mT0, std::min(mT1, *pStartTime));
-      // Reset mixer positions for all playback tracks
-      unsigned numMixers = mPlaybackTracks.GetCount();
-      for (unsigned ii = 0; ii < numMixers; ++ii)
-         mPlaybackMixers[ii]->Reposition(mTime);
-      if(mTimeTrack)
-         mWarpedTime = mTimeTrack->ComputeWarpedLength(mT0, mTime);
-      else
-         mWarpedTime = mTime - mT0;
-   }
 
    // We signal the audio thread to call FillBuffers, to prime the RingBuffers
    // so that they will have data in them when the stream starts.  Having the

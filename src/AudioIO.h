@@ -74,6 +74,24 @@ DECLARE_EXPORTED_EVENT_TYPE(AUDACITY_DLL_API, EVT_AUDIOIO_PLAYBACK, -1);
 DECLARE_EXPORTED_EVENT_TYPE(AUDACITY_DLL_API, EVT_AUDIOIO_CAPTURE, -1);
 DECLARE_EXPORTED_EVENT_TYPE(AUDACITY_DLL_API, EVT_AUDIOIO_MONITOR, -1);
 
+// To avoid growing the argument list of StartStream, add fields here
+struct AudioIOStartStreamOptions
+{
+   AudioIOStartStreamOptions()
+      : timeTrack(NULL)
+      , listener(NULL)
+      , playLooped(false)
+      , cutPreviewGapStart(0.0)
+      , cutPreviewGapLen(0.0)
+   {}
+
+   TimeTrack *timeTrack;
+   AudioIOListener* listener;
+   bool playLooped;
+   double cutPreviewGapStart;
+   double cutPreviewGapLen;
+};
+
 class AUDACITY_DLL_API AudioIO {
 
  public:
@@ -103,15 +121,9 @@ class AUDACITY_DLL_API AudioIO {
 #ifdef EXPERIMENTAL_MIDI_OUT
                    NoteTrackArray midiTracks,
 #endif
-                   TimeTrack *timeTrack, double sampleRate,
-                   double t0, double t1,
-                   AudioIOListener* listener,
-                   bool playLooped = false,
-                   double cutPreviewGapStart = 0.0,
-                   double cutPreviewGapLen = 0.0,
-                   // May be other than t0,
-                   // but will be constrained between t0 and t1
-                   const double *pStartTime = 0);
+                   double sampleRate, double t0, double t1,
+                   const AudioIOStartStreamOptions &options =
+                      AudioIOStartStreamOptions());
 
    /** \brief Stop recording, playback or input monitoring.
     *
@@ -281,9 +293,8 @@ class AUDACITY_DLL_API AudioIO {
     */
    static int GetOptimalSupportedSampleRate();
 
-   /** \brief The time the stream has been playing for
+   /** \brief During playback, the (unwarped) track time most recently played
     *
-    * This is given in seconds based on starting at t0
     * When playing looped, this will start from t0 again,
     * too. So the returned time should be always between
     * t0 and t1
@@ -535,7 +546,7 @@ private:
    Meter              *mInputMeter;
    Meter              *mOutputMeter;
    bool                mUpdateMeters;
-   bool                mUpdatingMeters;
+   volatile bool       mUpdatingMeters;
 
    #if USE_PORTMIXER
    PxMixer            *mPortMixer;

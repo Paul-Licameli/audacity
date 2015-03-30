@@ -2137,7 +2137,8 @@ void TrackPanel::StartOrJumpPlayback(wxMouseEvent &event)
          //the clicked point
          ControlToolBar * ctb = p->GetControlToolBar();
          //ctb->SetPlay(true);// Not needed as done in PlayPlayRegion
-         ctb->PlayPlayRegion(clicktime, endtime,false) ;
+         ctb->PlayPlayRegion
+            (SelectedRegion(clicktime, endtime), p->GetDefaultPlayOptions());
       }
       else
       {
@@ -2148,7 +2149,8 @@ void TrackPanel::StartOrJumpPlayback(wxMouseEvent &event)
          //require a new method in ControlToolBar: SetPause();
          ControlToolBar * ctb = p->GetControlToolBar();
          ctb->StopPlaying();
-         ctb->PlayPlayRegion(clicktime,endtime,false) ;
+         ctb->PlayPlayRegion
+            (SelectedRegion(clicktime, endtime), p->GetDefaultPlayOptions());
       }
    }
 }

@@ -50,6 +50,7 @@ scroll information.  It also has some status flags.
 *//*******************************************************************/
 
 #include "Audacity.h"
+#include "Project.h"
 
 #include <stdio.h>
 #include <iostream>
@@ -89,8 +90,6 @@ scroll information.  It also has some status flags.
 #include <wx/mac/private.h>
 #endif
 #endif
-
-#include "Project.h"
 
 #include "FreqWindow.h"
 #include "AutoRecovery.h"
@@ -1033,6 +1032,14 @@ AudacityProject::AudacityProject(wxWindow * parent, wxWindowID id,
 AudacityProject::~AudacityProject()
 {
    wxGetApp().GetRecentFiles()->RemoveMenu(mRecentFilesMenu);
+}
+
+AudioIOStartStreamOptions AudacityProject::GetDefaultPlayOptions()
+{
+   AudioIOStartStreamOptions options;
+   options.timeTrack = GetTracks()->GetTimeTrack();
+   options.listener = this;
+   return options;
 }
 
 void AudacityProject::UpdatePrefsVariables()
