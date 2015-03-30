@@ -1777,6 +1777,7 @@ static float sumFreqValues(float *freq, int x0, float bin0, float bin1)
 
 // Helper function to decide on which color set to use.
 // dashCount counts both dashes and the spaces between them. 
+inline
 AColor::ColorGradientChoice ChooseColorSet( float bin0, float bin1, float selBinLo, 
    float selBinCenter, float selBinHi, int dashCount )
 {
@@ -1932,8 +1933,8 @@ void TrackArtist::DrawClipSpectrum(WaveTrack *track,
    if (!image)return;
    unsigned char *data = image->GetData();
 
-   int windowSize = GetSpectrumWindowSize();
-   int half = windowSize/2;
+   int windowSize = GetSpectrumWindowSize(!autocorrelation);
+   const int half = windowSize / 2;
    float *freq = new float[mid.width * half];
    sampleCount *where = new sampleCount[mid.width+1];
 
@@ -2079,7 +2080,7 @@ void TrackArtist::DrawClipSpectrum(WaveTrack *track,
 
             AColor::ColorGradientChoice selected =
                AColor::ColorGradientUnselected;
-            // If we are in the time selected range, then we may use a differnt color set.
+            // If we are in the time selected range, then we may use a different color set.
             if (ssel0 <= w0 && w1 < ssel1)
             {
                selected = ChooseColorSet( bin0, bin1, selBinLo, selBinCenter, selBinHi, x/DASH_LENGTH );
@@ -2222,7 +2223,7 @@ void TrackArtist::DrawClipSpectrum(WaveTrack *track,
 
             AColor::ColorGradientChoice selected =
                AColor::ColorGradientUnselected;
-            // If we are in the time selected range, then we may use a differnt color set.
+            // If we are in the time selected range, then we may use a different color set.
             if (ssel0 <= w0 && w1 < ssel1)
             {
                selected = ChooseColorSet( bin0, bin1, selBinLo, selBinCenter, selBinHi, x/DASH_LENGTH );
@@ -3038,6 +3039,7 @@ void TrackArtist::UpdatePrefs()
       mLogMinFreq = 1;
 
    mWindowSize = gPrefs->Read(wxT("/Spectrum/FFTSize"), 256);
+   mZeroPaddingFactor = gPrefs->Read(wxT("/Spectrum/ZeroPaddingFactor"), 1);
    mIsGrayscale = (gPrefs->Read(wxT("/Spectrum/Grayscale"), 0L) != 0);
 
 #ifdef EXPERIMENTAL_FFT_Y_GRID
@@ -3079,9 +3081,12 @@ int TrackArtist::GetSpectrumLogMaxFreq(int deffreq)
    return mLogMaxFreq < 0 ? deffreq : mLogMaxFreq;
 }
 
-int TrackArtist::GetSpectrumWindowSize()
+int TrackArtist::GetSpectrumWindowSize(bool includeZeroPadding)
 {
-   return mWindowSize;
+   if (includeZeroPadding)
+      return mWindowSize * mZeroPaddingFactor;
+   else
+      return mWindowSize;
 }
 
 #ifdef EXPERIMENTAL_FFT_SKIP_POINTS

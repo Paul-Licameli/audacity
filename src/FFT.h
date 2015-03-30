@@ -40,6 +40,12 @@
     * 9: Gaussian(a=4.5)
 */
 
+#ifndef __AUDACITY_FFT__
+#define __AUDACITY_FFT__
+
+#include <wx/defs.h>
+#include <wx/wxchar.h>
+
 #ifndef M_PI
 #define	M_PI		3.14159265358979323846  /* pi */
 #endif
@@ -87,22 +93,48 @@ void FFT(int NumSamples,
          bool InverseTransform,
          float *RealIn, float *ImagIn, float *RealOut, float *ImagOut);
 
-/*
- * Applies a windowing function to the data in place
- *
- * 0: Rectangular (no window)
- * 1: Bartlett    (triangular)
- * 2: Hamming
- * 3: Hanning
- * 4: Blackman
- * 5: Blackman-Harris
- * 6: Welch
- * 7: Gaussian(a=2.5)
- * 8: Gaussian(a=3.5)
- * 9: Gaussian(a=4.5)
- */
+enum WindowFunctionChoice {
+   WFCRectangular = 0,  // no window
+   WFCBartlett,         // Triangular
+   WFCHamming,          // Two term cosines
+   WFCHann,             // Two term cosines
+   WFCBlackman,         // Three term cosines
+   WFCBlackmanHarris,   // Four term cosines
+   WFCWelch,            // parabola
+   WFCGaussian2_5,
+   WFCGaussian3_5,
+   WFCGaussian4_5,
 
+   WFCNumChoices,
+   WFCUndefined = -1,
+};
+
+/*
+ * Multiply values in data by values of the chosen function
+ * DO NOT REUSE!  Prefer NewWindowFunc instead
+ * This version was inconsistent whether the window functions were
+ * symmetrical about NumSamples / 2, or about (NumSamples - 1) / 2
+ * It remains for compatibility until we decide to upgrade all the old uses
+ * All functions have 0 in data[0] except Rectangular, Hamming and Gaussians
+ */
 void WindowFunc(int whichFunction, int NumSamples, float *data);
+
+/*
+ * Multiply values in data by values of the chosen function
+ * All functions are symmetrical about NumSamples / 2 if extraSample is false,
+ * otherwise about (NumSamples - 1) / 2
+ * All functions have 0 in data[0] except Rectangular, Hamming and Gaussians
+ */
+void NewWindowFunc(int whichFunction, int NumSamples, bool extraSample, float *data);
+
+/*
+ * Multiply values in data by derivative of the chosen function, assuming
+ * sampling interval is unit
+ * All functions are symmetrical about NumSamples / 2 if extraSample is false,
+ * otherwise about (NumSamples - 1) / 2
+ * All functions have 0 in data[0] except Rectangular, Hamming and Gaussians
+ */
+void DerivativeOfWindowFunc(int whichFunction, int NumSamples, bool extraSample, float *data);
 
 /*
  * Returns the name of the windowing function (for UI display)
@@ -117,3 +149,5 @@ const wxChar *WindowFuncName(int whichFunction);
 int NumWindowFuncs();
 
 void DeinitFFT();
+
+#endif

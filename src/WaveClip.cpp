@@ -223,6 +223,8 @@ public:
       rangeOld = -1;
       windowTypeOld = -1;
       windowSizeOld = -1;
+      zeroPaddingFactorOld = 1;
+      reassignmentOld = false;
       frequencyGainOld = false;
 #ifdef EXPERIMENTAL_FFT_SKIP_POINTS
       fftSkipPointsOld = -1;
@@ -248,6 +250,8 @@ public:
    int          rangeOld;
    int          windowTypeOld;
    int          windowSizeOld;
+   int          zeroPaddingFactorOld;
+   bool         reassignmentOld;
    int          frequencyGainOld;
 #ifdef EXPERIMENTAL_FFT_SKIP_POINTS
    int          fftSkipPointsOld;
@@ -280,8 +284,9 @@ static void ComputeSpectrumUsingRealFFTf(float *buffer, HFFT hFFT, float *window
    else
       out[0] = 10.0*log10(power);
    for(i=1;i<hFFT->Points;i++) {
-      power = (buffer[hFFT->BitReversed[i]  ]*buffer[hFFT->BitReversed[i]  ])
-            + (buffer[hFFT->BitReversed[i]+1]*buffer[hFFT->BitReversed[i]+1]);
+      const int index = hFFT->BitReversed[i];
+      const float re = buffer[index], im = buffer[index + 1];
+      power = re * re + im * im;
       if(power <= 0)
          out[i] = -160.0;
       else
@@ -302,7 +307,10 @@ WaveClip::WaveClip(DirManager *projDirManager, sampleFormat format, int rate)
    mWindowSize = -1;
    hFFT = NULL;
    mWindow = NULL;
+   mTWindow = NULL;
+   mDWindow = NULL;
 #endif
+   mZeroPaddingFactor = 1;
    mSpecCache = new SpecCache(1, 1, false);
    mSpecPxCache = new SpecPxCache(1);
    mAppendBuffer = NULL;
@@ -330,7 +338,10 @@ WaveClip::WaveClip(WaveClip& orig, DirManager *projDirManager)
    mWindowSize = -1;
    hFFT = NULL;
    mWindow = NULL;
+   mTWindow = NULL;
+   mDWindow = NULL;
 #endif
+   mZeroPaddingFactor = 1;
    mSpecCache = new SpecCache(1, 1, false);
    mSpecPxCache = new SpecPxCache(1);
 
@@ -356,8 +367,9 @@ WaveClip::~WaveClip()
 #ifdef EXPERIMENTAL_USE_REALFFTF
    if(hFFT != NULL)
       EndFFT(hFFT);
-   if(mWindow != NULL)
-      delete[] mWindow;
+   delete[] mWindow;
+   delete[] mTWindow;
+   delete[] mDWindow;
 #endif
 
    if (mAppendBuffer)
@@ -720,6 +732,62 @@ bool WaveClip::GetWaveDisplay(float *min, float *max, float *rms,int* bl,
    return true;
 }
 
+namespace
+{
+enum { WINDOW, TWINDOW, DWINDOW };
+void RecreateWindow(
+   float *&window, int which, int fftLen,
+   int padding, int windowType, int windowSize, double &scale)
+{
+   if (window != NULL)
+      delete[] window;
+   // Create the requested window function
+   window = new float[fftLen];
+   int ii;
+
+   const bool extra = padding > 0;
+   wxASSERT(windowSize % 2 == 0);
+   if (extra)
+      // For windows that do not go to 0 at the edges, this improves symmetry
+      ++windowSize;
+   const int endOfWindow = padding + windowSize;
+   // Left and right padding
+   for (ii = 0; ii < padding; ++ii) {
+      window[ii] = 0.0;
+      window[fftLen - ii - 1] = 0.0;
+   }
+   // Default rectangular window in the middle
+   for (; ii < endOfWindow; ++ii)
+      window[ii] = 1.0;
+   // Overwrite middle as needed
+   switch (which) {
+   case WINDOW:
+      NewWindowFunc(windowType, windowSize, extra, window + padding);
+      break;
+   case TWINDOW:
+      NewWindowFunc(windowType, windowSize, extra, window + padding);
+      for (int ii = padding, multiplier = -windowSize / 2; ii < endOfWindow; ++ii, ++multiplier)
+         window[ii] *= multiplier;
+      break;
+   case DWINDOW:
+      DerivativeOfWindowFunc(windowType, windowSize, extra, window + padding);
+      break;
+   default:
+      wxASSERT(false);
+   }
+   // Scale the window function to give 0dB spectrum for 0dB sine tone
+   if (which == WINDOW) {
+      scale = 0.0;
+      for (ii = padding; ii < endOfWindow; ++ii)
+         scale += window[ii];
+      if (scale > 0)
+         scale = 2.0 / scale;
+   }
+   for (ii = padding; ii < endOfWindow; ++ii)
+      window[ii] *= scale;
+}
+}
+
 bool WaveClip::GetSpectrogram(float *freq, sampleCount *where,
                                int numPixels,
                                double t0, double pixelsPerSecond,
@@ -736,53 +804,71 @@ bool WaveClip::GetSpectrogram(float *freq, sampleCount *where,
    int fftSkipPoints = gPrefs->Read(wxT("/Spectrum/FFTSkipPoints"), 0L);
    int fftSkipPoints1 = fftSkipPoints+1;
 #endif //EXPERIMENTAL_FFT_SKIP_POINTS
-   int half = windowSize/2;
+   const int zeroPaddingFactor =
+      autocorrelation ? 1 : gPrefs->Read(wxT("/Spectrum/ZeroPaddingFactor"), 1);
+   const bool reassignment =
+      !autocorrelation && (gPrefs->Read(wxT("/Spectrum/Reassignment"), 0L) != 0);
    gPrefs->Read(wxT("/Spectrum/WindowType"), &windowType, 3);
+
+   // FFT length may be longer than the window of samples that affect results
+   // because of zero padding done for increased frequency resolution
+   const int fftLen = windowSize * zeroPaddingFactor;
+   const int half = fftLen / 2;
+   const int padding = (windowSize * (zeroPaddingFactor - 1)) / 2;
 
 #ifdef EXPERIMENTAL_USE_REALFFTF
    // Update the FFT and window if necessary
+   if (!reassignment) {
+      if (mTWindow) {
+         delete[] mTWindow;
+         mTWindow = NULL;
+      }
+      if (mDWindow) {
+         delete[] mDWindow;
+         mDWindow = NULL;
+      }
+   }
    if((mWindowType != windowType) || (mWindowSize != windowSize)
-      || (hFFT == NULL) || (mWindow == NULL) || (mWindowSize != hFFT->Points*2) ) {
+      || (hFFT == NULL) || (mWindow == NULL) || (fftLen != hFFT->Points * 2)
+      || (mZeroPaddingFactor != zeroPaddingFactor)
+      || (reassignment && (mTWindow == NULL || mDWindow == NULL))) {
       mWindowType = windowType;
       mWindowSize = windowSize;
       if(hFFT != NULL)
          EndFFT(hFFT);
-      hFFT = InitializeFFT(mWindowSize);
-      if(mWindow != NULL) delete[] mWindow;
-      // Create the requested window function
-      mWindow = new float[mWindowSize];
-      int i;
-      for(i=0; i<windowSize; i++)
-         mWindow[i]=1.0;
-      WindowFunc(mWindowType, mWindowSize, mWindow);
-      // Scale the window function to give 0dB spectrum for 0dB sine tone
-      double ws=0;
-      for(i=0; i<windowSize; i++)
-         ws += mWindow[i];
-      if(ws > 0) {
-         ws = 2.0/ws;
-         for(i=0; i<windowSize; i++)
-            mWindow[i] *= ws;
+      hFFT = InitializeFFT(fftLen);
+      double scale;
+      RecreateWindow(mWindow, WINDOW, fftLen, padding, mWindowType, mWindowSize, scale);
+      if (reassignment) {
+         RecreateWindow(mTWindow, TWINDOW, fftLen, padding, mWindowType, mWindowSize, scale);
+         RecreateWindow(mDWindow, DWINDOW, fftLen, padding, mWindowType, mWindowSize, scale);
       }
    }
 #endif // EXPERIMENTAL_USE_REALFFTF
 
-   if (mSpecCache &&
-       mSpecCache->minFreqOld == minFreq &&
-       mSpecCache->maxFreqOld == maxFreq &&
-       mSpecCache->rangeOld == range &&
-       mSpecCache->gainOld == gain &&
-       mSpecCache->windowTypeOld == windowType &&
-       mSpecCache->windowSizeOld == windowSize &&
-       mSpecCache->frequencyGainOld == frequencygain &&
+   mZeroPaddingFactor = zeroPaddingFactor;
+
+   const bool matchingParameters =
+      mSpecCache &&
+      mSpecCache->minFreqOld == minFreq &&
+      mSpecCache->maxFreqOld == maxFreq &&
+      mSpecCache->rangeOld == range &&
+      mSpecCache->gainOld == gain &&
+      mSpecCache->windowTypeOld == windowType &&
+      mSpecCache->windowSizeOld == windowSize &&
+      mSpecCache->zeroPaddingFactorOld == zeroPaddingFactor &&
+      mSpecCache->reassignmentOld == reassignment &&
+      mSpecCache->frequencyGainOld == frequencygain &&
 #ifdef EXPERIMENTAL_FFT_SKIP_POINTS
-       mSpecCache->fftSkipPointsOld == fftSkipPoints &&
+      mSpecCache->fftSkipPointsOld == fftSkipPoints &&
 #endif //EXPERIMENTAL_FFT_SKIP_POINTS
-       mSpecCache->dirty == mDirty &&
+      mSpecCache->dirty == mDirty &&
+      mSpecCache->pps == pixelsPerSecond &&
+      mSpecCache->ac == autocorrelation;
+
+   if (mSpecCache && matchingParameters &&
        mSpecCache->start == t0 &&
-       mSpecCache->ac == autocorrelation &&
-       mSpecCache->len >= numPixels &&
-       mSpecCache->pps == pixelsPerSecond) {
+       mSpecCache->len >= numPixels) {
       memcpy(freq, mSpecCache->freq, numPixels*half*sizeof(float));
       memcpy(where, mSpecCache->where, (numPixels+1)*sizeof(sampleCount));
       return false;  //hit cache completely
@@ -800,7 +886,7 @@ bool WaveClip::GetSpectrogram(float *freq, sampleCount *where,
 
    for (x = 0; x < mSpecCache->len + 1; x++) {
       recalc[x] = true;
-      // purposely offset the display 1/2 bin to the left (as compared
+      // purposely offset the display 1/2 sample to the left (as compared
       // to waveform display to properly center response of the FFT
       mSpecCache->where[x] =
          (sampleCount)floor((t0*mRate) + (x*mRate/pixelsPerSecond) + 1.);
@@ -809,19 +895,7 @@ bool WaveClip::GetSpectrogram(float *freq, sampleCount *where,
    // Optimization: if the old cache is good and overlaps
    // with the current one, re-use as much of the cache as
    // possible
-   if (oldCache->dirty == mDirty &&
-       oldCache->minFreqOld == minFreq &&
-       oldCache->maxFreqOld == maxFreq &&
-       oldCache->rangeOld == range &&
-       oldCache->gainOld == gain &&
-       oldCache->windowTypeOld == windowType &&
-       oldCache->windowSizeOld == windowSize &&
-       oldCache->frequencyGainOld == frequencygain &&
-#ifdef EXPERIMENTAL_FFT_SKIP_POINTS
-       oldCache->fftSkipPointsOld == fftSkipPoints &&
-#endif //EXPERIMENTAL_FFT_SKIP_POINTS
-       oldCache->pps == pixelsPerSecond &&
-       oldCache->ac == autocorrelation &&
+   if (oldCache && matchingParameters &&
        oldCache->where[0] < mSpecCache->where[mSpecCache->len] &&
        oldCache->where[oldCache->len] > mSpecCache->where[0]) {
 
@@ -846,17 +920,25 @@ bool WaveClip::GetSpectrogram(float *freq, sampleCount *where,
    }
 
 #ifdef EXPERIMENTAL_FFT_SKIP_POINTS
-   float *buffer = new float[windowSize*fftSkipPoints1];
+   float *buffer = new float[fftLen*fftSkipPoints1];
    mSpecCache->fftSkipPointsOld = fftSkipPoints;
 #else //!EXPERIMENTAL_FFT_SKIP_POINTS
-   float *buffer = new float[windowSize];
+   float *buffer = new float[fftLen];
 #endif //EXPERIMENTAL_FFT_SKIP_POINTS
+   // Initialize zero padding in the buffer
+   for (int ii = 0; ii < padding; ++ii) {
+      buffer[ii] = 0.0;
+      buffer[fftLen - ii - 1] = 0.0;
+   }
+
    mSpecCache->minFreqOld = minFreq;
    mSpecCache->maxFreqOld = maxFreq;
    mSpecCache->gainOld = gain;
    mSpecCache->rangeOld = range;
    mSpecCache->windowTypeOld = windowType;
    mSpecCache->windowSizeOld = windowSize;
+   mSpecCache->zeroPaddingFactorOld = zeroPaddingFactor;
+   mSpecCache->reassignmentOld = reassignment;
    mSpecCache->frequencyGainOld = frequencygain;
 
    float *gainfactor = NULL;
@@ -877,15 +959,15 @@ bool WaveClip::GetSpectrogram(float *freq, sampleCount *where,
          sampleCount len = windowSize;
          sampleCount i;
 
-         if (start <= 0 || start >= mSequence->GetNumSamples()) {
+         const bool outOfBounds = start <= 0 || start >= mSequence->GetNumSamples();
+         if (outOfBounds || reassignment) {
 
             for (i = 0; i < (sampleCount)half; i++)
                mSpecCache->freq[half * x + i] = 0;
 
          }
-         else
-         {
-            float *adj = buffer;
+         if (!outOfBounds) {
+            float *adj = buffer + padding;
             start -= windowSize >> 1;
 
             if (start < 0) {
@@ -894,18 +976,22 @@ bool WaveClip::GetSpectrogram(float *freq, sampleCount *where,
                len += start;
                start = 0;
             }
+
 #ifdef EXPERIMENTAL_FFT_SKIP_POINTS
             if (start + len*fftSkipPoints1 > mSequence->GetNumSamples()) {
                int newlen = (mSequence->GetNumSamples() - start)/fftSkipPoints1;
                for (i = newlen*fftSkipPoints1; i < (sampleCount)len*fftSkipPoints1; i++)
+                  adj[i] = 0;
+               len = newlen;
+            }
 #else //!EXPERIMENTAL_FFT_SKIP_POINTS
             if (start + len > mSequence->GetNumSamples()) {
                int newlen = mSequence->GetNumSamples() - start;
                for (i = newlen; i < (sampleCount)len; i++)
-#endif //EXPERIMENTAL_FFT_SKIP_POINTS
                   adj[i] = 0;
                len = newlen;
             }
+#endif //EXPERIMENTAL_FFT_SKIP_POINTS
 
             if (len > 0)
 #ifdef EXPERIMENTAL_FFT_SKIP_POINTS
@@ -927,8 +1013,62 @@ bool WaveClip::GetSpectrogram(float *freq, sampleCount *where,
                ComputeSpectrum(buffer, windowSize, windowSize,
                                mRate, &mSpecCache->freq[half * x],
                                autocorrelation, windowType);
-            } else {
-               ComputeSpectrumUsingRealFFTf(buffer, hFFT, mWindow, mWindowSize, &mSpecCache->freq[half * x]);
+            }
+            else if (reassignment) {
+               static const double epsilon = 1e-16;
+
+               float *buffer2 = new float[fftLen];
+               memcpy(buffer2, buffer, fftLen * sizeof(float));
+
+               for (i = 0; i<fftLen; i++)
+                  buffer[i] *= mWindow[i];
+               RealFFTf(buffer, hFFT);
+
+               for (i = 0; i<fftLen; i++)
+                  buffer2[i] *= mDWindow[i];
+               RealFFTf(buffer2, hFFT);
+
+               const double multiplier = - fftLen / (2.0f * M_PI);
+               for (i = 0; i < hFFT->Points; i++) {
+                  const int index = hFFT->BitReversed[i];
+                  const float
+                     denomRe = buffer[index],
+                     denomIm = i == 0 ? 0 : buffer[index + 1];
+                  const double power = denomRe * denomRe + denomIm * denomIm;
+                  if (power < epsilon)
+                     // Avoid dividing by near-zero below
+                     continue;
+
+                  const float
+                     numRe = buffer2[index],
+                     numIm = i == 0 ? 0 : buffer2[index + 1];
+                  // Find complex quotient --
+                  // Which means, multiply numerator by conjugate of denominator,
+                  // then divide by norm squared of denominator --
+                  // Then just take its imaginary part.
+                  const double
+                     quotIm = (-numRe * denomIm + numIm * denomRe) / power;
+                  // With appropriate multiplier, that becomes the correction of
+                  // the frequency bin.
+                  const double correction = multiplier * quotIm;
+                  const int bin = int(i + correction + 0.5f);
+                  if (bin >= 0 && bin < hFFT->Points)
+                     mSpecCache->freq[half * x + bin] += power;
+               }
+
+               // Now Convert to dB terms
+               for (i = 0; i < hFFT->Points; i++) {
+                  float &power = mSpecCache->freq[half * x + i];
+                  if (power <= 0)
+                     power = -160.0;
+                  else
+                     power = 10.0*log10f(power);
+               }
+
+               delete[] buffer2;
+            }
+            else {
+               ComputeSpectrumUsingRealFFTf(buffer, hFFT, mWindow, fftLen, &mSpecCache->freq[half * x]);
             }
 #else  // EXPERIMENTAL_USE_REALFFTF
            ComputeSpectrum(buffer, windowSize, windowSize,

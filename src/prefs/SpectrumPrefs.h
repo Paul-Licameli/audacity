@@ -51,6 +51,9 @@ class SpectrumPrefs:public PrefsPanel
    wxArrayString mSizeChoices;
    wxArrayInt mSizeCodes;
 
+   wxArrayString mZeroPaddingChoices;
+   wxArrayInt mZeroPaddingCodes;
+
    wxArrayString mTypeChoices;
    wxArrayInt mTypeCodes;
 

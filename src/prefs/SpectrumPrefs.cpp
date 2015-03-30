@@ -56,6 +56,24 @@ void SpectrumPrefs::Populate()
       mSizeCodes.Add(1 << (i + 3));
    }
 
+   mZeroPaddingChoices.Add(wxT("1"));
+   mZeroPaddingChoices.Add(wxT("2"));
+   mZeroPaddingChoices.Add(wxT("4"));
+   mZeroPaddingChoices.Add(wxT("8"));
+   mZeroPaddingChoices.Add(wxT("16"));
+   mZeroPaddingChoices.Add(wxT("32"));
+   mZeroPaddingChoices.Add(wxT("64"));
+   mZeroPaddingChoices.Add(wxT("128"));
+   mZeroPaddingChoices.Add(wxT("256"));
+   mZeroPaddingChoices.Add(wxT("512"));
+   mZeroPaddingChoices.Add(wxT("1024"));
+   mZeroPaddingChoices.Add(wxT("2048"));
+   mZeroPaddingChoices.Add(wxT("4096"));
+
+   for (size_t i = 0; i < mZeroPaddingChoices.GetCount(); i++) {
+      mZeroPaddingCodes.Add(1 << i);
+   }
+
    for (int i = 0; i < NumWindowFuncs(); i++) {
       mTypeChoices.Add(WindowFuncName(i));
       mTypeCodes.Add(i);
@@ -92,6 +110,13 @@ void SpectrumPrefs::PopulateOrExchange(ShuttleGui & S)
                      mTypeChoices,
                      mTypeCodes);
          S.SetSizeHints(mTypeChoices);
+
+         S.TieChoice(_("&Zero padding factor") + wxString(wxT(":")),
+                     wxT("/Spectrum/ZeroPaddingFactor"),
+                     1,
+                     mZeroPaddingChoices,
+                     mZeroPaddingCodes);
+         S.SetSizeHints(mSizeChoices);
       }
       S.EndMultiColumn();
    }
@@ -163,8 +188,12 @@ void SpectrumPrefs::PopulateOrExchange(ShuttleGui & S)
       S.EndTwoColumn();
 
       S.TieCheckBox(_("S&how the spectrum using grayscale colors"),
-                    wxT("/Spectrum/Grayscale"),
-                    false);
+         wxT("/Spectrum/Grayscale"),
+         false);
+
+      S.TieCheckBox(_("Reass&ignment"),
+         wxT("/Spectrum/Reassignment"),
+         false);
 
 #ifdef EXPERIMENTAL_FFT_Y_GRID
       S.TieCheckBox(_("Show a grid along the &Y-axis"),

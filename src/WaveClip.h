@@ -252,9 +252,15 @@ protected:
    // Variables used for computing the spectrum
    HFFT          hFFT;
    float         *mWindow;
+
+   // Two other windows for computing reassigned spectrogram
+   float         *mTWindow; // Window times time parameter
+   float         *mDWindow; // Derivative of window
+
    int           mWindowType;
    int           mWindowSize;
 #endif
+   int           mZeroPaddingFactor;
    samplePtr     mAppendBuffer;
    sampleCount   mAppendBufferLen;
 

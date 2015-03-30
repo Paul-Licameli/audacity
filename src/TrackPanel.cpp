@@ -2627,7 +2627,8 @@ inline double findMaxRatio(double center, double rate)
 
 void TrackPanel::SnapCenterOnce(WaveTrack *pTrack, bool up)
 {
-   const int windowSize = mTrackArtist->GetSpectrumWindowSize();
+   // Always spectrogram, never pitch view, pass true
+   const int windowSize = mTrackArtist->GetSpectrumWindowSize(true);
    const double rate = pTrack->GetRate();
    const double nyq = rate / 2.0;
    const double binFrequency = rate / windowSize;
@@ -2688,7 +2689,10 @@ void TrackPanel::StartSnappingFreqSelection (WaveTrack *pTrack)
 
    // Use same settings as are now used for spectrogram display,
    // except, shrink the window as needed so we get some answers
-   int windowSize = mTrackArtist->GetSpectrumWindowSize();
+
+   // Always spectrogram, never pitch view, pass true
+   int windowSize = mTrackArtist->GetSpectrumWindowSize(true);
+
    while(windowSize > effectiveLength)
       windowSize >>= 1;
    int windowType;
@@ -4354,7 +4358,9 @@ void TrackPanel::HandleVZoomButtonUp( wxMouseEvent & event )
       max = mTrackArtist->GetSpectrumMaxFreq(8000);
       if(max > rate/2.)
          max = rate/2.;
-      windowSize = mTrackArtist->GetSpectrumWindowSize();
+
+      // Always spectrogram, never pitch view, pass true
+      windowSize = mTrackArtist->GetSpectrumWindowSize(true);
 #ifdef EXPERIMENTAL_FFT_SKIP_POINTS
       fftSkipPoints = mTrackArtist->GetSpectrumFftSkipPoints();
 #endif //EXPERIMENTAL_FFT_SKIP_POINTS
@@ -4369,7 +4375,9 @@ void TrackPanel::HandleVZoomButtonUp( wxMouseEvent & event )
          max = mTrackArtist->GetSpectrumLogMaxFreq(lrint(rate/2.));
          if(max > rate/2.)
             max = rate/2.;
-         windowSize = mTrackArtist->GetSpectrumWindowSize();
+
+         // Always spectrogram, never pitch view, pass true
+         windowSize = mTrackArtist->GetSpectrumWindowSize(true);
 #ifdef EXPERIMENTAL_FFT_SKIP_POINTS
          fftSkipPoints = mTrackArtist->GetSpectrumFftSkipPoints();
 #endif //EXPERIMENTAL_FFT_SKIP_POINTS
