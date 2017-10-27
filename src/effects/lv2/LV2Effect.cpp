@@ -1583,12 +1583,12 @@ bool LV2Effect::PopulateUI(ShuttleGui &S)
 
    if (mUseGUI)
    {
-      mUseGUI = BuildFancy();
+      mUseGUI = BuildFancy(S);
    }
 
    if (!mUseGUI)
    {
-      return BuildPlain();
+      return BuildPlain(S);
    }
 
    return true;
@@ -2063,7 +2063,7 @@ void LV2Effect::FreeInstance(LV2Wrapper *wrapper)
    delete wrapper;
 }
 
-bool LV2Effect::BuildFancy()
+bool LV2Effect::BuildFancy(ShuttleGui &S)
 {
    // Set the native UI type
    const char *nativeType =
@@ -2251,33 +2251,12 @@ bool LV2Effect::BuildFancy()
          mNativeWin->SetMinSize(mNativeWinInitialSize);
       }
 
-      wxSizerItem *si = NULL;
-      auto vs = std::make_unique<wxBoxSizer>(wxVERTICAL);
-      if (vs)
-      {
-         auto hs = std::make_unique<wxBoxSizer>(wxHORIZONTAL);
-         if (hs)
-         {
-            if (mNoResize)
-            {
-               si = hs->Add(mNativeWin, 0, wxCENTER);
-               vs->Add(hs.release(), 1, wxCENTER);
-            }
-            else
-            {
-               si = hs->Add(mNativeWin, 1, wxEXPAND);
-               vs->Add(hs.release(), 1, wxEXPAND);
-            }
-         }
-      }
+      auto flag = mNoResize ? wxCENTER : wxEXPAND;
+      S.StartHorizontalLay( flag );
+      S.Prop(1).Position( flag ).AddWindow( mNativeWin );
+      S.EndHorizontalLay();
 
-      if (!si)
-      {
-         lilv_uis_free(uis);
-         return false;
-      }
-
-      mParent->SetSizerAndFit(vs.release());
+      S.GetParent()->GetSizer()->SetSizeHints( S.GetParent() );
    }
 
    mUIIdleInterface = (LV2UI_Idle_Interface *)
@@ -2306,7 +2285,7 @@ bool LV2Effect::BuildFancy()
    return true;
 }
 
-bool LV2Effect::BuildPlain()
+bool LV2Effect::BuildPlain(ShuttleGui &S)
 {
    int numCols = 5;
    wxSizer *innerSizer;

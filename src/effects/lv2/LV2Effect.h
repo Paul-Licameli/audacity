@@ -379,8 +379,8 @@ private:
    bool ValidateFeatures(const LilvNode *subject);
    bool CheckFeatures(const LilvNode *subject, const LilvNode *predicate, bool required);
 
-   bool BuildFancy();
-   bool BuildPlain();
+   bool BuildFancy(ShuttleGui &S);
+   bool BuildPlain(ShuttleGui &S);
 
    bool TransferDataToWindow() /* not override */;
    bool TransferDataFromWindow() /* not override */;
