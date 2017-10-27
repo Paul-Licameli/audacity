@@ -49,8 +49,8 @@ UpdatePopupDialog::UpdatePopupDialog (wxWindow* parent, const VersionPatch& vers
 
             S.Prop(1).AddSpace(1, 0, 1);
 
-            S.Id (wxID_NO).AddButton(XXC ("&Skip", "update dialog"));
-            S.Id (wxID_YES).AddButton(XXC("&Install update", "update dialog"));
+            S.Id (wxID_NO).AddButton (XXC("&Skip", "update dialog"));
+            S.Id (wxID_YES).AddButton (XXC("&Install update", "update dialog"));
 
             S.SetBorder (5);
         }

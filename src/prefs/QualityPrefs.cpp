@@ -121,7 +121,8 @@ void QualityPrefs::PopulateOrExchange(ShuttleGui & S)
    {
       S.StartMultiColumn(2);
       {
-         S.AddPrompt(XXO("Default Sample &Rate:"));
+         S
+            .AddPrompt(XXO("Default Sample &Rate:"));
 
          S.StartMultiColumn(2);
          {
@@ -140,9 +141,9 @@ void QualityPrefs::PopulateOrExchange(ShuttleGui & S)
                   mSampleRateNames.size() - 1 );
 
             // Now do the edit box...
-            mOtherSampleRate = S.TieNumericTextBox( {},
-                                                   mOtherSampleRateValue,
-                                                   15);
+            mOtherSampleRate =
+            S
+               .TieNumericTextBox( {}, mOtherSampleRateValue, 15 );
          }
          S.EndHorizontalLay();
 
@@ -154,16 +155,18 @@ void QualityPrefs::PopulateOrExchange(ShuttleGui & S)
    }
    S.EndStatic();
 
-   S.StartStatic(XO("Real-time Conversion"));
+   S
+      .StartStatic(XO("Real-time Conversion"));
    {
       S.StartMultiColumn(2, wxEXPAND);
       {
-         S.TieChoice(XXO("Sample Rate Con&verter:"),
-                     Resample::FastMethodSetting);
+         S
+            .TieChoice(XXO("Sample Rate Con&verter:"),
+               Resample::FastMethodSetting);
 
          /* i18n-hint: technical term for randomization to reduce undesirable resampling artifacts */
-         S.TieChoice(XXO("&Dither:"),
-                     Dither::FastSetting);
+         S
+            .TieChoice( XXO("&Dither:"), Dither::FastSetting );
       }
       S.EndMultiColumn();
    }
@@ -173,12 +176,14 @@ void QualityPrefs::PopulateOrExchange(ShuttleGui & S)
    {
       S.StartMultiColumn(2);
       {
-         S.TieChoice(XXO("Sample Rate Conver&ter:"),
-                     Resample::BestMethodSetting);
+         S
+            .TieChoice( XXO("Sample Rate Conver&ter:"),
+               Resample::BestMethodSetting );
 
          /* i18n-hint: technical term for randomization to reduce undesirable resampling artifacts */
-         S.TieChoice(XXO("Dit&her:"),
-                     Dither::BestSetting);
+         S
+            .TieChoice( XXO("Dit&her:"),
+               Dither::BestSetting );
       }
       S.EndMultiColumn();
    }

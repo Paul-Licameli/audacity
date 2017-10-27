@@ -2790,7 +2790,8 @@ void NyquistEffect::BuildPromptWindow(ShuttleGui & S)
       {
          S.SetStretchyCol(1);
 
-         S.AddVariableText(XO("Enter Nyquist Command: "));
+         S
+            .AddVariableText(XO("Enter Nyquist Command: "));
 
          S.AddSpace(1, 1);
       }
@@ -2798,7 +2799,9 @@ void NyquistEffect::BuildPromptWindow(ShuttleGui & S)
 
       S.StartHorizontalLay(wxEXPAND, 1);
       {
-          mCommandText = S.Focus()
+         mCommandText =
+         S
+            .Focus()
             .MinSize( { 500, 200 } )
             .AddTextWindow(L"");
       }
@@ -2806,8 +2809,13 @@ void NyquistEffect::BuildPromptWindow(ShuttleGui & S)
 
       S.StartHorizontalLay(wxALIGN_CENTER, 0);
       {
-         S.Id(ID_Load).AddButton(XXO("&Load"));
-         S.Id(ID_Save).AddButton(XXO("&Save"));
+         S
+            .Id(ID_Load)
+            .AddButton(XXO("&Load"));
+
+         S
+            .Id(ID_Save)
+            .AddButton(XXO("&Save"));
       }
       S.EndHorizontalLay();
    }
@@ -2816,8 +2824,11 @@ void NyquistEffect::BuildPromptWindow(ShuttleGui & S)
 
 void NyquistEffect::BuildEffectWindow(ShuttleGui & S)
 {
-   wxScrolledWindow *scroller = S.Style(wxVSCROLL | wxTAB_TRAVERSAL)
+   auto scroller =
+   S
+      .Style(wxVSCROLL | wxTAB_TRAVERSAL)
       .StartScroller(2);
+
    {
       S.StartMultiColumn(4);
       {
@@ -2831,7 +2842,9 @@ void NyquistEffect::BuildEffectWindow(ShuttleGui & S)
                S.StartHorizontalLay(wxALIGN_LEFT, 0);
                {
                   S.AddSpace(0, 10);
-                  S.AddFixedText( Verbatim( ctrl.label ), false );
+
+                  S
+                     .AddFixedText( Verbatim( ctrl.label ), false );
                }
                S.EndHorizontalLay();
                S.StartMultiColumn(4);
@@ -2839,13 +2852,16 @@ void NyquistEffect::BuildEffectWindow(ShuttleGui & S)
             else
             {
                auto prompt = XXO("%s:").Format( ctrl.name );
-               S.AddPrompt( prompt );
+               S
+                  .AddPrompt( prompt );
 
                if (ctrl.type == NYQ_CTRL_STRING)
                {
                   S.AddSpace(10, 10);
 
-                  auto item = S.Id(ID_Text + i)
+                  auto item =
+                  S
+                     .Id(ID_Text + i)
                      .Validator<wxGenericValidator>(&ctrl.valStr)
                      .Name( prompt.Stripped() )
                      .AddTextBox( {}, L"", 50);
@@ -2854,8 +2870,10 @@ void NyquistEffect::BuildEffectWindow(ShuttleGui & S)
                {
                   S.AddSpace(10, 10);
 
-                  S.Id(ID_Choice + i).AddChoice( {},
-                     Msgids( ctrl.choices.data(), ctrl.choices.size() ) );
+                  S
+                     .Id(ID_Choice + i)
+                     .AddChoice( {},
+                        Msgids( ctrl.choices.data(), ctrl.choices.size() ) );
                }
                else if (ctrl.type == NYQ_CTRL_TIME)
                {
@@ -2873,6 +2891,7 @@ void NyquistEffect::BuildEffectWindow(ShuttleGui & S)
                                      ctrl.val,
                                      mProjectRate,
                                      options);
+
                   S
                      .Name( prompt.Stripped() )
                      .Position(wxALIGN_LEFT | wxALL)
@@ -2891,7 +2910,9 @@ void NyquistEffect::BuildEffectWindow(ShuttleGui & S)
                   }
                   resolveFilePath(ctrl.valStr, defaultExtension);
 
-                  wxTextCtrl *item = S.Id(ID_Text+i)
+                  wxTextCtrl *item =
+                  S
+                     .Id(ID_Text+i)
                      .Name( prompt.Stripped() )
                      .AddTextBox( {}, L"", 40);
                   item->SetValidator(wxGenericValidator(&ctrl.valStr));
@@ -2899,8 +2920,11 @@ void NyquistEffect::BuildEffectWindow(ShuttleGui & S)
                   if (ctrl.label.empty())
                      // We'd expect wxFileSelectorPromptStr to already be translated, but apparently not.
                      ctrl.label = wxGetTranslation( wxFileSelectorPromptStr );
-                  S.Id(ID_FILE + i).AddButton(
-                     VerbatimLabel(ctrl.label), wxALIGN_LEFT);
+
+                  S
+                     .Id(ID_FILE + i)
+                     .AddButton(
+                        VerbatimLabel(ctrl.label), wxALIGN_LEFT);
                }
                else
                {
@@ -2923,8 +2947,7 @@ void NyquistEffect::BuildEffectWindow(ShuttleGui & S)
                            : range < 100
                               ? NumValidatorStyle::TWO_TRAILING_ZEROES
                               : NumValidatorStyle::ONE_TRAILING_ZERO),
-                        ctrl.low, ctrl.high
-                     );
+                        ctrl.low, ctrl.high );
                   }
                   else
                   {
@@ -2932,7 +2955,9 @@ void NyquistEffect::BuildEffectWindow(ShuttleGui & S)
                         &ctrl.val, NumValidatorStyle::DEFAULT,
                         (int) ctrl.low, (int) ctrl.high);
                   }
-                  wxTextCtrl *item = S
+
+                  wxTextCtrl *item =
+                  S
                      .Name( prompt.Stripped() )
                      .AddTextBox( {}, L"",
                         (ctrl.type == NYQ_CTRL_INT_TEXT ||
@@ -2940,7 +2965,8 @@ void NyquistEffect::BuildEffectWindow(ShuttleGui & S)
 
                   if (ctrl.type == NYQ_CTRL_INT || ctrl.type == NYQ_CTRL_FLOAT)
                   {
-                     S.Id(ID_Slider + i)
+                     S
+                        .Id(ID_Slider + i)
                         .Style(wxSL_HORIZONTAL)
                         .MinSize( { 150, -1 } )
                         .AddSlider( {}, 0, ctrl.ticks, 0);
@@ -2955,7 +2981,8 @@ void NyquistEffect::BuildEffectWindow(ShuttleGui & S)
                   }
                   else
                   {
-                     S.AddUnits( Verbatim( ctrl.label ) );
+                     S
+                        .AddUnits( Verbatim( ctrl.label ) );
                   }
                }
             }
@@ -3328,11 +3355,13 @@ NyquistOutputDialog::NyquistOutputDialog(wxWindow * parent, wxWindowID id,
    {
       S.SetBorder(10);
 
-      S.AddVariableText( prompt, false, wxALIGN_LEFT | wxLEFT | wxTOP | wxRIGHT );
+      S
+         .AddVariableText( prompt, false, wxALIGN_LEFT | wxLEFT | wxTOP | wxRIGHT );
 
       // TODO: use ShowInfoDialog() instead.
       // Beware this dialog MUST work with screen readers.
-      S.Prop( 1 )
+      S
+         .Prop( 1 )
          .Position(wxEXPAND | wxALL)
          .MinSize( { 480, 250 } )
          .Style(wxTE_MULTILINE | wxTE_READONLY | wxTE_RICH)
@@ -3343,7 +3372,9 @@ NyquistOutputDialog::NyquistOutputDialog(wxWindow * parent, wxWindowID id,
       S.StartHorizontalLay(wxALIGN_CENTRE | wxLEFT | wxBOTTOM | wxRIGHT, 0 );
       {
          /* i18n-hint: In most languages OK is to be translated as OK.  It appears on a button.*/
-         S.Id(wxID_OK).AddButton( XXO("OK"), wxALIGN_CENTRE, true );
+         S
+            .Id(wxID_OK)
+            .AddButton( XXO("OK"), wxALIGN_CENTRE, true );
       }
       S.EndHorizontalLay();
 

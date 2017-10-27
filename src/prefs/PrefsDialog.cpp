@@ -467,7 +467,8 @@ PrefsDialog::PrefsDialog(
          mCategories->GetTreeCtrl()->SetName(_("Category"));
          S.StartHorizontalLay(wxALIGN_LEFT | wxEXPAND, true);
          {
-            S.Prop(1)
+            S
+               .Prop(1)
                .Position(wxEXPAND)
                .AddWindow(mCategories);
 
@@ -509,7 +510,9 @@ PrefsDialog::PrefsDialog(
          const auto &node = factories[0];
          const auto &factory = node.factory;
          mUniquePage = factory(S.GetParent(), wxID_ANY, pProject);
-         wxWindow * uniquePageWindow = S.Prop(1)
+         wxWindow * uniquePageWindow =
+         S
+            .Prop(1)
             .Position(wxEXPAND)
             .AddWindow(mUniquePage);
          // We're not in the wxTreebook, so add the accelerator here
@@ -525,7 +528,8 @@ PrefsDialog::PrefsDialog(
    }
    S.EndVerticalLay();
 
-   S.AddStandardButtons(eOkButton | eCancelButton | ePreviewButton | eHelpButton);
+   S
+      .AddStandardButtons(eOkButton | eCancelButton | ePreviewButton | eHelpButton);
 
    if (mUniquePage && !mUniquePage->ShowsPreviewButton()) {
       wxWindow *const previewButton =

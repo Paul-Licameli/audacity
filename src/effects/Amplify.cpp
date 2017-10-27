@@ -240,10 +240,11 @@ void EffectAmplify::PopulateOrExchange(ShuttleGui & S)
       // Amplitude
       S.StartMultiColumn(2, wxCENTER);
       {
-         mAmpT = S.Id(ID_Amp)
+         mAmpT =
+         S
+            .Id(ID_Amp)
             .Validator<FloatingPointValidator<double>>(
-               precision, &mAmp, NumValidatorStyle::ONE_TRAILING_ZERO, MIN_Amp, MAX_Amp
-            )
+               precision, &mAmp, NumValidatorStyle::ONE_TRAILING_ZERO, MIN_Amp, MAX_Amp )
             .AddTextBox(XXO("&Amplification (dB):"), L"", 12);
       }
       S.EndMultiColumn();
@@ -251,7 +252,9 @@ void EffectAmplify::PopulateOrExchange(ShuttleGui & S)
       // Amplitude
       S.StartHorizontalLay(wxEXPAND);
       {
-         mAmpS = S.Id(ID_Amp)
+         mAmpS =
+         S
+            .Id(ID_Amp)
             .Style(wxSL_HORIZONTAL)
             .Name(XO("Amplification dB"))
             .AddSlider( {}, 0, MAX_Amp * SCL_Amp, MIN_Amp * SCL_Amp);
@@ -261,7 +264,9 @@ void EffectAmplify::PopulateOrExchange(ShuttleGui & S)
       // Peak
       S.StartMultiColumn(2, wxCENTER);
       {
-         mNewPeakT = S.Id(ID_Peak)
+         mNewPeakT =
+         S
+            .Id(ID_Peak)
             .Validator<FloatingPointValidator<double>>(
                // One extra decimal place so that rounding is visible to user
                // (see: bug 958)
@@ -269,8 +274,7 @@ void EffectAmplify::PopulateOrExchange(ShuttleGui & S)
                &mNewPeak, NumValidatorStyle::ONE_TRAILING_ZERO,
                // min and max need same precision as what we're validating (bug 963)
                RoundValue( precision + 1, MIN_Amp + LINEAR_TO_DB(mPeak) ),
-               RoundValue( precision + 1, MAX_Amp + LINEAR_TO_DB(mPeak) )
-            )
+               RoundValue( precision + 1, MAX_Amp + LINEAR_TO_DB(mPeak) ) )
             .AddTextBox(XXO("&New Peak Amplitude (dB):"), L"", 12);
       }
       S.EndMultiColumn();
@@ -279,7 +283,10 @@ void EffectAmplify::PopulateOrExchange(ShuttleGui & S)
       S.StartHorizontalLay(wxCENTER);
       {
 
-         mClip = S.Id(ID_Clip).Disable( batch )
+         mClip =
+         S
+            .Id(ID_Clip)
+            .Disable( batch )
             .AddCheckBox(XXO("Allo&w clipping"), false);
       }
       S.EndHorizontalLay();

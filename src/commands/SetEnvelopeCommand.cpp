@@ -53,9 +53,17 @@ void SetEnvelopeCommand::PopulateOrExchange(ShuttleGui & S)
 
    S.StartMultiColumn(3, wxALIGN_CENTER);
    {
-      S.Optional( bHasT           ).TieNumericTextBox(  XXO("Time:"),          mT );
-      S.Optional( bHasV           ).TieNumericTextBox(  XXO("Value:"),         mV );
-      S.Optional( bHasDelete      ).TieCheckBox(        XXO("Delete"),         mbDelete );
+      S
+         .Optional( bHasT           )
+         .TieNumericTextBox(  XXO("Time:"),          mT );
+
+      S
+         .Optional( bHasV           )
+         .TieNumericTextBox(  XXO("Value:"),         mV );
+
+      S
+         .Optional( bHasDelete      )
+         .TieCheckBox(        XXO("Delete"),         mbDelete );
    }
    S.EndMultiColumn();
 }

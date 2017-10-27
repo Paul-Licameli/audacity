@@ -59,12 +59,15 @@ void TimeDialog::PopulateOrExchange(ShuttleGui &S)
                          mRate,
                          NumericTextCtrl::Options{}
                             .AutoPos(true));
-         S.AddWindow(mTimeCtrl);
+         S
+            .AddWindow(mTimeCtrl);
       }
       S.EndStatic();
    }
    S.EndVerticalLay();
-   S.AddStandardButtons();
+
+   S
+      .AddStandardButtons();
 
    TransferDataToWindow();
 

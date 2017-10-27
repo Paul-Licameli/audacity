@@ -437,64 +437,76 @@ void EffectAutoDuck::PopulateOrExchange(ShuttleGui & S)
 
       S.StartMultiColumn(6, wxCENTER);
       {
-         mDuckAmountDbBox = S.Validator<FloatingPointValidator<double>>(
+         mDuckAmountDbBox =
+         S
+            .Validator<FloatingPointValidator<double>>(
                1, &mDuckAmountDb, NumValidatorStyle::NO_TRAILING_ZEROES,
-               MIN_DuckAmountDb, MAX_DuckAmountDb
-            )
+               MIN_DuckAmountDb, MAX_DuckAmountDb )
             .NameSuffix(XO("db"))
             .AddTextBox(XXO("Duck &amount:"), L"", 10);
+
          S.AddUnits(XO("dB"));
 
-         mMaximumPauseBox = S.Validator<FloatingPointValidator<double>>(
+         mMaximumPauseBox =
+         S
+            .Validator<FloatingPointValidator<double>>(
                2, &mMaximumPause, NumValidatorStyle::NO_TRAILING_ZEROES,
-               MIN_MaximumPause, MAX_MaximumPause
-            )
+               MIN_MaximumPause, MAX_MaximumPause )
             .NameSuffix(XO("seconds"))
             .AddTextBox(XXO("Ma&ximum pause:"), L"", 10);
+
          S.AddUnits(XO("seconds"));
 
-         mOuterFadeDownLenBox = S.Validator<FloatingPointValidator<double>>(
+         mOuterFadeDownLenBox =
+         S
+            .Validator<FloatingPointValidator<double>>(
                2, &mOuterFadeDownLen, NumValidatorStyle::NO_TRAILING_ZEROES,
-               MIN_OuterFadeDownLen, MAX_OuterFadeDownLen
-            )
+               MIN_OuterFadeDownLen, MAX_OuterFadeDownLen )
             .NameSuffix(XO("seconds"))
             .AddTextBox(XXO("Outer fade &down length:"), L"", 10);
+
          S.AddUnits(XO("seconds"));
 
-         mOuterFadeUpLenBox = S.Validator<FloatingPointValidator<double>>(
+         mOuterFadeUpLenBox =
+         S.Validator<FloatingPointValidator<double>>(
                2, &mOuterFadeUpLen, NumValidatorStyle::NO_TRAILING_ZEROES,
-               MIN_OuterFadeUpLen, MAX_OuterFadeUpLen
-            )
+               MIN_OuterFadeUpLen, MAX_OuterFadeUpLen )
             .NameSuffix(XO("seconds"))
             .AddTextBox(XXO("Outer fade &up length:"), L"", 10);
+
          S.AddUnits(XO("seconds"));
 
-         mInnerFadeDownLenBox = S.Validator<FloatingPointValidator<double>>(
+         mInnerFadeDownLenBox =
+         S
+            .Validator<FloatingPointValidator<double>>(
                2, &mInnerFadeDownLen, NumValidatorStyle::NO_TRAILING_ZEROES,
-               MIN_InnerFadeDownLen, MAX_InnerFadeDownLen
-            )
+               MIN_InnerFadeDownLen, MAX_InnerFadeDownLen )
             .NameSuffix(XO("seconds"))
             .AddTextBox(XXO("Inner fade d&own length:"), L"", 10);
+
          S.AddUnits(XO("seconds"));
 
-         mInnerFadeUpLenBox = S.Validator<FloatingPointValidator<double>>(
+         mInnerFadeUpLenBox =
+         S.Validator<FloatingPointValidator<double>>(
                2, &mInnerFadeUpLen, NumValidatorStyle::NO_TRAILING_ZEROES,
-               MIN_InnerFadeUpLen, MAX_InnerFadeUpLen
-            )
+               MIN_InnerFadeUpLen, MAX_InnerFadeUpLen )
             .NameSuffix(XO("seconds"))
             .AddTextBox(XXO("Inner &fade up length:"), L"", 10);
+
          S.AddUnits(XO("seconds"));
       }
       S.EndMultiColumn();
 
       S.StartMultiColumn(3, wxCENTER);
       {
-         mThresholdDbBox = S.Validator<FloatingPointValidator<double>>(
+         mThresholdDbBox =
+         S
+            .Validator<FloatingPointValidator<double>>(
                2, &mThresholdDb, NumValidatorStyle::NO_TRAILING_ZEROES,
-               MIN_ThresholdDb, MAX_ThresholdDb
-            )
+               MIN_ThresholdDb, MAX_ThresholdDb )
             .NameSuffix(XO("db"))
             .AddTextBox(XXO("&Threshold:"), L"", 10);
+
          S.AddUnits(XO("dB"));
       }
       S.EndMultiColumn();

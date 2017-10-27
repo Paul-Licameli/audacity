@@ -1444,21 +1444,23 @@ struct ControlInfo {
 
    void CreateControls(int id, ShuttleGui &S) const
    {
-      wxTextCtrl *const text = S.Id(id + 1)
+      wxTextCtrl *const text =
+      S
+         .Id(id + 1)
          .Validator<FloatingPointValidator<double>>(
             formatAsInt ? 0 : 2,
             nullptr,
             NumValidatorStyle::DEFAULT,
-            valueMin, valueMax
-         )
+            valueMin, valueMax )
          .AddTextBox(textBoxCaption, L"", 0);
 
       wxSlider *const slider =
-         S.Id(id)
-            .Name( sliderName )
-            .Style(wxSL_HORIZONTAL)
-            .MinSize( { 150, -1 } )
-            .AddSlider( {}, 0, sliderMax);
+      S
+         .Id(id)
+         .Name( sliderName )
+         .Style(wxSL_HORIZONTAL)
+         .MinSize( { 150, -1 } )
+         .AddSlider( {}, 0, sliderMax);
    }
 
    MemberPointer field;
@@ -1719,16 +1721,21 @@ void EffectNoiseReduction::Dialog::PopulateOrExchange(ShuttleGui & S)
 {
    S.StartStatic(XO("Step 1"));
    {
-      S.AddVariableText(XO(
+      S
+         .AddVariableText(XO(
 "Select a few seconds of just noise so Audacity knows what to filter out,\nthen click Get Noise Profile:"));
+
       //m_pButton_GetProfile =
-      S.Id(ID_BUTTON_GETPROFILE).AddButton(XXO("&Get Noise Profile"));
+      S
+         .Id(ID_BUTTON_GETPROFILE)
+         .AddButton(XXO("&Get Noise Profile"));
    }
    S.EndStatic();
 
    S.StartStatic(XO("Step 2"));
    {
-      S.AddVariableText(XO(
+      S
+         .AddVariableText(XO(
 "Select all of the audio you want filtered, choose how much noise you want\nfiltered out, and then click 'OK' to reduce noise.\n"));
 
       S.StartMultiColumn(3, wxEXPAND);
@@ -1791,59 +1798,60 @@ void EffectNoiseReduction::Dialog::PopulateOrExchange(ShuttleGui & S)
    {
       S.StartMultiColumn(2);
       {
-         S.TieChoice(XXO("&Window types:"),
-            mTempSettings.mWindowTypes,
-            []{
-               TranslatableStrings windowTypeChoices;
-               for (int ii = 0; ii < WT_N_WINDOW_TYPES; ++ii)
-                  windowTypeChoices.push_back(windowTypesInfo[ii].name);
-               return windowTypeChoices;
-            }()
-         );
+         S
+            .TieChoice(XXO("&Window types:"),
+               mTempSettings.mWindowTypes,
+               []{
+                  TranslatableStrings windowTypeChoices;
+                  for (int ii = 0; ii < WT_N_WINDOW_TYPES; ++ii)
+                     windowTypeChoices.push_back(windowTypesInfo[ii].name);
+                  return windowTypeChoices;
+               }() );
 
-         S.TieChoice(XXO("Window si&ze:"),
-            mTempSettings.mWindowSizeChoice,
-            {
-               XO("8") ,
-               XO("16") ,
-               XO("32") ,
-               XO("64") ,
-               XO("128") ,
-               XO("256") ,
-               XO("512") ,
-               XO("1024") ,
-               XO("2048 (default)") ,
-               XO("4096") ,
-               XO("8192") ,
-               XO("16384") ,
-            }
-         );
+         S
+            .TieChoice(XXO("Window si&ze:"),
+               mTempSettings.mWindowSizeChoice,
+               {
+                  XO("8") ,
+                  XO("16") ,
+                  XO("32") ,
+                  XO("64") ,
+                  XO("128") ,
+                  XO("256") ,
+                  XO("512") ,
+                  XO("1024") ,
+                  XO("2048 (default)") ,
+                  XO("4096") ,
+                  XO("8192") ,
+                  XO("16384") ,
+               } );
 
-         S.TieChoice(XXO("S&teps per window:"),
-            mTempSettings.mStepsPerWindowChoice,
-            {
-               XO("2") ,
-               XO("4 (default)") ,
-               XO("8") ,
-               XO("16") ,
-               XO("32") ,
-               XO("64") ,
-            }
-         );
+         S
+            .TieChoice(XXO("S&teps per window:"),
+               mTempSettings.mStepsPerWindowChoice,
+               {
+                  XO("2") ,
+                  XO("4 (default)") ,
+                  XO("8") ,
+                  XO("16") ,
+                  XO("32") ,
+                  XO("64") ,
+               } );
 
-         S.Id(ID_CHOICE_METHOD)
-         .TieChoice(XXO("Discrimination &method:"),
-            mTempSettings.mMethod,
-            []{
-               TranslatableStrings methodChoices;
-               int nn = DM_N_METHODS;
-#ifndef OLD_METHOD_AVAILABLE
-               --nn;
-#endif
-               for (int ii = 0; ii < nn; ++ii)
-                  methodChoices.push_back(discriminationMethodInfo[ii].name);
-               return methodChoices;
-            }());
+         S
+            .Id(ID_CHOICE_METHOD)
+            .TieChoice(XXO("Discrimination &method:"),
+               mTempSettings.mMethod,
+               []{
+                  TranslatableStrings methodChoices;
+                  int nn = DM_N_METHODS;
+   #ifndef OLD_METHOD_AVAILABLE
+                  --nn;
+   #endif
+                  for (int ii = 0; ii < nn; ++ii)
+                     methodChoices.push_back(discriminationMethodInfo[ii].name);
+                  return methodChoices;
+               }() );
       }
       S.EndMultiColumn();
 

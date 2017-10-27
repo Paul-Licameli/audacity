@@ -308,7 +308,8 @@ AboutDialog::AboutDialog(wxWindow * parent)
    }
    S.EndNotebook();
 
-   S.Id(wxID_OK)
+   S
+      .Id(wxID_OK)
       .Prop(0)
       .AddButton(XXO("OK"), wxALIGN_CENTER, true);
 
@@ -502,7 +503,10 @@ visit our %s.")
       << L"</center>"
    ;
 
-   auto pPage = S.StartNotebookPage( ProgramName );
+   auto pPage =
+   S
+      .StartNotebookPage( ProgramName );
+
    S.StartVerticalLay(1);
    {
       //v For now, change to AudacityLogoWithName via old-fashioned way, not Theme.
@@ -531,7 +535,10 @@ visit our %s.")
          wxDefaultPosition,
          wxSize((int)(LOGOWITHNAME_WIDTH*fScale), (int)(LOGOWITHNAME_HEIGHT*fScale)));
    }
-   S.Prop(0).AddWindow( icon );
+
+   S
+      .Prop(0)
+      .AddWindow( icon );
 
    HtmlWindow *html = safenew LinkingHtmlWindow(S.GetParent(), -1,
                                          wxDefaultPosition,
@@ -540,7 +547,10 @@ visit our %s.")
    html->SetPage( FormatHtmlText( o.GetString() ) );
 
    /* locate the html renderer where it fits in the dialogue */
-   S.Prop(1).Position( wxEXPAND ).Focus()
+   S
+      .Prop(1)
+      .Position( wxEXPAND )
+      .Focus()
       .AddWindow( html );
 
    S.EndVerticalLay();
@@ -556,7 +566,10 @@ void AboutDialog::PopulateInformationPage( ShuttleGui & S )
 {
    wxStringOutputStream o;
    wxTextOutputStream informationStr( o );   // string to build up list of information in
-   S.StartNotebookPage( XO("Build Information") );  // start the tab
+
+   S
+      .StartNotebookPage( XO("Build Information") );  // start the tab
+
    S.StartVerticalLay(2);  // create the window
    HtmlWindow *html = safenew LinkingHtmlWindow(S.GetParent(), -1, wxDefaultPosition,
                            wxSize(ABOUT_DIALOG_WIDTH, 264),
@@ -809,9 +822,12 @@ void AboutDialog::PopulateInformationPage( ShuttleGui & S )
    informationStr << L"</table>\n";   // end of table of features
 
    html->SetPage( FormatHtmlText( o.GetString() ) );   // push the page into the html renderer
-   S.Prop(2)
+
+   S
+      .Prop(2)
       .Position( wxEXPAND )
       .AddWindow( html ); // make it fill the page
+
    // I think the 2 here goes with the StartVerticalLay() call above?
    S.EndVerticalLay();     // end window
    S.EndNotebookPage(); // end the tab
@@ -820,7 +836,9 @@ void AboutDialog::PopulateInformationPage( ShuttleGui & S )
 
 void AboutDialog::PopulateLicensePage( ShuttleGui & S )
 {
-   S.StartNotebookPage( XO("GPL License") );
+   S
+      .StartNotebookPage( XO("GPL License") );
+
    S.StartVerticalLay(1);
    HtmlWindow *html = safenew LinkingHtmlWindow(S.GetParent(), -1,
                                          wxDefaultPosition,
@@ -1119,7 +1137,8 @@ L"POSSIBILITY OF SUCH DAMAGES.\n");
 
    html->SetPage( PageText );
 
-   S.Prop(1)
+   S
+      .Prop(1)
       .Position( wxEXPAND )
       .AddWindow( html );
 

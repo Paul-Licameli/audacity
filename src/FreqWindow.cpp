@@ -286,6 +286,8 @@ void FrequencyPlotDialog::Populate()
 
       S.StartVerticalLay(2);
       {
+         S.AddSpace(wxDefaultCoord, 1);
+
          vRuler = safenew RulerPanel(
             S.GetParent(), wxID_ANY, wxVERTICAL,
             wxSize{ 100, 100 }, // Ruler can't handle small sizes
@@ -297,16 +299,18 @@ void FrequencyPlotDialog::Populate()
                .TickColour( theTheme.Colour( clrGraphLabels ) )
          );
 
-         S.AddSpace(wxDefaultCoord, 1);
-         S.Prop(1)
+         S
+            .Prop(1)
             .Position(wxALIGN_RIGHT | wxALIGN_TOP)
             .AddWindow(vRuler);
+
          S.AddSpace(wxDefaultCoord, 1);
       }
       S.EndVerticalLay();
 
       mFreqPlot = safenew FreqPlot(S.GetParent(), wxID_ANY);
-      S.Prop(1)
+      S
+         .Prop(1)
          .Position(wxEXPAND)
          .MinSize( { wxDefaultCoord, FREQ_WINDOW_HEIGHT } )
          .AddWindow(mFreqPlot);
@@ -332,15 +336,16 @@ void FrequencyPlotDialog::Populate()
          S.StartVerticalLay();
          {
             wxStaticBitmap *zi = safenew wxStaticBitmap(S.GetParent(), wxID_ANY, wxBitmap(ZoomIn));
-            S.Position(wxALIGN_CENTER)
+            S
+               .Position(wxALIGN_CENTER)
                .AddWindow(zi);
 
             S.AddSpace(5);
 
             mZoomSlider = safenew wxSliderWrapper(S.GetParent(), FreqZoomSliderID, 100, 1, 100,
                wxDefaultPosition, wxDefaultSize, wxSL_VERTICAL);
-            S.Prop(1);
             S
+               .Prop(1)
                .Name(XO("Zoom"))
                .Position(wxALIGN_CENTER_HORIZONTAL)
                .AddWindow(mZoomSlider);
@@ -352,7 +357,8 @@ void FrequencyPlotDialog::Populate()
             S.AddSpace(5);
 
             wxStaticBitmap *zo = safenew wxStaticBitmap(S.GetParent(), wxID_ANY, wxBitmap(ZoomOut));
-            S.Position(wxALIGN_CENTER)
+            S
+               .Position(wxALIGN_CENTER)
                .AddWindow(zo);
          }
          S.EndVerticalLay();
@@ -369,6 +375,8 @@ void FrequencyPlotDialog::Populate()
 
       S.StartHorizontalLay(wxEXPAND, 0);
       {
+         S.AddSpace(1, wxDefaultCoord);
+
          hRuler  = safenew RulerPanel(
             S.GetParent(), wxID_ANY, wxHORIZONTAL,
             wxSize{ 100, 100 }, // Ruler can't handle small sizes
@@ -382,10 +390,10 @@ void FrequencyPlotDialog::Populate()
                .TickColour( theTheme.Colour( clrGraphLabels ) )
          );
 
-         S.AddSpace(1, wxDefaultCoord);
          S.Prop(1)
             .Position(wxALIGN_LEFT | wxALIGN_TOP)
             .AddWindow(hRuler);
+
          S.AddSpace(1, wxDefaultCoord);
       }
       S.EndHorizontalLay();
@@ -414,16 +422,24 @@ void FrequencyPlotDialog::Populate()
          {
             S.AddPrompt(XXO("Cursor:"));
 
-            mCursorText = S.Style(wxTE_READONLY)
+            mCursorText =
+            S
+               .Style(wxTE_READONLY)
                .AddTextBox( {}, L"", 10);
 
             S.AddPrompt(XXO("Peak:"));
 
-            mPeakText = S.Style(wxTE_READONLY)
+            mPeakText =
+            S
+               .Style(wxTE_READONLY)
                .AddTextBox( {}, L"", 10);
+   
             S.AddSpace(5);
 
-            mGridOnOff = S.Id(GridOnOffID).AddCheckBox(XXO("&Grids"), mDrawGrid);
+            mGridOnOff =
+            S
+               .Id(GridOnOffID)
+               .AddCheckBox(XXO("&Grids"), mDrawGrid);
          }
          S.EndMultiColumn();
       }
@@ -449,19 +465,26 @@ void FrequencyPlotDialog::Populate()
 
       S.AddSpace(5);
 
-      mAlgChoice = S.Id(FreqAlgChoiceID).Focus()
+      mAlgChoice =
+      S
+         .Id(FreqAlgChoiceID).Focus()
          .MinSize( { wxDefaultCoord, wxDefaultCoord } )
          .AddChoice(XXO("&Algorithm:"), algChoices, mAlg);
 
       S.AddSpace(5);
 
-      mSizeChoice = S.Id(FreqSizeChoiceID)
+      mSizeChoice =
+      S
+         .Id(FreqSizeChoiceID)
          .MinSize( { wxDefaultCoord, wxDefaultCoord } )
          .AddChoice(XXO("&Size:"), sizeChoices, mSize);
 
       S.AddSpace(5);
 
-      mExportButton = S.Id(FreqExportButtonID).AddButton(XXO("&Export..."));
+      mExportButton =
+      S
+         .Id(FreqExportButtonID)
+         .AddButton(XXO("&Export..."));
 
       S.AddSpace(5);
 
@@ -472,21 +495,28 @@ void FrequencyPlotDialog::Populate()
 
       S.AddSpace(5);
 
-      mFuncChoice = S.Id(FreqFuncChoiceID)
+      mFuncChoice =
+      S
+         .Id(FreqFuncChoiceID)
          .MinSize( { wxDefaultCoord, wxDefaultCoord } )
          .AddChoice(XXO("&Function:"), funcChoices, mFunc);
       mFuncChoice->MoveAfterInTabOrder(mSizeChoice);
 
       S.AddSpace(5);
 
-      mAxisChoice = S.Id(FreqAxisChoiceID)
+      mAxisChoice =
+      S
+         .Id(FreqAxisChoiceID)
          .MinSize( { wxDefaultCoord, wxDefaultCoord } )
          .AddChoice(XXO("&Axis:"), axisChoices, mAxis);
       mAxisChoice->MoveAfterInTabOrder(mFuncChoice);
 
       S.AddSpace(5);
 
-      mReplotButton = S.Id(ReplotButtonID).AddButton(XXO("&Replot..."));
+      mReplotButton =
+      S
+         .Id(ReplotButtonID)
+         .AddButton(XXO("&Replot..."));
 
       S.AddSpace(5);
 
@@ -495,7 +525,9 @@ void FrequencyPlotDialog::Populate()
       //S.AddSpace(5);
    }
    S.EndMultiColumn();
-   S.AddStandardButtons( eHelpButton | eCloseButton );
+
+   S
+      .AddStandardButtons( eHelpButton | eCloseButton );
 
    // -------------------------------------------------------------------
    // ROW 8: Spacer
@@ -504,7 +536,8 @@ void FrequencyPlotDialog::Populate()
    S.AddSpace(5);
 
    mProgress = safenew FreqGauge(S.GetParent(), wxID_ANY); //, wxST_SIZEGRIP);
-   S.Position(wxEXPAND)
+   S
+      .Position(wxEXPAND)
       .AddWindow(mProgress);
 
    // Log-frequency axis works for spectrum plots only.

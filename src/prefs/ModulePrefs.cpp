@@ -114,40 +114,52 @@ void ModulePrefs::PopulateOrExchange(ShuttleGui & S)
    S.SetBorder(2);
    S.StartScroller();
 
-   S.StartStatic( {} );
+   S
+      .StartStatic( {} );
    {
-      S.AddFixedText(XO(
+      S
+         .AddFixedText( XO(
 "These are experimental modules. Enable them only if you've read the Audacity Manual\nand know what you are doing.") );
-      S.AddFixedText(XO(
+
+      S
+         .AddFixedText( XO(
 /* i18n-hint preserve the leading spaces */
 "  'Ask' means Audacity will ask if you want to load the module each time it starts.") );
-      S.AddFixedText(XO(
+
+      S
+         .AddFixedText( XO(
 /* i18n-hint preserve the leading spaces */
 "  'Failed' means Audacity thinks the module is broken and won't run it.") );
-      S.AddFixedText(XO(
+
+      S
+         .AddFixedText( XO(
 /* i18n-hint preserve the leading spaces */
 "  'New' means no choice has been made yet.") );
-      S.AddFixedText(XO(
+
+      S
+         .AddFixedText(  XO(
 "Changes to these settings only take effect when Audacity starts up."));
       {
         S.StartMultiColumn( 2 );
         int i;
         for(i=0;i<(int)mModules.size();i++)
-           S.TieChoice( VerbatimLabel( mModules[i] ),
-              mStatuses[i],
-              {
-                 XO("Disabled" ) ,
-                 XO("Enabled" ) ,
-                 XO("Ask" ) ,
-                 XO("Failed" ) ,
-                 XO("New" ) ,
-              }
-           );
+           S
+              .TieChoice( VerbatimLabel( mModules[i] ),
+                 mStatuses[i],
+                 {
+                    XO("Disabled" ) ,
+                    XO("Enabled" ) ,
+                    XO("Ask" ) ,
+                    XO("Failed" ) ,
+                    XO("New" ) ,
+                 } );
         S.EndMultiColumn();
       }
+
       if( mModules.size() < 1 )
       {
-        S.AddFixedText( XO("No modules were found") );
+        S
+            .AddFixedText( XO("No modules were found") );
       }
    }
    S.EndStatic();

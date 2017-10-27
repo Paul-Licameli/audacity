@@ -238,17 +238,21 @@ void EffectChangeTempo::PopulateOrExchange(ShuttleGui & S)
    S.StartVerticalLay(0);
    {
       S.AddSpace(0, 5);
-      S.AddTitle(XO("Change Tempo without Changing Pitch"));
+
+      S
+         .AddTitle(XO("Change Tempo without Changing Pitch"));
+
       S.SetBorder(5);
 
       //
       S.StartMultiColumn(2, wxCENTER);
       {
-         m_pTextCtrl_PercentChange = S.Id(ID_PercentChange)
+         m_pTextCtrl_PercentChange =
+         S
+            .Id(ID_PercentChange)
             .Validator<FloatingPointValidator<double>>(
                3, &m_PercentChange, NumValidatorStyle::THREE_TRAILING_ZEROES,
-               MIN_Percentage, MAX_Percentage
-            )
+               MIN_Percentage, MAX_Percentage )
             .AddTextBox(XXO("Percent C&hange:"), L"", 12);
       }
       S.EndMultiColumn();
@@ -256,7 +260,9 @@ void EffectChangeTempo::PopulateOrExchange(ShuttleGui & S)
       //
       S.StartHorizontalLay(wxEXPAND);
       {
-         m_pSlider_PercentChange = S.Id(ID_PercentChange)
+         m_pSlider_PercentChange =
+         S
+            .Id(ID_PercentChange)
             .Name(XO("Percent Change"))
             .Style(wxSL_HORIZONTAL)
             .AddSlider( {}, 0, (int)kSliderMax, (int)MIN_Percentage);
@@ -267,7 +273,9 @@ void EffectChangeTempo::PopulateOrExchange(ShuttleGui & S)
       {
          S.StartHorizontalLay(wxALIGN_CENTER);
          {
-            m_pTextCtrl_FromBPM = S.Id(ID_FromBPM)
+            m_pTextCtrl_FromBPM =
+            S
+               .Id(ID_FromBPM)
                /* i18n-hint: changing tempo "from" one value "to" another */
                .Name(XO("Beats per minute, from"))
                .Validator<FloatingPointValidator<double>>(
@@ -277,7 +285,9 @@ void EffectChangeTempo::PopulateOrExchange(ShuttleGui & S)
                /* i18n-hint: changing tempo "from" one value "to" another */
                .AddTextBox(XXC("&from", "change tempo"), L"", 12);
 
-            m_pTextCtrl_ToBPM = S.Id(ID_ToBPM)
+            m_pTextCtrl_ToBPM =
+            S
+               .Id(ID_ToBPM)
                /* i18n-hint: changing tempo "from" one value "to" another */
                .Name(XO("Beats per minute, to"))
                .Validator<FloatingPointValidator<double>>(
@@ -315,8 +325,7 @@ void EffectChangeTempo::PopulateOrExchange(ShuttleGui & S)
                   RoundValue( precision,
                      (m_FromLength * 100.0) / (100.0 + MAX_Percentage) ),
                   RoundValue( precision,
-                     (m_FromLength * 100.0) / (100.0 + MIN_Percentage) )
-               )
+                     (m_FromLength * 100.0) / (100.0 + MIN_Percentage) ) )
                /* i18n-hint: changing tempo "from" one value "to" another */
                .AddTextBox(XXC("t&o", "change tempo"), L"", 12);
          }
@@ -327,7 +336,9 @@ void EffectChangeTempo::PopulateOrExchange(ShuttleGui & S)
 #if USE_SBSMS
       S.StartMultiColumn(2);
       {
-         mUseSBSMSCheckBox = S.Validator<wxGenericValidator>(&mUseSBSMS)
+         mUseSBSMSCheckBox =
+         S
+            .Validator<wxGenericValidator>(&mUseSBSMS)
             .AddCheckBox(XXO("&Use high quality stretching (slow)"),
                                              mUseSBSMS);
       }

@@ -1997,13 +1997,18 @@ void MeterPanel::OnPreferences()
    ShuttleGui S(&dlg, eIsCreating);
    S.StartVerticalLay();
    {
-      S.StartStatic(XO("Refresh Rate"), 0);
+      S
+         .StartStatic(XO("Refresh Rate"), 0);
       {
-         S.AddFixedText(XO(
-"Higher refresh rates make the meter show more frequent\nchanges. A rate of 30 per second or less should prevent\nthe meter affecting audio quality on slower machines."));
+         S
+            .AddFixedText( XO(
+"Higher refresh rates make the meter show more frequent\nchanges. A rate of 30 per second or less should prevent\nthe meter affecting audio quality on slower machines.") );
+
          S.StartHorizontalLay();
          {
-            rate = S.Name(XO("Meter refresh rate per second [1-100]"))
+            rate =
+            S
+               .Name(XO("Meter refresh rate per second [1-100]"))
                .Validator<IntegerValidator<long>>(
                   &mMeterRefreshRate, NumValidatorStyle::DEFAULT,
                   MIN_REFRESH_RATE, MAX_REFRESH_RATE)
@@ -2062,7 +2067,8 @@ void MeterPanel::OnPreferences()
         }
         S.EndStatic();
 
-        S.StartStatic(XO("Orientation"), 1);
+        S
+           .StartStatic(XO("Orientation"), 1);
         {
            S.StartVerticalLay();
            {
@@ -2091,7 +2097,9 @@ void MeterPanel::OnPreferences()
         S.EndStatic();
       }
       S.EndHorizontalLay();
-      S.AddStandardButtons();
+
+      S
+         .AddStandardButtons();
    }
    S.EndVerticalLay();
    dlg.Layout();

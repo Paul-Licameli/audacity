@@ -178,19 +178,25 @@ void EffectRepeat::PopulateOrExchange(ShuttleGui & S)
 {
    S.StartHorizontalLay(wxCENTER, false);
    {
-      mRepeatCount = S.Validator<IntegerValidator<int>>(
+      mRepeatCount =
+      S
+         .Validator<IntegerValidator<int>>(
             &repeatCount, NumValidatorStyle::DEFAULT,
-            MIN_Count, 2147483647 / mProjectRate
-         )
+            MIN_Count, 2147483647 / mProjectRate )
          .AddTextBox(XXO("&Number of repeats to add:"), L"", 12);
    }
    S.EndHorizontalLay();
 
    S.StartMultiColumn(1, wxCENTER);
    {
-      mCurrentTime = S.AddVariableText(
-         XO("Current selection length: dd:hh:mm:ss"));
-      mTotalTime = S.AddVariableText(XO("New selection length: dd:hh:mm:ss"));
+      mCurrentTime =
+      S
+         .AddVariableText(
+            XO("Current selection length: dd:hh:mm:ss"));
+
+      mTotalTime =
+      S
+         .AddVariableText(XO("New selection length: dd:hh:mm:ss"));
    }
    S.EndMultiColumn();
 }

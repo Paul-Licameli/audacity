@@ -317,27 +317,32 @@ void TracksPrefs::PopulateOrExchange(ShuttleGui & S)
    S.SetBorder(2);
    S.StartScroller();
 
-   S.StartStatic(XO("Display"));
+   S
+      .StartStatic(XO("Display"));
    {
-      S.TieCheckBox(XXO("Auto-&fit track height"),
-                    {L"/GUI/TracksFitVerticallyZoomed",
-                     false});
-      S.TieCheckBox(XXO("Sho&w track name as overlay"),
-                  {L"/GUI/ShowTrackNameInWaveform",
-                   false});
+      S
+         .TieCheckBox(XXO("Auto-&fit track height"),
+            {L"/GUI/TracksFitVerticallyZoomed", false});
+
+      S
+         .TieCheckBox(XXO("Sho&w track name as overlay"),
+            {L"/GUI/ShowTrackNameInWaveform", false});
+
 #ifdef EXPERIMENTAL_HALF_WAVE
-      S.TieCheckBox(XXO("Use &half-wave display when collapsed"),
-                  {L"/GUI/CollapseToHalfWave",
-                   false});
+      S
+         .TieCheckBox(XXO("Use &half-wave display when collapsed"),
+            {L"/GUI/CollapseToHalfWave", false});
 #endif
+
 #ifdef SHOW_PINNED_UNPINNED_IN_PREFS
-      S.TieCheckBox(XXO("&Pinned Recording/Playback head"),
-         {PinnedHeadPreferenceKey(),
-          PinnedHeadPreferenceDefault()});
+      S
+         .TieCheckBox(XXO("&Pinned Recording/Playback head"),
+            {PinnedHeadPreferenceKey(), PinnedHeadPreferenceDefault()});
 #endif
-      S.TieCheckBox(XXO("A&uto-scroll if head unpinned"),
-         {L"/GUI/AutoScroll",
-          true});
+
+      S
+         .TieCheckBox(XXO("A&uto-scroll if head unpinned"),
+            {L"/GUI/AutoScroll", true});
 
       S.AddSpace(10);
 
@@ -345,26 +350,27 @@ void TracksPrefs::PopulateOrExchange(ShuttleGui & S)
       {
 #define SHOW_PINNED_POSITION_IN_PREFS
 #ifdef SHOW_PINNED_POSITION_IN_PREFS
-         S.TieNumericTextBox(
-            XXO("Pinned &head position"),
-            {PinnedHeadPositionPreferenceKey(),
-             PinnedHeadPositionPreferenceDefault()},
-            30
-         );
+         S
+            .TieNumericTextBox(
+               XXO("Pinned &head position"),
+               {PinnedHeadPositionPreferenceKey(),
+                PinnedHeadPositionPreferenceDefault()},
+               30 );
 #endif
 
-         S.TieChoice(XXO("Default &view mode:"),
-                     viewModeSetting() );
+         S
+            .TieChoice( XXO("Default &view mode:"), viewModeSetting() );
 
-         S.TieChoice(XXO("Default Waveform scale:"),
-                     waveformScaleSetting );
+         S
+            .TieChoice( XXO("Default Waveform scale:"), waveformScaleSetting );
 
-         S.TieChoice(XXO("Display &samples:"),
-                     sampleDisplaySetting );
+         S
+            .TieChoice( XXO("Display &samples:"), sampleDisplaySetting );
 
-         S.TieTextBox(XXO("Default audio track &name:"),
-                      {L"/GUI/TrackNames/DefaultTrackName",
-                       _("Audio Track")},
+         S
+            .TieTextBox(XXO("Default audio track &name:"),
+               {L"/GUI/TrackNames/DefaultTrackName",
+                  _("Audio Track")},
                       30);
       }
       S.EndMultiColumn();
@@ -375,11 +381,11 @@ void TracksPrefs::PopulateOrExchange(ShuttleGui & S)
    {
       S.StartMultiColumn(4);
       {
-         S.TieChoice(XXO("Preset 1:"),
-                     zoom1Setting );
+         S
+            .TieChoice( XXO("Preset 1:"), zoom1Setting );
 
-         S.TieChoice(XXO("Preset 2:"),
-                     zoom2Setting );
+         S
+            .TieChoice( XXO("Preset 2:"), zoom2Setting );
       }
    }
    S.EndStatic();

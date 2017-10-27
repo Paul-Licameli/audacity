@@ -171,13 +171,14 @@ void EffectEcho::PopulateOrExchange(ShuttleGui & S)
 
    S.StartMultiColumn(2, wxALIGN_CENTER);
    {
-      S.Validator<FloatingPointValidator<double>>(
+      S
+         .Validator<FloatingPointValidator<double>>(
             3, &delay, NumValidatorStyle::NO_TRAILING_ZEROES,
-            MIN_Delay, MAX_Delay
-         )
+            MIN_Delay, MAX_Delay )
          .AddTextBox(XXO("&Delay time (seconds):"), L"", 10);
 
-      S.Validator<FloatingPointValidator<double>>(
+      S
+         .Validator<FloatingPointValidator<double>>(
             3, &decay, NumValidatorStyle::NO_TRAILING_ZEROES,
             MIN_Decay, MAX_Decay)
          .AddTextBox(XXO("D&ecay factor:"), L"", 10);

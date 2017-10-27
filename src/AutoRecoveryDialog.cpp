@@ -97,16 +97,19 @@ void AutoRecoveryDialog::PopulateOrExchange(ShuttleGui &S)
    S.SetBorder(5);
    S.StartVerticalLay(wxEXPAND, 1);
    {
-      S.AddFixedText(
-         XO("The following projects were not saved properly the last time Audacity was run and "
-            "can be automatically recovered.\n\n"
-            "After recovery, save the projects to ensure changes are written to disk."),
-         false,
-         500);
+      S
+         .AddFixedText(
+            XO("The following projects were not saved properly the last time Audacity was run and "
+               "can be automatically recovered.\n\n"
+               "After recovery, save the projects to ensure changes are written to disk."),
+            false,
+            500);
 
       S.StartStatic(XO("Recoverable &projects"), 1);
       {
-         mFileList = S.Id(ID_FILE_LIST)
+         mFileList =
+         S
+            .Id(ID_FILE_LIST)
             .ConnectRoot(wxEVT_KEY_DOWN, &AutoRecoveryDialog::OnListKeyDown)
             .AddListControlReportMode(
             {
@@ -120,12 +123,28 @@ void AutoRecoveryDialog::PopulateOrExchange(ShuttleGui &S)
       }
       S.EndStatic();
 
+      S
+         .AddVariableText(
+            XO("After recovery, save the project to save the changes to disk."),
+            false);
+
       S.StartHorizontalLay(wxALIGN_CENTRE, 0);
       {
-         S.Id(ID_QUIT_AUDACITY).AddButton(XXO("&Quit Audacity"));
-         S.Id(ID_DISCARD_SELECTED).AddButton(XXO("&Discard Selected"));
-         S.Id(ID_RECOVER_SELECTED).AddButton(XXO("&Recover Selected"), wxALIGN_CENTRE, true);
-         S.Id(ID_SKIP).AddButton(XXO("&Skip"));
+         S
+            .Id(ID_QUIT_AUDACITY)
+            .AddButton(XXO("&Quit Audacity"));
+
+         S
+            .Id(ID_DISCARD_SELECTED)
+            .AddButton(XXO("&Discard Selected"));
+
+         S
+            .Id(ID_RECOVER_SELECTED)
+            .AddButton(XXO("&Recover Selected"), wxALIGN_CENTRE, true);
+
+         S
+            .Id(ID_SKIP)
+            .AddButton(XXO("&Skip"));
 
          SetAffirmativeId(ID_RECOVER_SELECTED);
          SetEscapeId(ID_SKIP);

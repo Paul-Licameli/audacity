@@ -68,11 +68,13 @@ void BatchPrefs::PopulateOrExchange( ShuttleGui & S )
    S.StartScroller();
    S.StartHorizontalLay( wxEXPAND, 0 );
 
-   S.StartStatic( XO("Behaviors"),1 );
+   S
+      .StartStatic( XO("Behaviors"),1 );
    {
 #ifdef _DEBUG
-      S.TieCheckBox( XXO("&Don't apply effects in batch mode"),
-         {L"/Batch/Debug", false});
+      S
+         .TieCheckBox( XXO("&Don't apply effects in batch mode"),
+            {L"/Batch/Debug", false});
 #endif
    }
    S.EndStatic();

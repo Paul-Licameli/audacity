@@ -311,12 +311,14 @@ SliderDialog::SliderDialog(wxWindow * parent, wxWindowID id,
                             size,
                             ASlider::Options{}
                                .Style( style ).Line( line ).Page( page ).Popup( false) );
-      S.Position(wxEXPAND)
+      S
+         .Position(wxEXPAND)
          .AddWindow(mSlider);
    }
    S.EndVerticalLay();
 
-   S.AddStandardButtons(eOkButton | eCancelButton);
+   S
+      .AddStandardButtons(eOkButton | eCancelButton);
 
    Fit();
 

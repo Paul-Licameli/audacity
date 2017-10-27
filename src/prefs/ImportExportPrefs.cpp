@@ -109,60 +109,78 @@ void ImportExportPrefs::PopulateOrExchange(ShuttleGui & S)
    S.StartScroller();
 
    S.StartStatic(XO("When exporting tracks to an audio file"));
+
+   S
+      .StartStatic(XO("When exporting tracks to an audio file"));
    {
       // Bug 2692: Place button group in panel so tabbing will work and,
       // on the Mac, VoiceOver will announce as radio buttons.
       S.StartPanel();
       {
-         S.StartRadioButtonGroup(ImportExportPrefs::ExportDownMixSetting);
+         S
+            .StartRadioButtonGroup(ImportExportPrefs::ExportDownMixSetting);
          {
-            S.TieRadioButton();
-            S.TieRadioButton();
+            S
+               .TieRadioButton();
+            S
+               .TieRadioButton();
          }
-         S.EndRadioButtonGroup();
+         S
+            .EndRadioButtonGroup();
       }
       S.EndPanel();
 
-      S.TieCheckBox(XXO("S&how Metadata Tags editor before export"),
-                    {L"/AudioFiles/ShowId3Dialog",
-                     true});
-      /* i18n-hint 'blank space' is space on the tracks with no audio in it*/
-      S.TieCheckBox(XXO("&Ignore blank space at the beginning"),
-                    {L"/AudioFiles/SkipSilenceAtBeginning",
-                     false});
+      S
+         .TieCheckBox(XXO("S&how Metadata Tags editor before export"),
+            {L"/AudioFiles/ShowId3Dialog", true});
+
+      S
+         /* i18n-hint 'blank space' is space on the tracks with no audio in it*/
+         .TieCheckBox(XXO("&Ignore blank space at the beginning"),
+            {L"/AudioFiles/SkipSilenceAtBeginning", false});
    }
    S.EndStatic();
 
-   S.StartStatic(XO("Exported Label Style:"));
+   S
+      .StartStatic(XO("Exported Label Style:"));
    {
       // Bug 2692: Place button group in panel so tabbing will work and,
       // on the Mac, VoiceOver will announce as radio buttons.
       S.StartPanel();
       {
-         S.StartRadioButtonGroup(ImportExportPrefs::LabelStyleSetting);
+         S
+            .StartRadioButtonGroup(ImportExportPrefs::LabelStyleSetting);
          {
-            S.TieRadioButton();
-            S.TieRadioButton();
+            S
+               .TieRadioButton();
+            S
+               .TieRadioButton();
          }
-         S.EndRadioButtonGroup();
+         S
+            .EndRadioButtonGroup();
       }
       S.EndPanel();
    }
    S.EndStatic();
 
 #ifdef USE_MIDI
-   S.StartStatic(XO("Exported Allegro (.gro) files save time as:"));
+   S
+      .StartStatic(XO("Exported Allegro (.gro) files save time as:"));
    {
       // Bug 2692: Place button group in panel so tabbing will work and,
       // on the Mac, VoiceOver will announce as radio buttons.
       S.StartPanel();
       {
-         S.StartRadioButtonGroup(ImportExportPrefs::AllegroStyleSetting);
+         S
+            .StartRadioButtonGroup(ImportExportPrefs::AllegroStyleSetting);
          {
-            S.TieRadioButton();
-            S.TieRadioButton();
+            S
+               .TieRadioButton();
+            S
+               .TieRadioButton();
          }
-         S.EndRadioButtonGroup();
+         S
+            .EndRadioButtonGroup();
       }
       S.EndPanel();
    }

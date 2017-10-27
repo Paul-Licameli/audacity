@@ -109,9 +109,11 @@ void ExtImportPrefs::PopulateOrExchange(ShuttleGui & S)
    S.SetBorder(2);
    S.StartScroller();
 
-   S.TieCheckBox(XXO("A&ttempt to use filter in OpenFile dialog first"),
+   S
+      .TieCheckBox(XXO("A&ttempt to use filter in OpenFile dialog first"),
          {L"/ExtendedImport/OverrideExtendedImportByOpenFileDialogChoice",
           true});
+
    S.StartStatic(XO("Rules to choose import filters"), 1);
    {
       S.SetSizerProportion(1);
@@ -152,14 +154,17 @@ void ExtImportPrefs::PopulateOrExchange(ShuttleGui & S)
             RuleTable->EnableDragCell (true);
             fillRuleTable = true;
          }
-         S.Position(wxEXPAND | wxALL)
+         S
+            .Position(wxEXPAND | wxALL)
             .AddWindow(RuleTable);
 
-         PluginList = S.Id(EIPPluginList).AddListControl(
-            { { XO("Importer order"), wxLIST_FORMAT_LEFT,
-                wxLIST_AUTOSIZE_USEHEADER } },
-            wxLC_REPORT | wxLC_SINGLE_SEL
-         );
+         PluginList =
+         S
+            .Id(EIPPluginList)
+            .AddListControl(
+               { { XO("Importer order"), wxLIST_FORMAT_LEFT,
+                   wxLIST_AUTOSIZE_USEHEADER } },
+               wxLC_REPORT | wxLC_SINGLE_SEL );
 
          if (fillRuleTable)
          {
@@ -187,19 +192,38 @@ void ExtImportPrefs::PopulateOrExchange(ShuttleGui & S)
       S.EndHorizontalLay();
       S.StartHorizontalLay (wxSHRINK, 0);
       {
-          MoveRuleUp = S.Id (EIPMoveRuleUp).AddButton(XXO("Move rule &up"));
-          MoveRuleDown = S.Id (EIPMoveRuleDown).AddButton(
-             XXO("Move rule &down"));
-          MoveFilterUp = S.Id (EIPMoveFilterUp).AddButton(
-             XXO("Move f&ilter up"));
-          MoveFilterDown = S.Id (EIPMoveFilterDown).AddButton(
-             XXO("Move &filter down"));
+         MoveRuleUp =
+         S
+            .Id (EIPMoveRuleUp)
+            .AddButton( XXO("Move rule &up") );
+
+         MoveRuleDown =
+         S
+            .Id (EIPMoveRuleDown)
+            .AddButton( XXO("Move rule &down") );
+
+         MoveFilterUp =
+         S
+            .Id (EIPMoveFilterUp)
+            .AddButton( XXO("Move f&ilter up") );
+
+         MoveFilterDown =
+         S
+            .Id (EIPMoveFilterDown)
+            .AddButton( XXO("Move &filter down") );
       }
       S.EndHorizontalLay();
       S.StartHorizontalLay (wxSHRINK, 0);
       {
-          AddRule = S.Id (EIPAddRule).AddButton(XXO("&Add new rule"));
-          DelRule = S.Id (EIPDelRule).AddButton(XXO("De&lete selected rule"));
+         AddRule =
+         S
+            .Id (EIPAddRule)
+            .AddButton( XXO("&Add new rule") );
+   
+         DelRule =
+         S
+            .Id (EIPDelRule)
+            .AddButton( XXO("De&lete selected rule") );
       }
       S.EndHorizontalLay();
    }

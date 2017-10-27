@@ -343,16 +343,19 @@ void EffectClickRemoval::PopulateOrExchange(ShuttleGui & S)
    S.SetStretchyCol(2);
    {
       // Threshold
-      mThreshT = S.Id(ID_Thresh)
+      mThreshT =
+      S
+         .Id(ID_Thresh)
          .Validator<IntegerValidator<int>>(
             &mThresholdLevel, NumValidatorStyle::DEFAULT,
-            MIN_Threshold, MAX_Threshold
-         )
+            MIN_Threshold, MAX_Threshold )
          .AddTextBox(XXO("&Threshold (lower is more sensitive):"),
                      L"",
                      10);
 
-      mThreshS = S.Id(ID_Thresh)
+      mThreshS =
+      S
+         .Id(ID_Thresh)
          .Name(XO("Threshold"))
          .Style(wxSL_HORIZONTAL)
          .Validator<wxGenericValidator>(&mThresholdLevel)
@@ -360,14 +363,18 @@ void EffectClickRemoval::PopulateOrExchange(ShuttleGui & S)
          .AddSlider( {}, mThresholdLevel, MAX_Threshold, MIN_Threshold);
 
       // Click width
-      mWidthT = S.Id(ID_Width)
+      mWidthT =
+      S
+         .Id(ID_Width)
          .Validator<IntegerValidator<int>>(
             &mClickWidth, NumValidatorStyle::DEFAULT, MIN_Width, MAX_Width)
          .AddTextBox(XXO("Max &Spike Width (higher is more sensitive):"),
                      L"",
                      10);
 
-      mWidthS = S.Id(ID_Width)
+      mWidthS =
+      S
+         .Id(ID_Width)
          .Name(XO("Max Spike Width"))
          .Style(wxSL_HORIZONTAL)
          .Validator<wxGenericValidator>(&mClickWidth)

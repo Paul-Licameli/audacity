@@ -83,12 +83,22 @@ void MacroCommandDialog::PopulateOrExchange(ShuttleGui &S)
       S.StartMultiColumn(4, wxEXPAND);
       {
          S.SetStretchyCol(1);
-         mCommand = S.AddTextBox(XXO("&Command"), L"", 20);
+
+         mCommand =
+         S
+            .AddTextBox(XXO("&Command"), L"", 20);
+
          mCommand->SetEditable(false);
-         mEditParams = S.Id(EditParamsButtonID)
+
+         mEditParams =
+         S
+            .Id(EditParamsButtonID)
             .Disable() // disable button as box is empty
             .AddButton(XXO("&Edit Parameters"));
-         mUsePreset = S.Id(UsePresetButtonID)
+
+         mUsePreset =
+         S
+            .Id(UsePresetButtonID)
             .Disable() // disable button as box is empty
             .AddButton(XXO("&Use Preset"));
       }
@@ -97,20 +107,34 @@ void MacroCommandDialog::PopulateOrExchange(ShuttleGui &S)
       S.StartMultiColumn(2, wxEXPAND);
       {
          S.SetStretchyCol(1);
-         mParameters = S.AddTextBox(XXO("&Parameters"), L"", 0);
+
+         mParameters =
+         S
+            .AddTextBox(XXO("&Parameters"), L"", 0);
+
          mParameters->SetEditable(false);
          auto prompt = XXO("&Details");
-         S.Prop(0).AddPrompt(prompt);
-         mDetails = S
+
+         S
+            .Prop(0)
+            .AddPrompt(prompt);
+
+         mDetails =
+         S
             .Name( prompt.Stripped() )
             .AddTextWindow( L"");
+
          mDetails->SetEditable(false);
       }
       S.EndMultiColumn();
 
-      S.Prop(10).StartStatic(XO("Choose command"), true);
+      S
+         .Prop(10)
+         .StartStatic(XO("Choose command"), true);
       {
-         mChoices = S.Id(CommandsListID)
+         mChoices =
+         S
+            .Id(CommandsListID)
             .Style(wxSUNKEN_BORDER | wxLC_LIST | wxLC_SINGLE_SEL)
             .AddListControl();
       }
@@ -118,7 +142,8 @@ void MacroCommandDialog::PopulateOrExchange(ShuttleGui &S)
    }
    S.EndVerticalLay();
 
-   S.AddStandardButtons( eOkButton | eCancelButton | eHelpButton);
+   S
+      .AddStandardButtons( eOkButton | eCancelButton | eHelpButton);
 
    PopulateCommandList();
    if (mChoices->GetItemCount() > 0) {

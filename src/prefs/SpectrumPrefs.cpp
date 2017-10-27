@@ -174,59 +174,83 @@ void SpectrumPrefs::PopulateOrExchange(ShuttleGui & S)
    mDefaultsCheckbox = 0;
    if (mWt) {
       /* i18n-hint: use is a verb */
-      mDefaultsCheckbox = S.Id(ID_DEFAULTS).TieCheckBox(XXO("&Use Preferences"), mDefaulted);
+      mDefaultsCheckbox =
+      S
+         .Id(ID_DEFAULTS)
+         .TieCheckBox(XXO("&Use Preferences"), mDefaulted);
    }
 
    S.StartMultiColumn(2,wxEXPAND);
    {
       S.SetStretchyCol( 0 );
       S.SetStretchyCol( 1 );
-      S.StartStatic(XO("Scale"),1);
+      S
+         .StartStatic(XO("Scale"),1);
       {
          S.StartMultiColumn(2,wxEXPAND);
          {
             S.SetStretchyCol( 0 );
             S.SetStretchyCol( 1 );
-            S.Id(ID_SCALE).TieChoice(XXO("S&cale:"),
-               mTempSettings.scaleType,
-               Msgids( SpectrogramSettings::GetScaleNames() ) );
+
+            S
+               .Id(ID_SCALE)
+               .TieChoice(XXO("S&cale:"),
+                  mTempSettings.scaleType,
+                  Msgids( SpectrogramSettings::GetScaleNames() ) );
+
             mMinFreq =
-               S.Id(ID_MINIMUM).TieNumericTextBox(XXO("Mi&n Frequency (Hz):"),
-               mTempSettings.minFreq,
-               12);
+            S
+               .Id(ID_MINIMUM)
+               .TieNumericTextBox(XXO("Mi&n Frequency (Hz):"),
+                  mTempSettings.minFreq,
+                  12);
+
             mMaxFreq =
-               S.Id(ID_MAXIMUM).TieNumericTextBox(XXO("Ma&x Frequency (Hz):"),
-               mTempSettings.maxFreq,
-               12);
+            S
+               .Id(ID_MAXIMUM)
+               .TieNumericTextBox(XXO("Ma&x Frequency (Hz):"),
+                  mTempSettings.maxFreq,
+                  12);
          }
          S.EndMultiColumn();
       }
       S.EndStatic();
 
-      S.StartStatic(XO("Colors"),1);
+      S
+         .StartStatic(XO("Colors"),1);
       {
          S.StartMultiColumn(2,wxEXPAND);
          {
             S.SetStretchyCol( 0 );
             S.SetStretchyCol( 1 );
+
             mGain =
-               S.Id(ID_GAIN).TieNumericTextBox(XXO("&Gain (dB):"),
-               mTempSettings.gain,
-               8);
+            S
+               .Id(ID_GAIN)
+               .TieNumericTextBox(XXO("&Gain (dB):"),
+                  mTempSettings.gain,
+                  8);
+
             mRange =
-               S.Id(ID_RANGE).TieNumericTextBox(XXO("&Range (dB):"),
-               mTempSettings.range,
-               8);
+            S
+               .Id(ID_RANGE)
+               .TieNumericTextBox(XXO("&Range (dB):"),
+                  mTempSettings.range,
+                  8);
 
             mFrequencyGain =
-               S.Id(ID_FREQUENCY_GAIN).TieNumericTextBox(XXO("High &boost (dB/dec):"),
-               mTempSettings.frequencyGain,
-               8);
+            S
+               .Id(ID_FREQUENCY_GAIN)
+               .TieNumericTextBox(XXO("High &boost (dB/dec):"),
+                  mTempSettings.frequencyGain,
+                  8);
 
             // i18n-hint Scheme refers to a color scheme for spectrogram colors
-            S.Id(ID_COLOR_SCHEME).TieChoice(XXC("Sche&me", "spectrum prefs"),
-               (int&)mTempSettings.colorScheme,
-               Msgids( SpectrogramSettings::GetColorSchemeNames() ) );
+            S
+               .Id(ID_COLOR_SCHEME)
+               .TieChoice(XXC("Sche&me", "spectrum prefs"),
+                  (int&)mTempSettings.colorScheme,
+                  Msgids( SpectrogramSettings::GetColorSchemeNames() ) );
          }
          S.EndMultiColumn();
       }
@@ -239,38 +263,45 @@ void SpectrumPrefs::PopulateOrExchange(ShuttleGui & S)
       S.StartMultiColumn(2);
       {
          mAlgorithmChoice =
-            S.Id(ID_ALGORITHM).TieChoice(XXO("A&lgorithm:"),
-            mTempSettings.algorithm,
-            SpectrogramSettings::GetAlgorithmNames() );
+         S
+            .Id(ID_ALGORITHM)
+            .TieChoice(XXO("A&lgorithm:"),
+               mTempSettings.algorithm,
+               SpectrogramSettings::GetAlgorithmNames() );
 
-         S.Id(ID_WINDOW_SIZE).TieChoice(XXO("Window &size:"),
-            mTempSettings.windowSize,
-            {
-               XO("8 - most wideband"),
-               XO("16"),
-               XO("32"),
-               XO("64"),
-               XO("128"),
-               XO("256"),
-               XO("512"),
-               XO("1024 - default"),
-               XO("2048"),
-               XO("4096"),
-               XO("8192"),
-               XO("16384"),
-               XO("32768 - most narrowband"),
-            }
-         );
+         S
+            .Id(ID_WINDOW_SIZE)
+            .TieChoice(XXO("Window &size:"),
+               mTempSettings.windowSize,
+               {
+                  XO("8 - most wideband"),
+                  XO("16"),
+                  XO("32"),
+                  XO("64"),
+                  XO("128"),
+                  XO("256"),
+                  XO("512"),
+                  XO("1024 - default"),
+                  XO("2048"),
+                  XO("4096"),
+                  XO("8192"),
+                  XO("16384"),
+                  XO("32768 - most narrowband"),
+               } );
 
-         S.Id(ID_WINDOW_TYPE).TieChoice(XXO("Window &type:"),
-            mTempSettings.windowType,
-            mTypeChoices);
+         S
+            .Id(ID_WINDOW_TYPE)
+            .TieChoice(XXO("Window &type:"),
+               mTempSettings.windowType,
+               mTypeChoices);
 
 #ifdef EXPERIMENTAL_ZERO_PADDED_SPECTROGRAMS
          mZeroPaddingChoiceCtrl =
-            S.Id(ID_PADDING_SIZE).TieChoice(XXO("&Zero padding factor:"),
-            mTempSettings.zeroPaddingFactor,
-            mZeroPaddingChoices);
+         S
+            .Id(ID_PADDING_SIZE)
+            .TieChoice(XXO("&Zero padding factor:"),
+               mTempSettings.zeroPaddingFactor,
+               mZeroPaddingChoices);
 #endif
       }
       S.EndMultiColumn();
@@ -278,53 +309,64 @@ void SpectrumPrefs::PopulateOrExchange(ShuttleGui & S)
    S.EndStatic();
 
 #ifndef SPECTRAL_SELECTION_GLOBAL_SWITCH
-   S.Id(ID_SPECTRAL_SELECTION).TieCheckBox(XXO("Ena&ble Spectral Selection"),
-      mTempSettings.spectralSelection);
+   S
+      .Id(ID_SPECTRAL_SELECTION)
+      .TieCheckBox(XXO("Ena&ble Spectral Selection"),
+         mTempSettings.spectralSelection);
 #endif
 
 #ifdef EXPERIMENTAL_FFT_Y_GRID
-         S.TieCheckBox(XO("Show a grid along the &Y-axis"),
-            mTempSettings.fftYGrid);
+   S
+      .TieCheckBox(XO("Show a grid along the &Y-axis"),
+         mTempSettings.fftYGrid);
 #endif //EXPERIMENTAL_FFT_Y_GRID
 
 #ifdef EXPERIMENTAL_FIND_NOTES
       /* i18n-hint: FFT stands for Fast Fourier Transform and probably shouldn't be translated*/
-      S.StartStatic(XO("FFT Find Notes"));
+      S
+         .StartStatic(XO("FFT Find Notes"));
       {
          S.StartTwoColumn();
          {
             mFindNotesMinA =
-               S.TieNumericTextBox(XXO("Minimum Amplitude (dB):"),
-               mTempSettings.findNotesMinA,
-               8);
+            S
+               .TieNumericTextBox(XXO("Minimum Amplitude (dB):"),
+                  mTempSettings.findNotesMinA,
+                  8);
 
             mFindNotesN =
-               S.TieNumericTextBox(XXO("Max. Number of Notes (1..128):"),
-               mTempSettings.numberOfMaxima,
-               8);
+            S
+               .TieNumericTextBox(XXO("Max. Number of Notes (1..128):"),
+                  mTempSettings.numberOfMaxima,
+                  8);
          }
          S.EndTwoColumn();
 
-         S.TieCheckBox(XXO("&Find Notes"),
-            mTempSettings.fftFindNotes);
+         S
+            .TieCheckBox(XXO("&Find Notes"),
+               mTempSettings.fftFindNotes);
 
-         S.TieCheckBox(XXO("&Quantize Notes"),
-            mTempSettings.findNotesQuantize);
+         S
+            .TieCheckBox(XXO("&Quantize Notes"),
+               mTempSettings.findNotesQuantize);
       }
       S.EndStatic();
 #endif //EXPERIMENTAL_FIND_NOTES
    // S.EndStatic();
 
 #ifdef SPECTRAL_SELECTION_GLOBAL_SWITCH
-   S.StartStatic(XO("Global settings"));
+   S
+      .StartStatic(XO("Global settings"));
    {
-      S.TieCheckBox(XXO("Ena&ble spectral selection"),
-         SpectrogramSettings::Globals::Get().spectralSelection);
+      S
+         .TieCheckBox(XXO("Ena&ble spectral selection"),
+            SpectrogramSettings::Globals::Get().spectralSelection);
    }
    S.EndStatic();
 #endif
 
-   } S.EndScroller();
+   }
+   S.EndScroller();
    
    // Enabling and disabling belongs outside this function.
    if( S.GetMode() != eIsGettingMetadata )

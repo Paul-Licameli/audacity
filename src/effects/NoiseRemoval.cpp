@@ -713,52 +713,77 @@ void NoiseRemovalDialog::PopulateOrExchange(ShuttleGui & S)
 {
    S.StartStatic(XO("Step 1"));
    {
-      S.AddVariableText(XO(
+      S
+         .AddVariableText(XO(
 "Select a few seconds of just noise so Audacity knows what to filter out,\nthen click Get Noise Profile:"));
-      m_pButton_GetProfile = S.Id(ID_BUTTON_GETPROFILE).AddButton(XXO("&Get Noise Profile"));
+
+      m_pButton_GetProfile =
+      S
+         .Id(ID_BUTTON_GETPROFILE)
+         .AddButton(XXO("&Get Noise Profile"));
    }
    S.EndStatic();
 
    S.StartStatic(XO("Step 2"));
    {
-      S.AddVariableText(XO(
+      S
+         .AddVariableText(XO(
 "Select all of the audio you want filtered, choose how much noise you want\nfiltered out, and then click 'OK' to remove noise.\n"));
 
       S.StartMultiColumn(3, wxEXPAND);
       S.SetStretchyCol(2);
       {
-         mGainT = S.Id(ID_GAIN_TEXT)
+         mGainT =
+         S
+            .Id(ID_GAIN_TEXT)
             .Validator<wxTextValidator>(wxFILTER_NUMERIC)
             .AddTextBox(XXO("Noise re&duction (dB):"), L"", 0);
 
-         mGainS = S.Id(ID_GAIN_SLIDER)
+         mGainS =
+         S
+            .Id(ID_GAIN_SLIDER)
             .Name(XO("Noise reduction"))
             .Style(wxSL_HORIZONTAL)
             .MinSize( { 150, -1 } )
             .AddSlider( {}, 0, GAIN_MAX, GAIN_MIN);
 
-         mSensitivityT = S.Id(ID_SENSITIVITY_TEXT)
+         mSensitivityT =
+         S
+            .Id(ID_SENSITIVITY_TEXT)
             .Validator<wxTextValidator>(wxFILTER_NUMERIC)
             .AddTextBox(XXO("&Sensitivity (dB):"), L"", 0);
-         mSensitivityS = S.Id(ID_SENSITIVITY_SLIDER)
+
+         mSensitivityS =
+         S
+            .Id(ID_SENSITIVITY_SLIDER)
             .Name(XO("Sensitivity"))
             .Style(wxSL_HORIZONTAL)
             .MinSize( { 150, -1 } )
             .AddSlider( {}, 0, SENSITIVITY_MAX, SENSITIVITY_MIN);
 
-         mFreqT = S.Id(ID_FREQ_TEXT)
+         mFreqT =
+         S
+            .Id(ID_FREQ_TEXT)
             .Validator<wxTextValidator>(wxFILTER_NUMERIC)
             .AddTextBox(XXO("Fr&equency smoothing (Hz):"), L"", 0);
-         mFreqS = S.Id(ID_FREQ_SLIDER)
+   
+         mFreqS =
+         S
+            .Id(ID_FREQ_SLIDER)
             .Name(XO("Frequency smoothing"))
             .Style(wxSL_HORIZONTAL)
             .MinSize( { 150, -1 } )
             .AddSlider( {}, 0, FREQ_MAX, FREQ_MIN);
 
-         mTimeT = S.Id(ID_TIME_TEXT)
+         mTimeT =
+         S
+            .Id(ID_TIME_TEXT)
             .Validator<wxTextValidator>(wxFILTER_NUMERIC)
             .AddTextBox(XXO("Attac&k/decay time (secs):"), L"", 0);
-         mTimeS = S.Id(ID_TIME_SLIDER)
+
+         mTimeS =
+         S
+            .Id(ID_TIME_SLIDER)
             .Name(XO("Attack/decay time"))
             .Style(wxSL_HORIZONTAL)
             .MinSize( { 150, -1 } )

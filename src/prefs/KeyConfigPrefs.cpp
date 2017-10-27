@@ -128,10 +128,14 @@ void KeyConfigPrefs::Populate()
    if (!mProject) {
       S.StartVerticalLay(true);
       {
-         S.StartStatic( {}, true);
+         S
+            .StartStatic( {}, true);
          {
-            S.AddTitle(XO("Keyboard preferences currently unavailable."));
-            S.AddTitle(XO("Open a new project to modify keyboard shortcuts."));
+            S
+               .AddTitle( XO("Keyboard preferences currently unavailable.") );
+
+            S
+               .AddTitle( XO("Open a new project to modify keyboard shortcuts.") );
          }
          S.EndStatic();
       }
@@ -177,7 +181,9 @@ void KeyConfigPrefs::PopulateOrExchange(ShuttleGui & S)
    {
       S.StartHorizontalLay(wxEXPAND, 0);
       {
-         S.Position(wxALIGN_LEFT | wxALIGN_CENTER_VERTICAL).AddTitle(XO("View by:"));
+         S
+            .Position(wxALIGN_LEFT | wxALIGN_CENTER_VERTICAL)
+            .AddTitle(XO("View by:"));
 
          // Bug 2692: Place button group in panel so tabbing will work and,
          // on the Mac, VoiceOver will announce as radio buttons.
@@ -185,25 +191,34 @@ void KeyConfigPrefs::PopulateOrExchange(ShuttleGui & S)
          {
             S.StartHorizontalLay();
             {
-               S.StartRadioButtonGroup({
-                  L"/Prefs/KeyConfig/ViewBy",
-                  {
-                     { L"tree", XXO("&Tree") },
-                     { L"name", XXO("&Name") },
-                     { L"key", XXO("&Key") },
-                  },
-                  0 // tree
-               });
+               S
+                  .StartRadioButtonGroup({
+                     L"/Prefs/KeyConfig/ViewBy",
+                     {
+                        { L"tree", XXO("&Tree") },
+                        { L"name", XXO("&Name") },
+                        { L"key", XXO("&Key") },
+                     },
+                     0 /* tree */ });
                {
-                  mViewByTree = S.Id(ViewByTreeID)
+                  mViewByTree =
+                  S
+                     .Id(ViewByTreeID)
                      .Name(XO("View by tree"))
                      .TieRadioButton();
-                  mViewByName = S.Id(ViewByNameID)
+         
+                  mViewByName =
+                  S
+                     .Id(ViewByNameID)
                      .Name(XO("View by name"))
                      .TieRadioButton();
-                  mViewByKey = S.Id(ViewByKeyID)
+         
+                  mViewByKey =
+                  S
+                     .Id(ViewByKeyID)
                      .Name(XO("View by key"))
                      .TieRadioButton();
+
 #if !defined(__WXMAC__) && wxUSE_ACCESSIBILITY
                   // so that name can be set on a standard control
                   if (mViewByTree) mViewByTree->SetAccessible(safenew WindowAccessible(mViewByTree));
@@ -211,17 +226,22 @@ void KeyConfigPrefs::PopulateOrExchange(ShuttleGui & S)
                   if (mViewByKey) mViewByKey->SetAccessible(safenew WindowAccessible(mViewByKey));
 #endif
                }
-               S.EndRadioButtonGroup();
+               S
+                  .EndRadioButtonGroup();
             }
             S.EndHorizontalLay();
          }
          S.EndPanel();
 
-         S.AddSpace(wxDefaultCoord, wxDefaultCoord, 1);
+         S
+            .AddSpace(wxDefaultCoord, wxDefaultCoord, 1);
 
          S.StartHorizontalLay(wxALIGN_CENTER_VERTICAL, 0);
          {
-            mFilterLabel = S.Position(wxALIGN_CENTER_VERTICAL).AddVariableText(XO("Searc&h:"));
+            mFilterLabel =
+            S
+               .Position(wxALIGN_CENTER_VERTICAL)
+               .AddVariableText(XO("Searc&h:"));
 
             if (!mFilter) {
                mFilter = safenew wxTextCtrl(S.GetParent(),
@@ -236,7 +256,9 @@ void KeyConfigPrefs::PopulateOrExchange(ShuttleGui & S)
                                         wxTE_PROCESS_ENTER);
                mFilter->SetName(wxStripMenuCodes(mFilterLabel->GetLabel()));
             }
-            S.Position(wxALIGN_NOT | wxALIGN_LEFT)
+
+            S
+               .Position(wxALIGN_NOT | wxALIGN_LEFT)
                .ConnectRoot(wxEVT_KEY_DOWN,
                             &KeyConfigPrefs::OnFilterKeyDown)
                .ConnectRoot(wxEVT_CHAR,
@@ -255,7 +277,8 @@ void KeyConfigPrefs::PopulateOrExchange(ShuttleGui & S)
             mView = safenew KeyView(S.GetParent(), CommandsListID);
             mView->SetName(_("Bindings"));
          }
-         S.Prop(true)
+         S
+            .Prop(true)
             .Position(wxEXPAND)
             .AddWindow(mView);
       }
@@ -291,22 +314,38 @@ void KeyConfigPrefs::PopulateOrExchange(ShuttleGui & S)
                       &KeyConfigPrefs::OnHotkeyContext)
             .AddWindow(mKey);
 
-         /* i18n-hint: (verb)*/
-         mSet = S.Id(SetButtonID).AddButton(XXO("&Set"));
-         /* i18n-hint: (verb)*/
-         mClear = S.Id(ClearButtonID).AddButton(XXO("Cl&ear"));
+         mSet =
+         S
+            .Id(SetButtonID)
+            /* i18n-hint: (verb)*/
+            .AddButton(XXO("&Set"));
+
+         mClear =
+         S
+            .Id(ClearButtonID)
+            /* i18n-hint: (verb)*/
+            .AddButton(XXO("Cl&ear"));
       }
       S.EndThreeColumn();
 
 #if defined(__WXMAC__)
-      S.AddFixedText(XO("Note: Pressing Cmd+Q will quit. All other keys are valid."));
+      S
+         .AddFixedText(XO("Note: Pressing Cmd+Q will quit. All other keys are valid."));
 #endif
 
       S.StartThreeColumn();
       {
-         S.Id(ImportButtonID).AddButton(XXO("&Import..."));
-         S.Id(ExportButtonID).AddButton(XXO("&Export..."));
-         S.Id(AssignDefaultsButtonID).AddButton(XXO("&Defaults"));
+         S
+            .Id(ImportButtonID)
+            .AddButton(XXO("&Import..."));
+
+         S
+            .Id(ExportButtonID)
+            .AddButton(XXO("&Export..."));
+
+         S
+            .Id(AssignDefaultsButtonID)
+            .AddButton(XXO("&Defaults"));
       }
       S.EndThreeColumn();
    }

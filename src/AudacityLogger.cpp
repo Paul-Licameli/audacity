@@ -185,16 +185,28 @@ void AudacityLogger::Show(bool show)
    {
       S.StartVerticalLay(true);
       {
-         mText = S.Style(wxTE_MULTILINE | wxHSCROLL | wxTE_READONLY | wxTE_RICH)
+         mText =
+         S
+            .Style(wxTE_MULTILINE | wxHSCROLL | wxTE_READONLY | wxTE_RICH)
             .AddTextWindow(mBuffer);
 
          S.AddSpace(0, 5);
          S.StartHorizontalLay(wxALIGN_CENTER, 0);
          {
             S.AddSpace(10, 0);
-            S.Id(LoggerID_Save).AddButton(XXO("&Save..."));
-            S.Id(LoggerID_Clear).AddButton(XXO("Cl&ear"));
-            S.Id(LoggerID_Close).AddButton(XXO("&Close"));
+         
+            S
+               .Id(LoggerID_Save)
+               .AddButton(XXO("&Save..."));
+         
+            S
+               .Id(LoggerID_Clear)
+               .AddButton(XXO("Cl&ear"));
+         
+            S
+               .Id(LoggerID_Close)
+               .AddButton(XXO("&Close"));
+
             S.AddSpace(10, 0);
          }
          S.EndHorizontalLay();

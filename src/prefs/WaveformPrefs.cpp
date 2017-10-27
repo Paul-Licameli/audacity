@@ -101,23 +101,30 @@ void WaveformPrefs::PopulateOrExchange(ShuttleGui & S)
    {
       mDefaultsCheckbox = 0;
       if (mWt) {
-         /* i18n-hint: use is a verb */
-         mDefaultsCheckbox = S.Id(ID_DEFAULTS).TieCheckBox(XXO("&Use Preferences"), mDefaulted);
+         mDefaultsCheckbox =
+         S
+            .Id(ID_DEFAULTS)
+            /* i18n-hint: use is a verb */
+            .TieCheckBox(XXO("&Use Preferences"), mDefaulted);
       }
 
-      S.StartStatic(XO("Display"));
+      S
+         .StartStatic(XO("Display"));
       {
          S.StartTwoColumn();
          {
             mScaleChoice =
-               S.Id(ID_SCALE).TieChoice(XXO("S&cale:"),
+            S
+               .Id(ID_SCALE)
+               .TieChoice(XXO("S&cale:"),
                   mTempSettings.scaleType,
                   Msgids( WaveformSettings::GetScaleNames() ) );
 
             mRangeChoice =
-               S.Id(ID_RANGE).TieChoice(XXO("Waveform dB &range:"),
-               mTempSettings.dBRange,
-               mRangeChoices);
+            S
+               .Id(ID_RANGE)
+               .TieChoice(XXO("Waveform dB &range:"),
+                  mTempSettings.dBRange, mRangeChoices);
          }
          S.EndTwoColumn();
       }

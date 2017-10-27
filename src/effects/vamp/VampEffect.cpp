@@ -543,7 +543,9 @@ void VampEffect::PopulateOrExchange(ShuttleGui & S)
    mChoices.reinit( count );
    mValues.reinit( count );
 
-   wxScrolledWindow *scroller = S.Style(wxVSCROLL | wxTAB_TRAVERSAL)
+   wxScrolledWindow *scroller =
+   S
+      .Style(wxVSCROLL | wxTAB_TRAVERSAL)
       .StartScroller(2);
    {
       S.StartStatic(XO("Plugin Settings"));
@@ -554,10 +556,13 @@ void VampEffect::PopulateOrExchange(ShuttleGui & S)
 
             if (!programs.empty())
             {
-               S.AddPrompt(XXO("Program"));
+               S
+                  .AddPrompt(XXO("Program"));
 
-               S.Id(ID_Program);
-               mProgram = S.Name(XO("Program"))
+               mProgram =
+               S
+                  .Id(ID_Program)
+                  .Name(XO("Program"))
                   .MinSize( { -1, -1 } )
                   .Position(wxEXPAND | wxALIGN_CENTER_VERTICAL | wxALL)
                   .AddChoice( {},
@@ -568,8 +573,9 @@ void VampEffect::PopulateOrExchange(ShuttleGui & S)
                               Verbatim(wxString::FromUTF8(program.c_str())));
                         return choices;
                      }(),
-                     Verbatim( wxString::FromUTF8(mPlugin->getCurrentProgram().c_str()) )
-                  );
+                     Verbatim(
+                        wxString::FromUTF8(
+                           mPlugin->getCurrentProgram().c_str()) ) );
 
                S.AddSpace(1, 1);
                S.AddSpace(1, 1);
@@ -594,17 +600,21 @@ void VampEffect::PopulateOrExchange(ShuttleGui & S)
                {
                   labelText += L" (" + unit + L")";
                }
+
                /* i18n-hint: An item name introducing a value, which is not part of the string but
                appears in a following text box window; translate with appropriate punctuation */
-               S.AddPrompt(XXO("%s:").Format( labelText ));
+               S
+                  .AddPrompt(XXO("%s:").Format( labelText ));
 
                if (mParameters[p].isQuantized &&
                    mParameters[p].quantizeStep == 1.0 &&
                    mParameters[p].minValue == 0.0 &&
                    mParameters[p].maxValue == 1.0)
                {
-                  S.Id(ID_Toggles + p);
-                  mToggles[p] = S.ToolTip( Verbatim( tip ) )
+                  mToggles[p] =
+                  S
+                     .Id(ID_Toggles + p)
+                     .ToolTip( Verbatim( tip ) )
                      .Name( Verbatim( labelText ) )
                      .Position(wxALIGN_LEFT | wxALIGN_CENTER_VERTICAL | wxALL)
                      .AddCheckBox( {},
@@ -632,8 +642,10 @@ void VampEffect::PopulateOrExchange(ShuttleGui & S)
                      choices.push_back( Verbatim( choice ) );
                   }
 
-                  S.Id(ID_Choices + p);
-                  mChoices[p] = S.ToolTip( Verbatim( tip ) )
+                  mChoices[p] =
+                  S
+                     .Id(ID_Choices + p)
+                     .ToolTip( Verbatim( tip ) )
                      .Name( Verbatim( labelText ) )
                      .Position(wxEXPAND | wxALIGN_CENTER_VERTICAL | wxALL)
                      .MinSize( { -1, -1 } )
@@ -649,8 +661,10 @@ void VampEffect::PopulateOrExchange(ShuttleGui & S)
 
                   float range = mParameters[p].maxValue - mParameters[p].minValue;
 
-                  S.Id(ID_Texts + p);
-                  mFields[p] = S.ToolTip( Verbatim( tip ) )
+                  mFields[p] =
+                  S
+                     .Id(ID_Texts + p)
+                     .ToolTip( Verbatim( tip ) )
                      .Name( Verbatim( labelText ) )
                      .Position(wxALIGN_CENTER_VERTICAL | wxALL)
                      .Validator<FloatingPointValidator<float>>(
@@ -664,17 +678,21 @@ void VampEffect::PopulateOrExchange(ShuttleGui & S)
                      .AddTextBox( {}, L"", 12);
 
                   wxString str = Internat::ToDisplayString(mParameters[p].minValue);
-                  S.AddPrompt( VerbatimLabel( str ) );
+                  S
+                     .AddPrompt( VerbatimLabel( str ) );
 
-                  S.Id(ID_Sliders + p);
-                  mSliders[p] = S.ToolTip( Verbatim( tip ) )
+                  mSliders[p] =
+                  S
+                     .Id(ID_Sliders + p)
+                     .ToolTip( Verbatim( tip ) )
                      .Name( Verbatim( labelText ) )
                      .Style(wxSL_HORIZONTAL)
                      .MinSize( { 150, -1 } )
                      .AddSlider( {}, 0, 1000, 0);
 
                   str = Internat::ToDisplayString(mParameters[p].maxValue);
-                  S.AddUnits( Verbatim( str ) );
+                  S
+                     .AddUnits( Verbatim( str ) );
                }
             }
          }

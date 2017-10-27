@@ -269,10 +269,13 @@ void EffectChangePitch::PopulateOrExchange(ShuttleGui & S)
    {
       S.StartVerticalLay();
       {
-         S.AddTitle(XO("Change Pitch without Changing Tempo"));
-         S.AddTitle(
-            XO("Estimated Start Pitch: %s%d (%.3f Hz)")
-               .Format( pitch[m_nFromPitch], m_nFromOctave, m_FromFrequency) );
+         S
+            .AddTitle(XO("Change Pitch without Changing Tempo"));
+      
+         S
+            .AddTitle(
+               XO("Estimated Start Pitch: %s%d (%.3f Hz)")
+                  .Format( pitch[m_nFromPitch], m_nFromOctave, m_FromFrequency) );
       }
       S.EndVerticalLay();
 
@@ -281,26 +284,34 @@ void EffectChangePitch::PopulateOrExchange(ShuttleGui & S)
       {
          S.StartMultiColumn(6, wxALIGN_CENTER); // 6 controls, because each AddChoice adds a wxStaticText and a wxChoice.
          {
-            m_pChoice_FromPitch = S.Id(ID_FromPitch)
+            m_pChoice_FromPitch =
+            S
+               .Id(ID_FromPitch)
                /* i18n-hint: changing musical pitch "from" one value "to" another */
                .Name(XC("from", "change pitch"))
                .MinSize( { 80, -1 } )
             /* i18n-hint: changing musical pitch "from" one value "to" another */
                .AddChoice(XXC("&from", "change pitch"), pitch);
 
-            m_pSpin_FromOctave = S.Id(ID_FromOctave)
+            m_pSpin_FromOctave =
+            S
+               .Id(ID_FromOctave)
                .Name(XO("from Octave"))
                .MinSize( { 50, -1 } )
                .AddSpinCtrl( {}, m_nFromOctave, INT_MAX, INT_MIN);
 
-            m_pChoice_ToPitch = S.Id(ID_ToPitch)
+            m_pChoice_ToPitch =
+            S
+               .Id(ID_ToPitch)
                /* i18n-hint: changing musical pitch "from" one value "to" another */
                .Name(XC("to", "change pitch"))
                .MinSize( { 80, -1 } )
                /* i18n-hint: changing musical pitch "from" one value "to" another */
                .AddChoice(XXC("&to", "change pitch"), pitch);
 
-            m_pSpin_ToOctave = S.Id(ID_ToOctave)
+            m_pSpin_ToOctave =
+            S
+               .Id(ID_ToOctave)
                .Name(XO("to Octave"))
                .MinSize( { 50, -1 } )
                .AddSpinCtrl( {}, m_nToOctave, INT_MAX, INT_MIN);
@@ -309,12 +320,13 @@ void EffectChangePitch::PopulateOrExchange(ShuttleGui & S)
 
          S.StartHorizontalLay(wxALIGN_CENTER);
          {
-            m_pTextCtrl_SemitonesChange = S.Id(ID_SemitonesChange)
+            m_pTextCtrl_SemitonesChange =
+            S
+               .Id(ID_SemitonesChange)
                .Name(XO("Semitones (half-steps)"))
                .Validator<FloatingPointValidator<double>>(
                   2, &m_dSemitonesChange,
-                  NumValidatorStyle::TWO_TRAILING_ZEROES
-               )
+                  NumValidatorStyle::TWO_TRAILING_ZEROES )
                .AddTextBox(XXO("&Semitones (half-steps):"), L"", 12);
          }
          S.EndHorizontalLay();
@@ -325,22 +337,24 @@ void EffectChangePitch::PopulateOrExchange(ShuttleGui & S)
       {
          S.StartMultiColumn(5, wxALIGN_CENTER); // 5, because AddTextBox adds a wxStaticText and a wxTextCtrl.
          {
-            m_pTextCtrl_FromFrequency = S.Id(ID_FromFrequency)
+            m_pTextCtrl_FromFrequency =
+            S
+               .Id(ID_FromFrequency)
                .Name(XO("from (Hz)"))
                .Validator<FloatingPointValidator<double>>(
                   3, &m_FromFrequency,
                   NumValidatorStyle::THREE_TRAILING_ZEROES,
-                  0.0
-               )
+                  0.0 )
                .AddTextBox(XXO("f&rom"), L"", 12);
 
-            m_pTextCtrl_ToFrequency = S.Id(ID_ToFrequency)
+            m_pTextCtrl_ToFrequency =
+            S
+               .Id(ID_ToFrequency)
                .Name(XO("to (Hz)"))
                .Validator<FloatingPointValidator<double>>(
                   3, &m_ToFrequency,
                   NumValidatorStyle::THREE_TRAILING_ZEROES,
-                  0.0
-               )
+                  0.0 )
                .AddTextBox(XXO("t&o"), L"", 12);
 
             S.AddUnits(XO("Hz"));
@@ -349,19 +363,22 @@ void EffectChangePitch::PopulateOrExchange(ShuttleGui & S)
 
          S.StartHorizontalLay(wxALIGN_CENTER);
          {
-            m_pTextCtrl_PercentChange = S.Id(ID_PercentChange)
+            m_pTextCtrl_PercentChange =
+            S
+               .Id(ID_PercentChange)
                .Validator<FloatingPointValidator<double>>(
                   3, &m_dPercentChange,
                   NumValidatorStyle::THREE_TRAILING_ZEROES,
-                  MIN_Percentage, MAX_Percentage
-               )
+                  MIN_Percentage, MAX_Percentage )
                .AddTextBox(XXO("Percent C&hange:"), L"", 12);
          }
          S.EndHorizontalLay();
 
          S.StartHorizontalLay(wxEXPAND);
          {
-            m_pSlider_PercentChange = S.Id(ID_PercentChange)
+            m_pSlider_PercentChange =
+            S
+               .Id(ID_PercentChange)
                .Name(XO("Percent Change"))
                .Style(wxSL_HORIZONTAL)
                .AddSlider( {}, 0, (int)kSliderMax, (int)MIN_Percentage);
@@ -373,7 +390,9 @@ void EffectChangePitch::PopulateOrExchange(ShuttleGui & S)
 #if USE_SBSMS
       S.StartMultiColumn(2);
       {
-         mUseSBSMSCheckBox = S.Validator<wxGenericValidator>(&mUseSBSMS)
+         mUseSBSMSCheckBox =
+         S
+            .Validator<wxGenericValidator>(&mUseSBSMS)
             .AddCheckBox(XXO("&Use high quality stretching (slow)"),
                                              mUseSBSMS);
       }

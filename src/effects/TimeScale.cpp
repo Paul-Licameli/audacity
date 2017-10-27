@@ -211,18 +211,21 @@ void EffectTimeScale::PopulateOrExchange(ShuttleGui & S)
       {
          S.StartMultiColumn(1, wxCENTER);
          {
-            m_pTextCtrl_RatePercentChangeStart = S.Id(ID_RatePercentChangeStart)
+            m_pTextCtrl_RatePercentChangeStart =
+            S
+               .Id(ID_RatePercentChangeStart)
                .Validator<FloatingPointValidator<double>>(
                   3, &m_RatePercentChangeStart,
                   NumValidatorStyle::NO_TRAILING_ZEROES,
-                  MIN_RatePercentStart, MAX_RatePercentStart
-               )
+                  MIN_RatePercentStart, MAX_RatePercentStart )
                .AddTextBox( {}, L"", 12);
          }
          S.EndMultiColumn();
          S.StartHorizontalLay(wxEXPAND, 0);
          {
-            m_pSlider_RatePercentChangeStart = S.Id(ID_RatePercentChangeStart)
+            m_pSlider_RatePercentChangeStart =
+            S
+               .Id(ID_RatePercentChangeStart)
                .Style(wxSL_HORIZONTAL)
                .AddSlider( {}, DEF_RatePercentStart, MAX_RatePercentStart, MIN_RatePercentStart);
          }
@@ -234,18 +237,21 @@ void EffectTimeScale::PopulateOrExchange(ShuttleGui & S)
       {
          S.StartMultiColumn(1, wxCENTER);
          {
-            m_pTextCtrl_RatePercentChangeEnd = S.Id(ID_RatePercentChangeEnd)
+            m_pTextCtrl_RatePercentChangeEnd =
+            S
+               .Id(ID_RatePercentChangeEnd)
                .Validator<FloatingPointValidator<double>>(
                   3, &m_RatePercentChangeEnd,
                   NumValidatorStyle::NO_TRAILING_ZEROES,
-                  MIN_RatePercentEnd, MAX_RatePercentEnd
-               )
+                  MIN_RatePercentEnd, MAX_RatePercentEnd )
                .AddTextBox( {}, L"", 12);
          }
          S.EndMultiColumn();
          S.StartHorizontalLay(wxEXPAND, 0);
          {
-            m_pSlider_RatePercentChangeEnd = S.Id(ID_RatePercentChangeEnd)
+            m_pSlider_RatePercentChangeEnd =
+            S
+               .Id(ID_RatePercentChangeEnd)
                .Style(wxSL_HORIZONTAL)
                .AddSlider( {}, DEF_RatePercentEnd, MAX_RatePercentEnd, MIN_RatePercentEnd);
          }
@@ -258,21 +264,23 @@ void EffectTimeScale::PopulateOrExchange(ShuttleGui & S)
       {
          S.StartMultiColumn(2, wxCENTER);
          {
-            m_pTextCtrl_PitchHalfStepsStart = S.Id(ID_PitchHalfStepsStart)
+            m_pTextCtrl_PitchHalfStepsStart =
+            S
+               .Id(ID_PitchHalfStepsStart)
                .Validator<FloatingPointValidator<double>>(
                   3, &m_PitchHalfStepsStart,
                   NumValidatorStyle::NO_TRAILING_ZEROES,
-                  MIN_HalfStepsStart, MAX_HalfStepsStart
-               )
+                  MIN_HalfStepsStart, MAX_HalfStepsStart )
                .AddTextBox(XXO("(&semitones) [-12 to 12]:"), L"", 12);
 
 
-            m_pTextCtrl_PitchPercentChangeStart = S.Id(ID_PitchPercentChangeStart)
+            m_pTextCtrl_PitchPercentChangeStart =
+            S
+               .Id(ID_PitchPercentChangeStart)
                .Validator<FloatingPointValidator<double>>(
                   3, &m_PitchPercentChangeStart,
                   NumValidatorStyle::NO_TRAILING_ZEROES,
-                  MIN_PitchPercentStart, MAX_PitchPercentStart
-               )
+                  MIN_PitchPercentStart, MAX_PitchPercentStart )
                .AddTextBox(XXO("(%) [-50 to 100]:"), L"", 12);
          }
          S.EndMultiColumn();
@@ -284,15 +292,18 @@ void EffectTimeScale::PopulateOrExchange(ShuttleGui & S)
       {
          S.StartMultiColumn(2, wxCENTER);
          {
-            m_pTextCtrl_PitchHalfStepsEnd = S.Id(ID_PitchHalfStepsEnd)
+            m_pTextCtrl_PitchHalfStepsEnd =
+            S
+               .Id(ID_PitchHalfStepsEnd)
                .Validator<FloatingPointValidator<double>>(
                   3, &m_PitchHalfStepsEnd,
                   NumValidatorStyle::NO_TRAILING_ZEROES,
-                  MIN_HalfStepsEnd, MAX_HalfStepsEnd
-               )
+                  MIN_HalfStepsEnd, MAX_HalfStepsEnd )
                .AddTextBox(XXO("(s&emitones) [-12 to 12]:"), L"", 12);
 
-            m_pTextCtrl_PitchPercentChangeEnd = S.Id(ID_PitchPercentChangeEnd)
+            m_pTextCtrl_PitchPercentChangeEnd =
+            S
+               .Id(ID_PitchPercentChangeEnd)
                .Validator<FloatingPointValidator<double>>(
                   3, &m_PitchPercentChangeEnd,
                   NumValidatorStyle::NO_TRAILING_ZEROES,

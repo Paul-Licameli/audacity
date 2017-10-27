@@ -205,7 +205,8 @@ void SetTrackNameCommand::PopulateOrExchange(ShuttleGui & S)
 
    S.StartMultiColumn(2, wxALIGN_CENTER);
    {
-      S.TieTextBox(XXO("Name:"),mName,60);
+      S
+         .TieTextBox(XXO("Name:"),mName,60);
    }
    S.EndMultiColumn();
 }

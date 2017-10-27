@@ -268,14 +268,24 @@ void ExportMultipleDialog::PopulateOrExchange(ShuttleGui& S)
       {
          S.StartMultiColumn(4, true);
          {
-            mDir = S.Id(DirID)
+            mDir =
+            S
+               .Id(DirID)
                .AddTextBox(XXO("Folder:"),
                            DefaultPath,
                            64);
-            S.Id(ChooseID).AddButton(XXO("Choose..."));
-            S.Id(CreateID).AddButton(XXO("Create"));
 
-            mFormat = S.Id(FormatID)
+            S
+               .Id(ChooseID)
+               .AddButton(XXO("Choose..."));
+
+            S
+               .Id(CreateID)
+               .AddButton(XXO("Create"));
+
+            mFormat =
+            S
+               .Id(FormatID)
                .TieChoice( XXO("Format:"),
                {
                   L"/Export/MultipleFormat",
@@ -285,16 +295,23 @@ void ExportMultipleDialog::PopulateOrExchange(ShuttleGui& S)
                      formats
                   },
                   mFilterIndex
-               }
-            );
-            S.AddVariableText( {}, false);
-            S.AddVariableText( {}, false);
+               } );
 
-            S.AddPrompt(XXO("Options:"));
+            S
+               .AddVariableText( {}, false);
 
-            mBook = S.Id(OptionsID)
+            S
+               .AddVariableText( {}, false);
+
+            S
+               .AddPrompt(XXO("Options:"));
+
+            mBook =
+            S
+               .Id(OptionsID)
                .Style(wxBORDER_STATIC)
                .StartSimplebook();
+
             if (S.GetMode() == eIsCreating)
             {
                for (const auto &pPlugin : mPlugins)
@@ -310,8 +327,12 @@ void ExportMultipleDialog::PopulateOrExchange(ShuttleGui& S)
                mBook->ChangeSelection(mFormat->GetSelection());
             }
             S.EndSimplebook();
-            S.AddVariableText( {}, false);
-            S.AddVariableText( {}, false);
+
+            S
+               .AddVariableText( {}, false);
+
+            S
+               .AddVariableText( {}, false);
          }
          S.EndMultiColumn();
       }
@@ -344,8 +365,12 @@ void ExportMultipleDialog::PopulateOrExchange(ShuttleGui& S)
          S.SetStretchyCol(1);
          {
             // Row 3 (indented)
-            S.AddVariableText(Verbatim("   "), false);
-            mFirst = S.Id(FirstID)
+            S
+               .AddVariableText(Verbatim("   "), false);
+   
+            mFirst =
+            S
+               .Id(FirstID)
                .AddCheckBox(XXO("Include audio before first label"), false);
 
             // Row 4
@@ -354,8 +379,12 @@ void ExportMultipleDialog::PopulateOrExchange(ShuttleGui& S)
             S.SetStretchyCol(1);
             {
                mFirstFileLabel =
-                  S.AddVariableText(XO("First file name:"), false);
-               mFirstFileName = S.Id(FirstFileNameID)
+               S
+                  .AddVariableText(XO("First file name:"), false);
+
+               mFirstFileName =
+               S
+                  .Id(FirstFileNameID)
                   .Prop(1)
                   .Name(XO("First file name"))
                   .TieTextBox( {},
@@ -379,23 +408,34 @@ void ExportMultipleDialog::PopulateOrExchange(ShuttleGui& S)
          // on the Mac, VoiceOver will announce as radio buttons.
          S.StartPanel();
          {
-            S.StartRadioButtonGroup({
-               L"/Export/TrackNameWithOrWithoutNumbers",
-               {
-                  { L"labelTrack", XXO("Using Label/Track Name") },
-                  { L"numberBefore", XXO("Numbering before Label/Track Name") },
-                  { L"numberAfter", XXO("Numbering after File name prefix") },
-               },
-               0 // labelTrack
-            });
+            S
+               .StartRadioButtonGroup({
+                  L"/Export/TrackNameWithOrWithoutNumbers",
+                  {
+                     { L"labelTrack", XXO("Using Label/Track Name") },
+                     { L"numberBefore", XXO("Numbering before Label/Track Name") },
+                     { L"numberAfter", XXO("Numbering after File name prefix") },
+                  },
+                  0 // labelTrack
+               });
             {
-               mByName = S.Id(ByNameID).TieRadioButton();
+               mByName =
+               S
+                  .Id(ByNameID)
+                  .TieRadioButton();
 
-               mByNumberAndName = S.Id(ByNameAndNumberID).TieRadioButton();
+               mByNumberAndName =
+               S
+                  .Id(ByNameAndNumberID)
+                  .TieRadioButton();
 
-               mByNumber = S.Id(ByNumberID).TieRadioButton();
+               mByNumber =
+               S
+                  .Id(ByNumberID)
+                  .TieRadioButton();
             }
-            S.EndRadioButtonGroup();
+            S
+               .EndRadioButtonGroup();
          }
          S.EndPanel();
 
@@ -403,9 +443,16 @@ void ExportMultipleDialog::PopulateOrExchange(ShuttleGui& S)
          S.SetStretchyCol(2);
          {
             // Row 3 (indented)
-            S.AddVariableText(Verbatim("   "), false);
-            mPrefixLabel = S.AddVariableText(XO("File name prefix:"), false);
-            mPrefix = S.Id(PrefixID)
+            S
+               .AddVariableText(Verbatim("   "), false);
+
+            mPrefixLabel =
+            S
+               .AddVariableText(XO("File name prefix:"), false);
+
+            mPrefix =
+            S
+               .Id(PrefixID)
                .Name(XO("File name prefix"))
                .TieTextBox( {},
                            name,
@@ -420,13 +467,17 @@ void ExportMultipleDialog::PopulateOrExchange(ShuttleGui& S)
    S.SetBorder(5);
    S.StartHorizontalLay(wxEXPAND, false);
    {
-      mOverwrite = S.Id(OverwriteID).TieCheckBox(XXO("Overwrite existing files"),
-                                                 {L"/Export/OverwriteExisting",
-                                                  false});
+      mOverwrite =
+      S
+         .Id(OverwriteID)
+         .TieCheckBox( XXO("Overwrite existing files"),
+            {L"/Export/OverwriteExisting", false} );
    }
    S.EndHorizontalLay();
 
-   S.AddStandardButtons(eOkButton | eCancelButton | eHelpButton);
+   S
+      .AddStandardButtons(eOkButton | eCancelButton | eHelpButton);
+
    mExport = (wxButton *)wxWindow::FindWindowById(wxID_OK, this);
    mExport->SetLabel(_("Export"));
 

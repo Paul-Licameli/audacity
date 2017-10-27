@@ -345,41 +345,56 @@ void DependencyDialog::PopulateOrExchange(ShuttleGui& S)
    S.SetBorder(5);
    S.StartVerticalLay();
    {
-      mMessageStaticText = S.AddVariableText(kStdMsg(), false);
+      mMessageStaticText =
+      S
+         .AddVariableText(kStdMsg(), false);
 
       S.StartStatic(XO("Project Dependencies"),1);
       {
-         mFileListCtrl = S.Id(FileListID).AddListControlReportMode({
-            { XO("Audio File"), wxLIST_FORMAT_LEFT, 220 },
-            { XO("Disk Space"), wxLIST_FORMAT_LEFT, 120 }
-         });
+         mFileListCtrl =
+         S
+            .Id(FileListID)
+            .AddListControlReportMode({
+               { XO("Audio File"), wxLIST_FORMAT_LEFT, 220 },
+               { XO("Disk Space"), wxLIST_FORMAT_LEFT, 120 }
+            });
+   
          PopulateList();
 
          mCopySelectedFilesButton =
-            S.Id(CopySelectedFilesButtonID)
-               .Focus()
-               .Disable(mFileListCtrl->GetSelectedItemCount() <= 0)
-               .AddButton(
-                  XXO("Copy Selected Files"),
-                  wxALIGN_LEFT, true);
+         S
+            .Id(CopySelectedFilesButtonID)
+            .Focus()
+            .Disable(mFileListCtrl->GetSelectedItemCount() <= 0)
+            .AddButton(
+               XXO("Copy Selected Files"),
+               wxALIGN_LEFT, true);
       }
       S.EndStatic();
 
       S.StartHorizontalLay(wxALIGN_CENTRE,0);
       {
          if (mIsSaving) {
-            S.Id(wxID_CANCEL).AddButton(XXO("Cancel Save"));
-            S.Id(wxID_NO).AddButton(XXO("Save Without Copying"));
+            S
+               .Id(wxID_CANCEL)
+               .AddButton(XXO("Cancel Save"));
+
+            S
+               .Id(wxID_NO)
+               .AddButton(XXO("Save Without Copying"));
          }
          else
-            S.Id(wxID_NO).AddButton(XXO("Do Not Copy"));
+            S
+               .Id(wxID_NO)
+               .AddButton(XXO("Do Not Copy"));
 
          mCopyAllFilesButton =
-            S.Id(wxID_YES)
-               // Enabling mCopyAllFilesButton is also done in PopulateList,
-               // but at its call above, mCopyAllFilesButton does not yet exist.
-               .Disable(mHasMissingFiles)
-               .AddButton(XXO("Copy All Files (Safer)"));
+         S
+            .Id(wxID_YES)
+            // Enabling mCopyAllFilesButton is also done in PopulateList,
+            // but at its call above, mCopyAllFilesButton does not yet exist.
+            .Disable(mHasMissingFiles)
+            .AddButton(XXO("Copy All Files (Safer)"));
 
       }
       S.EndHorizontalLay();
@@ -389,7 +404,9 @@ void DependencyDialog::PopulateOrExchange(ShuttleGui& S)
          S.StartHorizontalLay(wxALIGN_LEFT,0);
          {
             mFutureActionChoice =
-               S.Id(FutureActionChoiceID).AddChoice(
+            S
+               .Id(FutureActionChoiceID)
+               .AddChoice(
                   XXO("Whenever a project depends on other files:"),
                   {
                      /*i18n-hint: One of the choices of what you want Audacity to do when
@@ -402,8 +419,7 @@ void DependencyDialog::PopulateOrExchange(ShuttleGui& S)
                      * Audacity finds a project depends on another file.*/
                      XO("Never copy any files") ,
                   },
-                  0 // "Ask me"
-               );
+                  0 /* "Ask me" */ );
          }
          S.EndHorizontalLay();
       }

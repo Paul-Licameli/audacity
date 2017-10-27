@@ -559,17 +559,19 @@ void AudioUnitEffectOptionsDialog::PopulateOrExchange(ShuttleGui & S)
       {
          S.StartStatic(XO("Latency Compensation"));
          {
-            S.AddVariableText(XO(
+            S
+               .AddVariableText( XO(
 "As part of their processing, some Audio Unit effects must delay returning "
 "audio to Audacity. When not compensating for this delay, you will "
 "notice that small silences have been inserted into the audio. "
 "Enabling this option will provide that compensation, but it may "
 "not work for all Audio Unit effects."),
-               false, 0, 650);
+                  false, 0, 650 );
 
             S.StartHorizontalLay(wxALIGN_LEFT);
             {
-               S.TieCheckBox(XXO("Enable &compensation"),
+               S
+                  .TieCheckBox(XXO("Enable &compensation"),
                              mUseLatency);
             }
             S.EndHorizontalLay();
@@ -578,26 +580,28 @@ void AudioUnitEffectOptionsDialog::PopulateOrExchange(ShuttleGui & S)
 
          S.StartStatic(XO("User Interface"));
          {
-            S.AddVariableText(XO(
+            S
+               .AddVariableText( XO(
 "Select \"Full\" to use the graphical interface if supplied by the Audio Unit."
 " Select \"Generic\" to use the system supplied generic interface."
 #if defined(HAVE_AUDIOUNIT_BASIC_SUPPORT)
 " Select \"Basic\" for a basic text-only interface."
 #endif
 " Reopen the effect for this to take effect."),
-               false, 0, 650);
+                  false, 0, 650);
 
             S.StartHorizontalLay(wxALIGN_LEFT);
             {
-               S.TieChoice(XXO("Select &interface"),
-                  mUIType,
-                  {
-                     XO("Full"),
-                     XO("Generic"),
+               S
+                  .TieChoice(XXO("Select &interface"),
+                     mUIType,
+                     {
+                        XO("Full"),
+                        XO("Generic"),
 #if defined(HAVE_AUDIOUNIT_BASIC_SUPPORT)
-                     XO("Basic")
+                        XO("Basic")
 #endif
-                  });
+                     });
             }
             S.EndHorizontalLay();
          }
@@ -686,7 +690,9 @@ void AudioUnitEffectImportDialog::PopulateOrExchange(ShuttleGui & S)
       {
          S.StartStatic(XO("Presets (may select multiple)"));
          {
-            mList = S.Style(wxLC_REPORT | wxLC_HRULES | wxLC_VRULES |
+            mList =
+            S
+               .Style(wxLC_REPORT | wxLC_HRULES | wxLC_VRULES |
                        wxLC_NO_SORT_HEADER)
                .AddListControlReportMode({ XO("Preset"), XO("Location") });
          }

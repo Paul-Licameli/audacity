@@ -193,7 +193,8 @@ void DirectoriesPrefs::PopulateOrExchange(ShuttleGui &S)
 
       S.StartMultiColumn(3, wxEXPAND);
       {
-         S.SetStretchyCol(1);
+         S
+            .SetStretchyCol(1);
 
          S.Id(OpenTextID);
          mOpenText = S.TieTextBox(XXO("O&pen:"),

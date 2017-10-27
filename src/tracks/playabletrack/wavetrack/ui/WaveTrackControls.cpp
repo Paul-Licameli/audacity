@@ -425,9 +425,9 @@ void RateMenuTable::OnRateOther(wxCommandEvent &)
          S.SetBorder(10);
          S.StartHorizontalLay(wxEXPAND, false);
          {
-            cb = S.AddCombo(XXO("New sample rate (Hz):"),
-               rate,
-               rates);
+            cb =
+            S
+               .AddCombo( XXO("New sample rate (Hz):"), rate, rates );
 #if defined(__WXMAC__)
             // As of wxMac-2.8.12, setting manually is required
             // to handle rates not in the list.  See: Bug #427
@@ -435,7 +435,9 @@ void RateMenuTable::OnRateOther(wxCommandEvent &)
 #endif
          }
          S.EndHorizontalLay();
-         S.AddStandardButtons();
+
+         S
+            .AddStandardButtons();
       }
       S.EndVerticalLay();
 

@@ -176,28 +176,32 @@ void BenchmarkDialog::MakeBenchmarkDialog()
       S.StartMultiColumn(4);
       {
          //
-         S.Id(BlockSizeID)
+         S
+            .Id(BlockSizeID)
             .Validator<wxTextValidator>(wxFILTER_NUMERIC, &mBlockSizeStr)
             .AddTextBox(XXO("Disk Block Size (KB):"),
                                              L"",
                                              12);
 
          //
-         S.Id(NumEditsID)
+         S
+            .Id(NumEditsID)
             .Validator<wxTextValidator>(wxFILTER_NUMERIC, &mNumEditsStr)
             .AddTextBox(XXO("Number of Edits:"),
                                             L"",
                                             12);
 
          //
-         S.Id(DataSizeID)
+         S
+            .Id(DataSizeID)
             .Validator<wxTextValidator>(wxFILTER_NUMERIC, &mDataSizeStr)
             .AddTextBox(XXO("Test Data Size (MB):"),
                                             L"",
                                             12);
 
          ///
-         S.Id(RandSeedID)
+         S
+            .Id(RandSeedID)
             .Validator<wxTextValidator>(wxFILTER_NUMERIC, &mRandSeedStr)
             /* i18n-hint: A "seed" is a number that initializes a
                pseudorandom number generating algorithm */
@@ -209,17 +213,21 @@ void BenchmarkDialog::MakeBenchmarkDialog()
       S.EndMultiColumn();
 
       //
-      S.Validator<wxGenericValidator>(&mBlockDetail)
+      S
+         .Validator<wxGenericValidator>(&mBlockDetail)
          .AddCheckBox(XXO("Show detailed info about each block file"),
                            false);
 
       //
-      S.Validator<wxGenericValidator>(&mEditDetail)
+      S
+         .Validator<wxGenericValidator>(&mEditDetail)
          .AddCheckBox(XXO("Show detailed info about each editing operation"),
                            false);
 
       //
-      mText = S.Id(StaticTextID)
+      mText =
+      S
+         .Id(StaticTextID)
          /* i18n-hint noun */
          .Name(XO("Output"))
          .Style( wxTE_MULTILINE | wxTE_READONLY | wxTE_RICH )
@@ -232,10 +240,18 @@ void BenchmarkDialog::MakeBenchmarkDialog()
       {
          S.StartHorizontalLay(wxALIGN_LEFT, false);
          {
-            S.Id(RunID).AddButton(XXO("Run"), wxALIGN_CENTRE, true);
-            S.Id(BSaveID).AddButton(XXO("Save"));
+            S
+               .Id(RunID)
+               .AddButton(XXO("Run"), wxALIGN_CENTRE, true);
+   
+            S
+               .Id(BSaveID)
+               .AddButton(XXO("Save"));
             /* i18n-hint verb; to empty or erase */
-            S.Id(ClearID).AddButton(XXO("Clear"));
+   
+            S
+               .Id(ClearID)
+               .AddButton(XXO("Clear"));
          }
          S.EndHorizontalLay();
 
@@ -248,7 +264,9 @@ void BenchmarkDialog::MakeBenchmarkDialog()
          S.StartHorizontalLay(wxALIGN_NOT | wxALIGN_LEFT, false);
          {
             /* i18n-hint verb */
-            S.Id(wxID_CANCEL).AddButton(XXO("Close"));
+            S
+               .Id(wxID_CANCEL)
+               .AddButton(XXO("Close"));
          }
          S.EndHorizontalLay();
       }

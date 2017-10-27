@@ -88,8 +88,10 @@ void ExportOGGOptions::PopulateOrExchange(ShuttleGui & S)
          S.StartMultiColumn(2, wxCENTER);
          {
             S.SetStretchyCol(1);
-            S.Prop(1).TieSlider(
-               XXO("Quality:"), mOggQualityUnscaled, 10);
+
+            S
+               .Prop(1)
+               .TieSlider( XXO("Quality:"), mOggQualityUnscaled, 10 );
          }
          S.EndMultiColumn();
       }

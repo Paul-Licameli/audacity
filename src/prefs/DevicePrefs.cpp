@@ -134,16 +134,20 @@ void DevicePrefs::PopulateOrExchange(ShuttleGui & S)
    {
       S.StartMultiColumn(2);
       {
-         S.Id(HostID);
-         mHost = S.TieChoice( XXO("&Host:"),
-            {
-               AudioIOHost,
-               { ByColumns, mHostNames, mHostLabels }
-            }
-         );
+         mHost =
+         S
+            .Id(HostID)
+            .TieChoice( XXO("&Host:"),
+               {
+                  AudioIOHost,
+                  { ByColumns, mHostNames, mHostLabels }
+               } );
 
-         S.AddPrompt(XXO("Using:"));
-         S.AddFixedText( Verbatim(wxSafeConvertMB2WX(Pa_GetVersionText() ) ) );
+         S
+            .AddPrompt(XXO("Using:"));
+
+         S
+            .AddFixedText( Verbatim(wxSafeConvertMB2WX(Pa_GetVersionText() ) ) );
       }
       S.EndMultiColumn();
    }
@@ -153,9 +157,10 @@ void DevicePrefs::PopulateOrExchange(ShuttleGui & S)
    {
       S.StartMultiColumn(2);
       {
-         S.Id(PlayID);
-         mPlay = S.AddChoice(XXO("&Device:"),
-                             {} );
+         mPlay =
+         S
+            .Id(PlayID)
+            .AddChoice(XXO("&Device:"), {} );
       }
       S.EndMultiColumn();
    }
@@ -166,13 +171,15 @@ void DevicePrefs::PopulateOrExchange(ShuttleGui & S)
    {
       S.StartMultiColumn(2);
       {
-         S.Id(RecordID);
-         mRecord = S.AddChoice(XXO("De&vice:"),
-                               {} );
+         mRecord =
+         S
+            .Id(RecordID)
+            .AddChoice(XXO("De&vice:"), {} );
 
-         S.Id(ChannelsID);
-         mChannels = S.AddChoice(XXO("Cha&nnels:"),
-                                 {} );
+         mChannels =
+         S
+            .Id(ChannelsID)
+            .AddChoice(XXO("Cha&nnels:"), {} );
       }
       S.EndMultiColumn();
    }
@@ -188,18 +195,24 @@ void DevicePrefs::PopulateOrExchange(ShuttleGui & S)
          wxTextCtrl *w;
          // only show the following controls if we use Portaudio v19, because
          // for Portaudio v18 we always use default buffer sizes
-         w = S
+         w =
+         S
             .NameSuffix(XO("milliseconds"))
             .TieNumericTextBox(XXO("&Buffer length:"),
                                  AudioIOLatencyDuration,
                                  9);
-         S.AddUnits(XO("milliseconds"));
 
-         w = S
+         S
+            .AddUnits(XO("milliseconds"));
+
+         w =
+         S
             .NameSuffix(XO("milliseconds"))
             .TieNumericTextBox(XXO("&Latency compensation:"),
                AudioIOLatencyCorrection, 9);
-         S.AddUnits(XO("milliseconds"));
+
+         S
+            .AddUnits(XO("milliseconds"));
       }
       S.EndThreeColumn();
    }

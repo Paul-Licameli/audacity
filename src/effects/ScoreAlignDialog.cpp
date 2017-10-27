@@ -87,58 +87,99 @@ ScoreAlignDialog::ScoreAlignDialog(ScoreAlignParams &params)
    S.StartMultiColumn(3, wxEXPAND | wxALIGN_CENTER_VERTICAL);
    S.SetStretchyCol(1);
 
-   mFramePeriodLabel = S.AddVariableText(
-      XO("Frame Period:"), true, wxALIGN_RIGHT | wxALIGN_CENTER_VERTICAL);
-   mFramePeriodSlider = S.Id(ID_FRAMEPERIOD)
+   mFramePeriodLabel =
+   S
+      .AddVariableText(
+         XO("Frame Period:"), true, wxALIGN_RIGHT | wxALIGN_CENTER_VERTICAL);
+
+   mFramePeriodSlider =
+   S
+      .Id(ID_FRAMEPERIOD)
       .Name(XO("Frame Period"))
       .Style(wxSL_HORIZONTAL)
       .MinSize( { 300, -1 } )
       .AddSlider( {},
        /*pos*/ (int) (p.mFramePeriod * 100 + 0.5), /*max*/ 50, /*min*/ 5);
-   mFramePeriodText = S.AddVariableText(
-      SA_DFT_FRAME_PERIOD_TEXT, true, wxALIGN_LEFT | wxALIGN_CENTER_VERTICAL);
 
-   mWindowSizeLabel = S.AddVariableText(
-      XO("Window Size:"), true, wxALIGN_RIGHT | wxALIGN_CENTER_VERTICAL);
-   mWindowSizeSlider = S.Id(ID_WINDOWSIZE)
+   mFramePeriodText =
+   S
+      .AddVariableText(
+         SA_DFT_FRAME_PERIOD_TEXT, true, wxALIGN_LEFT | wxALIGN_CENTER_VERTICAL);
+
+   mWindowSizeLabel =
+   S
+      .AddVariableText(
+         XO("Window Size:"), true, wxALIGN_RIGHT | wxALIGN_CENTER_VERTICAL);
+
+   mWindowSizeSlider =
+   S
+      .Id(ID_WINDOWSIZE)
       .Name(XO("Window Size"))
       .Style(wxSL_HORIZONTAL)
       .AddSlider( {},
        /*pos*/ (int) (p.mWindowSize * 100 + 0.5), /*max*/ 100, /*min*/ 5);
-   mWindowSizeText = S.AddVariableText(
-      SA_DFT_WINDOW_SIZE_TEXT, true, wxALIGN_LEFT | wxALIGN_CENTER_VERTICAL);
 
-   mForceFinalAlignmentCheckBox = S.Id(ID_FORCEFINALALIGNMENT)
+   mWindowSizeText =
+   S
+      .AddVariableText(
+         SA_DFT_WINDOW_SIZE_TEXT, true, wxALIGN_LEFT | wxALIGN_CENTER_VERTICAL);
+
+   mForceFinalAlignmentCheckBox =
+   S
+      .Id(ID_FORCEFINALALIGNMENT)
       .Name(XO("Force Final Alignment"))
       .AddCheckBox(
                 XO("Force Final Alignment"),
                 p.mForceFinalAlignment);
-   mIgnoreSilenceCheckBox = S.Id(ID_IGNORESILENCE)
+
+   mIgnoreSilenceCheckBox =
+   S
+      .Id(ID_IGNORESILENCE)
       .Name(XO("Ignore Silence at Beginnings and Endings"))
       .AddCheckBox(
          XO("Ignore Silence at Beginnings and Endings"),
          p.mIgnoreSilence );
-   // need a third column after checkboxes:
-   S.AddVariableText({}, true, wxALIGN_RIGHT | wxALIGN_CENTER_VERTICAL);
 
-   mSilenceThresholdLabel = S.AddVariableText(XO("Silence Threshold:"),
+   // need a third column after checkboxes:
+   S
+      .AddVariableText({}, true, wxALIGN_RIGHT | wxALIGN_CENTER_VERTICAL);
+
+   mSilenceThresholdLabel =
+   S
+      .AddVariableText(XO("Silence Threshold:"),
          true, wxALIGN_RIGHT | wxALIGN_CENTER_VERTICAL);
-   mSilenceThresholdSlider = S.Id(ID_SILENCETHRESHOLD)
+
+   mSilenceThresholdSlider =
+   S
+      .Id(ID_SILENCETHRESHOLD)
       .Name(XO("Silence Threshold"))
       .Style(wxSL_HORIZONTAL)
       .AddSlider( {},
          /*pos*/ (int) (p.mSilenceThreshold * 1000 + 0.5), /*max*/ 500);
-   mSilenceThresholdText = S.AddVariableText(
-      SA_DFT_SILENCE_THRESHOLD_TEXT,
-      true, wxALIGN_LEFT | wxALIGN_CENTER_VERTICAL);
+
+   mSilenceThresholdText =
+   S
+      .AddVariableText(
+         SA_DFT_SILENCE_THRESHOLD_TEXT,
+         true, wxALIGN_LEFT | wxALIGN_CENTER_VERTICAL);
 
    mPresmoothLabel = S.AddVariableText(
    /* i18n-hint: The English would be clearer if it had 'Duration' rather than 'Time'
       This is a NEW experimental effect, and until we have it documented in the user
       manual we don't have a clear description of what this parameter does.
       It is OK to leave it in English. */
-      XO("Presmooth Time:"), true, wxALIGN_RIGHT | wxALIGN_CENTER_VERTICAL);
-   mPresmoothSlider = S.Id(ID_PRESMOOTH)
+   mPresmoothLabel =
+   S
+      .AddVariableText(
+   /* i18n-hint: The English would be clearer if it had 'Duration' rather than 'Time'
+      This is a NEW experimental effect, and until we have it documented in the user
+      manual we don't have a clear description of what this parameter does.
+      It is OK to leave it in English. */
+         XO("Presmooth Time:"), true, wxALIGN_RIGHT | wxALIGN_CENTER_VERTICAL);
+
+   mPresmoothSlider =
+   S
+      .Id(ID_PRESMOOTH)
    /* i18n-hint: The English would be clearer if it had 'Duration' rather than 'Time'
       This is a NEW experimental effect, and until we have it documented in the user
       manual we don't have a clear description of what this parameter does.
@@ -147,16 +188,24 @@ ScoreAlignDialog::ScoreAlignDialog(ScoreAlignParams &params)
       .Style(wxSL_HORIZONTAL)
       .AddSlider( {},
                /*pos*/ (int) (p.mPresmoothTime * 100 + 0.5), /*max*/ 500);
-   mPresmoothText = S.AddVariableText(
-      SA_DFT_PRESMOOTH_TIME_TEXT, true, wxALIGN_LEFT | wxALIGN_CENTER_VERTICAL);
 
+   mPresmoothText =
+   S
+      .AddVariableText(
+         SA_DFT_PRESMOOTH_TIME_TEXT, true, wxALIGN_LEFT | wxALIGN_CENTER_VERTICAL);
+
+   mLineTimeLabel =
+   S
    /* i18n-hint: The English would be clearer if it had 'Duration' rather than 'Time'
       This is a NEW experimental effect, and until we have it documented in the user
       manual we don't have a clear description of what this parameter does.
       It is OK to leave it in English. */
-   mLineTimeLabel = S.AddVariableText(XO("Line Time:"), true,
-      wxALIGN_RIGHT | wxALIGN_CENTER_VERTICAL);
-   mLineTimeSlider = S.Id(ID_LINETIME)
+      .AddVariableText(XO("Line Time:"), true,
+         wxALIGN_RIGHT | wxALIGN_CENTER_VERTICAL);
+
+   mLineTimeSlider =
+   S
+      .Id(ID_LINETIME)
    /* i18n-hint: The English would be clearer if it had 'Duration' rather than 'Time'
       This is a NEW experimental effect, and until we have it documented in the user
       manual we don't have a clear description of what this parameter does.
@@ -165,16 +214,24 @@ ScoreAlignDialog::ScoreAlignDialog(ScoreAlignParams &params)
       .Style(wxSL_HORIZONTAL)
       .AddSlider( {},
                     /*pos*/ (int) (p.mLineTime * 100 + 0.5), /*max*/ 500);
-   mLineTimeText = S.AddVariableText(
-      SA_DFT_LINE_TIME_TEXT, true, wxALIGN_LEFT | wxALIGN_CENTER_VERTICAL);
 
+   mLineTimeText =
+   S
+      .AddVariableText(
+         SA_DFT_LINE_TIME_TEXT, true, wxALIGN_LEFT | wxALIGN_CENTER_VERTICAL);
+
+   mSmoothTimeLabel =
+   S
+      .AddVariableText(
    /* i18n-hint: The English would be clearer if it had 'Duration' rather than 'Time'
       This is a NEW experimental effect, and until we have it documented in the user
       manual we don't have a clear description of what this parameter does.
       It is OK to leave it in English. */
-   mSmoothTimeLabel = S.AddVariableText(
-      XO("Smooth Time:"), true, wxALIGN_RIGHT | wxALIGN_CENTER_VERTICAL);
-   mSmoothTimeSlider = S.Id(ID_SMOOTHTIME)
+         XO("Smooth Time:"), true, wxALIGN_RIGHT | wxALIGN_CENTER_VERTICAL);
+
+   mSmoothTimeSlider =
+   S
+      .Id(ID_SMOOTHTIME)
    /* i18n-hint: The English would be clearer if it had 'Duration' rather than 'Time'
       This is a NEW experimental effect, and until we have it documented in the user
       manual we don't have a clear description of what this parameter does.
@@ -183,8 +240,11 @@ ScoreAlignDialog::ScoreAlignDialog(ScoreAlignParams &params)
       .Style(wxSL_HORIZONTAL)
       .AddSlider( {},
                   /*pos*/ (int) (p.mSmoothTime * 100 + 0.5), /*max*/ 500);
-   mSmoothTimeText = S.AddVariableText(
-      SA_DFT_SMOOTH_TIME_TEXT, true, wxALIGN_LEFT | wxALIGN_CENTER_VERTICAL);
+
+   mSmoothTimeText =
+   S
+      .AddVariableText(
+         SA_DFT_SMOOTH_TIME_TEXT, true, wxALIGN_LEFT | wxALIGN_CENTER_VERTICAL);
 
    S.EndMultiColumn();
    S.EndStatic();
@@ -192,7 +252,9 @@ ScoreAlignDialog::ScoreAlignDialog(ScoreAlignParams &params)
    mDefaultButton = safenew wxButton(this, ID_DEFAULT, _("Use Defaults"));
    mDefaultButton->SetName(_("Restore Defaults"));
 
-   S.AddStandardButtons(eOkButton | eCancelButton, mDefaultButton);
+   S
+      .AddStandardButtons(eOkButton | eCancelButton, mDefaultButton);
+
    S.EndVerticalLay();
    Layout();
    Fit();

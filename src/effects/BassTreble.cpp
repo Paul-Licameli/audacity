@@ -228,24 +228,32 @@ void EffectBassTreble::PopulateOrExchange(ShuttleGui & S)
          S.SetStretchyCol(2);
 
          // Bass control
-         mBassT = S.Id(ID_Bass)
+         mBassT =
+         S
+            .Id(ID_Bass)
             .Name(XO("Bass (dB):"))
             .Validator<FloatingPointValidator<double>>(
                1, &mBass, NumValidatorStyle::DEFAULT, MIN_Bass, MAX_Bass)
             .AddTextBox(XXO("Ba&ss (dB):"), L"", 10);
 
-         mBassS = S.Id(ID_Bass)
+         mBassS =
+         S
+            .Id(ID_Bass)
             .Name(XO("Bass"))
             .Style(wxSL_HORIZONTAL)
             .AddSlider( {}, 0, MAX_Bass * SCL_Bass, MIN_Bass * SCL_Bass);
 
          // Treble control
-         mTrebleT = S.Id(ID_Treble)
+         mTrebleT =
+         S
+            .Id(ID_Treble)
             .Validator<FloatingPointValidator<double>>(
                1, &mTreble, NumValidatorStyle::DEFAULT, MIN_Treble, MAX_Treble)
             .AddTextBox(XXO("&Treble (dB):"), L"", 10);
 
-         mTrebleS = S.Id(ID_Treble)
+         mTrebleS =
+         S
+            .Id(ID_Treble)
             .Name(XO("Treble"))
             .Style(wxSL_HORIZONTAL)
             .AddSlider( {}, 0, MAX_Treble * SCL_Treble, MIN_Treble * SCL_Treble);
@@ -261,12 +269,16 @@ void EffectBassTreble::PopulateOrExchange(ShuttleGui & S)
          S.SetStretchyCol(2);
 
          // Gain control
-         mGainT = S.Id(ID_Gain)
+         mGainT =
+         S
+            .Id(ID_Gain)
             .Validator<FloatingPointValidator<double>>(
                1, &mGain, NumValidatorStyle::DEFAULT, MIN_Gain, MAX_Gain)
             .AddTextBox(XXO("&Volume (dB):"), L"", 10);
 
-         mGainS = S.Id(ID_Gain)
+         mGainS =
+         S
+            .Id(ID_Gain)
             .Name(XO("Level"))
             .Style(wxSL_HORIZONTAL)
             .AddSlider( {}, 0, MAX_Gain * SCL_Gain, MIN_Gain * SCL_Gain);
@@ -276,8 +288,11 @@ void EffectBassTreble::PopulateOrExchange(ShuttleGui & S)
       S.StartMultiColumn(2, wxCENTER);
       {
          // Link checkbox
-         mLinkCheckBox = S.Id(ID_Link).AddCheckBox(XXO("&Link Volume control to Tone controls"),
-                                          DEF_Link);
+         mLinkCheckBox =
+         S
+            .Id(ID_Link)
+            .AddCheckBox(XXO("&Link Volume control to Tone controls"),
+               DEF_Link);
       }
       S.EndMultiColumn();
    }

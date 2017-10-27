@@ -99,14 +99,20 @@ void HelpSystem::ShowInfoDialog( wxWindow *parent,
 
    S.StartVerticalLay(1);
    {
-      S.AddTitle( shortMsg );
-      S.Style( wxTE_MULTILINE | wxTE_READONLY | wxTE_RICH | wxTE_RICH2 |
-              wxTE_AUTO_URL | wxTE_NOHIDESEL | wxHSCROLL )
+      S
+         .AddTitle( shortMsg );
+
+      S
+         .Style( wxTE_MULTILINE | wxTE_READONLY | wxTE_RICH | wxTE_RICH2 |
+            wxTE_AUTO_URL | wxTE_NOHIDESEL | wxHSCROLL )
          .AddTextWindow(message);
 
       S.SetBorder( 0 );
       S.StartHorizontalLay(wxALIGN_CENTER_HORIZONTAL, 0);
-         S.AddStandardButtons(eOkButton);
+      {
+         S
+            .AddStandardButtons(eOkButton);
+      }
       S.EndHorizontalLay();
    }
    S.EndVerticalLay();
@@ -154,20 +160,24 @@ void HelpSystem::ShowHtmlText(wxWindow *pParent,
    pFrame->SetTransparent(0);
    ShuttleGui S( pWnd, eIsCreating );
 
-   S.Style( wxNO_BORDER | wxTAB_TRAVERSAL )
+   S
+      .Style( wxNO_BORDER | wxTAB_TRAVERSAL )
       .Prop(true)
       .StartPanel();
    {
       S.StartHorizontalLay( wxEXPAND, false );
       {
-         S.Id( wxID_BACKWARD )
+         S
+            .Id( wxID_BACKWARD )
             .Disable()
 #if wxUSE_TOOLTIPS
             .ToolTip( XO("Backwards" ) )
 #endif
             /* i18n-hint arrowhead meaning backward movement */
             .AddButton( XXO("<") );
-         S.Id( wxID_FORWARD  )
+
+         S
+            .Id( wxID_FORWARD  )
             .Disable()
 #if wxUSE_TOOLTIPS
             .ToolTip( XO("Forwards" ) )
@@ -188,10 +198,15 @@ void HelpSystem::ShowHtmlText(wxWindow *pParent,
       else
          html->SetPage( HtmlText);
 
-      S.Prop(1).Focus().Position( wxEXPAND )
+      S
+         .Prop(1)
+         .Focus()
+         .Position( wxEXPAND )
          .AddWindow( html );
 
-      S.Id( wxID_CANCEL ).AddButton( XXO("Close"), wxALIGN_CENTER, true );
+      S
+         .Id( wxID_CANCEL )
+         .AddButton( XXO("Close"), wxALIGN_CENTER, true );
    }
    S.EndPanel();
 

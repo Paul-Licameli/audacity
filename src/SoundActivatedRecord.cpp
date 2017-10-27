@@ -53,15 +53,20 @@ void SoundActivatedRecordDialog::PopulateOrExchange(ShuttleGui & S)
    {
       S.StartMultiColumn(2, wxEXPAND);
       S.SetStretchyCol(1);
-      S.TieSlider(
-         XXO("Activation level (dB):"),
-         {L"/AudioIO/SilenceLevel", -50},
-         0, -gPrefs->Read(ENV_DB_KEY, ENV_DB_RANGE)
-      )->SetMinSize(wxSize(300, wxDefaultCoord));
+
+      S
+         .TieSlider(
+            XXO("Activation level (dB):"),
+            {L"/AudioIO/SilenceLevel", -50},
+            0, -gPrefs->Read(ENV_DB_KEY, ENV_DB_RANGE) )
+            ->SetMinSize(wxSize(300, wxDefaultCoord));
+
       S.EndMultiColumn();
    }
    S.EndVerticalLay();
-   S.AddStandardButtons();
+
+   S
+      .AddStandardButtons();
 }
 
 void SoundActivatedRecordDialog::OnOK(wxCommandEvent & WXUNUSED(event))

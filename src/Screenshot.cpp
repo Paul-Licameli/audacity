@@ -340,36 +340,49 @@ void ScreenshotBigDialog::PopulateOrExchange(ShuttleGui & S)
    {
       S.SetBorder(3);
 
-      S.StartStatic(XO("Choose location to save files"));
+      S
+         .StartStatic(XO("Choose location to save files"));
       {
          S.StartMultiColumn(3, wxEXPAND);
          {
             S.SetStretchyCol(1);
 
             mDirectoryTextBox =
-            S.Id(IdDirectory).AddTextBox(
-               XXO("Save images to:"),
-               gPrefs->Read(L"/ScreenshotPath", wxFileName::GetHomeDir()),
-               30
-            );
-            S.Id(IdDirChoose).AddButton(XXO("Choose..."));
+            S
+               .Id(IdDirectory)
+               .AddTextBox(
+                  XXO("Save images to:"),
+                  gPrefs->Read(L"/ScreenshotPath", wxFileName::GetHomeDir()),
+                  30 );
+
+            S
+               .Id(IdDirChoose)
+               .AddButton(XXO("Choose..."));
          }
          S.EndMultiColumn();
       }
       S.EndStatic();
 
-      S.StartStatic(XO("Capture entire window or screen"));
+      S
+         .StartStatic(XO("Capture entire window or screen"));
       {
          S.StartHorizontalLay();
          {
-            S.Id(IdMainWindowSmall).AddButton(XXO("Resize Small"));
-            S.Id(IdMainWindowLarge).AddButton(XXO("Resize Large"));
+            S
+               .Id(IdMainWindowSmall)
+               .AddButton(XXO("Resize Small"));
+
+            S
+               .Id(IdMainWindowLarge)
+               .AddButton(XXO("Resize Large"));
+
             mBlue = safenew wxToggleButton(S.GetParent(),
                                        IdToggleBackgroundBlue,
             /* i18n-hint: Bkgnd is short for background and appears on a small button
              * It is OK to just translate this item as if it said 'Blue' */
                                        _("Blue Bkgnd"));
             S.AddWindow(mBlue);
+
             mWhite = safenew wxToggleButton(S.GetParent(),
                                         IdToggleBackgroundWhite,
             /* i18n-hint: Bkgnd is short for background and appears on a small button
@@ -381,101 +394,201 @@ void ScreenshotBigDialog::PopulateOrExchange(ShuttleGui & S)
 
          S.StartHorizontalLay();
          {
-            S.Id(IdCaptureWindowContents).AddButton(XXO("Capture Window Only"));
-            S.Id(IdCaptureFullWindow).AddButton(XXO("Capture Full Window"));
-            S.Id(IdCaptureWindowPlus).AddButton(XXO("Capture Window Plus"));
+            S
+               .Id(IdCaptureWindowContents)
+               .AddButton(XXO("Capture Window Only"));
+
+            S
+               .Id(IdCaptureFullWindow)
+               .AddButton(XXO("Capture Full Window"));
+
+            S
+               .Id(IdCaptureWindowPlus)
+               .AddButton(XXO("Capture Window Plus"));
          }
          S.EndHorizontalLay();
 
          S.StartHorizontalLay();
          {
-            S.Id(IdCaptureFullScreen).AddButton(XXO("Capture Full Screen"));
+            S
+               .Id(IdCaptureFullScreen)
+               .AddButton(XXO("Capture Full Screen"));
          }
          S.EndHorizontalLay();
 
          S.StartHorizontalLay();
          {
-            mDelayCheckBox = S.Id(IdDelayCheckBox).AddCheckBox(
-               XXO("Wait 5 seconds and capture frontmost window/dialog"),
-                false);
+            mDelayCheckBox =
+            S
+               .Id(IdDelayCheckBox)
+               .AddCheckBox(
+                  XXO("Wait 5 seconds and capture frontmost window/dialog"),
+                  false);
          }
          S.EndHorizontalLay();
       }
       S.EndStatic();
 
-      S.StartStatic(XO("Capture part of a project window"));
+      S
+         .StartStatic(XO("Capture part of a project window"));
       {
          S.StartHorizontalLay();
          {
-            S.Id(IdCaptureToolbars).AddButton(XXO("All Toolbars"));
-            S.Id(IdCaptureEffects).AddButton(XXO("All Effects"));
-            S.Id(IdCaptureScriptables).AddButton(XXO("All Scriptables"));
-            S.Id(IdCapturePreferences).AddButton(XXO("All Preferences"));
+            S
+               .Id(IdCaptureToolbars)
+               .AddButton(XXO("All Toolbars"));
+
+            S
+               .Id(IdCaptureEffects)
+               .AddButton(XXO("All Effects"));
+
+            S
+               .Id(IdCaptureScriptables)
+               .AddButton(XXO("All Scriptables"));
+
+            S
+               .Id(IdCapturePreferences)
+               .AddButton(XXO("All Preferences"));
          }
          S.EndHorizontalLay();
 
          S.StartHorizontalLay();
          {
-            S.Id(IdCaptureSelectionBar).AddButton(XXO("SelectionBar"));
-            S.Id(IdCaptureSpectralSelection).AddButton(XXO("Spectral Selection"));
-            S.Id(IdCaptureTimer).AddButton(XXO("Timer"));
-            S.Id(IdCaptureTools).AddButton(XXO("Tools"));
-            S.Id(IdCaptureTransport).AddButton(XXO("Transport"));
+            S
+               .Id(IdCaptureSelectionBar)
+               .AddButton(XXO("SelectionBar"));
+
+            S
+               .Id(IdCaptureSpectralSelection)
+               .AddButton(XXO("Spectral Selection"));
+
+            S
+               .Id(IdCaptureTimer)
+               .AddButton(XXO("Timer"));
+
+            S
+               .Id(IdCaptureTools)
+               .AddButton(XXO("Tools"));
+
+            S
+               .Id(IdCaptureTransport)
+               .AddButton(XXO("Transport"));
          }
          S.EndHorizontalLay();
 
          S.StartHorizontalLay();
          {
-            S.Id(IdCaptureMixer).AddButton(XXO("Mixer"));
-            S.Id(IdCaptureMeter).AddButton(XXO("Meter"));
-            S.Id(IdCapturePlayMeter).AddButton(XXO("Play Meter"));
-            S.Id(IdCaptureRecordMeter).AddButton(XXO("Record Meter"));
+            S
+               .Id(IdCaptureMixer)
+               .AddButton(XXO("Mixer"));
+
+            S
+               .Id(IdCaptureMeter)
+               .AddButton(XXO("Meter"));
+
+            S
+               .Id(IdCapturePlayMeter)
+               .AddButton(XXO("Play Meter"));
+
+            S
+               .Id(IdCaptureRecordMeter)
+               .AddButton(XXO("Record Meter"));
          }
          S.EndHorizontalLay();
 
          S.StartHorizontalLay();
          {
-            S.Id(IdCaptureEdit).AddButton(XXO("Edit"));
-            S.Id(IdCaptureDevice).AddButton(XXO("Device"));
-            S.Id(IdCaptureTranscription).AddButton(XXO("Play-at-Speed"));
-            S.Id(IdCaptureScrub).AddButton(XXO("Scrub"));
+            S
+               .Id(IdCaptureEdit)
+               .AddButton(XXO("Edit"));
+
+            S
+               .Id(IdCaptureDevice)
+               .AddButton(XXO("Device"));
+
+            S
+               .Id(IdCaptureTranscription)
+               .AddButton(XXO("Play-at-Speed"));
+
+            S
+               .Id(IdCaptureScrub)
+               .AddButton(XXO("Scrub"));
          }
          S.EndHorizontalLay();
 
          S.StartHorizontalLay();
          {
-            S.Id(IdCaptureTrackPanel).AddButton(XXO("Track Panel"));
-            S.Id(IdCaptureRuler).AddButton(XXO("Ruler"));
-            S.Id(IdCaptureTracks).AddButton(XXO("Tracks"));
-            S.Id(IdCaptureFirstTrack).AddButton(XXO("First Track"));
-            S.Id(IdCaptureSecondTrack).AddButton(XXO("Second Track"));
+            S
+               .Id(IdCaptureTrackPanel)
+               .AddButton(XXO("Track Panel"));
+
+            S
+               .Id(IdCaptureRuler)
+               .AddButton(XXO("Ruler"));
+
+            S
+               .Id(IdCaptureTracks)
+               .AddButton(XXO("Tracks"));
+
+            S
+               .Id(IdCaptureFirstTrack)
+               .AddButton(XXO("First Track"));
+
+            S
+               .Id(IdCaptureSecondTrack)
+               .AddButton(XXO("Second Track"));
          }
          S.EndHorizontalLay();
       }
       S.EndStatic();
 
-      S.StartStatic(XO("Scale"));
+      S
+         .StartStatic(XO("Scale"));
       {
          S.StartHorizontalLay();
          {
-            S.Id(IdOneSec).AddButton(XXO("One Sec"));
-            S.Id(IdTenSec).AddButton(XXO("Ten Sec"));
-            S.Id(IdOneMin).AddButton(XXO("One Min"));
-            S.Id(IdFiveMin).AddButton(XXO("Five Min"));
-            S.Id(IdOneHour).AddButton(XXO("One Hour"));
+            S
+               .Id(IdOneSec)
+               .AddButton(XXO("One Sec"));
+
+            S
+               .Id(IdTenSec)
+               .AddButton(XXO("Ten Sec"));
+
+            S
+               .Id(IdOneMin)
+               .AddButton(XXO("One Min"));
+
+            S
+               .Id(IdFiveMin)
+               .AddButton(XXO("Five Min"));
+
+            S
+               .Id(IdOneHour)
+               .AddButton(XXO("One Hour"));
          }
          S.EndHorizontalLay();
 
          S.StartHorizontalLay();
          {
-            S.Id(IdShortTracks).AddButton(XXO("Short Tracks"));
-            S.Id(IdMedTracks).AddButton(XXO("Medium Tracks"));
-            S.Id(IdTallTracks).AddButton(XXO("Tall Tracks"));
+            S
+               .Id(IdShortTracks)
+               .AddButton(XXO("Short Tracks"));
+
+            S
+               .Id(IdMedTracks)
+               .AddButton(XXO("Medium Tracks"));
+
+            S
+               .Id(IdTallTracks)
+               .AddButton(XXO("Tall Tracks"));
          }
          S.EndHorizontalLay();
       }
       S.EndStatic();
-      S.AddStandardButtons(eCloseButton |eHelpButton);
+
+      S
+         .AddStandardButtons(eCloseButton |eHelpButton);
    }
    S.EndPanel();
 

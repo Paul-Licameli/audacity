@@ -118,7 +118,8 @@ void SplashDialog::Populate( ShuttleGui & S )
                           wxDefaultPosition,
                           wxSize((int)(LOGOWITHNAME_WIDTH*fScale), (int)(LOGOWITHNAME_HEIGHT*fScale)));
 
-   S.Prop(0)
+   S
+      .Prop(0)
 #if  (0)
       .ConnectRoot( wxEVT_LEFT_DOWN, &SplashDialog::OnChar)
 #endif
@@ -132,14 +133,23 @@ void SplashDialog::Populate( ShuttleGui & S )
    S.Prop(1)
       .Position( wxEXPAND )
       .AddWindow( mpHtml );
-   S.Prop(0).StartMultiColumn(2, wxEXPAND);
+
+   S
+      .Prop(0)
+      .StartMultiColumn(2, wxEXPAND);
+
    S.SetStretchyCol( 1 );// Column 1 is stretchy...
    {
       S.SetBorder( 5 );
-      S.Id( DontShowID).AddCheckBox( XXO("Don't show this again at start up"), !bShow );
+
+      S
+         .Id( DontShowID)
+         .AddCheckBox( XXO("Don't show this again at start up"), !bShow );
+
       S.SetBorder( 5 );
 
-      S.Id(wxID_OK)
+      S
+         .Id(wxID_OK)
          .Prop(0)
          .AddButton(XXO("OK"), wxALIGN_RIGHT| wxALL, true);
    }

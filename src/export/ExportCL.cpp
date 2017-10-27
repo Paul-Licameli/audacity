@@ -121,21 +121,29 @@ void ExportCLOptions::PopulateOrExchange(ShuttleGui & S)
          S.StartMultiColumn(3, wxEXPAND);
          {
             S.SetStretchyCol(1);
-            mCmd = S.AddCombo(XXO("Command:"),
+
+            mCmd =
+            S
+               .AddCombo(XXO("Command:"),
                               cmd,
                               cmds);
-            S.Id(ID_BROWSE).AddButton(XXO("Browse..."),
-                                      wxALIGN_CENTER_VERTICAL);
+
+            S
+               .Id(ID_BROWSE)
+               .AddButton(XXO("Browse..."), wxALIGN_CENTER_VERTICAL);
+
             S.AddFixedText( {} );
-            S.TieCheckBox(XXO("Show output"),
-                          {L"/FileFormats/ExternalProgramShowOutput",
-                           false});
+
+            S
+               .TieCheckBox(XXO("Show output"),
+                  {L"/FileFormats/ExternalProgramShowOutput", false});
          }
          S.EndMultiColumn();
       }
       S.EndHorizontalLay();
 
-      S.AddTitle(XO(
+      S
+         .AddTitle(XO(
 /* i18n-hint: Some programmer-oriented terminology here:
    "Data" refers to the sound to be exported, "piped" means sent,
    and "standard in" means the default input stream that the external program,
@@ -585,12 +593,16 @@ ProgressResult ExportCL::Export(AudacityProject *project,
       dlg.SetName();
 
       ShuttleGui S(&dlg, eIsCreating);
+
       S
          .Style( wxTE_MULTILINE | wxTE_READONLY | wxTE_RICH )
          .AddTextWindow(mCmd + L"\n\n" + output);
+
       S.StartHorizontalLay(wxALIGN_CENTER, false);
       {
-         S.Id(wxID_OK).AddButton(XXO("&OK"), wxALIGN_CENTER, true);
+         S
+            .Id(wxID_OK)
+            .AddButton(XXO("&OK"), wxALIGN_CENTER, true);
       }
       dlg.GetSizer()->AddSpacer(5);
       dlg.Layout();

@@ -234,15 +234,18 @@ void EffectNoise::PopulateOrExchange(ShuttleGui & S)
 
    S.StartMultiColumn(2, wxCENTER);
    {
-      S.Validator<wxGenericValidator>(&mType)
+      S
+         .Validator<wxGenericValidator>(&mType)
          .AddChoice(XXO("&Noise type:"), Msgids(kTypeStrings, nTypes));
 
-      S.Validator<FloatingPointValidator<double>>(
-            6, &mAmp, NumValidatorStyle::NO_TRAILING_ZEROES, MIN_Amp, MAX_Amp
-         )
+      S
+         .Validator<FloatingPointValidator<double>>(
+            6, &mAmp, NumValidatorStyle::NO_TRAILING_ZEROES, MIN_Amp, MAX_Amp )
          .AddTextBox(XXO("&Amplitude (0-1):"), L"", 12);
 
-      S.AddPrompt(XXO("&Duration:"));
+      S
+         .AddPrompt(XXO("&Duration:"));
+
       mNoiseDurationT = safenew
          NumericTextCtrl(S.GetParent(), wxID_ANY,
                          NumericConverter::TIME,
@@ -251,7 +254,9 @@ void EffectNoise::PopulateOrExchange(ShuttleGui & S)
                          mProjectRate,
                          NumericTextCtrl::Options{}
                             .AutoPos(true));
-      S.Name(XO("Duration"))
+
+      S
+         .Name(XO("Duration"))
          .Position(wxALIGN_LEFT | wxALIGN_CENTER_VERTICAL | wxALL)
          .AddWindow(mNoiseDurationT);
    }

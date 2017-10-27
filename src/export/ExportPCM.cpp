@@ -192,12 +192,17 @@ void ExportPCMOptions::PopulateOrExchange(ShuttleGui & S)
             S.SetStretchyCol(1);
             if (mSelFormat == FMT_OTHER)
             {
-               mHeaderChoice = S.Id(ID_HEADER_CHOICE)
+               mHeaderChoice =
+               S
+                  .Id(ID_HEADER_CHOICE)
                   .AddChoice(XXO("Header:"),
                              mHeaderNames,
                              mHeaderFromChoice);
             }
-            mEncodingChoice = S.Id(ID_ENCODING_CHOICE)
+
+            mEncodingChoice =
+            S
+               .Id(ID_ENCODING_CHOICE)
                .AddChoice(XXO("Encoding:"),
                           mEncodingNames,
                           mEncodingFromChoice);

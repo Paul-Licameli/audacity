@@ -474,15 +474,17 @@ public:
       S.SetBorder(10);
       S.StartVerticalLay(true);
       {
-         S.AddTitle(
-            XO(
+         S
+            .AddTitle(
+               XO(
 "Audacity needs the file '%s' to import and export audio via FFmpeg.")
-               .Format( mName ) );
+                  .Format( mName ) );
 
          S.SetBorder(3);
          S.StartHorizontalLay(wxALIGN_LEFT, true);
          {
-            S.AddTitle( XO("Location of '%s':").Format( mName ) );
+            S
+               .AddTitle( XO("Location of '%s':").Format( mName ) );
          }
          S.EndHorizontalLay();
 
@@ -490,20 +492,33 @@ public:
          S.SetStretchyCol(0);
          {
             if (mLibPath.GetFullPath().empty()) {
-               mPathText = S.AddTextBox( {},
-                  wxString::Format(_("To find '%s', click here -->"), mName), 0);
+               mPathText =
+               S
+                  .AddTextBox( {},
+                     wxString::Format(_("To find '%s', click here -->"), mName), 0);
             }
             else {
-               mPathText = S.AddTextBox( {}, mLibPath.GetFullPath(), 0);
+               mPathText =
+               S
+                  .AddTextBox( {}, mLibPath.GetFullPath(), 0);
             }
-            S.Id(ID_FFMPEG_BROWSE).AddButton(XXO("Browse..."), wxALIGN_RIGHT);
-            S.AddVariableText(
-               XO("To get a free copy of FFmpeg, click here -->"), true);
-            S.Id(ID_FFMPEG_DLOAD).AddButton(XXO("Download"), wxALIGN_RIGHT);
+
+            S
+               .Id(ID_FFMPEG_BROWSE)
+               .AddButton(XXO("Browse..."), wxALIGN_RIGHT);
+      
+            S
+               .AddVariableText(
+                  XO("To get a free copy of FFmpeg, click here -->"), true);
+
+            S
+               .Id(ID_FFMPEG_DLOAD)
+               .AddButton(XXO("Download"), wxALIGN_RIGHT);
          }
          S.EndMultiColumn();
 
-         S.AddStandardButtons();
+         S
+            .AddStandardButtons();
       }
       S.EndVerticalLay();
 
@@ -584,18 +599,21 @@ void FFmpegNotFoundDialog::PopulateOrExchange(ShuttleGui & S)
    S.SetBorder(10);
    S.StartVerticalLay(true);
    {
-      S.AddFixedText(XO(
+      S
+         .AddFixedText( XO(
 "Audacity attempted to use FFmpeg to import an audio file,\n\
 but the libraries were not found.\n\n\
 To use FFmpeg import, go to Edit > Preferences > Libraries\n\
 to download or locate the FFmpeg libraries."
-      ));
+         ) );
 
-      mDontShow = S
+      mDontShow =
+      S
          .AddCheckBox(XXO("Do not show this warning again"),
             gPrefs->ReadBool(L"/FFmpeg/NotFoundDontShow", false) );
 
-      S.AddStandardButtons(eOkButton);
+      S
+         .AddStandardButtons(eOkButton);
    }
    S.EndVerticalLay();
 

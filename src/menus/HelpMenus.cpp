@@ -41,12 +41,15 @@ void ShowDiagnostics(
    wxTextCtrl *text;
    S.StartVerticalLay();
    {
-      text = S.Id(wxID_STATIC)
+      text =
+      S
+         .Id(wxID_STATIC)
          .Style(wxTE_MULTILINE | wxTE_READONLY | wxTE_RICH)
          .AddTextWindow("");
 
       wxButton *save = safenew wxButton(S.GetParent(), wxID_OK, _("&Save"));
-      S.AddStandardButtons(eCancelButton, save);
+      S
+         .AddStandardButtons(eCancelButton, save);
    }
    S.EndVerticalLay();
 
@@ -188,14 +191,17 @@ void QuickFixDialog::PopulateOrExchange(ShuttleGui & S)
 {
 
    S.StartVerticalLay(1);
-   S.StartStatic( XO("Quick Fixes"));
+
+   S
+      .StartStatic( XO("Quick Fixes"));
 
    // These aren't all possible modes one can be stuck in, but they are some of them.
    bool bStuckInMode = mbSyncLocked || mbInSnapTo || mbSoundActivated;
 
    if( !bStuckInMode ){
       SetLabel(XO("Nothing to do"));
-      S.AddFixedText(XO("No quick, easily fixed problems were found"));
+      S
+         .AddFixedText(XO("No quick, easily fixed problems were found"));
    }
    else {
       S.StartMultiColumn(3, wxALIGN_CENTER);
@@ -242,7 +248,10 @@ void QuickFixDialog::PopulateOrExchange(ShuttleGui & S)
    S.EndStatic();
 
    S.StartHorizontalLay(wxALIGN_CENTER_HORIZONTAL, 0);
-      S.AddStandardButtons(eCloseButton + (bStuckInMode ? 0 : eHelpButton));
+   {
+      S
+         .AddStandardButtons(eCloseButton + (bStuckInMode ? 0 : eHelpButton));
+   }
    S.EndHorizontalLay();
 
    S.EndVerticalLay();

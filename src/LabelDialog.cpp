@@ -250,23 +250,44 @@ void LabelDialog::Populate()
 
 void LabelDialog::PopulateOrExchange( ShuttleGui & S )
 {
-   S.AddFixedText(XO("Press F2 or double click to edit cell contents."));
+   S
+      .AddFixedText( XO("Press F2 or double click to edit cell contents.") );
+
    S.StartHorizontalLay(wxEXPAND,1);
    {
       S.StartVerticalLay(wxEXPAND,1);
       {
          mGrid = safenew Grid(S.GetParent(), wxID_ANY);
-         S.Prop(1).AddWindow( mGrid );
+         S
+            .Prop(1)
+            .AddWindow( mGrid );
       }
       S.EndVerticalLay();
       S.StartVerticalLay(0);
       {
-         //S.Id(ID_INSERTA).AddButton(XO("&Insert"), wxALIGN_LEFT);
-         S.Id(ID_INSERTB).AddButton(XXO("&Insert"), wxALIGN_LEFT);
-         //S.Id(EditButtonID).AddButton(XO("&Edit"), wxALIGN_LEFT);
-         S.Id(ID_REMOVE).AddButton(XXO("De&lete"), wxALIGN_LEFT);
-         S.Id(ID_IMPORT).AddButton(XXO("I&mport..."), wxALIGN_LEFT);
-         S.Id(ID_EXPORT).AddButton(XXO("&Export..."), wxALIGN_LEFT);
+         //S
+         //   .Id(ID_INSERTA)
+         //   .AddButton(XO("&Insert"), wxALIGN_LEFT);
+
+         S
+            .Id(ID_INSERTB)
+            .AddButton(XXO("&Insert"), wxALIGN_LEFT);
+
+         //S
+         //   .Id(EditButtonID)
+         //   .AddButton(XO("&Edit"), wxALIGN_LEFT);
+
+         S
+            .Id(ID_REMOVE)
+            .AddButton(XXO("De&lete"), wxALIGN_LEFT);
+
+         S
+            .Id(ID_IMPORT)
+            .AddButton(XXO("I&mport..."), wxALIGN_LEFT);
+
+         S
+            .Id(ID_EXPORT)
+            .AddButton(XXO("&Export..."), wxALIGN_LEFT);
       }
       S.EndVerticalLay();
    }
@@ -274,7 +295,8 @@ void LabelDialog::PopulateOrExchange( ShuttleGui & S )
 
    S.StartHorizontalLay(wxALIGN_RIGHT, false);
    {
-      S.AddStandardButtons( eOkButton | eCancelButton | eHelpButton);
+      S
+         .AddStandardButtons( eOkButton | eCancelButton | eHelpButton);
    }
    S.EndHorizontalLay();
 }

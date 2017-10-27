@@ -797,15 +797,19 @@ void EffectEqualization::PopulateOrExchange(ShuttleGui & S)
             );
 
             S.Prop(0).AddSpace(0, 1);
-            S.Prop(1)
+
+            S
+               .Prop(1)
                .Position(wxEXPAND)
                .AddWindow(mdBRuler);
+
             S.AddSpace(0, 1);
          }
          S.EndVerticalLay();
 
          mPanel = safenew EqualizationPanel(S.GetParent(), wxID_ANY, this);
-         S.Prop(1)
+         S
+            .Prop(1)
             .Position(wxEXPAND)
             .MinSize( { wxDefaultCoord, wxDefaultCoord } )
             .AddWindow(mPanel);
@@ -813,8 +817,12 @@ void EffectEqualization::PopulateOrExchange(ShuttleGui & S)
          S.SetBorder(5);
          S.StartVerticalLay();
          {
-            S.AddVariableText(XO("+ dB"), false, wxCENTER);
-            mdBMaxSlider = S.Id(ID_dBMax)
+            S
+               .AddVariableText(XO("+ dB"), false, wxCENTER);
+
+            mdBMaxSlider =
+            S
+               .Id(ID_dBMax)
                .Name(XO("Max dB"))
                .Style(wxSL_VERTICAL | wxSL_INVERSE)
                .AddSlider( {}, 30, 60, 0);
@@ -822,14 +830,18 @@ void EffectEqualization::PopulateOrExchange(ShuttleGui & S)
             mdBMaxSlider->SetAccessible(safenew SliderAx(mdBMaxSlider, XO("%d dB")));
 #endif
 
-            mdBMinSlider = S.Id(ID_dBMin)
+            mdBMinSlider =
+            S
+               .Id(ID_dBMin)
                .Name(XO("Min dB"))
                .Style(wxSL_VERTICAL | wxSL_INVERSE)
                .AddSlider( {}, -30, -10, -120);
-            S.AddVariableText(XO("- dB"), false, wxCENTER);
 #if wxUSE_ACCESSIBILITY
             mdBMinSlider->SetAccessible(safenew SliderAx(mdBMinSlider, XO("%d dB")));
 #endif
+
+            S
+               .AddVariableText(XO("- dB"), false, wxCENTER);
          }
          S.EndVerticalLay();
          S.SetBorder(0);
@@ -856,9 +868,12 @@ void EffectEqualization::PopulateOrExchange(ShuttleGui & S)
          );
 
          S.SetBorder(1);
-         S.Prop(1)
+
+         S
+            .Prop(1)
             .Position(wxEXPAND | wxALIGN_LEFT | wxALIGN_TOP | wxLEFT)
             .AddWindow(mFreqRuler);
+
          S.SetBorder(0);
 
          // Column 3 is empty
@@ -896,7 +911,9 @@ void EffectEqualization::PopulateOrExchange(ShuttleGui & S)
                : XO("%gk").Format(kThirdOct[i] / 1000.);
             S.StartVerticalLay();
             {
-               S.AddFixedText( fNum  );
+               S
+                  .AddFixedText( fNum  );
+
                mSliders[i] = safenew wxSliderWrapper(pParent, ID_Slider + i, 0, -20, +20,
                   wxDefaultPosition, wxSize(-1,50), wxSL_VERTICAL | wxSL_INVERSE);
 
@@ -906,7 +923,9 @@ void EffectEqualization::PopulateOrExchange(ShuttleGui & S)
 
                mSlidersOld[i] = 0;
                mEQVals[i] = 0.;
-               S.Prop(1)
+
+               S
+                  .Prop(1)
                   .Name(freq)
                   .ConnectRoot(
                      wxEVT_ERASE_BACKGROUND, &EffectEqualization::OnErase)
@@ -936,7 +955,8 @@ void EffectEqualization::PopulateOrExchange(ShuttleGui & S)
          {
             S.StartHorizontalLay(wxALIGN_RIGHT | wxALIGN_CENTER_VERTICAL);
             {
-               S.AddPrompt(XXO("&EQ Type:"));
+               S
+                  .AddPrompt(XXO("&EQ Type:"));
             }
             S.EndHorizontalLay();
 
@@ -974,7 +994,9 @@ void EffectEqualization::PopulateOrExchange(ShuttleGui & S)
             {
                szrI = S.GetSizer();
 
-               mInterpChoice = S.Id(ID_Interp)
+               mInterpChoice =
+               S
+                  .Id(ID_Interp)
                   .Name(XO("Interpolation type"))
                   .AddChoice( {},
                      Msgids(kInterpStrings, nInterpolations), 0 );
@@ -989,7 +1011,9 @@ void EffectEqualization::PopulateOrExchange(ShuttleGui & S)
             {
                szrL = S.GetSizer();
 
-               mLinFreq = S.Id(ID_Linear)
+               mLinFreq =
+               S
+                  .Id(ID_Linear)
                   .Name(XO("Linear Frequency Scale"))
                   .AddCheckBox(XXO("Li&near Frequency Scale"), false);
             }
@@ -1006,13 +1030,16 @@ void EffectEqualization::PopulateOrExchange(ShuttleGui & S)
             {
                S.StartHorizontalLay(wxALIGN_LEFT | wxALIGN_CENTER_VERTICAL, 0);
                {
-                  S.AddPrompt(XXO("Length of &Filter:"));
+                  S
+                     .AddPrompt(XXO("Length of &Filter:"));
                }
                S.EndHorizontalLay();
 
                S.StartHorizontalLay(wxEXPAND, 1);
                {
-                  mMSlider = S.Id(ID_Length)
+                  mMSlider =
+                  S
+                     .Id(ID_Length)
                      .Name(XO("Length of Filter"))
                      .Style(wxSL_HORIZONTAL)
                      .AddSlider( {}, (mM - 1) / 2, 4095, 10);
@@ -1023,7 +1050,9 @@ void EffectEqualization::PopulateOrExchange(ShuttleGui & S)
                {
                   wxString label;
                   label.Printf(L"%ld", mM);
-                  mMText = S.Name( Verbatim( label ) )
+                  mMText =
+                  S
+                     .Name( Verbatim( label ) )
                   // fix for bug 577 (NVDA/Narrator screen readers do not
                   // read static text in dialogs)
                      .AddVariableText( Verbatim( label ) );
@@ -1041,7 +1070,8 @@ void EffectEqualization::PopulateOrExchange(ShuttleGui & S)
             S.AddSpace(5, 5);
             S.StartHorizontalLay(wxALIGN_RIGHT | wxALIGN_CENTER_VERTICAL);
             {
-               S.AddPrompt(XXO("&Select Curve:"));
+               S
+                  .AddPrompt(XXO("&Select Curve:"));
             }
             S.EndHorizontalLay();
 
@@ -1049,7 +1079,9 @@ void EffectEqualization::PopulateOrExchange(ShuttleGui & S)
             {
                S.StartHorizontalLay(wxALIGN_LEFT | wxALIGN_CENTER_VERTICAL, 1);
                {
-                  mCurve = S.Id(ID_Curve)
+                  mCurve =
+                  S
+                     .Id(ID_Curve)
                      .Name(XO("Select Curve"))
                      .AddChoice( {},
                         [this]{
@@ -1057,22 +1089,30 @@ void EffectEqualization::PopulateOrExchange(ShuttleGui & S)
                            for (const auto &curve : mCurves)
                               curves.push_back( Verbatim( curve.Name ) );
                            return curves;
-                        }()
-                     );
+                        }() );
                }
                S.EndHorizontalLay();
             }
             S.EndHorizontalLay();
 
-            S.Id(ID_Manage).AddButton(XXO("S&ave/Manage Curves..."));
+            S
+               .Id(ID_Manage)
+               .AddButton(XXO("S&ave/Manage Curves..."));
          }
 
          S.StartHorizontalLay(wxALIGN_LEFT | wxALIGN_CENTER_VERTICAL, 1);
          {
-            S.Id(ID_Clear).AddButton(XXO("Fla&tten"));
-            S.Id(ID_Invert).AddButton(XXO("&Invert"));
+            S
+               .Id(ID_Clear)
+               .AddButton(XXO("Fla&tten"));
 
-            mGridOnOff = S.Id(ID_Grid)
+            S
+               .Id(ID_Invert)
+               .AddButton(XXO("&Invert"));
+
+            mGridOnOff =
+            S
+               .Id(ID_Grid)
                .Name(XO("Show grid lines"))
                .AddCheckBox(XXO("Show g&rid lines"), false);
          }
@@ -1096,7 +1136,8 @@ void EffectEqualization::PopulateOrExchange(ShuttleGui & S)
 
       S.StartHorizontalLay();
       {
-         S.AddUnits(XO("&Processing: "));
+         S
+            .AddUnits(XO("&Processing: "));
 
          // update the control state
          int mathPath = EffectEqualization48x::GetMathPath();
@@ -3420,7 +3461,9 @@ void EditCurvesDialog::PopulateOrExchange(ShuttleGui & S)
    {
       S.StartStatic(XO("&Curves"), 1);
       {
-         mList = S.Id(CurvesListID)
+         mList =
+         S
+            .Id(CurvesListID)
             .Style(wxSUNKEN_BORDER | wxLC_REPORT | wxLC_HRULES | wxLC_VRULES )
             .AddListControlReportMode({
                { XO("Curve Name"), wxLIST_FORMAT_RIGHT }
@@ -3429,14 +3472,37 @@ void EditCurvesDialog::PopulateOrExchange(ShuttleGui & S)
       S.EndStatic();
       S.StartVerticalLay(0);
       {
-         S.Id(UpButtonID).AddButton(XXO("Move &Up"), wxALIGN_LEFT);
-         S.Id(DownButtonID).AddButton(XXO("Move &Down"), wxALIGN_LEFT);
-         S.Id(RenameButtonID).AddButton(XXO("&Rename..."), wxALIGN_LEFT);
-         S.Id(DeleteButtonID).AddButton(XXO("D&elete..."), wxALIGN_LEFT);
-         S.Id(ImportButtonID).AddButton(XXO("I&mport..."), wxALIGN_LEFT);
-         S.Id(ExportButtonID).AddButton(XXO("E&xport..."), wxALIGN_LEFT);
-         S.Id(LibraryButtonID).AddButton(XXO("&Get More..."), wxALIGN_LEFT);
-         S.Id(DefaultsButtonID).AddButton(XXO("De&faults"), wxALIGN_LEFT);
+         S
+            .Id(UpButtonID)
+            .AddButton(XXO("Move &Up"), wxALIGN_LEFT);
+
+         S
+            .Id(DownButtonID)
+            .AddButton(XXO("Move &Down"), wxALIGN_LEFT);
+
+         S
+            .Id(RenameButtonID)
+            .AddButton(XXO("&Rename..."), wxALIGN_LEFT);
+
+         S
+            .Id(DeleteButtonID)
+            .AddButton(XXO("D&elete..."), wxALIGN_LEFT);
+
+         S
+            .Id(ImportButtonID)
+            .AddButton(XXO("I&mport..."), wxALIGN_LEFT);
+
+         S
+            .Id(ExportButtonID)
+            .AddButton(XXO("E&xport..."), wxALIGN_LEFT);
+
+         S
+            .Id(LibraryButtonID)
+            .AddButton(XXO("&Get More..."), wxALIGN_LEFT);
+
+         S
+            .Id(DefaultsButtonID)
+            .AddButton(XXO("De&faults"), wxALIGN_LEFT);
       }
       S.EndVerticalLay();
    }

@@ -337,7 +337,8 @@ void ExportMP3Options::PopulateOrExchange(ShuttleGui & S)
             S.SetStretchyCol(1);
             S.StartTwoColumn();
             {
-               S.AddPrompt(XXO("Bit Rate Mode:"));
+               S
+                  .AddPrompt(XXO("Bit Rate Mode:"));
 
                // Bug 2692: Place button group in panel so tabbing will work and,
                // on the Mac, VoiceOver will announce as radio buttons.
@@ -345,14 +346,31 @@ void ExportMP3Options::PopulateOrExchange(ShuttleGui & S)
                {
                   S.StartHorizontalLay();
                   {
-                     S.StartRadioButtonGroup(MP3RateModeSetting);
+                     S
+                        .StartRadioButtonGroup(MP3RateModeSetting);
                      {
-                        mSET = S.Id(ID_SET).TieRadioButton();
-                        mVBR = S.Id(ID_VBR).TieRadioButton();
-                        mABR = S.Id(ID_ABR).TieRadioButton();
-                        mCBR = S.Id(ID_CBR).TieRadioButton();
+                        mSET =
+                        S
+                           .Id(ID_SET)
+                           .TieRadioButton();
+
+                        mVBR =
+                        S
+                           .Id(ID_VBR)
+                           .TieRadioButton();
+
+                        mABR =
+                        S
+                           .Id(ID_ABR)
+                           .TieRadioButton();
+
+                        mCBR =
+                        S
+                           .Id(ID_CBR)
+                           .TieRadioButton();
                      }
-                     S.EndRadioButtonGroup();
+                     S
+                        .EndRadioButtonGroup();
                   }
                   S.EndHorizontalLay();
                }
@@ -440,7 +458,10 @@ void ExportMP3Options::PopulateOrExchange(ShuttleGui & S)
                      { L"/FileFormats/MP3VarMode", ROUTINE_FAST },
                      varModeNames );
                */
-               S.AddPrompt(XXO("Channel Mode:"));
+   
+               S
+                  .AddPrompt(XXO("Channel Mode:"));
+
                S.StartMultiColumn(2, wxEXPAND);
                {
                   // Bug 2692: Place button group in panel so tabbing will work and,
@@ -451,9 +472,14 @@ void ExportMP3Options::PopulateOrExchange(ShuttleGui & S)
                      {
                         S.StartRadioButtonGroup(MP3ChannelModeSetting);
                         {
-                           mJoint = S.Disable(mono)
+                           mJoint =
+                           S
+                              .Disable(mono)
                               .TieRadioButton();
-                           mStereo = S.Disable(mono)
+
+                           mStereo =
+                           S
+                              .Disable(mono)
                               .TieRadioButton();
                         }
                         S.EndRadioButtonGroup();
@@ -462,7 +488,10 @@ void ExportMP3Options::PopulateOrExchange(ShuttleGui & S)
                   }
                   S.EndPanel();
 
-                  mMono = S.Id(ID_MONO).AddCheckBox(XXO("Force export to mono"), mono);
+                  mMono =
+                  S
+                     .Id(ID_MONO)
+                     .AddCheckBox(XXO("Force export to mono"), mono);
                }
                S.EndMultiColumn();
             }
@@ -614,7 +643,8 @@ public:
          S.SetBorder(3);
          S.StartHorizontalLay(wxALIGN_LEFT, true);
          {
-            S.AddTitle( XO("Location of %s:").Format( mName ) );
+            S
+               .AddTitle( XO("Location of %s:").Format( mName ) );
          }
          S.EndHorizontalLay();
 
@@ -622,23 +652,36 @@ public:
          S.SetStretchyCol(0);
          {
             if (mLibPath.GetFullPath().empty()) {
-               mPathText = S.AddTextBox( {},
+               mPathText =
+               S
+                  .AddTextBox( {},
                   /* i18n-hint: There is a  button to the right of the arrow.*/
-                  wxString::Format(_("To find %s, click here -->"), mName), 0);
+                     wxString::Format(_("To find %s, click here -->"), mName), 0);
             }
             else {
-               mPathText = S.AddTextBox( {}, mLibPath.GetFullPath(), 0);
+               mPathText =
+               S
+                  .AddTextBox( {}, mLibPath.GetFullPath(), 0);
             }
-            S.Id(ID_BROWSE).AddButton(XXO("Browse..."), wxALIGN_RIGHT);
-            S.AddVariableText(
-               /* i18n-hint: There is a  button to the right of the arrow.*/
-               XO("To get a free copy of LAME, click here -->"), true);
-            /* i18n-hint: (verb)*/
-            S.Id(ID_DLOAD).AddButton(XXO("Download"), wxALIGN_RIGHT);
+
+            S
+               .Id(ID_BROWSE)
+               .AddButton(XXO("Browse..."), wxALIGN_RIGHT);
+
+            S
+               .AddVariableText(
+                  /* i18n-hint: There is a  button to the right of the arrow.*/
+                  XO("To get a free copy of LAME, click here -->"), true);
+
+            S
+               .Id(ID_DLOAD)
+               /* i18n-hint: (verb)*/
+               .AddButton(XXO("Download"), wxALIGN_RIGHT);
          }
          S.EndMultiColumn();
 
-         S.AddStandardButtons();
+         S
+            .AddStandardButtons();
       }
       S.EndVerticalLay();
 
@@ -2054,46 +2097,48 @@ int ExportMP3::AskResample(int bitrate, int rate, int lowrate, int highrate)
    S.StartVerticalLay();
    {
       S.SetBorder(10);
-      S.StartStatic(XO("Resample"));
+      S
+         .StartStatic(XO("Resample"));
       {
          S.StartHorizontalLay(wxALIGN_CENTER, false);
          {
-            S.AddTitle(
-               ((bitrate == 0)
-                  ? XO(
+            S
+               .AddTitle(
+                  ((bitrate == 0)
+                     ? XO(
 "The project sample rate (%d) is not supported by the MP3\nfile format. ")
-                       .Format( rate )
-                  : XO(
+                          .Format( rate )
+                     : XO(
 "The project sample rate (%d) and bit rate (%d kbps) combination is not\nsupported by the MP3 file format. ")
-                       .Format( rate, bitrate ))
-               + XO("You may resample to one of the rates below.")
-            );
+                          .Format( rate, bitrate ))
+                  + XO("You may resample to one of the rates below.") );
          }
          S.EndHorizontalLay();
 
          S.StartHorizontalLay(wxALIGN_CENTER, false);
          {
-            choice = S.AddChoice(XXO("Sample Rates"),
-               [&]{
-                  TranslatableStrings choices;
-                  for (size_t ii = 0, nn = sampRates.size(); ii < nn; ++ii) {
-                     int label = sampRates[ii];
-                     if (label >= lowrate && label <= highrate) {
-                        choices.push_back( Verbatim( "%d" ).Format( label ) );
-                        if (label <= rate)
-                           selected = ii;
+            choice = S
+               .AddChoice(XXO("Sample Rates"),
+                  [&]{
+                     TranslatableStrings choices;
+                     for (size_t ii = 0, nn = sampRates.size(); ii < nn; ++ii) {
+                        int label = sampRates[ii];
+                        if (label >= lowrate && label <= highrate) {
+                           choices.push_back( Verbatim( "%d" ).Format( label ) );
+                           if (label <= rate)
+                              selected = ii;
+                        }
                      }
-                  }
-                  return choices;
-               }(),
-               std::max( 0, selected )
-            );
+                     return choices;
+                  }(),
+                  std::max( 0, selected ) );
          }
          S.EndHorizontalLay();
       }
       S.EndStatic();
 
-      S.AddStandardButtons();
+      S
+         .AddStandardButtons();
    }
    S.EndVerticalLay();
 

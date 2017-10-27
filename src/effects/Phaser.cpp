@@ -259,81 +259,109 @@ void EffectPhaser::PopulateOrExchange(ShuttleGui & S)
    {
       S.SetStretchyCol(2);
 
-      mStagesT = S.Id(ID_Stages)
+      mStagesT =
+      S
+         .Id(ID_Stages)
          .Validator<IntegerValidator<int>>(
             &mStages, NumValidatorStyle::DEFAULT, MIN_Stages, MAX_Stages)
          .AddTextBox(XXO("&Stages:"), L"", 15);
 
-      mStagesS = S.Id(ID_Stages)
+      mStagesS =
+      S
+         .Id(ID_Stages)
          .Name(XO("Stages"))
          .Style(wxSL_HORIZONTAL)
          .MinSize( { 100, -1 } )
          .AddSlider( {}, DEF_Stages * SCL_Stages, MAX_Stages * SCL_Stages, MIN_Stages * SCL_Stages,
             2 /* line size */ );
 
-      mDryWetT = S.Id(ID_DryWet)
+      mDryWetT =
+      S
+         .Id(ID_DryWet)
          .Validator<IntegerValidator<int>>(
             &mDryWet, NumValidatorStyle::DEFAULT, MIN_DryWet, MAX_DryWet)
          .AddTextBox(XXO("&Dry/Wet:"), L"", 15);
 
-      mDryWetS = S.Id(ID_DryWet)
+      mDryWetS =
+      S
+         .Id(ID_DryWet)
          .Name(XO("Dry Wet"))
          .Style(wxSL_HORIZONTAL)
          .MinSize( { 100, -1 } )
          .AddSlider( {}, DEF_DryWet * SCL_DryWet, MAX_DryWet * SCL_DryWet, MIN_DryWet * SCL_DryWet);
 
-      mFreqT = S.Id(ID_Freq)
+      mFreqT =
+      S
+         .Id(ID_Freq)
          .Validator<FloatingPointValidator<double>>(
             5, &mFreq, NumValidatorStyle::ONE_TRAILING_ZERO, MIN_Freq, MAX_Freq)
          .AddTextBox(XXO("LFO Freq&uency (Hz):"), L"", 15);
 
-      mFreqS = S.Id(ID_Freq)
+      mFreqS =
+      S
+         .Id(ID_Freq)
          .Name(XO("LFO frequency in hertz"))
          .Style(wxSL_HORIZONTAL)
          .MinSize( { 100, -1 } )
          .AddSlider( {}, DEF_Freq * SCL_Freq, MAX_Freq * SCL_Freq, 0.0);
 
-      mPhaseT = S.Id(ID_Phase)
+      mPhaseT =
+      S
+         .Id(ID_Phase)
          .Validator<FloatingPointValidator<double>>(
             1, &mPhase, NumValidatorStyle::DEFAULT, MIN_Phase, MAX_Phase)
          .AddTextBox(XXO("LFO Sta&rt Phase (deg.):"), L"", 15);
 
-      mPhaseS = S.Id(ID_Phase)
+      mPhaseS =
+      S
+         .Id(ID_Phase)
          .Name(XO("LFO start phase in degrees"))
          .Style(wxSL_HORIZONTAL)
          .MinSize( { 100, -1 } )
          .AddSlider( {}, DEF_Phase * SCL_Phase, MAX_Phase * SCL_Phase, MIN_Phase * SCL_Phase,
             10 /* line size */ );
 
-      mDepthT = S.Id(ID_Depth)
+      mDepthT =
+      S
+         .Id(ID_Depth)
          .Validator<IntegerValidator<int>>(
             &mDepth, NumValidatorStyle::DEFAULT, MIN_Depth, MAX_Depth)
          .AddTextBox(XXO("Dept&h:"), L"", 15);
 
-      mDepthS = S.Id(ID_Depth)
+      mDepthS =
+      S
+         .Id(ID_Depth)
          .Name(XO("Depth in percent"))
          .Style(wxSL_HORIZONTAL)
          .MinSize( { 100, -1 } )
          .AddSlider( {}, DEF_Depth * SCL_Depth, MAX_Depth * SCL_Depth, MIN_Depth * SCL_Depth);
 
-      mFeedbackT = S.Id(ID_Feedback)
+      mFeedbackT =
+      S
+         .Id(ID_Feedback)
          .Validator<IntegerValidator<int>>(
             &mFeedback, NumValidatorStyle::DEFAULT, MIN_Feedback, MAX_Feedback)
          .AddTextBox(XXO("Feedbac&k (%):"), L"", 15);
 
-      mFeedbackS = S.Id(ID_Feedback)
+      mFeedbackS =
+      S
+         .Id(ID_Feedback)
          .Name(XO("Feedback in percent"))
          .Style(wxSL_HORIZONTAL)
          .MinSize( { 100, -1 } )
          .AddSlider( {}, DEF_Feedback * SCL_Feedback, MAX_Feedback * SCL_Feedback, MIN_Feedback * SCL_Feedback,
             10 /* line size */ );
 
-      mOutGainT = S.Id(ID_OutGain)
+      mOutGainT =
+      S
+         .Id(ID_OutGain)
          .Validator<FloatingPointValidator<double>>(
             1, &mOutGain, NumValidatorStyle::DEFAULT, MIN_OutGain, MAX_OutGain)
          .AddTextBox(XXO("&Output gain (dB):"), L"", 12);
 
-      mOutGainS = S.Id(ID_OutGain)
+      mOutGainS =
+      S
+         .Id(ID_OutGain)
          .Name(XO("Output gain (dB)"))
          .Style(wxSL_HORIZONTAL)
          .MinSize( { 100, -1 } )

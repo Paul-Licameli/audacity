@@ -932,8 +932,12 @@ void NyqBench::PopulateOrExchange(ShuttleGui & S)
       mSplitter->SetMinimumPaneSize(50);
 
       S.AddSpace(5, 1);
-      S.Prop(true);
-      S.Position(wxEXPAND).AddWindow(mSplitter);
+
+      S
+        .Prop(true)
+        .Position(wxEXPAND)
+        .AddWindow(mSplitter);
+
       S.AddSpace(5, 1);
 
       mSplitter->SetMinSize(wxSize(600, 400));

@@ -294,36 +294,46 @@ void EffectNormalize::PopulateOrExchange(ShuttleGui & S)
       {
          S.StartVerticalLay(false);
          {
-            mDCCheckBox = S.Validator<wxGenericValidator>(&mDC)
+            mDCCheckBox =
+            S
+               .Validator<wxGenericValidator>(&mDC)
                .AddCheckBox(XXO("&Remove DC offset (center on 0.0 vertically)"),
                                         mDC);
 
             S.StartHorizontalLay(wxALIGN_LEFT, false);
             {
-               mGainCheckBox = S
+               mGainCheckBox =
+               S
                   .MinSize()
                   .Validator<wxGenericValidator>(&mGain)
                   .AddCheckBox(XXO("&Normalize peak amplitude to   "),
                      mGain);
 
-               mLevelTextCtrl = S
+               mLevelTextCtrl =
+               S
                   .Name(XO("Peak amplitude dB"))
                   .Validator<FloatingPointValidator<double>>(
                      2,
                      &mPeakLevel,
                      NumValidatorStyle::ONE_TRAILING_ZERO,
                      MIN_PeakLevel,
-                     MAX_PeakLevel
-                  )
+                     MAX_PeakLevel )
                   .AddTextBox( {}, L"", 10);
-               mLeveldB = S.AddVariableText(XO("dB"), false,
-                  wxALIGN_CENTER_VERTICAL | wxALIGN_LEFT);
-               mWarning = S.AddVariableText( {}, false,
-                  wxALIGN_CENTER_VERTICAL | wxALIGN_LEFT);
+
+               mLeveldB =
+               S
+                  .AddVariableText(XO("dB"), false,
+                     wxALIGN_CENTER_VERTICAL | wxALIGN_LEFT);
+
+               mWarning =
+               S
+                  .AddVariableText( {}, false,
+                     wxALIGN_CENTER_VERTICAL | wxALIGN_LEFT);
             }
             S.EndHorizontalLay();
 
-            mStereoIndCheckBox = S
+            mStereoIndCheckBox =
+            S
                .Validator<wxGenericValidator>(&mStereoInd)
                .AddCheckBox(XXO("N&ormalize stereo channels independently"),
                                                mStereoInd);

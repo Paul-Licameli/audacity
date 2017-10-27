@@ -68,26 +68,32 @@ void WarningsPrefs::PopulateOrExchange(ShuttleGui & S)
    S.SetBorder(2);
    S.StartScroller();
 
-   S.StartStatic(XO("Show Warnings/Prompts for"));
+   S
+      .StartStatic(XO("Show Warnings/Prompts for"));
    {
-      S.TieCheckBox(XXO("Saving &projects"),
-                    {L"/Warnings/FirstProjectSave",
-                     true});
-      S.TieCheckBox(XXO("Saving &empty project"),
-                    {L"/GUI/EmptyCanBeDirty",
-                     true});
-      S.TieCheckBox(XXO("Mixing down to &mono during export"),
-                    {L"/Warnings/MixMono",
-                     true});
-      S.TieCheckBox(XXO("Mixing down to &stereo during export"),
-                    {L"/Warnings/MixStereo",
-                     true});
-      S.TieCheckBox(XXO("Mixing down on export (&Custom FFmpeg or external program)"),
-                    {L"/Warnings/MixUnknownChannels",
-                     true});
-      S.TieCheckBox(XXO("Missing file &name extension during export"),
-                    {L"/Warnings/MissingExtension",
-                     true});
+      S
+         .TieCheckBox(XXO("Saving &projects"),
+            {L"/Warnings/FirstProjectSave", true});
+
+      S
+         .TieCheckBox(XXO("Saving &empty project"),
+            {L"/GUI/EmptyCanBeDirty", true});
+
+      S
+         .TieCheckBox(XXO("Mixing down to &mono during export"),
+            {L"/Warnings/MixMono", true});
+
+      S
+         .TieCheckBox(XXO("Mixing down to &stereo during export"),
+            {L"/Warnings/MixStereo", true});
+
+      S
+         .TieCheckBox(XXO("Mixing down on export (&Custom FFmpeg or external program)"),
+            {L"/Warnings/MixUnknownChannels", true});
+
+      S
+         .TieCheckBox(XXO("Missing file &name extension during export"),
+            {L"/Warnings/MissingExtension", true});
    }
    S.EndStatic();
    S.EndScroller();

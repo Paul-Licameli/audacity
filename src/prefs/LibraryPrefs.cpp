@@ -123,24 +123,29 @@ void LibraryPrefs::PopulateOrExchange(ShuttleGui & S)
             .Position(wxALIGN_CENTRE_VERTICAL)
             .AddReadOnlyText(XXO("FFmpeg Library Version:"), version.Translation());
 
-         S.AddVariableText(XO("FFmpeg Library:"),
-            true, wxALL | wxALIGN_RIGHT | wxALIGN_CENTRE_VERTICAL);
-         S.Id(ID_FFMPEG_FIND_BUTTON);
          S
+            .AddVariableText(XO("FFmpeg Library:"),
+               true, wxALL | wxALIGN_RIGHT | wxALIGN_CENTRE_VERTICAL);
+
+         S
+            .Id(ID_FFMPEG_FIND_BUTTON)
 #if !defined(USE_FFMPEG) || defined(DISABLE_DYNAMIC_LOADING_FFMPEG)
             .Disable()
 #endif
             .AddButton(XXO("Loca&te..."),
                        wxALL | wxALIGN_LEFT | wxALIGN_CENTRE_VERTICAL);
-         S.AddVariableText(XO("FFmpeg Library:"),
-            true, wxALL | wxALIGN_RIGHT | wxALIGN_CENTRE_VERTICAL);
-         S.Id(ID_FFMPEG_DOWN_BUTTON);
+
          S
+            .AddVariableText(XO("FFmpeg Library:"),
+               true, wxALL | wxALIGN_RIGHT | wxALIGN_CENTRE_VERTICAL);
+
+         S
+            .Id(ID_FFMPEG_DOWN_BUTTON)
 #if !defined(USE_FFMPEG) || defined(DISABLE_DYNAMIC_LOADING_FFMPEG)
             .Disable()
 #endif
             .AddButton(XXO("Dow&nload"),
-                       wxALL | wxALIGN_LEFT | wxALIGN_CENTRE_VERTICAL);
+               wxALL | wxALIGN_LEFT | wxALIGN_CENTRE_VERTICAL);
       }
       S.EndTwoColumn();
    }

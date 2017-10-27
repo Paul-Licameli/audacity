@@ -252,10 +252,13 @@ void EffectCompressor::PopulateOrExchange(ShuttleGui & S)
                                          mThresholdDB,
                                          mNoiseFloorDB,
                                          mRatio);
-      S.Prop(true)
+
+      S
+         .Prop(true)
          .Position(wxEXPAND | wxALL)
          .MinSize( { 400, 200 } )
          .AddWindow(mPanel);
+
       S.SetBorder(5);
    }
    S.EndHorizontalLay();
@@ -265,33 +268,55 @@ void EffectCompressor::PopulateOrExchange(ShuttleGui & S)
       S.StartMultiColumn(3, wxEXPAND);
       {
          S.SetStretchyCol(1);
-         mThresholdLabel = S.AddVariableText(XO("&Threshold:"), true,
-            wxALIGN_RIGHT | wxALIGN_CENTER_VERTICAL);
-         mThresholdSlider = S.Id(ID_Threshold)
+
+         mThresholdLabel =
+         S
+            .AddVariableText(XO("&Threshold:"), true,
+               wxALIGN_RIGHT | wxALIGN_CENTER_VERTICAL);
+
+         mThresholdSlider =
+         S
+            .Id(ID_Threshold)
             .Name(XO("Threshold"))
             .Style(wxSL_HORIZONTAL)
             .AddSlider( {},
                DEF_Threshold * SCL_Threshold,
                MAX_Threshold * SCL_Threshold,
                MIN_Threshold * SCL_Threshold);
-         mThresholdText = S.AddVariableText(ThresholdFormat(999), true,
-            wxALIGN_LEFT | wxALIGN_CENTER_VERTICAL);
 
-         mNoiseFloorLabel = S.AddVariableText(XO("&Noise Floor:"), true,
-            wxALIGN_RIGHT | wxALIGN_CENTER_VERTICAL);
-         mNoiseFloorSlider = S.Id(ID_NoiseFloor)
+         mThresholdText =
+         S
+            .AddVariableText(ThresholdFormat(999), true,
+               wxALIGN_LEFT | wxALIGN_CENTER_VERTICAL);
+
+         mNoiseFloorLabel =
+         S
+            .AddVariableText(XO("&Noise Floor:"), true,
+               wxALIGN_RIGHT | wxALIGN_CENTER_VERTICAL);
+
+         mNoiseFloorSlider =
+         S.
+            Id(ID_NoiseFloor)
             .Name(XO("Noise Floor"))
             .Style(wxSL_HORIZONTAL)
             .AddSlider( {},
                DEF_NoiseFloor * SCL_NoiseFloor,
                MAX_NoiseFloor * SCL_NoiseFloor,
                MIN_NoiseFloor * SCL_NoiseFloor);
-         mNoiseFloorText = S.AddVariableText(ThresholdFormat(999),
-            true, wxALIGN_LEFT | wxALIGN_CENTER_VERTICAL);
 
-         mRatioLabel = S.AddVariableText(XO("&Ratio:"), true,
-            wxALIGN_RIGHT | wxALIGN_CENTER_VERTICAL);
-         mRatioSlider = S.Id(ID_Ratio)
+         mNoiseFloorText =
+         S
+            .AddVariableText(ThresholdFormat(999),
+               true, wxALIGN_LEFT | wxALIGN_CENTER_VERTICAL);
+
+         mRatioLabel =
+         S
+            .AddVariableText(XO("&Ratio:"), true,
+               wxALIGN_RIGHT | wxALIGN_CENTER_VERTICAL);
+
+         mRatioSlider =
+         S
+            .Id(ID_Ratio)
             .Name(XO("Ratio"))
             .Style(wxSL_HORIZONTAL)
             .AddSlider( {},
@@ -300,15 +325,22 @@ void EffectCompressor::PopulateOrExchange(ShuttleGui & S)
                MIN_Ratio * SCL_Ratio,
                -1, 5 /* page size */ );
 
-         mRatioText = S.AddVariableText(RatioTextFormat( 1, 99.9 ), true,
-            wxALIGN_LEFT | wxALIGN_CENTER_VERTICAL);
+         mRatioText =
+         S
+            .AddVariableText(RatioTextFormat( 1, 99.9 ), true,
+               wxALIGN_LEFT | wxALIGN_CENTER_VERTICAL);
 
+         mAttackLabel =
+         S
          /* i18n-hint: Particularly in percussion, sounds can be regarded as having
           * an 'attack' phase where the sound builds up and a 'decay' where the
           * sound dies away.  So this means 'onset duration'.  */
-         mAttackLabel = S.AddVariableText(XO("&Attack Time:"), true,
-            wxALIGN_RIGHT | wxALIGN_CENTER_VERTICAL);
-         mAttackSlider = S.Id(ID_Attack)
+            .AddVariableText(XO("&Attack Time:"), true,
+               wxALIGN_RIGHT | wxALIGN_CENTER_VERTICAL);
+
+         mAttackSlider =
+         S
+            .Id(ID_Attack)
          /* i18n-hint: Particularly in percussion, sounds can be regarded as having
           * an 'attack' phase where the sound builds up and a 'decay' where the
           * sound dies away.  So this means 'onset duration'.  */
@@ -318,16 +350,24 @@ void EffectCompressor::PopulateOrExchange(ShuttleGui & S)
                DEF_AttackTime * SCL_AttackTime,
                MAX_AttackTime * SCL_AttackTime,
                MIN_AttackTime * SCL_AttackTime);
-         mAttackText = S.AddVariableText(
-            AttackTimeFormat(9.99),
-            true, wxALIGN_LEFT | wxALIGN_CENTER_VERTICAL);
 
+         mAttackText =
+         S
+            .AddVariableText(
+               AttackTimeFormat(9.99),
+               true, wxALIGN_LEFT | wxALIGN_CENTER_VERTICAL);
+
+         mDecayLabel =
+         S
          /* i18n-hint: Particularly in percussion, sounds can be regarded as having
           * an 'attack' phase where the sound builds up and a 'decay' or 'release' where the
           * sound dies away.  */
-         mDecayLabel = S.AddVariableText(XO("R&elease Time:"), true,
-            wxALIGN_RIGHT | wxALIGN_CENTER_VERTICAL);
-         mDecaySlider = S.Id(ID_Decay)
+            .AddVariableText(XO("R&elease Time:"), true,
+               wxALIGN_RIGHT | wxALIGN_CENTER_VERTICAL);
+
+         mDecaySlider =
+         S
+            .Id(ID_Decay)
          /* i18n-hint: Particularly in percussion, sounds can be regarded as having
           * an 'attack' phase where the sound builds up and a 'decay' or 'release' where the
           * sound dies away.  */
@@ -338,9 +378,11 @@ void EffectCompressor::PopulateOrExchange(ShuttleGui & S)
                MAX_ReleaseTime * SCL_ReleaseTime,
                MIN_ReleaseTime * SCL_ReleaseTime);
 
-         mDecayText = S.AddVariableText(
-            DecayTimeFormat(99.9),
-            true, wxALIGN_LEFT | wxALIGN_CENTER_VERTICAL);
+         mDecayText =
+         S
+            .AddVariableText(
+               DecayTimeFormat(99.9),
+               true, wxALIGN_LEFT | wxALIGN_CENTER_VERTICAL);
       }
       S.EndMultiColumn();
    }
@@ -348,13 +390,18 @@ void EffectCompressor::PopulateOrExchange(ShuttleGui & S)
 
    S.StartHorizontalLay(wxCENTER, false);
    {
+      mGainCheckBox =
+      S
       /* i18n-hint: Make-up, i.e. correct for any reduction, rather than fabricate it.*/
-      mGainCheckBox = S.AddCheckBox(XXO("Ma&ke-up gain for 0 dB after compressing"),
-                                    DEF_Normalize);
+         .AddCheckBox(XXO("Ma&ke-up gain for 0 dB after compressing"),
+            DEF_Normalize);
+
+      mPeakCheckBox =
+      S
       /* i18n-hint: "Compress" here means reduce variations of sound volume,
        NOT related to file-size compression; Peaks means extremes in volume */
-      mPeakCheckBox = S.AddCheckBox(XXO("C&ompress based on Peaks"),
-                                    DEF_UsePeak);
+         .AddCheckBox(XXO("C&ompress based on Peaks"),
+            DEF_UsePeak);
    }
    S.EndHorizontalLay();
 }

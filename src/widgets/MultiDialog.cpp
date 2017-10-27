@@ -100,7 +100,10 @@ MultiDialog::MultiDialog(wxWindow * pParent,
                .AddWindow( icon );
 
             S.SetBorder( 15 );
-            S.Prop(1).AddVariableText( message, false, wxCENTER | wxLEFT );
+
+            S
+               .Prop(1)
+               .AddVariableText( message, false, wxCENTER | wxLEFT );
          }
          S.EndHorizontalLay();
 
@@ -139,12 +142,17 @@ MultiDialog::MultiDialog(wxWindow * pParent,
                S.AddSpace(40, 0);
             }
 
-            auto pButton = S.Id(wxID_OK)
+            auto pButton =
+            S
+               .Id(wxID_OK)
                .AddButton(XXO("OK"), wxALIGN_CENTER, !log);
 
             if (!mHelpPage.IsEmpty()) {
-               auto pHelpBtn = S.Id(wxID_HELP)
+               auto pHelpBtn =
+               S
+                  .Id(wxID_HELP)
                   .AddBitmapButton(theTheme.Bitmap(bmpHelpIcon), wxALIGN_CENTER, false);
+
                pHelpBtn->SetToolTip(XO("Help").Translation());
                pHelpBtn->SetLabel(XO("Help").Translation());       // for screen readers
             }

@@ -387,15 +387,26 @@ ImportRawDialog::ImportRawDialog(wxWindow * parent,
       S.SetBorder(5);
       S.StartTwoColumn();
       {
-         mEncodingChoice = S.Id(ChoiceID).AddChoice(XXO("Encoding:"),
-                                                    encodings,
-                                                    selection);
-         mEndianChoice = S.Id(ChoiceID).AddChoice(XXO("Byte order:"),
-                                                  endians,
-                                                  endian);
-         mChannelChoice = S.Id(ChoiceID).AddChoice(XXO("Channels:"),
-                                                   chans,
-                                                   mChannels - 1);
+         mEncodingChoice =
+         S
+            .Id(ChoiceID)
+            .AddChoice(XXO("Encoding:"),
+               encodings,
+               selection);
+
+         mEndianChoice =
+         S
+            .Id(ChoiceID)
+            .AddChoice(XXO("Byte order:"),
+               endians,
+               endian);
+
+         mChannelChoice =
+         S
+            .Id(ChoiceID)
+            .AddChoice(XXO("Channels:"),
+               chans,
+               mChannels - 1);
       }
       S.EndTwoColumn();
 
@@ -404,16 +415,24 @@ ImportRawDialog::ImportRawDialog(wxWindow * parent,
       {
          // Offset text
          /* i18n-hint: (noun)*/
-         mOffsetText = S.AddTextBox(XXO("Start offset:"),
-                                    wxString::Format(L"%d", mOffset),
-                                    12);
-         S.AddUnits(XO("bytes"));
+         mOffsetText =
+         S
+            .AddTextBox( XXO("Start offset:"),
+               wxString::Format(L"%d", mOffset),
+               12);
+
+         S
+            .AddUnits(XO("bytes"));
 
          // Percent text
-         mPercentText = S.AddTextBox(XXO("Amount to import:"),
-                                     L"100",
-                                     12);
-         S.AddUnits(XO("%"));
+         mPercentText =
+         S
+            .AddTextBox( XXO("Amount to import:"),
+               L"100",
+               12);
+
+         S
+            .AddUnits(XO("%"));
 
          // Rate text
          wxArrayStringEx rates;
@@ -423,12 +442,15 @@ ImportRawDialog::ImportRawDialog(wxWindow * parent,
          }
 
          /* i18n-hint: (noun)*/
-         mRateText = S.AddCombo(XXO("Sample rate:"),
-                                wxString::Format(L"%d", (int)mRate),
-                                rates);
+         mRateText =
+         S
+            .AddCombo(XXO("Sample rate:"),
+               wxString::Format(L"%d", (int)mRate),
+               rates);
          /* i18n-hint: This is the abbreviation for "Hertz", or
             cycles per second. */
-         S.AddUnits(XO("Hz"));
+         S
+            .AddUnits(XO("Hz"));
       }
       S.EndMultiColumn();
 

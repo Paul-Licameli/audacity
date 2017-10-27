@@ -246,22 +246,25 @@ void LV2EffectSettingsDialog::PopulateOrExchange(ShuttleGui &S)
             IntegerValidator<int> vld(&mBufferSize);
             vld.SetRange(8, DEFAULT_BLOCKSIZE);
 
-            S.AddVariableText( XO(
+            S
+               .AddVariableText( XO(
 "The buffer size controls the number of samples sent to the effect "
 "on each iteration. Smaller values will cause slower processing and "
 "some effects require 8192 samples or less to work properly. However "
 "most effects can accept large buffers and using them will greatly "
 "reduce processing time."),
-               false, 0, 650);
+                  false, 0, 650);
 
             S.StartHorizontalLay(wxALIGN_LEFT);
             {
                wxTextCtrl *t;
-               t = S.TieNumericTextBox(
-                  XXO("&Buffer Size (8 to %d) samples:")
-                     .Format( DEFAULT_BLOCKSIZE ),
-                  mBufferSize,
-                  12);
+               t =
+               S
+                  .TieNumericTextBox(
+                     XXO("&Buffer Size (8 to %d) samples:")
+                        .Format( DEFAULT_BLOCKSIZE ),
+                     mBufferSize,
+                     12);
                t->SetMinSize(wxSize(100, -1));
                t->SetValidator(vld);
             }
@@ -271,18 +274,19 @@ void LV2EffectSettingsDialog::PopulateOrExchange(ShuttleGui &S)
 
          S.StartStatic(XO("Latency Compensation"));
          {
-            S.AddVariableText( XO(
+            S
+               .AddVariableText( XO(
 "As part of their processing, some LV2 effects must delay returning "
 "audio to Audacity. When not compensating for this delay, you will "
 "notice that small silences have been inserted into the audio. "
 "Enabling this setting will provide that compensation, but it may "
 "not work for all LV2 effects."),
-               false, 0, 650);
+                  false, 0, 650);
 
             S.StartHorizontalLay(wxALIGN_LEFT);
             {
-               S.TieCheckBox(XXO("Enable &compensation"),
-                             mUseLatency);
+               S
+                  .TieCheckBox(XXO("Enable &compensation"), mUseLatency);
             }
             S.EndHorizontalLay();
          }
@@ -290,13 +294,15 @@ void LV2EffectSettingsDialog::PopulateOrExchange(ShuttleGui &S)
 
          S.StartStatic(XO("Graphical Mode"));
          {
-            S.AddVariableText( XO(
+            S
+               .AddVariableText( XO(
 "LV2 effects can have a graphical interface for setting parameter values."
 " A basic text-only method is also available. "
 " Reopen the effect for this to take effect."),
-               false, 0, 650);
-            S.TieCheckBox(XXO("Enable &graphical interface"),
-                          mUseGUI);
+                  false, 0, 650);
+
+            S
+               .TieCheckBox(XXO("Enable &graphical interface"), mUseGUI);
          }
          S.EndStatic();
       }

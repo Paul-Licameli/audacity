@@ -1150,39 +1150,40 @@ int ExportFFmpeg::AskResample(int bitrate, int rate, int lowrate, int highrate, 
       {
          S.StartHorizontalLay(wxALIGN_CENTER, false);
          {
-            S.AddTitle(
-               (bitrate == 0
-                  ? XO(
+            S
+               .AddTitle(
+                  (bitrate == 0
+                     ? XO(
 "The project sample rate (%d) is not supported by the current output\nfile format. ")
-                       .Format( rate )
-                  : XO(
+                          .Format( rate )
+                     : XO(
 "The project sample rate (%d) and bit rate (%d kbps) combination is not\nsupported by the current output file format. ")
-                       .Format( rate, bitrate/1000))
-               + XO("You may resample to one of the rates below.")
-            );
+                          .Format( rate, bitrate/1000))
+                  + XO("You may resample to one of the rates below.") );
          }
          S.EndHorizontalLay();
 
          S.StartHorizontalLay(wxALIGN_CENTER, false);
          {
-            choice = S.AddChoice(XO("Sample Rates"),
-               [&]{
-                  TranslatableStrings choices;
-                  for (int i = 0; sampRates[i] > 0; i++)
-                  {
-                     int label = sampRates[i];
-                     if ((!lowrate || label >= lowrate) && (!highrate || label <= highrate))
+            choice =
+            S
+               .AddChoice(XO("Sample Rates"),
+                  [&]{
+                     TranslatableStrings choices;
+                     for (int i = 0; sampRates[i] > 0; i++)
                      {
-                        wxString name = wxString::Format(L"%d",label);
-                        choices.push_back( Verbatim( name ) );
-                        if (label <= rate)
-                           selected = i;
+                        int label = sampRates[i];
+                        if ((!lowrate || label >= lowrate) && (!highrate || label <= highrate))
+                        {
+                           wxString name = wxString::Format(L"%d",label);
+                           choices.push_back( Verbatim( name ) );
+                           if (label <= rate)
+                              selected = i;
+                        }
                      }
-                  }
-                  return choices;
-               }(),
-               std::max( 0, selected )
-            );
+                     return choices;
+                  }(),
+                  std::max( 0, selected ) );
          }
          S.EndHorizontalLay();
       }

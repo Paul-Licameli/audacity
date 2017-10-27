@@ -366,9 +366,13 @@ bool LongMessageDialog::Init()
    S.SetBorder(5);
    S.StartVerticalLay(true);
    {
-      mTextCtrl = S.AddTextWindow( "" );
+      mTextCtrl =
+      S
+         .AddTextWindow( "" );
+
       long buttons = eOkButton;
-      S.AddStandardButtons(buttons|mAdditionalButtons);
+      S
+         .AddStandardButtons(buttons|mAdditionalButtons);
    }
    S.EndVerticalLay();
 

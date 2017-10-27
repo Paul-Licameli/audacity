@@ -110,14 +110,14 @@ void HistoryDialog::Populate(ShuttleGui & S)
    {
       S.StartStatic(XO("&Manage History"), 1);
       {
-         mList = S
+         mList =
+         S
             .MinSize()
             .ConnectRoot(wxEVT_KEY_DOWN, &HistoryDialog::OnListKeyDown)
             .AddListControlReportMode(
                { { XO("Action"), wxLIST_FORMAT_LEFT, 260 },
                  { XO("Used Space"), wxLIST_FORMAT_LEFT, 125 } },
-               wxLC_SINGLE_SEL
-            );
+               wxLC_SINGLE_SEL );
 
          //Assign rather than set the image list, so that it is deleted later.
          // AssignImageList takes ownership
@@ -125,16 +125,36 @@ void HistoryDialog::Populate(ShuttleGui & S)
 
          S.StartMultiColumn(3, wxCENTRE);
          {
-            S.AddPrompt(XXO("&Total space used"));
-            mTotal = S.Id(ID_TOTAL).Style(wxTE_READONLY).AddTextBox({}, L"", 10);
-            S.AddVariableText( {} )->Hide();
+            S
+               .AddPrompt(XXO("&Total space used"));
+
+            mTotal =
+            S
+               .Id(ID_TOTAL)
+               .Style(wxTE_READONLY)
+               .AddTextBox({}, L"", 10);
+
+            S
+               .AddVariableText( {} )->Hide();
 
 #if defined(ALLOW_DISCARD)
-            S.AddPrompt(XXO("&Undo levels available"));
-            mAvail = S.Id(ID_AVAIL).Style(wxTE_READONLY).AddTextBox({}, L"", 10);
-            S.AddVariableText( {} )->Hide();
+            S
+               .AddPrompt(XXO("&Undo levels available"));
+            mAvail =
+            S
+               .Id(ID_AVAIL)
+               .Style(wxTE_READONLY)
+               .AddTextBox({}, L"", 10);
+            S
+               .AddVariableText( {} )->Hide();
 
-            S.AddPrompt(XXO("&Levels to discard"));
+            S
+               .AddVariableText( {} )
+                  ->Hide();
+
+            S
+               .AddPrompt(XXO("&Levels to discard"));
+
             mLevels = safenew wxSpinCtrl(S.GetParent(),
                                      ID_LEVELS,
                                      L"1",
@@ -145,14 +165,25 @@ void HistoryDialog::Populate(ShuttleGui & S)
                                      mManager->GetCurrentState(),
                                      0);
             S.AddWindow(mLevels);
-            /* i18n-hint: (verb)*/
-            mDiscard = S.Id(ID_DISCARD).AddButton(XXO("&Discard"));
+
+            mDiscard =
+            S
+               .Id(ID_DISCARD)
+               /* i18n-hint: (verb)*/
+               .AddButton(XXO("&Discard"));
 #endif
-            S.AddPrompt(XXO("Clip&board space used"));
-            mClipboard = S.Style(wxTE_READONLY).AddTextBox({}, L"", 10);
+            S
+               .AddPrompt(XXO("Clip&board space used"));
+
+            mClipboard =
+            S
+               .Style(wxTE_READONLY)
+               .AddTextBox({}, L"", 10);
 
 #if defined(ALLOW_DISCARD)
-            S.Id(ID_DISCARD_CLIPBOARD).AddButton(XXO("D&iscard"));
+            S
+               .Id(ID_DISCARD_CLIPBOARD)
+               .AddButton(XXO("D&iscard"));
 #endif
          }
          S.EndMultiColumn();

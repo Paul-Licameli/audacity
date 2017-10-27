@@ -276,7 +276,8 @@ bool AudacityCommandDialog::Init()
       PopulateOrExchange(S);
 
       long buttons = eOkButton;
-      S.AddStandardButtons(buttons|mAdditionalButtons);
+      S
+         .AddStandardButtons(buttons|mAdditionalButtons);
    }
    S.EndVerticalLay();
 

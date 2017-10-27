@@ -70,28 +70,35 @@ ErrorDialog::ErrorDialog(
    S.SetBorder(2);
    S.StartHorizontalLay(wxEXPAND, 0);
    {
-      S.SetBorder(20);
+      S
+         .SetBorder(20);
       wxBitmap bitmap = wxArtProvider::GetBitmap(wxART_WARNING);
-      S.AddWindow(safenew wxStaticBitmap(S.GetParent(), -1, bitmap));
+      S
+         .AddWindow(safenew wxStaticBitmap(S.GetParent(), -1, bitmap));
 
-      S.SetBorder(20);
-      S.AddFixedText(message, false, 500);
+      S
+         .SetBorder(20);
+      S
+         .AddFixedText(message, false, 500);
    }
    S.EndHorizontalLay();
 
-   S.SetBorder(2);
+   S
+      .SetBorder(2);
    if (!log.empty())
    {
       S.StartHorizontalLay(wxEXPAND, 1);
       {
-         S.SetBorder(5);
+         S
+            .SetBorder(5);
 
          auto pane = safenew wxCollapsiblePane(S.GetParent(),
                                                wxID_ANY,
                                                XO("Show &Log...").Translation());
-         S.Style(wxEXPAND | wxALIGN_LEFT);
-         S.Prop(1);
-         S.AddWindow(pane);
+         S
+            .Style(wxEXPAND | wxALIGN_LEFT)
+            .Prop(1)
+            .AddWindow(pane);
 
          ShuttleGui SI(pane->GetPane(), eIsCreating);
          auto text = SI.AddTextWindow(log);
@@ -102,8 +109,10 @@ ErrorDialog::ErrorDialog(
       S.EndHorizontalLay();
    }
 
-   S.SetBorder(2);
-   S.AddStandardButtons(buttonMask);
+   S
+      .SetBorder(2);
+   S
+      .AddStandardButtons(buttonMask);
 
    Layout();
    GetSizer()->Fit(this);

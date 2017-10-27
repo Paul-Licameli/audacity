@@ -336,21 +336,24 @@ void EffectDtmf::PopulateOrExchange(ShuttleGui & S)
    S.AddSpace(0, 5);
    S.StartMultiColumn(2, wxCENTER);
    {
-      mDtmfSequenceT = S.Id(ID_Sequence)
+      mDtmfSequenceT =
+      S
+         .Id(ID_Sequence)
          .Validator([this]{
             wxTextValidator vldDtmf(wxFILTER_INCLUDE_CHAR_LIST, &dtmfSequence);
             vldDtmf.SetIncludes(wxArrayString(WXSIZEOF(kSymbols), kSymbols));
-            return vldDtmf;
-         })
+            return vldDtmf; })
          .AddTextBox(XXO("DTMF &sequence:"), L"", 10);
 
-      S.Id(ID_Amplitude)
+      S
+         .Id(ID_Amplitude)
          .Validator<FloatingPointValidator<double>>(
             3, &dtmfAmplitude, NumValidatorStyle::NO_TRAILING_ZEROES,
             MIN_Amplitude, MAX_Amplitude)
          .AddTextBox(XXO("&Amplitude (0-1):"), L"", 10);
 
       S.AddPrompt(XXO("&Duration:"));
+
       mDtmfDurationT = safenew
          NumericTextCtrl(S.GetParent(), ID_Duration,
                          NumericConverter::TIME,
@@ -359,11 +362,16 @@ void EffectDtmf::PopulateOrExchange(ShuttleGui & S)
                          mProjectRate,
                          NumericTextCtrl::Options{}
                             .AutoPos(true));
-      S.Name(XO("Duration"))
+      S
+         .Name(XO("Duration"))
          .AddWindow(mDtmfDurationT);
 
-      S.AddFixedText(XO("&Tone/silence ratio:"), false);
-      mDtmfDutyCycleS = S.Id(ID_DutyCycle)
+      S
+         .AddFixedText(XO("&Tone/silence ratio:"), false);
+
+      mDtmfDutyCycleS =
+      S
+         .Id(ID_DutyCycle)
          .Style(wxSL_HORIZONTAL | wxEXPAND)
          .MinSize( { -1, -1 } )
          .AddSlider( {},
@@ -375,19 +383,28 @@ void EffectDtmf::PopulateOrExchange(ShuttleGui & S)
 
    S.StartMultiColumn(2, wxCENTER);
    {
-      S.AddFixedText(XO("Duty cycle:"), false);
-      mDtmfDutyT =
-         S.AddVariableText(XO("%.1f %%").Format( dtmfDutyCycle ), false);
-      
-      S.AddFixedText(XO("Tone duration:"), false);
-      mDtmfSilenceT =
-         /* i18n-hint milliseconds */
-         S.AddVariableText(XO("%.0f ms").Format( dtmfTone * 1000.0 ), false);
+      S
+         .AddFixedText(XO("Duty cycle:"), false);
 
-      S.AddFixedText(XO("Silence duration:"), false);
-      mDtmfToneT =
+      mDtmfDutyT =
+      S
+         .AddVariableText(XO("%.1f %%").Format( dtmfDutyCycle ), false);
+      
+      S
+         .AddFixedText(XO("Tone duration:"), false);
+
+      mDtmfSilenceT =
+      S
          /* i18n-hint milliseconds */
-         S.AddVariableText(XO("%0.f ms").Format( dtmfSilence * 1000.0 ), false);
+         .AddVariableText(XO("%.0f ms").Format( dtmfTone * 1000.0 ), false);
+
+      S
+         .AddFixedText(XO("Silence duration:"), false);
+
+      mDtmfToneT =
+      S
+         /* i18n-hint milliseconds */
+         .AddVariableText(XO("%0.f ms").Format( dtmfSilence * 1000.0 ), false);
    }
    S.EndMultiColumn();
 }

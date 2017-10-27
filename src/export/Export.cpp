@@ -209,7 +209,9 @@ void ExportPlugin::OptionsCreate(ShuttleGui &S, int WXUNUSED(format))
    {
       S.StartHorizontalLay(wxCENTER, 0);
       {
-         S.Prop(1).AddTitle(XO("No format specific options"));
+         S
+            .Prop(1)
+            .AddTitle(XO("No format specific options"));
       }
       S.EndHorizontalLay();
    }
@@ -1421,16 +1423,20 @@ ExportMixerDialog::ExportMixerDialog( const TrackList *tracks, bool selectedOnly
       auto mixerPanel = safenew ExportMixerPanel(
          S.GetParent(), ID_MIXERPANEL, mMixerSpec.get(),
          mTrackNames, wxDefaultPosition, wxSize(400, -1));
-      S.Prop(1)
+
+      S
+         .Prop(1)
          .Name(XO("Mixer Panel"))
          .Position(wxEXPAND | wxALL)
          .AddWindow(mixerPanel);
 
       S.StartHorizontalLay(wxALIGN_CENTER | wxALL, 0);
       {
-         mChannelsText = S.AddVariableText(
-            label,
-            false, wxALIGN_LEFT | wxALL );
+         mChannelsText =
+         S
+            .AddVariableText(
+               label,
+               false, wxALIGN_LEFT | wxALL );
 
          S
             .Id(ID_SLIDER_CHANNEL)
@@ -1444,7 +1450,8 @@ ExportMixerDialog::ExportMixerDialog( const TrackList *tracks, bool selectedOnly
       }
       S.EndHorizontalLay();
 
-      S.AddStandardButtons( eCancelButton | eOkButton | eHelpButton );
+      S
+         .AddStandardButtons( eCancelButton | eOkButton | eHelpButton );
    }
 
    SetAutoLayout(true);

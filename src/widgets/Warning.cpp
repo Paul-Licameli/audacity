@@ -69,13 +69,19 @@ WarningDialog::WarningDialog(wxWindow *parent, const TranslatableString &message
    S.SetBorder(10);
    S.StartVerticalLay(false);
    {
-      S.AddFixedText(message);
-      mCheckBox = S.AddCheckBox(footer, false);
+      S
+         .AddFixedText(message);
+
+      mCheckBox =
+      S
+         .AddCheckBox(footer, false);
    }
    S.EndVerticalLay();
 
    S.SetBorder(0);
-   S.AddStandardButtons(showCancelButton ? eOkButton | eCancelButton : eOkButton);
+
+   S
+      .AddStandardButtons(showCancelButton ? eOkButton | eCancelButton : eOkButton);
 
    Layout();
    GetSizer()->Fit(this);

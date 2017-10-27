@@ -866,7 +866,8 @@ wxDialogWrapper( parent, id, title, position, size, style | wxRESIZE_BORDER )
                mFile->GetStreamInfo(),
                std::mem_fn( &TranslatableString::Translation ) ) );
 
-      S.AddStandardButtons();
+      S
+         .AddStandardButtons();
    }
 
    SetAutoLayout(true);

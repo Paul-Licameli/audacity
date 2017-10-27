@@ -151,66 +151,74 @@ void GUIPrefs::PopulateOrExchange(ShuttleGui & S)
       S.StartMultiColumn(2);
       {
 
-         S.TieChoice( XXO("&Language:"),
-            {
-               L"/Locale/Language",
-               { ByColumns, mLangNames, mLangCodes }
-            }
-         );
+         S
+            .TieChoice( XXO("&Language:"),
+               {
+                  L"/Locale/Language",
+                  { ByColumns, mLangNames, mLangCodes }
+               } );
 
-         S.TieChoice( XXO("Location of &Manual:"), GUIManualLocation);
+         S
+            .TieChoice( XXO("Location of &Manual:"), GUIManualLocation );
 
-         S.TieChoice( XXO("Th&eme:"), GUITheme);
+         S
+            .TieChoice( XXO("Th&eme:"), GUITheme );
 
-         S.TieChoice( XXO("Meter dB &range:"),
-            {
-               ENV_DB_KEY,
-               { ByColumns, mRangeChoices, mRangeCodes },
-               mDefaultRangeIndex
-            }
-         );
+         S
+            .TieChoice( XXO("Meter dB &range:"),
+               {
+                  ENV_DB_KEY,
+                  { ByColumns, mRangeChoices, mRangeCodes },
+                  mDefaultRangeIndex
+               } );
       }
       S.EndMultiColumn();
 //      S.AddSpace(10);
 // JKC: This is a silly preference.  Kept here as a reminder that we may
 // later want to have configurable button order.
-//      S.TieCheckBox(XXO("&Ergonomic order of Transport Toolbar buttons"),
-//                    L"/GUI/ErgonomicTransportButtons",
-//                    true);
+//      S
+//         .TieCheckBox( XXO("&Ergonomic order of Transport Toolbar buttons"),
+//            L"/GUI/ErgonomicTransportButtons", true );
 
    }
    S.EndStatic();
 
    S.StartStatic(XO("Options"));
    {
-      // Start wording of options with a verb, if possible.
-      S.TieCheckBox(XXO("Show 'How to Get &Help' at launch"),
-                    {L"/GUI/ShowSplashScreen",
-                     true});
-      S.TieCheckBox(XXO("Show e&xtra menus"),
-                    {L"/GUI/ShowExtraMenus",
-                     false});
+      S
+         // Start wording of options with a verb, if possible.
+         .TieCheckBox(XXO("Show 'How to Get &Help' at launch"),
+            {L"/GUI/ShowSplashScreen", true});
+
+      S
+        .TieCheckBox(XXO("Show e&xtra menus"),
+           {L"/GUI/ShowExtraMenus", false});
+
 #ifdef EXPERIMENTAL_THEME_PREFS
       // We do not want to make this option mainstream.  It's a 
       // convenience for developers.
-      S.TieCheckBox(XXO("Show alternative &styling (Mac vs PC)"),
-                    {L"/GUI/ShowMac",
-                     false});
+      S
+         .TieCheckBox(XXO("Show alternative &styling (Mac vs PC)"),
+            {L"/GUI/ShowMac", false});
 #endif
-      S.TieCheckBox(XXO("&Beep on completion of longer activities"),
-                    {L"/GUI/BeepOnCompletion",
-                     false});
-      S.TieCheckBox(XXO("Re&tain labels if selection snaps to a label"),
-                    {L"/GUI/RetainLabels",
-                     false});
-      S.TieCheckBox(XXO("B&lend system and Audacity theme"),
-                    {L"/GUI/BlendThemes",
-                     true});
+
+      S
+         .TieCheckBox(XXO("&Beep on completion of longer activities"),
+            {L"/GUI/BeepOnCompletion", false});
+
+      S
+         .TieCheckBox(XXO("Re&tain labels if selection snaps to a label"),
+            {L"/GUI/RetainLabels", false});
+
+      S
+         .TieCheckBox(XXO("B&lend system and Audacity theme"),
+            {L"/GUI/BlendThemes", true});
+
 #ifndef __WXMAC__
       /* i18n-hint: RTL stands for 'Right to Left'  */
-      S.TieCheckBox(XXO("Use mostly Left-to-Right layouts in RTL languages"),
-         {"/GUI/RtlWorkaround",
-          true});
+      S
+         .TieCheckBox(XXO("Use mostly Left-to-Right layouts in RTL languages"),
+            {"/GUI/RtlWorkaround", true});
 #endif
 #ifdef EXPERIMENTAL_CEE_NUMBERS_OPTION
       S.TieCheckBox(XXO("Never use comma as decimal point"),
@@ -222,12 +230,13 @@ void GUIPrefs::PopulateOrExchange(ShuttleGui & S)
 
    S.StartStatic(XO("Timeline"));
    {
-      S.TieCheckBox(XXO("Show Timeline Tooltips"),
-                    {L"/QuickPlay/ToolTips",
-                     true});
-      S.TieCheckBox(XXO("Show Scrub Ruler"),
-                    {L"/QuickPlay/ScrubbingEnabled",
-                     false});
+      S
+         .TieCheckBox(XXO("Show Timeline Tooltips"),
+            {L"/QuickPlay/ToolTips", true});
+
+      S
+         .TieCheckBox(XXO("Show Scrub Ruler"),
+            {L"/QuickPlay/ScrubbingEnabled", false});
    }
    S.EndStatic();
 

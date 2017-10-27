@@ -243,68 +243,92 @@ void EffectWahwah::PopulateOrExchange(ShuttleGui & S)
    {
       S.SetStretchyCol(2);
    
-      mFreqT = S.Id(ID_Freq)
+      mFreqT =
+      S
+         .Id(ID_Freq)
          .Validator<FloatingPointValidator<double>>(
             5, &mFreq, NumValidatorStyle::ONE_TRAILING_ZERO, MIN_Freq, MAX_Freq)
          .AddTextBox(XXO("LFO Freq&uency (Hz):"), L"", 12);
 
-      mFreqS = S.Id(ID_Freq)
+      mFreqS =
+      S
+         .Id(ID_Freq)
          .Name(XO("LFO frequency in hertz"))
          .Style(wxSL_HORIZONTAL)
          .MinSize( { 100, -1 } )
          .AddSlider( {}, DEF_Freq * SCL_Freq, MAX_Freq * SCL_Freq, MIN_Freq * SCL_Freq);
 
-      mPhaseT = S.Id(ID_Phase)
+      mPhaseT =
+      S
+         .Id(ID_Phase)
          .Validator<FloatingPointValidator<double>>(
             1, &mPhase, NumValidatorStyle::DEFAULT, MIN_Phase, MAX_Phase)
          .AddTextBox(XXO("LFO Sta&rt Phase (deg.):"), L"", 12);
 
-      mPhaseS = S.Id(ID_Phase)
+      mPhaseS =
+      S
+         .Id(ID_Phase)
          .Name(XO("LFO start phase in degrees"))
          .Style(wxSL_HORIZONTAL)
          .MinSize( { 100, -1 } )
          .AddSlider( {}, DEF_Phase * SCL_Phase, MAX_Phase * SCL_Phase, MIN_Phase * SCL_Phase,
             10 /* line size */ );
 
-      mDepthT = S.Id(ID_Depth)
+      mDepthT =
+      S
+         .Id(ID_Depth)
          .Validator<IntegerValidator<int>>(
             &mDepth, NumValidatorStyle::DEFAULT, MIN_Depth, MAX_Depth)
          .AddTextBox(XXO("Dept&h (%):"), L"", 12);
 
-      mDepthS = S.Id(ID_Depth)
+      mDepthS =
+      S
+         .Id(ID_Depth)
          .Name(XO("Depth in percent"))
          .Style(wxSL_HORIZONTAL)
          .MinSize( { 100, -1 } )
          .AddSlider( {}, DEF_Depth * SCL_Depth, MAX_Depth * SCL_Depth, MIN_Depth * SCL_Depth);
 
-      mResT = S.Id(ID_Res)
+      mResT =
+      S
+         .Id(ID_Res)
          .Validator<FloatingPointValidator<double>>(
             1, &mRes, NumValidatorStyle::DEFAULT, MIN_Res, MAX_Res)
          .AddTextBox(XXO("Reso&nance:"), L"", 12);
 
-      mResS = S.Id(ID_Res)
+      mResS =
+      S
+         .Id(ID_Res)
          .Name(XO("Resonance"))
          .Style(wxSL_HORIZONTAL)
          .MinSize( { 100, -1 } )
          .AddSlider( {}, DEF_Res * SCL_Res, MAX_Res * SCL_Res, MIN_Res * SCL_Res);
 
-      mFreqOfsT = S.Id(ID_FreqOfs)
+      mFreqOfsT =
+      S
+         .Id(ID_FreqOfs)
          .Validator<IntegerValidator<int>>(
             &mFreqOfs, NumValidatorStyle::DEFAULT, MIN_FreqOfs, MAX_FreqOfs)
          .AddTextBox(XXO("Wah Frequency Offse&t (%):"), L"", 12);
 
-      mFreqOfsS = S.Id(ID_FreqOfs)
+      mFreqOfsS =
+      S
+         .Id(ID_FreqOfs)
          .Name(XO("Wah frequency offset in percent"))
          .Style(wxSL_HORIZONTAL)
          .MinSize( { 100, -1 } )
          .AddSlider( {}, DEF_FreqOfs * SCL_FreqOfs, MAX_FreqOfs * SCL_FreqOfs, MIN_FreqOfs * SCL_FreqOfs);
 
-      mOutGainT = S.Id(ID_OutGain)
+      mOutGainT =
+      S
+         .Id(ID_OutGain)
          .Validator<FloatingPointValidator<double>>(
             1, &mOutGain, NumValidatorStyle::DEFAULT, MIN_OutGain, MAX_OutGain)
          .AddTextBox(XXO("&Output gain (dB):"), L"", 12);
 
-      mOutGainS = S.Id(ID_OutGain)
+      mOutGainS =
+      S
+         .Id(ID_OutGain)
          .Name(XO("Output gain (dB)"))
          .Style(wxSL_HORIZONTAL)
          .MinSize( { 100, -1 } )

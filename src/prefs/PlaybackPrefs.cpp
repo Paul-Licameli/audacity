@@ -86,35 +86,45 @@ void PlaybackPrefs::PopulateOrExchange(ShuttleGui & S)
    {
       S.StartThreeColumn();
       {
-         S.NameSuffix(suffix)
+         S
+            .NameSuffix(suffix)
             .TieNumericTextBox(XXO("&Length:"),
                                  {L"/AudioIO/EffectsPreviewLen",
                                   6.0},
                                  9);
-         S.AddUnits(XO("seconds"));
+   
+         S
+            .AddUnits(XO("seconds"));
       }
       S.EndThreeColumn();
    }
    S.EndStatic();
 
    /* i18n-hint: (noun) this is a preview of the cut */
-   S.StartStatic(XO("Cut Preview"));
+   S
+      .StartStatic(XO("Cut Preview"));
    {
       S.StartThreeColumn();
       {
-         S.NameSuffix(suffix)
+         S
+            .NameSuffix(suffix)
             .TieNumericTextBox(XXO("&Before cut region:"),
                                  {L"/AudioIO/CutPreviewBeforeLen",
                                   2.0},
                                  9);
-         S.AddUnits(XO("seconds"));
 
-         S.NameSuffix(suffix)
+         S
+            .AddUnits(XO("seconds"));
+
+         S
+            .NameSuffix(suffix)
             .TieNumericTextBox(XXO("&After cut region:"),
                                  {L"/AudioIO/CutPreviewAfterLen",
                                   1.0},
                                  9);
-         S.AddUnits(XO("seconds"));
+
+         S
+            .AddUnits(XO("seconds"));
       }
       S.EndThreeColumn();
    }
@@ -124,19 +134,25 @@ void PlaybackPrefs::PopulateOrExchange(ShuttleGui & S)
    {
       S.StartThreeColumn();
       {
-         S.NameSuffix(suffix)
+         S
+            .NameSuffix(suffix)
             .TieNumericTextBox(XXO("&Short period:"),
                                  {L"/AudioIO/SeekShortPeriod",
                                   1.0},
                                  9);
-         S.AddUnits(XO("seconds"));
 
-         S.NameSuffix(suffix)
+         S
+            .AddUnits(XO("seconds"));
+
+         S
+            .NameSuffix(suffix)
             .TieNumericTextBox(XXO("Lo&ng period:"),
                                  {L"/AudioIO/SeekLongPeriod",
                                   15.0},
                                  9);
-         S.AddUnits(XO("seconds"));
+
+         S
+            .AddUnits(XO("seconds"));
       }
       S.EndThreeColumn();
    }
@@ -146,11 +162,16 @@ void PlaybackPrefs::PopulateOrExchange(ShuttleGui & S)
    {
       S.StartVerticalLay();
       {
-         S.TieCheckBox(XXO("&Vari-Speed Play"), {"/AudioIO/VariSpeedPlay", true});
-         S.TieCheckBox(XXO("&Micro-fades"), {"/AudioIO/Microfades", false});
-         S.TieCheckBox(XXO("Always scrub un&pinned"),
-            {UnpinnedScrubbingPreferenceKey(),
-             UnpinnedScrubbingPreferenceDefault()});
+         S
+            .TieCheckBox(XXO("&Vari-Speed Play"), {"/AudioIO/VariSpeedPlay", true});
+
+         S
+            .TieCheckBox(XXO("&Micro-fades"), {"/AudioIO/Microfades", false});
+
+         S
+            .TieCheckBox(XXO("Always scrub un&pinned"),
+               {UnpinnedScrubbingPreferenceKey(),
+                UnpinnedScrubbingPreferenceDefault()});
       }
       S.EndVerticalLay();
    }
