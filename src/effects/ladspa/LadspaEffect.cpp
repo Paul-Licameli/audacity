@@ -1200,301 +1200,294 @@ bool LadspaEffect::PopulateUI(ShuttleGui &S)
    mLabels.reinit( mData->PortCount );
    mMeters.reinit( mData->PortCount );
 
-   wxASSERT(mParent); // To justify safenew
-   wxScrolledWindow *const w = safenew wxScrolledWindow(mParent,
-      wxID_ANY,
-      wxDefaultPosition,
-      wxDefaultSize,
-      wxVSCROLL | wxTAB_TRAVERSAL);
-
+   auto w = S.StartScroller(wxVSCROLL | wxTAB_TRAVERSAL);
+   w->SetScrollRate(0, 20);
    {
-      auto mainSizer = std::make_unique<wxBoxSizer>(wxVERTICAL);
-      w->SetScrollRate(0, 20);
-
-      // This fools NVDA into not saying "Panel" when the dialog gets focus
-      w->SetName(L"\a");
-      w->SetLabel(L"\a");
-
-      mainSizer->Add(w, 1, wxEXPAND);
-      mParent->SetSizer(mainSizer.release());
-   }
-
-   wxSizer *marginSizer;
-   {
-      auto uMarginSizer = std::make_unique<wxBoxSizer>(wxVERTICAL);
-      marginSizer = uMarginSizer.get();
-
+      S.SetBorder( 5 );
       if (mNumInputControls)
       {
-         auto paramSizer = std::make_unique<wxStaticBoxSizer>(wxVERTICAL, w, _("Effect Settings"));
-
-         auto gridSizer = std::make_unique<wxFlexGridSizer>(5, 0, 0);
-         gridSizer->AddGrowableCol(3);
-
-         wxControl *item;
-
-         // Add the duration control for generators
-         if (GetType() == EffectTypeGenerate)
+         S.StartStatic( XO("Effect Settings") );
          {
-            item = safenew wxStaticText(w, 0, _("Duration:"));
-            gridSizer->Add(item, 0, wxALIGN_CENTER_VERTICAL | wxALIGN_RIGHT | wxALL, 5);
-            mDuration = safenew
-               NumericTextCtrl(w, ID_Duration,
-                  NumericConverter::TIME,
-                  mHost->GetDurationFormat(),
-                  mHost->GetDuration(),
-                  mSampleRate,
-                  NumericTextCtrl::Options{}
-                     .AutoPos(true));
-            mDuration->SetName( XO("Duration") );
-            gridSizer->Add(mDuration, 0, wxALIGN_CENTER_VERTICAL | wxALL, 5);
-            gridSizer->Add(1, 1, 0);
-            gridSizer->Add(1, 1, 0);
-            gridSizer->Add(1, 1, 0);
-         }
-
-         for (unsigned long p = 0; p < mData->PortCount; p++)
-         {
-            LADSPA_PortDescriptor d = mData->PortDescriptors[p];
-            if (LADSPA_IS_PORT_AUDIO(d) || LADSPA_IS_PORT_OUTPUT(d))
+            S.StartMultiColumn(5);
             {
-               continue;
-            }
+               S.SetStretchyCol( 3 );
+               wxControl *item;
 
-            wxString labelText = LAT1CTOWX(mData->PortNames[p]);
-            item = safenew wxStaticText(w, 0, wxString::Format(_("%s:"), labelText));
-            gridSizer->Add(item, 0, wxALIGN_CENTER_VERTICAL | wxALIGN_RIGHT | wxALL, 5);
-
-            wxString fieldText;
-            LADSPA_PortRangeHint hint = mData->PortRangeHints[p];
-
-            if (LADSPA_IS_HINT_TOGGLED(hint.HintDescriptor))
-            {
-               mToggles[p] = safenew wxCheckBox(w, ID_Toggles + p, L"");
-               mToggles[p]->SetName(labelText);
-               mToggles[p]->SetValue(mInputControls[p] > 0);
-               gridSizer->Add(mToggles[p], 0, wxALL, 5);
-
-               gridSizer->Add(1, 1, 0);
-               gridSizer->Add(1, 1, 0);
-               gridSizer->Add(1, 1, 0);
-               continue;
-            }
-
-            wxString bound;
-            float lower = -FLT_MAX;
-            float upper = FLT_MAX;
-            bool haslo = false;
-            bool hashi = false;
-            bool forceint = false;
-
-            if (LADSPA_IS_HINT_BOUNDED_BELOW(hint.HintDescriptor))
-            {
-               lower = hint.LowerBound;
-               haslo = true;
-            }
-
-            if (LADSPA_IS_HINT_BOUNDED_ABOVE(hint.HintDescriptor))
-            {
-               upper = hint.UpperBound;
-               hashi = true;
-            }
-
-            if (LADSPA_IS_HINT_SAMPLE_RATE(hint.HintDescriptor))
-            {
-               lower *= mSampleRate;
-               upper *= mSampleRate;
-               forceint = true;
-            }
-
-            // Limit to the UI precision
-            lower = ceilf(lower * 1000000.0) / 1000000.0;
-            upper = floorf(upper * 1000000.0) / 1000000.0;
-            mInputControls[p] = roundf(mInputControls[p] * 1000000.0) / 1000000.0;
-
-            if (haslo && mInputControls[p] < lower)
-            {
-               mInputControls[p] = lower;
-            }
-
-            if (hashi && mInputControls[p] > upper)
-            {
-               mInputControls[p] = lower;
-            }
-
-            // Don't specify a value at creation time.  This prevents unwanted events
-            // being sent to the OnTextCtrl() handler before the associated slider
-            // has been created.
-            mFields[p] = safenew wxTextCtrl(w, ID_Texts + p);
-            mFields[p]->SetName(labelText);
-            gridSizer->Add(mFields[p], 0, wxALIGN_CENTER_VERTICAL | wxALL, 5);
-
-            wxString str;
-            if (haslo)
-            {
-               if (LADSPA_IS_HINT_INTEGER(hint.HintDescriptor) || forceint)
+               // Add the duration control for generators
+               if (GetType() == EffectTypeGenerate)
                {
-                  str.Printf(L"%d", (int)(lower + 0.5));
+                  item = safenew wxStaticText(S.GetParent(), 0, _("Duration:"));
+                  S.Position(wxALIGN_CENTER_VERTICAL | wxALIGN_RIGHT | wxALL)
+                     .AddWindow(item);
+                  mDuration = safenew
+                     NumericTextCtrl(S.GetParent(), ID_Duration,
+                                     NumericConverter::TIME,
+                                     mHost->GetDurationFormat(),
+                                     mHost->GetDuration(),
+                                     mSampleRate,
+                                     NumericTextCtrl::Options{}
+                                        .AutoPos(true));
+                  mDuration->SetName(XO("Duration"));
+                  S.Position(wxALIGN_CENTER_VERTICAL | wxALL)
+                     .AddWindow(mDuration);
+                  S.AddSpace( 1, 1 );
+                  S.AddSpace( 1, 1 );
+                  S.AddSpace( 1, 1 );
                }
-               else
-               {
-                  str = Internat::ToDisplayString(lower);
-               }
-               item = safenew wxStaticText(w, 0, str);
-               gridSizer->Add(item, 0, wxALIGN_CENTER_VERTICAL | wxALIGN_RIGHT | wxALL, 5);
-            }
-            else
-            {
-               gridSizer->Add(1, 1, 0);
-            }
 
-            mSliders[p] = safenew wxSliderWrapper(w, ID_Sliders + p,
-               0, 0, 1000,
-               wxDefaultPosition,
-               wxSize(200, -1));
+               for (unsigned long p = 0; p < mData->PortCount; p++)
+               {
+                  LADSPA_PortDescriptor d = mData->PortDescriptors[p];
+                  if (LADSPA_IS_PORT_AUDIO(d) || LADSPA_IS_PORT_OUTPUT(d))
+                  {
+                     continue;
+                  }
+
+                  wxString labelText = LAT1CTOWX(mData->PortNames[p]);
+                  item = safenew wxStaticText(S.GetParent(), 0, wxString::Format(_("%s:"), labelText));
+                  S.Position(wxALIGN_CENTER_VERTICAL | wxALIGN_RIGHT | wxALL)
+                     .AddWindow(item);
+
+                  wxString fieldText;
+                  LADSPA_PortRangeHint hint = mData->PortRangeHints[p];
+
+                  if (LADSPA_IS_HINT_TOGGLED(hint.HintDescriptor))
+                  {
+                     mToggles[p] = safenew wxCheckBox(S.GetParent(), ID_Toggles + p, L"");
+                     mToggles[p]->SetName(labelText);
+                     mToggles[p]->SetValue(mInputControls[p] > 0);
+                     S.Position(wxALL)
+                        .AddWindow(mToggles[p]);
+
+                     S.AddSpace( 1, 1 );
+                     S.AddSpace( 1, 1 );
+                     S.AddSpace( 1, 1 );
+                     continue;
+                  }
+
+                  wxString bound;
+                  float lower = -FLT_MAX;
+                  float upper = FLT_MAX;
+                  bool haslo = false;
+                  bool hashi = false;
+                  bool forceint = false;
+
+                  if (LADSPA_IS_HINT_BOUNDED_BELOW(hint.HintDescriptor))
+                  {
+                     lower = hint.LowerBound;
+                     haslo = true;
+                  }
+
+                  if (LADSPA_IS_HINT_BOUNDED_ABOVE(hint.HintDescriptor))
+                  {
+                     upper = hint.UpperBound;
+                     hashi = true;
+                  }
+
+                  if (LADSPA_IS_HINT_SAMPLE_RATE(hint.HintDescriptor))
+                  {
+                     lower *= mSampleRate;
+                     upper *= mSampleRate;
+                     forceint = true;
+                  }
+
+                  // Limit to the UI precision
+                  lower = ceilf(lower * 1000000.0) / 1000000.0;
+                  upper = floorf(upper * 1000000.0) / 1000000.0;
+                  mInputControls[p] = roundf(mInputControls[p] * 1000000.0) / 1000000.0;
+
+                  if (haslo && mInputControls[p] < lower)
+                  {
+                     mInputControls[p] = lower;
+                  }
+
+                  if (hashi && mInputControls[p] > upper)
+                  {
+                     mInputControls[p] = lower;
+                  }
+
+                  // Don't specify a value at creation time.  This prevents unwanted events
+                  // being sent to the OnTextCtrl() handler before the associated slider
+                  // has been created.
+                  mFields[p] = safenew wxTextCtrl(S.GetParent(), ID_Texts + p);
+                  mFields[p]->SetName(labelText);
+                  S.Position(wxALIGN_CENTER_VERTICAL | wxALL)
+                     .AddWindow(mFields[p]);
+
+                  wxString str;
+                  if (haslo)
+                  {
+                     if (LADSPA_IS_HINT_INTEGER(hint.HintDescriptor) || forceint)
+                     {
+                        str.Printf(L"%d", (int)(lower + 0.5));
+                     }
+                     else
+                     {
+                        str = Internat::ToDisplayString(lower);
+                     }
+                     item = safenew wxStaticText(S.GetParent(), 0, str);
+                     S.Position(wxALIGN_CENTER_VERTICAL | wxALIGN_RIGHT | wxALL)
+                        .AddWindow(item);
+                  }
+                  else
+                  {
+                     S.AddSpace( 1, 1 );
+                  }
+
+                  mSliders[p] = safenew wxSliderWrapper(S.GetParent(), ID_Sliders + p,
+                                                 0, 0, 1000,
+                                                 wxDefaultPosition,
+                                                 wxSize(200, -1));
 #if wxUSE_ACCESSIBILITY
-            // so that name can be set on a standard control
-            mSliders[p]->SetAccessible(safenew WindowAccessible(mSliders[p]));
+                  // so that name can be set on a standard control
+                  mSliders[p]->SetAccessible(safenew WindowAccessible(mSliders[p]));
 #endif
-            mSliders[p]->SetName(labelText);
-            gridSizer->Add(mSliders[p], 0, wxALIGN_CENTER_VERTICAL | wxEXPAND | wxALL, 5);
+                  mSliders[p]->SetName(labelText);
+                  S.Position(wxALIGN_CENTER_VERTICAL | wxEXPAND | wxALL)
+                     .AddWindow(mSliders[p]);
 
-            if (hashi)
-            {
-               if (LADSPA_IS_HINT_INTEGER(hint.HintDescriptor) || forceint)
-               {
-                  str.Printf(L"%d", (int)(upper + 0.5));
+                  if (hashi)
+                  {
+                     if (LADSPA_IS_HINT_INTEGER(hint.HintDescriptor) || forceint)
+                     {
+                        str.Printf(L"%d", (int)(upper + 0.5));
+                     }
+                     else
+                     {
+                        str = Internat::ToDisplayString(upper);
+                     }
+                     item = safenew wxStaticText(S.GetParent(), 0, str);
+                     S.Position(wxALIGN_CENTER_VERTICAL | wxALIGN_LEFT | wxALL)
+                        .AddWindow(item);
+                  }
+                  else
+                  {
+                     S.AddSpace( 1, 1 );
+                  }
+
+                  if (LADSPA_IS_HINT_INTEGER(hint.HintDescriptor) || forceint)
+                  {
+                     fieldText.Printf(L"%d", (int)(mInputControls[p] + 0.5));
+
+                     IntegerValidator<float> vld(&mInputControls[p]);
+                     vld.SetRange(haslo ? lower : INT_MIN,
+                                  hashi ? upper : INT_MAX);
+                     mFields[p]->SetValidator(vld);
+                  }
+                  else
+                  {
+                     fieldText = Internat::ToDisplayString(mInputControls[p]);
+
+                     // > 12 decimal places can cause rounding errors in display.
+                     FloatingPointValidator<float> vld(6, &mInputControls[p]);
+                     vld.SetRange(lower, upper);
+
+                     // Set number of decimal places
+                     if (upper - lower < 10.0)
+                     {
+                        vld.SetStyle(NumValidatorStyle::THREE_TRAILING_ZEROES);
+                     }
+                     else if (upper - lower < 100.0)
+                     {
+                        vld.SetStyle(NumValidatorStyle::TWO_TRAILING_ZEROES);
+                     }
+                     else
+                     {
+                        vld.SetStyle(NumValidatorStyle::ONE_TRAILING_ZERO);
+                     }
+
+                     mFields[p]->SetValidator(vld);
+                  }
+
+                  // Set the textctrl value.  This will trigger an event so OnTextCtrl()
+                  // can update the slider.
+                  mFields[p]->SetValue(fieldText);
                }
-               else
-               {
-                  str = Internat::ToDisplayString(upper);
-               }
-               item = safenew wxStaticText(w, 0, str);
-               gridSizer->Add(item, 0, wxALIGN_CENTER_VERTICAL | wxALIGN_LEFT | wxALL, 5);
             }
-            else
-            {
-               gridSizer->Add(1, 1, 0);
-            }
-
-            if (LADSPA_IS_HINT_INTEGER(hint.HintDescriptor) || forceint)
-            {
-               fieldText.Printf(L"%d", (int)(mInputControls[p] + 0.5));
-
-               IntegerValidator<float> vld(&mInputControls[p]);
-               vld.SetRange(haslo ? lower : INT_MIN,
-                  hashi ? upper : INT_MAX);
-               mFields[p]->SetValidator(vld);
-            }
-            else
-            {
-               fieldText = Internat::ToDisplayString(mInputControls[p]);
-
-               // > 12 decimal places can cause rounding errors in display.
-               FloatingPointValidator<float> vld(6, &mInputControls[p]);
-               vld.SetRange(lower, upper);
-
-               // Set number of decimal places
-               if (upper - lower < 10.0)
-               {
-                  vld.SetStyle(NumValidatorStyle::THREE_TRAILING_ZEROES);
-               }
-               else if (upper - lower < 100.0)
-               {
-                  vld.SetStyle(NumValidatorStyle::TWO_TRAILING_ZEROES);
-               }
-               else
-               {
-                  vld.SetStyle(NumValidatorStyle::ONE_TRAILING_ZERO);
-               }
-
-               mFields[p]->SetValidator(vld);
-            }
-
-            // Set the textctrl value.  This will trigger an event so OnTextCtrl()
-            // can update the slider.
-            mFields[p]->SetValue(fieldText);
+            S.EndMultiColumn();
          }
-
-         paramSizer->Add(gridSizer.release(), 0, wxEXPAND | wxALL, 5);
-         marginSizer->Add(paramSizer.release(), 0, wxEXPAND | wxALL, 5);
+         S.EndStatic();
       }
 
       if (mNumOutputControls > 0)
       {
-         auto paramSizer = std::make_unique<wxStaticBoxSizer>(wxVERTICAL, w, _("Effect Output"));
-
-         auto gridSizer = std::make_unique<wxFlexGridSizer>(2, 0, 0);
-         gridSizer->AddGrowableCol(1);
-
-         wxControl *item;
-
-         for (unsigned long p = 0; p < mData->PortCount; p++)
+         S.StartStatic( XO("Effect Output") );
          {
-            LADSPA_PortDescriptor d = mData->PortDescriptors[p];
-            if (LADSPA_IS_PORT_AUDIO(d) || LADSPA_IS_PORT_INPUT(d))
+            S.StartMultiColumn( 2 );
             {
-               continue;
+               S.SetStretchyCol( 1 );
+
+               wxControl *item;
+
+               for (unsigned long p = 0; p < mData->PortCount; p++)
+               {
+                  LADSPA_PortDescriptor d = mData->PortDescriptors[p];
+                  if (LADSPA_IS_PORT_AUDIO(d) || LADSPA_IS_PORT_INPUT(d))
+                  {
+                     continue;
+                  }
+
+                  wxString labelText = LAT1CTOWX(mData->PortNames[p]);
+                  item = safenew wxStaticText(S.GetParent(), 0, wxString::Format(_("%s:"), labelText));
+                  S.Position(wxALIGN_CENTER_VERTICAL | wxALIGN_RIGHT | wxALL)
+                     .AddWindow(item);
+
+                  //LADSPA_PortRangeHint hint = mData->PortRangeHints[p];
+
+                  wxString bound;
+                  float lower = 0.0;
+                  float upper = 1.0;
+
+                  /*
+                   bool haslo = false;
+                   bool hashi = false;
+                   bool forceint = false;
+                   
+                   if (LADSPA_IS_HINT_BOUNDED_BELOW(hint.HintDescriptor))
+                   {
+                   lower = hint.LowerBound;
+                   haslo = true;
+                   }
+                   
+                   if (LADSPA_IS_HINT_BOUNDED_ABOVE(hint.HintDescriptor))
+                   {
+                   upper = hint.UpperBound;
+                   hashi = true;
+                   }
+                   
+                   if (LADSPA_IS_HINT_SAMPLE_RATE(hint.HintDescriptor))
+                   {
+                   lower *= mSampleRate;
+                   upper *= mSampleRate;
+                   forceint = true;
+                   }
+                   */
+                  
+                  // Limit to the UI precision
+                  lower = ceilf(lower * 1000000.0) / 1000000.0;
+                  upper = floorf(upper * 1000000.0) / 1000000.0;
+                  mInputControls[p] = roundf(mInputControls[p] * 1000000.0) / 1000000.0;
+                  
+                  mMeters[p] = safenew LadspaEffectMeter(S.GetParent(), mOutputControls[p], lower, upper);
+                  mMeters[p]->SetLabel(labelText);    // for screen readers
+                  S.Prop(1)
+                     .Position(wxEXPAND | wxALIGN_CENTER_VERTICAL | wxALL)
+                     .AddWindow(mMeters[p]);
+               }
             }
-
-            wxString labelText = LAT1CTOWX(mData->PortNames[p]);
-            item = safenew wxStaticText(w, 0, wxString::Format(_("%s:"), labelText));
-            gridSizer->Add(item, 0, wxALIGN_CENTER_VERTICAL | wxALIGN_RIGHT | wxALL, 5);
-
-            //LADSPA_PortRangeHint hint = mData->PortRangeHints[p];
-
-            wxString bound;
-            float lower = 0.0;
-            float upper = 1.0;
-
-            /*
-            bool haslo = false;
-            bool hashi = false;
-            bool forceint = false;
-
-            if (LADSPA_IS_HINT_BOUNDED_BELOW(hint.HintDescriptor))
-            {
-               lower = hint.LowerBound;
-               haslo = true;
-            }
-
-            if (LADSPA_IS_HINT_BOUNDED_ABOVE(hint.HintDescriptor))
-            {
-               upper = hint.UpperBound;
-               hashi = true;
-            }
-
-            if (LADSPA_IS_HINT_SAMPLE_RATE(hint.HintDescriptor))
-            {
-               lower *= mSampleRate;
-               upper *= mSampleRate;
-               forceint = true;
-            }
-            */
-
-            // Limit to the UI precision
-            lower = ceilf(lower * 1000000.0) / 1000000.0;
-            upper = floorf(upper * 1000000.0) / 1000000.0;
-            mInputControls[p] = roundf(mInputControls[p] * 1000000.0) / 1000000.0;
-
-            mMeters[p] = safenew LadspaEffectMeter(w, mOutputControls[p], lower, upper);
-            mMeters[p]->SetLabel(labelText);    // for screen readers
-            gridSizer->Add(mMeters[p], 1, wxEXPAND | wxALIGN_CENTER_VERTICAL | wxALL, 5);
+            S.EndMultiColumn();
          }
-
-         paramSizer->Add(gridSizer.release(), 0, wxEXPAND | wxALL, 5);
-         marginSizer->Add(paramSizer.release(), 0, wxEXPAND | wxALL, 5);
+         S.EndStatic();
 
          RefreshControls(true);
       }
-
-      w->SetSizer(uMarginSizer.release());
    }
+   S.EndScroller();
 
    w->Layout();
 
    // Try to give the window a sensible default/minimum size
-   wxSize sz1 = marginSizer->GetMinSize();
+   wxSize sz1 = w->GetSizer()->GetMinSize();
    wxSize sz2 = mParent->GetMinSize();
    w->SetMinSize( { std::min(sz1.x, sz2.x), std::min(sz1.y, sz2.y) } );
 
