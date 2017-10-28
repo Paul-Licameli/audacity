@@ -258,7 +258,8 @@ void ExportFFmpegAACOptions::PopulateOrExchange(ShuttleGui & S)
          {
             S.SetStretchyCol(1);
 
-            S.Prop(1)
+            // S.Prop(1); // PRL: was here, but had no effect
+            S
                .Target( AACQuality )
                .AddSlider(XXO("Quality (kbps):"), 0, 320, 98);
          }

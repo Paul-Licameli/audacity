@@ -139,7 +139,8 @@ void SplashDialog::Populate( ShuttleGui & S )
       } )
       .Assign(mpHtml);
 
-   S.Prop(0).StartMultiColumn(2, wxEXPAND);
+   // S.Prop(0); // PRL: was here, but had no effect
+   S.StartMultiColumn(2, wxEXPAND);
    S.SetStretchyCol( 1 );// Column 1 is stretchy...
    {
       S.SetBorder( 5 );

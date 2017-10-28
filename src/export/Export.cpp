@@ -210,8 +210,8 @@ void ExportPlugin::OptionsCreate(ShuttleGui &S, int WXUNUSED(format))
    {
       S.StartHorizontalLay(wxCENTER, 0);
       {
+         // S.Prop(1); // PRL: was here, but had no effect
          S
-            .Prop(1)
             .AddTitle(XO("No format specific options"));
       }
       S.EndHorizontalLay();

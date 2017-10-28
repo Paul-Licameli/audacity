@@ -88,10 +88,10 @@ void ExportOGGOptions::PopulateOrExchange(ShuttleGui & S)
          {
             S.SetStretchyCol(1);
 
+            // S.Prop(1); // PRL: was here, but had no effect
             S
-               .Prop(1)
                .Target( mOggQualityUnscaled )
-               .AddSlider( XXO("Quality:"), 0, 10 );
+               .AddSlider( XXO("Quality:"), 0, 10);
          }
          S.EndMultiColumn();
       }
