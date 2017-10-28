@@ -253,8 +253,10 @@ void ExportFFmpegAACOptions::PopulateOrExchange(ShuttleGui & S)
    {
       S.StartHorizontalLay(wxEXPAND);
       {
-         S.SetSizerProportion(1);
-         S.StartMultiColumn(2, GroupOptions{ wxCENTER }.StretchyColumn(1));
+         S.StartMultiColumn(2,
+                            GroupOptions{ wxCENTER }
+                               .Proportion(1)
+                               .StretchyColumn(1));
          {
             // S.Prop(1); // PRL: was here, but had no effect
             S
@@ -557,13 +559,12 @@ ExportFFmpegOPUSOptions::~ExportFFmpegOPUSOptions()
 ///
 void ExportFFmpegOPUSOptions::PopulateOrExchange(ShuttleGui & S)
 {
-   S.SetSizerProportion(1);
    S.SetBorder(4);
    S.StartVerticalLay();
    {
       S.StartHorizontalLay(wxCENTER);
       {
-         S.StartMultiColumn(2, wxCENTER);
+         S.StartMultiColumn(2, GroupOptions{wxCENTER}.Proportion(1));
          {
             S.StartMultiColumn(2, wxCENTER);
             {

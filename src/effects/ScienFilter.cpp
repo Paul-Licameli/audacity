@@ -328,9 +328,9 @@ void EffectScienFilter::PopulateOrExchange(ShuttleGui & S)
    const auto type2Enabler = [this]{ return mFilterType == kChebyshevTypeII; };
 
    S.AddSpace(5);
-   S.SetSizerProportion(1);
    S.StartMultiColumn(3,
                       GroupOptions{ wxEXPAND }
+                         .Proportion(1)
                          .StretchyColumn(1)
                          .StretchyRow(0));
    {
@@ -435,7 +435,6 @@ void EffectScienFilter::PopulateOrExchange(ShuttleGui & S)
       // -------------------------------------------------------------------
 
       S.AddSpace(1, 1);
-      S.SetSizerProportion(0);
       S.StartMultiColumn(8, wxALIGN_CENTER);
       {
          wxASSERT(nTypes == WXSIZEOF(kTypeStrings));

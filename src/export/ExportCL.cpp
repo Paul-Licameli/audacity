@@ -114,8 +114,10 @@ void ExportCLOptions::PopulateOrExchange(ShuttleGui & S)
    {
       S.StartHorizontalLay(wxEXPAND);
       {
-         S.SetSizerProportion(1);
-         S.StartMultiColumn(3, GroupOptions{ wxEXPAND }.StretchyColumn(1));
+         S.StartMultiColumn(3,
+                            GroupOptions{ wxEXPAND }
+                               .Proportion(1)
+                               .StretchyColumn(1));
          {
             S
                .Target( Choice( mCmd, Verbatim( cmds ) ) )

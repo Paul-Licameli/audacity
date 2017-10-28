@@ -268,9 +268,9 @@ void FrequencyPlotDialog::Populate()
 
    S.AddSpace(5);
 
-   S.SetSizerProportion(1);
    S.StartMultiColumn(3,
                       GroupOptions{ wxEXPAND }
+                         .Proportion(1)
                          .StretchyColumn(1)
                          .StretchyRow(0));
    {
@@ -405,9 +405,10 @@ void FrequencyPlotDialog::Populate()
 
       S.StartHorizontalLay(wxEXPAND);
       {
-         S.SetSizerProportion(1);
          S.StartMultiColumn(6,
-            GroupOptions{}.StretchyColumn(1).StretchyColumn(3));
+            GroupOptions{}
+               .Proportion(1)
+               .StretchyColumn(1).StretchyColumn(3));
          {
             S.AddPrompt(XXO("Cursor:"));
 
@@ -445,7 +446,6 @@ void FrequencyPlotDialog::Populate()
    S.AddSpace(5);
 
    S.SetBorder(2);
-   S.SetSizerProportion(0);
    S.StartMultiColumn(9, wxALIGN_CENTER);
    {
       // ----------------------------------------------------------------

@@ -90,7 +90,6 @@ void ExtImportPrefs::PopulateOrExchange(ShuttleGui & S)
 
    S.StartStatic(XO("Rules to choose import filters"), 1);
    {
-      S.SetSizerProportion(1);
       S.StartHorizontalLay (wxEXPAND, 1);
       {
          bool fillRuleTable = false;

@@ -1661,6 +1661,7 @@ void ShuttleGuiBase::EndVerticalLay()
 void ShuttleGuiBase::StartMultiColumn( int nCols, const GroupOptions &options)
 {
    mpSubSizer = std::make_unique<wxFlexGridSizer>( nCols );
+   miSizerProp = options.proportion;
    // PRL:  wxALL has no effect because UpdateSizersCore ignores border
    UpdateSizersCore( false, options.positionFlags | wxALL );
 

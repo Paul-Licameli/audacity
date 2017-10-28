@@ -144,6 +144,9 @@ struct GroupOptions {
    GroupOptions &Position( int pos )
    { positionFlags = pos; return *this; }
 
+   GroupOptions &Proportion( int prop )
+   { proportion = prop; return *this; }
+
    GroupOptions &StretchyRow( size_t row )
    { stretchyRows.push_back(row); return *this; }
 
@@ -151,6 +154,7 @@ struct GroupOptions {
    { stretchyColumns.push_back(column); return *this; }
 
    int positionFlags { wxALIGN_LEFT };
+   int proportion{ 0 };
    std::vector<size_t> stretchyRows, stretchyColumns;
 };
 
@@ -1317,7 +1321,6 @@ public:
    void AddRadioButton();
 
    void SetBorder( int Border ) {mpState -> miBorder = Border;};
-   void SetSizerProportion( int iProp ) {miSizerProp = iProp;};
 
 //--Some Additions since June 2007 that don't fit in elsewhere...
    wxWindow * GetParent()
