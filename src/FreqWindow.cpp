@@ -193,6 +193,8 @@ FrequencyPlotDialog::FrequencyPlotDialog(wxWindow * parent, wxWindowID id,
    mAnalyst(std::make_unique<SpectrumAnalyst>())
 ,  mProject{ &project }
 {
+   using namespace DialogDefinition;
+
    SetName();
 
    mMouseX = 0;
@@ -315,11 +317,11 @@ void FrequencyPlotDialog::Populate()
                .Position( wxALIGN_LEFT | wxTOP)
                .Prop(1)
                .Style(wxSB_VERTICAL)
-               .Window<wxScrollBar>();
 #if wxUSE_ACCESSIBILITY
-            // so that name can be set on a standard control
-            mPanScroller->SetAccessible(safenew WindowAccessible(mPanScroller));
+               // so that name can be set on a standard control
+               .Accessible()
 #endif
+               .Window<wxScrollBar>();
          }
          S.EndVerticalLay();
 
@@ -337,11 +339,11 @@ void FrequencyPlotDialog::Populate()
                .Prop(1)
                .Position(wxALIGN_CENTER_HORIZONTAL)
                .Style(wxSL_VERTICAL)
-               .AddSlider( XXO("Zoom"), 100, 1, 100 );
 #if wxUSE_ACCESSIBILITY
-            // so that name can be set on a standard control
-            mZoomSlider->SetAccessible(safenew WindowAccessible(mZoomSlider));
+               // so that name can be set on a standard control
+               .Accessible()
 #endif
+               .AddSlider( XXO("Zoom"), 100, 1, 100 );
 
             S.AddSpace(5);
 

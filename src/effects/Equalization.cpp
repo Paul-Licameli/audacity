@@ -66,7 +66,6 @@
 #include <wx/dcclient.h>
 #include <wx/dcmemory.h>
 #include <wx/listctrl.h>
-#include <wx/choice.h>
 #include <wx/slider.h>
 #include <wx/stattext.h>
 #include <wx/textdlg.h>
@@ -719,6 +718,8 @@ void EffectEqualization::PopulateOrExchange(ShuttleGui & S)
    if ( !IsBatchProcessing() )
       LoadUserPreset(GetCurrentSettingsGroup());
 
+   using namespace DialogDefinition;
+
    //LoadCurves();
 
 
@@ -784,31 +785,31 @@ void EffectEqualization::PopulateOrExchange(ShuttleGui & S)
             S
                .AddVariableText(XO("+ dB"), false, wxCENTER);
 
-            wxSlider *slider =
             S
                .VariableText( [this]{ return ControlText{ XO("Max dB"), {},
                   // tooltip
                   XO("%d dB").Format( (int)mdBMax )
                }; } )
                .Style(wxSL_VERTICAL | wxSL_INVERSE)
+#if wxUSE_ACCESSIBILITY
+               .Accessible(
+                  MakeAccessibleFactory<SliderAx>( XO("%d dB")) )
+#endif
                .Target( mdBMax )
                .AddSlider( {}, 30, 60, 0);
-#if wxUSE_ACCESSIBILITY
-            slider->SetAccessible(safenew SliderAx(slider, XO("%d dB")));
-#endif
 
-            slider =
             S
                .VariableText( [this]{ return ControlText{ XO("Min dB"), {},
                   // tooltip
                   XO("%d dB").Format( (int)mdBMin )
                }; } )
                .Style(wxSL_VERTICAL | wxSL_INVERSE)
+#if wxUSE_ACCESSIBILITY
+               .Accessible(
+                  MakeAccessibleFactory<SliderAx>( XO("%d dB")) )
+#endif
                .Target( mdBMin )
                .AddSlider( {}, -30, -10, -120);
-#if wxUSE_ACCESSIBILITY
-            slider->SetAccessible(safenew SliderAx(slider, XO("%d dB")));
-#endif
 
             S
                .AddVariableText(XO("- dB"), false, wxCENTER);
@@ -903,23 +904,14 @@ void EffectEqualization::PopulateOrExchange(ShuttleGui & S)
                         ? XO("%d Hz").Format( (int)kThirdOct[i] )
                         : XO("%g kHz").Format( kThirdOct[i]/1000. ) )
                   .ConnectRoot(
-                     wxEVT_ERASE_BACKGROUND, &EffectEqualization::OnErase)
+                     wxEVT_ERASE_BACKGROUND, &EffectEqualization::OnErase )
                   .Position(wxEXPAND)
                   .Size( { -1, 150 } )
                   .Style( wxSL_VERTICAL | wxSL_INVERSE )
+#if wxUSE_ACCESSIBILITY
+                  .Accessible(MakeAccessibleFactory<SliderAx>(XO("%d dB")))
+#endif
                   .AddSlider( {}, 0, -20, +20 );
-   #if wxUSE_ACCESSIBILITY
-               mSliders[i]->SetAccessible(safenew SliderAx(mSliders[i], XO("%d dB")));
-   #endif
-
-               S
-                  .Prop(1)
-                  .Text( freq )
-                  .ConnectRoot(
-                     wxEVT_ERASE_BACKGROUND, &EffectEqualization::OnErase)
-                  .Position(wxEXPAND)
-                  .Size({ -1, 50 })
-                  .AddWindow(mSliders[i]);
             }
             S.EndVerticalLay();
          }
@@ -986,12 +978,12 @@ void EffectEqualization::PopulateOrExchange(ShuttleGui & S)
                   .Text(XO("Interpolation type"))
                   .Target( mInterp )
                   .Action( [this]{ OnInterp(); } )
+#if wxUSE_ACCESSIBILITY
+                  // so that name can be set on a standard control
+                  .Accessible()
+#endif
                   .AddChoice( {},
                      Msgids(kInterpStrings, nInterpolations), 0 );
-#if wxUSE_ACCESSIBILITY
-               // so that name can be set on a standard control
-               interpChoice->SetAccessible(safenew WindowAccessible(interpChoice));
-#endif
             }
             S.EndHorizontalLay();
 

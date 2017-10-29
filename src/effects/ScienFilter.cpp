@@ -377,31 +377,31 @@ void EffectScienFilter::PopulateOrExchange(ShuttleGui & S)
          S
             .AddVariableText(XO("+ dB"), false, wxCENTER);
 
-         wxSlider *slider =
          S
             .Style(wxSL_VERTICAL | wxSL_INVERSE)
+#if wxUSE_ACCESSIBILITY
+            .Accessible(
+               MakeAccessibleFactory<SliderAx>( XO("%d dB")) )
+#endif
             .VariableText( [this]{ return ControlText{ XO("Max dB"), {},
                // tooltip
                XO("%d dB").Format( (int)mdBMax )
             }; } )
             .Target( mdBMax )
             .AddSlider( {}, 10, 20, 0);
-#if wxUSE_ACCESSIBILITY
-         slider->SetAccessible(safenew SliderAx(slider, XO("%d dB")));
-#endif
 
-         slider =
          S
             .Style(wxSL_VERTICAL | wxSL_INVERSE)
+#if wxUSE_ACCESSIBILITY
+            .Accessible(
+               MakeAccessibleFactory<SliderAx>( XO("%d dB")) )
+#endif
             .VariableText( [this]{ return ControlText{ XO("Min dB"), {},
                // tooltip
                XO("%d dB").Format( (int)mdBMin )
             }; } )
             .Target( mdBMin )
             .AddSlider( {}, -10, -10, -120);
-#if wxUSE_ACCESSIBILITY
-         slider->SetAccessible(safenew SliderAx(slider, XO("%d dB")));
-#endif
 
          S
             .AddVariableText(XO("- dB"), false, wxCENTER);

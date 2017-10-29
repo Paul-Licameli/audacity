@@ -27,7 +27,6 @@ KeyConfigPrefs and MousePrefs use.
 #include <wx/defs.h>
 #include <wx/ffile.h>
 #include <wx/button.h>
-#include <wx/radiobut.h>
 #include <wx/stattext.h>
 #include <wx/statbox.h>
 #include <wx/textctrl.h>
@@ -170,7 +169,9 @@ bool KeyConfigPrefs::TransferDataToWindow()
 /// so this is only used in populating the panel.
 void KeyConfigPrefs::PopulateOrExchange(ShuttleGui & S)
 {
+   using namespace DialogDefinition;
    const auto enabler = [this]{ return CanSet(); };
+
    S.SetBorder(2);
 
    S.StartStatic(XO("Key Bindings"), 1);
@@ -188,30 +189,24 @@ void KeyConfigPrefs::PopulateOrExchange(ShuttleGui & S)
             S.StartHorizontalLay();
             {
                S
+#if !defined(__WXMAC__) && wxUSE_ACCESSIBILITY
+                  // so that name can be set on a standard control
+                  .Accessible()
+#endif
                   .Action( [this]{ OnViewBy(); } )
                   .StartRadioButtonGroup( radioSetting );
                {
-                  wxRadioButton *pButton1 =
                   S
                      .Text(XO("View by tree"))
                      .AddRadioButton();
          
-                  wxRadioButton *pButton2 =
                   S
                      .Text(XO("View by name"))
                      .AddRadioButton();
          
-                  wxRadioButton *pButton3 =
                   S
                      .Text(XO("View by key"))
                      .AddRadioButton();
-
-#if !defined(__WXMAC__) && wxUSE_ACCESSIBILITY
-                  // so that name can be set on a standard control
-                  for ( auto pButton : { pButton1, pButton2, pButton3 } )
-                     if (pButton)
-                        pButton->SetAccessible(safenew WindowAccessible(pButton));
-#endif
                }
                S
                   .EndRadioButtonGroup();
@@ -282,6 +277,10 @@ void KeyConfigPrefs::PopulateOrExchange(ShuttleGui & S)
             .ConnectRoot(wxEVT_CONTEXT_MENU,
                       &KeyConfigPrefs::OnHotkeyContext)
             .Enable( enabler )
+#if !defined(__WXMAC__) && wxUSE_ACCESSIBILITY
+             // so that name can be set on a standard control
+            .Accessible()
+#endif
          .Window( [=]( wxWindow *parent, wxWindowID winid ) {
             auto key = safenew wxTextCtrl(parent,
                                   winid,
@@ -293,13 +292,8 @@ void KeyConfigPrefs::PopulateOrExchange(ShuttleGui & S)
                                   wxSize(210, -1),
 #endif
                                   wxTE_PROCESS_ENTER);
-
             return key;
          });
-#if !defined(__WXMAC__) && wxUSE_ACCESSIBILITY
-         // so that name can be set on a standard control
-         mKey->SetAccessible(safenew WindowAccessible(mKey));
-#endif
 
          S
             .Enable( enabler )

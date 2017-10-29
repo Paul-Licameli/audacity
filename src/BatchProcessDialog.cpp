@@ -124,6 +124,8 @@ void ApplyMacroDialog::Populate()
 /// Defines the dialog and does data exchange with it.
 void ApplyMacroDialog::PopulateOrExchange(ShuttleGui &S)
 {
+   using namespace DialogDefinition;
+
    /*i18n-hint: A macro is a sequence of commands that can be applied
       * to one or more audio files.*/
    S.StartStatic(XO("Select Macro"), 1);
@@ -143,25 +145,23 @@ void ApplyMacroDialog::PopulateOrExchange(ShuttleGui &S)
       S
          .AddPrompt( XXO("Apply Macro to:") );
 
-      wxButton* btn =
       S
          .Text(XO("Apply macro to project"))
          .Action( [this]{ OnApplyToProject(); } )
-         .AddButton(XXO("&Project"));
 #if wxUSE_ACCESSIBILITY
-      // so that name can be set on a standard control
-      btn->SetAccessible(safenew WindowAccessible(btn));
+         // so that name can be set on a standard control
+         .Accessible()
 #endif
+         .AddButton(XXO("&Project"));
 
-      btn =
       S
          .Text(XO("Apply macro to files..."))
          .Action( [this]{ OnApplyToFiles(); } )
-         .AddButton(XXO("&Files..."));
 #if wxUSE_ACCESSIBILITY
-      // so that name can be set on a standard control
-      btn->SetAccessible(safenew WindowAccessible(btn));
+         // so that name can be set on a standard control
+         .Accessible()
 #endif
+         .AddButton(XXO("&Files..."));
    }
    S.EndHorizontalLay();
 
@@ -594,6 +594,7 @@ void MacrosWindow::Populate()
 /// Defines the dialog and does data exchange with it.
 void MacrosWindow::PopulateOrExchange(ShuttleGui & S)
 {
+   using namespace DialogDefinition;
    const auto enabler = [this]{ return !mIsFixed; };
 
    S.StartHorizontalLay(wxEXPAND, 1);
@@ -710,30 +711,31 @@ void MacrosWindow::PopulateOrExchange(ShuttleGui & S)
       // Using variable text just to get the positioning options.
       S.Prop(0).AddVariableText(
          XO("Apply Macro to:"), false, wxALL | wxALIGN_CENTRE_VERTICAL );
-      wxButton* btn = S
+      S
          .Text(XO("Apply macro to project"))
          .Action( [this]{ OnApplyToProject(); } )
-         .AddButton(XXO("&Project"));
 #if wxUSE_ACCESSIBILITY
-      // so that name can be set on a standard control
-      btn->SetAccessible(safenew WindowAccessible(btn));
+         // so that name can be set on a standard control
+         .Accessible()
 #endif
+         .AddButton(XXO("&Project"));
 
-      btn =
       S
          .Text(XO("Apply macro to files..."))
          .Action( [this]{ OnApplyToFiles(); } )
-         .AddButton(XXO("&Files..."));
 #if wxUSE_ACCESSIBILITY
-      // so that name can be set on a standard control
-      btn->SetAccessible(safenew WindowAccessible(btn));
+         // so that name can be set on a standard control
+         .Accessible()
 #endif
+         .AddButton(XXO("&Files..."));
+
       S.AddSpace( 10,10,1 );
       // Bug 2524 OK button does much the same as cancel, so remove it.
       // OnCancel prompts you if there has been a change.
       // OnOK saves without prompting.
       // That difference is too slight to merit a button, and with the OK
       // button, people might expect the dialog to apply the macro too.
+
       S
          .AddStandardButtons( 0, {
             // S.Item( eOkButton ).Action( [this]{ OnOK(); } ),

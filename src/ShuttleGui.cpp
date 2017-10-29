@@ -1935,6 +1935,11 @@ void ShuttleGuiBase::ApplyItem( int step,
 
       ApplyText( item.mText, pWind );
 
+#if wxUSE_ACCESSIBILITY
+         if ( item.mAccessibleFactory )
+            pWind->SetAccessible( item.mAccessibleFactory( pWind ) );
+#endif
+
       if (item.mFocused)
          pWind->SetFocus();
 
