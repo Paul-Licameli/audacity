@@ -307,16 +307,13 @@ SliderDialog::SliderDialog(wxWindow * parent, wxWindowID id,
             .AddTextBox({}, wxEmptyString, 15);
       }
 
-      mSlider = safenew ASlider(S.GetParent(),
-                            wxID_ANY,
-                            title,
-                            wxDefaultPosition,
-                            size,
-                            ASlider::Options{}
-                               .Style( style ).Line( line ).Page( page ).Popup( false) );
+      mSlider =
       S
          .Position(wxEXPAND)
-         .AddWindow(mSlider);
+         .Window<ASlider>(
+            title, wxDefaultPosition, size,
+            ASlider::Options{}
+               .Style( style ).Line( line ).Page( page ).Popup( false) );
    }
    S.EndVerticalLay();
 

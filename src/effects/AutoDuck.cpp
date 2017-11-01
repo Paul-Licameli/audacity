@@ -389,8 +389,7 @@ void EffectAutoDuck::PopulateOrExchange(ShuttleGui & S)
    {
       S.AddSpace(0, 5);
 
-      mPanel = safenew EffectAutoDuckPanel(S.GetParent(), wxID_ANY, this);
-      S.AddWindow(mPanel);
+      mPanel = S.Window<EffectAutoDuckPanel>(this);
 
       S.AddSpace(0, 5);
 

@@ -374,8 +374,17 @@ public:
       wxWindowID id, const TranslatableString &titlePrefix)
       : wxTreebook( parent, id )
       , mTitlePrefix(titlePrefix)
-   {;};
-   ~wxTreebookExt(){;};
+   {
+#if wxUSE_ACCESSIBILITY
+      // so that name can be set on a standard control
+      GetTreeCtrl()->SetAccessible(
+         safenew TreeCtrlAx(GetTreeCtrl()));
+#endif
+      // RJH: Prevent NVDA from reading "treeCtrl"
+      GetTreeCtrl()->SetName(_("Category"));
+   }
+   ~wxTreebookExt()
+   {}
    int ChangeSelection(size_t n) override;
    int SetSelection(size_t n) override;
    const TranslatableString mTitlePrefix;
@@ -454,20 +463,13 @@ PrefsDialog::PrefsDialog(
    {
       wxASSERT(factories.size() > 0);
       if (!uniquePage) {
-         mCategories = safenew wxTreebookExt(S.GetParent(), wxID_ANY, mTitlePrefix);
-#if wxUSE_ACCESSIBILITY
-         // so that name can be set on a standard control
-         mCategories->GetTreeCtrl()->SetAccessible(
-            safenew TreeCtrlAx(mCategories->GetTreeCtrl()));
-#endif
-         // RJH: Prevent NVDA from reading "treeCtrl"
-         mCategories->GetTreeCtrl()->SetName(_("Category"));
          S.StartHorizontalLay(wxALIGN_LEFT | wxEXPAND, true);
          {
+            mCategories =
             S
                .Prop(1)
                .Position(wxEXPAND)
-               .AddWindow(mCategories);
+               .Window<wxTreebookExt>(mTitlePrefix);
 
             {
                typedef std::pair<int, int> IntPair;
@@ -508,17 +510,17 @@ PrefsDialog::PrefsDialog(
          // And then hiding the treebook.
 
          // Unique page, don't show the factory
-         const auto &node = factories[0];
-         const auto &factory = node.factory;
-         mUniquePage = factory(S.GetParent(), wxID_ANY, pProject);
+         const auto &f = factories[0].factory;
+         const auto factory = [f, pProject](wxWindow *pWind, int winId)
+            { return f(pWind, winId, pProject); };
          ShuttleGui S2(
             mUniquePage, true, { 250, 100 }, pVisitor );
          mUniquePage->PopulateOrExchange( S2 );
-         wxWindow * uniquePageWindow =
+         mUniquePage =
          S
             .Prop(1)
             .Position(wxEXPAND)
-            .AddWindow(mUniquePage);
+            .Window(factory);
          // We're not in the wxTreebook, so add the accelerator here
          wxAcceleratorEntry entries[1];
 #if defined(__WXMAC__)
@@ -527,7 +529,7 @@ PrefsDialog::PrefsDialog(
          entries[0].Set(wxACCEL_NORMAL, (int) WXK_F1, wxID_HELP);
 #endif
          wxAcceleratorTable accel(1, entries);
-         uniquePageWindow->SetAcceleratorTable(accel);
+         mUniquePage->SetAcceleratorTable(accel);
       }
    }
    S.EndVerticalLay();

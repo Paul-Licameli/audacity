@@ -94,9 +94,12 @@ void ExtImportPrefs::PopulateOrExchange(ShuttleGui & S)
       S.StartHorizontalLay (wxEXPAND, 1);
       {
          bool fillRuleTable = false;
-         if (RuleTable == NULL)
-         {
-            RuleTable = safenew Grid(S.GetParent(),EIPRuleTable);
+         RuleTable =
+         S
+            .Id(EIPRuleTable)
+            .Position(wxEXPAND | wxALL)
+         .Window( [this, &fillRuleTable] (wxWindow *parent, wxWindowID winid) {
+            RuleTable = safenew Grid(parent, winid);
 
             RuleTable->SetColLabelSize(RuleTable->GetDefaultRowSize());
 #if EXTIMPORT_MIME_SUPPORT
@@ -127,10 +130,8 @@ void ExtImportPrefs::PopulateOrExchange(ShuttleGui & S)
 
             RuleTable->EnableDragCell (true);
             fillRuleTable = true;
-         }
-         S
-            .Position(wxEXPAND | wxALL)
-            .AddWindow(RuleTable);
+            return RuleTable;
+         });
 
          PluginList =
          S

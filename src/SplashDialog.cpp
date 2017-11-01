@@ -110,33 +110,30 @@ void SplashDialog::Populate( ShuttleGui & S )
    // wxIMAGE_QUALITY_HIGH not supported by wxWidgets 2.6.1, or we would use it here.
    RescaledImage.Rescale( (int)(LOGOWITHNAME_WIDTH * fScale), (int)(LOGOWITHNAME_HEIGHT *fScale) );
    wxBitmap RescaledBitmap( RescaledImage );
-   wxStaticBitmap *const icon =
-       safenew wxStaticBitmap(S.GetParent(), -1,
+   S.Prop(0)
+#if  (0)
+      .ConnectRoot( wxEVT_LEFT_DOWN, &SplashDialog::OnChar)
+#endif
+      .Window<wxStaticBitmap>(
                           //*m_pLogo, //v theTheme.Bitmap(bmpAudacityLogoWithName),
                           RescaledBitmap,
                           wxDefaultPosition,
                           wxSize((int)(LOGOWITHNAME_WIDTH*fScale), (int)(LOGOWITHNAME_HEIGHT*fScale)));
 
+   mpHtml =
    S
-      .Prop(0)
-#if  (0)
-      .ConnectRoot( wxEVT_LEFT_DOWN, &SplashDialog::OnChar)
-#endif
-      .AddWindow( icon );
-
-   mpHtml = safenew LinkingHtmlWindow(S.GetParent(), -1,
-                                         wxDefaultPosition,
-                                         wxSize(506, 280),
-                                         wxHW_SCROLLBAR_AUTO | wxSUNKEN_BORDER );
-   mpHtml->SetPage(HelpText( L"welcome" ));
-   S.Prop(1)
+      .Prop(1)
       .Position( wxEXPAND )
-      .AddWindow( mpHtml );
+      .Window( [=](wxWindow *parent, wxWindowID winid ){
+         auto html = safenew LinkingHtmlWindow(parent, winid,
+                                               wxDefaultPosition,
+                                               wxSize(506, 280),
+                                               wxHW_SCROLLBAR_AUTO | wxSUNKEN_BORDER );
+         html->SetPage(HelpText( L"welcome" ));
+         return html;
+      } );
 
-   S
-      .Prop(0)
-      .StartMultiColumn(2, wxEXPAND);
-
+   S.Prop(0).StartMultiColumn(2, wxEXPAND);
    S.SetStretchyCol( 1 );// Column 1 is stretchy...
    {
       S.SetBorder( 5 );

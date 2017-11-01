@@ -245,10 +245,10 @@ void LabelDialog::PopulateOrExchange( ShuttleGui & S )
    {
       S.StartVerticalLay(wxEXPAND,1);
       {
-         mGrid = safenew Grid(S.GetParent(), wxID_ANY);
+         mGrid =
          S
             .Prop(1)
-            .AddWindow( mGrid );
+            .Window<Grid>();
       }
       S.EndVerticalLay();
       S.StartVerticalLay(0);

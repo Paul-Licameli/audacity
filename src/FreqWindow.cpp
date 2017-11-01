@@ -280,57 +280,54 @@ void FrequencyPlotDialog::Populate()
       {
          S.AddSpace(wxDefaultCoord, 1);
 
-         vRuler = safenew RulerPanel(
-            S.GetParent(), wxID_ANY, wxVERTICAL,
-            wxSize{ 100, 100 }, // Ruler can't handle small sizes
-            RulerPanel::Range{ 0.0, -dBRange },
-            Ruler::LinearDBFormat,
-            XO("dB"),
-            RulerPanel::Options{}
-               .LabelEdges(true)
-               .TickColour( theTheme.Colour( clrGraphLabels ) )
-         );
-
+         vRuler =
          S
             .Prop(1)
             .Position(wxALIGN_RIGHT | wxALIGN_TOP)
-            .AddWindow(vRuler);
+            .Window<RulerPanel>(
+               wxVERTICAL,
+               wxSize{ 100, 100 }, // Ruler can't handle small sizes
+               RulerPanel::Range{ 0.0, -dBRange },
+               Ruler::LinearDBFormat,
+               XO("dB"),
+               RulerPanel::Options{}
+                  .LabelEdges(true)
+                  .TickColour( theTheme.Colour( clrGraphLabels ) )
+            );
 
          S.AddSpace(wxDefaultCoord, 1);
       }
       S.EndVerticalLay();
 
-      mFreqPlot = safenew FreqPlot(S.GetParent(), wxID_ANY);
+      mFreqPlot =
       S
          .Prop(1)
          .Position(wxEXPAND)
          .MinSize( { wxDefaultCoord, FREQ_WINDOW_HEIGHT } )
-         .AddWindow(mFreqPlot);
+         .Window<FreqPlot>();
 
       S.StartHorizontalLay(wxEXPAND, 0);
       {
          S.StartVerticalLay();
          {
-            mPanScroller = safenew wxScrollBar(S.GetParent(), FreqPanScrollerID,
-               wxDefaultPosition, wxDefaultSize, wxSB_VERTICAL);
+            mPanScroller = S.Id(FreqPanScrollerID)
+               .Text(XO("Scroll"))
+               .Position( wxALIGN_LEFT | wxTOP)
+               .Prop(1)
+               .Style(wxSB_VERTICAL)
+               .Window<wxScrollBar>();
 #if wxUSE_ACCESSIBILITY
             // so that name can be set on a standard control
             mPanScroller->SetAccessible(safenew WindowAccessible(mPanScroller));
 #endif
-            S.Prop(1);
-            S
-               .Text(XO("Scroll"))
-               .Position( wxALIGN_LEFT | wxTOP)
-               .AddWindow(mPanScroller);
          }
          S.EndVerticalLay();
 
          S.StartVerticalLay();
          {
-            wxStaticBitmap *zi = safenew wxStaticBitmap(S.GetParent(), wxID_ANY, wxBitmap(ZoomIn));
             S
                .Position(wxALIGN_CENTER)
-               .AddWindow(zi);
+               .Window<wxStaticBitmap>(wxBitmap(ZoomIn));
 
             S.AddSpace(5);
 
@@ -348,10 +345,9 @@ void FrequencyPlotDialog::Populate()
 
             S.AddSpace(5);
 
-            wxStaticBitmap *zo = safenew wxStaticBitmap(S.GetParent(), wxID_ANY, wxBitmap(ZoomOut));
             S
                .Position(wxALIGN_CENTER)
-               .AddWindow(zo);
+               .Window<wxStaticBitmap>(wxBitmap(ZoomOut));
          }
          S.EndVerticalLay();
 
@@ -369,22 +365,21 @@ void FrequencyPlotDialog::Populate()
       {
          S.AddSpace(1, wxDefaultCoord);
 
-         hRuler  = safenew RulerPanel(
-            S.GetParent(), wxID_ANY, wxHORIZONTAL,
-            wxSize{ 100, 100 }, // Ruler can't handle small sizes
-            RulerPanel::Range{ 10, 20000 },
-            Ruler::RealFormat,
-            XO("Hz"),
-            RulerPanel::Options{}
-               .Log(true)
-               .Flip(true)
-               .LabelEdges(true)
-               .TickColour( theTheme.Colour( clrGraphLabels ) )
-         );
-
-         S.Prop(1)
+         hRuler =
+         S
+            .Prop(1)
             .Position(wxALIGN_LEFT | wxALIGN_TOP)
-            .AddWindow(hRuler);
+            .Window<RulerPanel>(
+               wxHORIZONTAL,
+               wxSize{ 100, 100 }, // Ruler can't handle small sizes
+               RulerPanel::Range{ 10, 20000 },
+               Ruler::RealFormat,
+               XO("Hz"),
+               RulerPanel::Options{}
+                  .Log(true)
+                  .Flip(true)
+                  .LabelEdges(true)
+                  .TickColour( theTheme.Colour( clrGraphLabels ) ) );
 
          S.AddSpace(1, wxDefaultCoord);
       }
@@ -533,10 +528,10 @@ void FrequencyPlotDialog::Populate()
 
    S.AddSpace(5);
 
-   mProgress = safenew FreqGauge(S.GetParent(), wxID_ANY); //, wxST_SIZEGRIP);
+   mProgress =
    S
       .Position(wxEXPAND)
-      .AddWindow(mProgress);
+      .Window<FreqGauge>(); // wxST_SIZEGRIP
 
    // Log-frequency axis works for spectrum plots only.
    if (mAlg != SpectrumAnalyst::Spectrum)

@@ -712,11 +712,30 @@ void TimerRecordDialog::PopulateOrExchange(ShuttleGui& S)
       saveEnabler() || exportEnabler(); };
 
    S.SetBorder(5);
+
    using Options = NumericTextCtrl::Options;
    /* i18n-hint a format string for hours, minutes, and seconds */
    auto strFormat = XO("099 h 060 m 060 s");
    /* i18n-hint a format string for days, hours, minutes, and seconds */
    auto strFormat1 = XO("099 days 024 h 060 m 060 s");
+
+   auto pickerCtrlFactory = []
+      (const wxDateTime &initial, const wxDateTime &rangeStart) {
+      return [&initial, rangeStart]( wxWindow *parent, wxWindowID winid )
+      {
+         auto result = safenew wxDatePickerCtrl(parent, winid, initial);
+         result->SetRange(rangeStart, wxInvalidDateTime); // No backdating.
+         return result;
+      };
+   };
+
+   TranslatableString sInitialValue;
+   AudacityProject* pProject = &mProject;
+   auto sSaveValue = ProjectFileIO::Get(mProject).GetFileName();
+   if (!sSaveValue.empty()) {
+      m_fnAutoSaveFile.Assign(sSaveValue);
+      sInitialValue = XO("Current Project");
+   }
 
    using namespace DialogDefinition;
    S.StartMultiColumn(2, wxCENTER);
@@ -732,12 +751,9 @@ void TimerRecordDialog::PopulateOrExchange(ShuttleGui& S)
             */
             .StartStatic(XO("Start Date and Time"), true);
          {
-            m_pDatePickerCtrl_Start =
-               safenew wxDatePickerCtrl(S.GetParent(), // wxWindow *parent,
-               ID_DATEPICKER_START, // wxWindowID id,
-               m_DateTime_Start); // const wxDateTime& dt = wxDefaultDateTime,
-            // const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxDefaultSize, long style = wxDP_DEFAULT | wxDP_SHOWCENTURY, const wxValidator& validator = wxDefaultValidator, const wxString& name = "datectrl")
-            m_pDatePickerCtrl_Start->SetRange(wxDateTime::Today(), wxInvalidDateTime); // No backdating.
+            m_pDatePickerCtrl_Start = S.Id(ID_DATEPICKER_START)
+               .Text(XO("Start Date"))
+               .Window( pickerCtrlFactory( m_DateTime_Start, wxDateTime::Today() ) );
 #if wxUSE_ACCESSIBILITY
             m_pDatePickerCtrl_Start->SetAccessible( safenew DatePickerCtrlAx(m_pDatePickerCtrl_Start));
 #endif
@@ -761,15 +777,9 @@ void TimerRecordDialog::PopulateOrExchange(ShuttleGui& S)
          S
             .StartStatic(XO("End Date and Time"), true);
          {
-            m_pDatePickerCtrl_End =
-               safenew wxDatePickerCtrl(S.GetParent(), // wxWindow *parent,
-               ID_DATEPICKER_END, // wxWindowID id,
-               m_DateTime_End); // const wxDateTime& dt = wxDefaultDateTime,
-            // const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxDefaultSize,
-            //                            long style = wxDP_DEFAULT | wxDP_SHOWCENTURY, 
-            //                            const wxValidator& validator = wxDefaultValidator,
-            //                            const wxString& name = "datectrl")
-            m_pDatePickerCtrl_End->SetRange(m_DateTime_Start, wxInvalidDateTime); // No backdating.
+            m_pDatePickerCtrl_End = S.Id(ID_DATEPICKER_END)
+               .Text(XO("End Date"))
+               .Window( pickerCtrlFactory( m_DateTime_End, m_DateTime_Start ) );
 #if wxUSE_ACCESSIBILITY
             m_pDatePickerCtrl_End->SetAccessible( safenew DatePickerCtrlAx(m_pDatePickerCtrl_End));
 #endif
@@ -827,13 +837,6 @@ void TimerRecordDialog::PopulateOrExchange(ShuttleGui& S)
                .AddCheckBox(XXO("Enable &Automatic Save?") );
             S.StartMultiColumn(3, wxEXPAND);
             {
-               TranslatableString sInitialValue;
-               auto sSaveValue = ProjectFileIO::Get(mProject).GetFileName();
-               if (!sSaveValue.empty()) {
-                  m_fnAutoSaveFile.Assign(sSaveValue);
-                  sInitialValue = XO("Current Project");
-               }
-
                S
                   .AddPrompt(XXO("Save Project As:"));
 

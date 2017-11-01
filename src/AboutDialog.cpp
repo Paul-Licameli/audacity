@@ -294,7 +294,6 @@ AboutDialog::AboutDialog(wxWindow * parent)
    SetName();
    this->SetBackgroundColour(theTheme.Colour( clrAboutBoxBackground ));
    //this->SetBackgroundColour(theTheme.Colour( clrMedium ));
-   icon = NULL;
    ShuttleGui S( this );
    S.StartNotebook();
    {
@@ -499,13 +498,14 @@ visit our %s.")
 
       << L"</center>"
    ;
+   auto &output = o.GetString();
 
    auto pPage =
    S
       .StartNotebookPage( ProgramName );
 
    S.StartVerticalLay(1);
-   {
+   S.Prop(0).Window( [=](wxWindow *parent, wxWindowID winid ) {
       //v For now, change to AudacityLogoWithName via old-fashioned way, not Theme.
       wxBitmap logo(AudacityLogoWithName_xpm); //v
 
@@ -523,32 +523,30 @@ visit our %s.")
       RescaledImage.Rescale((int)(LOGOWITHNAME_WIDTH * fScale), (int)(LOGOWITHNAME_HEIGHT *fScale));
       wxBitmap RescaledBitmap(RescaledImage);
 
-      icon =
-         safenew wxStaticBitmap(S.GetParent(), -1,
+      return
+         safenew wxStaticBitmap(parent, winid,
          //*logo, //v
          //v theTheme.Bitmap(bmpAudacityLogo), wxPoint(93, 10), wxSize(215, 190));
          //v theTheme.Bitmap(bmpAudacityLogoWithName),
          RescaledBitmap,
          wxDefaultPosition,
          wxSize((int)(LOGOWITHNAME_WIDTH*fScale), (int)(LOGOWITHNAME_HEIGHT*fScale)));
-   }
-
-   S
-      .Prop(0)
-      .AddWindow( icon );
-
-   HtmlWindow *html = safenew LinkingHtmlWindow(S.GetParent(), -1,
-                                         wxDefaultPosition,
-                                         wxSize(ABOUT_DIALOG_WIDTH, 359),
-                                         wxHW_SCROLLBAR_AUTO | wxSUNKEN_BORDER);
-   html->SetPage( FormatHtmlText( o.GetString() ) );
+   });
 
    /* locate the html renderer where it fits in the dialogue */
    S
       .Prop(1)
       .Position( wxEXPAND )
       .Focus()
-      .AddWindow( html );
+      .Window( [=](wxWindow *parent, wxWindowID winid ){
+         auto html = safenew LinkingHtmlWindow(parent, winid,
+                                               wxDefaultPosition,
+                                               wxSize(ABOUT_DIALOG_WIDTH, 359),
+                                               wxHW_SCROLLBAR_AUTO | wxSUNKEN_BORDER);
+         html->SetPage( FormatHtmlText( output ) );
+         return html;
+
+      } );
 
    S.EndVerticalLay();
    S.EndNotebookPage();
@@ -561,14 +559,15 @@ visit our %s.")
  * about the build we might wish to know should be visible here */
 void AboutDialog::PopulateInformationPage( ShuttleGui & S )
 {
-   wxStringOutputStream o;
-   wxTextOutputStream informationStr( o );   // string to build up list of information in
-
    S
       .StartNotebookPage( XO("Build Information") );  // start the tab
 
    S.StartVerticalLay(2);  // create the window
-   HtmlWindow *html = safenew LinkingHtmlWindow(S.GetParent(), -1, wxDefaultPosition,
+
+S.Prop(2).Position( wxEXPAND ).Window( [=](wxWindow *parent, wxWindowID winid ){
+   wxStringOutputStream o;
+   wxTextOutputStream informationStr( o );   // string to build up list of information in
+   auto html = safenew LinkingHtmlWindow(parent, winid, wxDefaultPosition,
                            wxSize(ABOUT_DIALOG_WIDTH, 264),
                            wxHW_SCROLLBAR_AUTO | wxSUNKEN_BORDER);
    // create a html pane in it to put the content in.
@@ -819,11 +818,8 @@ void AboutDialog::PopulateInformationPage( ShuttleGui & S )
    informationStr << L"</table>\n";   // end of table of features
 
    html->SetPage( FormatHtmlText( o.GetString() ) );   // push the page into the html renderer
-
-   S
-      .Prop(2)
-      .Position( wxEXPAND )
-      .AddWindow( html ); // make it fill the page
+   return html;
+}); // make it fill the page
 
    // I think the 2 here goes with the StartVerticalLay() call above?
    S.EndVerticalLay();     // end window
@@ -837,7 +833,13 @@ void AboutDialog::PopulateLicensePage( ShuttleGui & S )
       .StartNotebookPage( XO("GPL License") );
 
    S.StartVerticalLay(1);
-   HtmlWindow *html = safenew LinkingHtmlWindow(S.GetParent(), -1,
+
+S
+   .Prop(1)
+   .Position( wxEXPAND )
+   .Window( [=](wxWindow *parent, wxWindowID winid ){
+
+   auto html = safenew LinkingHtmlWindow(parent, winid,
                                          wxDefaultPosition,
                                          wxSize(ABOUT_DIALOG_WIDTH, 264),
                                          wxHW_SCROLLBAR_AUTO | wxSUNKEN_BORDER);
@@ -1133,11 +1135,9 @@ L"PROGRAMS), EVEN IF SUCH HOLDER OR OTHER PARTY HAS BEEN ADVISED OF THE\n"
 L"POSSIBILITY OF SUCH DAMAGES.\n");
 
    html->SetPage( PageText );
+   return html;
 
-   S
-      .Prop(1)
-      .Position( wxEXPAND )
-      .AddWindow( html );
+});
 
    S.EndVerticalLay();
    S.EndNotebookPage();

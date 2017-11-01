@@ -857,9 +857,11 @@ void TagsEditorDialog::PopulateOrExchange(ShuttleGui & S)
       }
       S.EndHorizontalLay();
 
-      if (mGrid == NULL) {
-         mGrid = safenew Grid(S.GetParent(),
-                          wxID_ANY,
+      S
+         .Prop(1)
+         .Position(wxEXPAND | wxALL)
+      .Window([this](wxWindow *parent, wxWindowID winid){
+         mGrid = safenew Grid(parent, winid,
                           wxDefaultPosition,
                           wxDefaultSize,
                           wxSUNKEN_BORDER);
@@ -884,11 +886,8 @@ void TagsEditorDialog::PopulateOrExchange(ShuttleGui & S)
          wxComboBox tc(this, wxID_ANY, L"", wxDefaultPosition, wxDefaultSize, cs);
          mGrid->SetColSize(0, tc.GetSize().x);
          mGrid->SetColMinimalWidth(0, tc.GetSize().x);
-      }
-      S
-         .Prop(1)
-         .Position(wxEXPAND | wxALL)
-         .AddWindow(mGrid);
+         return mGrid;
+      });
 
       S.StartMultiColumn(4, wxALIGN_CENTER);
       {

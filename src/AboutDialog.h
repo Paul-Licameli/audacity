@@ -40,8 +40,6 @@ class AUDACITY_DLL_API AboutDialog final : public wxDialogWrapper {
 
    void OnOK();
 
-   wxStaticBitmap *icon;
-
  private:
    enum Role {
       roleTeamMember,

@@ -751,35 +751,32 @@ void EffectEqualization::PopulateOrExchange(ShuttleGui & S)
 
          S.StartVerticalLay(wxEXPAND, 1);
          {
-            mdBRuler = safenew RulerPanel(
-               S.GetParent(), wxID_ANY, wxVERTICAL,
-               wxSize{ 100, 100 }, // Ruler can't handle small sizes
-               RulerPanel::Range{ 60.0, -120.0 },
-               Ruler::LinearDBFormat,
-               XO("dB"),
-               RulerPanel::Options{}
-                  .LabelEdges(true)
-                  .TicksAtExtremes(true)
-                  .TickColour( { 0, 0, 0 } )
-            );
-
             S.Prop(0).AddSpace(0, 1);
 
+            mdBRuler =
             S
                .Prop(1)
                .Position(wxEXPAND)
-               .AddWindow(mdBRuler);
-
+               .Window<RulerPanel>(
+                  wxVERTICAL,
+                  wxSize{ 100, 100 }, // Ruler can't handle small sizes
+                  RulerPanel::Range{ 60.0, -120.0 },
+                  Ruler::LinearDBFormat,
+                  XO("dB"),
+                  RulerPanel::Options{}
+                     .LabelEdges(true)
+                     .TicksAtExtremes(true)
+                     .TickColour( { 0, 0, 0 } ) );
             S.AddSpace(0, 1);
          }
          S.EndVerticalLay();
 
-         mPanel = safenew EqualizationPanel(S.GetParent(), wxID_ANY, this);
+         mPanel =
          S
             .Prop(1)
             .Position(wxEXPAND)
             .MinSize( { wxDefaultCoord, wxDefaultCoord } )
-            .AddWindow(mPanel);
+            .Window<EqualizationPanel>(this);
 
          S.SetBorder(5);
          S.StartVerticalLay();
@@ -826,26 +823,24 @@ void EffectEqualization::PopulateOrExchange(ShuttleGui & S)
          // Column 1 is empty
          S.AddSpace(1, 1);
 
-         mFreqRuler  = safenew RulerPanel(
-            S.GetParent(), wxID_ANY, wxHORIZONTAL,
-            wxSize{ 100, 100 }, // Ruler can't handle small sizes
-            RulerPanel::Range{ mLoFreq, mHiFreq },
-            Ruler::IntFormat,
-            XO("Hz"),
-            RulerPanel::Options{}
-               .Log(true)
-               .Flip(true)
-               .LabelEdges(true)
-               .TicksAtExtremes(true)
-               .TickColour( { 0, 0, 0 } )
-         );
-
          S.SetBorder(1);
 
+         mFreqRuler =
          S
             .Prop(1)
             .Position(wxEXPAND | wxALIGN_LEFT | wxALIGN_TOP | wxLEFT)
-            .AddWindow(mFreqRuler);
+            .Window<RulerPanel>(
+               wxHORIZONTAL,
+               wxSize{ 100, 100 }, // Ruler can't handle small sizes
+               RulerPanel::Range{ mLoFreq, mHiFreq },
+               Ruler::IntFormat,
+               XO("Hz"),
+               RulerPanel::Options{}
+                  .Log(true)
+                  .Flip(true)
+                  .LabelEdges(true)
+                  .TicksAtExtremes(true)
+                  .TickColour( { 0, 0, 0 } ) );
 
          S.SetBorder(0);
 

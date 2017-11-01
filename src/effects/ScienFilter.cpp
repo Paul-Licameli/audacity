@@ -340,39 +340,37 @@ void EffectScienFilter::PopulateOrExchange(ShuttleGui & S)
 
       S.StartVerticalLay();
       {
-         mdBRuler = safenew RulerPanel(
-            S.GetParent(), wxID_ANY, wxVERTICAL,
-            wxSize{ 100, 100 }, // Ruler can't handle small sizes
-            RulerPanel::Range{ 30.0, -120.0 },
-            Ruler::LinearDBFormat,
-            XO("dB"),
-            RulerPanel::Options{}
-               .LabelEdges(true)
-         );
-
          S.SetBorder(1);
          S.AddSpace(1, 1);
 
+         mdBRuler =
          S
             .Prop(1)
             .Position(wxALIGN_RIGHT | wxTOP)
-            .AddWindow(mdBRuler);
+            .Window<RulerPanel>(
+               wxVERTICAL,
+               wxSize{ 100, 100 }, // Ruler can't handle small sizes
+               RulerPanel::Range{ 30.0, -120.0 },
+               Ruler::LinearDBFormat,
+               XO("dB"),
+               RulerPanel::Options{}
+                  .LabelEdges(true)
+            );
 
          S.AddSpace(1, 1);
       }
       S.EndVerticalLay();
 
-      mPanel = safenew EffectScienFilterPanel(
-         S.GetParent(), wxID_ANY,
-         this, mLoFreq, mNyquist
-      );
-
       S.SetBorder(5);
+
+      mPanel =
       S
          .Prop(1)
          .Position(wxEXPAND | wxRIGHT)
          .MinSize( { -1, -1 } )
-         .AddWindow(mPanel);
+         .Window<EffectScienFilterPanel>(
+             this, mLoFreq, mNyquist
+         );
 
       S.StartVerticalLay();
       {
@@ -416,22 +414,21 @@ void EffectScienFilter::PopulateOrExchange(ShuttleGui & S)
 
       S.AddSpace(1, 1);
 
-      mfreqRuler = safenew RulerPanel(
-         S.GetParent(), wxID_ANY, wxHORIZONTAL,
-         wxSize{ 100, 100 }, // Ruler can't handle small sizes
-         RulerPanel::Range{ mLoFreq, mNyquist },
-         Ruler::IntFormat,
-         {},
-         RulerPanel::Options{}
-            .Log(true)
-            .Flip(true)
-            .LabelEdges(true)
-      );
-
+      mfreqRuler =
       S
          .Prop(1)
          .Position(wxEXPAND | wxALIGN_LEFT | wxRIGHT)
-         .AddWindow(mfreqRuler);
+         .Window<RulerPanel>(
+            wxHORIZONTAL,
+            wxSize{ 100, 100 }, // Ruler can't handle small sizes
+            RulerPanel::Range{ mLoFreq, mNyquist },
+            Ruler::IntFormat,
+            TranslatableString{},
+            RulerPanel::Options{}
+               .Log(true)
+               .Flip(true)
+               .LabelEdges(true)
+         );
 
       S.AddSpace(1, 1);
 

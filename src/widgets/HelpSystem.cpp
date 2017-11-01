@@ -130,8 +130,6 @@ void HelpSystem::ShowHtmlText(wxWindow *pParent,
                   bool bIsFile,
                   bool bModal)
 {
-   LinkingHtmlWindow *html;
-
    wxASSERT(pParent); // to justify safenew
    // JKC: ANSWER-ME: Why do we create a fake 'frame' and then put a BrowserDialog
    // inside it, rather than have a variant of the BrowserDialog that is a
@@ -188,22 +186,27 @@ void HelpSystem::ShowHtmlText(wxWindow *pParent,
       }
       S.EndHorizontalLay();
 
-      html = safenew LinkingHtmlWindow(S.GetParent(), wxID_ANY,
-                                   wxDefaultPosition,
-                                   bIsFile ? wxSize(500, 400) : wxSize(480, 240),
-                                   wxHW_SCROLLBAR_AUTO | wxSUNKEN_BORDER);
-
-      html->SetRelatedFrame( pFrame, L"Help: %s" );
-      if( bIsFile )
-         html->LoadFile( HtmlText );
-      else
-         html->SetPage( HtmlText);
-
       S
          .Prop(1)
          .Focus()
          .Position( wxEXPAND )
-         .AddWindow( html );
+      .Window( [=](wxWindow *parent, wxWindowID winid ){
+         auto html = safenew LinkingHtmlWindow(parent, winid,
+                                      wxDefaultPosition,
+                                      bIsFile ? wxSize(500, 400) : wxSize(480, 240),
+                                      wxHW_SCROLLBAR_AUTO | wxSUNKEN_BORDER);
+
+         html->SetRelatedFrame( pFrame, L"Help: %s" );
+         if( bIsFile )
+            html->LoadFile( HtmlText );
+         else
+            html->SetPage( HtmlText);
+
+         html->SetRelatedStatusBar( 0 );
+
+         pWnd->mpHtml = html;
+         return html;
+      });
 
       S
          .Action( [pWnd]{ pWnd->OnClose(); } )
@@ -224,7 +227,6 @@ void HelpSystem::ShowHtmlText(wxWindow *pParent,
    // -- END of ICON stuff -----
 
 
-   pWnd->mpHtml = html;
    pWnd->SetBackgroundColour( wxSystemSettings::GetColour(wxSYS_COLOUR_BTNFACE));
 
    pFrame->CreateStatusBar();
@@ -239,8 +241,6 @@ void HelpSystem::ShowHtmlText(wxWindow *pParent,
       pWnd->Show(true);
       pFrame->Show(true);
    }
-
-   html->SetRelatedStatusBar( 0 );
 
    return;
 }
