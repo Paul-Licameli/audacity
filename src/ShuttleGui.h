@@ -1115,6 +1115,7 @@ public:
    void AddPrompt(const TranslatableLabel &Prompt, int wrapWidth = 0);
    void AddUnits(const TranslatableString &Units, int wrapWidth = 0);
    void AddTitle(const TranslatableString &Title, int wrapWidth = 0);
+
    wxWindow * AddWindow(wxWindow * pWindow);
    void AddSlider(
       const TranslatableLabel &Prompt, int pos, int Max, int Min = 0,
@@ -1356,6 +1357,26 @@ private:
 
 protected:
    DialogDefinition::BaseItem mItem;
+
+   template< typename S > class BuildHelper {
+      // If class S can be constructed with Args, then this factory function
+      // is generated; if not, then by the sfinae rule, there is no
+      // error
+      template< typename... Args >
+      auto Build_( S *dummy, Args... args ) -> decltype( S(args...) ) *
+      { return safenew S(args...); }
+
+      // If the function above is not defined for certain arguments,
+      // then overloading resolution chooses this, when (S*)nullptr is
+      // passed as the first argument
+      template< typename... Args >
+      S *Build_( void *dummy, Args... args)
+      {  wxASSERT( false ); return nullptr; }
+
+   public:
+      template< typename... Args >
+      S *Build( Args... args) { return this->Build_( (S*)nullptr, args... ); }
+   };
 };
 
 // A rarely used helper function that sets a pointer
@@ -1797,6 +1818,46 @@ public:
       WindowType *pWindow = *this;
       p = pWindow;
       return *this;
+   }
+
+   // A "Window Factory" is any function object that takes a parent
+   // window pointer and an id, and returns a window allocated with safenew.
+   // This is a convenient type alias:
+   template<typename Subclass>
+   using WindowFactory = std::function< Subclass* ( wxWindow*, wxWindowID ) >;
+
+   // Invoke a Window Factory and put the result in the dialog
+   template<
+      typename Factory,
+      typename Win = typename std::decay<
+         decltype( *std::declval<Factory>()( nullptr, -1 ) ) >::type
+   >
+   TypedShuttleGui<Sink, Win> Window( Factory &&f )
+   {
+      UseUpId();
+      ShuttleGuiBase::AddWindow( std::forward<Factory>(f)( GetParent(), miId ) );
+      return Rebind<Sink, Win>();
+   }
+
+   // Add any kind of window, by specifying its class and the third and
+   // later constructor arguments.  (But let ShuttleGui supply the first two,
+   // parent and id.)
+   template< typename Subclass, typename... Args >
+   TypedShuttleGui<Sink, Subclass> Window( Args... args )
+   {
+      auto factory =
+         [this, args...]( wxWindow *parent, wxWindowID id )
+         {
+            if (mItem.miStyle)
+               return BuildHelper<Subclass>{}.Build(
+                  parent, id, args...,
+                  wxDefaultPosition, wxDefaultSize, GetStyle(0)
+               );
+            else
+               return safenew Subclass( parent, id, args... );
+         };
+      Window( factory );
+      return Rebind<Sink, Subclass>();
    }
 
 private:
