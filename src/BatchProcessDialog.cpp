@@ -617,7 +617,7 @@ void MacrosWindow::PopulateOrExchange(ShuttleGui & S)
               // i18n-hint: This is the heading for a column in the edit macros dialog
               .AddListControlReportMode( { XO("Macro") } );
 
-            S.StartVerticalLay(wxALIGN_TOP, 0);
+            S.StartVerticalLay2(wxALIGN_TOP, 0);
             {
                S
                   .Action( [this]{ OnAdd(); } )
