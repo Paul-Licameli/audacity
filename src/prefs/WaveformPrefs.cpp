@@ -77,8 +77,7 @@ void WaveformPrefs::PopulateOrExchange(ShuttleGui & S)
    mDefaultsCheckbox = 0;
    mPopulating = true;
 
-   S.SetBorder(2);
-   S.StartScroller();
+   S.StartScroller(0, 2);
 
    // S.StartStatic(XO("Track Settings"));
    {

@@ -264,13 +264,12 @@ void FrequencyPlotDialog::Populate()
 
    auto S = ShuttleGui(this);
 
-   S.SetBorder(0);
-
    S.AddSpace(5);
 
    S.StartMultiColumn(3,
                       GroupOptions{ wxEXPAND }
                          .Proportion(1)
+                         .Border(0)
                          .StretchyColumn(1)
                          .StretchyRow(0));
    {
@@ -445,8 +444,8 @@ void FrequencyPlotDialog::Populate()
    
    S.AddSpace(5);
 
-   S.SetBorder(2);
-   S.StartMultiColumn(9, wxALIGN_CENTER);
+   S.StartMultiColumn(9,
+                      GroupOptions{ wxALIGN_CENTER }.Border(2));
    {
       // ----------------------------------------------------------------
       // ROW 6: Algorithm, Size, Export, Replot
@@ -530,6 +529,7 @@ void FrequencyPlotDialog::Populate()
          S.Item( eHelpButton ).Action( [this]{ OnGetURL(); } )
       } );
 
+   //??
    // -------------------------------------------------------------------
    // ROW 8: Spacer
    // -------------------------------------------------------------------

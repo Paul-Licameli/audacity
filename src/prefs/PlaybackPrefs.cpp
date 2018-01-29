@@ -60,8 +60,7 @@ void PlaybackPrefs::PopulateOrExchange(ShuttleGui & S)
 {
    const auto suffix = XO("seconds");
 
-   S.StartScroller();
-   S.SetBorder(2);
+   S.StartScroller(0, 2);
 
    S.StartStatic(XO("Effects Preview"));
    {

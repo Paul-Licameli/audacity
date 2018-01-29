@@ -488,22 +488,23 @@ public:
 
    void PopulateOrExchange(ShuttleGui & S)
    {
-      S.SetBorder(10);
-      S.StartVerticalLay(true);
+      S.StartVerticalLay(true, 10);
       {
          S.AddTitle(
             XO("Audacity needs the file %s to create MP3s.")
                .Format( mName ) );
 
-         S.SetBorder(3);
-         S.StartHorizontalLay(wxALIGN_LEFT, true);
+         S.StartHorizontalLay(wxALIGN_LEFT, true, 3);
          {
             S
                .AddTitle( XO("Location of %s:").Format( mName ) );
          }
          S.EndHorizontalLay();
 
-         S.StartMultiColumn(2, GroupOptions{ wxEXPAND }.StretchyColumn(0));
+         S.StartMultiColumn(2,
+                            GroupOptions{ wxEXPAND }
+                               .Border(3)
+                               .StretchyColumn(0));
          {
             if (mLibPath.GetFullPath().empty()) {
                S
@@ -1937,9 +1938,8 @@ int ExportMP3::AskResample(int bitrate, int rate, int lowrate, int highrate)
 
    int selected = -1;
 
-   S.StartVerticalLay();
+   S.StartVerticalLay(1, 10);
    {
-      S.SetBorder(10);
       S
          .StartStatic(XO("Resample"));
       {

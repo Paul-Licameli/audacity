@@ -114,9 +114,8 @@ void MidiIOPrefs::PopulateOrExchange( ShuttleGui & S ) {
    if (nDevices == 0)
       hostLabels.push_back(XO("No MIDI interfaces").Translation()); //?
 
-   S.SetBorder(2);
-   S.StartScroller();
-
+   S.StartScroller(0, 2);
+   
    /* i18n-hint Software interface to MIDI */
    S.StartStatic(XC("Interface", "MIDI"));
    {

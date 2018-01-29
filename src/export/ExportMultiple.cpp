@@ -318,10 +318,9 @@ void ExportMultipleDialog::PopulateOrExchange(ShuttleGui& S)
 
    S.StartHorizontalLay(wxEXPAND, false);
    {
-      S.StartStatic(XO("Split files based on:"), 1);
+      S.StartStatic(XO("Split files based on:"), 1, 1);
       {
          // Row 1
-         S.SetBorder(1);
 
          // Bug 2692: Place button group in panel so tabbing will work and,
          // on the Mac, VoiceOver will announce as radio buttons.
@@ -342,8 +341,12 @@ void ExportMultipleDialog::PopulateOrExchange(ShuttleGui& S)
          }
          S.EndPanel();
 
-         S.SetBorder(3);
-         S.StartMultiColumn(2, GroupOptions{wxEXPAND}.StretchyColumn(1));
+         // Row 2
+   
+         S.StartMultiColumn(2,
+                            GroupOptions{ wxEXPAND }
+                               .Border(3)
+                               .StretchyColumn(1));
          {
             // Row 3 (indented)
             S
@@ -381,16 +384,15 @@ void ExportMultipleDialog::PopulateOrExchange(ShuttleGui& S)
       }
       S.EndStatic();
 
-      S.SetBorder(5);
-      S.StartStatic(XO("Name files:"), 1);
+      S.StartStatic(XO("Name files:"), 1, 2);
       {
-         S.SetBorder(2);
 
          // Bug 2692: Place button group in panel so tabbing will work and,
          // on the Mac, VoiceOver will announce as radio buttons.
          S.StartPanel();
          {
             S
+               //??
                .StartRadioButtonGroup( radioSetting );
             {
                S
@@ -433,8 +435,7 @@ void ExportMultipleDialog::PopulateOrExchange(ShuttleGui& S)
    }
    S.EndHorizontalLay();
 
-   S.SetBorder(5);
-   S.StartHorizontalLay(wxEXPAND, false);
+   S.StartHorizontalLay(wxEXPAND, false, 5);
    {
       S
          .Target( OverwriteExisting )

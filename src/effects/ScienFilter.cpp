@@ -338,10 +338,8 @@ void EffectScienFilter::PopulateOrExchange(ShuttleGui & S)
       // ROW 1: Freq response panel and sliders for vertical scale
       // -------------------------------------------------------------------
 
-      S.StartVerticalLay();
+      S.StartVerticalLay(1, 1);
       {
-         S.SetBorder(1);
-
          S.AddSpace(1, 1);
 
          S

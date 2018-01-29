@@ -172,9 +172,7 @@ void KeyConfigPrefs::PopulateOrExchange(ShuttleGui & S)
    using namespace DialogDefinition;
    const auto enabler = [this]{ return CanSet(); };
 
-   S.SetBorder(2);
-
-   S.StartStatic(XO("Key Bindings"), 1);
+   S.StartStatic(XO("Key Bindings"), 1, 2);
    {
       S.StartHorizontalLay(wxEXPAND, 0);
       {

@@ -166,8 +166,7 @@ static const std::vector< Entry > &GetModuleData()
 
 void EffectsPrefs::PopulateOrExchange(ShuttleGui & S)
 {
-   S.SetBorder(2);
-   S.StartScroller();
+   S.StartScroller(0, 2);
 
    S.StartStatic(XO("Enable Effects"));
    {

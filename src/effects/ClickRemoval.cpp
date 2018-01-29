@@ -298,9 +298,11 @@ bool EffectClickRemoval::RemoveClicks(size_t len, float *buffer)
 void EffectClickRemoval::PopulateOrExchange(ShuttleGui & S)
 {
    S.AddSpace(0, 5);
-   S.SetBorder(10);
 
-   S.StartMultiColumn(3, GroupOptions{}.Position(wxEXPAND).StretchyColumn(2));
+   S.StartMultiColumn(3,
+                      GroupOptions{}.Position(wxEXPAND)
+                         .Border(10)
+                         .StretchyColumn(2));
    {
       // Threshold
       S

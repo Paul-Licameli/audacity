@@ -100,8 +100,6 @@ bool MousePrefs::TransferDataToWindow()
 /// Places controls on the panel and also exchanges data with them.
 void MousePrefs::PopulateOrExchange(ShuttleGui & S)
 {
-   S.SetBorder(2);
-
    S
       .StartStatic(XO("Mouse Bindings (default values, not configurable)"), 1);
    {

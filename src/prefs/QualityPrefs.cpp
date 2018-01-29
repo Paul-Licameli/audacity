@@ -99,8 +99,7 @@ void QualityPrefs::GetNamesAndLabels()
 void QualityPrefs::PopulateOrExchange(ShuttleGui & S)
 {
    using namespace DialogDefinition;
-   S.SetBorder(2);
-   S.StartScroller();
+   S.StartScroller(0, 2);
 
    S.StartStatic(XO("Sampling"));
    {

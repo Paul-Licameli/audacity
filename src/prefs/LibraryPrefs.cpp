@@ -72,8 +72,7 @@ bool LibraryPrefs::TransferDataToWindow()
 /// and others don't.
 void LibraryPrefs::PopulateOrExchange(ShuttleGui & S)
 {
-   S.SetBorder(2);
-   S.StartScroller();
+   S.StartScroller(0, 2);
 
    S.StartStatic(XO("LAME MP3 Export Library"));
    {

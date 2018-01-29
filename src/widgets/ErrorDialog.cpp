@@ -65,10 +65,8 @@ ErrorDialog::ErrorDialog(
    ShuttleGui S{ this };
 
    S.SetBorder(2);
-   S.StartHorizontalLay(wxEXPAND, 0);
+   S.StartHorizontalLay(wxALIGN_CENTRE, 1, 20);
    {
-      S
-         .SetBorder(20);
       wxBitmap bitmap = wxArtProvider::GetBitmap(wxART_WARNING);
       S
          .AddWindow(safenew wxStaticBitmap(S.GetParent(), -1, bitmap));
@@ -84,11 +82,8 @@ ErrorDialog::ErrorDialog(
       .SetBorder(2);
    if (!log.empty())
    {
-      S.StartHorizontalLay(wxEXPAND, 1);
+      S.StartHorizontalLay(wxEXPAND, 1, 5);
       {
-         S
-            .SetBorder(5);
-
          auto pane = safenew wxCollapsiblePane(S.GetParent(),
                                                wxID_ANY,
                                                XO("Show &Log...").Translation());

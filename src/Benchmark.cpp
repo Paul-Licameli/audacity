@@ -158,9 +158,8 @@ void BenchmarkDialog::MakeBenchmarkDialog()
    // Strings don't need to be translated because this class doesn't
    // ever get used in a stable release.
 
-   S.StartVerticalLay(true);
+   S.StartVerticalLay(true, 8);
    {
-      S.SetBorder(8);
       S.StartMultiColumn(4);
       {
          //
@@ -223,8 +222,7 @@ void BenchmarkDialog::MakeBenchmarkDialog()
          .Assign(mText);
 
       //
-      S.SetBorder(10);
-      S.StartHorizontalLay(wxALIGN_LEFT | wxEXPAND, false);
+      S.StartHorizontalLay(wxALIGN_LEFT | wxEXPAND, false, 10);
       {
          S.StartHorizontalLay(wxALIGN_LEFT, false);
          {

@@ -70,8 +70,7 @@ wxString ThemePrefs::HelpPageName()
 /// Create the dialog contents, or exchange data with it.
 void ThemePrefs::PopulateOrExchange(ShuttleGui & S)
 {
-   S.SetBorder(2);
-   S.StartScroller();
+   S.StartScroller(0, 2);
 
    S
       .StartStatic(XO("Info"));

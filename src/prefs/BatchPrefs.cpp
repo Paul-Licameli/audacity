@@ -51,8 +51,7 @@ wxString BatchPrefs::HelpPageName()
 /// Defines the dialog and does data exchange with it.
 void BatchPrefs::PopulateOrExchange( ShuttleGui & S )
 {
-   S.SetBorder( 2 );
-   S.StartScroller();
+   S.StartScroller(0, 2);
    S.StartHorizontalLay( wxEXPAND, 0 );
 
    S

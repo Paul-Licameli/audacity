@@ -280,13 +280,11 @@ void ApplyMacroDialog::ApplyMacroToProject( int iMacro, bool bHasGui )
 
    S.StartHorizontalLay(wxCENTER, false);
    {
-      S.StartStatic( {}, false);   // deliberately not translated (!)
+      S.StartStatic( {}, false, 20);   // deliberately not translated (!)
       {
-         S.SetBorder(20);
-
          S
-            .AddFixedText(XO("Applying '%s' to current project")
-            .Format( name ) );
+            .AddFixedText( XO("Applying '%s' to current project")
+               .Format( name ) );
       }
       S.EndStatic();
    }

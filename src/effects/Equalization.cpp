@@ -727,12 +727,11 @@ void EffectEqualization::PopulateOrExchange(ShuttleGui & S)
    std::fill(mSlidersOld, mSlidersOld + NUMBER_OF_BANDS, 0);
    std::fill(mEQVals, mEQVals + NUMBER_OF_BANDS + 1, 0.);
 
-   S.SetBorder(0);
-
    S.Prop(1)
       .StartMultiColumn(1,
          GroupOptions{ wxEXPAND }
             .Proportion(1) // redundant?
+            .Border(0)
             .StretchyColumn(0)
             //.StretchyRow(0) // The 5px Top border
             .StretchyRow(1)   // The Graph
@@ -753,6 +752,7 @@ void EffectEqualization::PopulateOrExchange(ShuttleGui & S)
          .StartMultiColumn(3,
             GroupOptions{ wxEXPAND }
                .Proportion(1) // redundant?
+               .Border(0)
                .StretchyColumn(1)
                .StretchyRow(0));
       {
@@ -788,8 +788,7 @@ void EffectEqualization::PopulateOrExchange(ShuttleGui & S)
             .Window<EqualizationPanel>(this)
             .Assign(mPanel);
 
-         S.SetBorder(5);
-         S.StartVerticalLay();
+         S.StartVerticalLay(1, 5);
          {
             S
                .AddVariableText(XO("+ dB"), false, wxCENTER);
@@ -824,7 +823,6 @@ void EffectEqualization::PopulateOrExchange(ShuttleGui & S)
                .AddVariableText(XO("- dB"), false, wxCENTER);
          }
          S.EndVerticalLay();
-         S.SetBorder(0);
 
          // -------------------------------------------------------------------
          // Frequency ruler below graph
@@ -863,7 +861,7 @@ void EffectEqualization::PopulateOrExchange(ShuttleGui & S)
       // ROW 2: Graphic EQ
       // -------------------------------------------------------------------
 //      S.SetSizerProportion(1); // FIX ME
-      S.StartHorizontalLay(wxEXPAND, 1);
+      S.StartHorizontalLay(wxEXPAND, 1, 0);
       {
          szrG = S.GetSizer();
 
@@ -927,13 +925,10 @@ void EffectEqualization::PopulateOrExchange(ShuttleGui & S)
       }
       S.EndHorizontalLay();
 
-      // -------------------------------------------------------------------
-      // ROW 4: Various controls
-      // -------------------------------------------------------------------
-//      S.SetSizerProportion(1); // FIX ME
-      S.Prop(1).StartMultiColumn(7, wxALIGN_CENTER_HORIZONTAL);
+      //      S.SetSizerProportion(1); // FIX ME
+      S.StartMultiColumn(7,
+                         GroupOptions{wxALIGN_CENTER_HORIZONTAL}.Border(5));
       {
-         S.SetBorder(5);
 
          S.AddSpace(5, 5);
 

@@ -317,8 +317,6 @@ void ScreenshotBigDialog::PopulateOrExchange(ShuttleGui & S)
    wxPanel *p = S.StartPanel();
    RTL_WORKAROUND(p);
    {
-      S.SetBorder(3);
-
       S
          .StartStatic(XO("Choose location to save files"));
       {

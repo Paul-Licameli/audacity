@@ -60,8 +60,7 @@ WarningDialog::WarningDialog(wxWindow *parent, const TranslatableString &message
    SetIcon(wxArtProvider::GetIcon(wxART_WARNING, wxART_MESSAGE_BOX));
    ShuttleGui S{ this };
 
-   S.SetBorder(10);
-   S.StartVerticalLay(false);
+   S.StartVerticalLay(false, 10);
    {
       S
          .AddFixedText(message);

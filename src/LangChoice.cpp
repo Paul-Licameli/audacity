@@ -75,10 +75,8 @@ LangChoiceDialog::LangChoiceDialog(wxWindow * parent,
 
    S.StartVerticalLay(false);
    {
-      S.StartHorizontalLay();
+      S.StartHorizontalLay(wxALIGN_CENTER, 1, 15);
       {
-         S.SetBorder(15);
-
          S
             .Target( NumberChoice( mLang, mLangNames ) )
             .AddChoice(XXO("Choose Language for Audacity to use:") );

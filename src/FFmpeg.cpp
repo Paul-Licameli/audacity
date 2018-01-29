@@ -468,8 +468,7 @@ public:
 
    void PopulateOrExchange(ShuttleGui & S)
    {
-      S.SetBorder(10);
-      S.StartVerticalLay(true);
+      S.StartVerticalLay(true, 10);
       {
          S
             .AddTitle(
@@ -477,15 +476,17 @@ public:
 "Audacity needs the file '%s' to import and export audio via FFmpeg.")
                   .Format( mName ) );
 
-         S.SetBorder(3);
-         S.StartHorizontalLay(wxALIGN_LEFT, true);
+         S.StartHorizontalLay(wxALIGN_LEFT, true, 3);
          {
             S
                .AddTitle( XO("Location of '%s':").Format( mName ) );
          }
          S.EndHorizontalLay();
 
-         S.StartMultiColumn(2, GroupOptions{ wxEXPAND }.StretchyColumn(0));
+         S.StartMultiColumn(2,
+                            GroupOptions{ wxEXPAND }
+                               .Border(3)
+                               .StretchyColumn(0));
          {
             if (mLibPath.GetFullPath().empty()) {
                S
@@ -586,8 +587,7 @@ void FFmpegNotFoundDialog::PopulateOrExchange(ShuttleGui & S)
 {
    wxString text;
 
-   S.SetBorder(10);
-   S.StartVerticalLay(true);
+   S.StartVerticalLay(true, 10);
    {
       S
          .AddFixedText( XO(

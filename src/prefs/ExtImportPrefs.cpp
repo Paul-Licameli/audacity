@@ -81,8 +81,7 @@ wxString ExtImportPrefs::HelpPageName()
 
 void ExtImportPrefs::PopulateOrExchange(ShuttleGui & S)
 {
-   S.SetBorder(2);
-   S.StartScroller();
+   S.StartScroller(0, 2);
 
    S
       .Target( ExtendedImportUsersSelectionOverrides )

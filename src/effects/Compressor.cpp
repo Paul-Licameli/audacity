@@ -193,9 +193,8 @@ void EffectCompressor::PopulateOrExchange(ShuttleGui & S)
 {
    using namespace DialogDefinition;
 
-   S.StartHorizontalLay(wxEXPAND, true);
+   S.StartHorizontalLay(wxEXPAND, true, 10);
    {
-      S.SetBorder(10);
       S
          .Prop(true)
          .Position(wxEXPAND | wxALL)
@@ -205,8 +204,6 @@ void EffectCompressor::PopulateOrExchange(ShuttleGui & S)
             std::ref( mNoiseFloorDB ),
             std::ref( mRatio ) )
          .Assign(mPanel);
-
-      S.SetBorder(5);
    }
    S.EndHorizontalLay();
 

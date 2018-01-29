@@ -53,8 +53,7 @@ wxString WarningsPrefs::HelpPageName()
 
 void WarningsPrefs::PopulateOrExchange(ShuttleGui & S)
 {
-   S.SetBorder(2);
-   S.StartScroller();
+   S.StartScroller(0, 2);
 
    S
       .StartStatic(XO("Show Warnings/Prompts for"));

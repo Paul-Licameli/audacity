@@ -106,8 +106,7 @@ void DevicePrefs::PopulateOrExchange(ShuttleGui & S)
    }
 
    using namespace DialogDefinition;
-   S.SetBorder(2);
-   S.StartScroller();
+   S.StartScroller(0, 2);
 
    /* i18n-hint Software interface to audio devices */
    S.StartStatic(XC("Interface", "device"));
