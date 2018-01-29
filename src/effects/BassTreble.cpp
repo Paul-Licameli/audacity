@@ -176,7 +176,6 @@ void EffectBassTreble::PopulateOrExchange(ShuttleGui & S)
 
    using namespace DialogDefinition;
 
-   S.SetBorder(5);
    S.AddSpace(0, 5);
 
    S.StartStatic(XO("Tone controls"));

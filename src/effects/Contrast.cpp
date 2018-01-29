@@ -208,7 +208,6 @@ ContrastDialog::ContrastDialog(wxWindow * parent, wxWindowID id,
 
    auto S = ShuttleGui(this);
 
-   S.SetBorder(5);
    S.StartHorizontalLay(wxCENTER, false);
    {
       S

@@ -100,7 +100,6 @@ void HistoryDialog::Populate(ShuttleGui & S)
    imageList->Add(wxIcon(empty9x16_xpm));
    imageList->Add(wxIcon(arrow_xpm));
 
-   S.SetBorder(5);
    S.StartVerticalLay(true);
    {
       S.StartStatic(XO("&Manage History"), 1);

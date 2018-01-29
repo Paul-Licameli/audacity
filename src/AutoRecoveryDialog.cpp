@@ -89,7 +89,6 @@ FilePaths AutoRecoveryDialog::GetRecoverables()
 
 void AutoRecoveryDialog::PopulateOrExchange(ShuttleGui &S)
 {
-   S.SetBorder(5);
    S.StartVerticalLay(wxEXPAND, 1);
    {
       S

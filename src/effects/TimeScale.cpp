@@ -144,7 +144,6 @@ bool EffectTimeScale::Process()
 void EffectTimeScale::PopulateOrExchange(ShuttleGui & S)
 {
    using namespace DialogDefinition;
-   S.SetBorder(5);
    S.AddSpace(0, 5);
 
    S.StartMultiColumn(2, wxALIGN_CENTER);

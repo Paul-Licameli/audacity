@@ -193,8 +193,6 @@ void EffectCompressor::PopulateOrExchange(ShuttleGui & S)
 {
    using namespace DialogDefinition;
 
-   S.SetBorder(5);
-
    S.StartHorizontalLay(wxEXPAND, true);
    {
       S.SetBorder(10);

@@ -183,11 +183,10 @@ void EffectPhaser::PopulateOrExchange(ShuttleGui & S)
 {
    using namespace DialogDefinition;
 
-   const    auto stagesTarget = Transform( mStages,
+   const auto stagesTarget = Transform( mStages,
       [](int output){ return output; },
       [](int input){ return input & ~1; /* must be even */ } );
 
-   S.SetBorder(5);
    S.AddSpace(0, 5);
 
    S.StartMultiColumn(3, GroupOptions{ wxEXPAND }.StretchyColumn(2));

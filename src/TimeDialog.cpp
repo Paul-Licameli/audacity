@@ -45,7 +45,6 @@ TimeDialog::TimeDialog(wxWindow *parent,
 
 void TimeDialog::PopulateOrExchange(ShuttleGui &S)
 {
-   S.SetBorder(5);
    S.StartVerticalLay(true);
    {
       S.StartStatic(mPrompt, true);

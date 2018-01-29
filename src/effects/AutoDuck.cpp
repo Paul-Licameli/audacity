@@ -384,7 +384,6 @@ bool EffectAutoDuck::Process()
 
 void EffectAutoDuck::PopulateOrExchange(ShuttleGui & S)
 {
-   S.SetBorder(5);
    S.StartVerticalLay(true);
    {
       S.AddSpace(0, 5);

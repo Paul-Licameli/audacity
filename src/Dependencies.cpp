@@ -330,7 +330,6 @@ XO("\n\nFiles shown as MISSING have been moved or deleted and cannot be copied.\
 void DependencyDialog::PopulateOrExchange(ShuttleGui& S)
 {
    using namespace DialogDefinition;
-   S.SetBorder(5);
    S.StartVerticalLay();
    {
       S

@@ -427,7 +427,6 @@ LadspaEffectOptionsDialog::~LadspaEffectOptionsDialog()
 
 void LadspaEffectOptionsDialog::PopulateOrExchange(ShuttleGui & S)
 {
-   S.SetBorder(5);
    S.StartHorizontalLay(wxEXPAND, 1);
    {
       S.StartVerticalLay(false);

@@ -250,10 +250,8 @@ void ExportMultipleDialog::PopulateOrExchange(ShuttleGui& S)
    mpTarget = Choice( ExportMultipleFormat, visibleFormats, formats );
    const auto &pTarget = mpTarget;
 
-   S.SetBorder(5);
    S.StartHorizontalLay(wxEXPAND, true);
    {
-      S.SetBorder(5);
       S.StartStatic(XO("Export files to:"), true);
       {
          S.StartMultiColumn(4, true);
@@ -320,7 +318,6 @@ void ExportMultipleDialog::PopulateOrExchange(ShuttleGui& S)
 
    S.StartHorizontalLay(wxEXPAND, false);
    {
-      S.SetBorder(5);
       S.StartStatic(XO("Split files based on:"), 1);
       {
          // Row 1

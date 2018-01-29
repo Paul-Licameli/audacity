@@ -44,8 +44,6 @@ SoundActivatedRecordDialog::~SoundActivatedRecordDialog()
 
 void SoundActivatedRecordDialog::PopulateOrExchange(ShuttleGui & S)
 {
-   S.SetBorder(5);
-
    S.StartVerticalLay();
    {
       S.StartMultiColumn(2, GroupOptions{ wxEXPAND }.StretchyColumn( 1 ));

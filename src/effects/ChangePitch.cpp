@@ -223,8 +223,6 @@ void EffectChangePitch::PopulateOrExchange(ShuttleGui & S)
    for (int ii = 0; ii < 12; ++ii)
       pitch.push_back( PitchName( ii, PitchNameChoice::Both ) );
 
-   S.SetBorder(5);
-
    S.StartVerticalLay(0);
    {
       S.StartVerticalLay();

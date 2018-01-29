@@ -559,7 +559,6 @@ AudioUnitEffectOptionsDialog::~AudioUnitEffectOptionsDialog()
 
 void AudioUnitEffectOptionsDialog::PopulateOrExchange(ShuttleGui & S)
 {
-   S.SetBorder(5);
    S.StartHorizontalLay(wxEXPAND, 1);
    {
       S.StartVerticalLay(false);
@@ -678,7 +677,6 @@ AudioUnitEffectImportDialog::~AudioUnitEffectImportDialog()
 
 void AudioUnitEffectImportDialog::PopulateOrExchange(ShuttleGui & S)
 {
-   S.SetBorder(5);
    S.StartHorizontalLay(wxEXPAND, 1);
    {
       S.StartVerticalLay(true);

@@ -77,7 +77,6 @@ ScoreAlignDialog::ScoreAlignDialog(ScoreAlignParams &params)
    auto S = ShuttleGui{ this };
    //ok->SetDefault();
 
-   S.SetBorder(5);
    S.StartVerticalLay(true);
    S.StartStatic(XO("Align MIDI to Audio"));
    S.StartMultiColumn(3, wxEXPAND | wxALIGN_CENTER_VERTICAL);

@@ -182,8 +182,6 @@ void EffectChangeTempo::PopulateOrExchange(ShuttleGui & S)
       S
          .AddTitle(XO("Change Tempo without Changing Pitch"));
 
-      S.SetBorder(5);
-
       //
       S.StartMultiColumn(2, GroupOptions{}.Position(wxCENTER));
       {

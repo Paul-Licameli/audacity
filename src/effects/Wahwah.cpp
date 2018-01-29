@@ -178,7 +178,6 @@ size_t EffectWahwah::RealtimeProcess(int group,
 void EffectWahwah::PopulateOrExchange(ShuttleGui & S)
 {
    using namespace DialogDefinition;
-   S.SetBorder(5);
    S.AddSpace(0, 5);
 
    S.StartMultiColumn(3, GroupOptions{ wxEXPAND }.StretchyColumn(2));

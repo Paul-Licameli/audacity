@@ -142,13 +142,9 @@ void SplashDialog::Populate( ShuttleGui & S )
    // S.Prop(0); // PRL: was here, but had no effect
    S.StartMultiColumn(2, GroupOptions{ wxEXPAND }.StretchyColumn(1));
    {
-      S.SetBorder( 5 );
-
       S
          .Id( DontShowID)
          .AddCheckBox( XXO("Don't show this again at start up"), !bShow );
-
-      S.SetBorder( 5 );
 
       S
          .Id(wxID_OK)
