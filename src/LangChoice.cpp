@@ -85,8 +85,6 @@ LangChoiceDialog::LangChoiceDialog(wxWindow * parent,
       }
       S.EndVerticalLay();
 
-      S.SetBorder(0);
-
       S
          .AddStandardButtons( 0, {
             S.Item( eOkButton ).Action( [this]{ OnOk(); } )

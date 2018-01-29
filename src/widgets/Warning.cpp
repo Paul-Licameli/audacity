@@ -72,8 +72,6 @@ WarningDialog::WarningDialog(wxWindow *parent, const TranslatableString &message
    }
    S.EndVerticalLay();
 
-   S.SetBorder(0);
-
    S
       .AddStandardButtons(showCancelButton ? eCancelButton : 0, {
          S.Item( eOkButton ).Action( [this]{ OnOK(); } )

@@ -107,8 +107,6 @@ ErrorDialog::ErrorDialog(
    }
 
    S
-      .SetBorder(2);
-   S
       .AddStandardButtons( 0, {
          S.Item( eOkButton ).Action( [this]{ OnOk(); } ),
          helpPage.empty()
