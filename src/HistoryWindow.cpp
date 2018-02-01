@@ -112,11 +112,14 @@ void HistoryDialog::Populate(ShuttleGui & S)
                { { XO("Action"), wxLIST_FORMAT_LEFT, 260 },
                  { XO("Used Space"), wxLIST_FORMAT_LEFT, 125 } },
                wxLC_SINGLE_SEL )
+            //Assign rather than set the image list, so that it is deleted later.
+            // AssignImageList takes ownership
+            .Initialize( [](wxListCtrl *p) {
+               auto imageList = std::make_unique<wxImageList>(9, 16);
+               imageList->Add(wxIcon(empty9x16_xpm));
+               imageList->Add(wxIcon(arrow_xpm));
+               p->AssignImageList(imageList.release(), wxIMAGE_LIST_SMALL); } )
             .Assign(mList);
-
-         //Assign rather than set the image list, so that it is deleted later.
-         // AssignImageList takes ownership
-         mList->AssignImageList(imageList.release(), wxIMAGE_LIST_SMALL);
 
          S.StartMultiColumn(3, wxCENTRE);
          {

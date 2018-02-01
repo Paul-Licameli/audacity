@@ -131,6 +131,19 @@ void ExtImportPrefs::PopulateOrExchange(ShuttleGui & S)
             fillRuleTable = true;
             return RuleTable;
          })
+         .Initialize( [](Grid *RuleTable) {
+            auto &items = Importer::Get().GetImportItems();
+            {
+               int i = -1;
+               for (const auto &item : items)
+                  AddItemToTable( RuleTable, ++i, item.get() );
+            }
+            if (!items.empty())
+            {
+               RuleTable->SelectRow(0);
+               RuleTable->SetGridCursor(0,0);
+            }
+         } )
          .Assign(RuleTable);
 
          S
@@ -139,30 +152,15 @@ void ExtImportPrefs::PopulateOrExchange(ShuttleGui & S)
                { { XO("Importer order"), wxLIST_FORMAT_LEFT,
                    wxLIST_AUTOSIZE_USEHEADER } },
                wxLC_REPORT | wxLC_SINGLE_SEL )
+            .Initialize( [this](wxListCtrl *PluginList) {
+               ExtImportPrefsDropTarget *dragtarget2 {};
+               PluginList->SetDropTarget (
+                  dragtarget2 = safenew ExtImportPrefsDropTarget(
+                     dragtext2 = safenew wxTextDataObject(L"")
+               ) );
+               dragtarget2->SetPrefs (this);
+            } )
             .Assign(PluginList);
-
-         if (fillRuleTable)
-         {
-            ExtImportPrefsDropTarget *dragtarget2 {};
-            PluginList->SetDropTarget (
-               dragtarget2 = safenew ExtImportPrefsDropTarget(
-                  dragtext2 = safenew wxTextDataObject(L"")
-               )
-            );
-            dragtarget2->SetPrefs (this);
-
-            auto &items = Importer::Get().GetImportItems();
-            {
-               int i = -1;
-               for (const auto &item : items)
-                  AddItemToTable (++i, item.get());
-            }
-            if (!items.empty())
-            {
-               RuleTable->SelectRow(0);
-               RuleTable->SetGridCursor(0,0);
-            }
-         }
       }
       S.EndHorizontalLay();
       S.StartHorizontalLay (wxSHRINK, 0);
@@ -587,7 +585,8 @@ Audacity to trim spaces for you?"),
    RuleTable->AutoSizeColumns ();
 }
 
-void ExtImportPrefs::AddItemToTable (int index, const ExtImportItem *item)
+void ExtImportPrefs::AddItemToTable (
+   Grid *RuleTable, int index, const ExtImportItem *item)
 {
    wxString extensions, mime_types;
    if (item->extensions.size() > 0)
@@ -623,7 +622,7 @@ void ExtImportPrefs::OnAddRule()
    auto uitem = Importer::Get().CreateDefaultImportItem();
    auto item = uitem.get();
    items.push_back(std::move(uitem));
-   AddItemToTable (RuleTable->GetNumberRows (), item);
+   AddItemToTable (RuleTable, RuleTable->GetNumberRows (), item);
 
    RuleTable->SelectRow(RuleTable->GetNumberRows () - 1);
    RuleTable->SetGridCursor (RuleTable->GetNumberRows () - 1, 0);

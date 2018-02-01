@@ -113,6 +113,9 @@ void AutoRecoveryDialog::PopulateOrExchange(ShuttleGui &S)
                /*i18n-hint: (noun).  It's the name of the project to recover.*/
                XO("Name")
             })
+            .Initialize( [this](wxWindow*){
+               PopulateList();
+            } )
             .Assign(mFileList);
          mFileList->EnableCheckBoxes();
 

@@ -169,6 +169,8 @@ void DevicePrefs::PopulateOrExchange(ShuttleGui & S)
    {
       S.StartThreeColumn();
       {
+         // only show the following controls if we use Portaudio v19, because
+         // for Portaudio v18 we always use default buffer sizes
          S
             .Text({ {}, XO("milliseconds") })
             .Target( AudioIOLatencyDuration )

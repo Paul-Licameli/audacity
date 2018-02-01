@@ -112,7 +112,8 @@ class ExtImportPrefs final : public PrefsPanel
    void DoOnRuleTableKeyDown (int keycode);
    bool DoOnPluginKeyDown (int code);
    void DoOnRuleTableSelect (int toprow);
-   void AddItemToTable (int index, const ExtImportItem *item);
+   static void AddItemToTable (
+      Grid *RuleTable, int index, const ExtImportItem *item);
    DECLARE_EVENT_TABLE()
 };
 

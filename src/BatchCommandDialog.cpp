@@ -78,9 +78,8 @@ void MacroCommandDialog::PopulateOrExchange(ShuttleGui &S)
 
          S
             .AddTextBox(XXO("&Command"), L"", 20)
+            .Initialize( &wxTextCtrl::SetEditable, false )
             .Assign(mCommand);
-
-         mCommand->SetEditable(false);
 
          S
             .Enable( [this]{
@@ -107,21 +106,19 @@ void MacroCommandDialog::PopulateOrExchange(ShuttleGui &S)
 
          S
             .AddTextBox(XXO("&Parameters"), L"", 0)
+            .Initialize( &wxTextCtrl::SetEditable, false )
             .Assign(mParameters);
 
-         mParameters->SetEditable(false);
          auto prompt = XXO("&Details");
 
          S
             .Prop(0)
             .AddPrompt(prompt);
 
-         mDetails =
          S
             .Text( prompt.Stripped() )
-            .AddTextWindow( L"");
-
-         mDetails->SetEditable(false);
+            .AddTextWindow( L"")
+            .Initialize( &wxTextCtrl::SetEditable, false );
       }
       S.EndMultiColumn();
 

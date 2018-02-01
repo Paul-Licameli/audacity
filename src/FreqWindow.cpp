@@ -465,7 +465,7 @@ void FrequencyPlotDialog::Populate()
 
       S.AddSpace(5);
 
-      auto sizeChoice =
+      wxChoice * sizeChoice =
       S
          .Id(FreqSizeChoiceID)
          .MinSize( { wxDefaultCoord, wxDefaultCoord } )
@@ -489,26 +489,28 @@ void FrequencyPlotDialog::Populate()
 
       S.AddSpace(5);
 
-      auto funcChoice =
+      wxChoice * funcChoice =
       S
          .Id(FreqFuncChoiceID)
          .MinSize( { wxDefaultCoord, wxDefaultCoord } )
          .Target( mFuncChoice )
          .Action( [this]{ OnFuncChoice(); } )
-         .AddChoice(XXO("&Function:"), funcChoices, mFunc);
-      funcChoice->MoveAfterInTabOrder(sizeChoice);
+         .AddChoice(XXO("&Function:"), funcChoices, mFunc)
+         .Initialize( [this, sizeChoice](wxWindow *p)
+            { p->MoveAfterInTabOrder(sizeChoice); } );
 
       S.AddSpace(5);
 
-      auto axisChoice =
+      wxChoice * axisChoice =
       S
          .Id(FreqAxisChoiceID)
          .MinSize( { wxDefaultCoord, wxDefaultCoord } )
          .Enable( [this]{ return mAlg == SpectrumAnalyst::Spectrum; } )
          .Target( mAxisChoice )
          .Action( [this]{ OnAxisChoice(); } )
-         .AddChoice(XXO("&Axis:"), axisChoices, mAxis);
-      axisChoice->MoveAfterInTabOrder(funcChoice);
+         .AddChoice(XXO("&Axis:"), axisChoices, mAxis)
+         .Initialize( [this, funcChoice](wxWindow *p)
+            { p->MoveAfterInTabOrder(funcChoice); } );
 
       S.AddSpace(5);
 

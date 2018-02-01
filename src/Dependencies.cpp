@@ -345,9 +345,8 @@ void DependencyDialog::PopulateOrExchange(ShuttleGui& S)
                { XO("Audio File"), wxLIST_FORMAT_LEFT, 220 },
                { XO("Disk Space"), wxLIST_FORMAT_LEFT, 120 }
             })
+            .Initialize([this](wxWindow*){ PopulateList(); })
             .Assign(mFileListCtrl);
-
-         PopulateList();
 
          S
             .Focus()

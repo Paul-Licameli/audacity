@@ -805,8 +805,6 @@ void VSTEffectOptionsDialog::PopulateOrExchange(ShuttleGui & S)
 
             S.StartHorizontalLay(wxALIGN_LEFT);
             {
-               wxTextCtrl *t;
-               t =
                S
                   .Target( mBufferSize,
                      NumValidatorStyle::DEFAULT, 8, 1048576 * 1)

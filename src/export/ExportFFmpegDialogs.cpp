@@ -1853,16 +1853,14 @@ void ExportFFmpegOptions::PopulateOrExchange(ShuttleGui & S)
             S
                .Id(FEFormatID)
                .AddListBox(mFormatNames)
+               .Initialize( &wxListBox::DeselectAll, -1 )
                .Assign(mFormatList);
-
-            mFormatList->DeselectAll();
 
             S
                .Id(FECodecID)
                .AddListBox(mCodecNames)
+               .Initialize( &wxListBox::DeselectAll, -1 )
                .Assign(mCodecList);
-   
-            mCodecList->DeselectAll();
          }
          S.EndMultiColumn();
          S.StartVerticalLay();

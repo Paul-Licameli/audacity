@@ -519,16 +519,17 @@ PrefsDialog::PrefsDialog(
             .Prop(1)
             .Position(wxEXPAND)
             .Window(factory)
-            .Assign(mUniquePage);
-         // We're not in the wxTreebook, so add the accelerator here
-         wxAcceleratorEntry entries[1];
+            .Initialize( &wxWindow::SetAcceleratorTable, []{
+                  // We're not in the wxTreebook, so add the accelerator here
+                  wxAcceleratorEntry entries[1];
 #if defined(__WXMAC__)
-         // Is there a standard shortcut on Mac?
+                  // Is there a standard shortcut on Mac?
 #else
-         entries[0].Set(wxACCEL_NORMAL, (int) WXK_F1, wxID_HELP);
+                  entries[0].Set(wxACCEL_NORMAL, (int) WXK_F1, wxID_HELP);
 #endif
-         wxAcceleratorTable accel(1, entries);
-         mUniquePage->SetAcceleratorTable(accel);
+                  return wxAcceleratorTable(1, entries);
+               }() )
+            .Assign(mUniquePage);
       }
    }
    S.EndVerticalLay();

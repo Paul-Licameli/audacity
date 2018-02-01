@@ -403,10 +403,14 @@ void ApplyMacroDialog::OnApplyToFiles()
             .Style(wxSUNKEN_BORDER | wxLC_REPORT | wxLC_HRULES | wxLC_VRULES |
                 wxLC_SINGLE_SEL)
             .AddListControlReportMode( { XO("File") } )
+            .Initialize( [](wxListCtrl *pCtrl){
+               auto imageList = std::make_unique<wxImageList>(9, 16);
+               imageList->Add(wxIcon(empty9x16_xpm));
+               imageList->Add(wxIcon(arrow_xpm));
+               // AssignImageList takes ownership
+               pCtrl->AssignImageList(imageList.release(), wxIMAGE_LIST_SMALL);
+            })
             .Assign(fileList);
-
-         // AssignImageList takes ownership
-         fileList->AssignImageList(imageList.release(), wxIMAGE_LIST_SMALL);
       }
       S.EndStatic();
 
