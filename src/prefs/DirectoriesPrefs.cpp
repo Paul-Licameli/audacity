@@ -250,9 +250,6 @@ void DirectoriesPrefs::PopulateOrExchange(ShuttleGui &S)
                                   30);
          if( mTempText )
             mTempText->SetValidator(FilesystemValidator(XO("Temporary files directory cannot be on a FAT drive.")));
-         S
-            .Action([this]{ OnTempBrowse(); })
-            .AddButton(XXO("Brow&se..."));
 
          mFreeSpace = S
             .AddReadOnlyText(XXO("&Free Space:"), "");

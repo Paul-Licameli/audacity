@@ -306,7 +306,7 @@ wxWindow * ShuttleGuiBase::AddWindow(wxWindow * pWindow)
    return pWindow;
 }
 
-NumericTextCtrl * ShuttleGuiBase::AddNumericTextCtrl(NumericConverter::Type type,
+void ShuttleGuiBase::AddNumericTextCtrl(NumericConverter::Type type,
       const NumericFormatSymbol &formatName,
       double value,
       double sampleRate,
@@ -316,14 +316,17 @@ NumericTextCtrl * ShuttleGuiBase::AddNumericTextCtrl(NumericConverter::Type type
 {
    UseUpId();
    NumericTextCtrl * pCtrl = nullptr;
+   if( mpState -> mShuttleMode != eIsCreating ) {
+      mpWind = wxWindow::FindWindowById( miId, mpState -> mpDlg);
+      return;
+   }
    mpWind = pCtrl = safenew NumericTextCtrl( GetParent(), miId,
       type, formatName, value, sampleRate, options, pos, size );
    CheckEventType( mItem, {wxEVT_TEXT} );
    UpdateSizers();
-   return pCtrl;
 }
 
-wxCheckBox * ShuttleGuiBase::AddCheckBox( const TranslatableLabel &Prompt, bool Selected)
+void ShuttleGuiBase::AddCheckBox( const TranslatableLabel &Prompt, bool Selected)
 {
    HandleOptionality( Prompt );
    auto realPrompt = Prompt.Translation();
@@ -334,8 +337,10 @@ wxCheckBox * ShuttleGuiBase::AddCheckBox( const TranslatableLabel &Prompt, bool 
    }
 
    UseUpId();
-   if( mpState -> mShuttleMode != eIsCreating )
-      return wxDynamicCast(wxWindow::FindWindowById( miId, mpState -> mpDlg), wxCheckBox);
+   if( mpState -> mShuttleMode != eIsCreating ) {
+      mpWind = wxWindow::FindWindowById( miId, mpState -> mpDlg);
+      return;
+   }
    wxCheckBox * pCheckBox;
    miProp=0;
    mpWind = pCheckBox = safenew wxCheckBox(GetParent(), miId, realPrompt, wxDefaultPosition, mItem.mWindowSize,
@@ -352,19 +357,20 @@ wxCheckBox * ShuttleGuiBase::AddCheckBox( const TranslatableLabel &Prompt, bool 
       pCheckBox->SetName(L"\a");      // non-empty string which screen readers do not read
    }
    UpdateSizers();
-   return pCheckBox;
 }
 
 /// For a consistent two-column layout we want labels on the left and
 /// controls on the right.  CheckBoxes break that rule, so we fake it by
 /// placing a static text label and then a tick box with an empty label.
-wxCheckBox * ShuttleGuiBase::AddCheckBoxOnRight( const TranslatableLabel &Prompt, bool Selected)
+void ShuttleGuiBase::AddCheckBoxOnRight( const TranslatableLabel &Prompt, bool Selected)
 {
    HandleOptionality( Prompt );
    AddPrompt( Prompt );
    UseUpId();
-   if( mpState -> mShuttleMode != eIsCreating )
-      return wxDynamicCast(wxWindow::FindWindowById( miId, mpState -> mpDlg), wxCheckBox);
+   if( mpState -> mShuttleMode != eIsCreating ) {
+      mpWind = wxWindow::FindWindowById( miId, mpState -> mpDlg);
+      return;
+   }
    wxCheckBox * pCheckBox;
    miProp=0;
    mpWind = pCheckBox = safenew wxCheckBox(GetParent(), miId, L"", wxDefaultPosition, mItem.mWindowSize,
@@ -372,15 +378,16 @@ wxCheckBox * ShuttleGuiBase::AddCheckBoxOnRight( const TranslatableLabel &Prompt
    pCheckBox->SetValue(Selected);
    pCheckBox->SetName(Prompt.Stripped().Translation());
    UpdateSizers();
-   return pCheckBox;
 }
 
-wxButton * ShuttleGuiBase::AddButton(
+void ShuttleGuiBase::AddButton(
    const TranslatableLabel &Label, int PositionFlags, bool setDefault)
 {
    UseUpId();
-   if( mpState -> mShuttleMode != eIsCreating )
-      return wxDynamicCast(wxWindow::FindWindowById( miId, mpState -> mpDlg), wxButton);
+   if( mpState -> mShuttleMode != eIsCreating ) {
+      mpWind = wxWindow::FindWindowById( miId, mpState -> mpDlg);
+      return;
+   }
    wxButton * pBtn;
    const auto translated = Label.Translation();
    mpWind = pBtn = safenew wxButton(GetParent(), miId,
@@ -392,15 +399,16 @@ wxButton * ShuttleGuiBase::AddButton(
    UpdateSizersCore(false, PositionFlags | wxALL);
    if (setDefault)
       pBtn->SetDefault();
-   return pBtn;
 }
 
-wxBitmapButton * ShuttleGuiBase::AddBitmapButton(
+void ShuttleGuiBase::AddBitmapButton(
    const wxBitmap &Bitmap, int PositionFlags, bool setDefault)
 {
    UseUpId();
-   if( mpState -> mShuttleMode != eIsCreating )
-      return wxDynamicCast(wxWindow::FindWindowById( miId, mpState -> mpDlg), wxBitmapButton);
+   if( mpState -> mShuttleMode != eIsCreating ) {
+      mpWind = wxWindow::FindWindowById( miId, mpState -> mpDlg);
+      return;
+   }
    wxBitmapButton * pBtn;
    mpWind = pBtn = safenew wxBitmapButton(GetParent(), miId, Bitmap,
       wxDefaultPosition, mItem.mWindowSize, GetStyle( wxBU_AUTODRAW ) );
@@ -411,17 +419,18 @@ wxBitmapButton * ShuttleGuiBase::AddBitmapButton(
    UpdateSizersCore(false, PositionFlags | wxALL);
    if (setDefault)
       pBtn->SetDefault();
-   return pBtn;
 }
 
-wxChoice * ShuttleGuiBase::AddChoice( const TranslatableLabel &Prompt,
+void ShuttleGuiBase::AddChoice( const TranslatableLabel &Prompt,
    const TranslatableStrings &choices, int Selected )
 {
    HandleOptionality( Prompt );
    AddPrompt( Prompt );
    UseUpId();
-   if( mpState -> mShuttleMode != eIsCreating )
-      return wxDynamicCast(wxWindow::FindWindowById( miId, mpState -> mpDlg), wxChoice);
+   if( mpState -> mShuttleMode != eIsCreating ) {
+      mpWind = wxWindow::FindWindowById( miId, mpState -> mpDlg);
+      return;
+   }
    wxChoice * pChoice;
    miProp=0;
 
@@ -447,13 +456,12 @@ wxChoice * ShuttleGuiBase::AddChoice( const TranslatableLabel &Prompt,
       pChoice->SetSelection( Selected );
 
    UpdateSizers();
-   return pChoice;
 }
 
-wxChoice * ShuttleGuiBase::AddChoice( const TranslatableLabel &Prompt,
+void ShuttleGuiBase::AddChoice( const TranslatableLabel &Prompt,
    const TranslatableStrings &choices, const TranslatableString &Selected )
 {
-   return AddChoice(
+   AddChoice(
       Prompt, choices, make_iterator_range( choices ).index( Selected ) );
 }
 
@@ -480,14 +488,16 @@ void ShuttleGuiBase::AddFixedText(
       UpdateSizers();
 }
 
-wxStaticText * ShuttleGuiBase::AddVariableText(
+void ShuttleGuiBase::AddVariableText(
    const TranslatableString &Str,
    bool bCenter, int PositionFlags, int wrapWidth )
 {
    const auto translated = Str.Translation();
    UseUpId();
-   if( mpState -> mShuttleMode != eIsCreating )
-      return wxDynamicCast(wxWindow::FindWindowById( miId, mpState -> mpDlg), wxStaticText);
+   if( mpState -> mShuttleMode != eIsCreating ) {
+      mpWind = wxWindow::FindWindowById( miId, mpState -> mpDlg);
+      return;
+   }
 
    wxStaticText *pStatic;
    auto text = pStatic = safenew wxStaticText(GetParent(), miId, translated,
@@ -510,10 +520,9 @@ wxStaticText * ShuttleGuiBase::AddVariableText(
          UpdateSizersCore( false, PositionFlags );
       else
          UpdateSizers();
-   return pStatic;
 }
 
-ReadOnlyText * ShuttleGuiBase::AddReadOnlyText(
+void ShuttleGuiBase::AddReadOnlyText(
    const TranslatableLabel &Caption, const wxString &Value)
 {
    const auto translated = Caption.Translation();
@@ -522,8 +531,10 @@ ReadOnlyText * ShuttleGuiBase::AddReadOnlyText(
    mItem.miStyle = wxALIGN_CENTER_VERTICAL;
    AddPrompt( Caption );
    UseUpId();
-   if( mpState -> mShuttleMode != eIsCreating )
-      return wxDynamicCast(wxWindow::FindWindowById( miId, mpState -> mpDlg), ReadOnlyText);
+   if( mpState -> mShuttleMode != eIsCreating ) {
+      mpWind = wxWindow::FindWindowById( miId, mpState -> mpDlg);
+      return;
+   }
    ReadOnlyText * pReadOnlyText;
    miProp=0;
 
@@ -531,10 +542,9 @@ ReadOnlyText * ShuttleGuiBase::AddReadOnlyText(
       wxDefaultPosition, wxDefaultSize, GetStyle( style ));
    mpWind->SetName(wxStripMenuCodes(translated));
    UpdateSizers();
-   return pReadOnlyText;
 }
 
-wxComboBox * ShuttleGuiBase::AddCombo(
+void ShuttleGuiBase::AddCombo(
    const TranslatableLabel &Prompt,
    const wxString &Selected, const wxArrayStringEx & choices )
 {
@@ -542,8 +552,10 @@ wxComboBox * ShuttleGuiBase::AddCombo(
    HandleOptionality( Prompt );
    AddPrompt( Prompt );
    UseUpId();
-   if( mpState -> mShuttleMode != eIsCreating )
-      return wxDynamicCast(wxWindow::FindWindowById( miId, mpState -> mpDlg), wxComboBox);
+   if( mpState -> mShuttleMode != eIsCreating ) {
+      mpWind = wxWindow::FindWindowById( miId, mpState -> mpDlg);
+      return;
+   }
    wxComboBox * pCombo;
    miProp=0;
 
@@ -561,19 +573,20 @@ wxComboBox * ShuttleGuiBase::AddCombo(
    mpWind->SetName(wxStripMenuCodes(translated));
 
    UpdateSizers();
-   return pCombo;
 }
 
 
-wxRadioButton * ShuttleGuiBase::DoAddRadioButton(
+void ShuttleGuiBase::DoAddRadioButton(
    const TranslatableLabel &Prompt, int style)
 {
    const auto translated = Prompt.Translation();
    /// \todo This function and the next two, suitably adapted, could be
    /// used by TieRadioButton.
    UseUpId();
-   if( mpState -> mShuttleMode != eIsCreating )
-      return wxDynamicCast(wxWindow::FindWindowById( miId, mpState -> mpDlg), wxRadioButton);
+   if( mpState -> mShuttleMode != eIsCreating ) {
+      mpWind = wxWindow::FindWindowById( miId, mpState -> mpDlg);
+      return;
+   }
    wxRadioButton * pRad;
    mpWind = pRad = safenew wxRadioButton(GetParent(), miId, translated,
       wxDefaultPosition, mItem.mWindowSize, GetStyle( style ) );
@@ -585,15 +598,13 @@ wxRadioButton * ShuttleGuiBase::DoAddRadioButton(
 
    if ( auto pList = mpState -> mRadioButtons.get() )
       pList->push_back( pRad );
-
-   return pRad;
 }
 
-wxRadioButton * ShuttleGuiBase::AddRadioButton(
+void ShuttleGuiBase::AddRadioButton(
    const TranslatableLabel &Prompt )
 {
    wxASSERT( mRadioCount >= 0); // Did you remember to use StartRadioButtonGroup() ?
-   return DoAddRadioButton( Prompt, (mRadioCount++ == 0) ? wxRB_GROUP : 0 );
+   DoAddRadioButton( Prompt, (mRadioCount++ == 0) ? wxRB_GROUP : 0 );
 }
 
 #ifdef __WXMAC__
@@ -605,15 +616,17 @@ void wxSliderWrapper::SetFocus()
 }
 #endif
 
-wxSlider * ShuttleGuiBase::AddSlider(
+void ShuttleGuiBase::AddSlider(
    const TranslatableLabel &Prompt, int pos, int Max, int Min,
    int lineSize, int pageSize )
 {
    HandleOptionality( Prompt );
    AddPrompt( Prompt );
    UseUpId();
-   if( mpState -> mShuttleMode != eIsCreating )
-      return wxDynamicCast(wxWindow::FindWindowById( miId, mpState -> mpDlg), wxSlider);
+   if( mpState -> mShuttleMode != eIsCreating ) {
+      mpWind = wxWindow::FindWindowById( miId, mpState -> mpDlg);
+      return;
+   }
    wxSlider * pSlider;
    mpWind = pSlider = safenew wxSliderWrapper(GetParent(), miId,
       pos, Min, Max,
@@ -637,18 +650,19 @@ wxSlider * ShuttleGuiBase::AddSlider(
       pSlider->SetPageSize( pageSize );
    
    UpdateSizers();
-   return pSlider;
 }
 
-wxSpinCtrl * ShuttleGuiBase::AddSpinCtrl(
+void ShuttleGuiBase::AddSpinCtrl(
    const TranslatableLabel &Prompt, int Value, int Max, int Min)
 {
    const auto translated = Prompt.Translation();
    HandleOptionality( Prompt );
    AddPrompt( Prompt );
    UseUpId();
-   if( mpState -> mShuttleMode != eIsCreating )
-      return wxDynamicCast(wxWindow::FindWindowById( miId, mpState -> mpDlg), wxSpinCtrl);
+   if( mpState -> mShuttleMode != eIsCreating ) {
+      mpWind = wxWindow::FindWindowById( miId, mpState -> mpDlg);
+      return;
+   }
    wxSpinCtrl * pSpinCtrl;
    mpWind = pSpinCtrl = safenew wxSpinCtrl(GetParent(), miId,
       wxEmptyString,
@@ -659,18 +673,19 @@ wxSpinCtrl * ShuttleGuiBase::AddSpinCtrl(
    mpWind->SetName(wxStripMenuCodes(translated));
    miProp=1;
    UpdateSizers();
-   return pSpinCtrl;
 }
 
-wxTextCtrl * ShuttleGuiBase::AddTextBox(
+void ShuttleGuiBase::AddTextBox(
    const TranslatableLabel &Prompt, const wxString &Value, const int nChars)
 {
    const auto translated = Prompt.Translation();
    HandleOptionality( Prompt );
    AddPrompt( Prompt );
    UseUpId();
-   if( mpState -> mShuttleMode != eIsCreating )
-      return wxDynamicCast(wxWindow::FindWindowById( miId, mpState -> mpDlg), wxTextCtrl);
+   if( mpState -> mShuttleMode != eIsCreating ) {
+      mpWind = wxWindow::FindWindowById( miId, mpState -> mpDlg);
+      return;
+   }
    wxTextCtrl * pTextCtrl;
    wxSize Size(mItem.mWindowSize);
    if( nChars > 0 && Size.GetX() == -1 )
@@ -696,18 +711,19 @@ wxTextCtrl * ShuttleGuiBase::AddTextBox(
 #endif
    mpWind->SetName(wxStripMenuCodes(translated));
    UpdateSizers();
-   return pTextCtrl;
 }
 
-wxTextCtrl * ShuttleGuiBase::AddNumericTextBox(
+void ShuttleGuiBase::AddNumericTextBox(
    const TranslatableLabel &Prompt, const wxString &Value, const int nChars)
 {
    const auto translated = Prompt.Translation();
    HandleOptionality( Prompt );
    AddPrompt( Prompt );
    UseUpId();
-   if( mpState -> mShuttleMode != eIsCreating )
-      return wxDynamicCast(wxWindow::FindWindowById( miId, mpState -> mpDlg), wxTextCtrl);
+   if( mpState -> mShuttleMode != eIsCreating ) {
+      mpWind = wxWindow::FindWindowById( miId, mpState -> mpDlg);
+      return;
+   }
    wxTextCtrl * pTextCtrl;
    wxSize Size(mItem.mWindowSize);
    if( nChars > 0 && Size.GetX() == -1 )
@@ -733,15 +749,16 @@ wxTextCtrl * ShuttleGuiBase::AddNumericTextBox(
 #endif
    mpWind->SetName(wxStripMenuCodes(translated));
    UpdateSizers();
-   return pTextCtrl;
 }
 
 /// Multiline text box that grows.
-wxTextCtrl * ShuttleGuiBase::AddTextWindow(const wxString &Value)
+void ShuttleGuiBase::AddTextWindow(const wxString &Value)
 {
    UseUpId();
-   if( mpState -> mShuttleMode != eIsCreating )
-      return wxDynamicCast(wxWindow::FindWindowById( miId, mpState -> mpDlg), wxTextCtrl);
+   if( mpState -> mShuttleMode != eIsCreating ) {
+      mpWind = wxWindow::FindWindowById( miId, mpState -> mpDlg);
+      return;
+   }
    wxTextCtrl * pTextCtrl;
    SetProportions( 1 );
    mpWind = pTextCtrl = safenew wxTextCtrl(GetParent(), miId, Value,
@@ -754,7 +771,6 @@ wxTextCtrl * ShuttleGuiBase::AddTextWindow(const wxString &Value)
    // Start off at start of window...
    pTextCtrl->SetInsertionPoint( 0 );
    pTextCtrl->ShowPosition( 0 );
-   return pTextCtrl;
 }
 
 /// Single line text box of fixed size.
@@ -779,11 +795,13 @@ void ShuttleGuiBase::AddConstTextBox(
    UpdateSizers();
 }
 
-wxListBox * ShuttleGuiBase::AddListBox(const wxArrayStringEx &choices)
+void ShuttleGuiBase::AddListBox(const wxArrayStringEx &choices)
 {
    UseUpId();
-   if( mpState -> mShuttleMode != eIsCreating )
-      return wxDynamicCast(wxWindow::FindWindowById( miId, mpState -> mpDlg), wxListBox);
+   if( mpState -> mShuttleMode != eIsCreating ) {
+      mpWind = wxWindow::FindWindowById( miId, mpState -> mpDlg);
+      return;
+   }
    wxListBox * pListBox;
    SetProportions( 1 );
    mpWind = pListBox = safenew wxListBox(GetParent(), miId,
@@ -791,32 +809,33 @@ wxListBox * ShuttleGuiBase::AddListBox(const wxArrayStringEx &choices)
    pListBox->SetMinSize( wxSize( 120,150 ));
    CheckEventType( mItem, {wxEVT_LISTBOX, wxEVT_LISTBOX_DCLICK} );
    UpdateSizers();
-   return pListBox;
 }
 
 
-wxGrid * ShuttleGuiBase::AddGrid()
+void ShuttleGuiBase::AddGrid()
 {
    UseUpId();
-   if( mpState -> mShuttleMode != eIsCreating )
-      return wxDynamicCast(wxWindow::FindWindowById( miId, mpState -> mpDlg), wxGrid);
+   if( mpState -> mShuttleMode != eIsCreating ) {
+      mpWind = wxWindow::FindWindowById( miId, mpState -> mpDlg);
+      return;
+   }
    wxGrid * pGrid;
    SetProportions( 1 );
    mpWind = pGrid = safenew wxGrid(GetParent(), miId, wxDefaultPosition,
       mItem.mWindowSize, GetStyle( wxWANTS_CHARS ));
    pGrid->SetMinSize( wxSize( 120, 150 ));
    UpdateSizers();
-   return pGrid;
 }
 
-wxListCtrl * ShuttleGuiBase::AddListControl(
+void ShuttleGuiBase::AddListControl(
    std::initializer_list<const ListControlColumn> columns,
-   long listControlStyles
-)
+   long listControlStyles )
 {
    UseUpId();
-   if( mpState -> mShuttleMode != eIsCreating )
-      return wxDynamicCast(wxWindow::FindWindowById( miId, mpState -> mpDlg), wxListCtrl);
+   if( mpState -> mShuttleMode != eIsCreating ) {
+      mpWind = wxWindow::FindWindowById( miId, mpState -> mpDlg);
+      return;
+   }
    wxListCtrl * pListCtrl;
    SetProportions( 1 );
    mpWind = pListCtrl = safenew wxListCtrl(GetParent(), miId,
@@ -825,18 +844,17 @@ wxListCtrl * ShuttleGuiBase::AddListControl(
    UpdateSizers();
 
    DoInsertListColumns( pListCtrl, listControlStyles, columns );
-
-   return pListCtrl;
 }
 
-wxListCtrl * ShuttleGuiBase::AddListControlReportMode(
+void ShuttleGuiBase::AddListControlReportMode(
    std::initializer_list<const ListControlColumn> columns,
-   long listControlStyles
-)
+   long listControlStyles )
 {
    UseUpId();
-   if( mpState -> mShuttleMode != eIsCreating )
-      return wxDynamicCast(wxWindow::FindWindowById( miId, mpState -> mpDlg), wxListCtrl);
+   if( mpState -> mShuttleMode != eIsCreating ) {
+      mpWind = wxWindow::FindWindowById( miId, mpState -> mpDlg);
+      return;
+   }
    wxListCtrl * pListCtrl;
    SetProportions( 1 );
    auto Size = mItem.mWindowSize;
@@ -850,8 +868,6 @@ wxListCtrl * ShuttleGuiBase::AddListControlReportMode(
    UpdateSizers();
 
    DoInsertListColumns( pListCtrl, listControlStyles, columns );
-
-   return pListCtrl;
 }
 
 void ShuttleGuiBase::DoInsertListColumns(
@@ -885,18 +901,19 @@ void ShuttleGuiBase::DoInsertListColumns(
       pListCtrl->DeleteColumn( 0 );
 }
 
-wxTreeCtrl * ShuttleGuiBase::AddTree()
+void ShuttleGuiBase::AddTree()
 {
    UseUpId();
-   if( mpState -> mShuttleMode != eIsCreating )
-      return wxDynamicCast(wxWindow::FindWindowById( miId, mpState -> mpDlg), wxTreeCtrl);
+   if( mpState -> mShuttleMode != eIsCreating ) {
+      mpWind = wxWindow::FindWindowById( miId, mpState -> mpDlg);
+      return;
+   }
    wxTreeCtrl * pTreeCtrl;
    SetProportions( 1 );
    mpWind = pTreeCtrl = safenew wxTreeCtrl(GetParent(), miId, wxDefaultPosition, mItem.mWindowSize,
       GetStyle( wxTR_HAS_BUTTONS ));
    pTreeCtrl->SetMinSize( wxSize( 120,650 ));
    UpdateSizers();
-   return pTreeCtrl;
 }
 
 void ShuttleGuiBase::AddIcon(wxBitmap *pBmp)
@@ -1276,8 +1293,10 @@ wxCheckBox * ShuttleGuiBase::DoTieCheckBox(
 {
    HandleOptionality( Prompt );
    // The Add function does a UseUpId(), so don't do it here in that case.
-   if( mpState -> mShuttleMode == eIsCreating )
-      return AddCheckBox( Prompt, WrappedRef.ReadAsString() == L"true");
+   if( mpState -> mShuttleMode == eIsCreating ) {
+      AddCheckBox( Prompt, WrappedRef.ReadAsString() == L"true");
+      return static_cast<wxCheckBox*>(mpWind);
+   }
 
    UseUpId();
 
@@ -1311,8 +1330,10 @@ wxCheckBox * ShuttleGuiBase::DoTieCheckBoxOnRight(
 {
    HandleOptionality( Prompt );
    // The Add function does a UseUpId(), so don't do it here in that case.
-   if( mpState -> mShuttleMode == eIsCreating )
-      return AddCheckBoxOnRight( Prompt, WrappedRef.ReadAsString() == L"true");
+   if( mpState -> mShuttleMode == eIsCreating ) {
+      AddCheckBoxOnRight( Prompt, WrappedRef.ReadAsString() == L"true");
+      return static_cast<wxCheckBox*>(mpWind);
+   }
 
    UseUpId();
 
@@ -1347,8 +1368,10 @@ wxSpinCtrl * ShuttleGuiBase::DoTieSpinCtrl(
 {
    HandleOptionality( Prompt );
    // The Add function does a UseUpId(), so don't do it here in that case.
-   if( mpState -> mShuttleMode == eIsCreating )
-      return AddSpinCtrl( Prompt, WrappedRef.ReadAsInt(), max, min );
+   if( mpState -> mShuttleMode == eIsCreating ) {
+      AddSpinCtrl( Prompt, WrappedRef.ReadAsInt(), max, min );
+      return static_cast< wxSpinCtrl* >( mpWind );
+   }
 
    UseUpId();
    wxSpinCtrl * pSpinCtrl=NULL;
@@ -1383,8 +1406,10 @@ wxTextCtrl * ShuttleGuiBase::DoTieTextBox(
 {
    HandleOptionality( Prompt );
    // The Add function does a UseUpId(), so don't do it here in that case.
-   if( mpState -> mShuttleMode == eIsCreating )
-      return AddTextBox( Prompt, WrappedRef.ReadAsString(), nChars );
+   if( mpState -> mShuttleMode == eIsCreating ) {
+      AddTextBox( Prompt, WrappedRef.ReadAsString(), nChars );
+      return static_cast< wxTextCtrl* >( mpWind );
+   }
 
    UseUpId();
    wxTextCtrl * pTextBox=NULL;
@@ -1419,8 +1444,10 @@ wxTextCtrl * ShuttleGuiBase::DoTieNumericTextBox(
 {
    HandleOptionality( Prompt );
    // The Add function does a UseUpId(), so don't do it here in that case.
-   if( mpState -> mShuttleMode == eIsCreating )
-      return AddNumericTextBox( Prompt, WrappedRef.ReadAsString(), nChars );
+   if( mpState -> mShuttleMode == eIsCreating ) {
+      AddNumericTextBox( Prompt, WrappedRef.ReadAsString(), nChars );
+      return static_cast< wxTextCtrl* >( mpWind );
+   }
 
    UseUpId();
    wxTextCtrl * pTextBox=NULL;
@@ -1463,7 +1490,8 @@ wxSlider * ShuttleGuiBase::DoTieSlider(
    {
       case eIsCreating:
          {
-            pSlider = AddSlider( Prompt, WrappedRef.ReadAsInt(), max, min );
+            AddSlider( Prompt, WrappedRef.ReadAsInt(), max, min );
+            pSlider = static_cast< wxSlider* >( mpWind );
          }
          break;
       // IF setting internal storage from the controls.
@@ -1507,7 +1535,8 @@ wxChoice * ShuttleGuiBase::TieChoice(
    {
    case eIsCreating:
       {
-         pChoice = AddChoice( Prompt, choices, Selected );
+         AddChoice( Prompt, choices, Selected );
+         pChoice = static_cast<wxChoice*>( mpWind );
          SetMinSize(pChoice, choices);
       }
       break;
@@ -1536,7 +1565,7 @@ wxChoice * ShuttleGuiBase::TieChoice(
 }
 
 /// This function must be within a StartRadioButtonGroup - EndRadioButtonGroup pair.
-wxRadioButton * ShuttleGuiBase::TieRadioButton()
+void ShuttleGuiBase::TieRadioButton()
 {
    wxASSERT( mRadioCount >= 0); // Did you remember to use StartRadioButtonGroup() ?
 
@@ -1591,7 +1620,6 @@ wxRadioButton * ShuttleGuiBase::TieRadioButton()
       wxASSERT( false );
       break;
    }
-   return pRadioButton;
 }
 
 /// Call this before AddRadioButton calls.
@@ -1654,8 +1682,10 @@ wxCheckBox * ShuttleGuiBase::TieCheckBoxOnRight(
 {
    // Only does anything different if it's creating.
    WrappedType WrappedRef( Var );
-   if( mpState -> mShuttleMode == eIsCreating )
-      return AddCheckBoxOnRight( Prompt, WrappedRef.ReadAsString() == L"true" );
+   if( mpState -> mShuttleMode == eIsCreating ) {
+      AddCheckBoxOnRight( Prompt, WrappedRef.ReadAsString() == L"true" );
+      return static_cast<wxCheckBox*>( mpWind );
+   }
    return DoTieCheckBox( Prompt, WrappedRef );
 }
 
@@ -2078,7 +2108,6 @@ wxChoice * ShuttleGuiBase::TieNumberAsChoice(
    else
       for ( int ii = 0; ii < (int)Choices.size(); ++ii )
          InternalChoices.emplace_back( fn( ii ) );
-
 
    const auto Default = Setting.GetDefault();
 

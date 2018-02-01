@@ -451,45 +451,45 @@ public:
    void AddUnits(const TranslatableString &Units, int wrapWidth = 0);
    void AddTitle(const TranslatableString &Title, int wrapWidth = 0);
    wxWindow * AddWindow(wxWindow * pWindow);
-   wxSlider * AddSlider(
+   void AddSlider(
       const TranslatableLabel &Prompt, int pos, int Max, int Min = 0,
       // Pass -1 to mean unspecified:
       int lineSize = -1, int pageSize = -1 );
-   wxSlider * AddVSlider(const TranslatableLabel &Prompt, int pos, int Max);
-   wxSpinCtrl * AddSpinCtrl(const TranslatableLabel &Prompt,
+   void AddVSlider(const TranslatableLabel &Prompt, int pos, int Max);
+   void AddSpinCtrl(const TranslatableLabel &Prompt,
       int Value, int Max, int Min);
-   wxTreeCtrl * AddTree();
+   void AddTree();
 
    // Spoken name of the button defaults to the same as the prompt
    // (after stripping menu codes):
-   wxRadioButton * AddRadioButton( const TranslatableLabel & Prompt );
+   void AddRadioButton( const TranslatableLabel & Prompt );
 
    // Only the last button specified as default (if more than one) will be
    // Always ORs the flags with wxALL (which affects borders):
-   wxButton * AddButton(
+   void AddButton(
       const TranslatableLabel & Label, int PositionFlags = wxALIGN_CENTRE,
       bool setDefault = false );
    // Only the last button specified as default (if more than one) will be
    // Always ORs the flags with wxALL (which affects borders):
-   wxBitmapButton * AddBitmapButton(
+   void AddBitmapButton(
       const wxBitmap &Bitmap, int PositionFlags = wxALIGN_CENTRE,
       bool setDefault = false );
    // When PositionFlags is 0, applies wxALL (which affects borders),
    // and either wxALIGN_CENTER (if bCenter) or else wxEXPAND
-   wxStaticText * AddVariableText(
+   void AddVariableText(
       const TranslatableString &Str, bool bCenter = false,
       int PositionFlags = 0, int wrapWidth = 0);
-   ReadOnlyText * AddReadOnlyText(
+   void AddReadOnlyText(
       const TranslatableLabel &Caption,
       const wxString &Value);
-   wxTextCtrl * AddTextBox(
+   void AddTextBox(
       const TranslatableLabel &Prompt,
       const wxString &Value, const int nChars);
-   wxTextCtrl * AddNumericTextBox(
+   void AddNumericTextBox(
       const TranslatableLabel &Prompt,
       const wxString &Value, const int nChars);
-   wxTextCtrl * AddTextWindow(const wxString &Value);
-   wxListBox * AddListBox(const wxArrayStringEx &choices);
+   void AddTextWindow(const wxString &Value);
+   void AddListBox(const wxArrayStringEx &choices);
 
    struct ListControlColumn{
       ListControlColumn(
@@ -502,18 +502,18 @@ public:
       int format;
       int width;
    };
-   wxListCtrl * AddListControl(
+   void AddListControl(
       std::initializer_list<const ListControlColumn> columns = {},
       long listControlStyles = 0
    );
-   wxListCtrl * AddListControlReportMode(
+   void AddListControlReportMode(
       std::initializer_list<const ListControlColumn> columns = {},
       long listControlStyles = 0
    );
 
-   wxGrid * AddGrid();
+   void AddGrid();
 
-   NumericTextCtrl * AddNumericTextCtrl(NumericConverter::Type type,
+   void AddNumericTextCtrl(NumericConverter::Type type,
          const NumericFormatSymbol &formatName = {},
          double value = 0.0,
          double sampleRate = 44100,
@@ -521,8 +521,8 @@ public:
          const wxPoint &pos = wxDefaultPosition,
          const wxSize &size = wxDefaultSize);
 
-   wxCheckBox * AddCheckBox( const TranslatableLabel &Prompt, bool Selected);
-   wxCheckBox * AddCheckBoxOnRight( const TranslatableLabel &Prompt, bool Selected);
+   void AddCheckBox( const TranslatableLabel &Prompt, bool Selected);
+   void AddCheckBoxOnRight( const TranslatableLabel &Prompt, bool Selected);
 
    // These deleted overloads are meant to break compilation of old calls that
    // passed literal "true" and "false" strings
@@ -531,11 +531,11 @@ public:
    wxCheckBox * AddCheckBoxOnRight( const TranslatableLabel &Prompt, const wxChar *) = delete;
    wxCheckBox * AddCheckBoxOnRight( const TranslatableLabel &Prompt, const char *) = delete;
 
-   wxComboBox * AddCombo( const TranslatableLabel &Prompt,
+   void AddCombo( const TranslatableLabel &Prompt,
       const wxString &Selected, const wxArrayStringEx & choices );
-   wxChoice   * AddChoice( const TranslatableLabel &Prompt,
+   void AddChoice( const TranslatableLabel &Prompt,
       const TranslatableStrings &choices, int Selected = -1 );
-   wxChoice   * AddChoice( const TranslatableLabel &Prompt,
+   void AddChoice( const TranslatableLabel &Prompt,
       const TranslatableStrings &choices, const TranslatableString &selected );
    void AddIcon( wxBitmap * pBmp);
    void AddFixedText(
@@ -629,11 +629,10 @@ public:
 
    // Must be called between a StartRadioButtonGroup / EndRadioButtonGroup pair,
    // and as many times as there are values in the enumeration.
-   wxRadioButton * TieRadioButton();
+   void TieRadioButton();
 
    wxSpinCtrl * TieSpinCtrl( const TranslatableLabel &Prompt,
       int &Value, const int max, const int min = 0 );
-
 
 //-- Variants of the standard Tie functions which do two step exchange in one go
 // Note that unlike the other Tie functions, ALL the arguments are const.
@@ -793,7 +792,7 @@ private:
    Optional<WrappedType> mRadioValue;  /// The wrapped value associated with the active radio button.
    int mRadioCount = -1;       /// The index of this radio item.  -1 for none.
    wxString mRadioValueString; /// Unwrapped string value.
-   wxRadioButton *DoAddRadioButton(
+   void DoAddRadioButton(
       const TranslatableLabel &Prompt, int style );
 
 protected:
@@ -833,7 +832,7 @@ AUDACITY_DLL_API std::unique_ptr<wxSizer> CreateStdButtonSizer(
 // TypedShuttleGui extends ShuttleGuiBase with Audacity specific extensions,
 // and takes template parameters that make certain of the functions more
 // convenient
-template< typename Sink = wxEvtHandler >
+template< typename Sink = wxEvtHandler, typename WindowType = wxWindow >
 class AUDACITY_DLL_API TypedShuttleGui /* not final */ : public ShuttleGuiBase
 {
 public:
@@ -866,8 +865,8 @@ public:
 
    ~TypedShuttleGui() = default;
 
-   template< typename Sink2 >
-   TypedShuttleGui< Sink2 > Rebind()
+   template< typename Sink2, typename Window2 = WindowType >
+   TypedShuttleGui< Sink2, Window2 > Rebind()
    {
       return { mpState };
    }
@@ -1018,6 +1017,239 @@ public:
       { GetItem().MinSize( sz ); return *this; }
 
    teShuttleMode GetMode() { return mpState -> mShuttleMode; };
+
+   operator WindowType* () const { return static_cast<WindowType*>(mpWind); }
+   WindowType* operator -> () const { return *this; }
+
+   TypedShuttleGui<Sink, wxSlider>
+   AddSlider(
+      const TranslatableLabel &Prompt, int pos, int Max, int Min = 0,
+      // Pass -1 to mean unspecified:
+      int lineSize = -1, int pageSize = -1 )
+   {
+      ShuttleGuiBase::AddSlider( Prompt, pos, Max, Min, lineSize, pageSize );
+      return Rebind<Sink, wxSlider>();
+   }
+   
+   TypedShuttleGui<Sink, wxSlider>
+   AddVSlider(const TranslatableLabel &Prompt, int pos, int Max)
+   {
+      ShuttleGuiBase::AddSlider( Prompt, pos, Max );
+      return Rebind<Sink, wxSlider>();
+   }
+
+   TypedShuttleGui<Sink, wxSpinCtrl>
+   AddSpinCtrl(const TranslatableLabel &Prompt,
+      int Value, int Max, int Min)
+   {
+      ShuttleGuiBase::AddSpinCtrl(Prompt, Value, Max, Min);
+      return Rebind<Sink, wxSpinCtrl>();
+   }
+
+   TypedShuttleGui<Sink, wxTreeCtrl>
+   AddTree()
+   {
+      ShuttleGuiBase::AddTree();
+      return Rebind<Sink, wxTreeCtrl>();
+   }
+
+   // Spoken name of the button defaults to the same as the prompt
+   // (after stripping menu codes):
+   TypedShuttleGui<Sink, wxRadioButton>
+   AddRadioButton( const TranslatableLabel & Prompt )
+   {
+      ShuttleGuiBase::AddRadioButton( Prompt );
+      return Rebind<Sink, wxRadioButton>();
+   }
+
+   // Only the last button specified as default (if more than one) will be
+   // Always ORs the flags with wxALL (which affects borders):
+   TypedShuttleGui<Sink, wxButton>
+   AddButton(
+      const TranslatableLabel & Text, int PositionFlags = wxALIGN_CENTRE,
+      bool setDefault = false )
+   {
+      ShuttleGuiBase::AddButton( Text, PositionFlags, setDefault );
+      return Rebind<Sink, wxButton>();
+   }
+
+   // Only the last button specified as default (if more than one) will be
+   // Always ORs the flags with wxALL (which affects borders):
+   TypedShuttleGui<Sink, wxBitmapButton>
+   AddBitmapButton(
+      const wxBitmap &Bitmap, int PositionFlags = wxALIGN_CENTRE,
+      bool setDefault = false )
+   {
+      ShuttleGuiBase::AddBitmapButton( Bitmap, PositionFlags, setDefault );
+      return Rebind<Sink, wxBitmapButton>();
+   }
+
+   // When PositionFlags is 0, applies wxALL (which affects borders),
+   // and either wxALIGN_CENTER (if bCenter) or else wxEXPAND
+   TypedShuttleGui<Sink, wxStaticText>
+   AddVariableText(
+      const TranslatableString &Str, bool bCenter = false,
+      int PositionFlags = 0, int wrapWidth = 0)
+   {
+      ShuttleGuiBase::AddVariableText( Str, bCenter, PositionFlags, wrapWidth );
+      return Rebind<Sink, wxStaticText>();
+   }
+
+   TypedShuttleGui<Sink, ReadOnlyText>
+   AddReadOnlyText(
+      const TranslatableLabel &Caption,
+      const wxString &Value)
+   {
+      ShuttleGuiBase::AddReadOnlyText( Caption, Value );
+      return Rebind<Sink, ReadOnlyText>();
+   }
+
+   TypedShuttleGui<Sink, wxTextCtrl>
+   AddTextBox(
+      const TranslatableLabel &Caption,
+      const wxString &Value = {}, const int nChars = 0)
+   {
+      ShuttleGuiBase::AddTextBox(Caption, Value, nChars);
+      return Rebind<Sink, wxTextCtrl>();
+   }
+
+   TypedShuttleGui<Sink, wxTextCtrl>
+   AddNumericTextBox(
+      const TranslatableLabel &Caption,
+      const wxString &Value, const int nChars)
+   {
+      ShuttleGuiBase::AddNumericTextBox( Caption, Value, nChars );
+      return Rebind<Sink, wxTextCtrl>();
+   }
+
+   TypedShuttleGui<Sink, wxTextCtrl>
+   AddTextWindow(const wxString &Value)
+   {
+      ShuttleGuiBase::AddTextWindow( Value );
+      return Rebind<Sink, wxTextCtrl>();
+   }
+
+   TypedShuttleGui<Sink, wxListBox>
+   AddListBox(const wxArrayStringEx &choices)
+   {
+      ShuttleGuiBase::AddListBox( choices );
+      return Rebind<Sink, wxListBox>();
+   }
+
+   TypedShuttleGui<Sink, wxListCtrl>
+   AddListControl(
+      std::initializer_list<const ListControlColumn> columns = {},
+      long listControlStyles = 0
+   )
+   {
+      ShuttleGuiBase::AddListControl( columns, listControlStyles );
+      return Rebind<Sink, wxListCtrl>();
+   }
+
+   TypedShuttleGui<Sink, wxListCtrl>
+   AddListControlReportMode(
+      std::initializer_list<const ListControlColumn> columns = {},
+      long listControlStyles = 0
+   )
+   {
+      ShuttleGuiBase::AddListControlReportMode( columns, listControlStyles );
+      return Rebind<Sink, wxListCtrl>();
+   }
+
+   TypedShuttleGui<Sink, NumericTextCtrl>
+   AddNumericTextCtrl(NumericConverter::Type type,
+         const NumericFormatSymbol &formatName = {},
+         double value = 0.0,
+         double sampleRate = 44100,
+         const NumericTextCtrl::Options &options = {},
+         const wxPoint &pos = wxDefaultPosition,
+         const wxSize &size = wxDefaultSize)
+   {
+      ShuttleGuiBase::AddNumericTextCtrl(
+         type, formatName, value, sampleRate, options, pos, size );
+      return Rebind<Sink, NumericTextCtrl>();
+   }
+
+   TypedShuttleGui<Sink, wxGrid>
+   AddGrid()
+   {
+      ShuttleGuiBase::AddGrid();
+      return Rebind<Sink, wxGrid>();
+   }
+
+   TypedShuttleGui<Sink, wxCheckBox>
+   AddCheckBox( const TranslatableLabel &Prompt, bool Selected = false)
+   {
+      ShuttleGuiBase::AddCheckBox( Prompt, Selected );
+      return Rebind<Sink, wxCheckBox>();
+   }
+
+   TypedShuttleGui<Sink, wxCheckBox>
+   AddCheckBoxOnRight( const TranslatableLabel &Prompt, bool Selected = false)
+   {
+      ShuttleGuiBase::AddCheckBoxOnRight( Prompt, Selected );
+      return Rebind<Sink, wxCheckBox>();
+   }
+
+   TypedShuttleGui<Sink, wxComboBox>
+   AddCombo( const TranslatableLabel &Prompt,
+      const wxString &Selected, const wxArrayStringEx & choices )
+   {
+      ShuttleGuiBase::AddCombo( Prompt, Selected, choices );
+      return Rebind<Sink, wxComboBox>();
+   }
+
+   TypedShuttleGui<Sink, wxChoice>
+   AddChoice( const TranslatableLabel &Prompt,
+      const TranslatableStrings &choices = {}, int Selected = -1 )
+   {
+      ShuttleGuiBase::AddChoice( Prompt, choices, Selected );
+      return Rebind<Sink, wxChoice>();
+   }
+
+   TypedShuttleGui<Sink, wxChoice>
+   AddChoice( const TranslatableLabel &Prompt,
+      const TranslatableStrings &choices, const TranslatableString &selected )
+   {
+      ShuttleGuiBase::AddChoice( Prompt, choices, selected );
+      return Rebind<Sink, wxChoice>();
+   }
+
+   // Must be called between a StartRadioButtonGroup / EndRadioButtonGroup pair,
+   // and as many times as there are values in the enumeration.
+   TypedShuttleGui<Sink, wxRadioButton>
+   TieRadioButton()
+   {
+      ShuttleGuiBase::TieRadioButton();
+      return Rebind<Sink, wxRadioButton>();
+   }
+
+   // Chain a post-construction step
+   template<typename F>
+   TypedShuttleGui &Initialize( const F &f )
+   {
+      WindowType *p = *this;
+      f( p );
+      return *this;
+   }
+
+   // Alternative using pointer-to-member functions
+   template<typename R, typename C, typename... Params, typename... Args>
+   TypedShuttleGui &Initialize(
+      R (C::*pmf)(Params...),
+      Args... args
+   )
+   { return Initialize( [=](WindowType *p){ return (p->*pmf)(args...); } ); }
+
+   // A common post-step is to record a pointer to the constructed window
+   // Be careful that the reference to pointer does not dangle!
+   template<typename Ptr>
+   TypedShuttleGui &Assign ( Ptr &p )
+   {
+      WindowType *pWindow = *this;
+      p = pWindow;
+      return *this;
+   }
 
 private:
    ItemType &&GetItem()

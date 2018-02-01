@@ -17,6 +17,7 @@
 
 #include "ExtImportPrefs.h"
 
+#include <wx/button.h>
 #include <wx/defs.h>
 #include <wx/listctrl.h>
 #include <wx/dnd.h>
