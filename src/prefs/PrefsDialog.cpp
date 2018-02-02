@@ -459,6 +459,9 @@ PrefsDialog::PrefsDialog(
 
    ShuttleGui S{ this };
 
+   typedef std::pair<int, int> IntPair;
+   std::vector<IntPair> stack;
+
    S.StartVerticalLay(true);
    {
       if (!uniquePage) {
@@ -471,13 +474,10 @@ PrefsDialog::PrefsDialog(
                .Assign(mCategories);
 
             {
-               typedef std::pair<int, int> IntPair;
-               std::vector<IntPair> stack;
                int iPage = 0;
-               for (auto it = factories.begin(), end = factories.end();
-                  it != end; ++it, ++iPage)
-               {
-                  const auto &node = *it;
+               for (size_t iPage = 0; iPage < factories.size(); ++iPage)
+               [&](size_t iPage) {
+                  const auto &node = factories[iPage];
                   const auto &factory = node.factory;
                   const auto panel = factory(mCategories, wxID_ANY, pProject);
                   ShuttleGui S2(
@@ -498,7 +498,7 @@ PrefsDialog::PrefsDialog(
                   }
                   if (node.nChildren > 0)
                      stack.push_back(IntPair(iPage, node.nChildren));
-               }
+               }(iPage);
             }
          }
          S.EndHorizontalLay();

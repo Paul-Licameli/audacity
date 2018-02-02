@@ -2818,8 +2818,7 @@ void NyquistEffect::BuildEffectWindow(ShuttleGui & S)
    {
       S.StartMultiColumn(4);
       {
-         for (size_t i = 0; i < mControls.size(); i++)
-         {
+         for (size_t i = 0; i < mControls.size(); i++) [&](size_t i){
             NyqControl & ctrl = mControls[i];
 
             if (ctrl.type == NYQ_CTRL_TEXT)
@@ -2967,7 +2966,7 @@ void NyquistEffect::BuildEffectWindow(ShuttleGui & S)
                   }
                }
             }
-         }
+         }(i);
       }
       S.EndMultiColumn();
    }

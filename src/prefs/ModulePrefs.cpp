@@ -133,19 +133,19 @@ void ModulePrefs::PopulateOrExchange(ShuttleGui & S)
          .AddFixedText(  XO(
 "Changes to these settings only take effect when Audacity starts up."));
       {
-        S.StartMultiColumn( 2 );
-        int i;
-        for(i=0;i<(int)mModules.size();i++)
-           S
-              .Target( mStatuses[i] )
-              .AddChoice( VerbatimLabel( mModules[i] ),
-                 {
-                    XO("Disabled" ) ,
-                    XO("Enabled" ) ,
-                    XO("Ask" ) ,
-                    XO("Failed" ) ,
-                    XO("New" ) ,
-                 } );
+         S.StartMultiColumn( 2 );
+         for( size_t ii = 0; ii < (int)mModules.size(); ++ii) [&](size_t ii){
+            S
+               .Target( mStatuses[ii] )
+               .AddChoice( VerbatimLabel( mModules[ii] ),
+                  {
+                     XO("Disabled" ) ,
+                     XO("Enabled" ) ,
+                     XO("Ask" ) ,
+                     XO("Failed" ) ,
+                     XO("New" ) ,
+                  } );
+        }(ii);
         S.EndMultiColumn();
       }
 

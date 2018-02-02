@@ -872,7 +872,8 @@ void EffectEqualization::PopulateOrExchange(ShuttleGui & S)
 
          // for (int i = 0; (i < NUMBER_OF_BANDS) && (kThirdOct[i] <= mHiFreq); ++i)
          // May show more sliders than needed.  Fixes Bug 2269
-         for (int i = 0; i < NUMBER_OF_BANDS; ++i)
+         for (size_t i = 0; (i < NUMBER_OF_BANDS) && (kThirdOct[i] <= mHiFreq); ++i)
+         [&](size_t i)
          {
             S.StartVerticalLay();
             {
@@ -914,7 +915,7 @@ void EffectEqualization::PopulateOrExchange(ShuttleGui & S)
                   .Assign( mSliders[i] );
             }
             S.EndVerticalLay();
-         }
+         }(i);
          S.AddSpace(15,0);
 
          } //S.EndPanel()

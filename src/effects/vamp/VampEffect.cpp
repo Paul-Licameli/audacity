@@ -572,8 +572,7 @@ void VampEffect::PopulateOrExchange(ShuttleGui & S)
                S.AddSpace(1, 1);
             }
 
-            for (size_t p = 0; p < count; p++)
-            {
+            for (size_t p = 0; p < count; p++) [&](size_t p) {
                wxString tip = wxString::FromUTF8(mParameters[p].description.c_str());
                wxString unit = wxString::FromUTF8(mParameters[p].unit.c_str());
 
@@ -683,7 +682,7 @@ void VampEffect::PopulateOrExchange(ShuttleGui & S)
                   S
                      .AddUnits( Verbatim( str ) );
                }
-            }
+            }(p);
          }
          S.EndMultiColumn();
       }
