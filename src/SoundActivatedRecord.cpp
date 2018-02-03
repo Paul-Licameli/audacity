@@ -48,8 +48,7 @@ void SoundActivatedRecordDialog::PopulateOrExchange(ShuttleGui & S)
 
    S.StartVerticalLay();
    {
-      S.StartMultiColumn(2, wxEXPAND);
-      S.SetStretchyCol(1);
+      S.StartMultiColumn(2, GroupOptions{ wxEXPAND }.StretchyColumn( 1 ));
 
       S
          .Target( AudioIOSilenceLevel )

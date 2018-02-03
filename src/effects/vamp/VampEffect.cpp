@@ -539,10 +539,8 @@ void VampEffect::PopulateOrExchange(ShuttleGui & S)
    {
       S.StartStatic(XO("Plugin Settings"));
       {
-         S.StartMultiColumn(5, wxEXPAND);
+         S.StartMultiColumn(5, GroupOptions{ wxEXPAND }.StretchyColumn(3));
          {
-            S.SetStretchyCol(3);
-
             if (!programs.empty())
             {
                S

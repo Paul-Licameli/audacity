@@ -897,10 +897,8 @@ void TimerRecordDialog::PopulateOrExchange(ShuttleGui& S)
 
          S.StartStatic(XO("Options"), true);
          {
-            S.StartMultiColumn(1, wxEXPAND);
+            S.StartMultiColumn(1, GroupOptions{}.StretchyColumn(0));
             {
-               S.SetStretchyCol( 0 );
-
                S
                   .Enable( eitherEnabler )
                   .Target( NumberChoice( PostAction, sChoices ) )

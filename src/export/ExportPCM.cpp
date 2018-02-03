@@ -177,9 +177,8 @@ void ExportPCMOptions::PopulateOrExchange(ShuttleGui & S)
    {
       S.StartHorizontalLay(wxCENTER);
       {
-         S.StartMultiColumn(2, wxCENTER);
+         S.StartMultiColumn(2, GroupOptions{ wxCENTER }.StretchyColumn(1));
          {
-            S.SetStretchyCol(1);
             if (mSelFormat == FMT_OTHER)
             {
                S

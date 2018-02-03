@@ -194,9 +194,9 @@ void EffectAmplify::PopulateOrExchange(ShuttleGui & S)
    // in different terms.
    S.StartVerticalLay(0);
    {
-      // Amplitude as text
-      S.StartMultiColumn(2, wxCENTER);
+      S.StartMultiColumn(2, GroupOptions{}.Position(wxCENTER));
       {
+         // Amplitude as text
          S
             .Target( Transform( mRatio,
                   [](double output){ return LINEAR_TO_DB( output ); },
@@ -225,9 +225,9 @@ void EffectAmplify::PopulateOrExchange(ShuttleGui & S)
       }
       S.EndHorizontalLay();
 
-      // New peak as text
-      S.StartMultiColumn(2, wxCENTER);
+      S.StartMultiColumn(2, GroupOptions{}.Position(wxCENTER));
       {
+         // New peak as text
          S
             .Target( Transform( mRatio,
                // Transformation depends on mPeak which is fixed after

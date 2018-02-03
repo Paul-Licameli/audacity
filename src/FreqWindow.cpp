@@ -269,11 +269,11 @@ void FrequencyPlotDialog::Populate()
    S.AddSpace(5);
 
    S.SetSizerProportion(1);
-   S.StartMultiColumn(3, wxEXPAND);
+   S.StartMultiColumn(3,
+                      GroupOptions{ wxEXPAND }
+                         .StretchyColumn(1)
+                         .StretchyRow(0));
    {
-      S.SetStretchyCol(1);
-      S.SetStretchyRow(0);
-
       // -------------------------------------------------------------------
       // ROW 1: Freq response panel and sliders for vertical scale
       // -------------------------------------------------------------------
@@ -406,9 +406,8 @@ void FrequencyPlotDialog::Populate()
       S.StartHorizontalLay(wxEXPAND);
       {
          S.SetSizerProportion(1);
-         S.StartMultiColumn(6);
-         S.SetStretchyCol(1);
-         S.SetStretchyCol(3);
+         S.StartMultiColumn(6,
+            GroupOptions{}.StretchyColumn(1).StretchyColumn(3));
          {
             S.AddPrompt(XXO("Cursor:"));
 

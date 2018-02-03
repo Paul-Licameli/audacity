@@ -81,7 +81,7 @@ ScoreAlignDialog::ScoreAlignDialog(ScoreAlignParams &params)
    S.StartVerticalLay(true);
    S.StartStatic(XO("Align MIDI to Audio"));
    S.StartMultiColumn(3, wxEXPAND | wxALIGN_CENTER_VERTICAL);
-   S.SetStretchyCol(1);
+      GroupOptions{}.StretchyColumn(1));
 
    S
       .AddVariableText(

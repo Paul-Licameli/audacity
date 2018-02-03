@@ -185,7 +185,7 @@ void EffectChangeTempo::PopulateOrExchange(ShuttleGui & S)
       S.SetBorder(5);
 
       //
-      S.StartMultiColumn(2, wxCENTER);
+      S.StartMultiColumn(2, GroupOptions{}.Position(wxCENTER));
       {
          S
             .Target( m_PercentChange,

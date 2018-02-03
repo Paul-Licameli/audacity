@@ -112,11 +112,11 @@ void LabelTrackMenuTable::OnSetFont(wxCommandEvent &)
    using namespace DialogDefinition;
    S.StartVerticalLay(true);
    {
-      S.StartMultiColumn(2, wxEXPAND);
+      S.StartMultiColumn(2,
+                         GroupOptions{ wxEXPAND }
+                            .StretchyColumn(1)
+                            .StretchyRow(0));
       {
-         S.SetStretchyRow(0);
-         S.SetStretchyCol(1);
-
          S
             /* i18n-hint: (noun) The name of the typeface*/
             .AddPrompt(XXO("Face name"));

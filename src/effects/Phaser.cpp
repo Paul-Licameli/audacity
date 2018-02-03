@@ -190,10 +190,8 @@ void EffectPhaser::PopulateOrExchange(ShuttleGui & S)
    S.SetBorder(5);
    S.AddSpace(0, 5);
 
-   S.StartMultiColumn(3, wxEXPAND);
+   S.StartMultiColumn(3, GroupOptions{ wxEXPAND }.StretchyColumn(2));
    {
-      S.SetStretchyCol(2);
-
       S
          .Target( stagesTarget,
             NumValidatorStyle::DEFAULT, Stages.min, Stages.max)

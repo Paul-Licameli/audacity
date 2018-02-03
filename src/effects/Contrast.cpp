@@ -365,10 +365,8 @@ ContrastDialog::ContrastDialog(wxWindow * parent, wxWindowID id,
       });
 
 #if 0
-   S.StartMultiColumn(3, wxEXPAND);
+   S.StartMultiColumn(3, wxEXPAND, GroupOptions{}.StretchyColumn(1));
    {
-      S.SetStretchyCol(1);
-
       S
          .Id(ID_BUTTON_GETURL)
          .AddButton(XO("&Help"))

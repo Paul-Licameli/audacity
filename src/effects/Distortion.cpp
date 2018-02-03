@@ -414,8 +414,7 @@ void EffectDistortion::PopulateThresholdPage(
 
    S
       .StartNotebookPage({});
-   S.StartMultiColumn(4, wxEXPAND);
-   S.SetStretchyCol(2);
+   S.StartMultiColumn(4, GroupOptions{ wxEXPAND }.StretchyColumn(2));
    {
       // Allow space for first Column
       S.AddSpace(250,0);
@@ -491,8 +490,7 @@ void EffectDistortion::PopulateParameterPage(
 
    S
       .StartNotebookPage({});
-   S.StartMultiColumn(4, wxEXPAND);
-   S.SetStretchyCol(2);
+   S.StartMultiColumn(4, GroupOptions{ wxEXPAND }.StretchyColumn(2));
    {
       // Allow space for first Column
       S.AddSpace(250,0);

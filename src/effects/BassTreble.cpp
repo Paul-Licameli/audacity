@@ -181,10 +181,8 @@ void EffectBassTreble::PopulateOrExchange(ShuttleGui & S)
 
    S.StartStatic(XO("Tone controls"));
    {
-      S.StartMultiColumn(3, wxEXPAND);
+      S.StartMultiColumn(3, GroupOptions{ wxEXPAND }.StretchyColumn(2));
       {
-         S.SetStretchyCol(2);
-
          // Bass control
          S
             .Text(XO("Bass (dB):"))
@@ -219,10 +217,8 @@ void EffectBassTreble::PopulateOrExchange(ShuttleGui & S)
 
    S.StartStatic(XO("Output"));
    {
-      S.StartMultiColumn(3, wxEXPAND);
+      S.StartMultiColumn(3, GroupOptions{ wxEXPAND }.StretchyColumn(2));
       {
-         S.SetStretchyCol(2);
-
          // Gain control
          S
             .Target( mGain, NumValidatorStyle::DEFAULT, 1, Gain.min, Gain.max )

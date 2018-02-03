@@ -175,17 +175,14 @@ void SpectrumPrefs::PopulateOrExchange(ShuttleGui & S)
          .Assign(mDefaultsCheckbox);
    }
 
-   S.StartMultiColumn(2,wxEXPAND);
+   S.StartMultiColumn(2, GroupOptions{}.Position(wxEXPAND).StretchyColumn(0));
    {
-      S.SetStretchyCol( 0 );
-      S.SetStretchyCol( 1 );
       S
          .StartStatic(XO("Scale"),1);
       {
-         S.StartMultiColumn(2,wxEXPAND);
+         S.StartMultiColumn(2,
+            GroupOptions{}.Position(wxEXPAND).StretchyColumn(0));
          {
-            S.SetStretchyCol( 0 );
-            S.SetStretchyCol( 1 );
 
             S
                .Target( mTempSettings.scaleType )
@@ -211,11 +208,9 @@ void SpectrumPrefs::PopulateOrExchange(ShuttleGui & S)
       S
          .StartStatic(XO("Colors"),1);
       {
-         S.StartMultiColumn(2,wxEXPAND);
+         S.StartMultiColumn(2,
+            GroupOptions{}.Position(wxEXPAND).StretchyColumn(0));
          {
-            S.SetStretchyCol( 0 );
-            S.SetStretchyCol( 1 );
-
             S
                .Id(ID_GAIN)
                .Enable( enabler )

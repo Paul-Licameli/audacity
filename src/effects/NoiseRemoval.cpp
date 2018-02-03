@@ -674,8 +674,7 @@ void NoiseRemovalDialog::PopulateOrExchange(ShuttleGui & S)
          .AddVariableText(XO(
 "Select all of the audio you want filtered, choose how much noise you want\nfiltered out, and then click 'OK' to remove noise.\n"));
 
-      S.StartMultiColumn(3, wxEXPAND);
-      S.SetStretchyCol(2);
+      S.StartMultiColumn(3, GroupOptions{wxEXPAND}.StretchyColumn(2));
       {
          S
             .Target( mGain,

@@ -84,10 +84,8 @@ void ExportOGGOptions::PopulateOrExchange(ShuttleGui & S)
       S.StartHorizontalLay(wxEXPAND);
       {
          S.SetSizerProportion(1);
-         S.StartMultiColumn(2, wxCENTER);
+         S.StartMultiColumn(2, GroupOptions{ wxCENTER }.StretchyColumn(1));
          {
-            S.SetStretchyCol(1);
-
             // S.Prop(1); // PRL: was here, but had no effect
             S
                .Target( mOggQualityUnscaled )

@@ -180,11 +180,8 @@ void DirectoriesPrefs::PopulateOrExchange(ShuttleGui &S)
          "Fill in a field to always go to that directory for that operation."), false, 450);
       S.AddSpace(5);
 
-      S.StartMultiColumn(3, wxEXPAND);
+      S.StartMultiColumn(3, GroupOptions{wxEXPAND}.StretchyColumn(1));
       {
-         S
-            .SetStretchyCol(1);
-
          S.Id(OpenTextID);
          S
             .Target(*PreferenceSetting(Operation::Open, PathType::User))
@@ -240,10 +237,8 @@ void DirectoriesPrefs::PopulateOrExchange(ShuttleGui &S)
 
    S.StartStatic(XO("Temporary files directory"));
    {
-      S.StartMultiColumn(3, wxEXPAND);
+      S.StartMultiColumn(3, GroupOptions{wxEXPAND}.StretchyColumn(1));
       {
-         S.SetStretchyCol(1);
-
          S.Id(TempTextID);
          mTempText =
          S

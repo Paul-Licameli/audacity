@@ -75,10 +75,8 @@ void SelectTimeCommand::PopulateOrExchange(ShuttleGui & S)
 {
    S.AddSpace(0, 5);
 
-   S.StartMultiColumn(3, wxEXPAND);
+   S.StartMultiColumn(3, GroupOptions{}.Position(wxEXPAND).StretchyColumn(2));
    {
-      S.SetStretchyCol( 2 );
-
       S
          .Optional( bHasT0 )
          .Target( mT0 )
@@ -167,10 +165,8 @@ void SelectFrequenciesCommand::PopulateOrExchange(ShuttleGui & S)
 {
    S.AddSpace(0, 5);
 
-   S.StartMultiColumn(3, wxEXPAND);
+   S.StartMultiColumn(3, GroupOptions{}.Position(wxEXPAND).StretchyColumn(2));
    {
-      S.SetStretchyCol( 2 );
-
       S
          .Optional( bHasTop    )
          .Target( mTop )
@@ -227,10 +223,8 @@ void SelectTracksCommand::PopulateOrExchange(ShuttleGui & S)
 {
    S.AddSpace(0, 5);
 
-   S.StartMultiColumn(3, wxEXPAND);
+   S.StartMultiColumn(3, GroupOptions{}.Position(wxEXPAND).StretchyColumn(2));
    {
-      S.SetStretchyCol( 2 );
-
       S
          .Optional( bHasFirstTrack)
          .Target( mFirstTrack )

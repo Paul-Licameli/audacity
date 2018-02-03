@@ -346,8 +346,7 @@ void ExportMultipleDialog::PopulateOrExchange(ShuttleGui& S)
          S.EndPanel();
 
          S.SetBorder(3);
-         S.StartMultiColumn(2, wxEXPAND);
-         S.SetStretchyCol(1);
+         S.StartMultiColumn(2, GroupOptions{wxEXPAND}.StretchyColumn(1));
          {
             // Row 3 (indented)
             S
@@ -361,8 +360,7 @@ void ExportMultipleDialog::PopulateOrExchange(ShuttleGui& S)
 
             // Row 4
             S.AddVariableText( {}, false);
-            S.StartMultiColumn(2, wxEXPAND);
-            S.SetStretchyCol(1);
+            S.StartMultiColumn(2, GroupOptions{  }.StretchyColumn(1));
             {
                S
                   .Enable( firstFileEnabler )
@@ -414,8 +412,7 @@ void ExportMultipleDialog::PopulateOrExchange(ShuttleGui& S)
          }
          S.EndPanel();
 
-         S.StartMultiColumn(3, wxEXPAND);
-         S.SetStretchyCol(2);
+         S.StartMultiColumn(3, GroupOptions{ wxEXPAND }.StretchyColumn(2));
          {
             // Row 3 (indented)
             S

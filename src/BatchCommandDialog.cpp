@@ -72,10 +72,9 @@ void MacroCommandDialog::PopulateOrExchange(ShuttleGui &S)
 {
    S.StartVerticalLay(true);
    {
-      S.StartMultiColumn(4, wxEXPAND);
+      S.StartMultiColumn(4,
+                         GroupOptions{}.Position(wxEXPAND).StretchyColumn(1));
       {
-         S.SetStretchyCol(1);
-
          S
             .AddTextBox(XXO("&Command"), L"", 20)
             .Initialize( &wxTextCtrl::SetEditable, false )
@@ -100,10 +99,9 @@ void MacroCommandDialog::PopulateOrExchange(ShuttleGui &S)
       }
       S.EndMultiColumn();
 
-      S.StartMultiColumn(2, wxEXPAND);
+      S.StartMultiColumn(2,
+                         GroupOptions{}.Position(wxEXPAND).StretchyColumn(1));
       {
-         S.SetStretchyCol(1);
-
          S
             .AddTextBox(XXO("&Parameters"), L"", 0)
             .Initialize( &wxTextCtrl::SetEditable, false )

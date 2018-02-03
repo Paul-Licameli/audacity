@@ -137,6 +137,23 @@ enum StandardButtonID : unsigned
 
 #include "Prefs.h"
 
+struct GroupOptions {
+   GroupOptions() {}
+   GroupOptions(int pos) { Position(pos); }
+
+   GroupOptions &Position( int pos )
+   { positionFlags = pos; return *this; }
+
+   GroupOptions &StretchyRow( size_t row )
+   { stretchyRows.push_back(row); return *this; }
+
+   GroupOptions &StretchyColumn( size_t column )
+   { stretchyColumns.push_back(column); return *this; }
+
+   int positionFlags { wxALIGN_LEFT };
+   std::vector<size_t> stretchyRows, stretchyColumns;
+};
+
 #if wxUSE_ACCESSIBILITY
 class wxAccessible;
 class WindowAccessible;
@@ -1254,13 +1271,18 @@ public:
    void EndScroller();
    wxPanel * StartPanel(int iStyle = 0, int border = 2); // not -1
    void EndPanel();
-   void StartMultiColumn(int nCols, int PositionFlags=wxALIGN_LEFT);
+
+   void StartMultiColumn(
+         int nCols,
+         const GroupOptions &options = GroupOptions{});
    void EndMultiColumn();
 
-   void StartTwoColumn() {StartMultiColumn(2);};
-   void EndTwoColumn() {EndMultiColumn();};
-   void StartThreeColumn(){StartMultiColumn(3);};
-   void EndThreeColumn(){EndMultiColumn();};
+   void StartTwoColumn(const GroupOptions &options = GroupOptions{})
+   { StartMultiColumn(2, options); }
+   void EndTwoColumn() { EndMultiColumn(); }
+   void StartThreeColumn(const GroupOptions &options = GroupOptions{})
+   { StartMultiColumn(3, options); }
+   void EndThreeColumn(){ EndMultiColumn(); }
 
    wxStaticBox * StartStatic( const TranslatableString & Str, int iProp=0 );
    void EndStatic();
@@ -1296,8 +1318,6 @@ public:
 
    void SetBorder( int Border ) {mpState -> miBorder = Border;};
    void SetSizerProportion( int iProp ) {miSizerProp = iProp;};
-   void SetStretchyCol( int i );
-   void SetStretchyRow( int i );
 
 //--Some Additions since June 2007 that don't fit in elsewhere...
    wxWindow * GetParent()

@@ -107,10 +107,8 @@ void RecordingPrefs::PopulateOrExchange(ShuttleGui & S)
          .Target( AudioIOSoundActivatedRecord )
          .AddCheckBox( XXO("&Enable") );
 
-      S.StartMultiColumn(2, wxEXPAND);
+      S.StartMultiColumn(2, GroupOptions{ wxEXPAND }.StretchyColumn(1));
       {
-         S.SetStretchyCol(1);
-
          S
             .Target( AudioIOSilenceLevel )
             .AddSlider(XXO("Le&vel (dB):"),
@@ -179,9 +177,8 @@ void RecordingPrefs::PopulateOrExchange(ShuttleGui & S)
             .Target( AudioIOAutomatedInputLevelAdjustment )
             .AddCheckBox( XXO("Enable Automated Recording Level Adjustment.") );
 
-         S.StartMultiColumn(2, wxEXPAND);
+         S.StartMultiColumn(2, GroupOptions{}.Position(wxEXPAND).StretchyColumn(1));
          {
-            S.SetStretchyCol(1);
 
             S
                .Target( AudioIOTargetPeak )

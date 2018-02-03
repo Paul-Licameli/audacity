@@ -214,10 +214,9 @@ void EffectCompressor::PopulateOrExchange(ShuttleGui & S)
 
    S.StartStatic( {} );
    {
-      S.StartMultiColumn(3, wxEXPAND);
+      S.StartMultiColumn(3,
+                         GroupOptions{}.Position(wxEXPAND).StretchyColumn(1));
       {
-         S.SetStretchyCol(1);
-
          S
             .VariableText( [this]{ return
                XO("Threshold %d dB").Format( (int) mThresholdDB ); } )

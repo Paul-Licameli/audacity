@@ -84,10 +84,8 @@ void SetTrackBase::PopulateOrExchange(ShuttleGui & S)
    if( !mbPromptForTracks )
       return;
    S.AddSpace(0, 5);
-   S.StartMultiColumn(3, wxEXPAND);
+   S.StartMultiColumn(3, GroupOptions{wxEXPAND}.StretchyColumn(2));
    {
-      S.SetStretchyCol( 2 );
-
       S
          .Optional( bHasTrackIndex  )
          .Target( mTrackIndex )
@@ -147,20 +145,16 @@ bool SetTrackStatusCommand::DefineParams( ShuttleParams & S ){
 void SetTrackStatusCommand::PopulateOrExchange(ShuttleGui & S)
 {
    SetTrackBase::PopulateOrExchange( S );
-   S.StartMultiColumn(3, wxEXPAND);
+   S.StartMultiColumn(3, GroupOptions{}.Position(wxEXPAND).StretchyColumn(2));
    {
-      S.SetStretchyCol( 2 );
-
       S
          .Optional( bHasTrackName   )
          .Target( mTrackName )
          .AddTextBox( XXO("Name:") );
    }
    S.EndMultiColumn();
-   S.StartMultiColumn(2, wxEXPAND);
+   S.StartMultiColumn(2, GroupOptions{}.Position(wxEXPAND).StretchyColumn(1));
    {
-      S.SetStretchyCol( 1 );
-
       S
          .Optional( bHasSelected       )
          .Target(bSelected)
@@ -222,10 +216,8 @@ bool SetTrackAudioCommand::DefineParams( ShuttleParams & S ){
 void SetTrackAudioCommand::PopulateOrExchange(ShuttleGui & S)
 {
    SetTrackBase::PopulateOrExchange( S );
-   S.StartMultiColumn(2, wxEXPAND);
+   S.StartMultiColumn(2, GroupOptions{}.Position(wxEXPAND).StretchyColumn(1));
    {
-      S.SetStretchyCol( 1 );
-
       S
          .Optional( bHasMute           )
          .Target(bMute)
@@ -237,10 +229,8 @@ void SetTrackAudioCommand::PopulateOrExchange(ShuttleGui & S)
          .AddCheckBox( XXO("Solo") );
    }
    S.EndMultiColumn();
-   S.StartMultiColumn(3, wxEXPAND);
+   S.StartMultiColumn(3, GroupOptions{}.Position(wxEXPAND).StretchyColumn(2));
    {
-      S.SetStretchyCol( 2 );
-
       S
          .Optional( bHasGain        )
          .Target( mGain )
@@ -367,10 +357,8 @@ bool SetTrackVisualsCommand::DefineParams( ShuttleParams & S ){
 void SetTrackVisualsCommand::PopulateOrExchange(ShuttleGui & S)
 {
    SetTrackBase::PopulateOrExchange( S );
-   S.StartMultiColumn(3, wxEXPAND);
+   S.StartMultiColumn(3, GroupOptions{}.Position(wxEXPAND).StretchyColumn(2));
    {
-      S.SetStretchyCol( 2 );
-
       S
          .Optional( bHasHeight      )
          .Target( mHeight )
@@ -411,10 +399,8 @@ void SetTrackVisualsCommand::PopulateOrExchange(ShuttleGui & S)
          .AddTextBox( XXO("VZoom Bottom:") );
    }
    S.EndMultiColumn();
-   S.StartMultiColumn(2, wxEXPAND);
+   S.StartMultiColumn(2, GroupOptions{}.Position(wxEXPAND).StretchyColumn(1));
    {
-      S.SetStretchyCol( 1 );
-
       S.Optional( bHasUseSpecPrefs   )
          .Target(bUseSpecPrefs)
          .AddCheckBox( XXO("Use Spectral Prefs") );
@@ -425,9 +411,8 @@ void SetTrackVisualsCommand::PopulateOrExchange(ShuttleGui & S)
          .AddCheckBox( XXO("Spectral Select") );
    }
    S.EndMultiColumn();
-   S.StartMultiColumn(3, wxEXPAND);
+   S.StartMultiColumn(3, GroupOptions{}.Position(wxEXPAND).StretchyColumn(2));
    {
-      S.SetStretchyCol( 2 );
       auto schemes = SpectrogramSettings::GetColorSchemeNames();
       S
          .Optional( bHasSpecColorScheme)

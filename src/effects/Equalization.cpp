@@ -730,12 +730,15 @@ void EffectEqualization::PopulateOrExchange(ShuttleGui & S)
    S.SetBorder(0);
 
    S.SetSizerProportion(1);
-   S.Prop(1).StartMultiColumn(1, wxEXPAND);
+   S.Prop(1)
+      .StartMultiColumn(1,
+         GroupOptions{ wxEXPAND }
+            .StretchyColumn(0)
+            //.StretchyRow(0) // The 5px Top border
+            .StretchyRow(1)   // The Graph
+            .StretchyRow(2)   // The EQ sliders
+      );
    {
-      S.SetStretchyCol(0);
-      //S.SetStretchyRow(0); // The 5px Top border
-      S.SetStretchyRow(1);   // The Graph
-      S.SetStretchyRow(2);   // The EQ sliders
       szrV = S.GetSizer();
 
       // -------------------------------------------------------------------
@@ -747,10 +750,12 @@ void EffectEqualization::PopulateOrExchange(ShuttleGui & S)
       // ROW 1: Equalization panel and sliders for vertical scale
       // -------------------------------------------------------------------
       S.SetSizerProportion(1);
-      S.Prop(1).StartMultiColumn(3, wxEXPAND);
+      S.Prop(1)
+         .StartMultiColumn(3,
+            GroupOptions{ wxEXPAND }
+               .StretchyColumn(1)
+               .StretchyRow(0));
       {
-         S.SetStretchyCol(1);
-         S.SetStretchyRow(0);
          szr1 = S.GetSizer();
 
          S.StartVerticalLay(wxEXPAND, 1);

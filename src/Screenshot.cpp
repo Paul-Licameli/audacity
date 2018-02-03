@@ -322,10 +322,8 @@ void ScreenshotBigDialog::PopulateOrExchange(ShuttleGui & S)
       S
          .StartStatic(XO("Choose location to save files"));
       {
-         S.StartMultiColumn(3, wxEXPAND);
+         S.StartMultiColumn(3, GroupOptions{ wxEXPAND }.StretchyColumn(1));
          {
-            S.SetStretchyCol(1);
-
             S
                .Id(IdDirectory)
                .Enable( enabler )

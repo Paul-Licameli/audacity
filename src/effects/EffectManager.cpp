@@ -412,8 +412,7 @@ EffectPresetsDialog::EffectPresetsDialog(wxWindow *parent, Effect *effect)
    ShuttleGui S{ this };
    S.StartVerticalLay();
    {
-      S.StartTwoColumn();
-      S.SetStretchyCol(1);
+      S.StartTwoColumn( GroupOptions{}.StretchyColumn(1) );
       {
          S
             .AddPrompt(XXO("Type:"));

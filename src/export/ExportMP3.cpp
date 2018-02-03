@@ -293,9 +293,8 @@ void ExportMP3Options::PopulateOrExchange(ShuttleGui & S)
    {
       S.StartHorizontalLay(wxCENTER);
       {
-         S.StartMultiColumn(2, wxCENTER);
+         S.StartMultiColumn(2, GroupOptions{ wxCENTER }.StretchyColumn(1));
          {
-            S.SetStretchyCol(1);
             S.StartTwoColumn();
             {
                S
@@ -504,8 +503,7 @@ public:
          }
          S.EndHorizontalLay();
 
-         S.StartMultiColumn(2, wxEXPAND);
-         S.SetStretchyCol(0);
+         S.StartMultiColumn(2, GroupOptions{ wxEXPAND }.StretchyColumn(0));
          {
             if (mLibPath.GetFullPath().empty()) {
                S

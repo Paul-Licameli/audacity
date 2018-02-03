@@ -2848,8 +2848,7 @@ void VSTEffect::BuildPlain(ShuttleGui &S)
    {
       S.StartStatic( XO("Effect Settings"), 1 );
       {
-         S.StartMultiColumn( 4 );
-         S.SetStretchyCol( 1 );
+         S.StartMultiColumn( 4, GroupOptions{}.StretchyColumn(1) );
          {
             // Add the duration control for generators
             if (GetType() == EffectTypeGenerate)

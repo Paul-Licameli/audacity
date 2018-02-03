@@ -366,9 +366,8 @@ void EffectReverb::PopulateOrExchange(ShuttleGui & S)
 
    S.AddSpace(0, 5);
 
-   S.StartMultiColumn(3, wxEXPAND);
+   S.StartMultiColumn(3, GroupOptions{ wxEXPAND }.StretchyColumn(2));
    {
-      S.SetStretchyCol(2);
       for ( auto &entry : table ) {
          auto &param = entry.parameter;
          auto &target = mParams.*( entry.target );

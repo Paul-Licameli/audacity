@@ -485,8 +485,7 @@ public:
          }
          S.EndHorizontalLay();
 
-         S.StartMultiColumn(2, wxEXPAND);
-         S.SetStretchyCol(0);
+         S.StartMultiColumn(2, GroupOptions{ wxEXPAND }.StretchyColumn(0));
          {
             if (mLibPath.GetFullPath().empty()) {
                S

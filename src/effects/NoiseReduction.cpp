@@ -1575,8 +1575,8 @@ void EffectNoiseReduction::Dialog::PopulateOrExchange(ShuttleGui & S)
          .AddVariableText(XO(
 "Select all of the audio you want filtered, choose how much noise you want\nfiltered out, and then click 'OK' to reduce noise.\n"));
 
-      S.StartMultiColumn(3, wxEXPAND);
-      S.SetStretchyCol(2);
+      S.StartMultiColumn(3,
+         GroupOptions{}.Position(wxEXPAND).StretchyColumn(2));
       {
          for (const auto &info : controlInfo())
             info.CreateControls(mTempSettings.*(info.field), S);
@@ -1684,8 +1684,8 @@ void EffectNoiseReduction::Dialog::PopulateOrExchange(ShuttleGui & S)
       }
       S.EndMultiColumn();
 
-      S.StartMultiColumn(3, wxEXPAND);
-      S.SetStretchyCol(2);
+      S.StartMultiColumn(3,
+         GroupOptions{}.Position(wxEXPAND).StretchyColumn(2));
       {
          for ( const auto &info : advancedControlInfo() )
             info.CreateControls(mTempSettings.*(info.field), S);

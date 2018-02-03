@@ -780,23 +780,6 @@ void ShuttleGuiBase::ResetId()
 }
 
 
-/// Used to modify an already placed FlexGridSizer to make a column stretchy.
-void ShuttleGuiBase::SetStretchyCol( int i )
-{
-   wxFlexGridSizer *pSizer = wxDynamicCast(mpState -> mpSizer, wxFlexGridSizer);
-   wxASSERT( pSizer );
-   pSizer->AddGrowableCol( i, 1 );
-}
-
-/// Used to modify an already placed FlexGridSizer to make a row stretchy.
-void ShuttleGuiBase::SetStretchyRow( int i )
-{
-   wxFlexGridSizer *pSizer = wxDynamicCast(mpState -> mpSizer, wxFlexGridSizer);
-   wxASSERT( pSizer );
-   pSizer->AddGrowableRow( i, 1 );
-}
-
-
 //---- Add Functions.
 
 /// Right aligned text string.
@@ -1675,11 +1658,18 @@ void ShuttleGuiBase::EndVerticalLay()
    mpState -> PopSizer();
 }
 
-void ShuttleGuiBase::StartMultiColumn(int nCols, int PositionFlags)
+void ShuttleGuiBase::StartMultiColumn( int nCols, const GroupOptions &options)
 {
    mpSubSizer = std::make_unique<wxFlexGridSizer>( nCols );
    // PRL:  wxALL has no effect because UpdateSizersCore ignores border
-   UpdateSizersCore( false, PositionFlags | wxALL );
+   UpdateSizersCore( false, options.positionFlags | wxALL );
+
+   if ( wxFlexGridSizer *pSizer = wxDynamicCast(mpState -> mpSizer, wxFlexGridSizer) ) {
+      for (unsigned ii : options.stretchyColumns)
+         pSizer->AddGrowableCol( ii, 1 );
+      for (unsigned ii : options.stretchyRows)
+         pSizer->AddGrowableRow( ii, 1 );
+   }
 }
 
 void ShuttleGuiBase::EndMultiColumn()

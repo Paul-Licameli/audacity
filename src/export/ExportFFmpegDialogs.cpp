@@ -254,10 +254,8 @@ void ExportFFmpegAACOptions::PopulateOrExchange(ShuttleGui & S)
       S.StartHorizontalLay(wxEXPAND);
       {
          S.SetSizerProportion(1);
-         S.StartMultiColumn(2, wxCENTER);
+         S.StartMultiColumn(2, GroupOptions{ wxCENTER }.StretchyColumn(1));
          {
-            S.SetStretchyCol(1);
-
             // S.Prop(1); // PRL: was here, but had no effect
             S
                .Target( AACQuality )
@@ -1780,13 +1778,10 @@ void ExportFFmpegOptions::PopulateOrExchange(ShuttleGui & S)
    } );
 
    S.StartVerticalLay(1);
-   S.StartMultiColumn(1, wxEXPAND);
+   S.StartMultiColumn(1, GroupOptions{ wxEXPAND }.StretchyRow(3));
    {
-      S.SetStretchyRow(3);
-      S.StartMultiColumn(7, wxEXPAND);
+      S.StartMultiColumn(7, GroupOptions{ wxEXPAND }.StretchyColumn(1));
       {
-         S.SetStretchyCol(1);
-
          S
             // This setting is used only in this dialog
             .Target( Choice( FFmpegPreset, Verbatim( Recompute(
@@ -1815,11 +1810,9 @@ void ExportFFmpegOptions::PopulateOrExchange(ShuttleGui & S)
             .AddButton(XXO("Export Presets"));
       }
       S.EndMultiColumn();
-      S.StartMultiColumn(4, wxALIGN_LEFT);
+      S.StartMultiColumn(4,
+         GroupOptions{ wxALIGN_LEFT }.StretchyColumn(1).StretchyColumn(3));
       {
-         S.SetStretchyCol(1);
-         S.SetStretchyCol(3);
-
          S
             .AddFixedText(XO("Format:"));
 
@@ -1839,10 +1832,8 @@ void ExportFFmpegOptions::PopulateOrExchange(ShuttleGui & S)
          false);
       S.StartMultiColumn(2, wxEXPAND);
       {
-         S.StartMultiColumn(2, wxEXPAND);
+         S.StartMultiColumn(2, GroupOptions{ wxEXPAND }.StretchyRow(1));
          {
-            S.SetStretchyRow(1);
-   
             S
                .Action( [this]{ OnAllFormats(); } )
                .AddButton(XXO("Show All Formats"));
