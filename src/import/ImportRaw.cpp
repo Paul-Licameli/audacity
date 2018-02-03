@@ -449,11 +449,12 @@ ImportRawDialog::ImportRawDialog(wxWindow * parent,
             .Item( eCancelButton )
             .Action( [this]{ OnCancel(); } )
       } );
-      // Find the OK button, and change its text to 'Import'.
-      // We MUST set mOK because it is used later.
-      mOK = (wxButton *)wxWindow::FindWindowById(wxID_OK, this);
    }
    S.EndVerticalLay();
+
+   // Find the OK button
+   // We MUST set mOK because it is used later.
+   mOK = (wxButton *)wxWindow::FindWindowById(wxID_OK, this);
 
    Fit();
    SetSizeHints(GetSize());
