@@ -532,9 +532,8 @@ void VampEffect::PopulateOrExchange(ShuttleGui & S)
 
    mValues.reinit( count, true );
 
-   wxScrolledWindow *scroller =
-   S
-      .Style(wxVSCROLL | wxTAB_TRAVERSAL)
+   wxScrolledWindow *scroller {};
+   S.Style(wxVSCROLL | wxTAB_TRAVERSAL)
       .StartScroller(2);
    {
       S.StartStatic(XO("Plugin Settings"));
@@ -690,7 +689,8 @@ void VampEffect::PopulateOrExchange(ShuttleGui & S)
       }
       S.EndStatic();
    }
-   S.EndScroller();
+   S.EndScroller()
+      .Assign(scroller);
 
    scroller->SetScrollRate(0, 20);
 

@@ -2810,11 +2810,11 @@ void NyquistEffect::BuildEffectWindow(ShuttleGui & S)
 {
    using namespace DialogDefinition;
 
-   auto scroller =
+   wxScrolledWindow *scroller {};
+
    S
       .Style(wxVSCROLL | wxTAB_TRAVERSAL)
       .StartScroller(2);
-
    {
       S.StartMultiColumn(4);
       {
@@ -2971,7 +2971,8 @@ void NyquistEffect::BuildEffectWindow(ShuttleGui & S)
       }
       S.EndMultiColumn();
    }
-   S.EndScroller();
+   S.EndScroller()
+      .Assign(scroller);
 
    scroller->SetScrollRate(0, 20);
 

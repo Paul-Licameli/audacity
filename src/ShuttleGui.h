@@ -1280,8 +1280,10 @@ public:
    void StartVerticalLay2(int PositionFlags, int iProp, int border = -1);
    void EndVerticalLay();
    wxScrolledWindow * StartScroller(int iStyle = 0, int border = -1);
+   // This proxy has both a sizer and a window pointer
    void EndScroller();
    wxPanel * StartPanel(int iStyle = 0, int border = 2); // not -1
+   // This proxy has both a sizer and a window pointer
    void EndPanel();
 
    void StartMultiColumn(
@@ -1291,10 +1293,10 @@ public:
 
    void StartTwoColumn(const GroupOptions &options = GroupOptions{})
    { StartMultiColumn(2, options); }
-   void EndTwoColumn() { EndMultiColumn(); }
+   void EndTwoColumn() { return EndMultiColumn(); }
    void StartThreeColumn(const GroupOptions &options = GroupOptions{})
    { StartMultiColumn(3, options); }
-   void EndThreeColumn(){ EndMultiColumn(); }
+   void EndThreeColumn() { return EndMultiColumn(); }
 
    wxStaticBox * StartStatic(
       const TranslatableString & Str, int iProp = 0, int border = -1 );
@@ -1670,6 +1672,9 @@ public:
    operator WindowType* () const { return static_cast<WindowType*>(mpWind); }
    WindowType* operator -> () const { return *this; }
 
+   operator wxSizer* () const
+   { return mpState -> pSizerStack[ mpState -> mSizerDepth + 1 ]; }
+
    TypedShuttleGui<Sink, wxSlider>
    AddSlider(
       const TranslatableLabel &Prompt, int pos, int Max, int Min = 0,
@@ -1900,6 +1905,13 @@ public:
       return *this;
    }
 
+   TypedShuttleGui &Assign ( wxSizer *&p )
+   {
+      wxSizer *pSizer = *this;
+      p = pSizer;
+      return *this;
+   }
+
    // A "Window Factory" is any function object that takes a parent
    // window pointer and an id, and returns a window allocated with safenew.
    // This is a convenient type alias:
@@ -1938,6 +1950,60 @@ public:
          };
       Window( factory );
       return Rebind<Sink, Subclass>();
+   }
+
+   TypedShuttleGui<Sink, wxWindow> EndHorizontalLay()
+   {
+      ShuttleGuiBase::EndHorizontalLay();
+      return Rebind<Sink, wxWindow>();
+   }
+
+   TypedShuttleGui<Sink, wxWindow> EndVerticalLay()
+   {
+      ShuttleGuiBase::EndVerticalLay();
+      return Rebind<Sink, wxWindow>();
+   }
+
+   TypedShuttleGui<Sink, wxScrolledWindow> EndScroller()
+   {
+      ShuttleGuiBase::EndScroller();
+      return Rebind<Sink, wxScrolledWindow>();
+   }
+
+   TypedShuttleGui<Sink, wxPanel> EndPanel()
+   {
+      ShuttleGuiBase::EndPanel();
+      return Rebind<Sink, wxPanel>();
+   }
+
+   TypedShuttleGui<Sink, wxWindow> EndMultiColumn()
+   {
+      ShuttleGuiBase::EndMultiColumn();
+      return Rebind<Sink, wxWindow>();
+   }
+
+   TypedShuttleGui<Sink, wxWindow> EndTwoColumn()
+   {
+      ShuttleGuiBase::EndTwoColumn();
+      return Rebind<Sink, wxWindow>();
+   }
+
+   TypedShuttleGui<Sink, wxWindow> EndThreeColumn()
+   {
+      ShuttleGuiBase::EndThreeColumn();
+      return Rebind<Sink, wxWindow>();
+   }
+
+   TypedShuttleGui<Sink, wxWindow> EndStatic()
+   {
+      ShuttleGuiBase::EndStatic();
+      return Rebind<Sink, wxWindow>();
+   }
+
+   TypedShuttleGui<Sink, wxWindow> EndNotebookPage()
+   {
+      ShuttleGuiBase::EndNotebookPage();
+      return Rebind<Sink, wxWindow>();
    }
 
 private:

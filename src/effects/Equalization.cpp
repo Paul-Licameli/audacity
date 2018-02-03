@@ -738,7 +738,6 @@ void EffectEqualization::PopulateOrExchange(ShuttleGui & S)
             .StretchyRow(2)   // The EQ sliders
       );
    {
-      szrV = S.GetSizer();
 
       // -------------------------------------------------------------------
       // ROW 0: Top border
@@ -756,7 +755,6 @@ void EffectEqualization::PopulateOrExchange(ShuttleGui & S)
                .StretchyColumn(1)
                .StretchyRow(0));
       {
-         szr1 = S.GetSizer();
 
          S.StartVerticalLay(wxEXPAND, 1);
          {
@@ -855,7 +853,7 @@ void EffectEqualization::PopulateOrExchange(ShuttleGui & S)
          // Column 3 is empty
          S.AddSpace(1, 1);
       }
-      S.EndMultiColumn();
+      S.EndMultiColumn().Assign(szr1);
 
       // -------------------------------------------------------------------
       // ROW 2: Graphic EQ
@@ -863,10 +861,8 @@ void EffectEqualization::PopulateOrExchange(ShuttleGui & S)
 //      S.SetSizerProportion(1); // FIX ME
       S.StartHorizontalLay(wxEXPAND, 1, 0);
       {
-         szrG = S.GetSizer();
-
          // Panel used to host the sliders since they will be positioned manually.
-         //mGraphicPanel = S.Prop(1)
+         //S.Prop(1)
             //.Position(wxEXPAND)
             //.Size( { -1, 150 } )
             //.StartPanel();
@@ -921,9 +917,10 @@ void EffectEqualization::PopulateOrExchange(ShuttleGui & S)
          }
          S.AddSpace(15,0);
 
-         } //S.EndPanel();
+         } //S.EndPanel()
+            //.Assign(mGraphicPanel);
       }
-      S.EndHorizontalLay();
+      S.EndHorizontalLay().Assign(szrG);
 
       //      S.SetSizerProportion(1); // FIX ME
       S.StartMultiColumn(7,
@@ -968,12 +965,8 @@ void EffectEqualization::PopulateOrExchange(ShuttleGui & S)
 
          S.StartHorizontalLay(wxALIGN_LEFT | wxALIGN_CENTER_VERTICAL, 0);
          {
-            szrH = S.GetSizer();
-
             S.StartHorizontalLay(wxALIGN_LEFT | wxALIGN_CENTER_VERTICAL, 1);
             {
-               szrI = S.GetSizer();
-
                S
                   .Text(XO("Interpolation type"))
                   .Target( mInterp )
@@ -985,21 +978,19 @@ void EffectEqualization::PopulateOrExchange(ShuttleGui & S)
                   .AddChoice( {},
                      Msgids(kInterpStrings, nInterpolations), 0 );
             }
-            S.EndHorizontalLay();
+            S.EndHorizontalLay().Assign(szrI);
 
             S.StartHorizontalLay(wxALIGN_LEFT | wxALIGN_CENTER_VERTICAL, 1);
             {
-               szrL = S.GetSizer();
-
                S
                   .Text(XO("Linear Frequency Scale"))
                   .Target( mLin )
                   .Action( [this]{ OnLinFreq(); } )
                   .AddCheckBox(XXO("Li&near Frequency Scale"), false);
             }
-            S.EndHorizontalLay();
+            S.EndHorizontalLay().Assign(szrL);
          }
-         S.EndHorizontalLay();
+         S.EndHorizontalLay().Assign(szrH);
 
          // -------------------------------------------------------------------
          // Filter length grouping
@@ -1106,7 +1097,7 @@ void EffectEqualization::PopulateOrExchange(ShuttleGui & S)
       }
       S.EndMultiColumn();
    }
-   S.EndMultiColumn();
+   S.EndMultiColumn().Assign(szrV);
 
 #ifdef EXPERIMENTAL_EQ_SSE_THREADED
    if (mEffectEqualization48x)
