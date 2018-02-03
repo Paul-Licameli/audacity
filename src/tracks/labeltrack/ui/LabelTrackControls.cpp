@@ -20,7 +20,6 @@ Paul Licameli split from TrackPanel.cpp
 #include "../../../ShuttleGui.h"
 #include "../../../widgets/wxPanelWrapper.h"
 #include <wx/fontenum.h>
-#include <wx/spinctrl.h>
 
 LabelTrackControls::~LabelTrackControls()
 {
@@ -105,13 +104,10 @@ void LabelTrackMenuTable::OnSetFont(wxCommandEvent &)
       LabelTrackView::GetFont( LabelTrackView::FaceName.Read() )
          .GetFaceName() );
 
-   long fontsize = LabelTrackView::FontSize.Read();
-
    /* i18n-hint: (noun) This is the font for the label track.*/
    wxDialogWrapper dlg(mpData->pParent, wxID_ANY, XO("Label Track Font"));
    dlg.SetName();
    ShuttleGui S(&dlg);
-   wxSpinCtrl *sc;
 
    using namespace DialogDefinition;
    S.StartVerticalLay(true);
@@ -142,16 +138,11 @@ void LabelTrackMenuTable::OnSetFont(wxCommandEvent &)
             /* i18n-hint: (noun) The size of the typeface*/
             .AddPrompt(XXO("Face size"));
 
-         sc = safenew wxSpinCtrl(S.GetParent(), wxID_ANY,
-            wxString::Format(L"%ld", fontsize),
-            wxDefaultPosition,
-            wxDefaultSize,
-            wxSP_ARROW_KEYS,
-            8, 48, fontsize);
          S
-            .Text(XO("Face size"))
             .Position( wxALIGN_LEFT | wxALL )
-            .AddWindow(sc);
+            .Style(wxSP_ARROW_KEYS /* | wxSP_VERTICAL */ )
+            .Target( LabelTrackView::FontSize )
+            .AddSpinCtrl(XXO("Face size"), 0, 48, 8);
       }
       S.EndMultiColumn();
 
@@ -166,7 +157,6 @@ void LabelTrackMenuTable::OnSetFont(wxCommandEvent &)
    if (dlg.ShowModal() == wxID_CANCEL)
       return;
 
-   LabelTrackView::FontSize.Write( sc->GetValue() );
    dlg.TransferDataFromWindow();
    transaction.Commit();
 

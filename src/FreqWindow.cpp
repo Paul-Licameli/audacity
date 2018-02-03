@@ -331,13 +331,13 @@ void FrequencyPlotDialog::Populate()
 
             S.AddSpace(5);
 
-            mZoomSlider = safenew wxSliderWrapper(S.GetParent(), FreqZoomSliderID, 100, 1, 100,
-               wxDefaultPosition, wxDefaultSize, wxSL_VERTICAL);
+            mZoomSlider =
             S
+               .Id(FreqZoomSliderID)
                .Prop(1)
-               .Text(XO("Zoom"))
                .Position(wxALIGN_CENTER_HORIZONTAL)
-               .AddWindow(mZoomSlider);
+               .Style(wxSL_VERTICAL)
+               .AddSlider( XXO("Zoom"), 100, 1, 100 );
 #if wxUSE_ACCESSIBILITY
             // so that name can be set on a standard control
             mZoomSlider->SetAccessible(safenew WindowAccessible(mZoomSlider));

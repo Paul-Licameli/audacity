@@ -161,8 +161,11 @@ void HistoryDialog::Populate(ShuttleGui & S)
                                      0);
 
             S
+               .Id(ID_LEVELS)
+               .Style(wxSP_ARROW_KEYS /* | wxSP_VERTICAL */ )
                .Enable( [this]{ return mSelected > 0; } )
-               .AddWindow(mLevels);
+               .AddSpinCtrl(XXO("&Levels to discard"),
+                            1, mManager->GetCurrentState() - 1, 0);
 
             mDiscard = S
                .Enable( [this]{ return !mAudioIOBusy && mSelected > 0; } )
