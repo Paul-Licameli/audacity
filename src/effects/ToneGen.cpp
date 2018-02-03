@@ -296,6 +296,8 @@ void EffectToneGen::PopulateOrExchange(ShuttleGui & S)
          .AddChoice(XXO("&Waveform:"),
             Msgids( kWaveStrings, nWaveforms ) );
 
+      //
+      //
       if (mChirp)
       {
          S.AddFixedText( {} );

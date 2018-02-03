@@ -360,6 +360,7 @@ void DependencyDialog::PopulateOrExchange(ShuttleGui& S)
 
       S.StartHorizontalLay(wxALIGN_CENTRE,0);
       {
+         //
          if (mIsSaving) {
             S
                .Action( [this]{ OnCancel(); } )
@@ -384,6 +385,7 @@ void DependencyDialog::PopulateOrExchange(ShuttleGui& S)
       }
       S.EndHorizontalLay();
 
+      //
       if (mIsSaving)
       {
          S.StartHorizontalLay(wxALIGN_LEFT,0);
