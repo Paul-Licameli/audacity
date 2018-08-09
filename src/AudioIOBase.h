@@ -221,7 +221,7 @@ protected:
    static wxString DeviceName(const PaDeviceInfo* info);
    static wxString HostName(const PaDeviceInfo* info);
 
-   AudacityProject    *mOwningProject;
+   wxWeakRef<AudacityProject> mOwningProject;
 
    /// True if audio playback is paused
    bool                mPaused;

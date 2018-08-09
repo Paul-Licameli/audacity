@@ -35,7 +35,7 @@ class RingBuffer;
 class Mixer;
 class Resample;
 class AudioThread;
-class SelectedRegion;
+class SelectedRegionEvent;
 
 class AudacityProject;
 
@@ -452,6 +452,10 @@ private:
                              unsigned int numPlaybackChannels,
                              unsigned int numCaptureChannels,
                              sampleFormat captureFormat);
+
+   void SetOwningProject( AudacityProject *pProject );
+   void ResetOwningProject();
+   static void LoopPlayUpdate( SelectedRegionEvent &evt );
 
    /*!
     Called in a loop from another worker thread that does not have the low-latency constraints

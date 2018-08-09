@@ -271,6 +271,9 @@ void PlaybackSchedule::Init(
    mWarpedLength = RealDuration(mT1);
 
    mPolicyValid.store(true, std::memory_order_release);
+
+   mMessageChannel.Initialize();
+   mMessageChannel.Write( { mT0, mT1 } );
 }
 
 double PlaybackSchedule::LimitTrackTime() const
@@ -466,4 +469,25 @@ void PlaybackSchedule::TimeQueue::ProduceExt(const AudioIOExts &exts,
 {
    std::for_each(exts.begin(), exts.end(), [&](auto &pExt){
       pExt->Producer(newTrackTimes, nFrames); });
+}
+
+#include "ViewInfo.h"
+void PlaybackSchedule::MessageProducer( SelectedRegionEvent &evt)
+{
+   // This executes in the main thread and is a producer of messages for
+   // the AudioThread
+   auto *pRegion = evt.pRegion.get();
+   if (!pRegion)
+      return;
+   const SelectedRegion &region = *pRegion;
+
+   mMessageChannel.Write( { region.t0(), region.t1() } );
+}
+
+void PlaybackSchedule::MessageConsumer()
+{
+   // This executes in the AudioThread and is the consumer
+
+   auto data = mMessageChannel.Read();
+   // TODO use data
 }

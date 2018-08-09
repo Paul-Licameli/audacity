@@ -21,6 +21,7 @@
 struct AudioIOStartStreamOptions;
 class BoundedEnvelope;
 using PRCrossfadeData = std::vector< std::vector < float > >;
+class SelectedRegionEvent;
 
 constexpr size_t TimeQueueGrainSize = 2000;
 
@@ -348,6 +349,14 @@ struct AUDACITY_DLL_API PlaybackSchedule {
    PlaybackPolicy &GetPolicy();
    const PlaybackPolicy &GetPolicy() const;
 
+   // The main thread writes changes in response to user events, and
+   // the audio thread later reads, and changes the playback.
+   struct SlotData {
+      double mT0;
+      double mT1;
+   };
+   MessageBuffer<SlotData> mMessageChannel;
+
    void Init(
       double t0, double t1,
       const AudioIOStartStreamOptions &options,
@@ -372,6 +381,9 @@ struct AUDACITY_DLL_API PlaybackSchedule {
     * @return The end point (in seconds from project start) as unwarped time
     */
    double SolveWarpedLength(double t0, double length) const;
+
+   void MessageProducer( SelectedRegionEvent &evt );
+   void MessageConsumer();
 
    /** \brief True if the end time is before the start time */
    bool ReversedTime() const
