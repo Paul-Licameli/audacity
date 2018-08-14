@@ -2130,15 +2130,24 @@ PlaybackSlice AudioIO::GetPlaybackSlice(const size_t available)
       const auto realTimeRemaining = mPlaybackSchedule.RealTimeRemaining();
       if (deltat > realTimeRemaining)
       {
-         frames = realTimeRemaining * mRate;
-         toProduce = frames;
+         // Produce some extra silence so that the time queue consumer can
+         // satisfy its end condition
+         double extraRealTime = mPlaybackSchedule.PlayingStraight()
+            ? (TimeQueueGrainSize + 1) / mRate
+            : 0;
+
+         auto extra =
+            std::min( extraRealTime, deltat - realTimeRemaining );
+         auto realTime = std::max( 0.0, realTimeRemaining + extra );
+         frames = realTime * mRate;
+         toProduce = std::max( 0.0, realTimeRemaining * mRate );
 
          // Don't fall into an infinite loop, if loop-playing a selection
          // that is so short, it has no samples: detect that case
          progress =
             !(mPlaybackSchedule.Looping() &&
               mPlaybackSchedule.mWarpedTime == 0.0 && frames == 0);
-         mPlaybackSchedule.RealTimeAdvance( realTimeRemaining );
+         mPlaybackSchedule.RealTimeAdvance( realTime );
       }
       else
          mPlaybackSchedule.RealTimeAdvance( deltat );
@@ -2741,12 +2750,12 @@ bool AudioIoCallback::FillOutputBuffers(
    mMaxFramesOutput = 0;
 
    // Quick returns if next to nothing to do.
-   if (mStreamToken <= 0)
+   if (mStreamToken <= 0 ||
+       !outputBuffer ||
+       numPlaybackChannels <= 0) {
+      mMaxFramesOutput = framesPerBuffer;
       return false;
-   if( !outputBuffer )
-      return false;
-   if(numPlaybackChannels <= 0)
-      return false;
+   }
 
    float *outputFloats = outputBuffer;
 
@@ -2933,12 +2942,8 @@ void AudioIoCallback::UpdateTimePosition(unsigned long framesPerBuffer)
       return;
 
    // Update the position seen by drawing code
-   if (mPlaybackSchedule.Interactive())
-      // To do: do this in all cases and remove TrackTimeUpdate
-      mPlaybackSchedule.SetTrackTime(
-         mPlaybackSchedule.mTimeQueue.Consumer( mMaxFramesOutput, mRate ) );
-   else
-      mPlaybackSchedule.TrackTimeUpdate( framesPerBuffer / mRate );
+   mPlaybackSchedule.SetTrackTime(
+      mPlaybackSchedule.mTimeQueue.Consumer( mMaxFramesOutput, mRate ) );
 }
 
 // return true, IFF we have fully handled the callback.
@@ -3429,6 +3434,8 @@ int AudioIoCallback::CallbackDoSeek()
       // but we can't assert in this thread
       wxUnusedVar(discarded);
    }
+
+   mPlaybackSchedule.mTimeQueue.Prime(time);
 
    // Reload the ring buffers
    mAudioThreadShouldCallTrackBufferExchangeOnce = true;
