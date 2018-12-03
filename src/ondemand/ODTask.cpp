@@ -362,3 +362,11 @@ void ODTask::ReplaceWaveTrack(Track *oldTrack,
    }
    mWaveTrackMutex.Unlock();
 }
+
+///Adds an invalid region to the wavecache so it redraws that portion only.
+void ODTask::AddInvalidRegion(
+   const WaveTrack &track, sampleCount startSample, sampleCount endSample)
+{
+   for (const auto &clip : track.GetClips())
+      WaveClipDisplayCache::Get(*clip).AddInvalidRegion(startSample, endSample);
+}

@@ -120,7 +120,8 @@ void ODComputeSummaryTask::DoSomeInternal()
             if(success && waveTrack)
             {
 #if 0 // LLL: Commented out while removing OD file handling              
-               waveTrack->AddInvalidRegion(blockStartSample,blockEndSample);
+               AddInvalidRegion(
+                  *waveTrack, blockStartSample,blockEndSample);
 #endif
             }
          }

@@ -106,7 +106,8 @@ void ODDecodeTask::DoSomeInternal()
             if(waveTrack)
             {
 #if 0 // LLL: Commented out while removing OD files handling               
-               waveTrack->AddInvalidRegion(blockStartSample,blockEndSample);
+               AddInvalidRegion(
+                  *waveTrack, blockStartSample,blockEndSample);
 #endif
             }
          }

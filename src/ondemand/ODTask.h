@@ -124,6 +124,9 @@ class ODTask /* not final */
 
    bool IsRunning();
 
+   ///Adds an invalid region to the wavecache so it redraws that portion only.
+   static void AddInvalidRegion(
+      const WaveTrack &track, sampleCount startSample, sampleCount endSample);
 
  protected:
 

@@ -31,6 +31,8 @@ flicker-free use.
 
 #include "Identifier.h"
 
+#include "Identifier.h"
+
 #include <wx/defs.h>
 #include <wx/statbmp.h> // to inherit
 
