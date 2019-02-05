@@ -71,15 +71,6 @@ class Shuttle /* not final */ {
    virtual bool ExchangeWithMaster(const wxString & Name);
 };
 
-class ShuttleCli final : public Shuttle
-{
-public:
-   wxString mParams;
-   ShuttleCli() {}
-   virtual ~ShuttleCli() {}
-   bool ExchangeWithMaster(const wxString & Name) override;
-};
-
 class CommandParameters;
 /**************************************************************************//**
 \brief Shuttle that deals with parameters.  This is a base class with lots of

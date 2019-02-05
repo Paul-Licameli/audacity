@@ -10,7 +10,7 @@
 *******************************************************************//**
 
 \file Shuttle.cpp
-\brief Implements Shuttle, ShuttleCli and Enums.
+\brief Implements Shuttle, ShuttleParams, their subclasses, and Enums.
 
 *//****************************************************************//**
 
@@ -26,15 +26,6 @@
 
   The 'Master' is the string side of the shuttle transfer, the 'Client'
   is the binary data side of the transfer.
-
-  \see ShuttleBase
-  \see ShuttleGui
-
-*//****************************************************************//**
-
-\class ShuttleCli
-\brief Derived from Shuttle, this class exchanges string parameters
-with a binary representation.
 
   \see ShuttleBase
   \see ShuttleGui
@@ -237,48 +228,6 @@ bool Shuttle::ExchangeWithMaster(const wxString & WXUNUSED(Name))
    wxASSERT( false );
    return true;
 }
-
-// This variant uses values of the form
-// param1=value1 param2=value2
-bool ShuttleCli::ExchangeWithMaster(const wxString & Name)
-{
-   if( !mbStoreInClient )
-   {
-      mParams += L" ";
-      mParams +=Name;
-      mParams += L"=";
-      mParams +=mValueString;
-   }
-   else
-   {
-      int i;
-      mParams = L" "+mParams;
-      i=mParams.Find( L" "+Name+L"=" );
-      if( i>=0 )
-      {
-         int j=i+2+Name.length();
-         wxString terminator = L' ';
-         if(mParams.GetChar(j) == L'"') //Strings are surrounded by quotes
-         {
-            terminator = L'"';
-            j++;
-         }
-         else if(mParams.GetChar(j) == L'\'') // or by single quotes.
-         {
-            terminator = L'\'';
-            j++;
-         }         
-         i=j;
-         while( j<(int)mParams.length() && mParams.GetChar(j) != terminator )
-            j++;
-         mValueString = mParams.Mid(i,j-i);
-         return true;
-      }
-      return false;
-   }
-   return true;
-}
-
 
 #ifdef _MSC_VER
 // If this is compiled with MSVC (Visual Studio)
