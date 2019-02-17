@@ -118,6 +118,7 @@ class AUDACITY_DLL_API AudacityCommand /* not final */ : public wxEvtHandler,
    // effect, after either successful or failed or exception-aborted processing.
    // Invoked inside a "finally" block so it must be no-throw.
    virtual void End(){;};
+   // The sink for actions in S is defaulted to this:
    virtual void PopulateOrExchange(ShuttleGui & WXUNUSED(S)){return;};
    virtual bool TransferDataToWindow();
    virtual bool TransferDataFromWindow();

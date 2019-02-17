@@ -324,7 +324,9 @@ protected:
    // Only override it if you need to do preprocessing or cleanup.
    virtual void Preview(bool dryOnly);
 
+   // The sink for actions in S is defaulted to this:
    virtual void PopulateOrExchange(ShuttleGui & S);
+
    virtual bool TransferDataToWindow() /* not override */;
    virtual bool TransferDataFromWindow() /* not override */;
    virtual bool EnableApply(bool enable = true);
