@@ -2171,15 +2171,27 @@ void ShuttleGuiBase::ApplyItem( int step, const DialogDefinition::Item &item,
    else if ( step == 1) {
       // Apply certain other optional window attributes here
 
-      if ( item.mAction ) {
-         auto action = item.mAction;
-         pDlg->Bind(
-            item.mEventType,
-            [action]( wxCommandEvent& ){
-               if ( action )
-                  action();
-            },
-            pWind->GetId() );
+      if ( item.mAction || item.mValidatorSetter ) {
+         if ( !item.mAction ) {
+            auto action = item.mAction;
+            pDlg->Bind(
+               item.mEventType,
+               [pWind, action, pDlg]( wxCommandEvent& ){
+                  if ( pWind->GetValidator() ) {
+                     if ( !pWind->GetValidator()->Validate( pWind ) )
+                        return;
+                     if ( !pWind->GetValidator()->TransferFromWindow() )
+                        return;
+                  }
+                  if ( action )
+                     action();
+                  if ( pWind->GetValidator() || action )
+                     pDlg->TransferDataToWindow();
+               },
+               pWind->GetId() );
+         }
+         else
+            wxASSERT( false );
       }
 
       if ( item.mValidatorSetter )
