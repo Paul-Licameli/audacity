@@ -349,6 +349,7 @@ extern BoolSetting AudioIOMicrofades;
 extern DoubleSetting AudioIOCutPreviewBeforeLen; // seconds
 extern DoubleSetting AudioIOCutPreviewAfterLen; // seconds
 extern DoubleSetting AudioIOEffectsPreviewLen; // seconds
+extern StringSetting AudioIOPlaybackSource;
 extern DoubleSetting AudioIOSeekLongPeriod; // seconds
 extern DoubleSetting AudioIOSeekShortPeriod; // seconds
 extern BoolSetting AudioIOUnpinnedScrubbing;

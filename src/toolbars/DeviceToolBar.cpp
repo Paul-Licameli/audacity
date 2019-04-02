@@ -278,7 +278,7 @@ void DeviceToolBar::UpdatePrefs()
    }
 
    devName = AudioIOPlaybackDevice.Read();
-   sourceName = gPrefs->Read(L"/AudioIO/PlaybackSource", L"");
+   sourceName = AudioIOPlaybackSource.Read();
    if (sourceName.empty())
       desc = devName;
    else
@@ -593,11 +593,10 @@ void DeviceToolBar::SetDevices(const DeviceSourceMap *in, const DeviceSourceMap 
 
    if (out) {
       AudioIOPlaybackDevice.Write(out->deviceString);
-      if (out->totalSources >= 1) {
-         gPrefs->Write(L"/AudioIO/PlaybackSource", out->sourceString);
-      } else {
-         gPrefs->Write(L"/AudioIO/PlaybackSource", L"");
-      }
+      if (out->totalSources >= 1)
+         AudioIOPlaybackSource.Write(out->sourceString);
+      else
+         AudioIOPlaybackSource.Write(L"");
       gPrefs->Flush();
    }
 }
