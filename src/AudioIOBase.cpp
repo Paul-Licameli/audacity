@@ -975,8 +975,11 @@ wxString AudioIOBase::GetMidiDeviceInfo()
    s << XO("Default recording device number: %d\n").Format( recDeviceNum );
    s << XO("Default playback device number: %d\n").Format( playDeviceNum );
 
-   wxString recDevice = gPrefs->Read(L"/MidiIO/RecordingDevice", L"");
-   wxString playDevice = gPrefs->Read(L"/MidiIO/PlaybackDevice", L"");
+   wxString recDevice;
+#ifdef EXPERIMENTAL_MIDI_IN
+   recDevice = MidiIORecordingDevice.Read();
+#endif
+   auto playDevice = MidiIOPlaybackDevice.Read();
 
    // This gets info on all available audio devices (input and output)
    if (cnt <= 0) {
@@ -1097,5 +1100,13 @@ BoolSetting AudioIOUnpinnedScrubbing{
 BoolSetting AudioIOVariSpeedPlay{
    L"/AudioIO/VariSpeedPlay",                    true };
 
+StringSetting MidiIOPlaybackDevice{
+   L"/MidiIO/PlaybackDevice" };
+#ifdef EXPERIMENTAL_MIDI_IN
+IntSetting MidiIORecordChannels{
+   L"/MidiIO/RecordChannels",                    2 };
+StringSetting MidiIORecordingDevice{
+   L"/MidiIO/RecordingDevice" };
+#endif
 IntSetting MidiIOSynthLatency{
    L"/MidiIO/SynthLatency",                      5 };

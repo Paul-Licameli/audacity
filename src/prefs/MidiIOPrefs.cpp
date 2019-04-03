@@ -77,11 +77,11 @@ wxString MidiIOPrefs::HelpPageName()
 void MidiIOPrefs::Populate()
 {
    // Get current setting for devices
-   mPlayDevice = gPrefs->Read(L"/MidiIO/PlaybackDevice", L"");
+   mPlayDevice = MidiIOPlaybackDevice.Read();
 #ifdef EXPERIMENTAL_MIDI_IN
-   mRecordDevice = gPrefs->Read(L"/MidiIO/RecordingDevice", L"");
+   mRecordDevice = MidiIORecordingDevice.Read();
 #endif
-//   mRecordChannels = gPrefs->Read(L"/MidiIO/RecordChannels", 2L);
+//   mRecordChannels = MidiIORecordChannels.Read();
 }
 
 bool MidiIOPrefs::TransferDataToWindow()
@@ -251,7 +251,7 @@ bool MidiIOPrefs::Commit()
 
    info = (const PmDeviceInfo *) mPlay->GetClientData(mPlay->GetSelection());
    if (info) {
-      gPrefs->Write(L"/MidiIO/PlaybackDevice",
+      MidiIOPlaybackDevice.Write(
                     wxString::Format(L"%s: %s",
                                      wxString(wxSafeConvertMB2WX(info->interf)),
                                      wxString(wxSafeConvertMB2WX(info->name))));
@@ -259,7 +259,7 @@ bool MidiIOPrefs::Commit()
 #ifdef EXPERIMENTAL_MIDI_IN
    info = (const PmDeviceInfo *) mRecord->GetClientData(mRecord->GetSelection());
    if (info) {
-      gPrefs->Write(L"/MidiIO/RecordingDevice",
+      MidiIORecordingDevice.Write(
                     wxString::Format(L"%s: %s",
                                      wxString(wxSafeConvertMB2WX(info->interf)),
                                      wxString(wxSafeConvertMB2WX(info->name))));

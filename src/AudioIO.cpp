@@ -2090,8 +2090,7 @@ bool AudioIoCallback::StartPortMidiStream()
 
    /* get midi playback device */
    PmDeviceID playbackDevice = Pm_GetDefaultOutputDeviceID();
-   wxString playbackDeviceName = gPrefs->Read(L"/MidiIO/PlaybackDevice",
-                                              L"");
+   auto playbackDeviceName = MidiIOPlaybackDevice.Read();
    mSynthLatency = MidiIOSynthLatency.Read();
    if (wxStrcmp(playbackDeviceName, L"") != 0) {
       for (i = 0; i < Pm_CountDevices(); i++) {

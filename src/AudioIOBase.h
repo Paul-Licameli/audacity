@@ -363,6 +363,11 @@ extern IntSetting AudioIORecordingSourceIndex;
 extern BoolSetting AudioIOUnpinnedScrubbing;
 extern BoolSetting AudioIOVariSpeedPlay;
 
+extern StringSetting MidiIOPlaybackDevice;
+#ifdef EXPERIMENTAL_MIDI_IN
+extern IntSetting MidiIORecordChannels;
+extern StringSetting MidiIORecordingDevice;
+#endif
 extern IntSetting MidiIOSynthLatency; // milliseconds
 
 #endif
