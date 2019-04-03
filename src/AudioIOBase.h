@@ -352,6 +352,14 @@ extern DoubleSetting AudioIOEffectsPreviewLen; // seconds
 extern StringSetting AudioIOPlaybackSource;
 extern DoubleSetting AudioIOSeekLongPeriod; // seconds
 extern DoubleSetting AudioIOSeekShortPeriod; // seconds
+
+extern StringSetting AudioIOPlaybackDevice;
+//extern BoolSetting AudioIOPlaythrough;
+extern IntSetting AudioIORecordChannels;
+extern StringSetting AudioIORecordingDevice;
+extern StringSetting AudioIORecordingSource;
+extern IntSetting AudioIORecordingSourceIndex;
+
 extern BoolSetting AudioIOUnpinnedScrubbing;
 extern BoolSetting AudioIOVariSpeedPlay;
 
