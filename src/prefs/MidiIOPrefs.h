@@ -57,6 +57,10 @@ class MidiIOPrefs final : public PrefsPanel
 //   wxChoice *mChannels;
 };
 
+extern StringSetting MidiIOPlaybackDevice;
+extern StringSetting MidiIORecordingDevice;
+extern IntSetting MidiIOSynthLatency; // milliseconds
+
 #endif
 
 #endif
