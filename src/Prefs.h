@@ -110,8 +110,9 @@ public:
    //! Delete the key if present, and return true iff it was.
    bool Delete();
 
-protected:
    SettingBase( const SettingBase& ) = default;
+
+protected:
    const RegistryPath mPath;
 };
 
@@ -176,13 +177,13 @@ public:
    using DefaultValueFunction = std::function< T() >;
 
    //! Usual overload supplies a default value
-   Setting( const SettingBase &path, const T &defaultValue )
+   explicit Setting( SettingBase path, const T &defaultValue )
       : CachingSettingBase< T >{ path }
       , mDefaultValue{ defaultValue }
    {}
 
    //! This overload causes recomputation of the default each time it is needed
-   Setting( const SettingBase &path, DefaultValueFunction function )
+   explicit Setting( SettingBase path, DefaultValueFunction function )
       : CachingSettingBase< T >{ path }
       , mFunction{ function }
    {}
