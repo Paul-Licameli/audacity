@@ -15,14 +15,12 @@
 #include "ProjectWindow.h"
 #include "Track.h"
 #include "TrackPanelAx.h"
-#include "TrackPanel.h"
 
 namespace TrackUtilities {
 
 void DoRemoveTracks( AudacityProject &project )
 {
    auto &tracks = TrackList::Get( project );
-   auto &trackPanel = TrackPanel::Get( project );
 
    std::vector<Track*> toRemove;
    for (auto track : tracks.Selected())
@@ -57,8 +55,6 @@ void DoRemoveTracks( AudacityProject &project )
 
    ProjectHistory::Get( project )
       .PushState(XO("Removed audio track(s)"), XO("Remove Track"));
-
-   trackPanel.UpdateViewIfNoTracks();
 }
 
 void DoTrackMute(AudacityProject &project, Track *t, bool exclusive)

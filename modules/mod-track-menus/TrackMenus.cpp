@@ -1111,9 +1111,6 @@ void OnTrackClose(const CommandContext &context)
    }
 
    TrackUtilities::DoRemoveTrack(project, t);
-
-   trackPanel.UpdateViewIfNoTracks();
-   trackPanel.Refresh(false);
 }
 
 void OnTrackMoveUp(const CommandContext &context)

@@ -547,7 +547,6 @@ void TrackPanel::ProcessUIHandleResult
    using namespace RefreshCode;
 
    if (refreshResult & DestroyedCell) {
-      panel->UpdateViewIfNoTracks();
       // Beware stale pointer!
       if (pLatestTrack == pClickedTrack)
          pLatestTrack = NULL;
@@ -627,28 +626,6 @@ size_t TrackPanel::GetSelectedTrackCount() const
    return GetTracks()->SelectedLeaders().size();
 }
 
-void TrackPanel::UpdateViewIfNoTracks()
-{
-   if (mTracks->empty())
-   {
-      // BG: There are no more tracks on screen
-      //BG: Set zoom to normal
-      mViewInfo->SetZoom(ZoomInfo::GetDefaultZoom());
-
-      //STM: Set selection to 0,0
-      //PRL: and default the rest of the selection information
-      mViewInfo->selectedRegion = SelectedRegion();
-
-      // PRL:  Following causes the time ruler to align 0 with left edge.
-      // Bug 972
-      mViewInfo->h = 0;
-
-      mListener->TP_HandleResize();
-      //STM: Clear message if all tracks are removed
-      ProjectStatus::Get( *GetProject() ).Set({});
-   }
-}
-
 // The tracks positions within the list have changed, so update the vertical
 // ruler size for the track that triggered the event.
 void TrackPanel::OnTrackListResizing(TrackListEvent & e)
@@ -678,6 +655,27 @@ void TrackPanel::OnTrackListDeletion(wxEvent & e)
    TrackFocus( *GetProject() ).Get();
 
    UpdateVRulerSize();
+
+   if (GetTracks()->empty())
+   {
+      // BG: There are no more tracks on screen
+      //BG: Set zoom to normal
+      mViewInfo->SetZoom(ZoomInfo::GetDefaultZoom());
+
+      //STM: Set selection to 0,0
+      //PRL: and default the rest of the selection information
+      mViewInfo->selectedRegion = SelectedRegion();
+
+      // PRL:  Following causes the time ruler to align 0 with left edge.
+      // Bug 972
+      mViewInfo->h = 0;
+
+      mListener->TP_HandleResize();
+      //STM: Clear message if all tracks are removed
+      ProjectStatus::Get( *GetProject() ).Set({});
+   }
+
+   Refresh(false);
 
    e.Skip();
 }
