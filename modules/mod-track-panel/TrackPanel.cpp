@@ -83,6 +83,8 @@ is time to refresh some aspect of the screen.
 #include "TrackView.h"
 #include "TrackVRulerControls.h"
 
+#include "Goniometer.h"
+
 //This loads the appropriate set of cursors, depending on platform.
 #include "../images/Cursors.h"
 
@@ -1360,12 +1362,29 @@ struct LabeledChannelGroup final : TrackPanelGroup {
       const std::shared_ptr< Track > &pTrack, wxCoord leftOffset )
          : mpTrack{ pTrack }, mLeftOffset{ leftOffset } {}
    Subdivision Children( const wxRect &rect ) override
-   { return { Axis::X, Refinement{
-      { rect.GetLeft(),
-         TrackControls::Get( *mpTrack ).shared_from_this() },
-      { rect.GetLeft() + kTrackInfoWidth,
-        std::make_shared< ChannelGroup >( mpTrack, mLeftOffset ) }
-   } }; }
+   {
+      auto left = rect.GetLeft();
+      auto trackLeft = left + kTrackInfoWidth;
+      Refinement refinement{
+         { left,
+            TrackControls::Get( *mpTrack ).shared_from_this() },
+         { trackLeft,
+            std::make_shared< ChannelGroup >( mpTrack, mLeftOffset ) }
+      };
+      const auto channels = TrackList::Channels( mpTrack.get() );
+      if (channels.size() == 2) {
+         // make a square at the right if it fits
+         auto height = rect.GetHeight();
+         auto goniometerLeft = left + rect.GetWidth() - height;
+         if ( goniometerLeft > trackLeft ) {
+            refinement.emplace_back(
+               goniometerLeft,
+               Goniometer::Get( **channels.begin() ).shared_from_this()
+            );
+         }
+      }
+      return { Axis::X, std::move( refinement ) };
+   }
 
    Identifier GetName() const override
    {
