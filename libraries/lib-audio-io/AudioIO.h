@@ -363,8 +363,8 @@ public:
 
 protected:
 
-   bool                mUpdateMeters;
-   volatile bool       mUpdatingMeters;
+   std::atomic<bool>   mUpdateMeters{ false };
+   std::atomic<bool>   mUpdatingMeters{ false };
 
    std::weak_ptr< AudioIOListener > mListener;
 
