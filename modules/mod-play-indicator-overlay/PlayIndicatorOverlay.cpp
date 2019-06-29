@@ -99,6 +99,10 @@ void PlayIndicatorOverlayBase::Draw(OverlayPanel &panel, wxDC &dc)
 
    auto tp = dynamic_cast<CellularPanel*>(&panel);
    if (mIsMaster && tp) {
+//      if ( mLastIndicatorX < rect.GetLeft() )
+  //       return;
+    //  if ( mLastIndicatorX > rect.GetRight() )
+      //   return;
       AColor::Line(dc, mLastIndicatorX, tp->GetRect().GetTop(), mLastIndicatorX, tp->GetRect().GetBottom());
    }
    else if (auto ruler = dynamic_cast<AdornedRulerPanel*>(&panel)) {

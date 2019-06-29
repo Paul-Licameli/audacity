@@ -14,6 +14,7 @@ Paul Licameli split from AudacityProject.cpp
 #include <sqlite3.h>
 #include <wx/crt.h>
 #include <wx/frame.h>
+#include <wx/log.h>
 #include <wx/sstream.h>
 #include <wx/xml/xml.h>
 

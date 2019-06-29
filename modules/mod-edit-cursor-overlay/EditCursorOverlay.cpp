@@ -107,6 +107,10 @@ void EditCursorOverlay::Draw(OverlayPanel &panel, wxDC &dc)
          const auto pTrackView = dynamic_cast<TrackView*>(&cell);
          if (!pTrackView)
             return;
+         if ( mLastCursorX < rect.GetLeft() )
+            return;
+         if ( mLastCursorX > rect.GetRight() )
+            return;
          const auto pTrack = pTrackView->FindTrack();
          if (pTrack->GetSelected() ||
              TrackFocus::Get( *mProject ).IsFocused( pTrack.get() ))

@@ -19,6 +19,7 @@
 #include "TrackPanelMouseEvent.h"
 #include "WaveClip.h"
 #include "ProjectHistory.h"
+#include "SyncLock.h"
 #include "Track.h"
 #include "WaveTrack.h"
 #include "../images/Cursors.h"
@@ -77,7 +78,6 @@ UIHandle::Result AffordanceHandle::Release(const TrackPanelMouseEvent& event, Au
     {
         //almost the same behaviour as provided by SelectHandle
         auto& viewInfo = ViewInfo::Get(*pProject);
-        const auto& settings = ProjectSettings::Get(*pProject);
 
         const auto sTrack = TrackList::Get(*pProject).Lock<Track>(GetTrack());
         const auto pTrack = sTrack.get();
@@ -103,7 +103,9 @@ UIHandle::Result AffordanceHandle::Release(const TrackPanelMouseEvent& event, Au
             [&](Track* track)
             {
                 // Default behavior: select whole track
-                SelectionState::SelectTrackLength(viewInfo, *track, settings.IsSyncLocked());
+               const auto &state = SyncLockState::Get(*pProject);
+               SelectionState::SelectTrackLength(
+                  viewInfo, *track, state.IsSyncLocked());
             }
         );
 
