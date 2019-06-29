@@ -1,6 +1,8 @@
 list( APPEND SOURCES
    BackgroundCell.cpp
    BackgroundCell.h
+   Goniometer.cpp
+   Goniometer.h
    TrackPanel.cpp
    TrackPanel.h
    TrackPanelResizeHandle.cpp
