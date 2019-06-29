@@ -6,6 +6,10 @@
 
 #include <wx/dc.h>
 
+// Display parameters, perhaps to be varied with preferences later
+static constexpr double persistence = 1.0; // seconds
+enum : size_t { nPoints = 100 };
+
 namespace{
 AttachedTrackObjects::RegisteredFactory sKey{
    []( Track &track ) {
@@ -28,15 +32,41 @@ Goniometer::~Goniometer() = default;
 
 void Goniometer::Clear()
 {
+   mRecentSamples.clear();
+   mLastSample = 0;
+   mSampleCount = 0;
+   mSampleInterval = 0;
 }
 
 void Goniometer::Reset(double sampleRate, bool resetClipping)
 {
+   Clear();
+   mRecentSamples.resize( 2 * nPoints, 0 );
+   mSampleInterval = std::max< size_t >( 1,
+      ( persistence * sampleRate ) / nPoints );
 }
 
 void Goniometer::UpdateDisplay(unsigned numChannels,
                    int numFrames, const float *sampleData)
 {
+   if ( numChannels != 2 ) {
+      wxASSERT( false );
+      return;
+   }
+   // Copy some of the samples into a circular buffer
+   size_t index = mSampleInterval - mSampleCount;
+   auto size = mRecentSamples.size();
+   while( index < numFrames ) {
+      while( index < numFrames && mLastSample < size ) {
+         auto ii = 2 * index;
+         mRecentSamples[ mLastSample++ ] = sampleData[ ii ];
+         mRecentSamples[ mLastSample++ ] = sampleData[ ii + 1 ];
+         index += mSampleInterval;
+      }
+      if ( mLastSample >= size )
+         mLastSample = 0;
+   }
+   mSampleCount = index - numFrames;
 }
 
 bool Goniometer::IsMeterDisabled() const
