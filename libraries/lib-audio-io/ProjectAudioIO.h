@@ -14,6 +14,7 @@ Paul Licameli split from AudacityProject.h
 #include "Project.h"
 
 #include <memory>
+#include <vector>
 class AudacityProject;
 class Meter;
 
@@ -35,19 +36,25 @@ public:
    bool IsAudioActive() const;
    void SetAudioIOToken(int token);
 
-   const std::shared_ptr<Meter> &GetPlaybackMeter() const;
-   void SetPlaybackMeter(
-      const std::shared_ptr<Meter> &playback);
-   const std::shared_ptr<Meter> &GetCaptureMeter() const;
-   void SetCaptureMeter(
-      const std::shared_ptr<Meter> &capture);
+   using MeterPtr = std::shared_ptr< Meter >;
+   using Meters = std::vector< MeterPtr >;
+
+   const Meters &GetPlaybackMeters() const;
+   bool HasPlaybackMeter( Meter *pMeter ) const;
+   void AddPlaybackMeter(const MeterPtr &playback);
+   void RemovePlaybackMeter(Meter *playback);
+
+   const Meters &GetCaptureMeters() const;
+   bool HasCaptureMeter( Meter *pMeter ) const;
+   void AddCaptureMeter(const MeterPtr &capture);
+   void RemoveCaptureMeter(Meter *capture);
 
 private:
    AudacityProject &mProject;
 
    // Project owned meters
-   std::shared_ptr<Meter> mPlaybackMeter;
-   std::shared_ptr<Meter> mCaptureMeter;
+   Meters mPlaybackMeters;
+   Meters mCaptureMeters;
 
    int  mAudioIOToken{ -1 };
 };

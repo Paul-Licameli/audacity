@@ -23,6 +23,7 @@ public:
    virtual void UpdateDisplay(unsigned numChannels,
                       int numFrames, const float *sampleData) = 0;
    virtual bool IsMeterDisabled() const = 0;
+   virtual bool HasMaxPeak() const = 0;
    virtual float GetMaxPeak() const = 0;
    virtual bool IsClipping() const = 0;
    virtual int GetDBRange() const = 0;

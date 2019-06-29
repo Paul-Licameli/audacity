@@ -345,15 +345,13 @@ void ProjectAudioManager::Stop(bool stopStream /* = true*/)
    // also clean the MeterQueues
    if( project ) {
       auto &projectAudioIO = ProjectAudioIO::Get( *project );
-      auto meter = projectAudioIO.GetPlaybackMeter();
-      if( meter ) {
-         meter->Clear();
-      }
+      for ( auto &meter : projectAudioIO.GetPlaybackMeters() )
+         if( meter )
+            meter->Clear();
 
-      meter = projectAudioIO.GetCaptureMeter();
-      if( meter ) {
-         meter->Clear();
-      }
+      for ( auto &meter : projectAudioIO.GetCaptureMeters() )
+         if( meter )
+            meter->Clear();
    }
 }
 
@@ -571,8 +569,12 @@ DefaultPlayOptions( AudacityProject &project )
    auto &projectAudioIO = ProjectAudioIO::Get( project );
    AudioIOStartStreamOptions options { &project,
       ProjectRate::Get( project ).GetRate() };
-   options.captureMeter = projectAudioIO.GetCaptureMeter();
-   options.playbackMeter = projectAudioIO.GetPlaybackMeter();
+   options.captureMeters =
+      { projectAudioIO.GetCaptureMeters().begin(),
+        projectAudioIO.GetCaptureMeters().end() };
+   options.playbackMeters =
+      { projectAudioIO.GetPlaybackMeters().begin(),
+        projectAudioIO.GetPlaybackMeters().end() };
    options.envelope = Mixer::WarpOptions::DefaultWarp(TrackList::Get(project));
    options.listener = ProjectAudioManager::Get( project ).shared_from_this();
    return options;

@@ -86,7 +86,7 @@ struct AudioIOStartStreamOptions
    {}
 
    AudacityProject *pProject{};
-   std::weak_ptr<Meter> captureMeter, playbackMeter;
+   std::vector< std::weak_ptr<Meter> > captureMeters, playbackMeters;
    const BoundedEnvelope *envelope; // for time warping
    std::shared_ptr< AudioIOListener > listener;
    double rate;
@@ -131,10 +131,12 @@ public:
    AudioIOBase(const AudioIOBase &) = delete;
    AudioIOBase& operator=(const AudioIOBase &) = delete;
 
-   void SetCaptureMeter(
-      AudacityProject *project, const std::weak_ptr<Meter> &meter);
-   void SetPlaybackMeter(
-      AudacityProject *project, const std::weak_ptr<Meter> &meter);
+   void SetCaptureMeters(
+      AudacityProject *project,
+      std::vector< std::weak_ptr<Meter> > meters);
+   void SetPlaybackMeters(
+      AudacityProject *project,
+      std::vector< std::weak_ptr<Meter> > meters);
 
    /** \brief update state after changing what audio devices are selected
     *
@@ -276,8 +278,7 @@ protected:
 
    PaStream           *mPortStreamV19;
 
-   std::weak_ptr<Meter> mInputMeter{};
-   std::weak_ptr<Meter> mOutputMeter{};
+   std::vector< std::weak_ptr<Meter> > mInputMeters, mOutputMeters;
 
    #if USE_PORTMIXER
    PxMixer            *mPortMixer;

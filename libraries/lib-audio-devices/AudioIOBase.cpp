@@ -307,36 +307,32 @@ void AudioIOBase::HandleDeviceChange()
 #endif   // USE_PORTMIXER
 }
 
-void AudioIOBase::SetCaptureMeter(
-   AudacityProject *project, const std::weak_ptr<Meter> &wMeter)
+void AudioIOBase::SetCaptureMeters(
+   AudacityProject *project,
+   std::vector< std::weak_ptr<Meter> > meters)
 {
    if (( mOwningProject ) && ( mOwningProject != project))
       return;
 
-   auto meter = wMeter.lock();
-   if (meter)
-   {
-      mInputMeter = meter;
-      meter->Reset(mRate, true);
-   }
-   else
-      mInputMeter.reset();
+   for ( auto &wMeter : meters )
+      if ( auto meter = wMeter.lock() )
+         meter->Reset(mRate, true);
+
+   meters.swap( mInputMeters );
 }
 
-void AudioIOBase::SetPlaybackMeter(
-   AudacityProject *project, const std::weak_ptr<Meter> &wMeter)
+void AudioIOBase::SetPlaybackMeters(
+   AudacityProject *project,
+   std::vector< std::weak_ptr<Meter> > meters)
 {
    if (( mOwningProject ) && ( mOwningProject != project))
       return;
 
-   auto meter = wMeter.lock();
-   if (meter)
-   {
-      mOutputMeter = meter;
-      meter->Reset(mRate, true);
-   }
-   else
-      mOutputMeter.reset();
+   for ( auto &wMeter : meters )
+      if ( auto meter = wMeter.lock() )
+         meter->Reset(mRate, true);
+
+   meters.swap( mOutputMeters );
 }
 
 bool AudioIOBase::IsPaused() const
