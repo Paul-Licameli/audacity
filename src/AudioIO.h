@@ -28,7 +28,6 @@
 
 #include "SampleCount.h"
 #include "SampleFormat.h"
-#include "audacity/Types.h"
 
 class wxArrayString;
 class AudioIOBase;

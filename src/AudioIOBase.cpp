@@ -11,7 +11,7 @@ Paul Licameli split from AudioIO.cpp
 
 #include "AudioIOBase.h"
 
-
+#include "MemoryX.h"
 
 #include <wx/log.h>
 #include <wx/sstream.h>
@@ -19,8 +19,8 @@ Paul Licameli split from AudioIO.cpp
 
 #include "MemoryX.h"
 #include "AudioIOExt.h"
+#include "Meter.h"
 #include "Prefs.h"
-#include "widgets/MeterPanelBase.h"
 
 #if USE_PORTMIXER
 #include "portmixer.h"
@@ -307,32 +307,36 @@ void AudioIOBase::HandleDeviceChange()
 #endif   // USE_PORTMIXER
 }
 
-void AudioIOBase::SetCaptureMeter(AudacityProject *project, MeterPanelBase *meter)
+void AudioIOBase::SetCaptureMeter(
+   AudacityProject *project, const std::weak_ptr<Meter> &wMeter)
 {
    if (( mOwningProject ) && ( mOwningProject != project))
       return;
 
+   auto meter = wMeter.lock();
    if (meter)
    {
       mInputMeter = meter;
-      mInputMeter->Reset(mRate, true);
+      meter->Reset(mRate, true);
    }
    else
-      mInputMeter.Release();
+      mInputMeter.reset();
 }
 
-void AudioIOBase::SetPlaybackMeter(AudacityProject *project, MeterPanelBase *meter)
+void AudioIOBase::SetPlaybackMeter(
+   AudacityProject *project, const std::weak_ptr<Meter> &wMeter)
 {
    if (( mOwningProject ) && ( mOwningProject != project))
       return;
 
+   auto meter = wMeter.lock();
    if (meter)
    {
       mOutputMeter = meter;
-      mOutputMeter->Reset(mRate, true);
+      meter->Reset(mRate, true);
    }
    else
-      mOutputMeter.Release();
+      mOutputMeter.reset();
 }
 
 bool AudioIOBase::IsPaused() const

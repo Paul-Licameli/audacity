@@ -18,7 +18,6 @@ Paul Licameli split from AudioIO.h
 #include <functional>
 #include <vector>
 #include <wx/string.h>
-#include <wx/weakref.h> // member variable
 #include "MemoryX.h"
 
 struct PaDeviceInfo;
@@ -33,8 +32,8 @@ class AudioIOBase;
 class AudacityProject;
 class AudioIOListener;
 class BoundedEnvelope;
-// class MeterPanelBase;
-#include "widgets/MeterPanelBase.h"
+// Windows requires Meter to be a complete type
+#include "Meter.h"
 using PRCrossfadeData = std::vector< std::vector < float > >;
 
 #define BAD_STREAM_TIME (-DBL_MAX)
@@ -87,7 +86,7 @@ struct AudioIOStartStreamOptions
    {}
 
    AudacityProject *pProject{};
-   MeterPanelBase *captureMeter{}, *playbackMeter{};
+   std::weak_ptr<Meter> captureMeter, playbackMeter;
    const BoundedEnvelope *envelope; // for time warping
    std::shared_ptr< AudioIOListener > listener;
    double rate;
@@ -132,8 +131,10 @@ public:
    AudioIOBase(const AudioIOBase &) = delete;
    AudioIOBase& operator=(const AudioIOBase &) = delete;
 
-   void SetCaptureMeter(AudacityProject *project, MeterPanelBase *meter);
-   void SetPlaybackMeter(AudacityProject *project, MeterPanelBase *meter);
+   void SetCaptureMeter(
+      AudacityProject *project, const std::weak_ptr<Meter> &meter);
+   void SetPlaybackMeter(
+      AudacityProject *project, const std::weak_ptr<Meter> &meter);
 
    /** \brief update state after changing what audio devices are selected
     *
@@ -275,8 +276,8 @@ protected:
 
    PaStream           *mPortStreamV19;
 
-   wxWeakRef<MeterPanelBase> mInputMeter{};
-   wxWeakRef<MeterPanelBase> mOutputMeter{};
+   std::weak_ptr<Meter> mInputMeter{};
+   std::weak_ptr<Meter> mOutputMeter{};
 
    #if USE_PORTMIXER
    PxMixer            *mPortMixer;

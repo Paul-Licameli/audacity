@@ -107,6 +107,8 @@ list( APPEND SOURCES
       Legacy.h
       LogWindow.cpp
       LogWindow.h
+      Meter.cpp
+      Meter.h
       MixAndRender.cpp
       MixAndRender.h
       PitchName.cpp

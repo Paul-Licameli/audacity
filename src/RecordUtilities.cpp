@@ -17,6 +17,7 @@
 #include "Project.h"
 #include "ProjectAudioIO.h"
 #include "ProjectAudioManager.h"
+#include "ProjectWindows.h"
 #include "ProjectSettings.h"
 #include "ProjectWindows.h"
 #include "TrackPanelAx.h"
