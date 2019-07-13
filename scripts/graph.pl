@@ -106,6 +106,31 @@ while( my ($shorter, $short) = each(%names) ) {
    }
 }
 
+# Optionally add fictitious cycles
+if ( open my $fh, '<', "clusters.txt" ) {
+   print STDERR "Adding cycles described in clusters.txt\n" if $traceLevel >= 1;
+   my %allnames;
+   foreach (<$fh>) {
+      chop;
+      last if $_ eq "END";
+      # ignore descriptions for now
+      my ($description, $rest) = split ':';
+      my @names = split ' ', $rest;
+      foreach my $name (@names) {
+         die ("unrecognized name: " . $name) unless exists $graph{$name};
+         die ("repeated name in clusters.txt: " . $name) if exists $allnames{$name};
+         $allnames{$name} = ();
+      }
+      if (@names > 1) {
+         for (my $ii = 0; $ii < scalar(@names) - 1; ++$ii) {
+            $graph{$names[$ii]}{$names[$ii + 1]} = ();
+         }
+         $graph{$names[-1]}{$names[0]} = ();
+      }
+   }
+   close $fh;
+}
+
 print STDERR "Found ", scalar( keys %graph ), " node(s) and ${arcs} arc(s)\n" if $traceLevel >= 1;
 
 # Step 3: compute an acyclic quotient graph
