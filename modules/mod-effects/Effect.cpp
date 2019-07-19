@@ -41,8 +41,6 @@
 #include "WaveTrack.h"
 #include "wxFileNameWrapper.h"
 #include "widgets/ProgressDialog.h"
-#include "tracks/playabletrack/wavetrack/ui/WaveTrackView.h"
-#include "tracks/playabletrack/wavetrack/ui/WaveTrackViewConstants.h"
 #include "widgets/NumericTextCtrl.h"
 #include "widgets/AudacityMessageBox.h"
 #include "widgets/VetoDialogHook.h"
@@ -2368,8 +2366,6 @@ void Effect::Preview(bool dryOnly)
 
       mixLeft->Offset(-mixLeft->GetStartTime());
       mixLeft->SetSelected(true);
-      WaveTrackView::Get( *mixLeft )
-         .SetDisplay(WaveTrackViewConstants::NoDisplay);
       auto pLeft = mTracks->Add( mixLeft );
       Track *pRight{};
       if (mixRight) {
@@ -2384,8 +2380,6 @@ void Effect::Preview(bool dryOnly)
          if (src->GetSelected() || mPreviewWithNotSelected) {
             auto dest = src->Copy(mT0, t1);
             dest->SetSelected(src->GetSelected());
-            WaveTrackView::Get( *static_cast<WaveTrack*>(dest.get()) )
-               .SetDisplay(WaveTrackViewConstants::NoDisplay);
             mTracks->Add( dest );
          }
       }
