@@ -108,10 +108,15 @@ class AUDACITY_DLL_API ToolManager final
       return mBars.size();
    }
 
+   static void ModifyToolbarMenus(AudacityProject &project);
+   // Calls ModifyToolbarMenus() on all projects
+   static void ModifyAllProjectToolbarMenus();
+
  private:
 
    ToolBar *Float( ToolBar *t, wxPoint & pos );
 
+   void OnMenuUpdate( wxCommandEvent &event );
    void OnTimer( wxTimerEvent & event );
    void OnMouse( wxMouseEvent & event );
    void OnCaptureLost( wxMouseCaptureLostEvent & event );

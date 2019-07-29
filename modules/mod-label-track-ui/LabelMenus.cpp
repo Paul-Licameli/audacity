@@ -3,7 +3,6 @@
 #include "CommonCommandFlags.h"
 #include "LabelImportExport.h"
 #include "LabelTrack.h"
-#include "Menus.h"
 #include "Prefs.h"
 #include "Project.h"
 #include "ProjectAudioIO.h"
@@ -23,6 +22,7 @@
 #include "LabelTrackView.h"
 #include "widgets/AudacityMessageBox.h"
 #include "ExportMultiple.h"
+#include "toolbars/ToolManager.h"
 
 // private helper classes and functions
 namespace {
@@ -395,7 +395,7 @@ void OnToggleTypeToCreateLabel(const CommandContext &WXUNUSED(context) )
    gPrefs->Read(wxT("/GUI/TypeToCreateLabel"), &typeToCreateLabel, false);
    gPrefs->Write(wxT("/GUI/TypeToCreateLabel"), !typeToCreateLabel);
    gPrefs->Flush();
-   MenuManager::ModifyAllProjectToolbarMenus();
+   ToolManager::ModifyAllProjectToolbarMenus();
 }
 
 void OnCutLabels(const CommandContext &context)

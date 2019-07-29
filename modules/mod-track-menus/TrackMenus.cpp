@@ -23,6 +23,7 @@
 #include "commands/CommandManager.h"
 #include "prefs/QualitySettings.h"
 #include "WaveTrackControls.h"
+#include "toolbars/ToolManager.h"
 #include "widgets/ASlider.h"
 #include "widgets/AudacityMessageBox.h"
 #include "widgets/ProgressDialog.h"
@@ -976,7 +977,7 @@ void OnSyncLock(const CommandContext &context)
    gPrefs->Flush();
 
    // Toolbar, project sync-lock handled within
-   MenuManager::ModifyAllProjectToolbarMenus();
+   ToolManager::ModifyAllProjectToolbarMenus();
 
    trackPanel.Refresh(false);
 }

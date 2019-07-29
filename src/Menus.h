@@ -33,6 +33,10 @@ typedef wxArrayString PluginIDs;
 
 namespace Registry{ class Visitor; }
 
+// Event sent to the project when menus update (such as for changing enablement
+// of items)
+wxDECLARE_EXPORTED_EVENT(AUDACITY_DLL_API, EVT_MENU_UPDATE, wxCommandEvent);
+
 class AUDACITY_DLL_API MenuCreator
 {
 public:
@@ -88,9 +92,6 @@ public:
    static void Visit( ToolbarMenuVisitor &visitor );
 
    static void ModifyUndoMenuItems(AudacityProject &project);
-   static void ModifyToolbarMenus(AudacityProject &project);
-   // Calls ModifyToolbarMenus() on all projects
-   static void ModifyAllProjectToolbarMenus();
 
    // checkActive is a temporary hack that should be removed as soon as we
    // get multiple effect preview working
