@@ -289,32 +289,33 @@ void EffectChangeSpeed::PopulateOrExchange(ShuttleGui & S)
       // Speed multiplier and percent change controls.
       S.StartMultiColumn(4, wxCENTER);
       {
-         mpTextCtrl_Multiplier =
          S
             .Id(ID_Multiplier)
             .Target( mMultiplier,
                NumValidatorStyle::THREE_TRAILING_ZEROES, 3,
                Percentage.min / 100.0, ((Percentage.min / 100.0) + 1) )
-            .AddTextBox(XXO("&Speed Multiplier:"), L"", 12);
+            .AddTextBox(XXO("&Speed Multiplier:"), L"", 12)
+            .Assign(mpTextCtrl_Multiplier);
 
-         mpTextCtrl_PercentChange =
          S
             .Id(ID_PercentChange)
             .Target( m_ApproximatePercentChange,
                NumValidatorStyle::THREE_TRAILING_ZEROES, 3,
                Percentage.min, Percentage.max )
-            .AddTextBox(XXO("Percent C&hange:"), L"", 12);
+            .AddTextBox(XXO("Percent C&hange:"), L"", 12)
+            .Assign(mpTextCtrl_PercentChange);
       }
       S.EndMultiColumn();
 
       // Percent change slider.
       S.StartHorizontalLay(wxEXPAND);
       {
-         mpSlider_PercentChange =
-         S.Id(ID_PercentChange)
+         S
+            .Id(ID_PercentChange)
             .Text(XO("Percent Change"))
             .Style(wxSL_HORIZONTAL)
-            .AddSlider( {}, 0, (int)kSliderMax, (int)Percentage.min);
+            .AddSlider( {}, 0, (int)kSliderMax, (int)Percentage.min)
+            .Assign(mpSlider_PercentChange);
       }
       S.EndHorizontalLay();
 
@@ -326,7 +327,6 @@ void EffectChangeSpeed::PopulateOrExchange(ShuttleGui & S)
          S
             .AddUnits(XO("Standard Vinyl rpm:"));
 
-         mpChoice_FromVinyl =
          S
             .Id(ID_FromVinyl)
             /* i18n-hint: changing speed of audio "from" one value "to" another
@@ -337,9 +337,9 @@ void EffectChangeSpeed::PopulateOrExchange(ShuttleGui & S)
             .Target( mFromVinyl )
             .Action( [this]{ OnChoice_Vinyl(); } )
             /* i18n-hint: changing speed of audio "from" one value "to" another */
-            .AddChoice(XXC("&from", "change speed"), kVinylStrings);
+            .AddChoice(XXC("&from", "change speed"), kVinylStrings)
+            .Assign(mpChoice_FromVinyl);
 
-         mpChoice_ToVinyl =
          S
             .Id(ID_ToVinyl)
             /* i18n-hint: changing speed of audio "from" one value "to" another
@@ -350,7 +350,8 @@ void EffectChangeSpeed::PopulateOrExchange(ShuttleGui & S)
             .Target( mToVinyl )
             .Action( [this]{ OnChoice_Vinyl(); } )
             /* i18n-hint: changing speed of audio "from" one value "to" another */
-            .AddChoice(XXC("&to", "change speed"), kVinylStrings);
+            .AddChoice(XXC("&to", "change speed"), kVinylStrings)
+            .Assign(mpChoice_ToVinyl);
       }
       S.EndMultiColumn();
 
@@ -362,11 +363,10 @@ void EffectChangeSpeed::PopulateOrExchange(ShuttleGui & S)
             S
                .AddPrompt(XXO("C&urrent Length:"));
 
-            mpFromLengthCtrl =
             S
-//?               .ToolTip(XO("Current length of selection."))
                /* i18n-hint: changing speed of audio "from" one value "to" another */
-               .Text(XC("from", "change speed"))
+               .Text({ XO("from"), {},
+                  XO("Current length of selection.")})
                .Position(wxALIGN_LEFT)
                .AddNumericTextCtrl(NumericConverter::TIME,
                   mFormat,
@@ -374,11 +374,11 @@ void EffectChangeSpeed::PopulateOrExchange(ShuttleGui & S)
                   mProjectRate,
                   NumericTextCtrl::Options{}
                      .ReadOnly(true)
-                     .MenuEnabled(false));
+                     .MenuEnabled(false))
+               .Assign(mpFromLengthCtrl);
 
             S.AddPrompt(XXO("&New Length:"));
 
-            mpToLengthCtrl =
             S
                /* i18n-hint: changing a quantity "from" one value "to" another */
                .Text(XC("to", "change speed"))
@@ -386,7 +386,8 @@ void EffectChangeSpeed::PopulateOrExchange(ShuttleGui & S)
                .AddNumericTextCtrl(NumericConverter::TIME,
                   mFormat,
                   mToLength,
-                  mProjectRate);
+                  mProjectRate)
+               .Assign(mpToLengthCtrl);
          }
          S.EndMultiColumn();
       }

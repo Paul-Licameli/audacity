@@ -186,19 +186,19 @@ void DirectoriesPrefs::PopulateOrExchange(ShuttleGui &S)
             .SetStretchyCol(1);
 
          S.Id(OpenTextID);
-         mOpenText =
          S
             .Target(*PreferenceSetting(Operation::Open, PathType::User))
-            .AddTextBox(XXO("O&pen:"), {}, 30);
+            .AddTextBox(XXO("O&pen:"), {}, 30)
+            .Assign(mOpenText);
          S
             .Action([this]{ OnBrowse(OpenCommand); })
             .AddButton(XXO("&Browse..."));
 
          S.Id(SaveTextID);
-         mSaveText =
          S
             .Target(*PreferenceSetting(Operation::Save, PathType::User))
-            .AddTextBox(XXO("S&ave:"), {}, 30);
+            .AddTextBox(XXO("S&ave:"), {}, 30)
+            .Assign(mSaveText);
          if( mSaveText )
             mSaveText->SetValidator(FilesystemValidator(XO("Projects cannot be saved to FAT drives.")));
 
@@ -207,19 +207,19 @@ void DirectoriesPrefs::PopulateOrExchange(ShuttleGui &S)
             .AddButton(XXO("B&rowse..."));
 
          S.Id(ImportTextID);
-         mImportText =
          S
             .Target(*PreferenceSetting(Operation::Import, PathType::User))
-            .AddTextBox(XXO("&Import:"), {}, 30);
+            .AddTextBox(XXO("&Import:"), {}, 30)
+            .Assign(mImportText);
          S
             .Action([this]{ OnBrowse(ImportCommand); })
             .AddButton(XXO("Br&owse..."));
 
          S.Id(ExportTextID);
-         mExportText =
          S
             .Target(*PreferenceSetting(Operation::Export, PathType::User))
-            .AddTextBox(XXO("&Export:"), {}, 30);
+            .AddTextBox(XXO("&Export:"), {}, 30)
+            .Assign(mExportText);
 
          S
             .Action([this]{ OnBrowse(ExportCommand); })

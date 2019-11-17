@@ -685,11 +685,11 @@ void AudioUnitEffectImportDialog::PopulateOrExchange(ShuttleGui & S)
       {
          S.StartStatic(XO("Presets (may select multiple)"));
          {
-            mList =
             S
                .Style(wxLC_REPORT | wxLC_HRULES | wxLC_VRULES |
                        wxLC_NO_SORT_HEADER)
-               .AddListControlReportMode({ XO("Preset"), XO("Location") });
+               .AddListControlReportMode({ XO("Preset"), XO("Location") })
+               .Assign(mList);
          }
          S.EndStatic();
       }

@@ -608,7 +608,8 @@ void VampEffect::PopulateOrExchange(ShuttleGui & S)
                            mToggles[p]);
                      } )
                      .AddCheckBox( {},
-                                  value > 0.5 );
+                                  value > 0.5 )
+                     .Assign(mToggles[p]);
 
                   S.AddSpace(1, 1);
                   S.AddSpace(1, 1);

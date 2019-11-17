@@ -288,7 +288,7 @@ void EffectNormalize::PopulateOrExchange(ShuttleGui & S)
                S
                   .Enable( enabler )
                   .AddVariableText(XO("dB"), false,
-                  wxALIGN_CENTER_VERTICAL | wxALIGN_LEFT);
+                     wxALIGN_CENTER_VERTICAL | wxALIGN_LEFT);
 
                // Warning label when the text boxes aren't okay
                S

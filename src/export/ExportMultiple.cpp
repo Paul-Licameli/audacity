@@ -353,11 +353,11 @@ void ExportMultipleDialog::PopulateOrExchange(ShuttleGui& S)
             S
                .AddVariableText(Verbatim("   "), false);
    
-            mFirst =
             S
                .Id(FirstID)
                .Enable( [this]{ return mPreferByLabels; } )
-               .AddCheckBox(XXO("Include audio before first label"), false);
+               .AddCheckBox(XXO("Include audio before first label"), false)
+               .Assign(mFirst);
 
             // Row 4
             S.AddVariableText( {}, false);
@@ -368,7 +368,6 @@ void ExportMultipleDialog::PopulateOrExchange(ShuttleGui& S)
                   .Enable( firstFileEnabler )
                   .AddVariableText(XO("First file name:"), false);
 
-               mFirstFileName =
                S
                   .Id(FirstFileNameID)
                   .Prop(1)
@@ -377,7 +376,8 @@ void ExportMultipleDialog::PopulateOrExchange(ShuttleGui& S)
                   .Target( name )
                   .AddTextBox( {},
                               {},
-                              30);
+                              30)
+                  .Assign(mFirstFileName);
             }
             S.EndMultiColumn();
          }
@@ -424,7 +424,6 @@ void ExportMultipleDialog::PopulateOrExchange(ShuttleGui& S)
                .Enable( byNumberEnabler )
                .AddVariableText(XO("File name prefix:"), false);
 
-            mPrefix =
             S
                .Id(PrefixID)
                .Text(XO("File name prefix"))
@@ -432,7 +431,8 @@ void ExportMultipleDialog::PopulateOrExchange(ShuttleGui& S)
                .Target( name )
                .AddTextBox( {},
                            {},
-                           30);
+                           30)
+               .Assign(mPrefix);
          }
          S.EndMultiColumn();
       }

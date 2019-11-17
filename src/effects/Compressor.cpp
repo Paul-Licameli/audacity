@@ -198,8 +198,6 @@ void EffectCompressor::PopulateOrExchange(ShuttleGui & S)
    S.StartHorizontalLay(wxEXPAND, true);
    {
       S.SetBorder(10);
-
-      mPanel =
       S
          .Prop(true)
          .Position(wxEXPAND | wxALL)
@@ -207,7 +205,8 @@ void EffectCompressor::PopulateOrExchange(ShuttleGui & S)
          .Window<EffectCompressorPanel>(
             std::ref( mThresholdDB ),
             std::ref( mNoiseFloorDB ),
-            std::ref( mRatio ) );
+            std::ref( mRatio ) )
+         .Assign(mPanel);
 
       S.SetBorder(5);
    }

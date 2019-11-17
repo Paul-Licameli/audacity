@@ -44,11 +44,11 @@ void ShowDiagnostics(
    wxTextCtrl *text;
    S.StartVerticalLay();
    {
-      text =
       S
          .Id(wxID_STATIC)
          .Style(wxTE_MULTILINE | wxTE_READONLY | wxTE_RICH)
-         .AddTextWindow("");
+         .AddTextWindow("")
+         .Assign(text);
 
       S
          .AddStandardButtons( eCancelButton, {

@@ -74,6 +74,7 @@ enum {
 
 void WaveformPrefs::PopulateOrExchange(ShuttleGui & S)
 {
+   mDefaultsCheckbox = 0;
    mPopulating = true;
 
    S.SetBorder(2);
@@ -81,14 +82,13 @@ void WaveformPrefs::PopulateOrExchange(ShuttleGui & S)
 
    // S.StartStatic(XO("Track Settings"));
    {
-      mDefaultsCheckbox = 0;
       if (mWt) {
-         mDefaultsCheckbox =
          S
             .Id(ID_DEFAULTS)
             .Target(mDefaulted)
             /* i18n-hint: use is a verb */
-            .AddCheckBox( XXO("&Use Preferences") );
+            .AddCheckBox( XXO("&Use Preferences") )
+            .Assign(mDefaultsCheckbox);
       }
 
       S

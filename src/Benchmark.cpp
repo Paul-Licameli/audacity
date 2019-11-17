@@ -213,14 +213,14 @@ void BenchmarkDialog::MakeBenchmarkDialog()
                            false);
 
       //
-      mText =
       S
          .Id(StaticTextID)
          /* i18n-hint noun */
          .Text(XO("Output"))
          .Style( wxTE_MULTILINE | wxTE_READONLY | wxTE_RICH )
          .MinSize( { 500, 200 } )
-         .AddTextWindow(L"");
+         .AddTextWindow(L"")
+         .Assign(mText);
 
       //
       S.SetBorder(10);

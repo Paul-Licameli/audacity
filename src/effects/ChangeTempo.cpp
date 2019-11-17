@@ -264,7 +264,6 @@ void EffectChangeTempo::PopulateOrExchange(ShuttleGui & S)
             /* i18n-hint: changing tempo "from" one value "to" another */
             S.AddPrompt(XXC("from", "change tempo"));
 
-            m_pTextCtrl_FromLength =
             S
                .Size( { 60, -1 } )
                .Style( wxALIGN_RIGHT )

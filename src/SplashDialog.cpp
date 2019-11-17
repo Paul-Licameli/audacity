@@ -126,7 +126,6 @@ void SplashDialog::Populate( ShuttleGui & S )
       wxSize((int)(LOGOWITHNAME_WIDTH*fScale),
              (int)(LOGOWITHNAME_HEIGHT*fScale)) );
 
-   mpHtml =
    S
       .Prop(1)
       .Position( wxEXPAND )
@@ -137,7 +136,8 @@ void SplashDialog::Populate( ShuttleGui & S )
                                                wxHW_SCROLLBAR_AUTO | wxSUNKEN_BORDER );
          html->SetPage(HelpText( L"welcome" ));
          return html;
-      } );
+      } )
+      .Assign(mpHtml);
 
    S.Prop(0).StartMultiColumn(2, wxEXPAND);
    S.SetStretchyCol( 1 );// Column 1 is stretchy...

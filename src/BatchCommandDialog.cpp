@@ -76,9 +76,9 @@ void MacroCommandDialog::PopulateOrExchange(ShuttleGui &S)
       {
          S.SetStretchyCol(1);
 
-         mCommand =
          S
-            .AddTextBox(XXO("&Command"), L"", 20);
+            .AddTextBox(XXO("&Command"), L"", 20)
+            .Assign(mCommand);
 
          mCommand->SetEditable(false);
 
@@ -105,9 +105,9 @@ void MacroCommandDialog::PopulateOrExchange(ShuttleGui &S)
       {
          S.SetStretchyCol(1);
 
-         mParameters =
          S
-            .AddTextBox(XXO("&Parameters"), L"", 0);
+            .AddTextBox(XXO("&Parameters"), L"", 0)
+            .Assign(mParameters);
 
          mParameters->SetEditable(false);
          auto prompt = XXO("&Details");
@@ -129,11 +129,11 @@ void MacroCommandDialog::PopulateOrExchange(ShuttleGui &S)
          .Prop(10)
          .StartStatic(XO("Choose command"), true);
       {
-         mChoices =
          S
             .Id(CommandsListID)
             .Style(wxSUNKEN_BORDER | wxLC_LIST | wxLC_SINGLE_SEL)
-            .AddListControl();
+            .AddListControl()
+            .Assign(mChoices);
       }
       S.EndStatic();
    }

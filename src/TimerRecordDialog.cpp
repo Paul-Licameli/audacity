@@ -753,7 +753,6 @@ void TimerRecordDialog::PopulateOrExchange(ShuttleGui& S)
             */
             .StartStatic(XO("Start Date and Time"), true);
          {
-            m_pDatePickerCtrl_Start =
             S
                .Id(ID_DATEPICKER_START)
                .Text(XO("Start Date"))
@@ -761,9 +760,9 @@ void TimerRecordDialog::PopulateOrExchange(ShuttleGui& S)
                .Accessible(
                   MakeAccessibleFactory<DatePickerCtrlAx, wxDatePickerCtrl>() )
 #endif
-               .Window( pickerCtrlFactory( m_DateTime_Start, wxDateTime::Today() ) );
+               .Window( pickerCtrlFactory( m_DateTime_Start, wxDateTime::Today() ) )
+               .Assign(m_pDatePickerCtrl_Start);
 
-            m_pTimeTextCtrl_Start =
             S
                .Id(ID_TIMETEXT_START)
                .Text(XO("Start Time"))
@@ -772,14 +771,14 @@ void TimerRecordDialog::PopulateOrExchange(ShuttleGui& S)
                   Options{}
                      .MenuEnabled(false)
                      .Format(strFormat)
-                     .Value(true, wxDateTime_to_AudacityTime(m_DateTime_Start)));
+                     .Value(true, wxDateTime_to_AudacityTime(m_DateTime_Start)))
+               .Assign(m_pTimeTextCtrl_Start);
          }
          S.EndStatic();
 
          S
             .StartStatic(XO("End Date and Time"), true);
          {
-            m_pDatePickerCtrl_End =
             S
                .Id(ID_DATEPICKER_END)
                .Text(XO("End Date"))
@@ -787,9 +786,9 @@ void TimerRecordDialog::PopulateOrExchange(ShuttleGui& S)
                .Accessible(
                   MakeAccessibleFactory<DatePickerCtrlAx, wxDatePickerCtrl>() )
 #endif
-               .Window( pickerCtrlFactory( m_DateTime_End, m_DateTime_Start ) );
+               .Window( pickerCtrlFactory( m_DateTime_End, m_DateTime_Start ) )
+               .Assign(m_pDatePickerCtrl_End);
 
-            m_pTimeTextCtrl_End =
             S
                .Id(ID_TIMETEXT_END)
                .Text(XO("End Time"))
@@ -798,14 +797,14 @@ void TimerRecordDialog::PopulateOrExchange(ShuttleGui& S)
                   Options{}
                      .MenuEnabled(false)
                      .Format(strFormat)
-                     .Value(true, wxDateTime_to_AudacityTime(m_DateTime_End)));
+                     .Value(true, wxDateTime_to_AudacityTime(m_DateTime_End)))
+               .Assign(m_pTimeTextCtrl_End);
          }
          S.EndStatic();
 
          S
             .StartStatic(XO("Duration"), true);
          {
-            m_pTimeTextCtrl_Duration =
             S
                .Id(ID_TIMETEXT_DURATION)
                /* i18n-hint: This string is used to configure the controls which shows the recording
@@ -822,7 +821,8 @@ void TimerRecordDialog::PopulateOrExchange(ShuttleGui& S)
                   Options{}
                      .MenuEnabled(false)
                      .Format(strFormat1)
-                     .Value(true, m_TimeSpan_Duration.GetSeconds().ToDouble()));
+                     .Value(true, m_TimeSpan_Duration.GetSeconds().ToDouble()))
+               .Assign(m_pTimeTextCtrl_Duration);
          }
          S.EndStatic();
       }
@@ -837,6 +837,7 @@ void TimerRecordDialog::PopulateOrExchange(ShuttleGui& S)
             S
                .Action( [this]{ EnableDisableAutoControls(); } )
                .AddCheckBox(XXO("Enable &Automatic Save?") );
+
             S.StartMultiColumn(3, wxEXPAND);
             {
                S

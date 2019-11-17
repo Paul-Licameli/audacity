@@ -184,7 +184,7 @@ void EffectWahwah::PopulateOrExchange(ShuttleGui & S)
    S.StartMultiColumn(3, wxEXPAND);
    {
       S.SetStretchyCol(2);
-   
+
       S
          .Target( mFreq,
             NumValidatorStyle::ONE_TRAILING_ZERO, 5, Freq.min, Freq.max )

@@ -157,6 +157,7 @@ void SpectrumPrefs::PopulateOrExchange(ShuttleGui & S)
       mTempSettings.algorithm != SpectrogramSettings::algPitchEAC;
    };
 
+   mDefaultsCheckbox = 0;
    mPopulating = true;
    S.SetBorder(2);
    S.StartScroller(); {
@@ -165,14 +166,13 @@ void SpectrumPrefs::PopulateOrExchange(ShuttleGui & S)
    // {
 
 
-   mDefaultsCheckbox = 0;
    if (mWt) {
       /* i18n-hint: use is a verb */
-      mDefaultsCheckbox =
       S
          .Id(ID_DEFAULTS)
          .Target(mDefaulted)
-         .AddCheckBox( XXO("&Use Preferences") );
+         .AddCheckBox( XXO("&Use Preferences") )
+         .Assign(mDefaultsCheckbox);
    }
 
    S.StartMultiColumn(2,wxEXPAND);
@@ -192,17 +192,17 @@ void SpectrumPrefs::PopulateOrExchange(ShuttleGui & S)
                .AddChoice(XXO("S&cale:"),
                   Msgids( SpectrogramSettings::GetScaleNames() ) );
 
-            mMinFreq =
             S
                .Id(ID_MINIMUM)
                   .Target( mTempSettings.minFreq )
-                  .AddTextBox(XXO("Mi&n Frequency (Hz):"), {}, 12);
+                  .AddTextBox(XXO("Mi&n Frequency (Hz):"), {}, 12)
+               .Assign(mMinFreq);
 
-            mMaxFreq =
             S
                .Id(ID_MAXIMUM)
                   .Target( mTempSettings.maxFreq )
-                  .AddTextBox(XXO("Ma&x Frequency (Hz):"), {}, 12);
+                  .AddTextBox(XXO("Ma&x Frequency (Hz):"), {}, 12)
+               .Assign(mMaxFreq);
          }
          S.EndMultiColumn();
       }
@@ -216,26 +216,26 @@ void SpectrumPrefs::PopulateOrExchange(ShuttleGui & S)
             S.SetStretchyCol( 0 );
             S.SetStretchyCol( 1 );
 
-            mGain =
             S
                .Id(ID_GAIN)
                .Enable( enabler )
                .Target( mTempSettings.gain )
-               .AddTextBox(XXO("&Gain (dB):"), {}, 8);
+               .AddTextBox(XXO("&Gain (dB):"), {}, 8)
+               .Assign(mGain);
 
-            mRange =
             S
                .Id(ID_RANGE)
                .Enable( enabler )
                .Target( mTempSettings.range )
-               .AddTextBox(XXO("&Range (dB):"), {}, 8);
+               .AddTextBox(XXO("&Range (dB):"), {}, 8)
+               .Assign(mRange);
 
-            mFrequencyGain =
             S
                .Id(ID_FREQUENCY_GAIN)
                .Enable( enabler )
                .Target( mTempSettings.frequencyGain )
-               .AddTextBox(XXO("High &boost (dB/dec):"), {}, 8);
+               .AddTextBox(XXO("High &boost (dB/dec):"), {}, 8)
+               .Assign( mFrequencyGain );
 
             // i18n-hint Scheme refers to a color scheme for spectrogram colors
             S
@@ -254,6 +254,7 @@ void SpectrumPrefs::PopulateOrExchange(ShuttleGui & S)
    {
       S.StartMultiColumn(2);
       {
+
          S
             .Target( mTempSettings.algorithm )
             .Action( [this]{ DoControl(); } )

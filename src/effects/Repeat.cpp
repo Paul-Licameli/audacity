@@ -163,14 +163,14 @@ void EffectRepeat::PopulateOrExchange(ShuttleGui & S)
 
    S.StartMultiColumn(1, wxCENTER);
    {
-      mCurrentTime =
       S
          .AddVariableText(
-            XO("Current selection length: dd:hh:mm:ss"));
+            XO("Current selection length: dd:hh:mm:ss"))
+         .Assign(mCurrentTime);
 
-      mTotalTime =
       S
-         .AddVariableText(XO("New selection length: dd:hh:mm:ss"));
+         .AddVariableText(XO("New selection length: dd:hh:mm:ss"))
+         .Assign(mTotalTime);
    }
    S.EndMultiColumn();
 }

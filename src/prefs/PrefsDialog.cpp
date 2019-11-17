@@ -464,11 +464,11 @@ PrefsDialog::PrefsDialog(
       if (!uniquePage) {
          S.StartHorizontalLay(wxALIGN_LEFT | wxEXPAND, true);
          {
-            mCategories =
             S
                .Prop(1)
                .Position(wxEXPAND)
-               .Window<wxTreebookExt>(mTitlePrefix);
+               .Window<wxTreebookExt>(mTitlePrefix)
+               .Assign(mCategories);
 
             {
                typedef std::pair<int, int> IntPair;
@@ -515,11 +515,11 @@ PrefsDialog::PrefsDialog(
          ShuttleGui S2(
             mUniquePage, true, { 250, 100 }, pVisitor );
          mUniquePage->PopulateOrExchange( S2 );
-         mUniquePage =
          S
             .Prop(1)
             .Position(wxEXPAND)
-            .Window(factory);
+            .Window(factory)
+            .Assign(mUniquePage);
          // We're not in the wxTreebook, so add the accelerator here
          wxAcceleratorEntry entries[1];
 #if defined(__WXMAC__)

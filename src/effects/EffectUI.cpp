@@ -1605,9 +1605,9 @@ void EffectUIHost::OnSaveAs()
       {
          S.StartHorizontalLay(wxALIGN_LEFT, 0);
          {
-            text =
             S
-               .AddTextBox(XXO("Preset name:"), name, 30);
+               .AddTextBox(XXO("Preset name:"), name, 30)
+               .Assign( text );
          }
          S.EndHorizontalLay();
          S.SetBorder(10);

@@ -715,12 +715,12 @@ void DeviceToolBar::ShowComboDialog(wxChoice *combo, const TranslatableString &t
    {
       S.StartHorizontalLay(wxCENTER, false);
       {
-         c =
          S
             .AddChoice( VerbatimLabel( combo->GetName() ),
                transform_container<TranslatableStrings>(
                   inputSources, Verbatim ),
-               combo->GetSelection());
+               combo->GetSelection())
+            .Assign(c);
          c->SetMinSize(c->GetBestSize());
       }
       S.EndHorizontalLay();

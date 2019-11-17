@@ -94,7 +94,6 @@ void ExtImportPrefs::PopulateOrExchange(ShuttleGui & S)
       S.StartHorizontalLay (wxEXPAND, 1);
       {
          bool fillRuleTable = false;
-         RuleTable =
          S
             .Id(EIPRuleTable)
             .Position(wxEXPAND | wxALL)
@@ -131,15 +130,16 @@ void ExtImportPrefs::PopulateOrExchange(ShuttleGui & S)
             RuleTable->EnableDragCell (true);
             fillRuleTable = true;
             return RuleTable;
-         });
+         })
+         .Assign(RuleTable);
 
-         PluginList =
          S
             .Id(EIPPluginList)
             .AddListControl(
                { { XO("Importer order"), wxLIST_FORMAT_LEFT,
                    wxLIST_AUTOSIZE_USEHEADER } },
-               wxLC_REPORT | wxLC_SINGLE_SEL );
+               wxLC_REPORT | wxLC_SINGLE_SEL )
+            .Assign(PluginList);
 
          if (fillRuleTable)
          {
@@ -167,38 +167,38 @@ void ExtImportPrefs::PopulateOrExchange(ShuttleGui & S)
       S.EndHorizontalLay();
       S.StartHorizontalLay (wxSHRINK, 0);
       {
-         MoveRuleUp =
          S
             .Action( [this]{ OnRuleMoveUp(); } )
-            .AddButton( XXO("Move rule &up") );
+            .AddButton( XXO("Move rule &up") )
+            .Assign(MoveRuleUp);
 
-         MoveRuleDown =
          S
             .Action( [this]{ OnRuleMoveDown(); } )
-            .AddButton( XXO("Move rule &down") );
+            .AddButton( XXO("Move rule &down") )
+            .Assign(MoveRuleDown);
 
-         MoveFilterUp =
          S
             .Action( [this]{ OnFilterMoveUp(); } )
-            .AddButton( XXO("Move f&ilter up") );
+            .AddButton( XXO("Move f&ilter up") )
+            .Assign(MoveFilterUp);
 
-         MoveFilterDown =
          S
             .Action( [this]{ OnFilterMoveDown(); } )
-            .AddButton( XXO("Move &filter down") );
+            .AddButton( XXO("Move &filter down") )
+            .Assign(MoveFilterDown);
       }
       S.EndHorizontalLay();
       S.StartHorizontalLay (wxSHRINK, 0);
       {
-         AddRule =
          S
             .Action( [this]{ OnAddRule(); } )
-            .AddButton( XXO("&Add new rule") );
+            .AddButton( XXO("&Add new rule") )
+            .Assign(AddRule);
    
-         DelRule =
          S
             .Action( [this]{ OnDelRule(); } )
-            .AddButton(XXO("De&lete selected rule"));
+            .AddButton( XXO("De&lete selected rule") )
+            .Assign(DelRule);
       }
       S.EndHorizontalLay();
    }

@@ -220,10 +220,10 @@ void KeyConfigPrefs::PopulateOrExchange(ShuttleGui & S)
 
          S.StartHorizontalLay(wxALIGN_CENTER_VERTICAL, 0);
          {
-            mFilterLabel =
             S
                .Position(wxALIGN_CENTER_VERTICAL)
-               .AddVariableText(XO("Searc&h:"));
+               .AddVariableText(XO("Searc&h:"))
+               .Assign(mFilterLabel);
 
             S
                .Id(FilterID)
@@ -232,19 +232,19 @@ void KeyConfigPrefs::PopulateOrExchange(ShuttleGui & S)
                             &KeyConfigPrefs::OnFilterKeyDown)
                .ConnectRoot(wxEVT_CHAR,
                             &KeyConfigPrefs::OnFilterChar)
-            .Window( [=](wxWindow *parent, wxWindowID winid) {
-               mFilter = safenew wxTextCtrl(parent, winid,
-                                        L"",
-                                        wxDefaultPosition,
-#if defined(__WXMAC__)
-                                        wxSize(300, -1),
-#else
-                                        wxSize(210, -1),
-#endif
-                                        wxTE_PROCESS_ENTER);
-               mFilter->SetName(wxStripMenuCodes(mFilterLabel->GetLabel()));
-               return mFilter;
-            });
+               .Window( [=](wxWindow *parent, wxWindowID winid) {
+                  mFilter = safenew wxTextCtrl(parent, winid,
+                                           L"",
+                                           wxDefaultPosition,
+   #if defined(__WXMAC__)
+                                           wxSize(300, -1),
+   #else
+                                           wxSize(210, -1),
+   #endif
+                                           wxTE_PROCESS_ENTER);
+                  mFilter->SetName(wxStripMenuCodes(mFilterLabel->GetLabel()));
+                  return mFilter;
+               });
          }
          S.EndHorizontalLay();
       }
@@ -254,19 +254,20 @@ void KeyConfigPrefs::PopulateOrExchange(ShuttleGui & S)
 
       S.StartHorizontalLay(wxEXPAND, 1);
       {
-         mView =
          S
             .Id(CommandsListID)
             .Text(XO("Bindings"))
             .Prop(true)
             .Position(wxEXPAND)
-            .Window<KeyView>();
+            .Window<KeyView>()
+            .Assign(mView);
       }
       S.EndHorizontalLay();
 
       S.StartThreeColumn();
       {
-         mKey = S.Id(CurrentComboID)
+         S
+            .Id(CurrentComboID)
             .Text(XO("Short cut"))
             .ConnectRoot(wxEVT_KEY_DOWN,
                       &KeyConfigPrefs::OnHotkeyKeyDown)
@@ -281,19 +282,20 @@ void KeyConfigPrefs::PopulateOrExchange(ShuttleGui & S)
              // so that name can be set on a standard control
             .Accessible()
 #endif
-         .Window( [=]( wxWindow *parent, wxWindowID winid ) {
-            auto key = safenew wxTextCtrl(parent,
-                                  winid,
-                                  L"",
-                                  wxDefaultPosition,
-#if defined(__WXMAC__)
-                                  wxSize(300, -1),
-#else
-                                  wxSize(210, -1),
-#endif
-                                  wxTE_PROCESS_ENTER);
-            return key;
-         });
+            .Window( [=]( wxWindow *parent, wxWindowID winid ) {
+               auto key = safenew wxTextCtrl(parent,
+                                     winid,
+                                     L"",
+                                     wxDefaultPosition,
+   #if defined(__WXMAC__)
+                                     wxSize(300, -1),
+   #else
+                                     wxSize(210, -1),
+   #endif
+                                     wxTE_PROCESS_ENTER);
+               return key;
+            })
+            .Assign(mKey);
 
          S
             .Enable( enabler )

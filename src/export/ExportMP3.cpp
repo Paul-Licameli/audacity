@@ -508,16 +508,16 @@ public:
          S.SetStretchyCol(0);
          {
             if (mLibPath.GetFullPath().empty()) {
-               mPathText =
                S
                   .AddTextBox( {},
-                  /* i18n-hint: There is a  button to the right of the arrow.*/
-                     wxString::Format(_("To find %s, click here -->"), mName), 0);
+                     /* i18n-hint: There is a  button to the right of the arrow.*/
+                     wxString::Format(_("To find %s, click here -->"), mName), 0)
+                  .Assign(mPathText);
             }
             else {
-               mPathText =
                S
-                  .AddTextBox( {}, mLibPath.GetFullPath(), 0);
+                  .AddTextBox( {}, mLibPath.GetFullPath(), 0)
+                  .Assign(mPathText);
             }
 
             S
@@ -1962,7 +1962,7 @@ int ExportMP3::AskResample(int bitrate, int rate, int lowrate, int highrate)
 
          S.StartHorizontalLay(wxALIGN_CENTER, false);
          {
-            choice = S
+            S
                .AddChoice(XXO("Sample Rates"),
                   [&]{
                      TranslatableStrings choices;
@@ -1976,7 +1976,8 @@ int ExportMP3::AskResample(int bitrate, int rate, int lowrate, int highrate)
                      }
                      return choices;
                   }(),
-                  std::max( 0, selected ) );
+                  std::max( 0, selected ) )
+               .Assign(choice);
          }
          S.EndHorizontalLay();
       }

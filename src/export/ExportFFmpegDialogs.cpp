@@ -1822,7 +1822,6 @@ void ExportFFmpegOptions::PopulateOrExchange(ShuttleGui & S)
          S
             .AddFixedText(XO("Format:"));
 
-         mFormatName =
          S
             .AddVariableText( {} );
 
@@ -1830,7 +1829,6 @@ void ExportFFmpegOptions::PopulateOrExchange(ShuttleGui & S)
             /* i18n-hint: "codec" is short for a "coder-decoder" algorithm */
             .AddFixedText(XO("Codec:"));
 
-         mCodecName =
          S
             .AddVariableText( {} );
       }
@@ -1852,18 +1850,18 @@ void ExportFFmpegOptions::PopulateOrExchange(ShuttleGui & S)
                .Action( [this]{ OnAllCodecs(); } )
                .AddButton(XXO("Show All Codecs"));
    
-            mFormatList =
             S
                .Id(FEFormatID)
-               .AddListBox(mFormatNames);
+               .AddListBox(mFormatNames)
+               .Assign(mFormatList);
 
             mFormatList->DeselectAll();
 
-            mCodecList =
             S
                .Id(FECodecID)
-               .AddListBox(mCodecNames);
-
+               .AddListBox(mCodecNames)
+               .Assign(mCodecList);
+   
             mCodecList->DeselectAll();
          }
          S.EndMultiColumn();

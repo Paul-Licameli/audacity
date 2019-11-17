@@ -79,9 +79,10 @@ void LibraryPrefs::PopulateOrExchange(ShuttleGui & S)
    {
       S.StartTwoColumn();
       {
-         mMP3Version = S
+         S
             .Position(wxALIGN_CENTRE_VERTICAL)
-            .AddReadOnlyText(XXO("MP3 Library Version:"), "");
+            .AddReadOnlyText(XXO("MP3 Library Version:"), "")
+            .Assign(mMP3Version);
       }
       S.EndTwoColumn();
    }
@@ -98,9 +99,10 @@ void LibraryPrefs::PopulateOrExchange(ShuttleGui & S)
             XO("FFmpeg support is not compiled in");
 #endif
 
-         mFFmpegVersion = S
+         S
             .Position(wxALIGN_CENTRE_VERTICAL)
-            .AddReadOnlyText(XXO("FFmpeg Library Version:"), version.Translation());
+            .AddReadOnlyText(XXO("FFmpeg Library Version:"), version.Translation())
+            .Assign(mFFmpegVersion);
 
          S
             .AddVariableText(XO("FFmpeg Library:"),

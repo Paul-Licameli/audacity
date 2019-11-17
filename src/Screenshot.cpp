@@ -326,14 +326,14 @@ void ScreenshotBigDialog::PopulateOrExchange(ShuttleGui & S)
          {
             S.SetStretchyCol(1);
 
-            mDirectoryTextBox =
             S
                .Id(IdDirectory)
                .Enable( enabler )
                .AddTextBox(
                   XXO("Save images to:"),
                   gPrefs->Read(L"/ScreenshotPath", wxFileName::GetHomeDir()),
-                  30 );
+                  30 )
+               .Assign(mDirectoryTextBox);
 
             S
                .Enable( enabler )
@@ -359,19 +359,19 @@ void ScreenshotBigDialog::PopulateOrExchange(ShuttleGui & S)
                .Action( [this]{ OnMainWindowLarge(); } )
                .AddButton(XXO("Resize Large"));
 
-            mBlue =
             S
                .Id(IdToggleBackgroundBlue)
                /* i18n-hint: Bkgnd is short for background and appears on a small button
                 * It is OK to just translate this item as if it said 'Blue' */
-               .Window<wxToggleButton>(_("Blue Bkgnd"));
+               .Window<wxToggleButton>(_("Blue Bkgnd"))
+               .Assign(mBlue);
 
-            mWhite =
             S
                .Id(IdToggleBackgroundWhite)
             /* i18n-hint: Bkgnd is short for background and appears on a small button
              * It is OK to just translate this item as if it said 'White' */
-               .Window<wxToggleButton>(_("White Bkgnd"));
+               .Window<wxToggleButton>(_("White Bkgnd"))
+               .Assign(mWhite);
          }
          S.EndHorizontalLay();
 
@@ -405,13 +405,13 @@ void ScreenshotBigDialog::PopulateOrExchange(ShuttleGui & S)
 
          S.StartHorizontalLay();
          {
-            mDelayCheckBox =
             S
                .Id(IdDelayCheckBox)
                .Enable( enabler )
                .AddCheckBox(
                   XXO("Wait 5 seconds and capture frontmost window/dialog"),
-                  false);
+                  false)
+               .Assign(mDelayCheckBox);
          }
          S.EndHorizontalLay();
       }

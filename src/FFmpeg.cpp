@@ -489,15 +489,16 @@ public:
          S.SetStretchyCol(0);
          {
             if (mLibPath.GetFullPath().empty()) {
-               mPathText =
                S
                   .AddTextBox( {},
-                     wxString::Format(_("To find '%s', click here -->"), mName), 0);
+                     wxString::Format(_("To find '%s', click here -->"), mName), 0)
+                  .Assign(mPathText);
             }
             else {
                mPathText =
                S
-                  .AddTextBox( {}, mLibPath.GetFullPath(), 0);
+                  .AddTextBox( {}, mLibPath.GetFullPath(), 0)
+                  .Assign(mPathText);
             }
 
             S
@@ -597,10 +598,10 @@ To use FFmpeg import, go to Edit > Preferences > Libraries\n\
 to download or locate the FFmpeg libraries."
          ) );
 
-      mDontShow =
       S
          .AddCheckBox(XXO("Do not show this warning again"),
-            gPrefs->ReadBool(L"/FFmpeg/NotFoundDontShow", false) );
+            gPrefs->ReadBool(L"/FFmpeg/NotFoundDontShow", false) )
+         .Assign( mDontShow );
 
       S
          .AddStandardButtons( 0, {

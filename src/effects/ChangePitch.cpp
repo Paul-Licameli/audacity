@@ -244,7 +244,6 @@ void EffectChangePitch::PopulateOrExchange(ShuttleGui & S)
       {
          S.StartMultiColumn(6, wxALIGN_CENTER); // 6 controls, because each AddChoice adds a wxStaticText and a wxChoice.
          {
-            m_pChoice_FromPitch =
             S
                .Id(ID_FromPitch)
                /* i18n-hint: changing musical pitch "from" one value "to" another */
@@ -253,16 +252,16 @@ void EffectChangePitch::PopulateOrExchange(ShuttleGui & S)
                .Target( m_nFromPitch )
                .Action( [this]{ OnChoice_FromPitch(); } )
                /* i18n-hint: changing musical pitch "from" one value "to" another */
-               .AddChoice(XXC("&from", "change pitch"), pitch);
+               .AddChoice(XXC("&from", "change pitch"), pitch)
+               .Assign(m_pChoice_FromPitch);
 
-            m_pSpin_FromOctave =
             S
                .Id(ID_FromOctave)
                .Text(XO("from Octave"))
                .MinSize( { 50, -1 } )
-               .AddSpinCtrl( {}, m_nFromOctave, INT_MAX, INT_MIN);
+               .AddSpinCtrl( {}, m_nFromOctave, INT_MAX, INT_MIN)
+               .Assign(m_pSpin_FromOctave);
 
-            m_pChoice_ToPitch =
             S
                .Id(ID_ToPitch)
                /* i18n-hint: changing musical pitch "from" one value "to" another */
@@ -271,26 +270,27 @@ void EffectChangePitch::PopulateOrExchange(ShuttleGui & S)
                .Target( m_nToPitch )
                .Action( [this]{ OnChoice_ToPitch(); } )
                /* i18n-hint: changing musical pitch "from" one value "to" another */
-               .AddChoice(XXC("&to", "change pitch"), pitch);
+               .AddChoice(XXC("&to", "change pitch"), pitch)
+               .Assign(m_pChoice_ToPitch);
 
-            m_pSpin_ToOctave =
             S
                .Id(ID_ToOctave)
                .Text(XO("to Octave"))
                .MinSize( { 50, -1 } )
-               .AddSpinCtrl( {}, m_nToOctave, INT_MAX, INT_MIN);
+               .AddSpinCtrl( {}, m_nToOctave, INT_MAX, INT_MIN)
+               .Assign(m_pSpin_ToOctave);
          }
          S.EndMultiColumn();
 
          S.StartHorizontalLay(wxALIGN_CENTER);
          {
-            m_pTextCtrl_SemitonesChange =
             S
                .Id(ID_SemitonesChange)
                .Text(XO("Semitones (half-steps)"))
                .Target( m_dSemitonesChange,
                   NumValidatorStyle::TWO_TRAILING_ZEROES, 2 )
-               .AddTextBox(XXO("&Semitones (half-steps):"), L"", 12);
+               .AddTextBox(XXO("&Semitones (half-steps):"), L"", 12)
+               .Assign(m_pTextCtrl_SemitonesChange);
          }
          S.EndHorizontalLay();
       }
@@ -300,23 +300,23 @@ void EffectChangePitch::PopulateOrExchange(ShuttleGui & S)
       {
          S.StartMultiColumn(5, wxALIGN_CENTER); // 5, because AddTextBox adds a wxStaticText and a wxTextCtrl.
          {
-            m_pTextCtrl_FromFrequency =
             S
                .Id(ID_FromFrequency)
                .Text(XO("from (Hz)"))
                .Target( m_FromFrequency,
                   NumValidatorStyle::THREE_TRAILING_ZEROES, 3,
                   0.0 )
-               .AddTextBox(XXO("f&rom"), L"", 12);
+               .AddTextBox(XXO("f&rom"), L"", 12)
+               .Assign(m_pTextCtrl_FromFrequency);
 
-            m_pTextCtrl_ToFrequency =
             S
                .Id(ID_ToFrequency)
                .Text(XO("to (Hz)"))
                .Target( m_ToFrequency,
                   NumValidatorStyle::THREE_TRAILING_ZEROES, 3,
                   0.0 )
-               .AddTextBox(XXO("t&o"), L"", 12);
+               .AddTextBox(XXO("t&o"), L"", 12)
+               .Assign(m_pTextCtrl_ToFrequency);
 
             S.AddUnits(XO("Hz"));
          }
@@ -324,24 +324,24 @@ void EffectChangePitch::PopulateOrExchange(ShuttleGui & S)
 
          S.StartHorizontalLay(wxALIGN_CENTER);
          {
-            m_pTextCtrl_PercentChange =
             S
                .Id(ID_PercentChange)
                .Target( m_dPercentChange,
                   NumValidatorStyle::THREE_TRAILING_ZEROES, 3,
                   Percentage.min, Percentage.max )
-               .AddTextBox(XXO("Percent C&hange:"), L"", 12);
+               .AddTextBox(XXO("Percent C&hange:"), L"", 12)
+               .Assign(m_pTextCtrl_PercentChange);
          }
          S.EndHorizontalLay();
 
          S.StartHorizontalLay(wxEXPAND);
          {
-            m_pSlider_PercentChange =
             S
                .Id(ID_PercentChange)
                .Text(XO("Percent Change"))
                .Style(wxSL_HORIZONTAL)
-               .AddSlider( {}, 0, (int)kSliderMax, (int)Percentage.min);
+               .AddSlider( {}, 0, (int)kSliderMax, (int)Percentage.min)
+               .Assign(m_pSlider_PercentChange);
          }
          S.EndHorizontalLay();
       }

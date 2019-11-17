@@ -333,20 +333,20 @@ void DependencyDialog::PopulateOrExchange(ShuttleGui& S)
    S.SetBorder(5);
    S.StartVerticalLay();
    {
-      mMessageStaticText =
       S
-         .AddVariableText(kStdMsg(), false);
+         .AddVariableText(kStdMsg(), false)
+         .Assign(mMessageStaticText);
 
       S.StartStatic(XO("Project Dependencies"),1);
       {
-         mFileListCtrl =
          S
             .Id(FileListID)
             .AddListControlReportMode({
                { XO("Audio File"), wxLIST_FORMAT_LEFT, 220 },
                { XO("Disk Space"), wxLIST_FORMAT_LEFT, 120 }
-            });
-   
+            })
+            .Assign(mFileListCtrl);
+
          PopulateList();
 
          S
@@ -383,7 +383,6 @@ void DependencyDialog::PopulateOrExchange(ShuttleGui& S)
             .Enable( [this]{ return !mHasMissingFiles; } )
             .Action( [this]{ OnYes(); } )
             .AddButton(XXO("Copy All Files (Safer)"));
-
       }
       S.EndHorizontalLay();
 

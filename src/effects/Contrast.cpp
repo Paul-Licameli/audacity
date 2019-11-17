@@ -242,7 +242,6 @@ ContrastDialog::ContrastDialog(wxWindow * parent, wxWindowID id,
          S
             .AddFixedText(XO("&Foreground:"), false);
 
-         mForegroundStartT =
          S
             .Id(ID_FOREGROUNDSTART_T)
             .Text(XO("Foreground start time"))
@@ -250,9 +249,9 @@ ContrastDialog::ContrastDialog(wxWindow * parent, wxWindowID id,
                NumericConverter::HundredthsFormat(),
                0.0,
                mProjectRate,
-               options);
+               options)
+            .Assign(mForegroundStartT);
 
-         mForegroundEndT =
          S
             .Id(ID_FOREGROUNDEND_T)
             .Text(XO("Foreground end time"))
@@ -260,26 +259,26 @@ ContrastDialog::ContrastDialog(wxWindow * parent, wxWindowID id,
                NumericConverter::HundredthsFormat(),
                0.0,
                mProjectRate,
-               options);
+               options)
+            .Assign(mForegroundEndT);
 
-         m_pButton_UseCurrentF =
          S
             .Action( [this]{ OnGetForeground(); } )
-            .AddButton(XXO("&Measure selection"));
-
-         mForegroundRMSText =
+            .AddButton(XXO("&Measure selection"))
+            .Assign(m_pButton_UseCurrentF);
+   
          S
             .Id(ID_FOREGROUNDDB_TEXT)
             .ConnectRoot(wxEVT_KEY_DOWN,
                          &ContrastDialog::OnChar)
-            .AddTextBox( {}, L"", 17);
+            .AddTextBox( {}, L"", 17)
+            .Assign(mForegroundRMSText);
 
          //Background
 
          S
             .AddFixedText(XO("&Background:"));
 
-         mBackgroundStartT =
          S
             .Id(ID_BACKGROUNDSTART_T)
             .Text(XO("Background start time"))
@@ -287,9 +286,9 @@ ContrastDialog::ContrastDialog(wxWindow * parent, wxWindowID id,
                NumericConverter::HundredthsFormat(),
                0.0,
                mProjectRate,
-               options);
+               options)
+            .Assign(mBackgroundStartT);
 
-         mBackgroundEndT =
          S
             .Id(ID_BACKGROUNDEND_T)
             .Text(XO("Background end time"))
@@ -297,19 +296,20 @@ ContrastDialog::ContrastDialog(wxWindow * parent, wxWindowID id,
                NumericConverter::HundredthsFormat(),
                0.0,
                mProjectRate,
-               options);
+               options)
+            .Assign(mBackgroundEndT);
 
-         m_pButton_UseCurrentB =
          S
             .Action( [this]{ OnGetBackground(); } )
-            .AddButton(XXO("Mea&sure selection"));
+            .AddButton(XXO("Mea&sure selection"))
+            .Assign(m_pButton_UseCurrentB);
 
-         mBackgroundRMSText =
          S
             .Id(ID_BACKGROUNDDB_TEXT)
             .ConnectRoot(wxEVT_KEY_DOWN,
                          &ContrastDialog::OnChar)
-            .AddTextBox( {}, L"", 17);
+            .AddTextBox( {}, L"", 17)
+            .Assign(mBackgroundRMSText);
       }
       S.EndMultiColumn();
    }
@@ -324,35 +324,35 @@ ContrastDialog::ContrastDialog(wxWindow * parent, wxWindowID id,
          S
             .AddFixedText(label);
 
-         mPassFailText =
          S
             .Id(ID_RESULTS_TEXT)
             .Text(label)
             .ConnectRoot(wxEVT_KEY_DOWN,
                          &ContrastDialog::OnChar)
-            .AddTextBox( {}, L"", 50);
+            .AddTextBox( {}, L"", 50)
+            .Assign(mPassFailText);
 
-         m_pButton_Reset =
          S
             .Action( [this]{ OnReset(); } )
-            .AddButton(XXO("R&eset"));
+            .AddButton(XXO("R&eset"))
+            .Assign(m_pButton_Reset);
 
          label = XO("&Difference:");
          S
             .AddFixedText(label);
 
-         mDiffText =
          S
             .Id(ID_RESULTSDB_TEXT)
             .Text(label)
             .ConnectRoot(wxEVT_KEY_DOWN,
                          &ContrastDialog::OnChar)
-            .AddTextBox( {}, L"", 50);
+            .AddTextBox( {}, L"", 50)
+            .Assign(mDiffText);
 
-         m_pButton_Export =
          S
             .Action( [this]{ OnExport(); } )
-            .AddButton(XXO("E&xport..."));
+            .AddButton(XXO("E&xport..."))
+            .Assign(m_pButton_Export);
       }
       S.EndMultiColumn();
    }
@@ -369,18 +369,18 @@ ContrastDialog::ContrastDialog(wxWindow * parent, wxWindowID id,
    {
       S.SetStretchyCol(1);
 
-      m_pButton_GetURL =
       S
          .Id(ID_BUTTON_GETURL)
-         .AddButton(XO("&Help"));
-
+         .AddButton(XO("&Help"))
+         .Assign(m_pButton_GetURL);
+   
       S
          .AddFixedText({});   // spacer
 
-      m_pButton_Close =
       S
          .Id(ID_BUTTON_CLOSE)
-         .AddButton(XO("&Close"));
+         .AddButton(XO("&Close"))
+         .Assign(m_pButton_Close);
    }
    S.EndMultiColumn();
 #endif

@@ -556,7 +556,6 @@ void PluginRegistrationDialog::PopulateOrExchange(ShuttleGui &S)
          }
          S.EndHorizontalLay();
 
-         mEffects =
          S
             .Id(ID_List)
             .Style(wxSUNKEN_BORDER | wxLC_REPORT | wxLC_HRULES | wxLC_VRULES )
@@ -565,7 +564,8 @@ void PluginRegistrationDialog::PopulateOrExchange(ShuttleGui &S)
 #if wxUSE_ACCESSIBILITY
             .Accessible( MakeAccessibleFactory<CheckListAx, wxListCtrl>() )
 #endif
-            .AddListControlReportMode({ XO("Name"), XO("State"), XO("Path") });
+            .AddListControlReportMode({ XO("Name"), XO("State"), XO("Path") })
+            .Assign(mEffects);
 
          S.StartHorizontalLay(wxALIGN_LEFT | wxEXPAND, 0);
          {

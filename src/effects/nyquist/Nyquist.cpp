@@ -2785,11 +2785,11 @@ void NyquistEffect::BuildPromptWindow(ShuttleGui & S)
 
       S.StartHorizontalLay(wxEXPAND, 1);
       {
-         mCommandText =
          S
             .Focus()
             .MinSize( { 500, 200 } )
-            .AddTextWindow(L"");
+            .AddTextWindow(L"")
+            .Assign(mCommandText);
       }
       S.EndHorizontalLay();
 

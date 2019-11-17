@@ -112,8 +112,10 @@ void AutoRecoveryDialog::PopulateOrExchange(ShuttleGui &S)
                XO("Select"),
                /*i18n-hint: (noun).  It's the name of the project to recover.*/
                XO("Name")
-            });
+            })
+            .Assign(mFileList);
          mFileList->EnableCheckBoxes();
+
          PopulateList();
       }
       S.EndStatic();

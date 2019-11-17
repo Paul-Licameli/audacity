@@ -375,6 +375,7 @@ void EffectReverb::PopulateOrExchange(ShuttleGui & S)
          S
             .Target( target )
             .AddSpinCtrl( entry.prompt, param.def, param.max, param.min);
+
          S
             .Style( wxSL_HORIZONTAL )
             .Target( target )

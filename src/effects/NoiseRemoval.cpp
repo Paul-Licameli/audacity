@@ -661,10 +661,10 @@ void NoiseRemovalDialog::PopulateOrExchange(ShuttleGui & S)
          .AddVariableText(XO(
 "Select a few seconds of just noise so Audacity knows what to filter out,\nthen click Get Noise Profile:"));
 
-      m_pButton_GetProfile =
       S
          .Action( [this]{ OnGetProfile(); } )
-         .AddButton(XXO("&Get Noise Profile"));
+         .AddButton(XXO("&Get Noise Profile"))
+         .Assign(m_pButton_GetProfile);
    }
    S.EndStatic();
 

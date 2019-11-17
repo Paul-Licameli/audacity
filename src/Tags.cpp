@@ -1153,9 +1153,9 @@ void TagsEditorDialog::OnEdit()
 
    S.StartVerticalLay(true);
    {
-      tc =
       S
-         .AddTextWindow(L"");
+         .AddTextWindow(L"")
+         .Assign(tc);
    }
    S.EndVerticalLay();
 

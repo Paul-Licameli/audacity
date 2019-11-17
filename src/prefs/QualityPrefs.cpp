@@ -112,7 +112,6 @@ void QualityPrefs::PopulateOrExchange(ShuttleGui & S)
          S.StartMultiColumn(2);
          {
             // First the choice...
-            // We make sure we have a pointer to it, so that we can drive it.
             S
                .Target( NumberChoice( QualitySettings::DefaultSampleRate,
                   mSampleRateNames, mSampleRateLabels ) )

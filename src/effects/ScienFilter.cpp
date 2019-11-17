@@ -341,9 +341,9 @@ void EffectScienFilter::PopulateOrExchange(ShuttleGui & S)
       S.StartVerticalLay();
       {
          S.SetBorder(1);
+
          S.AddSpace(1, 1);
 
-         mdBRuler =
          S
             .Prop(1)
             .Position(wxALIGN_RIGHT | wxTOP)
@@ -354,23 +354,22 @@ void EffectScienFilter::PopulateOrExchange(ShuttleGui & S)
                Ruler::LinearDBFormat,
                XO("dB"),
                RulerPanel::Options{}
-                  .LabelEdges(true)
-            );
-
+                  .LabelEdges(true) )
+            .Assign(mdBRuler);
+   
          S.AddSpace(1, 1);
       }
       S.EndVerticalLay();
 
       S.SetBorder(5);
 
-      mPanel =
       S
          .Prop(1)
          .Position(wxEXPAND | wxRIGHT)
          .MinSize( { -1, -1 } )
          .Window<EffectScienFilterPanel>(
-             this, mLoFreq, mNyquist
-         );
+             this, mLoFreq, mNyquist )
+         .Assign(mPanel);
 
       S.StartVerticalLay();
       {
@@ -414,7 +413,6 @@ void EffectScienFilter::PopulateOrExchange(ShuttleGui & S)
 
       S.AddSpace(1, 1);
 
-      mfreqRuler =
       S
          .Prop(1)
          .Position(wxEXPAND | wxALIGN_LEFT | wxRIGHT)
@@ -427,8 +425,8 @@ void EffectScienFilter::PopulateOrExchange(ShuttleGui & S)
             RulerPanel::Options{}
                .Log(true)
                .Flip(true)
-               .LabelEdges(true)
-         );
+               .LabelEdges(true) )
+         .Assign(mfreqRuler);
 
       S.AddSpace(1, 1);
 

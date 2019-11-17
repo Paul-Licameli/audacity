@@ -190,13 +190,13 @@ void ExportPCMOptions::PopulateOrExchange(ShuttleGui & S)
                              mHeaderFromChoice);
             }
 
-            mEncodingChoice =
             S
                .Target( mEncodingFromChoice )
                .Action( [this]{ OnEncodingChoice(); } )
                .AddChoice(XXO("Encoding:"),
                           mEncodingNames,
-                          mEncodingFromChoice);
+                          mEncodingFromChoice)
+               .Assign(mEncodingChoice);
          }
          S.EndMultiColumn();
       }

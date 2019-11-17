@@ -130,13 +130,14 @@ void ApplyMacroDialog::PopulateOrExchange(ShuttleGui &S)
       * to one or more audio files.*/
    S.StartStatic(XO("Select Macro"), 1);
    {
-      mMacros =
       S
-         .Id(MacrosListID).Prop(1)
+         .Id(MacrosListID)
+         .Prop(1)
          .Style(wxSUNKEN_BORDER | wxLC_REPORT | wxLC_HRULES | wxLC_VRULES |
              wxLC_SINGLE_SEL)
           // i18n-hint: This is the heading for a column in the edit macros dialog
-         .AddListControlReportMode( { XO("Macro") } );
+         .AddListControlReportMode( { XO("Macro") } )
+         .Assign(mMacros);
    }
    S.EndStatic();
 
@@ -168,10 +169,10 @@ void ApplyMacroDialog::PopulateOrExchange(ShuttleGui &S)
    S.StartHorizontalLay(wxEXPAND, 0);
    {
       /* i18n-hint: The Expand button makes the dialog bigger, with more in it */
-      mResize =
       S
          .Action( [this]{ OnExpand(); } )
-         .AddButton(XXO("&Expand"));
+         .AddButton(XXO("&Expand"))
+         .Assign(mResize);
 
       S.AddSpace( 10,10,1 );
 
@@ -397,12 +398,13 @@ void ApplyMacroDialog::OnApplyToFiles()
          imageList->Add(wxIcon(empty9x16_xpm));
          imageList->Add(wxIcon(arrow_xpm));
 
-         fileList =
          S
             .Id(CommandsListID)
             .Style(wxSUNKEN_BORDER | wxLC_REPORT | wxLC_HRULES | wxLC_VRULES |
                 wxLC_SINGLE_SEL)
-            .AddListControlReportMode( { XO("File") } );
+            .AddListControlReportMode( { XO("File") } )
+            .Assign(fileList);
+
          // AssignImageList takes ownership
          fileList->AssignImageList(imageList.release(), wxIMAGE_LIST_SMALL);
       }
@@ -603,7 +605,6 @@ void MacrosWindow::PopulateOrExchange(ShuttleGui & S)
       {
          S.StartHorizontalLay(wxEXPAND,1);
          {
-            mMacros =
             S
                .Id(MacrosListID)
                .Prop(1)
@@ -652,8 +653,6 @@ void MacrosWindow::PopulateOrExchange(ShuttleGui & S)
       {
          S.StartHorizontalLay(wxEXPAND,1);
          {
-            
-            mList =
             S
                .Id(CommandsListID)
                .Style(wxSUNKEN_BORDER | wxLC_REPORT | wxLC_HRULES | wxLC_VRULES |
@@ -663,7 +662,8 @@ void MacrosWindow::PopulateOrExchange(ShuttleGui & S)
                   { XO("Num"), wxLIST_FORMAT_RIGHT },
                   { XO("Command  "), wxLIST_FORMAT_RIGHT },
                   { XO("Parameters"), wxLIST_FORMAT_LEFT }
-                });
+                })
+                .Assign(mList);
 
             S.StartVerticalLay(wxALIGN_TOP, 0);
             {

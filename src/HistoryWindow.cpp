@@ -105,14 +105,14 @@ void HistoryDialog::Populate(ShuttleGui & S)
    {
       S.StartStatic(XO("&Manage History"), 1);
       {
-         mList =
          S
             .MinSize()
             .ConnectRoot(wxEVT_KEY_DOWN, &HistoryDialog::OnListKeyDown)
             .AddListControlReportMode(
                { { XO("Action"), wxLIST_FORMAT_LEFT, 260 },
                  { XO("Used Space"), wxLIST_FORMAT_LEFT, 125 } },
-               wxLC_SINGLE_SEL );
+               wxLC_SINGLE_SEL )
+            .Assign(mList);
 
          //Assign rather than set the image list, so that it is deleted later.
          // AssignImageList takes ownership
@@ -123,11 +123,11 @@ void HistoryDialog::Populate(ShuttleGui & S)
             S
                .AddPrompt(XXO("&Total space used"));
 
-            mTotal =
             S
                .Id(ID_TOTAL)
                .Style(wxTE_READONLY)
-               .AddTextBox({}, L"", 10);
+               .AddTextBox({}, L"", 10)
+               .Assign(mTotal);
 
             S
                .AddVariableText( {} )->Hide();
@@ -135,11 +135,13 @@ void HistoryDialog::Populate(ShuttleGui & S)
 #if defined(ALLOW_DISCARD)
             S
                .AddPrompt(XXO("&Undo levels available"));
-            mAvail =
+
             S
                .Id(ID_AVAIL)
                .Style(wxTE_READONLY)
-               .AddTextBox({}, L"", 10);
+               .AddTextBox({}, L"", 10)
+               .Assign(mAvail);
+
             S
                .AddVariableText( {} )->Hide();
 
@@ -159,15 +161,16 @@ void HistoryDialog::Populate(ShuttleGui & S)
                                      0,
                                      mManager->GetCurrentState(),
                                      0);
-
+            
             S
                .Id(ID_LEVELS)
                .Style(wxSP_ARROW_KEYS /* | wxSP_VERTICAL */ )
                .Enable( [this]{ return mSelected > 0; } )
                .AddSpinCtrl(XXO("&Levels to discard"),
-                            1, mManager->GetCurrentState() - 1, 0);
+                            1, mManager->GetCurrentState() - 1, 0)
+               .Assign(mLevels);
 
-            mDiscard = S
+            S
                .Enable( [this]{ return !mAudioIOBusy && mSelected > 0; } )
                .Action( [this]{ OnDiscard(); } )
                /* i18n-hint: (verb)*/
@@ -176,7 +179,6 @@ void HistoryDialog::Populate(ShuttleGui & S)
             S
                .AddPrompt(XXO("Clip&board space used"));
 
-            mClipboard =
             S
                .Style(wxTE_READONLY)
                .AddTextBox({}, L"", 10);

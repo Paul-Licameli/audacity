@@ -282,7 +282,6 @@ void FrequencyPlotDialog::Populate()
       {
          S.AddSpace(wxDefaultCoord, 1);
 
-         vRuler =
          S
             .Prop(1)
             .Position(wxALIGN_RIGHT | wxALIGN_TOP)
@@ -294,25 +293,26 @@ void FrequencyPlotDialog::Populate()
                XO("dB"),
                RulerPanel::Options{}
                   .LabelEdges(true)
-                  .TickColour( theTheme.Colour( clrGraphLabels ) )
-            );
+                  .TickColour( theTheme.Colour( clrGraphLabels ) ) )
+            .Assign(vRuler);
 
          S.AddSpace(wxDefaultCoord, 1);
       }
       S.EndVerticalLay();
 
-      mFreqPlot =
       S
          .Prop(1)
          .Position(wxEXPAND)
          .MinSize( { wxDefaultCoord, FREQ_WINDOW_HEIGHT } )
-         .Window<FreqPlot>();
+         .Window<FreqPlot>()
+         .Assign(mFreqPlot);
 
       S.StartHorizontalLay(wxEXPAND, 0);
       {
          S.StartVerticalLay();
          {
-            mPanScroller = S.Id(FreqPanScrollerID)
+            S
+               .Id(FreqPanScrollerID)
                .Text(XO("Scroll"))
                .Position( wxALIGN_LEFT | wxTOP)
                .Prop(1)
@@ -321,7 +321,8 @@ void FrequencyPlotDialog::Populate()
                // so that name can be set on a standard control
                .Accessible()
 #endif
-               .Window<wxScrollBar>();
+               .Window<wxScrollBar>()
+               .Assign(mPanScroller);
          }
          S.EndVerticalLay();
 
@@ -333,7 +334,6 @@ void FrequencyPlotDialog::Populate()
 
             S.AddSpace(5);
 
-            mZoomSlider =
             S
                .Id(FreqZoomSliderID)
                .Prop(1)
@@ -343,7 +343,8 @@ void FrequencyPlotDialog::Populate()
                // so that name can be set on a standard control
                .Accessible()
 #endif
-               .AddSlider( XXO("Zoom"), 100, 1, 100 );
+               .AddSlider( XXO("Zoom"), 100, 1, 100 )
+               .Assign(mZoomSlider);
 
             S.AddSpace(5);
 
@@ -367,7 +368,6 @@ void FrequencyPlotDialog::Populate()
       {
          S.AddSpace(1, wxDefaultCoord);
 
-         hRuler =
          S
             .Prop(1)
             .Position(wxALIGN_LEFT | wxALIGN_TOP)
@@ -381,7 +381,8 @@ void FrequencyPlotDialog::Populate()
                   .Log(true)
                   .Flip(true)
                   .LabelEdges(true)
-                  .TickColour( theTheme.Colour( clrGraphLabels ) ) );
+                  .TickColour( theTheme.Colour( clrGraphLabels ) ) )
+            .Assign(hRuler);
 
          S.AddSpace(1, wxDefaultCoord);
       }
@@ -411,24 +412,24 @@ void FrequencyPlotDialog::Populate()
          {
             S.AddPrompt(XXO("Cursor:"));
 
-            mCursorText =
             S
                .Style(wxTE_READONLY)
-               .AddTextBox( {}, L"", 10);
+               .AddTextBox( {}, L"", 10)
+               .Assign(mCursorText);
 
             S.AddPrompt(XXO("Peak:"));
 
-            mPeakText =
             S
                .Style(wxTE_READONLY)
-               .AddTextBox( {}, L"", 10);
+               .AddTextBox( {}, L"", 10)
+               .Assign(mPeakText);
    
             S.AddSpace(5);
 
-            mGridOnOff =
             S
                .Id(GridOnOffID)
-               .AddCheckBox(XXO("&Grids"), mDrawGrid);
+               .AddCheckBox(XXO("&Grids"), mDrawGrid)
+               .Assign(mGridOnOff);
          }
          S.EndMultiColumn();
       }
@@ -455,27 +456,29 @@ void FrequencyPlotDialog::Populate()
       S.AddSpace(5);
 
       S
+         .Id(FreqAlgChoiceID)
          .Focus()
+         .MinSize( { wxDefaultCoord, wxDefaultCoord } )
          .Target( mAlgChoice )
          .Action( [this]{ OnAlgChoice(); } )
-         .MinSize( { wxDefaultCoord, wxDefaultCoord } )
          .AddChoice(XXO("&Algorithm:"), algChoices, mAlg);
 
       S.AddSpace(5);
 
       auto sizeChoice =
       S
+         .Id(FreqSizeChoiceID)
+         .MinSize( { wxDefaultCoord, wxDefaultCoord } )
          .Target( mSizeChoice )
          .Action( [this]{ OnSizeChoice(); } )
-         .MinSize( { wxDefaultCoord, wxDefaultCoord } )
          .AddChoice(XXO("&Size:"), sizeChoices, mSize);
 
       S.AddSpace(5);
 
-      mExportButton =
       S
          .Action( [this]{ OnExport(); } )
-         .AddButton(XXO("&Export..."));
+         .AddButton(XXO("&Export..."))
+         .Assign(mExportButton);
 
       S.AddSpace(5);
 
@@ -488,29 +491,31 @@ void FrequencyPlotDialog::Populate()
 
       auto funcChoice =
       S
+         .Id(FreqFuncChoiceID)
+         .MinSize( { wxDefaultCoord, wxDefaultCoord } )
          .Target( mFuncChoice )
          .Action( [this]{ OnFuncChoice(); } )
-         .MinSize( { wxDefaultCoord, wxDefaultCoord } )
          .AddChoice(XXO("&Function:"), funcChoices, mFunc);
-      funcChoice->MoveAfterInTabOrder( sizeChoice );
+      funcChoice->MoveAfterInTabOrder(sizeChoice);
 
       S.AddSpace(5);
 
       auto axisChoice =
       S
-         .Target( mAxisChoice )
-         .Action( [this]{ OnAxisChoice(); } )
+         .Id(FreqAxisChoiceID)
          .MinSize( { wxDefaultCoord, wxDefaultCoord } )
          .Enable( [this]{ return mAlg == SpectrumAnalyst::Spectrum; } )
+         .Target( mAxisChoice )
+         .Action( [this]{ OnAxisChoice(); } )
          .AddChoice(XXO("&Axis:"), axisChoices, mAxis);
-      axisChoice->MoveAfterInTabOrder( funcChoice );
+      axisChoice->MoveAfterInTabOrder(funcChoice);
 
       S.AddSpace(5);
 
-      mReplotButton =
       S
          .Action( [this]{ OnReplot(); } )
-         .AddButton(XXO("&Replot..."));
+         .AddButton(XXO("&Replot..."))
+         .Assign(mReplotButton);
 
       S.AddSpace(5);
 
@@ -530,10 +535,10 @@ void FrequencyPlotDialog::Populate()
 
    S.AddSpace(5);
 
-   mProgress =
    S
       .Position(wxEXPAND)
-      .Window<FreqGauge>(); // wxST_SIZEGRIP
+      .Window<FreqGauge>() // wxST_SIZEGRIP
+      .Assign(mProgress);
 
    // Log-frequency axis works for spectrum plots only.
    if (mAlg != SpectrumAnalyst::Spectrum)

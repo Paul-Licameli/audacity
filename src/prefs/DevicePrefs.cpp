@@ -114,11 +114,11 @@ void DevicePrefs::PopulateOrExchange(ShuttleGui & S)
    {
       S.StartMultiColumn(2);
       {
-         mHost =
          S
             .Target( Choice( AudioIOHost, Verbatim( hostLabels ) ) )
             .Action( [this]{ OnHost(); } )
-            .AddChoice( XXO("&Host:") );
+            .AddChoice( XXO("&Host:") )
+            .Assign(mHost);
 
          S
             .AddPrompt(XXO("Using:"));
@@ -134,10 +134,10 @@ void DevicePrefs::PopulateOrExchange(ShuttleGui & S)
    {
       S.StartMultiColumn(2);
       {
-         mPlay =
          S
             .Id(PlayID)
-            .AddChoice(XXO("&Device:"), {} );
+            .AddChoice(XXO("&Device:"), {} )
+            .Assign(mPlay);
       }
       S.EndMultiColumn();
    }
@@ -148,15 +148,15 @@ void DevicePrefs::PopulateOrExchange(ShuttleGui & S)
    {
       S.StartMultiColumn(2);
       {
-         mRecord =
          S
             .Action( [this]{ OnDevice(); } )
-            .AddChoice(XXO("De&vice:"), {} );
+            .AddChoice(XXO("De&vice:"), {} )
+            .Assign(mRecord);
 
-         mChannels =
          S
             .Id(ChannelsID)
-            .AddChoice(XXO("Cha&nnels:"), {} );
+            .AddChoice(XXO("Cha&nnels:"), {} )
+            .Assign(mChannels);
       }
       S.EndMultiColumn();
    }

@@ -289,8 +289,6 @@ void EffectToneGen::PostSet()
 
 void EffectToneGen::PopulateOrExchange(ShuttleGui & S)
 {
-   wxTextCtrl *t;
-
    S.StartMultiColumn(2, wxCENTER);
    {
       S
@@ -326,7 +324,6 @@ void EffectToneGen::PopulateOrExchange(ShuttleGui & S)
          {
             S.StartHorizontalLay(wxLEFT, 50);
             {
-               t =
                S
                   .Text(XO("Frequency Hertz Start"))
                   .Target( mFrequency[0],
@@ -339,7 +336,6 @@ void EffectToneGen::PopulateOrExchange(ShuttleGui & S)
 
             S.StartHorizontalLay(wxLEFT, 50);
             {
-               t =
                S
                   .Text(XO("Frequency Hertz End"))
                   .Target( mFrequency[1],
@@ -359,7 +355,6 @@ void EffectToneGen::PopulateOrExchange(ShuttleGui & S)
          {
             S.StartHorizontalLay(wxLEFT, 50);
             {
-               t =
                S
                   .Text(XO("Amplitude Start"))
                   .Target( mAmplitude[0],
@@ -371,7 +366,6 @@ void EffectToneGen::PopulateOrExchange(ShuttleGui & S)
 
             S.StartHorizontalLay(wxLEFT, 50);
             {
-               t =
                S
                   .Text(XO("Amplitude End"))
                   .Target( mAmplitude[1],
@@ -390,7 +384,6 @@ void EffectToneGen::PopulateOrExchange(ShuttleGui & S)
       }
       else
       {
-         t =
          S
             .Target( mFrequency[0],
                NumValidatorStyle::NO_TRAILING_ZEROES, 6,
@@ -398,7 +391,6 @@ void EffectToneGen::PopulateOrExchange(ShuttleGui & S)
                mProjectRate / 2.0 )
             .AddTextBox(XXO("&Frequency (Hz):"), L"", 12);
 
-         t =
          S
             .Target( mAmplitude[0],
                NumValidatorStyle::NO_TRAILING_ZEROES, 6,

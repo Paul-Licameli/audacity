@@ -105,9 +105,9 @@ void MousePrefs::PopulateOrExchange(ShuttleGui & S)
    S
       .StartStatic(XO("Mouse Bindings (default values, not configurable)"), 1);
    {
-      mList =
       S
-         .AddListControlReportMode();
+         .AddListControlReportMode()
+         .Assign(mList);
    }
    S.EndStatic();
 }
