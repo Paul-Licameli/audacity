@@ -71,7 +71,6 @@ SplashDialog::SplashDialog(wxWindow * parent)
       wxDefaultSize, wxDEFAULT_DIALOG_STYLE | wxRESIZE_BORDER)
 {
    SetName();
-   m_pLogo = NULL; //v
    ShuttleGui S( this );
    Populate( S );
    Fit();
@@ -90,35 +89,42 @@ void SplashDialog::OnChar(wxMouseEvent &event)
 void SplashDialog::Populate( ShuttleGui & S )
 {
    auto bShow = GUIShowSplashScreen.Read();
+
+   const float fScale=0.5f;// smaller size.
+
    S.StartVerticalLay(1);
 
-   //v For now, change to AudacityLogoWithName via old-fashioned ways, not Theme.
-   m_pLogo = std::make_unique<wxBitmap>((const char **) AudacityLogoWithName_xpm); //v
-
-
-   // JKC: Resize to 50% of size.  Later we may use a smaller xpm as
-   // our source, but this allows us to tweak the size - if we want to.
-   // It also makes it easier to revert to full size if we decide to.
-   const float fScale=0.5f;// smaller size.
-   wxImage RescaledImage( m_pLogo->ConvertToImage() );
-   wxColour MainColour( 
-      RescaledImage.GetRed(1,1), 
-      RescaledImage.GetGreen(1,1), 
-      RescaledImage.GetBlue(1,1));
-   this->SetBackgroundColour(MainColour);
-
-   // wxIMAGE_QUALITY_HIGH not supported by wxWidgets 2.6.1, or we would use it here.
-   RescaledImage.Rescale( (int)(LOGOWITHNAME_WIDTH * fScale), (int)(LOGOWITHNAME_HEIGHT *fScale) );
-   wxBitmap RescaledBitmap( RescaledImage );
-   S.Prop(0)
+   wxStaticBitmap *icon{};
+   S
+      .Prop(0)
 #if  (0)
       .ConnectRoot( wxEVT_LEFT_DOWN, &SplashDialog::OnChar)
 #endif
       .Window<wxStaticBitmap>(
-                          //*m_pLogo, //v theTheme.Bitmap(bmpAudacityLogoWithName),
-                          RescaledBitmap,
-                          wxDefaultPosition,
-                          wxSize((int)(LOGOWITHNAME_WIDTH*fScale), (int)(LOGOWITHNAME_HEIGHT*fScale)));
+      //*m_pLogo, //v theTheme.Bitmap(bmpAudacityLogoWithName),
+      [=]{
+         //v For now, change to AudacityLogoWithName via old-fashioned ways, not Theme.
+         auto pLogo = std::make_unique<wxBitmap>(
+            (const char **) AudacityLogoWithName_xpm); //v
+
+         // JKC: Resize to 50% of size.  Later we may use a smaller xpm as
+         // our source, but this allows us to tweak the size - if we want to.
+         // It also makes it easier to revert to full size if we decide to.
+         wxImage RescaledImage( pLogo->ConvertToImage() );
+         wxColour MainColour(
+            RescaledImage.GetRed(1,1),
+            RescaledImage.GetGreen(1,1),
+            RescaledImage.GetBlue(1,1));
+         this->SetBackgroundColour(MainColour);
+
+         // wxIMAGE_QUALITY_HIGH not supported by wxWidgets 2.6.1, or we would use it here.
+         RescaledImage.Rescale( (int)(LOGOWITHNAME_WIDTH * fScale), (int)(LOGOWITHNAME_HEIGHT *fScale) );
+         // Note: wxBitmap is reference-counted and cheap to copy
+         return wxBitmap { RescaledImage };
+      }(),
+      wxDefaultPosition,
+      wxSize((int)(LOGOWITHNAME_WIDTH*fScale),
+             (int)(LOGOWITHNAME_HEIGHT*fScale)) );
 
    mpHtml =
    S
