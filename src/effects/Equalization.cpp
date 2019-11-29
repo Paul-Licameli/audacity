@@ -724,6 +724,9 @@ void EffectEqualization::PopulateOrExchange(ShuttleGui & S)
 
 
 
+   std::fill(mSlidersOld, mSlidersOld + NUMBER_OF_BANDS, 0);
+   std::fill(mEQVals, mEQVals + NUMBER_OF_BANDS + 1, 0.);
+
    S.SetBorder(0);
 
    S.SetSizerProportion(1);
@@ -877,9 +880,6 @@ void EffectEqualization::PopulateOrExchange(ShuttleGui & S)
                //?
 //               S
   //                .AddFixedText( fNum  );
-
-               mSlidersOld[i] = 0;
-               mEQVals[i] = 0.;
 
                //S.SetSizerProportion(1);
 
@@ -1123,6 +1123,7 @@ void EffectEqualization::PopulateOrExchange(ShuttleGui & S)
          S
             .AddUnits(XO("&Processing: "));
 
+         [&]{
          // update the control state
          int mathPath = EffectEqualization48x::GetMathPath();
          mMathProcessing =
@@ -1164,6 +1165,7 @@ void EffectEqualization::PopulateOrExchange(ShuttleGui & S)
                .AddRadioButton(XXO("AV&X Threaded"));
          }
          S.EndRadioButtonGroup();
+         }();
 
          S
             .Action( [this]{ OnBench(); } )
