@@ -46,6 +46,11 @@ private:
       const AudacityProject *pProject, int currentTool, bool bMultiTool )
       override;
 
+   UIHandlePtr SelectionHitTest(
+       std::weak_ptr<UIHandle> &mSelectHandle,
+       const TrackPanelMouseState &state, const AudacityProject *pProject)
+      override;
+
 protected:
    void DoSetMinimized( bool minimized ) override;
 };

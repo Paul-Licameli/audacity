@@ -357,14 +357,14 @@ namespace
    }
 }
 
-UIHandlePtr SelectHandle::HitTest
-(std::weak_ptr<SelectHandle> &holder,
+UIHandlePtr SelectHandle::HitTest( SelectHandleFactory factory,
+ std::weak_ptr<UIHandle> &holder,
  const TrackPanelMouseState &st, const AudacityProject *pProject,
  const std::shared_ptr<TrackView> &pTrackView)
 {
    // This handle is a little special because there may be some state to
    // preserve during movement before the click.
-   auto old = holder.lock();
+   auto old = std::dynamic_pointer_cast<SelectHandle>( holder.lock() );
    bool oldUseSnap = true;
    if (old) {
       // It should not have started listening to timer events
@@ -378,8 +378,8 @@ UIHandlePtr SelectHandle::HitTest
    }
 
    const auto &viewInfo = ViewInfo::Get( *pProject );
-   auto result = std::make_shared<SelectHandle>(
-      pTrackView, oldUseSnap, TrackList::Get( *pProject ), st, viewInfo );
+   auto result = factory(
+      pTrackView, oldUseSnap, TrackList::Get( *pProject ), st, viewInfo);
 
    result = AssignUIHandlePtr(holder, result);
 
@@ -1553,4 +1553,5 @@ void SelectHandle::ResetFreqSelectionPin
       wxASSERT(false);
    }
 }
+
 #endif

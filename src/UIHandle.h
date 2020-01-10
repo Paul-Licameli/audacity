@@ -140,15 +140,15 @@ using UIHandlePtr = std::shared_ptr<UIHandle>;
 // Construct a NEW handle as if hit the first time; then either keep it, or
 // use it to overwrite the state of a previously constructed handle that has not
 // yet been released.
-template<typename Subclass>
+template<typename BaseClass, typename Subclass>
 std::shared_ptr<Subclass> AssignUIHandlePtr
-( std::weak_ptr<Subclass> &holder, const std::shared_ptr<Subclass> &pNew )
+( std::weak_ptr<BaseClass> &holder, const std::shared_ptr<Subclass> &pNew )
 {
    // Either assign to a null weak_ptr, or else rewrite what the weak_ptr
    // points at.  Thus a handle already pointed at changes its state but not its
    // identity.  This may matter for the framework that holds the strong
    // pointers.
-   auto ptr = holder.lock();
+   auto ptr = std::dynamic_pointer_cast<Subclass>( holder.lock() );
    if (!ptr) {
       holder = pNew;
       return pNew;

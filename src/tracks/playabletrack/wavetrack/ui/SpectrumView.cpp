@@ -18,15 +18,16 @@ Paul Licameli split from WaveTrackView.cpp
 #include "WaveTrackView.h"
 #include "WaveTrackViewConstants.h"
 
-#include "../../../../AColor.h"
+#include "AColor.h"
 #include "Prefs.h"
-#include "../../../../NumberScale.h"
-#include "../../../../TrackArtist.h"
-#include "../../../../TrackPanelDrawingContext.h"
-#include "../../../../ViewInfo.h"
-#include "../../../../WaveClip.h"
-#include "../../../../WaveTrack.h"
-#include "../../../../prefs/SpectrogramSettings.h"
+#include "NumberScale.h"
+#include "TrackArtist.h"
+#include "TrackPanelDrawingContext.h"
+#include "ViewInfo.h"
+#include "WaveClip.h"
+#include "WaveTrack.h"
+#include "prefs/SpectrogramSettings.h"
+#include "tracks/ui/SpectralSelectHandle.h"
 
 #include <wx/dcmemory.h>
 #include <wx/graphics.h>
@@ -55,6 +56,23 @@ std::vector<UIHandlePtr> SpectrumView::DetailedHitTest(
    return WaveTrackSubView::DoDetailedHitTest(
       state, pProject, currentTool, bMultiTool, wt
    ).second;
+}
+
+UIHandlePtr SpectrumView::SelectionHitTest(
+    std::weak_ptr<UIHandle> &mSelectHandle,
+    const TrackPanelMouseState &state, const AudacityProject *pProject)
+{
+   auto factory = [](
+      const std::shared_ptr<TrackView> &pTrackView,
+      bool oldUseSnap,
+      const TrackList &trackList,
+      const TrackPanelMouseState &st,
+      const ViewInfo &viewInfo) -> UIHandlePtr {
+         return std::make_shared<SpectralSelectHandle>(
+            pTrackView, oldUseSnap, trackList, st, viewInfo );
+   };
+   return SelectHandle::HitTest( factory,
+      mSelectHandle, state, pProject, shared_from_this() );
 }
 
 void SpectrumView::DoSetMinimized( bool minimized )

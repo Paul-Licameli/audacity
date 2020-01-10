@@ -42,7 +42,13 @@ protected:
        const AudacityProject *pProject, int currentTool, bool bMultiTool)
       = 0;
 
-   std::weak_ptr<SelectHandle> mSelectHandle;
+   // Override to return the appropriate selection handle
+   // Default is the usual time-selection handle
+   virtual UIHandlePtr SelectionHitTest(
+       std::weak_ptr<UIHandle> &mSelectHandle,
+       const TrackPanelMouseState &state, const AudacityProject *pProject);
+
+   std::weak_ptr<UIHandle> mSelectHandle;
 
 public:
    std::weak_ptr<TimeShiftHandle> mTimeShiftHandle;
