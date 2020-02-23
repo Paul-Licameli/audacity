@@ -20,7 +20,6 @@
 
 
 class wxSlider;
-class wxCheckBox;
 class wxTextCtrl;
 class ShuttleGui;
 
@@ -63,7 +62,7 @@ private:
    void OnAmpText(wxCommandEvent & evt);
    void OnPeakText(wxCommandEvent & evt);
    void OnAmpSlider(wxCommandEvent & evt);
-   void OnClipCheckBox(wxCommandEvent & evt);
+   void OnClipCheckBox();
    void CheckClip();
    bool CanApply() override;
 
@@ -79,7 +78,6 @@ private:
    wxSlider *mAmpS;
    wxTextCtrl *mAmpT;
    wxTextCtrl *mNewPeakT;
-   wxCheckBox *mClip;
 
    CapturedParameters mParameters;
    CapturedParameters mBatchParameters;

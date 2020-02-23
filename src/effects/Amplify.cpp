@@ -41,7 +41,6 @@ enum
 {
    ID_Amp = 10000,
    ID_Peak,
-   ID_Clip
 };
 
 // Define keys, defaults, minimums, and maximums for the effect parameters
@@ -67,7 +66,6 @@ BEGIN_EVENT_TABLE(EffectAmplify, wxEvtHandler)
    EVT_SLIDER(ID_Amp, EffectAmplify::OnAmpSlider)
    EVT_TEXT(ID_Amp, EffectAmplify::OnAmpText)
    EVT_TEXT(ID_Peak, EffectAmplify::OnPeakText)
-   EVT_CHECKBOX(ID_Clip, EffectAmplify::OnClipCheckBox)
 END_EVENT_TABLE()
 
 EffectAmplify::EffectAmplify()
@@ -262,11 +260,10 @@ void EffectAmplify::PopulateOrExchange(ShuttleGui & S)
       // Clipping
       S.StartHorizontalLay(wxCENTER);
       {
-
-         mClip =
          S
-            .Id(ID_Clip)
             .Disable( batch )
+            .Action( [this]{ OnClipCheckBox(); } )
+            .Target( mCanClip )
             .AddCheckBox(XXO("Allo&w clipping"), false);
       }
       S.EndHorizontalLay();
@@ -290,8 +287,6 @@ bool EffectAmplify::TransferDataToWindow()
 
    mNewPeak = LINEAR_TO_DB(mRatio * mPeak);
 
-   mClip->SetValue(mCanClip);
-
    CheckClip();
 
    return true;
@@ -300,8 +295,6 @@ bool EffectAmplify::TransferDataToWindow()
 bool EffectAmplify::TransferDataFromWindow()
 {
    mRatio = DB_TO_LINEAR(TrapDouble(mAmp * Amp.scale, Amp.min * Amp.scale, Amp.max * Amp.scale) / Amp.scale);
-
-   mCanClip = mClip->GetValue();
 
    if (!mCanClip && mRatio * mPeak > 1.0)
    {
@@ -320,7 +313,7 @@ void EffectAmplify::CheckClip()
 
 bool EffectAmplify::CanApply()
 {
-   return mClip->GetValue() || (mPeak > 0.0 && mRatio <= mRatioClip);
+   return mCanClip || (mPeak > 0.0 && mRatio <= mRatioClip);
 }
 
 void EffectAmplify::OnAmpText(wxCommandEvent & WXUNUSED(evt))
@@ -374,7 +367,7 @@ void EffectAmplify::OnAmpSlider(wxCommandEvent & evt)
    double dB2 = (evt.GetInt() - 1) / Amp.scale;
    double ratio2 = DB_TO_LINEAR(TrapDouble(dB2, Amp.min, Amp.max));
 
-   if (!mClip->GetValue() && mRatio * mPeak > 1.0 && ratio2 * mPeak < 1.0)
+   if (!mCanClip && mRatio * mPeak > 1.0 && ratio2 * mPeak < 1.0)
    {
       mRatio = 1.0 / mPeak;
    }
@@ -388,7 +381,7 @@ void EffectAmplify::OnAmpSlider(wxCommandEvent & evt)
    CheckClip();
 }
 
-void EffectAmplify::OnClipCheckBox(wxCommandEvent & WXUNUSED(evt))
+void EffectAmplify::OnClipCheckBox()
 {
    CheckClip();
 }
