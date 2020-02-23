@@ -87,6 +87,7 @@ private:
    double mCurT1;
 
    // control values
+   double   m_ApproximatePercentChange; // As shown in text, may lose precision
    double   m_PercentChange;  // percent change to apply to tempo
                               // -100% is meaningless, but sky's the upper limit.
                               // Slider is (-100, 200], but textCtrls can set higher.
