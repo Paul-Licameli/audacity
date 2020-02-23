@@ -70,7 +70,9 @@ private:
    void OnTimeCtrlUpdate(wxCommandEvent & evt);
 
    // helper functions
+   void UpdateApproximatePercentChange();
    void Update_Text_PercentChange();   // Update control per current m_PercentChange.
+   void UpdateMultiplier();
    void Update_Text_Multiplier();      // Update control per current m_PercentChange.
    void Update_Slider_PercentChange(); // Update control per current m_PercentChange.
    void Update_Vinyl();                // Update Vinyl controls for NEW percent change.

@@ -305,27 +305,12 @@ void EffectWahwah::PopulateOrExchange(ShuttleGui & S)
 
 bool EffectWahwah::TransferDataToWindow()
 {
-   if (!mUIParent->TransferDataToWindow())
-   {
-      return false;
-   }
-
    mFreqS->SetValue((int) (mFreq * Freq.scale));
    mPhaseS->SetValue((int) (mPhase * Phase.scale));
    mDepthS->SetValue((int) (mDepth * Depth.scale));
    mResS->SetValue((int) (mRes * Res.scale));
    mFreqOfsS->SetValue((int) (mFreqOfs * FreqOfs.scale));
    mOutGainS->SetValue((int) (mOutGain * OutGain.scale));
-
-   return true;
-}
-
-bool EffectWahwah::TransferDataFromWindow()
-{
-   if (!mUIParent->Validate() || !mUIParent->TransferDataFromWindow())
-   {
-      return false;
-   }
 
    return true;
 }

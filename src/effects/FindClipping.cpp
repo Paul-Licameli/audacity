@@ -241,11 +241,6 @@ bool EffectFindClipping::TransferDataToWindow()
 
 bool EffectFindClipping::TransferDataFromWindow()
 {
-   if (!mUIParent->Validate())
-   {
-      return false;
-   }
-
    ShuttleGui S(mUIParent, eIsGettingFromDialog);
    PopulateOrExchange(S);
 

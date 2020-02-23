@@ -275,11 +275,6 @@ void EffectBassTreble::PopulateOrExchange(ShuttleGui & S)
 
 bool EffectBassTreble::TransferDataToWindow()
 {
-   if (!mUIParent->TransferDataToWindow())
-   {
-      return false;
-   }
-
    mBassS->SetValue((int) (mBass * Bass.scale));
    mTrebleS->SetValue((int) mTreble *Treble.scale);
    mGainS->SetValue((int) mGain * Gain.scale);
@@ -290,11 +285,6 @@ bool EffectBassTreble::TransferDataToWindow()
 
 bool EffectBassTreble::TransferDataFromWindow()
 {
-   if (!mUIParent->Validate() || !mUIParent->TransferDataFromWindow())
-   {
-      return false;
-   }
-
    return true;
 }
 

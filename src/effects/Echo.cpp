@@ -161,24 +161,3 @@ void EffectEcho::PopulateOrExchange(ShuttleGui & S)
    }
    S.EndMultiColumn();
 }
-
-bool EffectEcho::TransferDataToWindow()
-{
-   if (!mUIParent->TransferDataToWindow())
-   {
-      return false;
-   }
-
-   return true;
-}
-
-bool EffectEcho::TransferDataFromWindow()
-{
-   if (!mUIParent->Validate() || !mUIParent->TransferDataFromWindow())
-   {
-      return false;
-   }
-
-   return true;
-}
-

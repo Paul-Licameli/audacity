@@ -368,11 +368,6 @@ bool EffectDtmf::TransferDataToWindow()
 {
    Recalculate();
 
-   if (!mUIParent->TransferDataToWindow())
-   {
-      return false;
-   }
-
    mDtmfDutyCycleS->SetValue(dtmfDutyCycle * DutyCycle.scale);
 
    mDtmfDurationT->SetValue(GetDuration());
@@ -384,11 +379,6 @@ bool EffectDtmf::TransferDataToWindow()
 
 bool EffectDtmf::TransferDataFromWindow()
 {
-   if (!mUIParent->Validate() || !mUIParent->TransferDataFromWindow())
-   {
-      return false;
-   }
-
    dtmfDutyCycle = (double) mDtmfDutyCycleS->GetValue() / DutyCycle.scale;
    SetDuration(mDtmfDurationT->GetValue());
 

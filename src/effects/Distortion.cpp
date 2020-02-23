@@ -327,9 +327,9 @@ bool EffectDistortion::LoadFactoryPreset(int id)
    mParams = FactoryPresets[id].params;
    Init();
 
-   if (mUIDialog)
+   if (mUIParent)
    {
-      TransferDataToWindow();
+      mUIParent->TransferDataToWindow();
    }
 
    return true;
@@ -629,12 +629,6 @@ bool EffectDistortion::Init()
 bool EffectDistortion::TransferDataToWindow()
 {
    const auto thresholdLinear = DB_TO_LINEAR( mParams.mThreshold_dB );
-
-   if (!mUIParent->TransferDataToWindow())
-   {
-      return false;
-   }
-
    auto &controls = mControls[ mTableChoiceIndx ];
    controls.mThresholdS->SetValue((int) (thresholdLinear * Threshold_dB.scale + 0.5));
    controls.mNoiseFloorS->SetValue((int) mParams.mNoiseFloor + 0.5);
@@ -647,11 +641,6 @@ bool EffectDistortion::TransferDataToWindow()
 
 bool EffectDistortion::TransferDataFromWindow()
 {
-   if (!mUIParent->Validate() || !mUIParent->TransferDataFromWindow())
-   {
-      return false;
-   }
-
    mParams = mPageParams[ mTableChoiceIndx ];
 
    return true;
@@ -763,8 +752,8 @@ void EffectDistortion::OnTypeChoice(wxCommandEvent& /*evt*/)
    Init();
    for ( auto pBook : { mBook1, mBook2, mBook3 } )
       pBook->SetSelection( mTableChoiceIndx );
-   if ( mUIDialog )
-      mUIDialog->TransferDataToWindow();
+   if ( mUIParent )
+      mUIParent->TransferDataToWindow();
 }
 
 void EffectDistortion::OnThresholdText(wxCommandEvent& /*evt*/)

@@ -386,11 +386,6 @@ bool EffectCompressor::TransferDataToWindow()
 
 bool EffectCompressor::TransferDataFromWindow()
 {
-   if (!mUIParent->Validate())
-   {
-      return false;
-   }
-
    mThresholdDB = (double) mThresholdSlider->GetValue();
    mNoiseFloorDB = (double) mNoiseFloorSlider->GetValue() / NoiseFloor.scale;
    mRatio = (double) mRatioSlider->GetValue() / Ratio.scale;
@@ -672,7 +667,8 @@ float EffectCompressor::DoCompression(float value, double env)
 
 void EffectCompressor::OnSlider(wxCommandEvent & WXUNUSED(evt))
 {
-   TransferDataFromWindow();
+   if ( mUIParent )
+      mUIParent->TransferDataFromWindow();
    UpdateUI();
 }
 

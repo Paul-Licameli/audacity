@@ -48,8 +48,6 @@ public:
    bool Startup() override;
    bool Process() override;
    void PopulateOrExchange(ShuttleGui & S) override;
-   bool TransferDataToWindow() override;
-   bool TransferDataFromWindow() override;
 
 private:
    bool ProcessOne(int count, WaveTrack * track,

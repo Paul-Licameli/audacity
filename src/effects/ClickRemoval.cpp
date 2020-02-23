@@ -363,26 +363,6 @@ void EffectClickRemoval::PopulateOrExchange(ShuttleGui & S)
    return;
 }
 
-bool EffectClickRemoval::TransferDataToWindow()
-{
-   if (!mUIParent->TransferDataToWindow())
-   {
-      return false;
-   }
-
-   return true;
-}
-
-bool EffectClickRemoval::TransferDataFromWindow()
-{
-   if (!mUIParent->Validate() || !mUIParent->TransferDataFromWindow())
-   {
-      return false;
-   }
-
-   return true;
-}
-
 void EffectClickRemoval::OnWidthText(wxCommandEvent & WXUNUSED(evt))
 {
    mWidthT->GetValidator()->TransferFromWindow();

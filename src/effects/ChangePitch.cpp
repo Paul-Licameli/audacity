@@ -365,11 +365,6 @@ void EffectChangePitch::PopulateOrExchange(ShuttleGui & S)
 
 bool EffectChangePitch::TransferDataToWindow()
 {
-   if (!mUIParent->TransferDataToWindow())
-   {
-      return false;
-   }
-
    Calc_SemitonesChange_fromPercentChange();
    Calc_ToPitch(); // Call *after* m_dSemitonesChange is updated.
    Calc_ToFrequency();
@@ -379,10 +374,6 @@ bool EffectChangePitch::TransferDataToWindow()
    Update_Choice_ToPitch();
    Update_Spin_FromOctave();
    Update_Spin_ToOctave();
-   Update_Text_SemitonesChange();
-   Update_Text_FromFrequency();
-   Update_Text_ToFrequency();
-   Update_Text_PercentChange();
    Update_Slider_PercentChange();
 
    return true;
@@ -390,11 +381,6 @@ bool EffectChangePitch::TransferDataToWindow()
 
 bool EffectChangePitch::TransferDataFromWindow()
 {
-   if (!mUIParent->Validate() || !mUIParent->TransferDataFromWindow())
-   {
-      return false;
-   }
-
    // from/to pitch controls
    m_nFromPitch = m_pChoice_FromPitch->GetSelection();
    m_nFromOctave = m_pSpin_FromOctave->GetValue();

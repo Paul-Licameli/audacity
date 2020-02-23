@@ -318,22 +318,7 @@ void EffectNormalize::PopulateOrExchange(ShuttleGui & S)
 
 bool EffectNormalize::TransferDataToWindow()
 {
-   if (!mUIParent->TransferDataToWindow())
-   {
-      return false;
-   }
-
    UpdateUI();
-
-   return true;
-}
-
-bool EffectNormalize::TransferDataFromWindow()
-{
-   if (!mUIParent->Validate() || !mUIParent->TransferDataFromWindow())
-   {
-      return false;
-   }
 
    return true;
 }

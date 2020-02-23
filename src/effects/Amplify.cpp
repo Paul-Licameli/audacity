@@ -158,7 +158,7 @@ bool EffectAmplify::LoadFactoryDefaults()
    }
    mCanClip = false;
 
-   return TransferDataToWindow();
+   return !mUIParent || mUIParent->TransferDataToWindow();
 }
 
 // Effect implementation
@@ -285,12 +285,10 @@ bool EffectAmplify::TransferDataToWindow()
       mRatio = DB_TO_LINEAR(dB);
 
    mAmp = LINEAR_TO_DB(mRatio);
-   mAmpT->GetValidator()->TransferToWindow();
 
    mAmpS->SetValue((int) (mAmp * Amp.scale + 0.5f));
 
    mNewPeak = LINEAR_TO_DB(mRatio * mPeak);
-   mNewPeakT->GetValidator()->TransferToWindow();
 
    mClip->SetValue(mCanClip);
 
@@ -301,11 +299,6 @@ bool EffectAmplify::TransferDataToWindow()
 
 bool EffectAmplify::TransferDataFromWindow()
 {
-   if (!mUIParent->Validate() || !mUIParent->TransferDataFromWindow())
-   {
-      return false;
-   }
-
    mRatio = DB_TO_LINEAR(TrapDouble(mAmp * Amp.scale, Amp.min * Amp.scale, Amp.max * Amp.scale) / Amp.scale);
 
    mCanClip = mClip->GetValue();

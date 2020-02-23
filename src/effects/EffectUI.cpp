@@ -782,15 +782,17 @@ EffectUIHost::~EffectUIHost()
 
 bool EffectUIHost::TransferDataToWindow()
 {
-   if( mEffect )
-      return mEffect->TransferDataToWindow();
-   if( mCommand )
-      return mCommand->TransferDataToWindow();
-   return false;
+   if( mEffect && ! mEffect->TransferDataToWindow() )
+      return false;
+   if( mCommand && !mCommand->TransferDataToWindow() )
+      return false;
+   return wxDialogWrapper::TransferDataToWindow();
 }
 
 bool EffectUIHost::TransferDataFromWindow()
 {
+   if ( !wxDialogWrapper::TransferDataFromWindow() )
+      return false;
    if( mEffect)
       return mEffect->TransferDataFromWindow();
    if( mCommand)
@@ -1417,7 +1419,7 @@ void EffectUIHost::OnPlay()
 {
    if (!mSupportsRealtime)
    {
-      if (!mClient->ValidateUI() || !mEffect->TransferDataFromWindow())
+      if (!mClient->ValidateUI() || !TransferDataFromWindow())
       {
          return;
       }

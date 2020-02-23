@@ -241,11 +241,6 @@ void EffectNoise::PopulateOrExchange(ShuttleGui & S)
 
 bool EffectNoise::TransferDataToWindow()
 {
-   if (!mUIParent->TransferDataToWindow())
-   {
-      return false;
-   }
-
    mNoiseDurationT->SetValue(GetDuration());
 
    return true;
@@ -253,11 +248,6 @@ bool EffectNoise::TransferDataToWindow()
 
 bool EffectNoise::TransferDataFromWindow()
 {
-   if (!mUIParent->Validate() || !mUIParent->TransferDataFromWindow())
-   {
-      return false;
-   }
-
    SetDuration(mNoiseDurationT->GetValue());
 
    return true;

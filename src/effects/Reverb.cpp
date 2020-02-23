@@ -310,10 +310,8 @@ bool EffectReverb::LoadFactoryPreset(int id)
 
    mParams = FactoryPresets[id].params;
 
-   if (mUIDialog)
-   {
-      TransferDataToWindow();
-   }
+   if (mUIParent)
+      mUIParent->TransferDataToWindow();
 
    return true;
 }
@@ -456,11 +454,6 @@ bool EffectReverb::TransferDataToWindow()
 
 bool EffectReverb::TransferDataFromWindow()
 {
-   if (!mUIParent->Validate())
-   {
-      return false;
-   }
-
    mParams.mRoomSize = mRoomSizeS->GetValue();
    mParams.mPreDelay = mPreDelayS->GetValue();
    mParams.mReverberance = mReverberanceS->GetValue();

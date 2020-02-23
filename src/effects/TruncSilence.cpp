@@ -843,23 +843,8 @@ void EffectTruncSilence::PopulateOrExchange(ShuttleGui & S)
    S.EndStatic();
 }
 
-bool EffectTruncSilence::TransferDataToWindow()
-{
-   if (!mUIParent->TransferDataToWindow())
-   {
-      return false;
-   }
-
-   return true;
-}
-
 bool EffectTruncSilence::TransferDataFromWindow()
 {
-   if (!mUIParent->Validate() || !mUIParent->TransferDataFromWindow())
-   {
-      return false;
-   }
-
    mbIndependent = mIndependent->IsChecked();
 
    return true;

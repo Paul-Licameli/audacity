@@ -281,23 +281,8 @@ void EffectTimeScale::PopulateOrExchange(ShuttleGui & S)
 
 bool EffectTimeScale::TransferDataToWindow()
 {
-   if (!mUIParent->TransferDataToWindow())
-   {
-      return false;
-   }
-
    Update_Slider_RatePercentChangeStart();
    Update_Slider_RatePercentChangeEnd();
-
-   return true;
-}
-
-bool EffectTimeScale::TransferDataFromWindow()
-{
-   if (!mUIParent->Validate() || !mUIParent->TransferDataFromWindow())
-   {
-      return false;
-   }
 
    return true;
 }

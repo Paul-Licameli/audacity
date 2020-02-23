@@ -1116,10 +1116,9 @@ bool Effect::GetAutomationParameters(wxString & parms)
 {
    CommandParameters eap;
 
-   if (mUIDialog && !TransferDataFromWindow())
-   {
+   if ( mUIDialog &&
+         ( !mUIDialog->Validate() || !mUIDialog->TransferDataFromWindow() ) )
       return false;
-   }
 
    ShuttleGetAutomation S;
    S.mpEap = &eap;
@@ -1193,7 +1192,7 @@ bool Effect::SetAutomationParameters(const wxString & parms)
       return true;
    }
 
-   return TransferDataToWindow();
+   return !mUIParent || mUIParent->TransferDataToWindow();
 }
 
 RegistryPaths Effect::GetUserPresets()

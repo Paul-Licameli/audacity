@@ -72,7 +72,9 @@ private:
    // helper fns
    void Update_Text_PercentChange(); // Update control per current m_PercentChange.
    void Update_Slider_PercentChange(); // Update control per current m_PercentChange.
+   void UpdateToBPM();
    void Update_Text_ToBPM(); // Use m_FromBPM & m_PercentChange to set NEW m_ToBPM & control.
+   void UpdateToLength();
    void Update_Text_ToLength(); // Use m_FromLength & m_PercentChange to set NEW m_ToLength & control.
 
 private:

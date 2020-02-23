@@ -194,26 +194,6 @@ void EffectPaulstretch::PopulateOrExchange(ShuttleGui & S)
    S.EndMultiColumn();
 };
 
-bool EffectPaulstretch::TransferDataToWindow()
-{
-   if (!mUIParent->TransferDataToWindow())
-   {
-      return false;
-   }
-
-   return true;
-}
-
-bool EffectPaulstretch::TransferDataFromWindow()
-{
-   if (!mUIParent->Validate() || !mUIParent->TransferDataFromWindow())
-   {
-      return false;
-   }
-
-   return true;
-}
-
 // EffectPaulstretch implementation
 
 void EffectPaulstretch::OnText(wxCommandEvent & WXUNUSED(evt))

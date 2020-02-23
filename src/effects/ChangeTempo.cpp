@@ -317,15 +317,10 @@ bool EffectChangeTempo::TransferDataToWindow()
    // Reset from length because it can be changed by Preview
    m_FromLength = mT1 - mT0;
 
-   if (!mUIParent->TransferDataToWindow())
-   {
-      return false;
-   }
-
    // percent change controls
    Update_Slider_PercentChange();
-   Update_Text_ToBPM();
-   Update_Text_ToLength();
+   UpdateToBPM();
+   UpdateToLength();
 
    auto number = FormatLength( m_FromLength );
    auto text = wxString::Format(  _("Length in seconds from %s, to"),
@@ -338,11 +333,6 @@ bool EffectChangeTempo::TransferDataToWindow()
 
 bool EffectChangeTempo::TransferDataFromWindow()
 {
-   if (!mUIParent->Validate() || !mUIParent->TransferDataFromWindow())
-   {
-      return false;
-   }
-
    return true;
 }
 
@@ -425,17 +415,27 @@ void EffectChangeTempo::Update_Slider_PercentChange()
    m_pSlider_PercentChange->SetValue((int)(unwarped + 0.5));
 }
 
-void EffectChangeTempo::Update_Text_ToBPM()
-// Use m_FromBPM & m_PercentChange to set NEW m_ToBPM & control.
+// Use m_FromBPM & m_PercentChange to set NEW m_ToBPM.
+void EffectChangeTempo::UpdateToBPM()
 {
    m_ToBPM = (((m_FromBPM * (100.0 + m_PercentChange)) / 100.0));
+}
+
+void EffectChangeTempo::Update_Text_ToBPM()
+{
+   UpdateToBPM();
    m_pTextCtrl_ToBPM->GetValidator()->TransferToWindow();
 }
 
-void EffectChangeTempo::Update_Text_ToLength()
-// Use m_FromLength & m_PercentChange to set NEW m_ToLength & control.
+// Use m_FromLength & m_PercentChange to set NEW m_ToLength.
+void EffectChangeTempo::UpdateToLength()
 {
    m_ToLength = (m_FromLength * 100.0) / (100.0 + m_PercentChange);
+}
+
+void EffectChangeTempo::Update_Text_ToLength()
+{
+   UpdateToLength();
    m_pTextCtrl_ToLength->GetValidator()->TransferToWindow();
 }
 
