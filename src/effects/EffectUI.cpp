@@ -676,7 +676,6 @@ static const int kDummyID = 20000;
 static const int kUserPresetsDummyID = 20006;
 static const int kDeletePresetDummyID = 20007;
 static const int kMenuID = 20100;
-static const int kEnableID = 20101;
 static const int kPlayID = 20102;
 static const int kRewindID = 20103;
 static const int kFFwdID = 20104;
@@ -688,7 +687,6 @@ EVT_INIT_DIALOG(EffectUIHost::OnInitDialog)
 EVT_ERASE_BACKGROUND(EffectUIHost::OnErase)
 EVT_PAINT(EffectUIHost::OnPaint)
 EVT_CLOSE(EffectUIHost::OnClose)
-EVT_CHECKBOX(kEnableID, EffectUIHost::OnEnable)
 END_EVENT_TABLE()
 
 EffectUIHost::EffectUIHost(wxWindow *parent,
@@ -1004,9 +1002,10 @@ wxPanel *EffectUIHost::BuildButtonBar(wxWindow *parent)
 
             mEnableCb =
             S
-               .Id( kEnableID )
                .Position(wxALIGN_CENTER | wxTOP | wxBOTTOM)
                .Text(XO("Enable"))
+               .Target( mEnabled )
+               .Action( [this]{ OnEnable(); } )
                .AddCheckBox( XXO("&Enable"), mEnabled );
             //
          }
@@ -1392,16 +1391,13 @@ void EffectUIHost::Resume()
       // The preferred behaviour is currently undecided, so for now
       // just disallow enabling until settings are valid.
       mEnabled = false;
-      mEnableCb->SetValue(mEnabled);
       return;
    }
    RealtimeEffectManager::Get().RealtimeResumeOne( *mEffect );
 }
 
-void EffectUIHost::OnEnable(wxCommandEvent & WXUNUSED(evt))
+void EffectUIHost::OnEnable()
 {
-   mEnabled = mEnableCb->GetValue();
-   
    if (mEnabled) {
       Resume();
       mNeedsResume = false;
