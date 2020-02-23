@@ -1767,7 +1767,7 @@ void ExportFFmpegOptions::PopulateOrExchange(ShuttleGui & S)
 {
    // A function-factory
    const auto forCodecs = [this]( std::vector<AVCodecID> ids )
-      -> DialogDefinition::Item::Test {
+      -> DialogDefinition::BaseItem::Test {
       return [this, ids]{
          const auto sel = FindSelectedCodec();
          if ( sel < 0 )
@@ -1786,7 +1786,7 @@ void ExportFFmpegOptions::PopulateOrExchange(ShuttleGui & S)
    
    // Another function-factory
    const auto forFormats = [this]( std::vector<const char *> formats )
-      -> DialogDefinition::Item::Test {
+      -> DialogDefinition::BaseItem::Test {
       wxArrayString strings;
       for ( const auto format : formats )
          strings.push_back( wxString::FromUTF8( format ) );

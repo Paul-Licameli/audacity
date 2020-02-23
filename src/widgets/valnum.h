@@ -55,6 +55,8 @@ public:
     // This function can pop up an error message.
     bool Validate(wxWindow * parent) override;
 
+   NumValidatorStyle GetStyle() const { return m_style; }
+
 protected:
     NumValidatorBase(NumValidatorStyle style)
     {
@@ -247,7 +249,7 @@ protected:
                                                     : wxString();
     }
 
-private:
+protected:
     // Just a helper which is a common part of TransferToWindow() and
     // NormalizeString(): returns string representation of a number honouring
     // NumValidatorStyle::ZERO_AS_BLANK flag.
@@ -289,6 +291,11 @@ protected:
     typedef long LongestValueType;
 #endif
 
+public:
+    LongestValueType GetMin() const { return m_min; }
+    LongestValueType GetMax() const { return m_max; }
+
+protected:
     IntegerValidatorBase(NumValidatorStyle style)
         : NumValidatorBase(style)
     {
@@ -336,7 +343,7 @@ private:
 // (short, int or long and long long if supported) and their unsigned versions
 // as well.
 template <typename T>
-class IntegerValidator final
+class IntegerValidator
     : public Private::NumValidator<IntegerValidatorBase, T>
 {
 public:
@@ -396,6 +403,12 @@ protected:
     // float).
     typedef double LongestValueType;
 
+public:
+    unsigned GetPrecision() const { return m_precision; }
+    LongestValueType GetMin() const { return m_min; }
+    LongestValueType GetMax() const { return m_max; }
+
+protected:
     FloatingPointValidatorBase(NumValidatorStyle style)
         : NumValidatorBase(style)
     {
@@ -442,7 +455,7 @@ private:
 // Validator for floating point numbers. It can be used with float, double or
 // long double values.
 template <typename T>
-class FloatingPointValidator final
+class FloatingPointValidator
     : public Private::NumValidator<FloatingPointValidatorBase, T>
 {
 public:

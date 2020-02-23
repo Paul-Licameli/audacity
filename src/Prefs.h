@@ -410,13 +410,16 @@ public:
    { return GetSymbols().GetInternals(); }
 
    Identifier Read() const;
+   int ReadIndex() const;
 
    // new direct use is discouraged but it may be needed in legacy code:
    // use a default in case the preference is not defined, which may not be
    // the default-default stored in this object.
    Identifier ReadWithDefault( const Identifier & ) const;
+   int ReadIndexWithDefault( const Identifier & ) const;
 
    bool Write( const Identifier &value ); // you flush gPrefs afterward
+   bool WriteIndex( size_t index ); // you flush gPrefs afterward
 
    void SetDefault( long value );
 
@@ -465,13 +468,16 @@ public:
    { return GetSymbols().GetInternals(); }
 
    Identifier Read() const;
+   int ReadIndex() const;
 
    // new direct use is discouraged but it may be needed in legacy code:
    // use a default in case the preference is not defined, which may not be
    // the default-default stored in this object.
    Identifier ReadWithDefault( const Identifier & ) const;
+   int ReadIndexWithDefault( const Identifier & ) const;
 
    bool Write( const Identifier &value ); // you flush gPrefs afterward
+   bool WriteIndex( size_t index ); // you flush gPrefs afterward
 
    void SetDefault( long value );
 

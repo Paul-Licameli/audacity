@@ -1816,7 +1816,7 @@ void EffectNoiseReduction::Dialog::PopulateOrExchange(ShuttleGui & S)
    S.EndStatic();
 #endif
 
-   using DialogDefinition::Item;
+   using DialogDefinition::BaseItem;
    S
       .AddStandardButtons( 0, {
          S.Item( eCancelButton ).Action( [this]{ OnCancel(); } ),

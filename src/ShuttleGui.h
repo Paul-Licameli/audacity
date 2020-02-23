@@ -17,10 +17,13 @@
 
 #include "Identifier.h"
 
+#include <bitset>
 #include <initializer_list>
 #include <functional>
 #include <vector>
 #include <wx/slider.h> // to inherit
+#include <wx/valgen.h> // for wxGenericValidator
+#include <wx/valtext.h> // for wxTextValidator
 #include "MemoryX.h"
 #include <wx/listbase.h> // for wxLIST_FORMAT_LEFT
 #include <wx/weakref.h>
@@ -28,6 +31,7 @@
 #include "Prefs.h"
 #include "widgets/NumericTextCtrl.h"
 #include "ShuttlePrefs.h"
+#include "widgets/valnum.h" // for IntegerValidator, FloatingPointValidator
 #include "WrappedType.h"
 
 class ChoiceSetting;
@@ -125,6 +129,8 @@ enum StandardButtonID : unsigned
    eCloseButton   = 0x0400,
 };
 
+#include "Prefs.h"
+
 namespace DialogDefinition {
   
 struct ControlText{
@@ -167,10 +173,586 @@ inline ControlText Label( const TranslatableString &label )
    return { {}, {}, {}, label };
 }
 
+// This allows validators to generalize their means of storage of a value,
+// such as by persistency, or transformation of values
+template< typename Target >
+class Adaptor {
+public:
+   using TargetType = Target;
+
+   virtual ~Adaptor() = default;
+
+   // Return value is a success indicator
+   virtual bool Get( TargetType &target ) const = 0;
+   virtual bool Set( const TargetType &value ) = 0;
+};
+
+// This adapts a variable
+template< typename Target >
+class BasicAdaptor : public Adaptor< Target > {
+public:
+   ~BasicAdaptor() override = default;
+
+   BasicAdaptor( Target &target ) : mTarget{ target } {}
+
+   bool Get( Target &target ) const override
+   {
+      target = mTarget;
+      return true;
+   }
+
+   bool Set( const Target &value ) override
+   {
+      mTarget = value;
+      return true;
+   }
+
+private:
+   Target &mTarget;
+};
+
+// This applies transformations to a variable
+template< typename Stored, typename Transformed = Stored >
+class Transformer : public Adaptor< Transformed > {
+public:
+   // Transform the stored value to a value associated with a control
+   using Getter = std::function< Transformed(Stored) >;
+   // Inverse transformation from control value to stored
+   using Setter = std::function< Stored(Transformed) >;
+
+   Transformer( Stored &stored, Getter getter, Setter setter )
+      : mStored{ stored }
+      , mGetter{ std::move( getter ) }
+      , mSetter{ std::move( setter ) }
+   {
+      wxASSERT( mGetter );
+      wxASSERT( mSetter );
+   }
+   ~Transformer() override = default;
+
+   bool Get( Transformed &target ) const override
+   {
+      target = mGetter( mStored );
+      return true;
+   }
+
+   bool Set( const Transformed &value ) override
+   {
+      mStored = mSetter( value );
+      return true;
+   }
+
+private:
+   Stored &mStored;
+   const Getter mGetter;
+   const Setter mSetter;
+};
+
+// Factory function that deduces template parameters for Transformer,
+// except in case Target needs to be distinct from Stored
+template<
+   typename Stored,
+   typename Target = Stored,
+   typename Getter = std::function< Target(Stored) >,
+   typename Setter = std::function< Stored(Target) >
+>
+inline std::shared_ptr< Adaptor< Target > >
+Transform( Stored &stored,
+   // Getter and Setter default to simple type conversions between
+   // Target and Stored types
+   Getter &&getter = [](Stored value){ return static_cast<Target>( value ); },
+   Setter &&setter = [](Target value){ return static_cast<Stored>( value ); } )
+{
+   return std::make_shared< Transformer< Stored, Target > >( stored,
+      std::forward< Getter >( getter ), std::forward< Setter >( setter ) );
+}
+
+// Detects whether any of the controls is transiently in a state with invalid
+// values, so that other controls (such as an OK button) can be disabled
+class ValidationState {
+   static constexpr size_t nFlags = 64;
+   using Bitset = std::bitset<nFlags>;
+
+public:
+   using Slot = Bitset::reference;
+
+   bool Ok() const { return mFlags.all(); }
+   Slot ReserveSlot();
+   
+private:
+   size_t mNext = 0;
+   Bitset mFlags = ~Bitset{}; // initially all true
+};
+
+// Factory function that deduces template parameters for Transformer,
+// except in case Target needs to be distinct from Stored.
+// Generates a getter and a setter that multiply and divide by a scale factor,
+// which is often useful with slider controls.
+template<
+   typename Stored,
+   typename Target = Stored,
+   typename Factor,
+   typename Origin = int
+>
+inline std::shared_ptr< Adaptor< Target > >
+Scale( Stored &stored, Factor scale, Origin origin = 0 )
+{
+   return std::make_shared< Transformer< Stored, Target > >( stored,
+      [origin, scale]( double output ){ return (output - origin) * scale; },
+      [origin, scale]( double input ){ return input / scale + origin; } );
+}
+
+// This adapts a setting stored in preferences
+template< typename Target >
+class SettingAdaptor : public Adaptor< Target > {
+public:
+   using SettingType = Setting< Target >;
+
+   SettingAdaptor( SettingType &setting ) : mSetting{ setting } {}
+
+   ~SettingAdaptor() override = default;
+
+   SettingType &GetSetting() { return mSetting; }
+
+   bool Get( Target &target ) const override
+   {
+      return mSetting.Read( &target );
+   }
+
+   bool Set( const Target &value ) override
+   {
+      return mSetting.Write( value ) && gPrefs->Flush();
+   }
+
+private:
+   SettingType &mSetting;
+};
+
+struct ComputedChoices
+{
+   using StringsFunction = Recomputer< Identifiers >;
+   using TranslatableStringsFunction = Recomputer< TranslatableStrings >;
+   StringsFunction GetChoices;
+   mutable Identifiers cache;
+
+   ComputedChoices() = default;
+
+   ComputedChoices( const TranslatableStrings &strings )
+      : ComputedChoices{ TranslatableStringsFunction{ strings } }
+   {}
+
+   ComputedChoices( TranslatableStringsFunction fn )
+   {
+      GetChoices = [fn]{
+         std::optional< Identifiers > result;
+         if ( auto strings = fn() )
+            result.emplace( transform_container< Identifiers >( *strings,
+               std::mem_fn( &TranslatableString::Translation ) ) );
+         return result;
+      };
+   }
+
+private:
+   explicit ComputedChoices( StringsFunction fn )
+      : GetChoices{ std::move( fn ) }
+   {}
+   friend ComputedChoices Verbatim( StringsFunction fn );
+};
+
+inline ComputedChoices Verbatim( ComputedChoices::StringsFunction fn )
+{
+   return ComputedChoices{ std::move( fn ) };
+}
+
+// A mix-in base class for adaptors that may also repopulate a control with
+// items (such as choice or listbox)
+struct ChoiceAdaptor
+{
+   explicit ChoiceAdaptor( ComputedChoices translated )
+      : mChoices{ std::move( translated ) }
+   {}
+   virtual ~ChoiceAdaptor();
+   ComputedChoices mChoices;
+};
+
+class SingleChoiceAdaptor
+   : public Adaptor< int >
+   , public ChoiceAdaptor
+{
+public:
+   SingleChoiceAdaptor( ComputedChoices translated )
+   : ChoiceAdaptor{ std::move( translated ) }
+   {
+   }
+
+   ~SingleChoiceAdaptor() override;
+   bool Get( TargetType &target ) const final;
+   bool Set( const TargetType &value ) final;
+
+protected:
+   virtual bool Get( int &index, const Identifiers &strings ) const = 0;
+   virtual bool Set( int index, const Identifier &str ) = 0;
+};
+
+class IntChoiceAdaptor final : public SingleChoiceAdaptor
+{
+public:
+   IntChoiceAdaptor( int &index, ComputedChoices translated )
+      : SingleChoiceAdaptor{ std::move( translated ) }
+      , mIndex{ index }
+   {}
+
+   ~IntChoiceAdaptor() override;
+
+private:
+   bool Get( int &index, const Identifiers &strings ) const override;
+   bool Set( int index, const Identifier &str ) override;
+
+   int &mIndex;
+};
+
+class StringChoiceAdaptor final : public SingleChoiceAdaptor
+{
+public:
+   // Optional third argument gives array of string values to be stored,
+   // if not the same as those shown to the user
+   StringChoiceAdaptor(
+      std::unique_ptr< Adaptor< wxString > > pAdaptor,
+      ComputedChoices translated,
+      ComputedChoices::StringsFunction internals = {} )
+      : SingleChoiceAdaptor{ std::move( translated ) }
+      , mpAdaptor{ std::move( pAdaptor ) }
+      , mInternals{ std::move( internals ) }
+   {}
+
+   ~StringChoiceAdaptor() override;
+
+private:
+   bool Get( int &index, const Identifiers &strings ) const override;
+   bool Set( int index, const Identifier &str ) override;
+
+   std::unique_ptr< Adaptor< wxString > > mpAdaptor;
+   ComputedChoices::StringsFunction mInternals;
+   mutable Identifiers mCachedInternals;
+};
+
+inline std::shared_ptr< Adaptor<int> >
+Choice( int &index, ComputedChoices translated )
+{
+   return std::make_shared< IntChoiceAdaptor >(
+      index, std::move( translated ) );
+}
+
+inline std::shared_ptr< Adaptor<int> >
+Choice( wxString &string, ComputedChoices translated,
+   ComputedChoices::StringsFunction internals = {} )
+{
+   return std::make_shared< StringChoiceAdaptor >(
+      std::make_unique< BasicAdaptor< wxString > >( string ),
+      std::move( translated ), std::move( internals ) );
+}
+
+inline std::shared_ptr< Adaptor<int> >
+Choice( StringSetting &setting, ComputedChoices translated,
+   ComputedChoices::StringsFunction internals = {} )
+{
+   return std::make_shared< StringChoiceAdaptor >(
+      std::make_unique< SettingAdaptor< wxString > >( setting ),
+      std::move( translated ), std::move( internals ) );
+}
+
+class MultipleChoiceAdaptor
+   : public BasicAdaptor< std::vector<int> >
+   , public ChoiceAdaptor
+{
+public:
+   MultipleChoiceAdaptor( std::vector<int> &ints, ComputedChoices choices )
+      : BasicAdaptor< std::vector<int> >{ ints }
+      , ChoiceAdaptor{ std::move( choices ) }
+   {}
+   ~MultipleChoiceAdaptor() override;
+};
+
+inline std::shared_ptr< Adaptor< std::vector<int> > >
+MultipleChoice( std::vector<int> &ints, ComputedChoices choices )
+{
+   return std::make_shared< MultipleChoiceAdaptor >(
+      ints, std::move( choices ) );
+}
+
+class NumberChoiceAdaptor
+   : public Adaptor< int >
+   , public ChoiceAdaptor
+{
+public:
+   NumberChoiceAdaptor(
+      std::unique_ptr< Adaptor< int > > pAdaptor,
+      ComputedChoices choices,
+         Recomputer< std::vector<int> > values = std::vector<int>{} )
+      : ChoiceAdaptor{ std::move( choices ) }
+      , mpAdaptor{ std::move( pAdaptor ) }
+      , mFindValues{ std::move( values ) }
+   {
+   }
+   ~NumberChoiceAdaptor() override;
+
+   bool Get( TargetType &target ) const override;
+   bool Set( const TargetType &value ) override;
+
+private:
+   std::unique_ptr< Adaptor< int > > mpAdaptor;
+   Recomputer< std::vector<int> > mFindValues;
+   mutable std::vector<int> mValues;
+};
+
+inline std::shared_ptr< Adaptor< int > >
+NumberChoice(
+   int &target, ComputedChoices choices,
+   Recomputer< std::vector<int> > values = std::vector<int>{} )
+{
+   return std::make_shared< NumberChoiceAdaptor >(
+      std::make_unique< BasicAdaptor<int> >( target ),
+      std::move( choices ), std::move( values ) );
+}
+
+inline std::shared_ptr< Adaptor< int > >
+NumberChoice(
+   IntSetting &setting, ComputedChoices choices,
+   Recomputer< std::vector<int> > values = std::vector<int>{} )
+{
+   return std::make_shared< NumberChoiceAdaptor >(
+      std::make_unique< SettingAdaptor<int> >( setting ),
+      std::move( choices ), std::move( values ) );
+}
+
+class ChoiceSettingAdaptor
+   : public Adaptor< int >
+{
+public:
+   using SettingType = ChoiceSetting;
+
+   explicit ChoiceSettingAdaptor( ChoiceSetting &setting )
+      : mSetting{ setting }
+   {}
+
+   ~ChoiceSettingAdaptor() override;
+
+   SettingType &GetSetting() { return mSetting; }
+
+   bool Get( TargetType &target ) const override;
+   bool Set( const TargetType &value ) override;
+
+private:
+   SettingType &mSetting;
+};
+
+template< typename Target > struct AdaptorFor{};
+
+template<> struct AdaptorFor< bool >
+   { using type = BasicAdaptor< bool >; };
+template<> struct AdaptorFor< int >
+   { using type = BasicAdaptor< int >; };
+template<> struct AdaptorFor< std::vector<int> >
+   { using type = BasicAdaptor< std::vector<int> >; };
+template<> struct AdaptorFor< double >
+   { using type = BasicAdaptor< double >; };
+template<> struct AdaptorFor< wxString >
+   { using type = BasicAdaptor< wxString >; };
+
+template<> struct AdaptorFor< BoolSetting >
+   { using type = SettingAdaptor< bool >; };
+template<> struct AdaptorFor< IntSetting >
+   { using type = SettingAdaptor< int >; };
+template<> struct AdaptorFor< DoubleSetting >
+   { using type = SettingAdaptor< double >; };
+template<> struct AdaptorFor< StringSetting >
+   { using type = SettingAdaptor< wxString >; };
+template<> struct AdaptorFor< ChoiceSetting >
+   { using type = ChoiceSettingAdaptor; };
+template< typename Enum > struct AdaptorFor< EnumSetting< Enum > >
+   { using type = ChoiceSettingAdaptor; };
+
+template< typename Target >
+class AdaptingValidatorBase
+{
+public:
+   using TargetType = Target;
+   using AdaptorType = Adaptor< TargetType >;
+
+   AdaptingValidatorBase(
+      const std::shared_ptr< ValidationState > &pValidationState,
+      const std::shared_ptr< AdaptorType > &pAdaptor )
+      : mpValidationState{ pValidationState }
+      , mSlot{ pValidationState->ReserveSlot() }
+      , mpAdaptor{ pAdaptor }
+   {}
+
+   AdaptingValidatorBase &operator= ( const AdaptingValidatorBase& ) = delete;
+
+   // This class must be findable with dynamic_cast
+   ~AdaptingValidatorBase() = default;
+
+   AdaptorType &GetAdaptor() const { return *mpAdaptor; }
+
+protected:
+   Target mTemp{};
+   std::shared_ptr< ValidationState > mpValidationState;
+   ValidationState::Slot mSlot;
+   std::shared_ptr< AdaptorType > mpAdaptor;
+};
+
+// This can shuttle to checkboxes
+class BoolValidator
+   : public wxGenericValidator
+   , public AdaptingValidatorBase< bool >
+{
+public:
+   using TargetType = bool;
+   using AdaptorType = Adaptor< TargetType >;
+   using SettingAdaptorType = SettingAdaptor< TargetType >;
+
+   BoolValidator( const std::shared_ptr< ValidationState > &pValidationState,
+      const std::shared_ptr< AdaptorType > &pAdaptor );
+   BoolValidator( const BoolValidator & );
+   ~BoolValidator() override;
+
+   bool Validate( wxWindow *parent ) override;
+   wxObject *Clone() const override;
+   bool TransferFromWindow() override;
+   bool TransferToWindow() override;
+};
+
+// This can shuttle to text boxes, combos, spin controls, sliders, choices,
+// single selection list boxes, and radio buttons (a group of radio buttons
+// being treated like one choice).
+// Also book controls, to change the page.
+// For text boxes and combos, validates the characters
+class IntValidator
+   : public IntegerValidator< int >
+   , public AdaptingValidatorBase< int >
+{
+public:
+   using TargetType = int;
+   using AdaptorType = Adaptor< TargetType >;
+   using SettingAdaptorType = SettingAdaptor< TargetType >;
+
+   using RadioButtonList = std::vector< wxWindowRef >;
+
+   IntValidator( const std::shared_ptr< ValidationState > &pValidationState,
+      const std::shared_ptr< AdaptorType > &pAdaptor,
+      NumValidatorStyle style = NumValidatorStyle::DEFAULT,
+      int min = std::numeric_limits<int>::min(),
+      int max = std::numeric_limits<int>::max() );
+   IntValidator( const IntValidator& );
+
+   ~IntValidator() override;
+   bool Validate( wxWindow *parent ) override;
+   wxObject *Clone() const override;
+   bool TransferFromWindow() override;
+   bool TransferToWindow() override;
+
+private:
+   std::shared_ptr< RadioButtonList > mRadioButtons;
+};
+
+// This can shuttle to multiple selection list boxes
+class IntVectorValidator
+   : public wxValidator
+   , public AdaptingValidatorBase< std::vector<int> >
+{
+public:
+   using TargetType = std::vector<int>;
+   using AdaptorType = Adaptor< TargetType >;
+
+   IntVectorValidator( const std::shared_ptr< ValidationState > &pValidationState,
+      const std::shared_ptr< AdaptorType > &pAdaptor );
+   IntVectorValidator( const IntVectorValidator& );
+
+   ~IntVectorValidator() override;
+   bool Validate( wxWindow *parent ) override;
+   wxObject *Clone() const override;
+   bool TransferFromWindow() override;
+   bool TransferToWindow() override;
+};
+
+// This can shuttle to text boxes, combos, and sliders.
+// For text boxes and combos, validates the characters
+class DoubleValidator
+   : public FloatingPointValidator< double >
+   , public AdaptingValidatorBase< double >
+{
+public:
+   using TargetType = double;
+   using AdaptorType = Adaptor< TargetType >;
+   using SettingAdaptorType = SettingAdaptor< TargetType >;
+
+   DoubleValidator( const std::shared_ptr< ValidationState > &pValidationState,
+      const std::shared_ptr< AdaptorType > &pAdaptor,
+      NumValidatorStyle style = NumValidatorStyle::DEFAULT,
+      int precision = std::numeric_limits<double>::digits10,
+      double min = std::numeric_limits<double>::lowest(),
+      double max =  std::numeric_limits<double>::max() );
+   DoubleValidator( const DoubleValidator& );
+   ~DoubleValidator() override;
+
+   bool Validate( wxWindow *parent ) override;
+   wxObject *Clone() const override;
+   bool TransferFromWindow() override;
+   bool TransferToWindow() override;
+private:
+   // Used in case of text or combo boxes to avoid precision loss when
+   // transferring the value out
+   double mExactValue = 0;
+};
+
+// This can shuttle to combo boxes and text controls
+class StringValidator
+   : public wxTextValidator
+   , public AdaptingValidatorBase< wxString >
+{
+public:
+   using TargetType = wxString;
+   using AdaptorType = Adaptor< TargetType >;
+   using SettingAdaptorType = SettingAdaptor< TargetType >;
+
+   struct Options {
+      Options() {}
+
+      wxString allowed;
+      bool numeric = false;
+
+      Options &&AllowedChars( const wxString &chars ) &&
+      { allowed = chars; return std::move( *this ); }
+
+      Options &&Numeric() &&
+      { numeric = true; return std::move( *this ); }
+   };
+
+   StringValidator( const std::shared_ptr< ValidationState > &pValidationState,
+      const std::shared_ptr< AdaptorType > &pAdaptor,
+      const Options &options = {} );
+   StringValidator( const StringValidator& );
+   ~StringValidator() override;
+
+   bool Validate( wxWindow *parent ) override;
+   wxObject *Clone() const override;
+   bool TransferFromWindow() override;
+   bool TransferToWindow() override;
+
+private:
+   void ApplyOptions();
+
+   Options mOptions{};
+};
+
 struct BaseItem
 {
    using ActionType = std::function< void() >;
    using Test = std::function< bool() >;
+   // This is a "curried" function!
+   using ValidatorSetter =
+   std::function< std::function< void(wxWindow*) >(
+      const std::shared_ptr< ValidationState > & ) >;
 
    BaseItem() = default;
 
@@ -179,9 +761,11 @@ struct BaseItem
       mStandardButton = id;
    }
 
-   std::function< void(wxWindow*) > mValidatorSetter;
+   ValidatorSetter mValidatorSetter;
+
    Test mEnableTest;
    Test mShowTest;
+
    ControlText mText;
 
    std::vector<std::pair<wxEventType, wxObjectEventFunction>> mRootConnections;
@@ -208,6 +792,16 @@ struct BaseItem
    ActionType mAction{};
 };
 
+// A metafunction used by TypedItem<Sink>::Target
+template< typename > struct ValidatorFor {};
+
+template<> struct ValidatorFor<bool> { using type = BoolValidator; };
+template<> struct ValidatorFor<int> { using type = IntValidator; };
+template<> struct ValidatorFor<std::vector<int>>
+   { using type = IntVectorValidator; };
+template<> struct ValidatorFor<double> { using type = DoubleValidator; };
+template<> struct ValidatorFor<wxString> { using type = StringValidator; };
+
 template< typename Sink = wxEvtHandler >
 struct TypedItem : BaseItem {
    TypedItem() = default;
@@ -231,14 +825,74 @@ struct TypedItem : BaseItem {
    template<typename Factory>
    TypedItem&& Validator( const Factory &f ) &&
    {
-      mValidatorSetter = [f](wxWindow *p){ p->SetValidator(f()); };
+      mValidatorSetter =
+      [f]( const std::shared_ptr<ValidationState> & ){
+         return [f](wxWindow *p){ p->SetValidator(f()); };
+      };
       return std::move(*this);
    }
 
-   // This allows further abbreviation of the previous:
+   // This overload cooperates with Target to make appropriate
+   // Adaptors:
    template<typename V, typename... Args>
    TypedItem&& Validator( Args&&... args ) &&
-   { return std::move(*this).Validator( [args...]{ return V( args... ); } ); }
+   {
+      mValidatorSetter =
+      [args...]( const std::shared_ptr<ValidationState> & pState ){
+         return [pState, args...](wxWindow *p){
+            p->SetValidator( V( pState, args... ) ); };
+      };
+      return std::move(*this);
+   }
+
+   // This overload cooperates with Target to make appropriate
+   // Adaptors:
+   template<typename V, typename Referent, typename... Args>
+   TypedItem&& Validator(
+      std::reference_wrapper<Referent> target, Args&&... args ) &&
+   {
+      mValidatorSetter =
+      [target, args...]( const std::shared_ptr<ValidationState> & pState ){
+         return [pState, target, args...](wxWindow *p){
+            p->SetValidator(
+               V( pState, MakeAdaptor( target.get() ), args... ) ); };
+      };
+      return std::move(*this);
+   }
+
+   // This overload takes a reference directly to the targeted variable and
+   // causes the appropriate adaptor and validator to be built
+   template< typename Arg, typename... Args >
+   TypedItem &&Target( Arg &target, Args&&... args ) &&
+   {
+      using Adaptor = typename AdaptorFor< Arg >::type;
+      using Validator =
+         typename ValidatorFor< typename Adaptor::TargetType >::type;
+      mValidatorSetter =
+      [&target, args...]( const std::shared_ptr<ValidationState> & pState ){
+         return [pState, &target, args...](wxWindow *p){
+            p->SetValidator( Validator(
+               pState, std::make_shared< Adaptor >( target ), args... ) ); };
+      };
+      return std::move( *this );
+   }
+   
+   // This overload takes a shared_ptr to an adaptor object that
+   // already wraps the targeted value and causes the appropriate validator
+   // to be built
+   template< typename Adaptor, typename... Args >
+   TypedItem &&Target(
+      const std::shared_ptr< Adaptor > &target, Args&&... args ) &&
+   {
+      using Validator =
+         typename ValidatorFor< typename Adaptor::TargetType >::type;
+      mValidatorSetter =
+      [target, args...]( const std::shared_ptr<ValidationState> & pState ){
+         return [pState, target, args...](wxWindow *p){
+            p->SetValidator( Validator( pState, target, args... ) ); };
+      };
+      return std::move( *this );
+   }
 
    TypedItem&& Text( const ControlText &text ) &&
    {
@@ -428,6 +1082,8 @@ struct ShuttleGuiState final
 
    using RadioButtonList = std::vector< wxWindowRef >;
    std::shared_ptr< RadioButtonList > mRadioButtons;
+
+   std::shared_ptr< DialogDefinition::ValidationState > mpValidationState;
 };
 
 class AUDACITY_DLL_API ShuttleGuiBase /* not final */
@@ -444,6 +1100,10 @@ public:
    ShuttleGuiBase( ShuttleGuiBase&& );
    virtual ~ShuttleGuiBase();
    void ResetId();
+
+   const std::shared_ptr<DialogDefinition::ValidationState>
+   &GetValidationState() const
+   { return mpState -> mpValidationState; }
 
 //-- Add functions.  These only add a widget or 2.
    void HandleOptionality(const TranslatableLabel &Prompt);
@@ -706,7 +1366,9 @@ public:
       const DialogDefinition::BaseItem &item,
       std::initializer_list<wxEventType> types );
 
-   static void ApplyItem( int step, const DialogDefinition::BaseItem &item,
+   static void ApplyItem( int step,
+      const DialogDefinition::BaseItem &item,
+      const std::shared_ptr< DialogDefinition::ValidationState > &pState,
       wxWindow *pWind, wxWindow *pDlg );
 
    // If none of the items is default,
@@ -825,6 +1487,7 @@ enum
 
 AUDACITY_DLL_API std::unique_ptr<wxSizer> CreateStdButtonSizer(
    wxWindow *pDlg, wxWindow *parent,
+   const std::shared_ptr< DialogDefinition::ValidationState > &pValidationState,
    long buttons = eOkButton | eCancelButton,
    DialogDefinition::Items items = {},
    wxWindow *extra = NULL );
@@ -906,14 +1569,14 @@ public:
    }
 
    // Specifies a predicate that is retested as needed
-   TypedShuttleGui &Enable( const DialogDefinition::Item::Test &test )
+   TypedShuttleGui &Enable( const DialogDefinition::BaseItem::Test &test )
    {
       GetItem().Enable( test );
       return *this;
    }
 
    // Specifies a predicate that is retested as needed
-   TypedShuttleGui &Show( const DialogDefinition::Item::Test &test )
+   TypedShuttleGui &Show( const DialogDefinition::BaseItem::Test &test )
    {
       GetItem().Show( test );
       return *this;
@@ -938,7 +1601,14 @@ public:
    TypedShuttleGui& Validator( Args&& ...args )
    {
       if ( GetMode() == eIsCreating )
-         GetItem().template Validator<V>( std::forward<Args>(args)... );
+         GetItem().Validator( [args...]{ return V( args... ); } );
+      return *this;
+   }
+
+   template< typename ... Args >
+   TypedShuttleGui &Target( Args &&...args )
+   {
+      GetItem().Target( std::forward<Args>( args )... );
       return *this;
    }
 

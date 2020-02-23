@@ -136,12 +136,506 @@ for registering for changes.
 
 PreferenceVisitor::~PreferenceVisitor() = default;
 
+namespace DialogDefinition {
+
+auto ValidationState::ReserveSlot() -> Slot
+{
+   if ( mNext == nFlags - 1 ) {
+      wxASSERT_MSG( false, "Too many controls in one dialog" );
+      --mNext;
+   }
+   return mFlags[ mNext++ ];
+}
+
+ChoiceAdaptor::~ChoiceAdaptor() = default;
+
+SingleChoiceAdaptor::~SingleChoiceAdaptor()  = default;
+
+bool SingleChoiceAdaptor::Get( TargetType &target ) const
+{
+   return Get( target, mChoices.cache );
+}
+
+bool SingleChoiceAdaptor::Set( const TargetType &value )
+{
+   if ( value >= 0 && value < mChoices.cache.size() )
+      return Set( value, mChoices.cache[ value ] );
+   else
+      return Set( value, {} );
+}
+
+IntChoiceAdaptor::~IntChoiceAdaptor() = default;
+
+bool IntChoiceAdaptor::Get( int &index, const Identifiers & ) const
+{
+   index = mIndex;
+   return true;
+}
+
+bool IntChoiceAdaptor::Set( int index, const Identifier & )
+{
+   mIndex = index;
+   return true;
+}
+
+StringChoiceAdaptor::~StringChoiceAdaptor() = default;
+
+bool StringChoiceAdaptor::Get( int &index, const Identifiers &strings ) const
+{
+   wxString value;
+   if ( !(mpAdaptor && mpAdaptor->Get( value ) ) )
+      return false;
+
+   auto pStrings = &strings;
+   if ( mInternals ) {
+      // The stored string should be looked up in internals, not in the
+      // user-visible strings that are passed in the argument
+      pStrings = &mCachedInternals;
+
+      // Be sure the cache is up-to-date
+      if ( auto newStrings = mInternals() )
+         mCachedInternals.swap( *newStrings );
+   }
+   
+   const auto begin = pStrings->begin(), end = pStrings->end(),
+      iter = std::find( begin, end, value );
+   if ( iter == end )
+      index = 0;
+   else
+      index = iter - begin;
+   return true;
+}
+
+bool StringChoiceAdaptor::Set( int index, const Identifier &str )
+{
+   if ( mInternals ) {
+      // Ignore the passed-in string, lookup index in internals
+      Identifier value;
+      if ( index >= 0 && index < mCachedInternals.size() )
+         value = mCachedInternals[ index ];
+      return ( mpAdaptor && mpAdaptor->Set( value.GET() ) );
+   }
+   else
+      return ( mpAdaptor && mpAdaptor->Set( str.GET() ) );
+}
+
+MultipleChoiceAdaptor::~MultipleChoiceAdaptor()  = default;
+
+NumberChoiceAdaptor::~NumberChoiceAdaptor() = default;
+
+bool NumberChoiceAdaptor::Get( TargetType &target ) const
+{
+   if ( auto newValues = mFindValues() )
+      mValues.swap( *newValues );
+
+   int value;
+   if ( !mpAdaptor->Get( value ) )
+      return false;
+
+   if ( mValues.empty() )
+      target = value;
+   else {
+      const auto begin = mValues.begin(), end = mValues.end(),
+         iter = std::find( begin, end, value );
+      if ( iter != end )
+         target = iter - begin;
+      else
+         // Last value is treated as the special default
+         target = mValues.size() - 1;
+   }
+   return true;
+}
+
+bool NumberChoiceAdaptor::Set( const TargetType &value )
+{
+   if ( auto newValues = mFindValues() )
+      mValues.swap( *newValues );
+
+   // Interpret the given value as index into integer values
+   if ( value >= 0 && value < mValues.size() )
+      return mpAdaptor->Set( mValues[ value ] );
+   else
+      return mpAdaptor->Set( value );
+}
+
+ChoiceSettingAdaptor::~ChoiceSettingAdaptor() = default;
+
+bool ChoiceSettingAdaptor::Get( TargetType &target ) const
+{
+   // to do: error handling
+   target = mSetting.ReadIndex();
+   return true;
+}
+
+bool ChoiceSettingAdaptor::Set( const TargetType &value )
+{
+   return mSetting.WriteIndex( value ) && gPrefs->Flush();
+}
+
+BoolValidator::BoolValidator(
+   const std::shared_ptr< ValidationState > &pValidationState,
+   const std::shared_ptr< AdaptorType > &pAdaptor )
+   : wxGenericValidator{ &mTemp }
+   , AdaptingValidatorBase<bool>{ pValidationState, pAdaptor }
+{}
+
+BoolValidator::BoolValidator( const BoolValidator &other )
+   // Make a "deep copy" so that the base class refers to its own temporary
+   // in mTemp, not to other.mTemp
+   : wxGenericValidator{ &mTemp }
+   , AdaptingValidatorBase<bool>{ other }
+{}
+
+BoolValidator::~BoolValidator() = default;
+
+wxObject *BoolValidator::Clone() const
+{
+   return safenew BoolValidator{ *this };
+}
+
+bool BoolValidator::Validate( wxWindow *pWindow )
+{
+   return mpAdaptor->Get( mTemp ) &&
+      wxGenericValidator::Validate( pWindow );
+}
+
+bool BoolValidator::TransferFromWindow()
+{
+   return mSlot = wxGenericValidator::TransferFromWindow() &&
+      mpAdaptor->Set( mTemp );
+}
+
+bool BoolValidator::TransferToWindow()
+{
+   mSlot = true;
+   return mpAdaptor->Get( mTemp ) &&
+      wxGenericValidator::TransferToWindow();
+}
+   
+namespace {
+void RepopulateChoices( wxItemContainer *pCtrl, ComputedChoices &adaptor )
+{
+   if ( adaptor.GetChoices ) {
+      auto strings = adaptor.GetChoices();
+      if ( strings ) {
+         // Repopulation of the choices
+         pCtrl->Clear();
+         for ( const auto &ident : *strings )
+            pCtrl->Append( ident.GET() );
+         adaptor.cache.swap( *strings );
+      }
+   }
+}
+
+template< typename Adaptor >
+void RepopulateChoices( wxItemContainer *pCtrl, Adaptor &adaptor )
+{
+   if ( auto pChoiceAdaptor = dynamic_cast<ChoiceAdaptor*>( &adaptor ) )
+      RepopulateChoices( pCtrl, pChoiceAdaptor->mChoices );
+}
+}
+
+IntValidator::IntValidator(
+   const std::shared_ptr< ValidationState > &pValidationState,
+   const std::shared_ptr< AdaptorType > &pAdaptor,
+   NumValidatorStyle style, int min, int max)
+   : IntegerValidator< int >{ &mTemp, style, min, max }
+   , AdaptingValidatorBase< int >{ pValidationState, pAdaptor }
+{}
+
+IntValidator::IntValidator( const IntValidator &other )
+   // Make a "deep copy" so that the base class refers to its own temporary
+   // in mTemp, not to other.mTemp
+   : IntegerValidator< int >(
+      &mTemp, other.GetStyle(), other.GetMin(), other.GetMax() )
+   , AdaptingValidatorBase< int >{ other }
+{}
+
+IntValidator::~IntValidator() = default;
+
+wxObject *IntValidator::Clone() const
+{
+   return safenew IntValidator{ *this };
+}
+
+bool IntValidator::Validate( wxWindow *pWindow )
+{
+   if ( dynamic_cast<wxTextCtrl*>( pWindow ) ||
+        dynamic_cast<wxComboBox*>( pWindow ) ) {
+      return mpAdaptor->Get( mTemp ) &&
+         IntegerValidator< int >::Validate( pWindow );
+   }
+   return true;
+}
+
+bool IntValidator::TransferFromWindow()
+{
+   auto pWindow = GetWindow();
+   if ( dynamic_cast<wxTextCtrl*>( pWindow ) ||
+        dynamic_cast<wxComboBox*>( pWindow ) )
+      return mSlot = IntegerValidator< int >::TransferFromWindow() &&
+         mpAdaptor->Set( mTemp );
+   else if ( auto pCtrl = dynamic_cast<wxItemContainer*>( pWindow ) )
+      // This case covers wxListBox and wxChoice
+      return mSlot = mpAdaptor->Set( pCtrl->GetSelection() );
+   else if ( auto pCtrl = dynamic_cast<wxSlider*>( pWindow ) )
+      return mSlot = mpAdaptor->Set( pCtrl->GetValue() );
+   else if ( auto pCtrl = dynamic_cast<wxSpinCtrl*>( pWindow ) )
+      return mSlot = mpAdaptor->Set( pCtrl->GetValue() );
+   else if ( auto pCtrl = dynamic_cast<wxRadioButton*>( pWindow ) ) {
+      if ( !pCtrl->GetValue() )
+         // Do the real work only at the chosen button of the group
+         return mSlot = true;
+      else if ( mRadioButtons ) {
+         auto begin = mRadioButtons->begin(), end = mRadioButtons->end(),
+            iter = std::find( begin, end, pWindow );
+         auto value = (iter == end) ? -1 : (iter - begin);
+         return mSlot = mpAdaptor->Set( value );
+      }
+   }
+   else if ( auto pCtrl = dynamic_cast<wxBookCtrlBase*>( pWindow ) )
+      return mSlot = mpAdaptor->Set( pCtrl->GetSelection() );
+   return mSlot = false;
+}
+
+bool IntValidator::TransferToWindow()
+{
+   mSlot = true;
+   auto pWindow = GetWindow();
+   if ( auto pCtrl = dynamic_cast<wxItemContainer*>( GetWindow() ) ) {
+      // This case covers wxListBox, wxChoice, wxComboBox
+      RepopulateChoices( pCtrl, *mpAdaptor );
+      if ( !mpAdaptor->Get( mTemp ) )
+         return false;
+      if ( dynamic_cast<wxComboBox*>( pWindow ) )
+         return IntegerValidator< int >::TransferToWindow();
+      else
+         return ( pCtrl->SetSelection( mTemp ), true );
+   }
+   else if ( dynamic_cast<wxTextCtrl*>( pWindow ) ||
+        dynamic_cast<wxComboBox*>( pWindow ) )
+      return mpAdaptor->Get( mTemp ) &&
+         IntegerValidator< int >::TransferToWindow();
+   else if ( auto pCtrl = dynamic_cast<wxSlider*>( GetWindow() ) )
+      return mpAdaptor->Get( mTemp ) &&
+         ( pCtrl->SetValue( mTemp ), true );
+   else if ( auto pCtrl = dynamic_cast<wxSpinCtrl*>( GetWindow() ) )
+      return mpAdaptor->Get( mTemp ) &&
+         ( pCtrl->SetValue( mTemp ), true );
+   else if ( auto pCtrl = dynamic_cast<wxRadioButton*>( pWindow ) ) {
+      if ( !mpAdaptor->Get( mTemp ) || !mRadioButtons )
+         return false;
+      auto begin = mRadioButtons->begin(), end = mRadioButtons->end(),
+         iter = std::find( begin, end, pWindow );
+      bool value = (iter == end) ? false : ( mTemp == (iter - begin) );
+      return mpAdaptor->Set( value );
+   }
+   else if ( auto pCtrl = dynamic_cast<wxBookCtrlBase*>( GetWindow() ) )
+      return mpAdaptor->Get( mTemp ) &&
+         ( pCtrl->SetSelection( mTemp ), true );
+   return false;
+}
+
+IntVectorValidator::IntVectorValidator(
+   const std::shared_ptr< ValidationState > &pValidationState,
+   const std::shared_ptr< AdaptorType > &pAdaptor )
+   : wxValidator{}
+   , AdaptingValidatorBase< std::vector<int> >{ pValidationState, pAdaptor }
+{}
+
+IntVectorValidator::IntVectorValidator( const IntVectorValidator& ) = default;
+
+IntVectorValidator::~IntVectorValidator() = default;
+
+wxObject *IntVectorValidator::Clone() const
+{
+   return safenew IntVectorValidator{ *this };
+}
+
+bool IntVectorValidator::Validate( wxWindow *pWindow )
+{
+   return true;
+}
+
+bool IntVectorValidator::TransferFromWindow()
+{
+   if ( auto pCtrl = dynamic_cast<wxListBox*>( GetWindow() ) ) {
+      wxArrayInt selections;
+      pCtrl->GetSelections( selections );
+      mTemp = { selections.begin(), selections.end() };
+      return mSlot = mpAdaptor->Set( mTemp );
+   }
+   return mSlot = false;
+}
+
+bool IntVectorValidator::TransferToWindow()
+{
+   if ( auto pCtrl = dynamic_cast<wxListBox*>( GetWindow() ) ) {
+      RepopulateChoices( pCtrl, *mpAdaptor );
+      if ( !mpAdaptor->Get( mTemp ) )
+         return false;
+      pCtrl->SetSelection( -1 );
+      for ( auto ii : mTemp )
+         pCtrl->Select( ii );
+      return true;
+   }
+   return false;
+}
+
+DoubleValidator::DoubleValidator(
+   const std::shared_ptr< ValidationState > &pValidationState,
+   const std::shared_ptr< AdaptorType > &pAdaptor,
+   NumValidatorStyle style, int precision, double min, double max )
+   : FloatingPointValidator< double >{ precision, &mTemp, style, min, max }
+   , AdaptingValidatorBase<double>{ pValidationState, pAdaptor }
+{}
+
+DoubleValidator::DoubleValidator( const DoubleValidator &other )
+   // Make a "deep copy" so that the base class refers to its own temporary
+   // in mTemp, not to other.mTemp
+   : FloatingPointValidator< double >(
+      other.GetPrecision(), &mTemp,
+      other.GetStyle(), other.GetMin(), other.GetMax() )
+   , AdaptingValidatorBase<double>{ other }
+   , mExactValue{ other.mExactValue }
+{}
+
+DoubleValidator::~DoubleValidator() = default;
+
+wxObject *DoubleValidator::Clone() const
+{
+   return safenew DoubleValidator{ *this };
+}
+
+bool DoubleValidator::Validate( wxWindow *pWindow )
+{
+   if ( ( dynamic_cast<wxTextCtrl*>( pWindow ) ||
+          dynamic_cast<wxComboBox*>( pWindow ) ) )
+      return mpAdaptor->Get( mTemp ) &&
+         FloatingPointValidator< double >::Validate( pWindow );
+   return true;
+}
+
+bool DoubleValidator::TransferFromWindow()
+{
+   auto pWindow = GetWindow();
+   if ( ( dynamic_cast<wxTextCtrl*>( pWindow ) ||
+          dynamic_cast<wxComboBox*>( pWindow ) ) ) {
+      if ( !FloatingPointValidator<double>::TransferFromWindow() )
+         return mSlot = false;
+      if ( NormalizeValue( mExactValue ) == GetTextEntry()->GetValue() )
+         // Window hasn't changed since we transferred to it
+         // Use the last stored value rather than suffer precision loss
+         // converting back from text
+         return mSlot = mpAdaptor->Set( mExactValue );
+      else
+         return mSlot = mpAdaptor->Set( mTemp );
+   }
+   else if ( auto pCtrl = dynamic_cast<wxSlider*>( GetWindow() ) )
+      return mSlot = mpAdaptor->Set( pCtrl->GetValue() );
+   return mSlot = false;
+}
+
+bool DoubleValidator::TransferToWindow()
+{
+   mSlot = true;
+   auto pWindow = GetWindow();
+   if ( ( dynamic_cast<wxTextCtrl*>( pWindow ) ||
+          dynamic_cast<wxComboBox*>( pWindow ) ) ) {
+      if ( !mpAdaptor->Get( mTemp ) )
+         return false;
+      mExactValue = mTemp;
+      return FloatingPointValidator<double>::TransferToWindow();
+   }
+   else if ( auto pCtrl = dynamic_cast<wxSlider*>( GetWindow() ) ) {
+      if ( !mpAdaptor->Get( mTemp ) )
+         return false;
+      pCtrl->SetValue( mTemp );
+      return true;
+   }
+   return false;
+}
+
+StringValidator::StringValidator(
+   const std::shared_ptr< ValidationState > &pValidationState,
+   const std::shared_ptr< AdaptorType > &pAdaptor,
+   const Options &options )
+   // Make a "deep copy" so that the base class refers to its own temporary
+   // in mTemp, not to other.mTemp
+   : wxTextValidator{ wxFILTER_NONE, &mTemp }
+   , AdaptingValidatorBase<wxString>{ pValidationState, pAdaptor }
+   , mOptions{ options }
+{
+   ApplyOptions();
+}
+
+StringValidator::StringValidator( const StringValidator &other )
+   : wxTextValidator{ wxFILTER_NONE, &mTemp }
+   , AdaptingValidatorBase<wxString>{ other }
+   , mOptions{ other.mOptions }
+{
+   ApplyOptions();
+}
+
+StringValidator::~StringValidator() = default;
+
+void StringValidator::ApplyOptions()
+{
+   if ( !mOptions.allowed.empty() ) {
+      wxTextValidator::SetStyle( wxFILTER_INCLUDE_CHAR_LIST );
+      wxArrayString strings;
+      for ( wxChar character : mOptions.allowed )
+         strings.push_back( wxString{ character } );
+      wxTextValidator::SetIncludes( strings );
+   }
+   else if ( mOptions.numeric )
+      wxTextValidator::SetStyle( wxFILTER_NUMERIC );
+}
+
+wxObject *StringValidator::Clone() const
+{
+   return safenew StringValidator{ *this };
+}
+
+bool StringValidator::Validate( wxWindow *pWindow )
+{
+   return mpAdaptor->Get( mTemp ) &&
+      wxTextValidator::Validate( pWindow );
+}
+
+bool StringValidator::TransferFromWindow()
+{
+   // Not intended to inherit the behavior of wxGenericValidator for choice
+   // controls!
+   if ( dynamic_cast< wxChoice * >( GetWindow() ) )
+      return mSlot = false;
+
+   auto result = wxTextValidator::TransferFromWindow();
+   return mSlot = mpAdaptor->Set( mTemp );
+}
+
+bool StringValidator::TransferToWindow()
+{
+   mSlot = true;
+
+   // Not intended to inherit the behavior of wxGenericValidator for choice
+   // controls!
+   if ( dynamic_cast< wxChoice * >( GetWindow() ) )
+      return false;
+
+   return mpAdaptor->Get( mTemp ) &&
+      wxTextValidator::TransferToWindow();
+}
+
+} // namespace DialogDefinition
+
 ShuttleGuiState::ShuttleGuiState(
    wxWindow *pDlg, teShuttleMode ShuttleMode, bool vertical, wxSize minSize,
    const std::shared_ptr< PreferenceVisitor > &pVisitor )
    : mpDlg{ pDlg }
    , mShuttleMode{ ShuttleMode }
    , mpVisitor{ pVisitor }
+   , mpValidationState{ std::make_shared<DialogDefinition::ValidationState>() }
 {
    wxASSERT( (pDlg != NULL ) || ( ShuttleMode != eIsCreating));
 
@@ -2192,7 +2686,9 @@ void ShuttleGuiBase::CheckEventType(
    }
 }
 
-void ShuttleGuiBase::ApplyItem( int step, const DialogDefinition::BaseItem &item,
+void ShuttleGuiBase::ApplyItem( int step,
+   const DialogDefinition::BaseItem &item,
+   const std::shared_ptr< DialogDefinition::ValidationState > &pState,
    wxWindow *pWind, wxWindow *pDlg )
 {
    if ( step == 0 ) {
@@ -2214,16 +2710,19 @@ void ShuttleGuiBase::ApplyItem( int step, const DialogDefinition::BaseItem &item
             pDlg->Bind(
                item.mEventType,
                [pWind, action, pDlg]( wxCommandEvent& ){
-                  if ( pWind->GetValidator() ) {
-                     if ( !pWind->GetValidator()->Validate( pWind ) )
-                        return;
-                     if ( !pWind->GetValidator()->TransferFromWindow() )
+                  using namespace DialogDefinition;
+                  auto pValidator = pWind->GetValidator();
+                  if ( pValidator ) {
+                     if ( !pValidator->TransferFromWindow() )
                         return;
                   }
                   if ( action )
                      action();
-                  if ( pWind->GetValidator() || action )
+                  if ( pValidator || action ) {
+                     // After action may have recalculated variables,
+                     // update other controls
                      pDlg->TransferDataToWindow();
+                  }
                },
                pWind->GetId() );
          }
@@ -2232,7 +2731,7 @@ void ShuttleGuiBase::ApplyItem( int step, const DialogDefinition::BaseItem &item
       }
 
       if ( item.mValidatorSetter )
-         item.mValidatorSetter( pWind );
+         item.mValidatorSetter( pState )( pWind );
 
       if ( !item.mText.mToolTip.empty() )
          pWind->SetToolTip( item.mText.mToolTip.Translation() );
@@ -2311,7 +2810,9 @@ void ShuttleGuiBase::UpdateSizersCore(bool bPrepend, int Flags, bool prompt)
          useFlags = mItem.mWindowPositionFlags;
 
       if (!prompt)
-         ApplyItem( 0, mItem, mpWind, mpState -> mpDlg );
+         ApplyItem( 0, mItem,
+            mpState -> mpValidationState,
+            mpWind, mpState -> mpDlg );
 
       if( mpState -> mpSizer){
          if( bPrepend )
@@ -2325,7 +2826,9 @@ void ShuttleGuiBase::UpdateSizersCore(bool bPrepend, int Flags, bool prompt)
       }
 
       if (!prompt) {
-         ApplyItem( 1, mItem, mpWind, mpState -> mpDlg );
+         ApplyItem( 1, mItem,
+            mpState -> mpValidationState,
+            mpWind, mpState -> mpDlg );
          // Reset to defaults
          mItem = {};
       }
@@ -2414,6 +2917,7 @@ void SetIfCreated( wxStaticText *&Var, wxStaticText * Val )
 
 std::unique_ptr<wxSizer> CreateStdButtonSizer(
    wxWindow *pDlg, wxWindow *parent,
+   const std::shared_ptr< DialogDefinition::ValidationState > &pValidationState,
    long buttons, DialogDefinition::Items items, wxWindow *extra,
    DialogDefinition::Item extraItem )
 {
@@ -2455,7 +2959,9 @@ std::unique_ptr<wxSizer> CreateStdButtonSizer(
          end == std::find_if( iter + 1, end, pred ) );
 
       if (iter != end)
-         ShuttleGuiBase::ApplyItem( 0, *iter, pButton, pDlg );
+         ShuttleGuiBase::ApplyItem( 0, *iter,
+            pValidationState,
+            pButton, pDlg );
       if ( insertAt == 0 )
          bs->AddButton( pButton );
       else if ( insertAt == -1 )
@@ -2465,7 +2971,9 @@ std::unique_ptr<wxSizer> CreateStdButtonSizer(
             pButton, 0, wxALIGN_CENTER | wxLEFT | wxRIGHT, margin );
       if (iter != end) {
          ShuttleGuiBase::CheckEventType( *iter, { wxEVT_BUTTON } );
-         ShuttleGuiBase::ApplyItem( 1, *iter, pButton, pDlg );
+         ShuttleGuiBase::ApplyItem( 1, *iter,
+            pValidationState,
+            pButton, pDlg );
       }
    };
 
@@ -2546,10 +3054,12 @@ std::unique_ptr<wxSizer> CreateStdButtonSizer(
 
    if( extra )
    {
-      ShuttleGuiBase::ApplyItem( 0, extraItem, extra, pDlg );
+      ShuttleGuiBase::ApplyItem( 0, extraItem, pValidationState,
+         extra, pDlg );
       bs->Add( extra, 0, wxALIGN_CENTER | wxLEFT | wxRIGHT, margin );
       bs->Add( 40, 0 );
-      ShuttleGuiBase::ApplyItem( 1, extraItem, extra, pDlg );
+      ShuttleGuiBase::ApplyItem( 1, extraItem, pValidationState,
+         extra, pDlg );
    }
 
    bs->AddStretchSpacer();
@@ -2618,6 +3128,7 @@ void ShuttleGuiBase::AddStandardButtons(
    miSizerProp = false;
    mpSubSizer = CreateStdButtonSizer(
       mpState -> mpDlg, mpState -> mpParent,
+      mpState -> mpValidationState,
       buttons, items, extra, extraItem );
    UpdateSizers();
    mpState -> PopSizer();
