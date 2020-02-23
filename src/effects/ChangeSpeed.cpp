@@ -101,7 +101,6 @@ EffectChangeSpeed::EffectChangeSpeed()
    mFromLength = 0.0;
    mToLength = 0.0;
    mFormat = NumericConverter::DefaultSelectionFormat();
-   mbLoopDetect = false;
 
    SetLinearEffectFlag(true);
 }
@@ -396,8 +395,6 @@ void EffectChangeSpeed::PopulateOrExchange(ShuttleGui & S)
 
 bool EffectChangeSpeed::TransferDataToWindow()
 {
-   mbLoopDetect = true;
-
    // Update Approximate change value from the exact
    Update_Text_PercentChange();
 
@@ -427,8 +424,6 @@ bool EffectChangeSpeed::TransferDataToWindow()
    // Set the format first so we can get sample accuracy.
    mpFromLengthCtrl->SetFormatName(mFormat);
    mpFromLengthCtrl->SetValue(mFromLength);
-
-   mbLoopDetect = false;
 
    return true;
 }
@@ -587,55 +582,40 @@ bool EffectChangeSpeed::ProcessOne(WaveTrack * track,
 
 void EffectChangeSpeed::OnText_PercentChange(wxCommandEvent & WXUNUSED(evt))
 {
-   if (mbLoopDetect)
-      return;
-
    mpTextCtrl_PercentChange->GetValidator()->TransferFromWindow();
    m_PercentChange = m_ApproximatePercentChange;
    UpdateUI();
 
-   mbLoopDetect = true;
    Update_Text_Multiplier();
    Update_Slider_PercentChange();
    Update_Vinyl();
    Update_TimeCtrl_ToLength();
-   mbLoopDetect = false;
 }
 
 void EffectChangeSpeed::OnText_Multiplier(wxCommandEvent & WXUNUSED(evt))
 {
-   if (mbLoopDetect)
-      return;
-
    mpTextCtrl_Multiplier->GetValidator()->TransferFromWindow();
    m_PercentChange = 100 * (mMultiplier - 1);
    UpdateUI();
 
-   mbLoopDetect = true;
    Update_Text_PercentChange();
    Update_Slider_PercentChange();
    Update_Vinyl();
    Update_TimeCtrl_ToLength();
-   mbLoopDetect = false;
 }
 
 void EffectChangeSpeed::OnSlider_PercentChange(wxCommandEvent & WXUNUSED(evt))
 {
-   if (mbLoopDetect)
-      return;
-
    m_PercentChange = (double)(mpSlider_PercentChange->GetValue());
    // Warp positive values to actually go up faster & further than negatives.
    if (m_PercentChange > 0.0)
       m_PercentChange = pow(m_PercentChange, kSliderWarp);
    UpdateUI();
 
-   mbLoopDetect = true;
    Update_Text_PercentChange();
    Update_Text_Multiplier();
    Update_Vinyl();
    Update_TimeCtrl_ToLength();
-   mbLoopDetect = false;
 }
 
 void EffectChangeSpeed::OnChoice_Vinyl(wxCommandEvent & WXUNUSED(evt))
@@ -669,34 +649,25 @@ void EffectChangeSpeed::OnChoice_Vinyl(wxCommandEvent & WXUNUSED(evt))
       m_PercentChange = ((toRPM * 100.0) / fromRPM) - 100.0;
       UpdateUI();
 
-      mbLoopDetect = true;
       Update_Text_PercentChange();
       Update_Text_Multiplier();
       Update_Slider_PercentChange();
       Update_TimeCtrl_ToLength();
    }
-   mbLoopDetect = false;
 }
 
 void EffectChangeSpeed::OnTimeCtrl_ToLength(wxCommandEvent & WXUNUSED(evt))
 {
-   if (mbLoopDetect)
-      return;
-
    mToLength = mpToLengthCtrl->GetValue();
    // Division by (double) 0.0 is not an error and we want to show "infinite" in
    // text controls, so take care that we handle infinite values when they occur.
    m_PercentChange = ((mFromLength * 100.0) / mToLength) - 100.0;
    UpdateUI();
 
-   mbLoopDetect = true;
-
    Update_Text_PercentChange();
    Update_Text_Multiplier();
    Update_Slider_PercentChange();
    Update_Vinyl();
-
-   mbLoopDetect = false;
 }
 
 void EffectChangeSpeed::OnTimeCtrlUpdate(wxCommandEvent & evt)

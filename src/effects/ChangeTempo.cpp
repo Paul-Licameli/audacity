@@ -98,8 +98,6 @@ EffectChangeTempo::EffectChangeTempo()
    m_FromLength = 0.0;
    m_ToLength = 0.0;
 
-   m_bLoopDetect = false;
-
    SetLinearEffectFlag(true);
 }
 
@@ -319,8 +317,6 @@ bool EffectChangeTempo::TransferDataToWindow()
    // Reset from length because it can be changed by Preview
    m_FromLength = mT1 - mT0;
 
-   m_bLoopDetect = true;
-
    if (!mUIParent->TransferDataToWindow())
    {
       return false;
@@ -330,8 +326,6 @@ bool EffectChangeTempo::TransferDataToWindow()
    Update_Slider_PercentChange();
    Update_Text_ToBPM();
    Update_Text_ToLength();
-
-   m_bLoopDetect = false;
 
    auto number = FormatLength( m_FromLength );
    auto text = wxString::Format(  _("Length in seconds from %s, to"),
@@ -356,57 +350,35 @@ bool EffectChangeTempo::TransferDataFromWindow()
 
 void EffectChangeTempo::OnText_PercentChange(wxCommandEvent & WXUNUSED(evt))
 {
-   if (m_bLoopDetect)
-      return;
-
    m_pTextCtrl_PercentChange->GetValidator()->TransferFromWindow();
 
-   m_bLoopDetect = true;
    Update_Slider_PercentChange();
    Update_Text_ToBPM();
    Update_Text_ToLength();
-   m_bLoopDetect = false;
 }
 
 void EffectChangeTempo::OnSlider_PercentChange(wxCommandEvent & WXUNUSED(evt))
 {
-   if (m_bLoopDetect)
-      return;
-
    m_PercentChange = (double)(m_pSlider_PercentChange->GetValue());
    // Warp positive values to actually go up faster & further than negatives.
    if (m_PercentChange > 0.0)
       m_PercentChange = pow(m_PercentChange, kSliderWarp);
 
-   m_bLoopDetect = true;
    Update_Text_PercentChange();
    Update_Text_ToBPM();
    Update_Text_ToLength();
-   m_bLoopDetect = false;
 }
 
 void EffectChangeTempo::OnText_FromBPM(wxCommandEvent & WXUNUSED(evt))
 {
-   if (m_bLoopDetect)
-      return;
-
    m_pTextCtrl_FromBPM->GetValidator()->TransferFromWindow();
 
-   m_bLoopDetect = true;
-
    Update_Text_ToBPM();
-
-   m_bLoopDetect = false;
 }
 
 void EffectChangeTempo::OnText_ToBPM(wxCommandEvent & WXUNUSED(evt))
 {
-   if (m_bLoopDetect)
-      return;
-
    m_pTextCtrl_ToBPM->GetValidator()->TransferFromWindow();
-
-   m_bLoopDetect = true;
 
    // If FromBPM has already been set, then there's a NEW percent change.
    if (m_FromBPM != 0.0 && m_ToBPM != 0.0)
@@ -418,15 +390,10 @@ void EffectChangeTempo::OnText_ToBPM(wxCommandEvent & WXUNUSED(evt))
 
       Update_Text_ToLength();
    }
-
-   m_bLoopDetect = false;
 }
 
 void EffectChangeTempo::OnText_ToLength(wxCommandEvent & WXUNUSED(evt))
 {
-   if (m_bLoopDetect)
-      return;
-
    m_pTextCtrl_ToLength->GetValidator()->TransferFromWindow();
 
    if (m_ToLength != 0.0)
@@ -434,14 +401,10 @@ void EffectChangeTempo::OnText_ToLength(wxCommandEvent & WXUNUSED(evt))
       m_PercentChange = ((m_FromLength * 100.0) / m_ToLength) - 100.0;
    }
 
-   m_bLoopDetect = true;
-
    Update_Text_PercentChange();
    Update_Slider_PercentChange();
 
    Update_Text_ToBPM();
-
-   m_bLoopDetect = false;
 }
 
 // helper fns

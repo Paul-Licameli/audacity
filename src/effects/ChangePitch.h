@@ -128,8 +128,6 @@ private:
    double m_dPercentChange;      // percent change to apply to pitch
                                  // Slider is (-100, 200], but textCtrls can set higher.
 
-   bool m_bLoopDetect; // Used to avoid loops in initialization and in event handling.
-
    // controls
    wxChoice *     m_pChoice_FromPitch;
    wxSpinCtrl *   m_pSpin_FromOctave;

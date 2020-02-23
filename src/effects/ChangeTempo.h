@@ -84,8 +84,6 @@ private:
    double         m_FromLength;     // starting length of selection
    double         m_ToLength;       // target length of selection
 
-   bool m_bLoopDetect;
-
    // controls
    wxTextCtrl *	m_pTextCtrl_PercentChange;
    wxSlider *		m_pSlider_PercentChange;

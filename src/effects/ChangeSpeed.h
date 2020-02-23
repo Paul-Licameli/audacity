@@ -97,8 +97,6 @@ private:
    int      mTimeCtrlFormat;  // time control format index number
    double   mMultiplier;
 
-   bool mbLoopDetect;
-
    // controls
    wxTextCtrl *      mpTextCtrl_PercentChange;
    wxTextCtrl *      mpTextCtrl_Multiplier;

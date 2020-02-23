@@ -110,7 +110,6 @@ EffectChangePitch::EffectChangePitch()
 
    m_dSemitonesChange = 0.0;
    m_dStartFrequency = 0.0; // 0.0 => uninitialized
-   m_bLoopDetect = false;
 
    // NULL out these control members because there are some cases where the
    // event table handlers get called during this method, and those handlers that
@@ -366,8 +365,6 @@ void EffectChangePitch::PopulateOrExchange(ShuttleGui & S)
 
 bool EffectChangePitch::TransferDataToWindow()
 {
-   m_bLoopDetect = true;
-
    if (!mUIParent->TransferDataToWindow())
    {
       return false;
@@ -387,8 +384,6 @@ bool EffectChangePitch::TransferDataToWindow()
    Update_Text_ToFrequency();
    Update_Text_PercentChange();
    Update_Slider_PercentChange();
-
-   m_bLoopDetect = false;
 
    return true;
 }
@@ -526,9 +521,6 @@ void EffectChangePitch::Calc_PercentChange()
 // handlers
 void EffectChangePitch::OnChoice_FromPitch(wxCommandEvent & WXUNUSED(evt))
 {
-   if (m_bLoopDetect)
-      return;
-
    m_nFromPitch = m_pChoice_FromPitch->GetSelection();
    m_FromFrequency = PitchToFreq(m_nFromPitch, m_nFromOctave);
 
@@ -536,21 +528,16 @@ void EffectChangePitch::OnChoice_FromPitch(wxCommandEvent & WXUNUSED(evt))
    Calc_ToFrequency();
    Calc_ToOctave(); // Call after Calc_ToFrequency().
 
-   m_bLoopDetect = true;
    {
       Update_Choice_ToPitch();
       Update_Spin_ToOctave();
       Update_Text_FromFrequency();
       Update_Text_ToFrequency();
    }
-   m_bLoopDetect = false;
 }
 
 void EffectChangePitch::OnSpin_FromOctave(wxCommandEvent & WXUNUSED(evt))
 {
-   if (m_bLoopDetect)
-      return;
-
    m_nFromOctave = m_pSpin_FromOctave->GetValue();
    //vvv If I change this code to not keep semitones and percent constant,
    // will need validation code as in OnSpin_ToOctave.
@@ -559,41 +546,31 @@ void EffectChangePitch::OnSpin_FromOctave(wxCommandEvent & WXUNUSED(evt))
    Calc_ToFrequency();
    Calc_ToOctave(); // Call after Calc_ToFrequency().
 
-   m_bLoopDetect = true;
    {
       Update_Spin_ToOctave();
       Update_Text_FromFrequency();
       Update_Text_ToFrequency();
    }
-   m_bLoopDetect = false;
 }
 
 void EffectChangePitch::OnChoice_ToPitch(wxCommandEvent & WXUNUSED(evt))
 {
-   if (m_bLoopDetect)
-      return;
-
    m_nToPitch = m_pChoice_ToPitch->GetSelection();
 
    Calc_SemitonesChange_fromPitches();
    Calc_PercentChange(); // Call *after* m_dSemitonesChange is updated.
    Calc_ToFrequency(); // Call *after* m_dPercentChange is updated.
 
-   m_bLoopDetect = true;
    {
       Update_Text_SemitonesChange();
       Update_Text_ToFrequency();
       Update_Text_PercentChange();
       Update_Slider_PercentChange();
    }
-   m_bLoopDetect = false;
 }
 
 void EffectChangePitch::OnSpin_ToOctave(wxCommandEvent & WXUNUSED(evt))
 {
-   if (m_bLoopDetect)
-      return;
-
    int nNewValue = m_pSpin_ToOctave->GetValue();
    // Validation: Rather than set a range for octave numbers, enforce a range that
    // keeps m_dPercentChange above -99%, per Soundtouch constraints.
@@ -610,21 +587,16 @@ void EffectChangePitch::OnSpin_ToOctave(wxCommandEvent & WXUNUSED(evt))
    Calc_SemitonesChange_fromPitches();
    Calc_PercentChange(); // Call *after* m_dSemitonesChange is updated.
 
-   m_bLoopDetect = true;
    {
       Update_Text_SemitonesChange();
       Update_Text_ToFrequency();
       Update_Text_PercentChange();
       Update_Slider_PercentChange();
    }
-   m_bLoopDetect = false;
 }
 
 void EffectChangePitch::OnText_SemitonesChange(wxCommandEvent & WXUNUSED(evt))
 {
-   if (m_bLoopDetect)
-      return;
-
    if (!m_pTextCtrl_SemitonesChange->GetValidator()->TransferFromWindow())
    {
       EnableApply(false);
@@ -636,7 +608,6 @@ void EffectChangePitch::OnText_SemitonesChange(wxCommandEvent & WXUNUSED(evt))
    Calc_ToPitch();
    Calc_ToOctave(); // Call after Calc_ToFrequency().
 
-   m_bLoopDetect = true;
    {
       Update_Choice_ToPitch();
       Update_Spin_ToOctave();
@@ -644,7 +615,6 @@ void EffectChangePitch::OnText_SemitonesChange(wxCommandEvent & WXUNUSED(evt))
       Update_Text_PercentChange();
       Update_Slider_PercentChange();
    }
-   m_bLoopDetect = false;
 
    // If m_dSemitonesChange is a big enough negative, we can go to or below 0 freq.
    // If m_dSemitonesChange is a big enough positive, we can go to 1.#INF (Windows) or inf (Linux).
@@ -655,9 +625,6 @@ void EffectChangePitch::OnText_SemitonesChange(wxCommandEvent & WXUNUSED(evt))
 
 void EffectChangePitch::OnText_FromFrequency(wxCommandEvent & WXUNUSED(evt))
 {
-   if (m_bLoopDetect)
-      return;
-
    // Empty string causes unpredictable results with ToDouble() and later calculations.
    // Non-positive frequency makes no sense, but user might still be editing,
    // so it's not an error, but we do not want to update the values/controls.
@@ -674,7 +641,6 @@ void EffectChangePitch::OnText_FromFrequency(wxCommandEvent & WXUNUSED(evt))
    Calc_ToFrequency();
    Calc_ToOctave(); // Call after Calc_ToFrequency().
 
-   m_bLoopDetect = true;
    {
       Update_Choice_FromPitch();
       Update_Spin_FromOctave();
@@ -682,7 +648,6 @@ void EffectChangePitch::OnText_FromFrequency(wxCommandEvent & WXUNUSED(evt))
       Update_Spin_ToOctave();
       Update_Text_ToFrequency();
    }
-   m_bLoopDetect = false;
 
    // Success. Make sure OK and Preview are enabled, in case we disabled above during editing.
    EnableApply(true);
@@ -690,9 +655,6 @@ void EffectChangePitch::OnText_FromFrequency(wxCommandEvent & WXUNUSED(evt))
 
 void EffectChangePitch::OnText_ToFrequency(wxCommandEvent & WXUNUSED(evt))
 {
-   if (m_bLoopDetect)
-      return;
-
    // Empty string causes unpredictable results with ToDouble() and later calculations.
    // Non-positive frequency makes no sense, but user might still be editing,
    // so it's not an error, but we do not want to update the values/controls.
@@ -708,7 +670,6 @@ void EffectChangePitch::OnText_ToFrequency(wxCommandEvent & WXUNUSED(evt))
    Calc_SemitonesChange_fromPercentChange();
    Calc_ToPitch(); // Call *after* m_dSemitonesChange is updated.
 
-   m_bLoopDetect = true;
    {
       Update_Choice_ToPitch();
       Update_Spin_ToOctave();
@@ -716,7 +677,6 @@ void EffectChangePitch::OnText_ToFrequency(wxCommandEvent & WXUNUSED(evt))
       Update_Text_PercentChange();
       Update_Slider_PercentChange();
    }
-   m_bLoopDetect = false;
 
    // Success. Make sure OK and Preview are disabled if percent change is out of bounds.
    // Can happen while editing.
@@ -727,9 +687,6 @@ void EffectChangePitch::OnText_ToFrequency(wxCommandEvent & WXUNUSED(evt))
 
 void EffectChangePitch::OnText_PercentChange(wxCommandEvent & WXUNUSED(evt))
 {
-   if (m_bLoopDetect)
-      return;
-
    if (!m_pTextCtrl_PercentChange->GetValidator()->TransferFromWindow())
    {
       EnableApply(false);
@@ -741,7 +698,6 @@ void EffectChangePitch::OnText_PercentChange(wxCommandEvent & WXUNUSED(evt))
    Calc_ToFrequency();
    Calc_ToOctave(); // Call after Calc_ToFrequency().
 
-   m_bLoopDetect = true;
    {
       Update_Choice_ToPitch();
       Update_Spin_ToOctave();
@@ -749,7 +705,6 @@ void EffectChangePitch::OnText_PercentChange(wxCommandEvent & WXUNUSED(evt))
       Update_Text_ToFrequency();
       Update_Slider_PercentChange();
    }
-   m_bLoopDetect = false;
 
    // Success. Make sure OK and Preview are enabled, in case we disabled above during editing.
    EnableApply(true);
@@ -757,9 +712,6 @@ void EffectChangePitch::OnText_PercentChange(wxCommandEvent & WXUNUSED(evt))
 
 void EffectChangePitch::OnSlider_PercentChange(wxCommandEvent & WXUNUSED(evt))
 {
-   if (m_bLoopDetect)
-      return;
-
    m_dPercentChange = (double)(m_pSlider_PercentChange->GetValue());
    // Warp positive values to actually go up faster & further than negatives.
    if (m_dPercentChange > 0.0)
@@ -770,7 +722,6 @@ void EffectChangePitch::OnSlider_PercentChange(wxCommandEvent & WXUNUSED(evt))
    Calc_ToFrequency();
    Calc_ToOctave(); // Call after Calc_ToFrequency().
 
-   m_bLoopDetect = true;
    {
       Update_Choice_ToPitch();
       Update_Spin_ToOctave();
@@ -778,7 +729,6 @@ void EffectChangePitch::OnSlider_PercentChange(wxCommandEvent & WXUNUSED(evt))
       Update_Text_ToFrequency();
       Update_Text_PercentChange();
    }
-   m_bLoopDetect = false;
 }
 
 // helper fns for controls
