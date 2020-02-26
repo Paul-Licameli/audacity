@@ -58,7 +58,7 @@ static auto NormalizeTo = Parameter<int>(
 
 BEGIN_EVENT_TABLE(EffectLoudness, wxEvtHandler)
    EVT_CHOICE(wxID_ANY, EffectLoudness::OnChoice)
-   EVT_CHECKBOX(wxID_ANY, EffectLoudness::OnUpdateUI)
+   EVT_CHOICE(wxID_ANY, EffectLoudness::OnUpdateUI)
    EVT_TEXT(wxID_ANY, EffectLoudness::OnUpdateUI)
 END_EVENT_TABLE()
 
@@ -331,15 +331,16 @@ void EffectLoudness::PopulateOrExchange(ShuttleGui & S)
             }
             S.EndHorizontalLay();
 
-            mStereoIndCheckBox =
             S
                .Target( mStereoInd )
+               .Action( [this]{ UpdateUI(); } )
                .AddCheckBox(XXO("Normalize &stereo channels independently"),
                   mStereoInd );
 
             S
                .Target( mDualMono )
                .Enable( [this]{ return mNormalizeTo == kLoudness; } )
+               .Action( [this]{ UpdateUI(); } )
                .AddCheckBox(XXO("&Treat mono as dual-mono (recommended)"),
                   mDualMono );
          }

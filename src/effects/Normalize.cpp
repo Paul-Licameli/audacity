@@ -49,7 +49,6 @@ const ComponentInterfaceSymbol EffectNormalize::Symbol
 namespace{ BuiltinEffectsModule::Registration< EffectNormalize > reg; }
 
 BEGIN_EVENT_TABLE(EffectNormalize, wxEvtHandler)
-   EVT_CHECKBOX(wxID_ANY, EffectNormalize::OnUpdateUI)
    EVT_TEXT(wxID_ANY, EffectNormalize::OnUpdateUI)
 END_EVENT_TABLE()
 
@@ -269,6 +268,7 @@ void EffectNormalize::PopulateOrExchange(ShuttleGui & S)
             mDCCheckBox =
             S
                .Target( mDC )
+               .Action( [this]{ UpdateUI(); } )
                .AddCheckBox(XXO("&Remove DC offset (center on 0.0 vertically)"),
                                         mDC);
 
@@ -278,6 +278,7 @@ void EffectNormalize::PopulateOrExchange(ShuttleGui & S)
                S
                   .MinSize()
                   .Target( mGain )
+                  .Action( [this]{ UpdateUI(); } )
                   .AddCheckBox(XXO("&Normalize peak amplitude to   "),
                      mGain);
 
@@ -305,6 +306,7 @@ void EffectNormalize::PopulateOrExchange(ShuttleGui & S)
             S
                .Target( mStereoInd )
                .Enable( enabler )
+               .Action( [this]{ UpdateUI(); } )
                .AddCheckBox(XXO("N&ormalize stereo channels independently"),
                                                mStereoInd);
          }

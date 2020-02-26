@@ -35,7 +35,6 @@ enum
    ID_Bass = 10000,
    ID_Treble,
    ID_Gain,
-   ID_Link
 };
 
 // Define keys, defaults, minimums, and maximums for the effect parameters
@@ -69,7 +68,6 @@ BEGIN_EVENT_TABLE(EffectBassTreble, wxEvtHandler)
    EVT_TEXT(ID_Bass,       EffectBassTreble::OnBassText)
    EVT_TEXT(ID_Treble,     EffectBassTreble::OnTrebleText)
    EVT_TEXT(ID_Gain,       EffectBassTreble::OnGainText)
-   EVT_CHECKBOX(ID_Link,   EffectBassTreble::OnLinkCheckbox)
 END_EVENT_TABLE()
 
 EffectBassTreble::EffectBassTreble()
@@ -262,9 +260,8 @@ void EffectBassTreble::PopulateOrExchange(ShuttleGui & S)
       S.StartMultiColumn(2, wxCENTER);
       {
          // Link checkbox
-         mLinkCheckBox =
          S
-            .Id(ID_Link)
+            .Target( mLink )
             .AddCheckBox(XXO("&Link Volume control to Tone controls"),
                Link.def);
       }
@@ -278,7 +275,6 @@ bool EffectBassTreble::TransferDataToWindow()
    mBassS->SetValue((int) (mBass * Bass.scale));
    mTrebleS->SetValue((int) mTreble *Treble.scale);
    mGainS->SetValue((int) mGain * Gain.scale);
-   mLinkCheckBox->SetValue(mLink);
 
    return true;
 }
@@ -430,7 +426,8 @@ void EffectBassTreble::OnBassText(wxCommandEvent & WXUNUSED(evt))
       return;
    }
 
-   if (mLink) UpdateGain(oldBass, kBass);
+   if (mLink)
+      UpdateGain(oldBass, kBass);
    mBassS->SetValue((int) (mBass * Bass.scale));
 }
 
@@ -443,7 +440,8 @@ void EffectBassTreble::OnTrebleText(wxCommandEvent & WXUNUSED(evt))
       return;
    }
 
-   if (mLink) UpdateGain(oldTreble, kTreble);
+   if (mLink)
+      UpdateGain(oldTreble, kTreble);
    mTrebleS->SetValue((int) (mTreble * Treble.scale));
 }
 
@@ -463,7 +461,8 @@ void EffectBassTreble::OnBassSlider(wxCommandEvent & evt)
    mBass = (double) evt.GetInt() / Bass.scale;
    mBassT->GetValidator()->TransferToWindow();
 
-   if (mLink) UpdateGain(oldBass, kBass);
+   if (mLink)
+      UpdateGain(oldBass, kBass);
    EnableApply(mUIParent->Validate());
 }
 
@@ -473,7 +472,8 @@ void EffectBassTreble::OnTrebleSlider(wxCommandEvent & evt)
    mTreble = (double) evt.GetInt() / Treble.scale;
    mTrebleT->GetValidator()->TransferToWindow();
 
-   if (mLink) UpdateGain(oldTreble, kTreble);
+   if (mLink)
+      UpdateGain(oldTreble, kTreble);
    EnableApply(mUIParent->Validate());
 }
 
@@ -483,11 +483,6 @@ void EffectBassTreble::OnGainSlider(wxCommandEvent & evt)
    mGainT->GetValidator()->TransferToWindow();
 
    EnableApply(mUIParent->Validate());
-}
-
-void EffectBassTreble::OnLinkCheckbox(wxCommandEvent& /*evt*/)
-{
-   mLink = mLinkCheckBox->GetValue();
 }
 
 void EffectBassTreble::UpdateGain(double oldVal, int control)

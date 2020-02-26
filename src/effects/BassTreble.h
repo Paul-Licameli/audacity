@@ -91,7 +91,7 @@ private:
    void OnBassSlider(wxCommandEvent & evt);
    void OnTrebleSlider(wxCommandEvent & evt);
    void OnGainSlider(wxCommandEvent & evt);
-   void OnLinkCheckbox(wxCommandEvent & evt);
+   void OnLinkCheckbox();
 
    // Auto-adjust gain to reduce variation in peak level
    void UpdateGain(double oldVal, int control );
@@ -112,8 +112,6 @@ private:
    wxTextCtrl  *mBassT;
    wxTextCtrl  *mTrebleT;
    wxTextCtrl  *mGainT;
-
-   wxCheckBox  *mLinkCheckBox;
 
    CapturedParameters mParameters;
    CapturedParameters &Parameters() override { return mParameters; }

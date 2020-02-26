@@ -19,7 +19,6 @@
 #include "LoadEffects.h"
 
 #include <wx/arrstr.h>
-#include <wx/checkbox.h>
 #include <wx/slider.h>
 #include <wx/spinctrl.h>
 #include <wx/textctrl.h>
@@ -39,8 +38,7 @@ enum
    ID_ToneHigh,
    ID_WetGain,
    ID_DryGain,
-   ID_StereoWidth,
-   ID_WetOnly
+   ID_StereoWidth
 };
 
 // Define keys, defaults, minimums, and maximums for the effect parameters
@@ -419,10 +417,9 @@ void EffectReverb::PopulateOrExchange(ShuttleGui & S)
 
    S.StartHorizontalLay(wxCENTER, false);
    {
-      mWetOnlyC =
       S
-         .Id(ID_WetOnly).
-            AddCheckBox(XXO("Wet O&nly"), WetOnly.def);
+         .Target( mParams.mWetOnly )
+         .AddCheckBox(XXO("Wet O&nly"), WetOnly.def);
    }
    S.EndHorizontalLay();
 
@@ -446,9 +443,6 @@ bool EffectReverb::TransferDataToWindow()
    SetSpinSlider(StereoWidth);
 
 #undef SetSpinSlider
-
-   mWetOnlyC->SetValue((int) mParams.mWetOnly);
-
    return true;
 }
 
@@ -463,8 +457,6 @@ bool EffectReverb::TransferDataFromWindow()
    mParams.mWetGain = mWetGainS->GetValue();
    mParams.mDryGain = mDryGainS->GetValue();
    mParams.mStereoWidth = mStereoWidthS->GetValue();
-   mParams.mWetOnly = mWetOnlyC->GetValue();
-
    return true;
 }
 

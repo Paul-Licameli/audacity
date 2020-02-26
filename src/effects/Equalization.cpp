@@ -76,7 +76,6 @@
 #include <wx/stdpaths.h>
 #include <wx/settings.h>
 #include <wx/sizer.h>
-#include <wx/checkbox.h>
 #include <wx/tooltip.h>
 
 #include "../AColor.h"
@@ -121,8 +120,6 @@ enum
    ID_Draw,
    ID_Graphic,
    ID_Interp,
-   ID_Linear,
-   ID_Grid,
    ID_Curve,
    ID_Delete,
 #ifdef EXPERIMENTAL_EQ_SSE_THREADED
@@ -222,8 +219,6 @@ BEGIN_EVENT_TABLE(EffectEqualization, wxEvtHandler)
 
    EVT_RADIOBUTTON(ID_Draw, EffectEqualization::OnDrawMode)
    EVT_RADIOBUTTON(ID_Graphic, EffectEqualization::OnGraphicMode)
-   EVT_CHECKBOX(ID_Linear, EffectEqualization::OnLinFreq)
-   EVT_CHECKBOX(ID_Grid, EffectEqualization::OnGridOnOff)
 
 #ifdef EXPERIMENTAL_EQ_SSE_THREADED
    EVT_RADIOBUTTON(ID_DefaultMath, EffectEqualization::OnProcessingRadio)
@@ -1009,10 +1004,10 @@ void EffectEqualization::PopulateOrExchange(ShuttleGui & S)
             {
                szrL = S.GetSizer();
 
-               mLinFreq =
                S
-                  .Id(ID_Linear)
                   .Text(XO("Linear Frequency Scale"))
+                  .Target( mLin )
+                  .Action( [this]{ OnLinFreq(); } )
                   .AddCheckBox(XXO("Li&near Frequency Scale"), false);
             }
             S.EndHorizontalLay();
@@ -1108,10 +1103,11 @@ void EffectEqualization::PopulateOrExchange(ShuttleGui & S)
                .Action( [this]{ OnInvert(); } )
                .AddButton(XXO("&Invert"));
 
-            mGridOnOff =
             S
-               .Id(ID_Grid)
                .Text(XO("Show grid lines"))
+               .Target( mDrawGrid )
+               .Show( [this]{ return mDrawMode; } )
+               .Action( [this]{ OnGridOnOff(); } )
                .AddCheckBox(XXO("Show g&rid lines"), false);
          }
          S.EndHorizontalLay();
@@ -1242,12 +1238,7 @@ void EffectEqualization::PopulateOrExchange(ShuttleGui & S)
 //
 bool EffectEqualization::TransferDataToWindow()
 {
-   // Set log or lin freq scale (affects interpolation as well)
-   mLinFreq->SetValue( mLin );
-   wxCommandEvent dummyEvent;
-   OnLinFreq(dummyEvent);  // causes a CalcFilter
-
-   mGridOnOff->SetValue( mDrawGrid ); // checks/unchecks the box on the interface
+   OnLinFreq();  // causes a CalcFilter
 
    if( mMSlider )
       mMSlider->SetValue((mM - 1) / 2);
@@ -1279,7 +1270,6 @@ bool EffectEqualization::TransferDataToWindow()
    szrH->Show(szrL, mDrawMode);    // linear freq checkbox
    if( mGraphic) 
       mGraphic->SetValue(!mDrawMode);
-   mGridOnOff->Show( mDrawMode );
 
    // Set Graphic (Fader) or Draw mode
    if (!mDrawMode)
@@ -3064,15 +3054,13 @@ void EffectEqualization::OnInvert() // Inverts any curve
    EnvelopeUpdated();
 }
 
-void EffectEqualization::OnGridOnOff(wxCommandEvent & WXUNUSED(event))
+void EffectEqualization::OnGridOnOff()
 {
-   mDrawGrid = mGridOnOff->IsChecked();
    mPanel->Refresh(false);
 }
 
-void EffectEqualization::OnLinFreq(wxCommandEvent & WXUNUSED(event))
+void EffectEqualization::OnLinFreq()
 {
-   mLin = mLinFreq->IsChecked();
    if(IsLinear())  //going from log to lin freq scale
    {
       mFreqRuler->ruler.SetLog(false);

@@ -15,7 +15,6 @@
 #include "Effect.h"
 #include "../Shuttle.h"
 
-class wxCheckBox;
 class wxSlider;
 class wxSpinCtrl;
 class ShuttleGui;
@@ -115,8 +114,6 @@ private:
    SpinSlider(StereoWidth)
 
 #undef SpinSlider
-
-   wxCheckBox  *mWetOnlyC;
 
    CapturedParameters mParameters;
    CapturedParameters &Parameters() override { return mParameters; }
