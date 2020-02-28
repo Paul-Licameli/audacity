@@ -188,6 +188,53 @@ void FinishPreferences()
 }
 
 //////////
+SettingTransaction::SettingTransaction()
+{
+   if ( sCurrent )
+      // nesting of transactions is not supported
+      wxASSERT( false );
+   else
+      sCurrent = this;
+}
+
+bool SettingTransaction::Commit()
+{
+   if ( sCurrent == this && !mCommitted ) {
+      for ( auto pSetting : mPending )
+         if ( !pSetting->Commit() )
+            return false;
+      if ( gPrefs->Flush() ) {
+         mPending.clear();
+         mCommitted = true;
+         return true;
+      }
+   }
+   return false;
+}
+
+// static
+auto SettingTransaction::Add( TransactionalSettingBase &setting ) -> AddResult
+{
+   if ( !sCurrent || sCurrent->mCommitted )
+      return NotAdded;
+   return sCurrent->mPending.insert( &setting ).second
+      ? Added
+      : PreviouslyAdded;
+}
+
+SettingTransaction::~SettingTransaction()
+{
+   if ( sCurrent == this ) {
+      if ( !mCommitted )
+         for ( auto pSetting : mPending )
+            pSetting->Rollback();
+      sCurrent = nullptr;
+   }
+}
+
+SettingTransaction *SettingTransaction::sCurrent = nullptr;
+
+//////////
 EnumValueSymbols::EnumValueSymbols(
    ByColumns_t,
    const TranslatableStrings &msgids,

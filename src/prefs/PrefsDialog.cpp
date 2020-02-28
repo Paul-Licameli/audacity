@@ -592,6 +592,8 @@ PrefsDialog::PrefsDialog(
    // Center after all that resizing, but make sure it doesn't end up
    // off-screen
    CentreOnParent();
+
+   mTransaction = std::make_unique< SettingTransaction >();
 }
 
 PrefsDialog::~PrefsDialog()
@@ -756,6 +758,8 @@ void PrefsDialog::OnOK(wxCommandEvent & WXUNUSED(event))
    //      not cause MenuCreator::RebuildMenuBar() to be executed.
 
    wxTheApp->AddPendingEvent(wxCommandEvent{ EVT_PREFS_UPDATE });
+
+   mTransaction->Commit();
 
    if( IsModal() )
       EndModal(true);
