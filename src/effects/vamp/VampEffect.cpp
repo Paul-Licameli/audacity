@@ -55,7 +55,6 @@ enum
 BEGIN_EVENT_TABLE(VampEffect, wxEvtHandler)
     EVT_SLIDER(wxID_ANY, VampEffect::OnSlider)
     EVT_TEXT(wxID_ANY, VampEffect::OnTextCtrl)
-    EVT_CHECKBOX(wxID_ANY, VampEffect::OnCheckBox)
     EVT_CHOICE(wxID_ANY, VampEffect::OnChoice)
 END_EVENT_TABLE()
 
@@ -535,6 +534,7 @@ void VampEffect::PopulateOrExchange(ShuttleGui & S)
    auto count = mParameters.size();
 
    mToggles.reinit( count );
+
    mSliders.reinit( count );
    mFields.reinit( count );
    mLabels.reinit( count );
@@ -587,7 +587,7 @@ void VampEffect::PopulateOrExchange(ShuttleGui & S)
 
                float value = mPlugin->getParameter(mParameters[p].identifier);
 
-               mToggles[p] = NULL;
+               mToggles[p] = false;
                mChoices[p] = NULL;
                mSliders[p] = NULL;
                mFields[p] = NULL;
@@ -609,11 +609,15 @@ void VampEffect::PopulateOrExchange(ShuttleGui & S)
                    mParameters[p].minValue == 0.0 &&
                    mParameters[p].maxValue == 1.0)
                {
-                  mToggles[p] =
                   S
-                     .Id(ID_Toggles + p)
                      .Text({ Verbatim( labelText ), {}, Verbatim( tip ) })
                      .Position(wxALIGN_LEFT | wxALIGN_CENTER_VERTICAL | wxALL)
+                     .Target( mToggles[p] )
+                     .Action( [this, p](){
+                        mPlugin->setParameter(
+                           mParameters[p].identifier,
+                           mToggles[p]);
+                     } )
                      .AddCheckBox( {},
                                   value > 0.5 );
 
@@ -751,7 +755,7 @@ void VampEffect::UpdateFromPlugin()
           mParameters[p].minValue == 0.0 &&
           mParameters[p].maxValue == 1.0)
       {
-         mToggles[p]->SetValue(value > 0.5);
+         mToggles[p] = (value > 0.5);
       }
       else if (mParameters[p].isQuantized &&
                mParameters[p].quantizeStep == 1.0 &&
@@ -783,13 +787,6 @@ void VampEffect::UpdateFromPlugin()
    }
 }
 
-void VampEffect::OnCheckBox(wxCommandEvent &event)
-{
-   int p = event.GetId() - ID_Toggles;
-
-   mPlugin->setParameter(mParameters[p].identifier, mToggles[p]->GetValue());
-}
-
 void VampEffect::OnChoice(wxCommandEvent & evt)
 {
    int p = evt.GetId();
@@ -799,7 +796,7 @@ void VampEffect::OnChoice(wxCommandEvent & evt)
    {
       Vamp::Plugin::ProgramList programs = mPlugin->getPrograms();
       mPlugin->selectProgram(programs[evt.GetInt()]);
-      UpdateFromPlugin();
+      TransferDataToWindow();
       return;
    }
 

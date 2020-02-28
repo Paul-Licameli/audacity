@@ -47,11 +47,6 @@ class RecordingPrefs final : public PrefsPanel
    void PopulateOrExchange(ShuttleGui & S) override;
 
  private:
-   void OnToggleCustomName(wxCommandEvent & /* Evt */);
-
-   bool mUseCustomTrackName;
-
-   DECLARE_EVENT_TABLE()
 };
 
 extern BoolSetting

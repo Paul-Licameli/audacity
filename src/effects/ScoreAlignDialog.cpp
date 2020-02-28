@@ -121,19 +121,16 @@ ScoreAlignDialog::ScoreAlignDialog(ScoreAlignParams &params)
       .AddVariableText(
          SA_DFT_WINDOW_SIZE_TEXT, true, wxALIGN_LEFT | wxALIGN_CENTER_VERTICAL);
 
-   mForceFinalAlignmentCheckBox =
    S
-      .Id(ID_FORCEFINALALIGNMENT)
-      .Text(XO("Force Final Alignment"))
+      .Text (XO("Force Final Alignment"))
+      .Target( p.mForceFinalAlignment )
       .AddCheckBox(
                 XO("Force Final Alignment"),
                 p.mForceFinalAlignment);
 
-   mIgnoreSilenceCheckBox =
    S
-      .Id(ID_IGNORESILENCE)
       .Text(XO("Ignore Silence at Beginnings and Endings"))
->>>>>>> dc1768f615... Single function of ShuttleGui for name, name suffix, tooltip
+      .Target( p.mIgnoreSilence )
       .AddCheckBox(
          XO("Ignore Silence at Beginnings and Endings"),
          p.mIgnoreSilence );
@@ -304,6 +301,11 @@ ScoreAlignDialog::~ScoreAlignDialog()
 
 void ScoreAlignDialog::OnSlider(wxCommandEvent & event)
 {
+   DoSlider();
+}
+
+void ScoreAlignDialog::DoSlider()
+{
    TransferDataFromWindow();
 }
 
@@ -314,13 +316,15 @@ void ScoreAlignDialog::OnDefault()
    mWindowSizeSlider->SetValue((int) (SA_DFT_WINDOW_SIZE * 100 + 0.5));
    mSilenceThresholdSlider->SetValue(
                           (int) (SA_DFT_SILENCE_THRESHOLD * 1000 + 0.5));
-   mForceFinalAlignmentCheckBox->SetValue(SA_DFT_FORCE_FINAL_ALIGNMENT);
-   mIgnoreSilenceCheckBox->SetValue(SA_DFT_IGNORE_SILENCE);
    mPresmoothSlider->SetValue((int) (SA_DFT_PRESMOOTH_TIME * 100 + 0.5));
    mLineTimeSlider->SetValue((int) (SA_DFT_LINE_TIME * 100 + 0.5));
    mSmoothTimeSlider->SetValue((int) (SA_DFT_SMOOTH_TIME * 100 + 0.5));
 
    TransferDataFromWindow();
+
+   p.mForceFinalAlignment = SA_DFT_FORCE_FINAL_ALIGNMENT;
+   p.mIgnoreSilence = SA_DFT_IGNORE_SILENCE;
+   TransferDataToWindow();
 }
 
 
@@ -329,8 +333,6 @@ bool ScoreAlignDialog::TransferDataFromWindow()
    p.mFramePeriod = (double) mFramePeriodSlider->GetValue() / 100.0;
    p.mWindowSize = (double) mWindowSizeSlider->GetValue() / 100.0;
    p.mSilenceThreshold = (double) mSilenceThresholdSlider->GetValue() / 1000.0;
-   p.mForceFinalAlignment = (double) mForceFinalAlignmentCheckBox->GetValue();
-   p.mIgnoreSilence = (double) mIgnoreSilenceCheckBox->GetValue();
    p.mPresmoothTime = (double) mPresmoothSlider->GetValue() / 100.0;
    p.mLineTime = (double) mLineTimeSlider->GetValue() / 100.0;
    p.mSmoothTime = (double) mSmoothTimeSlider->GetValue() / 100.0;
@@ -347,7 +349,8 @@ bool ScoreAlignDialog::TransferDataFromWindow()
                            wxString::Format(_("%.2f secs"), p.mLineTime) :
                            L"(off)");
    mSmoothTimeText->SetLabel(wxString::Format(_("%.2f secs"), p.mSmoothTime));
-   return true;
+   
+   return wxDialogWrapper::TransferDataFromWindow();
 }
 
 
@@ -361,8 +364,6 @@ BEGIN_EVENT_TABLE(ScoreAlignDialog, wxDialogWrapper)
    EVT_SLIDER(ID_FRAMEPERIOD, ScoreAlignDialog::OnSlider)
    EVT_SLIDER(ID_WINDOWSIZE, ScoreAlignDialog::OnSlider)
    EVT_SLIDER(ID_SILENCETHRESHOLD, ScoreAlignDialog::OnSlider)
-   EVT_CHECKBOX(ID_FORCEFINALALIGNMENT, ScoreAlignDialog::OnSlider)
-   EVT_CHECKBOX(ID_IGNORESILENCE, ScoreAlignDialog::OnSlider)
    EVT_SLIDER(ID_PRESMOOTH, ScoreAlignDialog::OnSlider)
    EVT_SLIDER(ID_LINETIME, ScoreAlignDialog::OnSlider)
    EVT_SLIDER(ID_SMOOTHTIME, ScoreAlignDialog::OnSlider)

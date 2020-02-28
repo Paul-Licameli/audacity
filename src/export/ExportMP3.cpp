@@ -215,7 +215,6 @@ static const std::vector< int > sampRates {
 #define ID_VBR 7001
 #define ID_ABR 7002
 #define ID_CBR 7003
-#define ID_MONO 7005
 
 class ExportMP3Options final : public wxPanelWrapper
 {
@@ -225,7 +224,6 @@ public:
    virtual ~ExportMP3Options();
 
    void PopulateOrExchange(ShuttleGui & S);
-   bool TransferDataToWindow() override;
    bool TransferDataFromWindow() override;
 
    void OnSET(wxCommandEvent& evt);
@@ -233,11 +231,10 @@ public:
    void OnABR(wxCommandEvent& evt);
    void OnCBR(wxCommandEvent& evt);
    void OnQuality(wxCommandEvent& evt);
-   void OnMono(wxCommandEvent& evt);
+   void OnMono();
 
 private:
 
-   wxCheckBox    *mMono;
    bool mMonoValue = false;
    wxRadioButton *mSET;
    wxRadioButton *mVBR;
@@ -264,7 +261,6 @@ BEGIN_EVENT_TABLE(ExportMP3Options, wxPanelWrapper)
    EVT_RADIOBUTTON(ID_ABR,    ExportMP3Options::OnABR)
    EVT_RADIOBUTTON(ID_CBR,    ExportMP3Options::OnCBR)
    EVT_CHOICE(wxID_ANY,       ExportMP3Options::OnQuality)
-   EVT_CHECKBOX(ID_MONO,      ExportMP3Options::OnMono)
 END_EVENT_TABLE()
 
 // Settings available for use elsewhere
@@ -488,11 +484,10 @@ void ExportMP3Options::PopulateOrExchange(ShuttleGui & S)
                   }
                   S.EndPanel();
 
-                  mMono =
                   S
-                     .Id(ID_MONO)
-                     .AddCheckBox(XXO("Force export to mono"),
-                        MP3ForceMono.Read());
+                     .Target( MP3ForceMono )
+                     .Action( [this]{ OnMono(); } )
+                     .AddCheckBox(XXO("Force export to mono"), false);
                }
                S.EndMultiColumn();
             }
@@ -503,15 +498,12 @@ void ExportMP3Options::PopulateOrExchange(ShuttleGui & S)
       S.EndHorizontalLay();
    }
    S.EndVerticalLay();
+
+   OnMono(); //??    
 }
 
 ///
 ///
-bool ExportMP3Options::TransferDataToWindow()
-{
-   return true;
-}
-
 bool ExportMP3Options::TransferDataFromWindow()
 {
    ShuttleGui S(this, eIsSavingToPrefs);
@@ -523,7 +515,7 @@ bool ExportMP3Options::TransferDataFromWindow()
    MP3CBitrate.Write( mCbrRate );
    gPrefs->Flush();
 
-   return true;
+   return wxPanelWrapper::TransferDataFromWindow();
 }
 
 namespace {
@@ -586,11 +578,9 @@ void ExportMP3Options::OnQuality(wxCommandEvent& WXUNUSED(event))
    }
 }
 
-void ExportMP3Options::OnMono(wxCommandEvent& /*evt*/)
+void ExportMP3Options::OnMono()
 {
-   mMonoValue = mMono->GetValue();
-
-   MP3ForceMono.Write( mMonoValue );
+   mMonoValue = MP3ForceMono.Read();
    gPrefs->Flush();
 }
 

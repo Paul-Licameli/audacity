@@ -1032,7 +1032,7 @@ bool TagsEditorDialog::TransferDataFromWindow()
       mLocal.SetTag(n, v, bSpecialTag);
    }
 
-   return true;
+   return wxDialogWrapper::TransferDataFromWindow();
 }
 
 bool TagsEditorDialog::TransferDataToWindow()
@@ -1094,7 +1094,7 @@ bool TagsEditorDialog::TransferDataToWindow()
    Layout();
    Fit();
 
-   return true;
+   return wxDialogWrapper::TransferDataFromWindow();
 }
 
 void TagsEditorDialog::OnChange(wxGridEvent & event)

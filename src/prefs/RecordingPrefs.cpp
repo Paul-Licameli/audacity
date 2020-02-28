@@ -34,18 +34,9 @@
 
 using std::min;
 
-enum {
-   UseCustomTrackNameID = 1000,
-};
-
-BEGIN_EVENT_TABLE(RecordingPrefs, PrefsPanel)
-   EVT_CHECKBOX(UseCustomTrackNameID, RecordingPrefs::OnToggleCustomName)
-END_EVENT_TABLE()
-
 RecordingPrefs::RecordingPrefs(wxWindow * parent, wxWindowID winid)
 :  PrefsPanel(parent, winid, XO("Recording")) // XC("Recording", "preference")
 {
-   mUseCustomTrackName = RecordingSettings::CustomName.Read();
 }
 
 RecordingPrefs::~RecordingPrefs()
@@ -143,13 +134,12 @@ void RecordingPrefs::PopulateOrExchange(ShuttleGui & S)
          S.StartMultiColumn(3);
          {
             S
-               .Id(UseCustomTrackNameID)
-               .TieCheckBox(XXO("Custom Track &Name"),
-                  RecordingSettings::CustomName);
+               .Target( RecordingSettings::CustomName )
+               .AddCheckBox(XXO("Custom Track &Name"));
 
             S
                .Text(XO("Custom name text"))
-               .Enable( [this]{ return mUseCustomTrackName; } )
+               .Enable( []{ return RecordingSettings::CustomName.Read(); } )
                .TieTextBox( {},
                   RecordingTrackName,
                   30);
@@ -287,11 +277,6 @@ bool RecordingPrefs::Commit()
          AudioIONumberAnalysis.Reset();
    #endif
    return true;
-}
-
-void RecordingPrefs::OnToggleCustomName(wxCommandEvent & /* Evt */)
-{
-   mUseCustomTrackName = !mUseCustomTrackName;
 }
 
 namespace{

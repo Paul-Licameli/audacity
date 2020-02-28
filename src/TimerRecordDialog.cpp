@@ -985,7 +985,7 @@ bool TimerRecordDialog::TransferDataFromWindow()
    AutoExport.Write( m_bAutoExportEnabled );
    PostAction.Write( iPostRecordAction );
 
-   return true;
+   return wxDialogWrapper::TransferDataFromWindow();
 }
 
 // Update m_TimeSpan_Duration and ctrl based on m_DateTime_Start and m_DateTime_End.

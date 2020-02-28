@@ -80,9 +80,6 @@ public:
    wxSlider *mSilenceThresholdSlider;
    wxStaticText *mSilenceThresholdText;
 
-   wxCheckBox *mForceFinalAlignmentCheckBox;
-   wxCheckBox *mIgnoreSilenceCheckBox;
-
    wxStaticText *mPresmoothLabel;
    wxSlider *mPresmoothSlider;
    wxStaticText *mPresmoothText;
@@ -110,8 +107,6 @@ private:
      ID_LINETIME,
      ID_SMOOTHTIME,
      ID_SILENCETHRESHOLD,
-     ID_FORCEFINALALIGNMENT,
-     ID_IGNORESILENCE,
      ID_DEFAULT
    };
 
@@ -119,6 +114,7 @@ private:
    void OnOK();
    void OnCancel();
    void OnSlider(wxCommandEvent & event);
+   void DoSlider();
    void OnDefault(wxCommandEvent & event);
 
    DECLARE_EVENT_TABLE()
