@@ -222,27 +222,12 @@ void EffectFindClipping::PopulateOrExchange(ShuttleGui & S)
    {
       S
          .Target( mStart, NumValidatorStyle::DEFAULT, Start.min )
-         .TieTextBox(XXO("&Start threshold (samples):"), mStart, 10);
+         .AddTextBox(XXO("&Start threshold (samples):"), {}, 10);
 
       S
          .Target( mStop, NumValidatorStyle::DEFAULT, Stop.min )
-         .TieTextBox(XXO("St&op threshold (samples):"), mStop, 10);
+         .AddTextBox(XXO("St&op threshold (samples):"), {}, 10);
    }
    S.EndMultiColumn();
 }
 
-bool EffectFindClipping::TransferDataToWindow()
-{
-   ShuttleGui S(mUIParent, eIsSettingToDialog);
-   PopulateOrExchange(S);
-
-   return true;
-}
-
-bool EffectFindClipping::TransferDataFromWindow()
-{
-   ShuttleGui S(mUIParent, eIsGettingFromDialog);
-   PopulateOrExchange(S);
-
-   return true;
-}

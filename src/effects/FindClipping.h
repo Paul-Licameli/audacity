@@ -41,8 +41,6 @@ public:
 
    bool Process() override;
    void PopulateOrExchange(ShuttleGui & S) override;
-   bool TransferDataToWindow() override;
-   bool TransferDataFromWindow() override;
 
 private:
    // EffectFindCliping implementation
