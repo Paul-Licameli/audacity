@@ -287,6 +287,35 @@ public:
       const ChoiceSetting &Setting) = 0;
 };
 
+struct ShuttleGuiState final
+{
+   ShuttleGuiState(
+      wxWindow *pDlg, teShuttleMode ShuttleMode, bool vertical, wxSize minSize,
+      const std::shared_ptr< PreferenceVisitor > &pVisitor );
+
+   void PushSizer();
+   void PopSizer();
+
+   wxWindow *const mpDlg;
+   const teShuttleMode mShuttleMode;
+
+   std::unique_ptr<Shuttle> mpShuttle; /*! Controls source/destination of shuttled data.  You can
+   leave this NULL if you are shuttling to variables */
+
+   std::shared_ptr< PreferenceVisitor > mpVisitor;
+
+   wxSizer * mpSizer = nullptr;
+
+   int miBorder = 5;
+
+   wxSizer * pSizerStack[ nMaxNestedSizers ];
+   int mSizerDepth = -1;
+
+   int miIdNext = 3000;
+
+   wxWindow * mpParent = mpDlg;
+};
+
 class AUDACITY_DLL_API ShuttleGuiBase /* not final */
 {
 public:
@@ -540,7 +569,7 @@ public:
       const int max,
       const int min);
 //-- End of variants.
-   void SetBorder( int Border ) {miBorder = Border;};
+   void SetBorder( int Border ) {mpState -> miBorder = Border;};
    void SetSizerProportion( int iProp ) {miSizerProp = iProp;};
    void SetStretchyCol( int i );
    void SetStretchyRow( int i );
@@ -550,21 +579,19 @@ public:
    {
       // This assertion justifies the use of safenew in many places where GetParent()
       // is used to construct a window
-      wxASSERT(mpParent != NULL);
-      return mpParent;
+      wxASSERT(mpState -> mpParent != NULL);
+      return mpState -> mpParent;
    }
    ShuttleGuiBase & Prop( int iProp );
    void UseUpId();
 
-   wxSizer * GetSizer() {return mpSizer;}
+   wxSizer * GetSizer() {return mpState -> mpSizer;}
 
    static void ApplyItem( int step, const DialogDefinition::Item &item,
       wxWindow *pWind, wxWindow *pDlg );
 
 protected:
    void SetProportions( int Default );
-   void PushSizer();
-   void PopSizer();
 
    void UpdateSizersCore( bool bPrepend, int Flags, bool prompt = false );
    void UpdateSizers();
@@ -580,32 +607,23 @@ private:
       std::initializer_list<const ListControlColumn> columns );
 
 protected:
-   wxWindow *const mpDlg;
-   wxSizer * pSizerStack[ nMaxNestedSizers ];
+   std::shared_ptr< ShuttleGuiState > mpState;
 
-   std::unique_ptr<Shuttle> mpShuttle; /*! Controls source/destination of shuttled data.  You can
-   leave this NULL if you are shuttling to variables */
    int miNoMatchSelector = 0; //! Used in choices to determine which item to use on no match.
 
-   teShuttleMode mShuttleMode;
-
    int miSizerProp = 0;
-   int mSizerDepth;
-   int miBorder;
    int miProp = 0;
 
-   // See UseUpId() for explanation of these three.
+   // See UseUpId() for explanation of these two.
    int miId = -1;
-   int miIdNext;
    int miIdSetByUser = -1;
+
    // Proportion set by user rather than default.
    int miPropSetByUser = -1;
 
    bool * mpbOptionalFlag = nullptr;
 
    std::unique_ptr<wxSizer> mpSubSizer;
-   wxSizer * mpSizer;
-   wxWindow * mpParent;
    wxWindow * mpWind = nullptr;
 
 private:
@@ -798,7 +816,7 @@ public:
    static void SetMinSize( wxWindow *window, const wxArrayStringEx & items );
   // static void SetMinSize( wxWindow *window, const std::vector<int> & items );
 
-   teShuttleMode GetMode() { return  mShuttleMode; };
+   teShuttleMode GetMode() { return mpState -> mShuttleMode; };
 };
 
 class ComponentInterfaceSymbol;
