@@ -585,28 +585,28 @@ protected:
 
    std::unique_ptr<Shuttle> mpShuttle; /*! Controls source/destination of shuttled data.  You can
    leave this NULL if you are shuttling to variables */
-   int miNoMatchSelector; //! Used in choices to determine which item to use on no match.
+   int miNoMatchSelector = 0; //! Used in choices to determine which item to use on no match.
 
    teShuttleMode mShuttleMode;
 
-   int miSizerProp;
+   int miSizerProp = 0;
    int mSizerDepth;
    int miBorder;
-   int miProp;
+   int miProp = 0;
 
    // See UseUpId() for explanation of these three.
-   int miId;
+   int miId = -1;
    int miIdNext;
-   int miIdSetByUser;
+   int miIdSetByUser = -1;
    // Proportion set by user rather than default.
-   int miPropSetByUser;
+   int miPropSetByUser = -1;
 
-   bool * mpbOptionalFlag;
+   bool * mpbOptionalFlag = nullptr;
 
    std::unique_ptr<wxSizer> mpSubSizer;
    wxSizer * mpSizer;
    wxWindow * mpParent;
-   wxWindow * mpWind;
+   wxWindow * mpWind = nullptr;
 
 private:
    void DoDataShuttle( const wxString &Name, WrappedType & WrappedRef );
@@ -631,7 +631,7 @@ private:
    Identifiers mRadioValues;
    wxString mRadioSettingName; /// The setting controlled by a group.
    Optional<WrappedType> mRadioValue;  /// The wrapped value associated with the active radio button.
-   int mRadioCount;       /// The index of this radio item.  -1 for none.
+   int mRadioCount = -1;       /// The index of this radio item.  -1 for none.
    wxString mRadioValueString; /// Unwrapped string value.
    wxRadioButton *DoAddRadioButton(
       const TranslatableLabel &Prompt, int style );

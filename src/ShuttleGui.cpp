@@ -143,27 +143,16 @@ ShuttleGuiBase::ShuttleGuiBase(
    , mpVisitor{ pVisitor }
 {
    wxASSERT( (pParent != NULL ) || ( ShuttleMode != eIsCreating));
-   mpbOptionalFlag = nullptr;
    mpParent = pParent;
    mShuttleMode = ShuttleMode;
 
    mpShuttle = NULL;
    mpSizer = NULL;
-   mpWind = NULL;
-   mpSubSizer = NULL;
-
-   mRadioSettingName = L"";
-   mRadioCount = -1;
 
    miBorder = 5;
-   miProp=0;
-   miPropSetByUser=-1;
-   miSizerProp=0;
    mSizerDepth=-1;
 
    ResetId();
-
-   miNoMatchSelector = 0;
 
    if( mShuttleMode != eIsCreating )
       return;
