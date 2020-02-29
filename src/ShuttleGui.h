@@ -298,7 +298,6 @@ public:
       const std::shared_ptr< PreferenceVisitor > &pVisitor
    );
    virtual ~ShuttleGuiBase();
-   void Init( bool vertical, wxSize minSize );
    void ResetId();
 
 //-- Add functions.  These only add a widget or 2.

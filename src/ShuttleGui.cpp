@@ -146,15 +146,7 @@ ShuttleGuiBase::ShuttleGuiBase(
    mpbOptionalFlag = nullptr;
    mpParent = pParent;
    mShuttleMode = ShuttleMode;
-   Init( vertical, minSize );
-}
 
-ShuttleGuiBase::~ShuttleGuiBase()
-{
-}
-
-void ShuttleGuiBase::Init(bool vertical, wxSize minSize)
-{
    mpShuttle = NULL;
    mpSizer = NULL;
    mpWind = NULL;
@@ -196,6 +188,10 @@ void ShuttleGuiBase::Init(bool vertical, wxSize minSize)
    }
    PushSizer();
    mpSizer->SetMinSize(minSize);
+}
+
+ShuttleGuiBase::~ShuttleGuiBase()
+{
 }
 
 void ShuttleGuiBase::ResetId()
@@ -2304,29 +2300,33 @@ void SetIfCreated( wxStaticText *&Var, wxStaticText * Val )
 #include "../extnpanel-src/GuiWaveTrack.h"
 #endif
 
+namespace {
+   inline teShuttleMode EffectiveMode( teShuttleMode inMode )
+   {
+      switch ( inMode ) {
+         case eIsCreatingFromPrefs:
+            return eIsCreating;
+         case eIsSavingToPrefs:
+            return eIsGettingFromDialog;
+         default:
+            return inMode;
+      }
+   }
+}
+
 ShuttleGui::ShuttleGui(
    wxWindow * pParent, teShuttleMode ShuttleMode, bool vertical, wxSize minSize,
    const std::shared_ptr< PreferenceVisitor > &pVisitor )
-   : ShuttleGuiBase( pParent, ShuttleMode, vertical, minSize, pVisitor )
+   : ShuttleGuiBase( pParent, EffectiveMode( ShuttleMode ),
+      vertical, minSize, pVisitor )
 {
-   if( ShuttleMode == eIsCreatingFromPrefs )
-   {
-      mShuttleMode = eIsCreating;
-      Init( vertical, minSize ); // Wasn't fully done in base constructor because it is only done when eIsCreating is set.
-   }
-   else if( ShuttleMode == eIsSavingToPrefs )
-   {
-      mShuttleMode = eIsGettingFromDialog;
-   }
-   else
-   {
+   if (!(ShuttleMode == eIsCreatingFromPrefs || ShuttleMode == eIsSavingToPrefs))
       return;
-   }
-
+   
    mpShuttle = std::make_unique<ShuttlePrefs>();
    // In this case the client is the GUI, so if creating we do want to
    // store in the client.
-   mpShuttle->mbStoreInClient = (mShuttleMode == eIsCreating );
+   mpShuttle->mbStoreInClient = (ShuttleMode == eIsCreatingFromPrefs );
 };
 
 ShuttleGui::~ShuttleGui()
