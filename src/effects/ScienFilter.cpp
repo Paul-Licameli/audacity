@@ -343,6 +343,9 @@ bool EffectScienFilter::Init()
 
 void EffectScienFilter::PopulateOrExchange(ShuttleGui & S)
 {
+   const auto type1Enabler = [this]{ return mFilterType == kChebyshevTypeI; };
+   const auto type2Enabler = [this]{ return mFilterType == kChebyshevTypeII; };
+
    S.AddSpace(5);
    S.SetSizerProportion(1);
    S.StartMultiColumn(3, wxEXPAND);
@@ -480,21 +483,25 @@ void EffectScienFilter::PopulateOrExchange(ShuttleGui & S)
 
          S.AddSpace(1, 1);
 
-         mRippleCtlP =
          S
+            .Enable( type1Enabler )
             .AddVariableText( XO("&Passband Ripple:"),
                false, wxALL | wxALIGN_RIGHT | wxALIGN_CENTER_VERTICAL);
 
-         mRippleCtl =
          S
             .Id(ID_Ripple)
             .Text(XO("Passband Ripple (dB)"))
             .Validator<FloatingPointValidator<float>>(
                1, &mRipple, NumValidatorStyle::DEFAULT,
                Passband.min, Passband.max)
+            .Enable( type1Enabler )
             .AddTextBox( {}, L"", 10);
 
-         mRippleCtlU =
+         S
+            .Enable( type1Enabler )
+            .AddVariableText(XO("dB"),
+               false, wxALL | wxALIGN_LEFT | wxALIGN_CENTER_VERTICAL);
+
          S
             .AddVariableText(XO("dB"),
                false, wxALL | wxALIGN_LEFT | wxALIGN_CENTER_VERTICAL);
@@ -519,22 +526,22 @@ void EffectScienFilter::PopulateOrExchange(ShuttleGui & S)
          S
             .AddUnits(XO("Hz"));
 
-         mStopbandRippleCtlP =
          S
+            .Enable( type2Enabler )
             .AddVariableText(XO("Minimum S&topband Attenuation:"),
                false, wxALL | wxALIGN_RIGHT | wxALIGN_CENTER_VERTICAL);
 
-         mStopbandRippleCtl =
          S
             .Id(ID_StopbandRipple)
             .Text(XO("Minimum S&topband Attenuation (dB)"))
             .Validator<FloatingPointValidator<float>>(
                1, &mStopbandRipple, NumValidatorStyle::DEFAULT,
                Stopband.min, Stopband.max)
+            .Enable( type2Enabler )
             .AddTextBox( {}, L"", 10);
 
-         mStopbandRippleCtlU =
          S
+            .Enable( type2Enabler )
             .AddVariableText(XO("dB"),
                false, wxALL | wxALIGN_LEFT | wxALIGN_CENTER_VERTICAL);
       }
@@ -563,8 +570,6 @@ bool EffectScienFilter::TransferDataToWindow()
 
    mdBMaxSlider->SetValue((int) mdBMax);
    mdBMax = 0.0;                    // force refresh in TransferGraphLimitsFromWindow()
-
-   EnableDisableRippleCtl(mFilterType);
 
    return TransferGraphLimitsFromWindow();
 }
@@ -730,7 +735,6 @@ void EffectScienFilter::OnOrder(wxCommandEvent & WXUNUSED(evt))
 void EffectScienFilter::OnFilterType(wxCommandEvent & WXUNUSED(evt))
 {
    mFilterType = mFilterTypeCtl->GetSelection();
-   EnableDisableRippleCtl(mFilterType);
    mPanel->Refresh(false);
 }
 
@@ -786,35 +790,6 @@ void EffectScienFilter::OnSize(wxSizeEvent & evt)
    // on a resize...no idea why.
    mUIParent->Refresh();
    evt.Skip();
-}
-
-void EffectScienFilter::EnableDisableRippleCtl(int FilterType)
-{
-   bool ripple;
-   bool stop;
-
-   if (FilterType == kButterworth)    // Butterworth
-   {
-      ripple = false;
-      stop = false;
-   }
-   else if (FilterType == kChebyshevTypeI)    // Chebyshev Type1
-   {
-      ripple = true;
-      stop = false;
-   }
-   else                        // Chebyshev Type2
-   {
-      ripple = false;
-      stop = true;
-   }
-
-   mRippleCtlP->Enable(ripple);
-   mRippleCtl->Enable(ripple);
-   mRippleCtlU->Enable(ripple);
-   mStopbandRippleCtlP->Enable(stop);
-   mStopbandRippleCtl->Enable(stop);
-   mStopbandRippleCtlU->Enable(stop);
 }
 
 //----------------------------------------------------------------------------

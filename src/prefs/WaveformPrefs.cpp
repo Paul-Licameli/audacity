@@ -113,11 +113,14 @@ void WaveformPrefs::PopulateOrExchange(ShuttleGui & S)
                   mTempSettings.scaleType,
                   Msgids( WaveformSettings::GetScaleNames() ) );
 
-            mRangeChoice =
             S
                .Id(ID_RANGE)
+               .Enable( [this]{ return mScaleChoice &&
+                  mScaleChoice->GetSelection() ==
+                     WaveformSettings::stLogarithmic; } )
                .TieChoice(XXO("Waveform dB &range:"),
-                  mTempSettings.dBRange, mRangeChoices);
+                  mTempSettings.dBRange,
+                  mRangeChoices);
          }
          S.EndTwoColumn();
       }
@@ -133,8 +136,6 @@ void WaveformPrefs::PopulateOrExchange(ShuttleGui & S)
    */
 
    S.EndScroller();
-
-   EnableDisableRange();
 
    mPopulating = false;
 }
@@ -221,14 +222,6 @@ void WaveformPrefs::OnControl(wxCommandEvent&)
    }
 }
 
-void WaveformPrefs::OnScale(wxCommandEvent &e)
-{
-   EnableDisableRange();
-
-   // do the common part
-   OnControl(e);
-}
-
 void WaveformPrefs::OnDefaults(wxCommandEvent &)
 {
    if (mDefaultsCheckbox->IsChecked()) {
@@ -240,15 +233,9 @@ void WaveformPrefs::OnDefaults(wxCommandEvent &)
    }
 }
 
-void WaveformPrefs::EnableDisableRange()
-{
-   mRangeChoice->Enable
-      (mScaleChoice->GetSelection() == WaveformSettings::stLogarithmic);
-}
-
 BEGIN_EVENT_TABLE(WaveformPrefs, PrefsPanel)
 
-EVT_CHOICE(ID_SCALE, WaveformPrefs::OnScale)
+EVT_CHOICE(ID_SCALE, WaveformPrefs::OnControl)
 EVT_CHOICE(ID_RANGE, WaveformPrefs::OnControl)
 
 EVT_CHECKBOX(ID_DEFAULTS, WaveformPrefs::OnDefaults)

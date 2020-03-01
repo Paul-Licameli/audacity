@@ -48,14 +48,15 @@ class MacroCommandDialog final : public wxDialogWrapper {
    void PopulateCommandList();
    //int GetSelectedItem();
 
-   wxButton   *mEditParams;
-   wxButton   *mUsePreset;
    wxListCtrl *mChoices;
    wxTextCtrl * mCommand;
    wxTextCtrl * mParameters;
    wxTextCtrl * mDetails;
 
    CommandID mInternalCommandName;
+   // These two are recomputed when the previous changes:
+   PluginID mPluginID{};
+   bool mHasPresets = false;
 
    const MacroCommandsCatalog mCatalog;
 

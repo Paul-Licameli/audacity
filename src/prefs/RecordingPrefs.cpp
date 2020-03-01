@@ -147,10 +147,9 @@ void RecordingPrefs::PopulateOrExchange(ShuttleGui & S)
                .TieCheckBox(XXO("Custom Track &Name"),
                   RecordingSettings::CustomName);
 
-            mToggleCustomName =
             S
                .Text(XO("Custom name text"))
-               .Disable(!mUseCustomTrackName)
+               .Enable( [this]{ return mUseCustomTrackName; } )
                .TieTextBox( {},
                   RecordingTrackName,
                   30);
@@ -293,7 +292,6 @@ bool RecordingPrefs::Commit()
 void RecordingPrefs::OnToggleCustomName(wxCommandEvent & /* Evt */)
 {
    mUseCustomTrackName = !mUseCustomTrackName;
-   mToggleCustomName->Enable(mUseCustomTrackName);
 }
 
 namespace{

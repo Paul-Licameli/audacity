@@ -68,6 +68,7 @@ private:
    void OnExport();
    void OnSet();
    void OnClear();
+   bool CanSet() const;
    void OnSelected(wxCommandEvent & e);
 
    void OnHotkeyKeyDown(wxKeyEvent & e);
@@ -81,8 +82,6 @@ private:
 
    KeyView *mView;
    wxTextCtrl *mKey;
-   wxButton *mSet;
-   wxButton *mClear;
 
    wxTextCtrl *mFilter;
    wxStaticText *mFilterLabel;

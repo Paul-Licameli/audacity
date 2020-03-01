@@ -91,7 +91,7 @@ private:
    void OnAutoSaveCheckBox_Change(wxCommandEvent& event);
    void OnAutoExportCheckBox_Change(wxCommandEvent& event);
    // Timer Recording Automation Routines
-   void EnableDisableAutoControls(bool bEnable, int iControlGoup);
+   void EnableDisableAutoControls();
    void UpdateTextBoxControls();
 
    // Add Path Controls to Form
@@ -123,10 +123,8 @@ private:
    // Controls for Auto Save/Export
    wxCheckBox *m_pTimerAutoSaveCheckBoxCtrl;
    wxTextCtrlWrapper *m_pTimerSavePathTextCtrl;
-   wxButton *m_pTimerSavePathButtonCtrl;
    wxCheckBox *m_pTimerAutoExportCheckBoxCtrl;
    wxTextCtrlWrapper *m_pTimerExportPathTextCtrl;
-   wxButton *m_pTimerExportPathButtonCtrl;
 
    // After Timer Record Options Choice
    wxChoice *m_pTimerAfterCompleteChoiceCtrl;

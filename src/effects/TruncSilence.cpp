@@ -812,24 +812,24 @@ void EffectTruncSilence::PopulateOrExchange(ShuttleGui & S)
       {
          // Truncation / Compression factor
 
-         mTruncLongestAllowedSilenceT =
          S
             .Validator<FloatingPointValidator<double>>(
                3, &mTruncLongestAllowedSilence,
                NumValidatorStyle::NO_TRAILING_ZEROES,
                Truncate.min, Truncate.max )
             .Text({ {}, XO("seconds") })
+            .Enable( [this]{ return mActionIndex == kTruncate; } )
             .AddTextBox(XXO("Tr&uncate to:"), L"", 12);
 
          S.AddUnits(XO("seconds"));
 
-         mSilenceCompressPercentT =
          S
             .Validator<FloatingPointValidator<double>>(
                3, &mSilenceCompressPercent,
                NumValidatorStyle::NO_TRAILING_ZEROES,
                Compress.min, Compress.max )
             .Text({ {}, XO("%") })
+            .Enable( [this]{ return mActionIndex == kCompress; } )
             .AddTextBox(XXO("C&ompress to:"), L"", 12);
 
          S.AddUnits(XO("%"));
@@ -845,8 +845,6 @@ void EffectTruncSilence::PopulateOrExchange(ShuttleGui & S)
       S.EndMultiColumn();
    }
    S.EndStatic();
-
-   UpdateUI();
 }
 
 bool EffectTruncSilence::TransferDataToWindow()
@@ -1021,25 +1019,9 @@ void EffectTruncSilence::BlendFrames(float* buffer, int blendFrameCount, int lef
 }
 */
 
-void EffectTruncSilence::UpdateUI()
-{
-   switch (mActionIndex)
-   {
-   case kTruncate:
-      mTruncLongestAllowedSilenceT->Enable(true);
-      mSilenceCompressPercentT->Enable(false);
-      break;
-   case kCompress:
-      mTruncLongestAllowedSilenceT->Enable(false);
-      mSilenceCompressPercentT->Enable(true);
-   }
-}
-
 void EffectTruncSilence::OnControlChange(wxCommandEvent & WXUNUSED(evt))
 {
    mActionChoice->GetValidator()->TransferFromWindow();
-
-   UpdateUI();
 
    if (!EnableApply(mUIParent->TransferDataFromWindow()))
    {

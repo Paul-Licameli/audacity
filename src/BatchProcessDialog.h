@@ -53,6 +53,8 @@ class ApplyMacroDialog : public wxDialogWrapper {
    wxListCtrl *mList;
    wxListCtrl *mMacros;
    MacroCommands mMacroCommands; /// Provides list of available commands.
+   // Recomputed with the previous:
+   bool mIsFixed = false;
 
    wxButton *mResize;
    wxButton *mOK;
@@ -130,13 +132,6 @@ private:
    void UpdatePrefs() override;
 
    AudacityProject &mProject;
-
-   wxButton *mRemove;
-   wxButton *mRename;
-   wxButton *mRestore;
-   wxButton *mImport;
-   wxButton *mExport;
-   wxButton *mSave;
 
    int mSelectedCommand;
    bool mChanged;

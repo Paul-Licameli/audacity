@@ -29,13 +29,7 @@
 #include "../Resample.h"
 #include "../ShuttleGui.h"
 
-#define ID_SAMPLE_RATE_CHOICE           7001
-
 //////////
-BEGIN_EVENT_TABLE(QualityPrefs, PrefsPanel)
-   EVT_CHOICE(ID_SAMPLE_RATE_CHOICE, QualityPrefs::OnSampleRateChoice)
-END_EVENT_TABLE()
-
 QualityPrefs::QualityPrefs(wxWindow * parent, wxWindowID winid)
 /* i18n-hint: meaning accuracy in reproduction of sounds */
 :  PrefsPanel(parent, winid, XO("Quality"))
@@ -67,13 +61,6 @@ void QualityPrefs::Populate()
    // First any pre-processing for constructing the GUI.
    GetNamesAndLabels();
    mOtherSampleRateValue = QualitySettings::DefaultSampleRate.Read();
-}
-
-bool QualityPrefs::TransferDataToWindow()
-{
-   wxCommandEvent e;
-   OnSampleRateChoice(e); // Enable/disable the control.
-   return true;   
 }
 
 /// Gets the lists of names and lists of labels which are
@@ -123,11 +110,9 @@ void QualityPrefs::PopulateOrExchange(ShuttleGui & S)
          S.StartMultiColumn(2);
          {
             // First the choice...
-            // We make sure it uses the ID we want, so that we get changes
             // We make sure we have a pointer to it, so that we can drive it.
             mSampleRates =
             S
-               .Id(ID_SAMPLE_RATE_CHOICE)
                .TieNumberAsChoice( {},
                   QualitySettings::DefaultSampleRate,
                   mSampleRateNames,
@@ -137,9 +122,9 @@ void QualityPrefs::PopulateOrExchange(ShuttleGui & S)
                   mSampleRateNames.size() - 1 );
 
             // Now do the edit box...
-            mOtherSampleRate =
             S
-               .TieNumericTextBox( {}, mOtherSampleRateValue, 15 );
+               .Enable( [this]{ return UseOtherRate(); } )
+               .TieNumericTextBox( {}, mOtherSampleRateValue, 15);
          }
          S.EndHorizontalLay();
 
@@ -188,12 +173,10 @@ void QualityPrefs::PopulateOrExchange(ShuttleGui & S)
 
 }
 
-/// Enables or disables the Edit box depending on
-/// whether we selected 'Other...' or not.
-void QualityPrefs::OnSampleRateChoice(wxCommandEvent & WXUNUSED(e))
+bool QualityPrefs::UseOtherRate() const
 {
-   int sel = mSampleRates->GetSelection();
-   mOtherSampleRate->Enable(sel == (int)mSampleRates->GetCount() - 1);
+   return mSampleRates &&
+      mSampleRates->GetSelection() == (int)mSampleRates->GetCount() - 1;
 }
 
 bool QualityPrefs::Commit()
@@ -203,7 +186,7 @@ bool QualityPrefs::Commit()
 
    // The complex compound control may have value 'other' in which case the
    // value in prefs comes from the second field.
-   if (mOtherSampleRate->IsEnabled()) {
+   if ( UseOtherRate() ) {
       QualitySettings::DefaultSampleRate.Write( mOtherSampleRateValue );
       gPrefs->Flush();
    }

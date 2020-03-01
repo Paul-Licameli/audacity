@@ -157,6 +157,10 @@ void SpectrumPrefs::PopulatePaddingChoices(size_t windowSize)
 
 void SpectrumPrefs::PopulateOrExchange(ShuttleGui & S)
 {
+   const auto enabler = [this]{ return mAlgorithmChoice &&
+      mAlgorithmChoice->GetSelection() != SpectrogramSettings::algPitchEAC;
+   };
+
    mPopulating = true;
    S.SetBorder(2);
    S.StartScroller(); {
@@ -221,6 +225,7 @@ void SpectrumPrefs::PopulateOrExchange(ShuttleGui & S)
             mGain =
             S
                .Id(ID_GAIN)
+               .Enable( enabler )
                .TieNumericTextBox(XXO("&Gain (dB):"),
                   mTempSettings.gain,
                   8);
@@ -228,6 +233,7 @@ void SpectrumPrefs::PopulateOrExchange(ShuttleGui & S)
             mRange =
             S
                .Id(ID_RANGE)
+               .Enable( enabler )
                .TieNumericTextBox(XXO("&Range (dB):"),
                   mTempSettings.range,
                   8);
@@ -235,6 +241,7 @@ void SpectrumPrefs::PopulateOrExchange(ShuttleGui & S)
             mFrequencyGain =
             S
                .Id(ID_FREQUENCY_GAIN)
+               .Enable( enabler )
                .TieNumericTextBox(XXO("High &boost (dB/dec):"),
                   mTempSettings.frequencyGain,
                   8);
@@ -290,9 +297,9 @@ void SpectrumPrefs::PopulateOrExchange(ShuttleGui & S)
                mTypeChoices);
 
 #ifdef EXPERIMENTAL_ZERO_PADDED_SPECTROGRAMS
-         mZeroPaddingChoiceCtrl =
          S
             .Id(ID_PADDING_SIZE)
+            .Enable( enabler )
             .TieChoice(XXO("&Zero padding factor:"),
                mTempSettings.zeroPaddingFactor,
                mZeroPaddingChoices);
@@ -584,29 +591,10 @@ void SpectrumPrefs::OnDefaults(wxCommandEvent &)
    }
 }
 
-void SpectrumPrefs::OnAlgorithm(wxCommandEvent &evt)
-{
-   EnableDisableSTFTOnlyControls();
-   OnControl(evt);
-}
-
-void SpectrumPrefs::EnableDisableSTFTOnlyControls()
-{
-   // Enable or disable other controls that are applicable only to STFT.
-   const bool STFT =
-      (mAlgorithmChoice->GetSelection() != SpectrogramSettings::algPitchEAC);
-   mGain->Enable(STFT);
-   mRange->Enable(STFT);
-   mFrequencyGain->Enable(STFT);
-#ifdef EXPERIMENTAL_ZERO_PADDED_SPECTROGRAMS
-   mZeroPaddingChoiceCtrl->Enable(STFT);
-#endif
-}
-
 BEGIN_EVENT_TABLE(SpectrumPrefs, PrefsPanel)
    EVT_CHOICE(ID_WINDOW_SIZE, SpectrumPrefs::OnWindowSize)
    EVT_CHECKBOX(ID_DEFAULTS, SpectrumPrefs::OnDefaults)
-   EVT_CHOICE(ID_ALGORITHM, SpectrumPrefs::OnAlgorithm)
+   EVT_CHOICE(ID_ALGORITHM, SpectrumPrefs::OnControl)
 
    // Several controls with common routine that unchecks the default box
    EVT_CHOICE(ID_WINDOW_TYPE, SpectrumPrefs::OnControl)

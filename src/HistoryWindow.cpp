@@ -159,10 +159,13 @@ void HistoryDialog::Populate(ShuttleGui & S)
                                      0,
                                      mManager->GetCurrentState(),
                                      0);
-            S.AddWindow(mLevels);
 
-            mDiscard =
             S
+               .Enable( [this]{ return mSelected > 0; } )
+               .AddWindow(mLevels);
+
+            mDiscard = S
+               .Enable( [this]{ return !mAudioIOBusy && mSelected > 0; } )
                .Action( [this]{ OnDiscard(); } )
                /* i18n-hint: (verb)*/
                .AddButton(XXO("&Discard"));
@@ -177,6 +180,7 @@ void HistoryDialog::Populate(ShuttleGui & S)
 
 #if defined(ALLOW_DISCARD)
             S
+               .Enable( [this]{ return mManager->GetClipboardSpaceUsage() > 0; } )
                .Action( [this]{ OnDiscardClipboard(); } )
                .AddButton(XXO("D&iscard"));
 #endif
@@ -185,7 +189,9 @@ void HistoryDialog::Populate(ShuttleGui & S)
       }
       S.EndStatic();
       S.AddStandardButtons(eOkButton, {
-            S.Item( eHelpButton ).Action([this]{ OnGetURL(); })
+            S.Item( eHelpButton )
+               .Enable( [this]{ return !mAudioIOBusy && mSelected > 0; } )
+               .Action([this]{ OnGetURL(); })
          }
 #if defined(ALLOW_DISCARD)
          ,
@@ -212,11 +218,6 @@ void HistoryDialog::OnAudioIO(wxCommandEvent& evt)
       mAudioIOBusy = true;
    else
       mAudioIOBusy = false;
-
-#if defined(ALLOW_DISCARD)
-   mDiscard->Enable(!mAudioIOBusy);
-   mCompact->Enable(!mAudioIOBusy);
-#endif
 }
 
 void HistoryDialog::UpdateDisplay(wxEvent& e)
@@ -255,9 +256,6 @@ void HistoryDialog::DoUpdate()
 
    auto clipboardUsage = mManager->GetClipboardSpaceUsage();
    mClipboard->SetValue(Internat::FormatSize(clipboardUsage).Translation());
-#if defined(ALLOW_DISCARD)
-   FindWindowById(ID_DISCARD_CLIPBOARD)->Enable(clipboardUsage > 0);
-#endif
 
    mList->EnsureVisible(mSelected);
 
@@ -291,9 +289,6 @@ void HistoryDialog::UpdateLevels()
    if ((focus == mDiscard || focus == mLevels) && mSelected == 0) {
       mList->SetFocus();
    }
-
-   mLevels->Enable(mSelected > 0);
-   mDiscard->Enable(!mAudioIOBusy && mSelected > 0);
 #endif
 }
 

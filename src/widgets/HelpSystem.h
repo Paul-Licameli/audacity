@@ -146,7 +146,6 @@ public:
    void OnClose();
    void OnKeyDown(wxKeyEvent & event);
 
-   void UpdateButtons();
    //void SetLabel(const wxString& label) override;
 
 

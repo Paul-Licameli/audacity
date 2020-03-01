@@ -76,10 +76,7 @@ private:
 
    wxCheckBox *mGainCheckBox;
    wxCheckBox *mDCCheckBox;
-   wxTextCtrl *mLevelTextCtrl;
-   wxStaticText *mLeveldB;
    wxStaticText *mWarning;
-   wxCheckBox *mStereoIndCheckBox;
    bool mCreating;
 
    CapturedParameters mParameters;

@@ -257,6 +257,8 @@ bool EffectNormalize::Process()
 
 void EffectNormalize::PopulateOrExchange(ShuttleGui & S)
 {
+   const auto enabler = [this]{ return mGain; };
+
    mCreating = true;
 
    S.StartVerticalLay(0);
@@ -280,7 +282,6 @@ void EffectNormalize::PopulateOrExchange(ShuttleGui & S)
                   .AddCheckBox(XXO("&Normalize peak amplitude to   "),
                      mGain);
 
-               mLevelTextCtrl =
                S
                   .Text(XO("Peak amplitude dB"))
                   .Validator<FloatingPointValidator<double>>(
@@ -289,12 +290,13 @@ void EffectNormalize::PopulateOrExchange(ShuttleGui & S)
                      NumValidatorStyle::ONE_TRAILING_ZERO,
                      PeakLevel.min,
                      PeakLevel.max )
+                  .Enable( enabler )
                   .AddTextBox( {}, L"", 10);
 
-               mLeveldB =
                S
+                  .Enable( enabler )
                   .AddVariableText(XO("dB"), false,
-                     wxALIGN_CENTER_VERTICAL | wxALIGN_LEFT);
+                  wxALIGN_CENTER_VERTICAL | wxALIGN_LEFT);
 
                mWarning =
                S
@@ -303,9 +305,9 @@ void EffectNormalize::PopulateOrExchange(ShuttleGui & S)
             }
             S.EndHorizontalLay();
 
-            mStereoIndCheckBox =
             S
                .Validator<wxGenericValidator>(&mStereoInd)
+               .Enable( enabler )
                .AddCheckBox(XXO("N&ormalize stereo channels independently"),
                                                mStereoInd);
          }
@@ -529,11 +531,6 @@ void EffectNormalize::UpdateUI()
       return;
    }
    mWarning->SetLabel(L"");
-
-   // Disallow level stuff if not normalizing
-   mLevelTextCtrl->Enable(mGain);
-   mLeveldB->Enable(mGain);
-   mStereoIndCheckBox->Enable(mGain);
 
    // Disallow OK/Preview if doing nothing
    EnableApply(mGain || mDC);

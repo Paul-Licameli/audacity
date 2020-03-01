@@ -95,7 +95,6 @@ private:
    wxChoice *mChoice;
    wxStaticText *mWarning;
    wxCheckBox *mStereoIndCheckBox;
-   wxCheckBox *mDualMonoCheckBox;
 
    Floats mTrackBuffer[2];    // MM: must be increased once surround channels are supported
    size_t mTrackBufferLen;

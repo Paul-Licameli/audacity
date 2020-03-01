@@ -167,6 +167,7 @@ bool KeyConfigPrefs::TransferDataToWindow()
 /// so this is only used in populating the panel.
 void KeyConfigPrefs::PopulateOrExchange(ShuttleGui & S)
 {
+   const auto enabler = [this]{ return CanSet(); };
    S.SetBorder(2);
 
    S.StartStatic(XO("Key Bindings"), 1);
@@ -304,16 +305,17 @@ void KeyConfigPrefs::PopulateOrExchange(ShuttleGui & S)
                       &KeyConfigPrefs::OnHotkeyKillFocus)
             .ConnectRoot(wxEVT_CONTEXT_MENU,
                       &KeyConfigPrefs::OnHotkeyContext)
+            .Enable( enabler )
             .AddWindow(mKey);
 
-         mSet =
          S
+            .Enable( enabler )
             .Action( [this]{ OnSet(); } )
             /* i18n-hint: (verb)*/
             .AddButton(XXO("&Set"));
 
-         mClear =
          S
+            .Enable( enabler )
             .Action( [this]{ OnClear(); } )
             /* i18n-hint: (verb)*/
             .AddButton(XXO("Cl&ear"));
@@ -870,21 +872,19 @@ void KeyConfigPrefs::OnClear()
    }
 }
 
+bool KeyConfigPrefs::CanSet() const
+{
+   auto commandSelected = mView->GetSelected();
+   return ( commandSelected != wxNOT_FOUND &&
+      mView->CanSetKey(mCommandSelected) );
+}
+
 void KeyConfigPrefs::OnSelected(wxCommandEvent & WXUNUSED(e))
 {
    mCommandSelected = mView->GetSelected();
    mKey->Clear();
-
-   if (mCommandSelected != wxNOT_FOUND) {
-      bool canset = mView->CanSetKey(mCommandSelected);
-      if (canset) {
-         mKey->AppendText(mView->GetKey(mCommandSelected).Display().GET());
-      }
-
-      mKey->Enable(canset);
-      mSet->Enable(canset);
-      mClear->Enable(canset);
-   }
+   if (CanSet())
+      mKey->AppendText(mView->GetKey(mCommandSelected).Display().GET());
 }
 
 void KeyConfigPrefs::OnViewBy(wxCommandEvent & e)

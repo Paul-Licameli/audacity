@@ -1616,94 +1616,6 @@ ExposedFormat ExportFFmpegOptions::fmts[] =
    {FMT_OTHER, L"FFMPEG", L"",     L"",     255, AV_CANMETA,              true,  XO("Custom FFmpeg Export"),             AV_CODEC_ID_NONE,   true}
 };
 
-/// Some controls (parameters they represent) are only applicable to a number
-/// of codecs and/or formats.
-/// Syntax: first, enable a control for each applicable format-codec combination
-/// then disable it for anything else
-/// "any" - any format
-/// AV_CODEC_ID_NONE - any codec
-/// Entry for the Applicability table
-static const struct ApplicableFor
-{
-   bool                 enable;  //!< true if this control should be enabled, false otherwise
-   int                  control; //!< control ID
-   AVCodecID            codec;   //!< Codec ID
-   const char          *format;  //!< Format short name
-} apptable[] {
-   {TRUE,FEQualityID,AV_CODEC_ID_AAC,"any"},
-   {TRUE,FEQualityID,AV_CODEC_ID_MP3,"any"},
-   {TRUE,FEQualityID,AV_CODEC_ID_VORBIS,"any"},
-   {FALSE,FEQualityID,AV_CODEC_ID_NONE,"any"},
-
-   {TRUE,FECutoffID,AV_CODEC_ID_AC3,"any"},
-   {TRUE,FECutoffID,AV_CODEC_ID_AAC,"any"},
-   {TRUE,FECutoffID,AV_CODEC_ID_VORBIS,"any"},
-   {FALSE,FECutoffID,AV_CODEC_ID_NONE,"any"},
-
-   {TRUE,FEFrameSizeID,AV_CODEC_ID_FLAC,"any"},
-   {FALSE,FEFrameSizeID,AV_CODEC_ID_NONE,"any"},
-
-   {TRUE,FEProfileID,AV_CODEC_ID_AAC,"any"},
-   {FALSE,FEProfileID,AV_CODEC_ID_NONE,"any"},
-
-   {TRUE,FECompLevelID,AV_CODEC_ID_FLAC,"any"},
-   {FALSE,FECompLevelID,AV_CODEC_ID_NONE,"any"},
-
-   {TRUE,FEUseLPCID,AV_CODEC_ID_FLAC,"any"},
-   {FALSE,FEUseLPCID,AV_CODEC_ID_NONE,"any"},
-
-   {TRUE,FELPCCoeffsID,AV_CODEC_ID_FLAC,"any"},
-   {FALSE,FELPCCoeffsID,AV_CODEC_ID_NONE,"any"},
-
-   {TRUE,FEMinPredID,AV_CODEC_ID_FLAC,"any"},
-   {FALSE,FEMinPredID,AV_CODEC_ID_NONE,"any"},
-
-   {TRUE,FEMaxPredID,AV_CODEC_ID_FLAC,"any"},
-   {FALSE,FEMaxPredID,AV_CODEC_ID_NONE,"any"},
-
-   {TRUE,FEPredOrderID,AV_CODEC_ID_FLAC,"any"},
-   {FALSE,FEPredOrderID,AV_CODEC_ID_NONE,"any"},
-
-   {TRUE,FEMinPartOrderID,AV_CODEC_ID_FLAC,"any"},
-   {FALSE,FEMinPartOrderID,AV_CODEC_ID_NONE,"any"},
-
-   {TRUE,FEMaxPartOrderID,AV_CODEC_ID_FLAC,"any"},
-   {FALSE,FEMaxPartOrderID,AV_CODEC_ID_NONE,"any"},
-
-   {TRUE,FEMuxRateID,AV_CODEC_ID_NONE,"mpeg"},
-   {TRUE,FEMuxRateID,AV_CODEC_ID_NONE,"vcd"},
-   {TRUE,FEMuxRateID,AV_CODEC_ID_NONE,"vob"},
-   {TRUE,FEMuxRateID,AV_CODEC_ID_NONE,"svcd"},
-   {TRUE,FEMuxRateID,AV_CODEC_ID_NONE,"dvd"},
-   {FALSE,FEMuxRateID,AV_CODEC_ID_NONE,"any"},
-
-   {TRUE,FEPacketSizeID,AV_CODEC_ID_NONE,"mpeg"},
-   {TRUE,FEPacketSizeID,AV_CODEC_ID_NONE,"vcd"},
-   {TRUE,FEPacketSizeID,AV_CODEC_ID_NONE,"vob"},
-   {TRUE,FEPacketSizeID,AV_CODEC_ID_NONE,"svcd"},
-   {TRUE,FEPacketSizeID,AV_CODEC_ID_NONE,"dvd"},
-   {FALSE,FEPacketSizeID,AV_CODEC_ID_NONE,"any"},
-
-   {TRUE,FELanguageID,AV_CODEC_ID_NONE,"matroska"},
-   {TRUE,FELanguageID,AV_CODEC_ID_NONE,"mov"},
-   {TRUE,FELanguageID,AV_CODEC_ID_NONE,"3gp"},
-   {TRUE,FELanguageID,AV_CODEC_ID_NONE,"mp4"},
-   {TRUE,FELanguageID,AV_CODEC_ID_NONE,"psp"},
-   {TRUE,FELanguageID,AV_CODEC_ID_NONE,"3g2"},
-   {TRUE,FELanguageID,AV_CODEC_ID_NONE,"ipod"},
-   {TRUE,FELanguageID,AV_CODEC_ID_NONE,"mpegts"},
-   {FALSE,FELanguageID,AV_CODEC_ID_NONE,"any"},
-
-   {TRUE,FEBitReservoirID,AV_CODEC_ID_MP3,"any"},
-   {TRUE,FEBitReservoirID,AV_CODEC_ID_WMAV1,"any"},
-   {TRUE,FEBitReservoirID,AV_CODEC_ID_WMAV2,"any"},
-   {FALSE,FEBitReservoirID,AV_CODEC_ID_NONE,"any"},
-
-   {TRUE,FEVariableBlockLenID,AV_CODEC_ID_WMAV1,"any"},
-   {TRUE,FEVariableBlockLenID,AV_CODEC_ID_WMAV2,"any"},
-   {FALSE,FEVariableBlockLenID,AV_CODEC_ID_NONE,"any"},
-};
-
 namespace {
 
 /// Prediction order method - names.
@@ -1853,6 +1765,59 @@ static StringSetting FFmpegPreset{ L"/FileFormats/FFmpegPreset", L"" };
 ///
 void ExportFFmpegOptions::PopulateOrExchange(ShuttleGui & S)
 {
+   // A function-factory
+   const auto forCodecs = [this]( std::vector<AVCodecID> ids )
+      -> DialogDefinition::Item::Test {
+      return [this, ids]{
+         const auto sel = FindSelectedCodec();
+         if ( sel < 0 )
+            return false;
+
+         const auto cdc =
+            avcodec_find_encoder_by_name( mCodecNames[ sel ].ToUTF8() );
+         if ( !cdc )
+            return false;
+
+         const auto end = ids.end();
+         return end != std::find_if( ids.begin(), end,
+            [cdc](const AVCodecID &id){ return id == cdc->id; } );
+      };
+   };
+   
+   // Another function-factory
+   const auto forFormats = [this]( std::vector<const char *> formats )
+      -> DialogDefinition::Item::Test {
+      wxArrayString strings;
+      for ( const auto format : formats )
+         strings.push_back( wxString::FromUTF8( format ) );
+      return [this, strings]{
+         const auto sel = FindSelectedFormat();
+         if ( sel < 0 )
+            return false;
+
+         const auto end = strings.end();
+         return end != std::find( strings.begin(), end, mFormatNames[ sel ] );
+      };
+   };
+   
+   const auto forFLAC = forCodecs( {
+      AV_CODEC_ID_FLAC,
+   } );
+
+   const auto forMuxPacket = forFormats( {
+      "mpeg",
+      "vcd",
+      "vob",
+      "svcd",
+      "dvd",
+   } );
+
+   const auto forQualityCutoff = forCodecs( {
+      AV_CODEC_ID_AAC,
+      AV_CODEC_ID_MP3,
+      AV_CODEC_ID_VORBIS,
+   } );
+
    S.StartVerticalLay(1);
    S.StartMultiColumn(1, wxEXPAND);
    {
@@ -1951,6 +1916,16 @@ void ExportFFmpegOptions::PopulateOrExchange(ShuttleGui & S)
                   S
                      .Id(FELanguageID)
                      .Text({ {}, {}, XO("ISO 639 3-letter language code\nOptional\nempty - automatic") })
+                     .Enable( forFormats( {
+                        "matroska",
+                        "mov",
+                        "3gp",
+                        "mp4",
+                        "psp",
+                        "3g2",
+                        "ipod",
+                        "mpegts",
+                     } ) )
                      .TieTextBox(XXO("Language:"), FFmpegLanguage, 9);
 
                   S.AddSpace( 20,0 );
@@ -1960,6 +1935,11 @@ void ExportFFmpegOptions::PopulateOrExchange(ShuttleGui & S)
 
                   S
                      .Id(FEBitReservoirID)
+                     .Enable( forCodecs( {
+                        AV_CODEC_ID_MP3,
+                        AV_CODEC_ID_WMAV1,
+                        AV_CODEC_ID_WMAV2,
+                     } ) )
                      .TieCheckBox( {}, FFmpegBitReservoir);
 
                   S.AddSpace( 20,0 );
@@ -1969,6 +1949,10 @@ void ExportFFmpegOptions::PopulateOrExchange(ShuttleGui & S)
 
                   S
                      .Id(FEVariableBlockLenID)
+                     .Enable( forCodecs( {
+                        AV_CODEC_ID_WMAV1,
+                        AV_CODEC_ID_WMAV2,
+                     } ) )
                      .TieCheckBox( {}, FFmpegVariableBlockLen);
                }
                S.EndMultiColumn();
@@ -1988,6 +1972,7 @@ void ExportFFmpegOptions::PopulateOrExchange(ShuttleGui & S)
                   S
                      .Id(FEQualityID)
                      .Text({ {}, {}, XO("Overall quality, used differently by different codecs\nRequired for vorbis\n0 - automatic\n-1 - off (use bitrate instead)") })
+                     .Enable( forQualityCutoff )
                      .TieSpinCtrl(XXO("Quality:"), FFmpegQuality, 500, -1);
 
                   S
@@ -1998,11 +1983,15 @@ void ExportFFmpegOptions::PopulateOrExchange(ShuttleGui & S)
                   S
                      .Id(FECutoffID)
                      .Text({ {}, {}, XO("Audio cutoff bandwidth (Hz)\nOptional\n0 - automatic") })
+                     .Enable( forQualityCutoff )
                      .TieSpinCtrl(XXO("Cutoff:"), FFmpegCutOff, 10000000, 0);
 
                   S
                      .Id(FEProfileID)
                      .Text({ {}, {}, XO("AAC Profile\nLow Complexity - default\nMost players won't play anything other than LC") })
+                     .Enable( forCodecs( {
+                        AV_CODEC_ID_AAC,
+                     } ) )
                      .MinSize( { 100, -1 } )
                      .TieChoice(XXO("Profile:"), AACProfiles);
                }
@@ -2015,22 +2004,26 @@ void ExportFFmpegOptions::PopulateOrExchange(ShuttleGui & S)
                {
                   S
                      .Text({ {}, {}, XO("Compression level\nRequired for FLAC\n-1 - automatic\nmin - 0 (fast encoding, large output file)\nmax - 10 (slow encoding, small output file)") })
+                     .Enable( forFLAC )
                      .TieSpinCtrl(XXO("Compression:"), FFmpegCompLevel, 10, -1);
 
                   S
                      .Id(FEFrameSizeID)
                      .Text({ {}, {}, XO("Frame size\nOptional\n0 - default\nmin - 16\nmax - 65535") })
+                     .Enable( forFLAC )
                      .TieSpinCtrl(XXO("Frame:"), FFmpegFrameSize, 65535, 0);
 
                   S
                      .Id(FELPCCoeffsID)
                      .Text({ {}, {}, XO("LPC coefficients precision\nOptional\n0 - default\nmin - 1\nmax - 15") })
+                     .Enable( forFLAC )
                      .TieSpinCtrl(XXO("LPC"), FFmpegLPCCoefPrec, 15, 0);
 
                   S
                      .Id(FEPredOrderID)
                      .Text({ {}, {}, XO("Prediction Order Method\nEstimate - fastest, lower compression\nLog search - slowest, best compression\nFull search - default") })
                      .MinSize( { 100, -1 } )
+                     .Enable( forFLAC )
                      .TieNumberAsChoice(
                         XXO("PdO Method:"),
                         FFmpegPredictionOrderMethod,
@@ -2039,21 +2032,25 @@ void ExportFFmpegOptions::PopulateOrExchange(ShuttleGui & S)
                   S
                      .Id(FEMinPredID)
                      .Text({ {}, {}, XO("Minimal prediction order\nOptional\n-1 - default\nmin - 0\nmax - 32 (with LPC) or 4 (without LPC)") })
+                     .Enable( forFLAC )
                      .TieSpinCtrl(XXO("Min. PdO"), FFmpegMinPredOrder, 32, -1);
 
                   S
                      .Id(FEMaxPredID)
                      .Text({ {}, {}, XO("Maximal prediction order\nOptional\n-1 - default\nmin - 0\nmax - 32 (with LPC) or 4 (without LPC)") })
+                     .Enable( forFLAC )
                      .TieSpinCtrl(XXO("Max. PdO"), FFmpegMaxPredOrder, 32, -1);
 
                   S
                      .Id(FEMinPartOrderID)
                      .Text({ {}, {}, XO("Minimal partition order\nOptional\n-1 - default\nmin - 0\nmax - 8") })
+                     .Enable( forFLAC )
                      .TieSpinCtrl(XXO("Min. PtO"), FFmpegMinPartOrder, 8, -1);
 
                   S
                      .Id(FEMaxPartOrderID)
                      .Text({ {}, {}, XO("Maximal partition order\nOptional\n-1 - default\nmin - 0\nmax - 8") })
+                     .Enable( forFLAC )
                      .TieSpinCtrl(XXO("Max. PtO"), FFmpegMaxPartOrder, 8, -1);
 
                   S
@@ -2064,6 +2061,7 @@ void ExportFFmpegOptions::PopulateOrExchange(ShuttleGui & S)
                   // PRL:  This preference is not used anywhere!
                   S
                      .Id(FEUseLPCID)
+                     .Enable( forFLAC )
                      .TieCheckBox( {}, FFmpegUseLPC);
                }
                S.EndMultiColumn();
@@ -2079,6 +2077,7 @@ void ExportFFmpegOptions::PopulateOrExchange(ShuttleGui & S)
                      /* i18n-hint: 'mux' is short for multiplexor, a device that selects between several inputs
                        'Mux Rate' is a parameter that has some bearing on compression ratio for MPEG
                        it has a hard to predict effect on the degree of compression */
+                     .Enable( forMuxPacket )
                      .TieSpinCtrl(XXO("Mux Rate:"), FFmpegMuxRate, 10000000, 0);
 
                   S
@@ -2086,6 +2085,7 @@ void ExportFFmpegOptions::PopulateOrExchange(ShuttleGui & S)
                      /* i18n-hint: 'Packet Size' is a parameter that has some bearing on compression ratio for MPEG
                        compression.  It measures how big a chunk of audio is compressed in one piece. */
                      .Text({ {}, {}, XO("Packet size\nOptional\n0 - default") })
+                     .Enable( forMuxPacket )
                      /* i18n-hint: 'Packet Size' is a parameter that has some bearing on compression ratio for MPEG
                        compression.  It measures how big a chunk of audio is compressed in one piece. */
                      .TieSpinCtrl(XXO("Packet Size:"), FFmpegPacketSize, 10000000, 0);
@@ -2522,36 +2522,6 @@ bool ExportFFmpegOptions::ReportIfBadCombination()
    return true;
 }
 
-
-
-void ExportFFmpegOptions::EnableDisableControls(AVCodec *cdc, wxString *selfmt)
-{
-   int handled = -1;
-   for ( const auto &entry : apptable )
-   {
-      if ( entry.control != handled )
-      {
-         bool codec = false;
-         bool format = false;
-         if ( entry.codec == AV_CODEC_ID_NONE )
-            codec = true;
-         else if ( cdc && entry.codec == cdc->id )
-            codec = true;
-         if ( wxString::FromUTF8( entry.format ) == L"any" )
-            format = true;
-         else if (selfmt &&
-            *selfmt == wxString::FromUTF8( entry.format) )
-            format = true;
-         if (codec && format)
-         {
-            handled = entry.control;
-            if ( const auto item = FindWindowById( entry.control, this ) )
-               item->Enable( entry.enable );
-         }
-      }
-   }
-}
-
 void ExportFFmpegOptions::DoOnFormatList()
 {
    const auto self = FindSelectedFormat();
@@ -2576,10 +2546,6 @@ void ExportFFmpegOptions::DoOnFormatList()
    int newselcdc = FetchCompatibleCodecList(*selfmt, (AVCodecID)selcdcid);
    if (newselcdc >= 0)
       mCodecList->Select(newselcdc);
-
-   const auto cdc = selcdc ?
-      avcodec_find_encoder_by_name(selcdc->ToUTF8()) : nullptr;
-   EnableDisableControls(cdc, selfmt);
 
    Layout();
    Fit();
@@ -2617,7 +2583,6 @@ void ExportFFmpegOptions::DoOnCodecList()
    if (newselfmt >= 0)
       mFormatList->Select( newselfmt );
 
-   EnableDisableControls(cdc, selfmt);
    Layout();
    Fit();
    return;

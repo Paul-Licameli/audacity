@@ -83,15 +83,20 @@ void MacroCommandDialog::PopulateOrExchange(ShuttleGui &S)
 
          mCommand->SetEditable(false);
 
-         mEditParams =
          S
-            .Disable() // disable button as box is empty
+            .Enable( [this]{
+               return !mPluginID.empty();
+            } )
             .Action( [this]{ OnEditParams(); } )
             .AddButton(XXO("&Edit Parameters"));
 
-         mUsePreset =
          S
-            .Disable() // disable button as box is empty
+            .Enable( [this]{
+               // If ID is empty, then the effect wasn't found, in which case,
+               // the user must have
+               // selected one of the "special" commands.
+               return mHasPresets;
+            } )
             .Action( [this]{ OnUsePreset(); } )
             .AddButton(XXO("&Use Preset"));
       }
@@ -200,11 +205,8 @@ void MacroCommandDialog::OnItemSelected(wxListEvent &event)
 
    EffectManager & em = EffectManager::Get();
    PluginID ID = em.GetEffectByIdentifier( command.name.Internal() );
-
-   // If ID is empty, then the effect wasn't found, in which case, the user must have
-   // selected one of the "special" commands.
-   mEditParams->Enable(!ID.empty());
-   mUsePreset->Enable(em.HasPresets(ID));
+   mPluginID = ID;
+   mHasPresets = em.HasPresets( mPluginID );
 
    auto value = command.name.Translation();
    if ( value == mCommand->GetValue() )
@@ -259,10 +261,13 @@ void MacroCommandDialog::SetCommandAndParams(const CommandID &Command, const wxS
    mParameters->SetValue( Params );
 
    mInternalCommandName = Command;
-   if (iter == mCatalog.end())
+   if (iter == mCatalog.end()) {
       // uh oh, using GET to expose an internal name to the user!
       // in default of any better friendly name
+      mPluginID = PluginID{};
+      mHasPresets = false;
       mCommand->SetValue( Command.GET() );
+   }
    else {
       mCommand->SetValue( iter->name.Translation() );
       // using GET to expose a CommandID to the user!
@@ -274,11 +279,7 @@ void MacroCommandDialog::SetCommandAndParams(const CommandID &Command, const wxS
                              wxLIST_STATE_SELECTED, wxLIST_STATE_SELECTED);
 
       EffectManager & em = EffectManager::Get();
-      PluginID ID = em.GetEffectByIdentifier(Command);
-
-      // If ID is empty, then the effect wasn't found, in which case, the user must have
-      // selected one of the "special" commands.
-      mEditParams->Enable(!ID.empty());
-      mUsePreset->Enable(em.HasPresets(ID));
+      mPluginID = em.GetEffectByIdentifier(Command);
+      mHasPresets = em.HasPresets( mPluginID );
    }
 }

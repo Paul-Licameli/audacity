@@ -273,9 +273,7 @@ private:
    bool              mHasNonMissingFiles;
 
    wxStaticText     *mMessageStaticText;
-   wxListCtrl       *mFileListCtrl;
-   wxButton         *mCopySelectedFilesButton;
-   wxButton         *mCopyAllFilesButton;
+   wxListCtrl       *mFileListCtrl = nullptr;
    wxChoice         *mFutureActionChoice;
 
 public:
@@ -311,9 +309,6 @@ DependencyDialog::DependencyDialog(wxWindow *parent,
    mHasMissingFiles(false),
    mHasNonMissingFiles(false),
    mMessageStaticText(NULL),
-   mFileListCtrl(NULL),
-   mCopySelectedFilesButton(NULL),
-   mCopyAllFilesButton(NULL),
    mFutureActionChoice(NULL)
 {
    SetName();
@@ -356,10 +351,10 @@ void DependencyDialog::PopulateOrExchange(ShuttleGui& S)
    
          PopulateList();
 
-         mCopySelectedFilesButton =
          S
             .Focus()
-            .Disable(mFileListCtrl->GetSelectedItemCount() <= 0)
+            .Enable( [this]{ return mFileListCtrl &&
+               mFileListCtrl->GetSelectedItemCount() > 0; })
             .Action( [this]{ OnCopySelectedFiles(); } )
             .AddButton(
                XXO("Copy Selected Files"),
@@ -383,11 +378,11 @@ void DependencyDialog::PopulateOrExchange(ShuttleGui& S)
                .Action( [this]{ OnNo(); } )
                .AddButton(XXO("Do Not Copy"));
 
-         mCopyAllFilesButton =
          S
             // Enabling mCopyAllFilesButton is also done in PopulateList,
             // but at its call above, mCopyAllFilesButton does not yet exist.
             .Disable(mHasMissingFiles)
+            .Enable( [this]{ return !mHasMissingFiles; } )
             .Action( [this]{ OnYes(); } )
             .AddButton(XXO("Copy All Files (Safer)"));
 
@@ -466,26 +461,19 @@ void DependencyDialog::PopulateList()
    if (mHasMissingFiles)
       msg += kExtraMsgForMissingFiles();
    mMessageStaticText->SetLabel(msg.Translation());
-
-   if (mCopyAllFilesButton)
-      mCopyAllFilesButton->Enable(!mHasMissingFiles);
 }
 
 void DependencyDialog::OnList(wxListEvent &evt)
 {
-   if (!mCopySelectedFilesButton || !mFileListCtrl)
+   if (!mFileListCtrl)
       return;
 
-   wxString itemStr = evt.GetText();
    if (evt.GetData() == 0)
       // This list item is one of mAliasedFiles for which
       // the original is missing, i.e., moved or deleted.
       // wxListCtrl does not provide for items that are not
       // allowed to be selected, so always deselect these items.
       mFileListCtrl->SetItemState(evt.GetIndex(), 0, wxLIST_STATE_SELECTED); // Deselect.
-
-   mCopySelectedFilesButton->Enable(
-      mFileListCtrl->GetSelectedItemCount() > 0);
 }
 
 void DependencyDialog::OnSize(wxSizeEvent &evt)

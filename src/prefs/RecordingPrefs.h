@@ -49,7 +49,6 @@ class RecordingPrefs final : public PrefsPanel
  private:
    void OnToggleCustomName(wxCommandEvent & /* Evt */);
 
-   wxTextCtrl *mToggleCustomName;
    bool mUseCustomTrackName;
 
    DECLARE_EVENT_TABLE()

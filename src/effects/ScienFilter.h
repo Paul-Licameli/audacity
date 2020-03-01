@@ -69,7 +69,6 @@ private:
    bool TransferGraphLimitsFromWindow();
    void CalcFilter();
    float FilterMagnAtFreq(float Freq);
-   void EnableDisableRippleCtl (int FilterType);
 
    void OnSize( wxSizeEvent & evt );
    void OnSlider( wxCommandEvent & evt );
@@ -105,15 +104,7 @@ private:
    wxSlider *mdBMinSlider;
    wxSlider *mdBMaxSlider;
 
-   wxStaticText *mRippleCtlP;
-   wxTextCtrl *mRippleCtl;
-   wxStaticText *mRippleCtlU;
-
    wxTextCtrl *mCutoffCtl;
-
-   wxStaticText *mStopbandRippleCtlP;
-   wxTextCtrl *mStopbandRippleCtl;
-   wxStaticText *mStopbandRippleCtlU;
 
    wxChoice *mFilterTypeCtl;
    wxChoice *mFilterSubTypeCtl;

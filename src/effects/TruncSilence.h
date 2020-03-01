@@ -80,7 +80,6 @@ private:
    void Intersect(RegionList &dest, const RegionList & src);
 
    void OnControlChange(wxCommandEvent & evt);
-   void UpdateUI();
 
    bool ProcessIndependently();
    bool ProcessAll();
@@ -105,8 +104,6 @@ private:
    wxTextCtrl *mThresholdText;
    wxChoice *mActionChoice;
    wxTextCtrl *mInitialAllowedSilenceT;
-   wxTextCtrl *mTruncLongestAllowedSilenceT;
-   wxTextCtrl *mSilenceCompressPercentT;
    wxCheckBox *mIndependent;
 
    DECLARE_EVENT_TABLE()

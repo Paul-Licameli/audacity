@@ -38,19 +38,15 @@ class AUDACITY_DLL_API QualityPrefs final : public PrefsPanel
    void PopulateOrExchange(ShuttleGui & S) override;
 
  private:
+   bool UseOtherRate() const;
    void Populate();
-   bool TransferDataToWindow() override;
    void GetNamesAndLabels();
-   void OnSampleRateChoice(wxCommandEvent & e);
 
    TranslatableStrings mSampleRateNames;
    std::vector<int> mSampleRateLabels;
 
    wxChoice *mSampleRates;
-   wxTextCtrl *mOtherSampleRate;
    int mOtherSampleRateValue;
-
-   DECLARE_EVENT_TABLE()
 };
 
 #endif

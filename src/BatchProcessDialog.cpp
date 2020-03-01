@@ -595,6 +595,8 @@ void MacrosWindow::Populate()
 /// Defines the dialog and does data exchange with it.
 void MacrosWindow::PopulateOrExchange(ShuttleGui & S)
 {
+   const auto enabler = [this]{ return !mIsFixed; };
+
    S.StartHorizontalLay(wxEXPAND, 1);
    {
       S.StartStatic(XO("Select Macro"),0);
@@ -615,28 +617,26 @@ void MacrosWindow::PopulateOrExchange(ShuttleGui & S)
                S
                   .Action( [this]{ OnAdd(); } )
                   .AddButton(XXO("&New"));
-   
-               mRemove =
+
                S
+                  .Enable( enabler )
                   .Action( [this]{ OnRemove(); } )
                   .AddButton(XXO("Remo&ve"));
 
-               mRename =
                S
+                  .Enable( enabler )
                   .Action( [this]{ OnRename(); } )
                   .AddButton(XXO("&Rename..."));
 
-               mRestore =
                S
+                  .Enable( enabler )
                   .Action( [this]{ OnRestore(); } )
                   .AddButton(XXO("Re&store"));
 
-               mImport =
                S
                   .Action( [this]{ OnImport(); } )
                   .AddButton(XXO("I&mport..."));
 
-               mExport =
                S
                   .Action( [this]{ OnExport(); } )
                   .AddButton(XXO("E&xport..."));
@@ -687,11 +687,10 @@ void MacrosWindow::PopulateOrExchange(ShuttleGui & S)
                   .Action( [this]{ OnDown(); } )
                   .AddButton(XXO("Move &Down"), wxALIGN_LEFT);
 
-               mSave =
                S
+                  .Enable( [this]{ return mChanged; } )
                   .Action( [this]{ OnSave(); } )
                   .AddButton(XXO("&Save"), wxALIGN_LEFT);
-               mSave->Enable( mChanged );
             }
             S.EndVerticalLay();
          }
@@ -818,10 +817,6 @@ void MacrosWindow::UpdateDisplay( bool bExpanded )
    mbExpanded = bExpanded;
 
    mChanged = false;
-   // if we try to access the about to be destroyed mSave button 
-   // inappropriately, we need to crash rather than (sometimes) silently 
-   // succeed.
-   mSave = nullptr;
 
    DestroyChildren();
    SetSizer( nullptr );
@@ -880,7 +875,6 @@ bool MacrosWindow::ChangeOK()
       }
 
       mChanged = false;
-      mSave->Enable( mChanged );
    }
 
    return true;
@@ -905,16 +899,7 @@ void MacrosWindow::ShowActiveMacro()
    if( !mbExpanded )
       return;
    
-   if (mMacroCommands.IsFixed(mActiveMacro)) {
-      mRemove->Disable();
-      mRename->Disable();
-      mRestore->Enable();
-   }
-   else {
-      mRemove->Enable();
-      mRename->Enable();
-      mRestore->Disable();
-   }
+   mIsFixed = mMacroCommands.IsFixed(mActiveMacro);
 
    PopulateList();
 }
@@ -1104,7 +1089,6 @@ void MacrosWindow::OnRemove()
    // changed.  Since we've just deleted the macro, we should
    // forget about that change.
    mChanged = false;
-   mSave->Enable( mChanged );
    mActiveMacro = mMacros->GetItemText(item);
 
    PopulateMacros();
@@ -1131,7 +1115,6 @@ void MacrosWindow::OnRestore()
    mMacroCommands.RestoreMacro(mActiveMacro);
 
    mChanged = true;
-   mSave->Enable( mChanged );
 
    PopulateList();
 }
@@ -1221,7 +1204,6 @@ void MacrosWindow::InsertCommandAt(int item)
                                 d.mSelectedParameters,
                                 item);
       mChanged = true;
-      mSave->Enable( mChanged );
 
       mSelectedCommand = item + 1;
       PopulateList();
@@ -1262,7 +1244,6 @@ void MacrosWindow::OnEditCommandParams()
       item);
 
    mChanged = true;
-   mSave->Enable( mChanged );
 
    mSelectedCommand = item;
    PopulateList();
@@ -1281,7 +1262,6 @@ void MacrosWindow::OnDelete()
    mMacroCommands.DeleteFromMacro(item);
 
    mChanged = true;
-   mSave->Enable( mChanged );
 
    if (item >= (mList->GetItemCount() - 2) && item >= 0) {
       item--;
@@ -1306,7 +1286,6 @@ void MacrosWindow::OnUp()
    mMacroCommands.DeleteFromMacro(item + 1);
 
    mChanged = true;
-   mSave->Enable( mChanged );
 
    mSelectedCommand = item - 1;
    PopulateList();
@@ -1328,7 +1307,6 @@ void MacrosWindow::OnDown()
    mMacroCommands.DeleteFromMacro(item);
 
    mChanged = true;
-   mSave->Enable( mChanged );
 
    mSelectedCommand = item + 1;
    PopulateList();
@@ -1359,8 +1337,6 @@ bool MacrosWindow::SaveChanges(){
    }
 
    mChanged = false;
-   if( mSave )
-      mSave->Enable( mChanged );
 
    return true;
 }

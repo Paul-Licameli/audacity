@@ -41,11 +41,8 @@ private:
    void Populate();
 
    void OnControl(wxCommandEvent&);
-   void OnScale(wxCommandEvent&);
    void OnDefaults(wxCommandEvent&);
    DECLARE_EVENT_TABLE()
-
-   void EnableDisableRange();
 
    AudacityProject *mProject{};
 
@@ -54,7 +51,6 @@ private:
 
    wxCheckBox *mDefaultsCheckbox;
    wxChoice *mScaleChoice;
-   wxChoice *mRangeChoice;
 
    Identifiers mRangeCodes;
    TranslatableStrings mRangeChoices;

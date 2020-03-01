@@ -70,7 +70,6 @@ class ScreenshotBigDialog final : public wxFrame,
    void PopulateOrExchange(ShuttleGui &S);
 
    void OnCloseWindow(wxCloseEvent & event);
-   void OnUIUpdate(wxUpdateUIEvent & event);
    void OnDirChoose();
    void OnGetURL();
    void OnClose();
@@ -233,8 +232,6 @@ enum
 BEGIN_EVENT_TABLE(ScreenshotBigDialog, wxFrame)
    EVT_CLOSE(ScreenshotBigDialog::OnCloseWindow)
 
-   EVT_UPDATE_UI(IdCaptureFullScreen,   ScreenshotBigDialog::OnUIUpdate)
-
    EVT_TOGGLEBUTTON(IdToggleBackgroundBlue,   ScreenshotBigDialog::OnToggleBackgroundBlue)
    EVT_TOGGLEBUTTON(IdToggleBackgroundWhite,  ScreenshotBigDialog::OnToggleBackgroundWhite)
    EVT_COMMAND_RANGE(IdCaptureFirst, IdCaptureLast, wxEVT_COMMAND_BUTTON_CLICKED, ScreenshotBigDialog::OnCaptureSomething)
@@ -307,6 +304,16 @@ void ScreenshotBigDialog::Populate()
 
 void ScreenshotBigDialog::PopulateOrExchange(ShuttleGui & S)
 {
+   auto enabler = [this] {
+#ifdef __WXMAC__
+      if ( mCommand ) {
+         wxTopLevelWindow *top = mCommand->GetFrontWindow(&mProject);
+         return (top && !top->IsIconized());
+      }
+#endif
+      return true;
+   };
+
    wxPanel *p = S.StartPanel();
    RTL_WORKAROUND(p);
    {
@@ -322,12 +329,14 @@ void ScreenshotBigDialog::PopulateOrExchange(ShuttleGui & S)
             mDirectoryTextBox =
             S
                .Id(IdDirectory)
+               .Enable( enabler )
                .AddTextBox(
                   XXO("Save images to:"),
                   gPrefs->Read(L"/ScreenshotPath", wxFileName::GetHomeDir()),
                   30 );
 
             S
+               .Enable( enabler )
                .Action( [this]{ OnDirChoose(); } )
                .AddButton(XXO("Choose..."));
          }
@@ -341,10 +350,12 @@ void ScreenshotBigDialog::PopulateOrExchange(ShuttleGui & S)
          S.StartHorizontalLay();
          {
             S
+               .Enable( enabler )
                .Action( [this]{ OnMainWindowSmall(); } )
                .AddButton(XXO("Resize Small"));
 
             S
+               .Enable( enabler )
                .Action( [this]{ OnMainWindowLarge(); } )
                .AddButton(XXO("Resize Large"));
 
@@ -368,14 +379,17 @@ void ScreenshotBigDialog::PopulateOrExchange(ShuttleGui & S)
          {
             S
                .Id(IdCaptureWindowContents)
+               .Enable( enabler )
                .AddButton(XXO("Capture Window Only"));
 
             S
                .Id(IdCaptureFullWindow)
+               .Enable( enabler )
                .AddButton(XXO("Capture Full Window"));
 
             S
                .Id(IdCaptureWindowPlus)
+               .Enable( enabler )
                .AddButton(XXO("Capture Window Plus"));
          }
          S.EndHorizontalLay();
@@ -384,6 +398,7 @@ void ScreenshotBigDialog::PopulateOrExchange(ShuttleGui & S)
          {
             S
                .Id(IdCaptureFullScreen)
+               .Enable( enabler )
                .AddButton(XXO("Capture Full Screen"));
          }
          S.EndHorizontalLay();
@@ -393,6 +408,7 @@ void ScreenshotBigDialog::PopulateOrExchange(ShuttleGui & S)
             mDelayCheckBox =
             S
                .Id(IdDelayCheckBox)
+               .Enable( enabler )
                .AddCheckBox(
                   XXO("Wait 5 seconds and capture frontmost window/dialog"),
                   false);
@@ -408,10 +424,12 @@ void ScreenshotBigDialog::PopulateOrExchange(ShuttleGui & S)
          {
             S
                .Id(IdCaptureToolbars)
+               .Enable( enabler )
                .AddButton(XXO("All Toolbars"));
 
             S
                .Id(IdCaptureEffects)
+               .Enable( enabler )
                .AddButton(XXO("All Effects"));
 
             S
@@ -419,7 +437,7 @@ void ScreenshotBigDialog::PopulateOrExchange(ShuttleGui & S)
                .AddButton(XXO("All Scriptables"));
 
             S
-               .Id(IdCapturePreferences)
+               .Enable( enabler )
                .AddButton(XXO("All Preferences"));
          }
          S.EndHorizontalLay();
@@ -428,22 +446,27 @@ void ScreenshotBigDialog::PopulateOrExchange(ShuttleGui & S)
          {
             S
                .Id(IdCaptureSelectionBar)
+               .Enable( enabler )
                .AddButton(XXO("SelectionBar"));
 
             S
                .Id(IdCaptureSpectralSelection)
+               .Enable( enabler )
                .AddButton(XXO("Spectral Selection"));
 
             S
                .Id(IdCaptureTimer)
+               .Enable( enabler )
                .AddButton(XXO("Timer"));
 
             S
                .Id(IdCaptureTools)
+               .Enable( enabler )
                .AddButton(XXO("Tools"));
 
             S
                .Id(IdCaptureTransport)
+               .Enable( enabler )
                .AddButton(XXO("Transport"));
          }
          S.EndHorizontalLay();
@@ -452,18 +475,22 @@ void ScreenshotBigDialog::PopulateOrExchange(ShuttleGui & S)
          {
             S
                .Id(IdCaptureMixer)
+               .Enable( enabler )
                .AddButton(XXO("Mixer"));
 
             S
                .Id(IdCaptureMeter)
+               .Enable( enabler )
                .AddButton(XXO("Meter"));
 
             S
                .Id(IdCapturePlayMeter)
+               .Enable( enabler )
                .AddButton(XXO("Play Meter"));
 
             S
                .Id(IdCaptureRecordMeter)
+               .Enable( enabler )
                .AddButton(XXO("Record Meter"));
          }
          S.EndHorizontalLay();
@@ -472,18 +499,22 @@ void ScreenshotBigDialog::PopulateOrExchange(ShuttleGui & S)
          {
             S
                .Id(IdCaptureEdit)
+               .Enable( enabler )
                .AddButton(XXO("Edit"));
 
             S
                .Id(IdCaptureDevice)
+               .Enable( enabler )
                .AddButton(XXO("Device"));
 
             S
                .Id(IdCaptureTranscription)
+               .Enable( enabler )
                .AddButton(XXO("Play-at-Speed"));
 
             S
                .Id(IdCaptureScrub)
+               .Enable( enabler )
                .AddButton(XXO("Scrub"));
          }
          S.EndHorizontalLay();
@@ -492,22 +523,27 @@ void ScreenshotBigDialog::PopulateOrExchange(ShuttleGui & S)
          {
             S
                .Id(IdCaptureTrackPanel)
+               .Enable( enabler )
                .AddButton(XXO("Track Panel"));
 
             S
                .Id(IdCaptureRuler)
+               .Enable( enabler )
                .AddButton(XXO("Ruler"));
 
             S
                .Id(IdCaptureTracks)
+               .Enable( enabler )
                .AddButton(XXO("Tracks"));
 
             S
                .Id(IdCaptureFirstTrack)
+               .Enable( enabler )
                .AddButton(XXO("First Track"));
 
             S
                .Id(IdCaptureSecondTrack)
+               .Enable( enabler )
                .AddButton(XXO("Second Track"));
          }
          S.EndHorizontalLay();
@@ -520,22 +556,27 @@ void ScreenshotBigDialog::PopulateOrExchange(ShuttleGui & S)
          S.StartHorizontalLay();
          {
             S
-               .Action( [this]{ OnOneSec(); } )
-               .AddButton(XXO("One Sec"));
+               .Enable( enabler )
+              .Action( [this]{ OnOneSec(); } )
+                .AddButton(XXO("One Sec"));
 
             S
+               .Enable( enabler )
                .Action( [this]{ OnTenSec(); } )
                .AddButton(XXO("Ten Sec"));
 
             S
+               .Enable( enabler )
                .Action( [this]{ OnOneMin(); } )
                .AddButton(XXO("One Min"));
 
             S
+               .Enable( enabler )
                .Action( [this]{ OnFiveMin(); } )
                .AddButton(XXO("Five Min"));
 
             S
+               .Enable( enabler )
                .Action( [this]{ OnOneHour(); } )
                .AddButton(XXO("One Hour"));
          }
@@ -544,14 +585,17 @@ void ScreenshotBigDialog::PopulateOrExchange(ShuttleGui & S)
          S.StartHorizontalLay();
          {
             S
+               .Enable( enabler )
                .Action( [this]{ OnShortTracks(); } )
                .AddButton(XXO("Short Tracks"));
 
             S
+               .Enable( enabler )
                .Action( [this]{ OnMedTracks(); } )
                .AddButton(XXO("Medium Tracks"));
 
             S
+               .Enable( enabler )
                .Action( [this]{ OnTallTracks(); } )
                .AddButton(XXO("Tall Tracks"));
          }
@@ -644,33 +688,6 @@ void ScreenshotBigDialog::OnClose()
 void ScreenshotBigDialog::OnGetURL()
 {
    HelpSystem::ShowHelp(this, L"Screenshot");
-}
-
-void ScreenshotBigDialog::OnUIUpdate(wxUpdateUIEvent &  WXUNUSED(event))
-{
-#ifdef __WXMAC__
-   wxTopLevelWindow *top = mCommand->GetFrontWindow(&mProject);
-   bool needupdate = false;
-   bool enable = false;
-
-   if ((!top || top->IsIconized()) && mDirectoryTextBox->IsEnabled()) {
-      needupdate = true;
-      enable = false;
-   }
-   else if ((top && !top->IsIconized()) && !mDirectoryTextBox->IsEnabled()) {
-      needupdate = true;
-      enable = true;
-   }
-
-   if (needupdate) {
-      for (int i = IdMainWindowSmall; i < IdLastDelayedEvent; i++) {
-         wxWindow *w = wxWindow::FindWindowById(i, this);
-         if (w) {
-            w->Enable(enable);
-         }
-      }
-   }
-#endif
 }
 
 void ScreenshotBigDialog::OnDirChoose()

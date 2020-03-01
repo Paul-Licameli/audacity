@@ -504,6 +504,7 @@ void FrequencyPlotDialog::Populate()
       S
          .Id(FreqAxisChoiceID)
          .MinSize( { wxDefaultCoord, wxDefaultCoord } )
+         .Enable( [this]{ return mAlg == SpectrumAnalyst::Spectrum; } )
          .AddChoice(XXO("&Axis:"), axisChoices, mAxis);
       mAxisChoice->MoveAfterInTabOrder(mFuncChoice);
 
@@ -541,7 +542,6 @@ void FrequencyPlotDialog::Populate()
    if (mAlg != SpectrumAnalyst::Spectrum)
    {
       mAxis = 0;
-      mAxisChoice->Disable();
    }
    mLogAxis = mAxis != 0;
 
@@ -872,14 +872,10 @@ void FrequencyPlotDialog::OnAlgChoice(wxCommandEvent & WXUNUSED(event))
    mAlg = SpectrumAnalyst::Algorithm(mAlgChoice->GetSelection());
 
    // Log-frequency axis works for spectrum plots only.
-   if (mAlg == SpectrumAnalyst::Spectrum) {
-      mAxisChoice->Enable(true);
+   if (mAlg == SpectrumAnalyst::Spectrum)
       mLogAxis = mAxisChoice->GetSelection() ? true : false;
-   }
-   else {
-      mAxisChoice->Disable();
+   else
       mLogAxis = false;
-   }
 
    SendRecalcEvent();
 }

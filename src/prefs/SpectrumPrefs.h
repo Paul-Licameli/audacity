@@ -62,10 +62,7 @@ class SpectrumPrefs final : public PrefsPanel
    void OnControl(wxCommandEvent &event);
    void OnWindowSize(wxCommandEvent &event);
    void OnDefaults(wxCommandEvent&);
-   void OnAlgorithm(wxCommandEvent &);
    DECLARE_EVENT_TABLE()
-
-   void EnableDisableSTFTOnlyControls();
 
    AudacityProject *mProject{};
 
@@ -80,7 +77,6 @@ class SpectrumPrefs final : public PrefsPanel
 
 #ifdef EXPERIMENTAL_ZERO_PADDED_SPECTROGRAMS
    int mZeroPaddingChoice;
-   wxChoice *mZeroPaddingChoiceCtrl;
    TranslatableStrings mZeroPaddingChoices;
 #endif
 

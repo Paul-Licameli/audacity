@@ -341,9 +341,9 @@ void EffectLoudness::PopulateOrExchange(ShuttleGui & S)
                .AddCheckBox(XXO("Normalize &stereo channels independently"),
                   mStereoInd );
 
-            mDualMonoCheckBox =
             S
                .Validator<wxGenericValidator>( &mDualMono )
+               .Enable( [this]{ return mNormalizeTo == kLoudness; } )
                .AddCheckBox(XXO("&Treat mono as dual-mono (recommended)"),
                   mDualMono );
          }
@@ -546,7 +546,6 @@ void EffectLoudness::OnChoice(wxCommandEvent & WXUNUSED(evt))
    mChoice->GetValidator()->TransferFromWindow();
    mBook->SetSelection( mNormalizeTo );
    UpdateUI();
-   mDualMonoCheckBox->Enable(mNormalizeTo == kLoudness);
 }
 
 void EffectLoudness::OnUpdateUI(wxCommandEvent & WXUNUSED(evt))
