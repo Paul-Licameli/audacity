@@ -727,11 +727,14 @@ AUDACITY_DLL_API std::unique_ptr<wxSizer> CreateStdButtonSizer( wxWindow *parent
                                long buttons = eOkButton | eCancelButton,
                                wxWindow *extra = NULL );
 
-// ShuttleGui extends ShuttleGuiBase with Audacity specific extensions.
-class AUDACITY_DLL_API ShuttleGui /* not final */ : public ShuttleGuiBase
+// TypedShuttleGui extends ShuttleGuiBase with Audacity specific extensions,
+// and takes template parameters that make certain of the functions more
+// convenient
+template< typename Sink = wxEvtHandler >
+class AUDACITY_DLL_API TypedShuttleGui /* not final */ : public ShuttleGuiBase
 {
 public:
-   ShuttleGui(
+   TypedShuttleGui(
       wxWindow * pParent, teShuttleMode ShuttleMode,
       bool vertical = true, // Choose layout direction of topmost level sizer
       wxSize minSize = { 250, 100 },
@@ -748,43 +751,44 @@ public:
       mpState -> mpShuttle->mbStoreInClient = (ShuttleMode == eIsCreatingFromPrefs );
    };
 
-   ~ShuttleGui(void) = default;
+   TypedShuttleGui( TypedShuttleGui&& ) = default;
 
-public:
-   ShuttleGui & Optional( bool & bVar )
+   ~TypedShuttleGui() = default;
+
+   TypedShuttleGui & Optional( bool & bVar )
    {
       mpbOptionalFlag = &bVar;
       return *this;
    }
 
-   ShuttleGui & Id(int id )
+   TypedShuttleGui & Id(int id )
    {
       miIdSetByUser = id;
       return *this;
    }
 
-
    // Only the last item specified as focused (if more than one) will be
-   ShuttleGui & Focus( bool focused = true )
+   TypedShuttleGui & Focus( bool focused = true )
    {
       std::move( mItem ).Focus( focused );
       return *this;
    }
 
-   ShuttleGui &Disable( bool disabled = true )
+   // Just sets the state of the item once
+   TypedShuttleGui &Disable( bool disabled = true )
    {
       std::move( mItem ).Disable( disabled );
       return *this;
    }
 
-   ShuttleGui & Text( const DialogDefinition::ControlText &text )
+   TypedShuttleGui & Text( const DialogDefinition::ControlText &text )
    {
       std::move( mItem ).Text( text );
       return *this;
    }
 
    template<typename Factory>
-   ShuttleGui& Validator( const Factory &f )
+   TypedShuttleGui& Validator( const Factory &f )
    {
       if ( GetMode() == eIsCreating )
          std::move( mItem ).Validator( f );
@@ -793,10 +797,10 @@ public:
 
    // This allows further abbreviation of the previous:
    template<typename V, typename...Args>
-   ShuttleGui& Validator( Args&& ...args )
+   TypedShuttleGui& Validator( Args&& ...args )
    {
       if ( GetMode() == eIsCreating )
-         std::move( mItem ).Validator<V>( std::forward<Args>(args)... );
+         std::move( mItem ).template Validator<V>( std::forward<Args>(args)... );
       return *this;
    }
 
@@ -811,37 +815,37 @@ public:
    )
         -> typename std::enable_if<
             std::is_base_of<Argument, Tag>::value,
-            ShuttleGui&
+            TypedShuttleGui&
         >::type
    {
       std::move( mItem ).ConnectRoot( eventType, func );
       return *this;
    }
 
-   ShuttleGui & Position( int flags )
+   TypedShuttleGui & Position( int flags )
    {
       std::move( mItem ).Position( flags );
       return *this;
    }
 
-   ShuttleGui & Size( wxSize size )
+   TypedShuttleGui & Size( wxSize size )
    {
       std::move( mItem ).Size( size );
       return *this;
    }
 
    // Prop() sets the proportion value, defined as in wxSizer::Add().
-   ShuttleGui & Prop( int iProp ){ ShuttleGuiBase::Prop(iProp); return *this;}; // Has to be here too, to return a ShuttleGui and not a ShuttleGuiBase.
+   TypedShuttleGui & Prop( int iProp ){ ShuttleGuiBase::Prop(iProp); return *this;}; // Has to be here too, to return a TypedShuttleGui and not a ShuttleGuiBase.
 
-   ShuttleGui & Style( long iStyle )
+   TypedShuttleGui & Style( long iStyle )
    {
       std::move( mItem ).Style( iStyle );
       return *this;
    }
 
-   ShuttleGui &MinSize() // set best size as min size
+   TypedShuttleGui &MinSize() // set best size as min size
       { std::move( mItem ).MinSize(); return *this; }
-   ShuttleGui &MinSize( wxSize sz )
+   TypedShuttleGui &MinSize( wxSize sz )
       { std::move( mItem ).MinSize( sz ); return *this; }
 
    teShuttleMode GetMode() { return mpState -> mShuttleMode; };
@@ -861,6 +865,12 @@ private:
 };
 
 class ComponentInterfaceSymbol;
+
+class ShuttleGui : public TypedShuttleGui<>
+{
+public:
+   using TypedShuttleGui<>::TypedShuttleGui;
+};
 
 //! Convenience function often useful when adding choice controls
 AUDACITY_DLL_API TranslatableStrings Msgids(
