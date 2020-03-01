@@ -1493,7 +1493,7 @@ wxChoice * ShuttleGuiBase::TieChoice(
    case eIsCreating:
       {
          pChoice = AddChoice( Prompt, choices, Selected );
-         ShuttleGui::SetMinSize(pChoice, choices);
+         SetMinSize(pChoice, choices);
       }
       break;
    // IF setting internal storage from the controls.
@@ -2434,7 +2434,7 @@ std::unique_ptr<wxSizer> CreateStdButtonSizer(wxWindow *parent, long buttons, wx
    return std::unique_ptr<wxSizer>{ s.release() };
 }
 
-void ShuttleGui::AddStandardButtons(long buttons, wxWindow *extra)
+void ShuttleGuiBase::AddStandardButtons(long buttons, wxWindow *extra)
 {
    if( mpState -> mShuttleMode != eIsCreating )
       return;
@@ -2449,7 +2449,7 @@ void ShuttleGui::AddStandardButtons(long buttons, wxWindow *extra)
    EndVerticalLay();
 }
 
-wxSizerItem * ShuttleGui::AddSpace( int width, int height, int prop )
+wxSizerItem * ShuttleGuiBase::AddSpace( int width, int height, int prop )
 {
    if( mpState -> mShuttleMode != eIsCreating )
       return NULL;
@@ -2460,14 +2460,14 @@ wxSizerItem * ShuttleGui::AddSpace( int width, int height, int prop )
    return mpState -> mpSizer->Add( width, height, prop );
 }
 
-void ShuttleGui::SetMinSize( wxWindow *window, const TranslatableStrings & items )
+void ShuttleGuiBase::SetMinSize( wxWindow *window, const TranslatableStrings & items )
 {
    SetMinSize( window,
       transform_container<wxArrayStringEx>(
          items, std::mem_fn( &TranslatableString::Translation ) ) );
 }
 
-void ShuttleGui::SetMinSize( wxWindow *window, const wxArrayStringEx & items )
+void ShuttleGuiBase::SetMinSize( wxWindow *window, const wxArrayStringEx & items )
 {
    int maxw = 0;
 
@@ -2499,7 +2499,7 @@ void ShuttleGui::SetMinSize( wxWindow *window, const wxArrayStringEx & items )
 }
 
 /*
-void ShuttleGui::SetMinSize( wxWindow *window, const std::vector<int> & items )
+void ShuttleGuiBase::SetMinSize( wxWindow *window, const std::vector<int> & items )
 {
    wxArrayStringEx strs;
 

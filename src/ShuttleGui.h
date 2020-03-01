@@ -107,6 +107,22 @@ using wxStaticBoxWrapper = wxStaticBox;
 using wxSliderWrapper = wxSlider;
 #endif
 
+// CreateStdButtonSizer defs...should probably move to widgets subdir
+enum StandardButtonID : unsigned
+{
+   eOkButton      = 0x0001,
+   eCancelButton  = 0x0002,
+   eYesButton     = 0x0004,
+   eNoButton      = 0x0008,
+   eHelpButton    = 0x0010,
+   ePreviewButton = 0x0020,
+   eDebugButton   = 0x0040,
+   eSettingsButton= 0x0080,
+   ePreviewDryButton  = 0x0100,
+   eApplyButton   = 0x0200,
+   eCloseButton   = 0x0400,
+};
+
 namespace DialogDefinition {
 
 struct ControlText{
@@ -591,6 +607,25 @@ public:
    static void ApplyItem( int step, const DialogDefinition::Item &item,
       wxWindow *pWind, wxWindow *pDlg );
 
+   // The first of these buttons, if any, that is included will be default:
+   // Apply, Yes, OK
+   // The buttons shown are the union of those given simply as a bit flag,
+   // or else specified as an Item with its StandardButton specified.
+   // There should be no other items.
+   // The positioning of the items is determined in the function, independently
+   // of the sequence of the items
+   void AddStandardButtons(
+      long buttons = eOkButton | eCancelButton, wxWindow *extra = NULL );
+
+   wxSizerItem * AddSpace( int width, int height, int prop = 0 );
+   wxSizerItem * AddSpace( int size ) { return AddSpace( size, size ); };
+
+   // Calculate width of a choice control adequate for the items, maybe after
+   // the dialog is created but the items change.
+   static void SetMinSize( wxWindow *window, const TranslatableStrings & items );
+   static void SetMinSize( wxWindow *window, const wxArrayStringEx & items );
+  // static void SetMinSize( wxWindow *window, const std::vector<int> & items );
+
 protected:
    void SetProportions( int Default );
 
@@ -675,22 +710,6 @@ class AttachableScrollBar;
 class ViewInfo;
 
 #include <wx/defs.h>  // to get wxSB_HORIZONTAL
-
-// CreateStdButtonSizer defs...should probably move to widgets subdir
-enum
-{
-   eOkButton      = 0x0001,
-   eCancelButton  = 0x0002,
-   eYesButton     = 0x0004,
-   eNoButton      = 0x0008,
-   eHelpButton    = 0x0010,
-   ePreviewButton = 0x0020,
-   eDebugButton   = 0x0040,
-   eSettingsButton= 0x0080,
-   ePreviewDryButton  = 0x0100,
-   eApplyButton   = 0x0200,
-   eCloseButton   = 0x0400,
-};
 
 enum
 {
@@ -824,20 +843,6 @@ public:
       { std::move( mItem ).MinSize(); return *this; }
    ShuttleGui &MinSize( wxSize sz )
       { std::move( mItem ).MinSize( sz ); return *this; }
-
-   // The first of these buttons, if any, that is included will be default:
-   // Apply, Yes, OK
-   void AddStandardButtons(
-      long buttons = eOkButton | eCancelButton, wxWindow *extra = NULL );
-
-   wxSizerItem * AddSpace( int width, int height, int prop = 0 );
-   wxSizerItem * AddSpace( int size ) { return AddSpace( size, size ); };
-
-   // Calculate width of a choice control adequate for the items, maybe after
-   // the dialog is created but the items change.
-   static void SetMinSize( wxWindow *window, const TranslatableStrings & items );
-   static void SetMinSize( wxWindow *window, const wxArrayStringEx & items );
-  // static void SetMinSize( wxWindow *window, const std::vector<int> & items );
 
    teShuttleMode GetMode() { return mpState -> mShuttleMode; };
 
