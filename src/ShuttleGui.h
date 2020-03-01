@@ -25,6 +25,7 @@
 
 #include "Prefs.h"
 #include "widgets/NumericTextCtrl.h"
+#include "ShuttlePrefs.h"
 #include "WrappedType.h"
 
 class ChoiceSetting;
@@ -715,12 +716,34 @@ public:
       wxWindow * pParent, teShuttleMode ShuttleMode,
       bool vertical = true, // Choose layout direction of topmost level sizer
       wxSize minSize = { 250, 100 },
-      const std::shared_ptr< PreferenceVisitor > &pVisitor = nullptr );
+      const std::shared_ptr< PreferenceVisitor > &pVisitor = nullptr )
+      : ShuttleGuiBase( pParent, EffectiveMode( ShuttleMode ),
+         vertical, minSize, pVisitor )
+   {
+      if (!(ShuttleMode == eIsCreatingFromPrefs || ShuttleMode == eIsSavingToPrefs))
+         return;
+      
+      mpState -> mpShuttle = std::make_unique<ShuttlePrefs>();
+      // In this case the client is the GUI, so if creating we do want to
+      // store in the client.
+      mpState -> mpShuttle->mbStoreInClient = (ShuttleMode == eIsCreatingFromPrefs );
+   };
 
-   ~ShuttleGui(void);
+   ~ShuttleGui(void) = default;
+
 public:
-   ShuttleGui & Optional( bool & bVar );
-   ShuttleGui & Id(int id );
+   ShuttleGui & Optional( bool & bVar )
+   {
+      mpbOptionalFlag = &bVar;
+      return *this;
+   }
+
+   ShuttleGui & Id(int id )
+   {
+      miIdSetByUser = id;
+      return *this;
+   }
+
 
    // Only the last item specified as focused (if more than one) will be
    ShuttleGui & Focus( bool focused = true )
@@ -817,6 +840,19 @@ public:
   // static void SetMinSize( wxWindow *window, const std::vector<int> & items );
 
    teShuttleMode GetMode() { return mpState -> mShuttleMode; };
+
+private:
+   inline teShuttleMode EffectiveMode( teShuttleMode inMode )
+   {
+      switch ( inMode ) {
+         case eIsCreatingFromPrefs:
+            return eIsCreating;
+         case eIsSavingToPrefs:
+            return eIsGettingFromDialog;
+         default:
+            return inMode;
+      }
+   }
 };
 
 class ComponentInterfaceSymbol;

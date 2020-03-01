@@ -2288,52 +2288,6 @@ void SetIfCreated( wxStaticText *&Var, wxStaticText * Val )
 #include "../extnpanel-src/GuiWaveTrack.h"
 #endif
 
-namespace {
-   inline teShuttleMode EffectiveMode( teShuttleMode inMode )
-   {
-      switch ( inMode ) {
-         case eIsCreatingFromPrefs:
-            return eIsCreating;
-         case eIsSavingToPrefs:
-            return eIsGettingFromDialog;
-         default:
-            return inMode;
-      }
-   }
-}
-
-ShuttleGui::ShuttleGui(
-   wxWindow * pParent, teShuttleMode ShuttleMode, bool vertical, wxSize minSize,
-   const std::shared_ptr< PreferenceVisitor > &pVisitor )
-   : ShuttleGuiBase( pParent, EffectiveMode( ShuttleMode ),
-      vertical, minSize, pVisitor )
-{
-   if (!(ShuttleMode == eIsCreatingFromPrefs || ShuttleMode == eIsSavingToPrefs))
-      return;
-   
-   mpState -> mpShuttle = std::make_unique<ShuttlePrefs>();
-   // In this case the client is the GUI, so if creating we do want to
-   // store in the client.
-   mpState -> mpShuttle->mbStoreInClient = (ShuttleMode == eIsCreatingFromPrefs );
-};
-
-ShuttleGui::~ShuttleGui()
-{
-}
-
-// Now we have Audacity specific shuttle functions.
-ShuttleGui & ShuttleGui::Id(int id )
-{
-   miIdSetByUser = id;
-   return *this;
-}
-
-ShuttleGui & ShuttleGui::Optional( bool &bVar ){
-   mpbOptionalFlag = &bVar; 
-   return *this;
-};
-
-
 std::unique_ptr<wxSizer> CreateStdButtonSizer(wxWindow *parent, long buttons, wxWindow *extra)
 {
    wxASSERT(parent != NULL); // To justify safenew
