@@ -178,6 +178,14 @@ ShuttleGuiBase::ShuttleGuiBase(
       pParent, ShuttleMode, vertical, minSize, pVisitor );
 }
 
+ShuttleGuiBase::ShuttleGuiBase(
+   const std::shared_ptr< ShuttleGuiState > &pState )
+      : mpState{ pState }
+{
+}
+
+ShuttleGuiBase::ShuttleGuiBase( ShuttleGuiBase&& ) = default;
+
 ShuttleGuiBase::~ShuttleGuiBase()
 {
 }
@@ -575,7 +583,7 @@ wxRadioButton * ShuttleGuiBase::DoAddRadioButton(
    UpdateSizers();
    pRad->SetValue( style != 0 );
 
-   if ( auto pList = mRadioButtons.get() )
+   if ( auto pList = mpState -> mRadioButtons.get() )
       pList->push_back( pRad );
 
    return pRad;
@@ -1589,8 +1597,8 @@ wxRadioButton * ShuttleGuiBase::TieRadioButton()
 /// Call this before AddRadioButton calls.
 void ShuttleGuiBase::StartRadioButtonGroup()
 {
-   mRadioButtons =
-      std::make_shared< RadioButtonList >();
+   mpState -> mRadioButtons =
+      std::make_shared< ShuttleGuiState::RadioButtonList >();
    mRadioCount = 0;
 }
 
@@ -1616,8 +1624,8 @@ void ShuttleGuiBase::StartRadioButtonGroup( const LabelSetting &Setting )
 void ShuttleGuiBase::EndRadioButtonGroup()
 {
    // too few buttons?
-   wxASSERT( !mRadioButtons ||
-      mRadioCount == mRadioButtons->size() );
+   wxASSERT( !mpState -> mRadioButtons ||
+      mRadioCount == mpState -> mRadioButtons->size() );
 
    if( mpState -> mShuttleMode == eIsGettingFromDialog )
       DoDataShuttle( mRadioSettingName, *mRadioValue );
@@ -1852,8 +1860,8 @@ wxCheckBox * ShuttleGuiBase::TieCheckBox(
    const TranslatableLabel &Prompt,
    const BoolSetting &Setting)
 {
-   if ( mpVisitor )
-      mpVisitor->Visit( Prompt.Translation(), Setting );
+   if ( mpState -> mpVisitor )
+      mpState -> mpVisitor->Visit( Prompt.Translation(), Setting );
 
    wxCheckBox * pCheck=NULL;
 
@@ -1872,8 +1880,8 @@ wxCheckBox * ShuttleGuiBase::TieCheckBoxOnRight(
    const TranslatableLabel &Prompt,
    const BoolSetting & Setting)
 {
-   if ( mpVisitor )
-      mpVisitor->Visit( Prompt.Translation(), Setting );
+   if ( mpState -> mpVisitor )
+      mpState -> mpVisitor->Visit( Prompt.Translation(), Setting );
 
    wxCheckBox * pCheck=NULL;
 
@@ -1894,8 +1902,8 @@ wxSlider * ShuttleGuiBase::TieSlider(
    const int max,
    const int min)
 {
-   if ( mpVisitor )
-      mpVisitor->Visit( Prompt.Translation(), Setting );
+   if ( mpState -> mpVisitor )
+      mpState -> mpVisitor->Visit( Prompt.Translation(), Setting );
 
    wxSlider * pSlider=NULL;
 
@@ -1916,8 +1924,8 @@ wxSpinCtrl * ShuttleGuiBase::TieSpinCtrl(
    const int max,
    const int min)
 {
-   if ( mpVisitor )
-      mpVisitor->Visit( Prompt.Translation(), Setting );
+   if ( mpState -> mpVisitor )
+      mpState -> mpVisitor->Visit( Prompt.Translation(), Setting );
 
    wxSpinCtrl * pSpinCtrl=NULL;
 
@@ -1937,8 +1945,8 @@ wxTextCtrl * ShuttleGuiBase::TieTextBox(
    const StringSetting & Setting,
    const int nChars)
 {
-   if ( mpVisitor )
-      mpVisitor->Visit( Prompt.Translation(), Setting );
+   if ( mpState -> mpVisitor )
+      mpState -> mpVisitor->Visit( Prompt.Translation(), Setting );
 
    wxTextCtrl * pText=(wxTextCtrl*)NULL;
 
@@ -1958,8 +1966,8 @@ wxTextCtrl * ShuttleGuiBase::TieIntegerTextBox(
    const IntSetting &Setting,
    const int nChars)
 {
-   if ( mpVisitor )
-      mpVisitor->Visit( Prompt.Translation(), Setting );
+   if ( mpState -> mpVisitor )
+      mpState -> mpVisitor->Visit( Prompt.Translation(), Setting );
 
    wxTextCtrl * pText=(wxTextCtrl*)NULL;
 
@@ -1979,8 +1987,8 @@ wxTextCtrl * ShuttleGuiBase::TieNumericTextBox(
    const DoubleSetting & Setting,
    const int nChars)
 {
-   if ( mpVisitor )
-      mpVisitor->Visit( Prompt.Translation(), Setting );
+   if ( mpState -> mpVisitor )
+      mpState -> mpVisitor->Visit( Prompt.Translation(), Setting );
 
    wxTextCtrl * pText=(wxTextCtrl*)NULL;
 
@@ -2002,8 +2010,8 @@ wxChoice *ShuttleGuiBase::TieChoice(
    const TranslatableLabel &Prompt,
    const ChoiceSetting &choiceSetting )
 {
-   if ( mpVisitor )
-      mpVisitor->Visit( Prompt.Translation(), choiceSetting );
+   if ( mpState -> mpVisitor )
+      mpState -> mpVisitor->Visit( Prompt.Translation(), choiceSetting );
 
    return DoTieChoice( Prompt, choiceSetting );
 }
@@ -2058,8 +2066,8 @@ wxChoice * ShuttleGuiBase::TieNumberAsChoice(
    const std::vector< int > * pInternalChoices,
    int iNoMatchSelector)
 {
-   if ( mpVisitor )
-      mpVisitor->Visit( Prompt.Translation(), Setting );
+   if ( mpState -> mpVisitor )
+      mpState -> mpVisitor->Visit( Prompt.Translation(), Setting );
 
    auto fn = [](int arg){ return wxString::Format( "%d", arg ); };
 
@@ -2131,7 +2139,7 @@ void ShuttleGuiBase::SetProportions( int Default )
 
 
 void ShuttleGuiBase::CheckEventType(
-   const DialogDefinition::Item &item,
+   const DialogDefinition::BaseItem &item,
    std::initializer_list<wxEventType> types )
 {
    if ( item.mAction || item.mValidatorSetter ) {
@@ -2155,9 +2163,9 @@ void ShuttleGuiBase::CheckEventType(
    }
 }
 
-void ShuttleGuiBase::ApplyItem( int step, const DialogDefinition::Item &item,
+void ShuttleGuiBase::ApplyItem( int step, const DialogDefinition::BaseItem &item,
    wxWindow *pWind, wxWindow *pDlg )
-{  
+{
    if ( step == 0 ) {
       // Do these steps before adding the window to the sizer
       if( item.mUseBestSize )
