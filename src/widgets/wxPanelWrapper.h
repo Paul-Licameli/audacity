@@ -203,6 +203,14 @@ public:
          style, pos, sz, name.Translation()
       );
    }
+
+   int ShowModal() override
+   {
+#ifndef __WXGTK__
+      wxWindowBase::Show();
+#endif
+      return FileDialog::ShowModal();
+   }
 };
 
 #include <wx/msgdlg.h>

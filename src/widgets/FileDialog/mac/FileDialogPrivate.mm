@@ -440,7 +440,7 @@ int FileDialog::ShowModal()
 {
     WX_HOOK_MODAL_DIALOG();
 
-    wxCFEventLoopPauseIdleEvents pause;
+    // wxCFEventLoopPauseIdleEvents pause;
 
     wxMacAutoreleasePool autoreleasepool;
     
