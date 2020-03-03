@@ -188,7 +188,7 @@ void HistoryDialog::Populate(ShuttleGui & S)
       S.EndStatic();
 #if defined(ALLOW_DISCARD)
       mCompact = safenew wxButton(this, ID_COMPACT, _("&Compact"));
-      S.AddStandardButtons(eOkButton | eHelpButton, mCompact);
+      S.AddStandardButtons(eOkButton | eHelpButton, {}, mCompact);
 #else
       S.AddStandardButtons(eOkButton | eHelpButton);
 #endif

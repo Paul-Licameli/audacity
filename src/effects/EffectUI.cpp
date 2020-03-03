@@ -1065,7 +1065,7 @@ bool EffectUIHost::Initialize()
          }
 
          S
-            .AddStandardButtons(buttons, bar);
+            .AddStandardButtons(buttons, {}, bar);
       }
       S.EndPanel();
    }

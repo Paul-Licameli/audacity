@@ -251,7 +251,7 @@ ScoreAlignDialog::ScoreAlignDialog(ScoreAlignParams &params)
    mDefaultButton->SetName(_("Restore Defaults"));
 
    S
-      .AddStandardButtons(eOkButton | eCancelButton, mDefaultButton);
+      .AddStandardButtons(eOkButton | eCancelButton, {}, mDefaultButton);
 
    S.EndVerticalLay();
    Layout();
