@@ -169,7 +169,6 @@ bool EffectNoiseRemoval::ShowInterface(
 
    if (mHasProfile || bAllowTwiddleSettings) {
       dlog.m_pButton_Preview->Enable(GetNumWaveTracks() != 0);
-      dlog.m_pButton_RemoveNoise->SetDefault();
    } else {
       dlog.m_pButton_Preview->Enable(false);
       dlog.m_pButton_RemoveNoise->Enable(false);
@@ -633,7 +632,7 @@ END_EVENT_TABLE()
 
 NoiseRemovalDialog::NoiseRemovalDialog(EffectNoiseRemoval * effect,
                                        wxWindow *parent)
-   : EffectDialog( parent, XO("Noise Removal"), EffectTypeProcess)
+   : EffectDialog( parent, XO("Noise Removal") )
 {
    m_pEffect = effect;
 
@@ -766,6 +765,9 @@ void NoiseRemovalDialog::PopulateOrExchange(ShuttleGui & S)
       S.EndMultiColumn();
    }
    S.EndStatic();
+
+   S
+      .AddStandardButtons( eOkButton | eCancelButton | ePreviewButton );
 }
 
 bool NoiseRemovalDialog::TransferDataToWindow()

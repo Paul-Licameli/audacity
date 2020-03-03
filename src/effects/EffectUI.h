@@ -242,9 +242,7 @@ public:
    // constructors and destructors
    EffectDialog(wxWindow * parent,
                 const TranslatableString & title,
-                int type = 0,
-                int flags = wxDEFAULT_DIALOG_STYLE,
-                int additionalButtons = 0);
+                int flags = wxDEFAULT_DIALOG_STYLE);
 
    void Init();
 
@@ -254,13 +252,9 @@ public:
 
    // NEW virtuals:
    virtual void PopulateOrExchange(ShuttleGui & S);
-   virtual void OnPreview(wxCommandEvent & evt);
    virtual void OnOk(wxCommandEvent & evt);
 
 private:
-   int mType;
-   int mAdditionalButtons;
-
    DECLARE_EVENT_TABLE()
    wxDECLARE_NO_COPY_CLASS(EffectDialog);
 };

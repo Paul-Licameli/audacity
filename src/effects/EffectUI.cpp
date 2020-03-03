@@ -2011,34 +2011,19 @@ END_EVENT_TABLE()
 
 EffectDialog::EffectDialog(wxWindow * parent,
                            const TranslatableString & title,
-                           int type,
-                           int flags,
-                           int additionalButtons)
+                           int flags)
 : wxDialogWrapper(parent, wxID_ANY, title, wxDefaultPosition, wxDefaultSize, flags)
 {
-   mType = type;
-   mAdditionalButtons = additionalButtons;
 }
 
 void EffectDialog::Init()
 {
-   long buttons = eOkButton;
-   if ((mType != EffectTypeAnalyze) && (mType != EffectTypeTool))
-   {
-      buttons |= eCancelButton;
-      if (mType == EffectTypeProcess)
-      {
-         buttons |= ePreviewButton;
-      }
-   }
-
    ShuttleGui S(this, eIsCreating);
 
    S.SetBorder(5);
    S.StartVerticalLay(true);
    {
       PopulateOrExchange(S);
-      S.AddStandardButtons(buttons|mAdditionalButtons);
    }
    S.EndVerticalLay();
 
@@ -2075,11 +2060,6 @@ bool EffectDialog::TransferDataFromWindow()
 bool EffectDialog::Validate()
 {
    return true;
-}
-
-void EffectDialog::OnPreview(wxCommandEvent & WXUNUSED(evt))
-{
-   return;
 }
 
 void EffectDialog::OnOk(wxCommandEvent & WXUNUSED(evt))
