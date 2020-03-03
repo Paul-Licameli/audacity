@@ -2234,6 +2234,31 @@ void ShuttleGuiBase::ApplyItem( int step, const DialogDefinition::Item &item,
 
       for (auto &pair : item.mRootConnections)
          pWind->Connect( pair.first, pair.second, nullptr, pDlg );
+
+      if ( item.mEnableTest || item.mShowTest ) {
+         auto enable = item.mEnableTest;
+         auto show = item.mShowTest;
+         pWind->Bind( wxEVT_UPDATE_UI, [enable, show]( wxUpdateUIEvent &evt ){
+            auto enabled = !enable || enable();
+            auto shown = !show || show();
+
+            // Try not to trap focus in the control we are about to disable
+            if ( !enabled || !shown )
+               if ( auto pWindow = dynamic_cast<wxWindow*>( evt.GetEventObject() ) ) {
+                  if ( pWindow == wxWindow::FindFocus() ) {
+                     auto pOrigWindow = pWindow;
+                     while( pWindow->Navigate() &&
+                       pOrigWindow != ( pWindow = wxWindow::FindFocus() ) &&
+                       pWindow &&
+                       !( pWindow->IsEnabled() && pWindow->IsShown() ) )
+                        ;
+                  }
+               }
+
+            evt.Enable( enabled );
+            evt.Show( shown );
+         } );
+      }
    }
 }
 

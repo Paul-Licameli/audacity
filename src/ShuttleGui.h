@@ -18,6 +18,7 @@
 #include "Identifier.h"
 
 #include <initializer_list>
+#include <functional>
 #include <vector>
 #include <wx/slider.h> // to inherit
 #include "MemoryX.h"
@@ -168,6 +169,7 @@ inline ControlText Label( const TranslatableString &label )
 
 struct Item {
    using ActionType = std::function< void() >;
+   using Test = std::function< bool() >;
 
    Item() = default;
 
@@ -227,9 +229,24 @@ struct Item {
       return std::move( *this );
    }
 
+   // Just sets the state of the item once
    Item&& Disable( bool disabled = true ) &&
    {
       mDisabled = disabled;
+      return std::move( *this );
+   }
+
+   // Specifies a predicate that is retested as needed
+   Item&& Enable( const Test &test ) &&
+   {
+      mEnableTest = test;
+      return std::move( *this );
+   }
+
+   // Specifies a predicate that is retested as needed
+   Item&& Show( const Test &test ) &&
+   {
+      mShowTest = test;
       return std::move( *this );
    }
 
@@ -315,6 +332,8 @@ struct Item {
    ActionType mAction{};
 
    std::function< void(wxWindow*) > mValidatorSetter;
+   Test mEnableTest;
+   Test mShowTest;
    ControlText mText;
 
    std::vector<std::pair<wxEventType, wxObjectEventFunction>> mRootConnections;
@@ -861,6 +880,20 @@ public:
    TypedShuttleGui &Disable( bool disabled = true )
    {
       std::move( mItem ).Disable( disabled );
+      return *this;
+   }
+
+   // Specifies a predicate that is retested as needed
+   TypedShuttleGui &Enable( const DialogDefinition::Item::Test &test )
+   {
+      std::move( mItem ).Enable( test );
+      return *this;
+   }
+
+   // Specifies a predicate that is retested as needed
+   TypedShuttleGui &Show( const DialogDefinition::Item::Test &test )
+   {
+      std::move( mItem ).Show( test );
       return *this;
    }
 
