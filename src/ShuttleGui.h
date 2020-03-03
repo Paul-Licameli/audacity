@@ -204,6 +204,14 @@ struct Item {
       return std::move( *this );
    }
 
+   // For buttons only
+   // Only the last item specified as default (if more than one) will be
+   Item&& Default( bool isdefault = true ) &&
+   {
+      mDefault = isdefault;
+      return std::move( *this );
+   }
+
    Item&& Disable( bool disabled = true ) &&
    {
       mDisabled = disabled;
@@ -308,6 +316,7 @@ struct Item {
    bool mUseBestSize{ false };
 
    bool mFocused { false };
+   bool mDefault { false };
    bool mDisabled { false };
 };
 
@@ -810,6 +819,14 @@ public:
    TypedShuttleGui & Focus( bool focused = true )
    {
       std::move( mItem ).Focus( focused );
+      return *this;
+   }
+
+   // For buttons only
+   // Only the last item specified as default (if more than one) will be
+   TypedShuttleGui & Default( bool isdefault = true )
+   {
+      std::move( mItem ).Default( isdefault );
       return *this;
    }
 
