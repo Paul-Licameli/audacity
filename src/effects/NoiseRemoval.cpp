@@ -838,8 +838,7 @@ bool NoiseRemovalDialog::TransferDataToWindow()
 
 bool NoiseRemovalDialog::TransferDataFromWindow()
 {
-   // Nothing to do here
-   return true;
+   return EffectDialog::TransferDataFromWindow();
 }
 
 void NoiseRemovalDialog::OnSensitivityText(wxCommandEvent & WXUNUSED(event))

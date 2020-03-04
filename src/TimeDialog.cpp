@@ -76,6 +76,8 @@ void TimeDialog::PopulateOrExchange(ShuttleGui &S)
 
 bool TimeDialog::TransferDataToWindow()
 {
+   wxDialogWrapper::TransferDataToWindow();
+
    mTimeCtrl->SetFormatString(mTimeCtrl->GetBuiltinFormat(mFormat));
    mTimeCtrl->SetSampleRate(mRate);
    mTimeCtrl->SetValue(mTime);
@@ -86,6 +88,8 @@ bool TimeDialog::TransferDataToWindow()
 
 bool TimeDialog::TransferDataFromWindow()
 {
+   wxDialogWrapper::TransferDataFromWindow();
+
    mTime = mTimeCtrl->GetValue();
 
    return true;
