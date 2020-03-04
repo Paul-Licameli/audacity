@@ -396,6 +396,7 @@ void DevicePrefs::OnDevice(wxCommandEvent & WXUNUSED(event))
 
 bool DevicePrefs::Commit()
 {
+   wxPanel::TransferDataFromWindow();
    ShuttleGui S(this, eIsSavingToPrefs);
    PopulateOrExchange(S);
    DeviceSourceMap *map = NULL;

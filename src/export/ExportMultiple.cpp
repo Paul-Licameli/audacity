@@ -563,6 +563,7 @@ void ExportMultipleDialog::OnHelp()
 
 void ExportMultipleDialog::OnExport()
 {
+   wxDialog::TransferDataFromWindow();
    ShuttleGui S(this, eIsSavingToPrefs);
    PopulateOrExchange(S);
 

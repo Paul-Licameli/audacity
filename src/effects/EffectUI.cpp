@@ -2084,6 +2084,7 @@ void EffectDialog::Init()
 
 bool EffectDialog::TransferDataToWindow()
 {
+   wxDialog::TransferDataToWindow();
    ShuttleGui S(this, eIsSettingToDialog);
    PopulateOrExchange(S);
 
@@ -2092,6 +2093,7 @@ bool EffectDialog::TransferDataToWindow()
 
 bool EffectDialog::TransferDataFromWindow()
 {
+   wxDialog::TransferDataFromWindow();
    ShuttleGui S(this, eIsGettingFromDialog);
    PopulateOrExchange(S);
 

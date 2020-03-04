@@ -427,6 +427,7 @@ bool SpectrumPrefs::Validate()
    }
 #endif //EXPERIMENTAL_FIND_NOTES
 
+   wxPanel::TransferDataFromWindow();
    ShuttleGui S(this, eIsSavingToPrefs);
    PopulateOrExchange(S);
 
@@ -484,6 +485,7 @@ void SpectrumPrefs::Preview()
 
    const bool isOpenPage = this->IsShown();
 
+   wxPanel::TransferDataFromWindow();
    ShuttleGui S(this, eIsSavingToPrefs);
    PopulateOrExchange(S);
 
@@ -586,6 +588,7 @@ void SpectrumPrefs::OnDefaults(wxCommandEvent &)
       mTempSettings = SpectrogramSettings::defaults();
       mTempSettings.ConvertToEnumeratedWindowSizes();
       mDefaulted = true;
+      wxPanel::TransferDataToWindow();
       ShuttleGui S(this, eIsSettingToDialog);
       PopulateOrExchange(S);
    }

@@ -385,6 +385,7 @@ bool TracksPrefs::Commit()
 {
    // Bug 1583: Clear the caching of the preference pinned state.
    iPreferencePinned = -1;
+   wxPanel::TransferDataFromWindow();
    ShuttleGui S(this, eIsSavingToPrefs);
    PopulateOrExchange(S);
 

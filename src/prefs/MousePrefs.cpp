@@ -225,6 +225,7 @@ void MousePrefs::OnShow(wxShowEvent &event)
 bool MousePrefs::Commit()
 {
 // Not yet required...
+//   wxPanel::TransferDataFromWindow();
 //   ShuttleGui S(this, eIsSavingToPrefs);
 //   PopulateOrExchange(S);
    return true;

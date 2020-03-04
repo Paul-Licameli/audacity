@@ -70,6 +70,7 @@ void SoundActivatedRecordDialog::PopulateOrExchange(ShuttleGui & S)
 
 void SoundActivatedRecordDialog::OnOK()
 {
+   wxDialog::TransferDataFromWindow();
    ShuttleGui S( this, eIsSavingToPrefs );
    PopulateOrExchange( S );
 

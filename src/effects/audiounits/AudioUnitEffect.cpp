@@ -619,6 +619,7 @@ void AudioUnitEffectOptionsDialog::OnOk()
       return;
    }
 
+   wxDialog::TransferDataFromWindow();
    ShuttleGui S(this, eIsGettingFromDialog);
    PopulateOrExchange(S);
 

@@ -146,6 +146,7 @@ bool WaveformPrefs::Validate()
 
    // ToDo: use wxIntegerValidator<unsigned> when available
 
+   wxPanel::TransferDataFromWindow();
    ShuttleGui S(this, eIsGettingFromDialog);
    PopulateOrExchange(S);
 
@@ -160,6 +161,7 @@ bool WaveformPrefs::Commit()
 {
    const bool isOpenPage = this->IsShown();
 
+   wxPanel::TransferDataFromWindow();
    ShuttleGui S(this, eIsGettingFromDialog);
    PopulateOrExchange(S);
 
@@ -228,6 +230,7 @@ void WaveformPrefs::OnDefaults(wxCommandEvent &)
       mTempSettings = WaveformSettings::defaults();
       mTempSettings.ConvertToEnumeratedDBRange();
       mDefaulted = true;
+      wxPanel::TransferDataToWindow();
       ShuttleGui S(this, eIsSettingToDialog);
       PopulateOrExchange(S);
    }

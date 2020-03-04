@@ -256,6 +256,7 @@ void RecordingPrefs::PopulateOrExchange(ShuttleGui & S)
 
 bool RecordingPrefs::Commit()
 {
+   wxPanel::TransferDataFromWindow();
    ShuttleGui S(this, eIsSavingToPrefs);
    PopulateOrExchange(S);
 

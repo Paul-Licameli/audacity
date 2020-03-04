@@ -90,6 +90,7 @@ void WarningsPrefs::PopulateOrExchange(ShuttleGui & S)
 
 bool WarningsPrefs::Commit()
 {
+   wxPanel::TransferDataFromWindow();
    ShuttleGui S(this, eIsSavingToPrefs);
    PopulateOrExchange(S);
 

@@ -73,6 +73,7 @@ void BatchPrefs::PopulateOrExchange( ShuttleGui & S )
 /// Send changed values back to Prefs, and update Audacity.
 bool BatchPrefs::Commit()
 {
+   wxPanel::TransferDataFromWindow();
    ShuttleGui S( this, eIsSavingToPrefs );
    PopulateOrExchange( S );
 

@@ -117,6 +117,7 @@ void TracksBehaviorsPrefs::PopulateOrExchange(ShuttleGui & S)
 
 bool TracksBehaviorsPrefs::Commit()
 {
+   wxPanel::TransferDataFromWindow();
    ShuttleGui S(this, eIsSavingToPrefs);
    PopulateOrExchange(S);
 

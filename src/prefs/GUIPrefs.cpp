@@ -235,6 +235,7 @@ void GUIPrefs::PopulateOrExchange(ShuttleGui & S)
 
 bool GUIPrefs::Commit()
 {
+   wxPanel::TransferDataFromWindow();
    ShuttleGui S(this, eIsSavingToPrefs);
    PopulateOrExchange(S);
 

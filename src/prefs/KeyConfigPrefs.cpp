@@ -922,6 +922,7 @@ bool KeyConfigPrefs::Commit()
       return true;
    }
 
+   wxPanel::TransferDataFromWindow();
    ShuttleGui S(this, eIsSavingToPrefs);
    PopulateOrExchange(S);
 

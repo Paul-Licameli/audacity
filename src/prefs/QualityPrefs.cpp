@@ -181,6 +181,7 @@ bool QualityPrefs::UseOtherRate() const
 
 bool QualityPrefs::Commit()
 {
+   wxPanel::TransferDataFromWindow();
    ShuttleGui S(this, eIsSavingToPrefs);
    PopulateOrExchange(S);
 
