@@ -58,7 +58,6 @@ public:
    virtual ~ExportCLOptions();
 
    void PopulateOrExchange(ShuttleGui & S);
-   bool TransferDataToWindow() override;
    bool TransferDataFromWindow() override;
 
    void OnBrowse();
@@ -150,13 +149,6 @@ void ExportCLOptions::PopulateOrExchange(ShuttleGui & S)
 "Data will be piped to standard in. \"%f\" uses the file name in the export window."), 250);
    }
    S.EndVerticalLay();
-}
-
-///
-///
-bool ExportCLOptions::TransferDataToWindow()
-{
-   return true;
 }
 
 ///

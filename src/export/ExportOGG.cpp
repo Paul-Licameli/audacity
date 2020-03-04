@@ -50,7 +50,6 @@ public:
    virtual ~ExportOGGOptions();
 
    void PopulateOrExchange(ShuttleGui & S);
-   bool TransferDataToWindow() override;
    bool TransferDataFromWindow() override;
 
 private:
@@ -98,13 +97,6 @@ void ExportOGGOptions::PopulateOrExchange(ShuttleGui & S)
       S.EndHorizontalLay();
    }
    S.EndVerticalLay();
-}
-
-///
-///
-bool ExportOGGOptions::TransferDataToWindow()
-{
-   return true;
 }
 
 ///

@@ -127,7 +127,6 @@ public:
    virtual ~ExportMP2Options();
 
    void PopulateOrExchange(ShuttleGui & S);
-   bool TransferDataToWindow() override;
    bool TransferDataFromWindow() override;
 };
 
@@ -177,13 +176,6 @@ void ExportMP2Options::PopulateOrExchange(ShuttleGui & S)
       S.EndHorizontalLay();
    }
    S.EndVerticalLay();
-}
-
-///
-///
-bool ExportMP2Options::TransferDataToWindow()
-{
-   return true;
 }
 
 ///

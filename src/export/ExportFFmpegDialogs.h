@@ -68,7 +68,6 @@ public:
    virtual ~ExportFFmpegAC3Options();
 
    void PopulateOrExchange(ShuttleGui & S);
-   bool TransferDataToWindow() override;
    bool TransferDataFromWindow() override;
 
    /// Sample Rates supported by AC3 encoder (must end with zero-element)
@@ -89,7 +88,6 @@ public:
    virtual ~ExportFFmpegAACOptions();
 
    void PopulateOrExchange(ShuttleGui & S);
-   bool TransferDataToWindow() override;
    bool TransferDataFromWindow() override;
 };
 
@@ -101,7 +99,6 @@ public:
    virtual ~ExportFFmpegAMRNBOptions();
 
    void PopulateOrExchange(ShuttleGui & S);
-   bool TransferDataToWindow() override;
    bool TransferDataFromWindow() override;
 
 private:
@@ -152,7 +149,6 @@ public:
    ~ExportFFmpegWMAOptions();
 
    void PopulateOrExchange(ShuttleGui & S);
-   bool TransferDataToWindow() override;
    bool TransferDataFromWindow() override;
 
    static const int iWMASampleRates[];
@@ -171,7 +167,7 @@ public:
    ~ExportFFmpegCustomOptions();
 
    void PopulateOrExchange(ShuttleGui & S);
-   bool TransferDataToWindow() override;
+   bool TransferDataToWindow() override; // remove this?
    bool TransferDataFromWindow() override;
 
    void OnOpen();
