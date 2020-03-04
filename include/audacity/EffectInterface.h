@@ -233,7 +233,10 @@ public:
 
    virtual void SetHostUI(EffectUIHostInterface *host) = 0;
    virtual bool IsGraphicalUI() = 0;
+
+   // Used only to create the dialog, not to shuttle values:
    virtual bool PopulateUI(ShuttleGui &S) = 0;
+
    virtual bool ValidateUI() = 0;
    virtual bool HideUI() = 0;
    virtual bool CloseUI() = 0;
