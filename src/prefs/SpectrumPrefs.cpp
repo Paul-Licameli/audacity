@@ -175,7 +175,8 @@ void SpectrumPrefs::PopulateOrExchange(ShuttleGui & S)
       mDefaultsCheckbox =
       S
          .Id(ID_DEFAULTS)
-         .TieCheckBox(XXO("&Use Preferences"), mDefaulted);
+         .Target(mDefaulted)
+         .AddCheckBox( XXO("&Use Preferences") );
    }
 
    S.StartMultiColumn(2,wxEXPAND);
@@ -312,14 +313,14 @@ void SpectrumPrefs::PopulateOrExchange(ShuttleGui & S)
 #ifndef SPECTRAL_SELECTION_GLOBAL_SWITCH
    S
       .Id(ID_SPECTRAL_SELECTION)
-      .TieCheckBox(XXO("Ena&ble Spectral Selection"),
-         mTempSettings.spectralSelection);
+      .Target(mTempSettings.spectralSelection)
+      .AddCheckBox( XXO("Ena&ble Spectral Selection") );
 #endif
 
 #ifdef EXPERIMENTAL_FFT_Y_GRID
    S
-      .TieCheckBox(XO("Show a grid along the &Y-axis"),
-         mTempSettings.fftYGrid);
+      .Target(mTempSettings.fftYGrid)
+      .AddCheckBox( XO("Show a grid along the &Y-axis") );
 #endif //EXPERIMENTAL_FFT_Y_GRID
 
 #ifdef EXPERIMENTAL_FIND_NOTES
@@ -344,12 +345,12 @@ void SpectrumPrefs::PopulateOrExchange(ShuttleGui & S)
          S.EndTwoColumn();
 
          S
-            .TieCheckBox(XXO("&Find Notes"),
-               mTempSettings.fftFindNotes);
+            .Target(mTempSettings.fftFindNotes)
+            .AddCheckBox( XXO("&Find Notes") );
 
          S
-            .TieCheckBox(XXO("&Quantize Notes"),
-               mTempSettings.findNotesQuantize);
+            .Target(mTempSettings.findNotesQuantize)
+            .AddCheckBox( XXO("&Quantize Notes") );
       }
       S.EndStatic();
 #endif //EXPERIMENTAL_FIND_NOTES
@@ -360,8 +361,8 @@ void SpectrumPrefs::PopulateOrExchange(ShuttleGui & S)
       .StartStatic(XO("Global settings"));
    {
       S
-         .TieCheckBox(XXO("Ena&ble spectral selection"),
-            SpectrogramSettings::Globals::Get().spectralSelection);
+         .Target(SpectrogramSettings::Globals::Get().spectralSelection)
+         .AddCheckBox( XXO("Ena&ble spectral selection") );
    }
    S.EndStatic();
 #endif

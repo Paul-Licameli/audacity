@@ -280,7 +280,8 @@ void LV2EffectSettingsDialog::PopulateOrExchange(ShuttleGui &S)
             S.StartHorizontalLay(wxALIGN_LEFT);
             {
                S
-                  .TieCheckBox(XXO("Enable &compensation"), mUseLatency);
+                  .Target(mUseLatency)
+                  .AddCheckBox( XXO("Enable &compensation") );
             }
             S.EndHorizontalLay();
          }
@@ -295,8 +296,8 @@ void LV2EffectSettingsDialog::PopulateOrExchange(ShuttleGui &S)
 " Reopen the effect for this to take effect."),
                   false, 0, 650);
 
-            S
-               .TieCheckBox(XXO("Enable &graphical interface"), mUseGUI);
+            S.Target( mUseGUI )
+               .AddCheckBox( XXO("Enable &graphical interface") );
          }
          S.EndStatic();
       }

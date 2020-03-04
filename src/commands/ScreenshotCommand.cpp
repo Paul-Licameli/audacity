@@ -137,7 +137,8 @@ void ScreenshotCommand::PopulateOrExchange(ShuttleGui & S)
             mBack, Msgids(kBackgroundStrings, nBackgrounds));
 
       S
-         .TieCheckBox( XXO("Bring To Top"), mbBringToTop);
+         .Target(mbBringToTop)
+         .AddCheckBox( XXO("Bring To Top") );
    }
    S.EndMultiColumn();
 }

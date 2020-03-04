@@ -50,7 +50,8 @@ void OpenProjectCommand::PopulateOrExchange(ShuttleGui & S)
          .TieTextBox(XXO("File Name:"),mFileName);
 
       S
-         .TieCheckBox(XXO("Add to History"), mbAddToHistory );
+         .Target(mbAddToHistory)
+         .AddCheckBox( XXO("Add to History") );
    }
    S.EndMultiColumn();
 }
@@ -102,7 +103,8 @@ void SaveProjectCommand::PopulateOrExchange(ShuttleGui & S)
          .TieTextBox(XXO("File Name:"),mFileName);
 
       S
-         .TieCheckBox(XXO("Add to History"), mbAddToHistory );
+         .Target( mbAddToHistory )
+         .AddCheckBox(XXO("Add to History") );
    }
    S.EndMultiColumn();
 }

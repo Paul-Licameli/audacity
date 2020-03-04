@@ -563,8 +563,8 @@ void AudioUnitEffectOptionsDialog::PopulateOrExchange(ShuttleGui & S)
             S.StartHorizontalLay(wxALIGN_LEFT);
             {
                S
-                  .TieCheckBox(XXO("Enable &compensation"),
-                             mUseLatency);
+                  .Target(mUseLatency)
+                  .AddCheckBox( XXO("Enable &compensation") );
             }
             S.EndHorizontalLay();
          }

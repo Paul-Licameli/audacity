@@ -74,7 +74,8 @@ void SetLabelCommand::PopulateOrExchange(ShuttleGui & S)
 
       S
          .Optional( bHasSelected  )
-         .TieCheckBox(        XXO("Selected"),  mbSelected );
+         .Target(mbSelected)
+         .AddCheckBox( XXO("Selected") );
    }
    S.EndMultiColumn();
 }

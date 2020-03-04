@@ -63,7 +63,8 @@ void SetEnvelopeCommand::PopulateOrExchange(ShuttleGui & S)
 
       S
          .Optional( bHasDelete      )
-         .TieCheckBox(        XXO("Delete"),         mbDelete );
+         .Target(mbDelete)
+         .AddCheckBox( XXO("Delete") );
    }
    S.EndMultiColumn();
 }

@@ -97,8 +97,9 @@ void WaveformPrefs::PopulateOrExchange(ShuttleGui & S)
          mDefaultsCheckbox =
          S
             .Id(ID_DEFAULTS)
+            .Target(mDefaulted)
             /* i18n-hint: use is a verb */
-            .TieCheckBox(XXO("&Use Preferences"), mDefaulted);
+            .AddCheckBox( XXO("&Use Preferences") );
       }
 
       S
