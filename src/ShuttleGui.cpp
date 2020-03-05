@@ -813,31 +813,12 @@ void ShuttleGuiBase::SetStretchyRow( int i )
 
 //---- Add Functions.
 
-void ShuttleGuiBase::HandleOptionality(const TranslatableLabel &Prompt)
-{
-   // If creating, will be handled by an AddPrompt.
-   if( mpState -> mShuttleMode == eIsCreating )
-      return;
-   //wxLogDebug( "Optionality: [%s] Id:%i (%i)", Prompt.c_str(), miId, miIdSetByUser ) ;
-   if( mpbOptionalFlag ){
-      bool * pVar = mpbOptionalFlag;
-      mpbOptionalFlag = nullptr;
-      TieCheckBox( Prompt, *pVar);
-   }
-}
-
 /// Right aligned text string.
 void ShuttleGuiBase::AddPrompt(const TranslatableLabel &Prompt, int wrapWidth)
 {
    if( mpState -> mShuttleMode != eIsCreating )
       return;
    //wxLogDebug( "Prompt: [%s] Id:%i (%i)", Prompt.c_str(), miId, miIdSetByUser ) ;
-   if( mpbOptionalFlag ){
-      bool * pVar = mpbOptionalFlag;
-      mpbOptionalFlag = nullptr;
-      TieCheckBox( {}, *pVar);
-      //return;
-   }
    if( Prompt.empty() )
       return;
    miProp=1;
@@ -920,13 +901,7 @@ void ShuttleGuiBase::AddNumericTextCtrl(NumericConverter::Type type,
 
 void ShuttleGuiBase::AddCheckBox( const TranslatableLabel &Prompt, bool Selected)
 {
-   HandleOptionality( Prompt );
    auto realPrompt = Prompt.Translation();
-   if( mpbOptionalFlag )
-   {
-      AddPrompt( {} );
-      //realPrompt = L"";
-   }
 
    UseUpId();
    if( mpState -> mShuttleMode != eIsCreating ) {
@@ -956,7 +931,6 @@ void ShuttleGuiBase::AddCheckBox( const TranslatableLabel &Prompt, bool Selected
 /// placing a static text label and then a tick box with an empty label.
 void ShuttleGuiBase::AddCheckBoxOnRight( const TranslatableLabel &Prompt, bool Selected)
 {
-   HandleOptionality( Prompt );
    AddPrompt( Prompt );
    UseUpId();
    if( mpState -> mShuttleMode != eIsCreating ) {
@@ -1016,7 +990,6 @@ void ShuttleGuiBase::AddBitmapButton(
 void ShuttleGuiBase::AddChoice( const TranslatableLabel &Prompt,
    const TranslatableStrings &choices, int Selected )
 {
-   HandleOptionality( Prompt );
    AddPrompt( Prompt );
    UseUpId();
    if( mpState -> mShuttleMode != eIsCreating ) {
@@ -1119,7 +1092,6 @@ void ShuttleGuiBase::AddReadOnlyText(
 {
    const auto translated = Caption.Translation();
    auto style = GetStyle( wxBORDER_NONE );
-   HandleOptionality( Caption );
    mItem.miStyle = wxALIGN_CENTER_VERTICAL;
    AddPrompt( Caption );
    UseUpId();
@@ -1141,7 +1113,6 @@ void ShuttleGuiBase::AddCombo(
    const wxString &Selected, const wxArrayStringEx & choices )
 {
    const auto translated = Prompt.Translation();
-   HandleOptionality( Prompt );
    AddPrompt( Prompt );
    UseUpId();
    if( mpState -> mShuttleMode != eIsCreating ) {
@@ -1212,7 +1183,6 @@ void ShuttleGuiBase::AddSlider(
    const TranslatableLabel &Prompt, int pos, int Max, int Min,
    int lineSize, int pageSize )
 {
-   HandleOptionality( Prompt );
    AddPrompt( Prompt );
    UseUpId();
    if( mpState -> mShuttleMode != eIsCreating ) {
@@ -1248,7 +1218,6 @@ void ShuttleGuiBase::AddSpinCtrl(
    const TranslatableLabel &Prompt, int Value, int Max, int Min)
 {
    const auto translated = Prompt.Translation();
-   HandleOptionality( Prompt );
    AddPrompt( Prompt );
    UseUpId();
    if( mpState -> mShuttleMode != eIsCreating ) {
@@ -1271,7 +1240,6 @@ void ShuttleGuiBase::AddTextBox(
    const TranslatableLabel &Prompt, const wxString &Value, const int nChars)
 {
    const auto translated = Prompt.Translation();
-   HandleOptionality( Prompt );
    AddPrompt( Prompt );
    UseUpId();
    if( mpState -> mShuttleMode != eIsCreating ) {
@@ -1309,7 +1277,6 @@ void ShuttleGuiBase::AddNumericTextBox(
    const TranslatableLabel &Prompt, const wxString &Value, const int nChars)
 {
    const auto translated = Prompt.Translation();
-   HandleOptionality( Prompt );
    AddPrompt( Prompt );
    UseUpId();
    if( mpState -> mShuttleMode != eIsCreating ) {
@@ -1370,7 +1337,6 @@ void ShuttleGuiBase::AddConstTextBox(
    const TranslatableString &Prompt, const TranslatableString &Value)
 {
    TranslatableLabel label{ Prompt };
-   HandleOptionality( label );
    AddPrompt( label );
    UseUpId();
    if( mpState -> mShuttleMode != eIsCreating )
@@ -1883,7 +1849,6 @@ void ShuttleGuiBase::DoDataShuttle( const wxString &Name, WrappedType & WrappedR
 wxCheckBox * ShuttleGuiBase::DoTieCheckBox(
    const TranslatableLabel &Prompt, WrappedType & WrappedRef)
 {
-   HandleOptionality( Prompt );
    // The Add function does a UseUpId(), so don't do it here in that case.
    if( mpState -> mShuttleMode == eIsCreating ) {
       AddCheckBox( Prompt, WrappedRef.ReadAsString() == L"true");
@@ -1920,7 +1885,6 @@ wxCheckBox * ShuttleGuiBase::DoTieCheckBox(
 wxCheckBox * ShuttleGuiBase::DoTieCheckBoxOnRight(
    const TranslatableLabel &Prompt, WrappedType & WrappedRef)
 {
-   HandleOptionality( Prompt );
    // The Add function does a UseUpId(), so don't do it here in that case.
    if( mpState -> mShuttleMode == eIsCreating ) {
       AddCheckBoxOnRight( Prompt, WrappedRef.ReadAsString() == L"true");
@@ -1958,7 +1922,6 @@ wxSpinCtrl * ShuttleGuiBase::DoTieSpinCtrl(
    const TranslatableLabel &Prompt,
    WrappedType & WrappedRef, const int max, const int min )
 {
-   HandleOptionality( Prompt );
    // The Add function does a UseUpId(), so don't do it here in that case.
    if( mpState -> mShuttleMode == eIsCreating ) {
       AddSpinCtrl( Prompt, WrappedRef.ReadAsInt(), max, min );
@@ -1996,7 +1959,6 @@ wxSpinCtrl * ShuttleGuiBase::DoTieSpinCtrl(
 wxTextCtrl * ShuttleGuiBase::DoTieTextBox(
    const TranslatableLabel &Prompt, WrappedType & WrappedRef, const int nChars)
 {
-   HandleOptionality( Prompt );
    // The Add function does a UseUpId(), so don't do it here in that case.
    if( mpState -> mShuttleMode == eIsCreating ) {
       AddTextBox( Prompt, WrappedRef.ReadAsString(), nChars );
@@ -2034,7 +1996,6 @@ wxTextCtrl * ShuttleGuiBase::DoTieTextBox(
 wxTextCtrl * ShuttleGuiBase::DoTieNumericTextBox(
    const TranslatableLabel &Prompt, WrappedType & WrappedRef, const int nChars)
 {
-   HandleOptionality( Prompt );
    // The Add function does a UseUpId(), so don't do it here in that case.
    if( mpState -> mShuttleMode == eIsCreating ) {
       AddNumericTextBox( Prompt, WrappedRef.ReadAsString(), nChars );
@@ -2073,7 +2034,6 @@ wxSlider * ShuttleGuiBase::DoTieSlider(
    const TranslatableLabel &Prompt,
    WrappedType & WrappedRef, const int max, int min )
 {
-   HandleOptionality( Prompt );
    // The Add function does a UseUpId(), so don't do it here in that case.
    if( mpState -> mShuttleMode != eIsCreating )
       UseUpId();
@@ -2116,8 +2076,6 @@ wxChoice * ShuttleGuiBase::TieChoice(
    int &Selected,
    const TranslatableStrings &choices )
 {
-   HandleOptionality( Prompt );
-
    // The Add function does a UseUpId(), so don't do it here in that case.
    if( mpState -> mShuttleMode != eIsCreating )
       UseUpId();
