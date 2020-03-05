@@ -90,9 +90,9 @@ void SelectTimeCommand::PopulateOrExchange(ShuttleGui & S)
 
       S
          .Optional( bHasRelativeSpec )
-         .TieChoice(
-            XXO("Relative To:"),
-            mRelativeTo, Msgids( kRelativeTo, nRelativeTos ));
+         .Target( mRelativeTo )
+         .AddChoice(
+            XXO("Relative To:"), Msgids( kRelativeTo, nRelativeTos ));
    }
    S.EndMultiColumn();
 }
@@ -240,7 +240,8 @@ void SelectTracksCommand::PopulateOrExchange(ShuttleGui & S)
    {
       // Always used, so no check box.
       S
-         .TieChoice( XXO("Mode:"), mMode, Msgids( kModes, nModes ));
+         .Target( mMode )
+         .AddChoice( XXO("Mode:"), Msgids( kModes, nModes ));
    }
    S.EndMultiColumn();
 }

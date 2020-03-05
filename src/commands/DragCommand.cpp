@@ -99,7 +99,8 @@ void DragCommand::PopulateOrExchange(ShuttleGui & S)
 
       S
          .Optional( bHasRelativeTo )
-         .TieChoice(          XXO("Relative To:"), mRelativeTo,
+         .Target( mRelativeTo )
+         .AddChoice( XXO("Relative To:"),
             Msgids( kCoordTypeStrings, nCoordTypes ) );
    }
    S.EndMultiColumn();

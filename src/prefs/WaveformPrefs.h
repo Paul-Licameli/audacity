@@ -50,7 +50,6 @@ private:
    bool mDefaulted;
 
    wxCheckBox *mDefaultsCheckbox;
-   wxChoice *mScaleChoice;
 
    Identifiers mRangeCodes;
    TranslatableStrings mRangeChoices;

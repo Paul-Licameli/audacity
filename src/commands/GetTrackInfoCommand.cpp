@@ -57,7 +57,8 @@ void GetTrackInfoCommand::PopulateOrExchange(ShuttleGui & S)
    S.StartMultiColumn(2, wxALIGN_CENTER);
    {
       S
-         .TieChoice( XXO("Types:"), mInfoType, Msgids( kTypes, nTypes ));
+         .Target( mInfoType )
+         .AddChoice( XXO("Types:"), Msgids( kTypes, nTypes ) );
    }
    S.EndMultiColumn();
 }

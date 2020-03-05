@@ -73,8 +73,8 @@ void SetClipCommand::PopulateOrExchange(ShuttleGui & S)
 
       S
          .Optional( bHasColour      )
-         .TieChoice(          XXO("Color:"),         mColour,
-            Msgids( kColourStrings, nColours ) );
+         .Target( mColour )
+         .AddChoice( XXO("Color:"), Msgids( kColourStrings, nColours ) );
 
       S
          .Optional( bHasT0          )

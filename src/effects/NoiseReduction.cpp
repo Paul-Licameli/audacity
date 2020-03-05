@@ -1367,10 +1367,6 @@ enum {
    ID_RADIOBUTTON_RESIDUE,
 #endif
 
-#ifdef ADVANCED_SETTINGS
-   ID_CHOICE_METHOD,
-#endif
-
    // Slider/text pairs
    ID_GAIN_SLIDER,
    ID_GAIN_TEXT,
@@ -1502,9 +1498,7 @@ const ControlInfo *controlInfo() {
          0.0, 24.0, 48, L"%.2f", false,
          XXO("&Sensitivity:"), XO("Sensitivity"),
          []( EffectNoiseReduction::Dialog &dlg ) {
-            const auto pChoice = static_cast<wxChoice*>(
-               wxWindow::FindWindowById(ID_CHOICE_METHOD, &dlg));
-            return pChoice->GetSelection() != DM_OLD_METHOD;
+            return dlg.GetTempSettings().mMethod != DM_OLD_METHOD;
          } ),
 
 #ifdef ATTACK_AND_RELEASE
@@ -1529,9 +1523,7 @@ const ControlInfo *controlInfo() {
          -20.0, 20.0, 4000, L"%.2f", false,
          XXO("Sensiti&vity (dB):"), XO("Old Sensitivity"),
          []( EffectNoiseReduction::Dialog &dlg ) {
-            const auto pChoice = static_cast<wxChoice*>(
-               wxWindow::FindWindowById(ID_CHOICE_METHOD, &dlg));
-            return pChoice->GetSelection() == DM_OLD_METHOD;
+            return dlg.GetTempSettings().mMethod == DM_OLD_METHOD;
          } ),
          // add here
 #endif
@@ -1744,8 +1736,8 @@ void EffectNoiseReduction::Dialog::PopulateOrExchange(ShuttleGui & S)
       S.StartMultiColumn(2);
       {
          S
-            .TieChoice(XXO("&Window types:"),
-               mTempSettings.mWindowTypes,
+            .Target( mTempSettings.mWindowTypes )
+            .AddChoice(XXO("&Window types:"),
                []{
                   TranslatableStrings windowTypeChoices;
                   for (int ii = 0; ii < WT_N_WINDOW_TYPES; ++ii)
@@ -1754,8 +1746,8 @@ void EffectNoiseReduction::Dialog::PopulateOrExchange(ShuttleGui & S)
                }() );
 
          S
-            .TieChoice(XXO("Window si&ze:"),
-               mTempSettings.mWindowSizeChoice,
+            .Target( mTempSettings.mWindowSizeChoice )
+            .AddChoice(XXO("Window si&ze:"),
                {
                   XO("8") ,
                   XO("16") ,
@@ -1772,8 +1764,8 @@ void EffectNoiseReduction::Dialog::PopulateOrExchange(ShuttleGui & S)
                } );
 
          S
-            .TieChoice(XXO("S&teps per window:"),
-               mTempSettings.mStepsPerWindowChoice,
+            .Target( mTempSettings.mStepsPerWindowChoice )
+            .AddChoice(XXO("S&teps per window:"),
                {
                   XO("2") ,
                   XO("4 (default)") ,
@@ -1784,9 +1776,8 @@ void EffectNoiseReduction::Dialog::PopulateOrExchange(ShuttleGui & S)
                } );
 
          S
-            .Id(ID_CHOICE_METHOD)
-            .TieChoice(XXO("Discrimination &method:"),
-               mTempSettings.mMethod,
+            .Target( mTempSettings.mMethod )
+            .AddChoice(XXO("Discrimination &method:"),
                []{
                   TranslatableStrings methodChoices;
                   int nn = DM_N_METHODS;

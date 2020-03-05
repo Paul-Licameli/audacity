@@ -157,8 +157,8 @@ void SpectrumPrefs::PopulatePaddingChoices(size_t windowSize)
 
 void SpectrumPrefs::PopulateOrExchange(ShuttleGui & S)
 {
-   const auto enabler = [this]{ return mAlgorithmChoice &&
-      mAlgorithmChoice->GetSelection() != SpectrogramSettings::algPitchEAC;
+   const auto enabler = [this]{ return
+      mTempSettings.algorithm != SpectrogramSettings::algPitchEAC;
    };
 
    mPopulating = true;
@@ -193,8 +193,8 @@ void SpectrumPrefs::PopulateOrExchange(ShuttleGui & S)
 
             S
                .Id(ID_SCALE)
-               .TieChoice(XXO("S&cale:"),
-                  mTempSettings.scaleType,
+               .Target( mTempSettings.scaleType )
+               .AddChoice(XXO("S&cale:"),
                   Msgids( SpectrogramSettings::GetScaleNames() ) );
 
             mMinFreq =
@@ -264,17 +264,16 @@ void SpectrumPrefs::PopulateOrExchange(ShuttleGui & S)
    {
       S.StartMultiColumn(2);
       {
-         mAlgorithmChoice =
          S
             .Id(ID_ALGORITHM)
-            .TieChoice(XXO("A&lgorithm:"),
-               mTempSettings.algorithm,
+            .Target( mTempSettings.algorithm )
+            .AddChoice(XXO("A&lgorithm:"),
                SpectrogramSettings::GetAlgorithmNames() );
 
          S
             .Id(ID_WINDOW_SIZE)
-            .TieChoice(XXO("Window &size:"),
-               mTempSettings.windowSize,
+            .Target( mTempSettings.windowSize )
+            .AddChoice(XXO("Window &size:"),
                {
                   XO("8 - most wideband"),
                   XO("16"),
@@ -293,16 +292,16 @@ void SpectrumPrefs::PopulateOrExchange(ShuttleGui & S)
 
          S
             .Id(ID_WINDOW_TYPE)
-            .TieChoice(XXO("Window &type:"),
-               mTempSettings.windowType,
+            .Target( mTempSettings.windowType )
+            .AddChoice(XXO("Window &type:"),
                mTypeChoices);
 
 #ifdef EXPERIMENTAL_ZERO_PADDED_SPECTROGRAMS
          S
             .Id(ID_PADDING_SIZE)
             .Enable( enabler )
-            .TieChoice(XXO("&Zero padding factor:"),
-               mTempSettings.zeroPaddingFactor,
+            .Target( mTempSettings.zeroPaddingFactor )
+            .AddChoice(XXO("&Zero padding factor:"),
                mZeroPaddingChoices);
 #endif
       }

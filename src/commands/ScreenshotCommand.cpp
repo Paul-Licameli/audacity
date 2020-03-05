@@ -129,12 +129,14 @@ void ScreenshotCommand::PopulateOrExchange(ShuttleGui & S)
          .TieTextBox(  XXO("Path:"), mPath);
 
       S
-         .TieChoice(   XXO("Capture What:"),
-            mWhat, Msgids(kCaptureWhatStrings, nCaptureWhats));
+        .Target( mWhat )
+         .AddChoice( XXO("Capture What:"),
+            Msgids(kCaptureWhatStrings, nCaptureWhats));
 
       S
-         .TieChoice(   XXO("Background:"),
-            mBack, Msgids(kBackgroundStrings, nBackgrounds));
+         .Target( mBack )
+         .AddChoice( XXO("Background:"),
+            Msgids(kBackgroundStrings, nBackgrounds));
 
       S
          .Target(mbBringToTop)

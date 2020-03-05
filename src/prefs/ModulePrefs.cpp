@@ -137,8 +137,8 @@ void ModulePrefs::PopulateOrExchange(ShuttleGui & S)
         int i;
         for(i=0;i<(int)mModules.size();i++)
            S
-              .TieChoice( VerbatimLabel( mModules[i] ),
-                 mStatuses[i],
+              .Target( mStatuses[i] )
+              .AddChoice( VerbatimLabel( mModules[i] ),
                  {
                     XO("Disabled" ) ,
                     XO("Enabled" ) ,

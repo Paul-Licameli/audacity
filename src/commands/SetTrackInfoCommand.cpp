@@ -372,10 +372,9 @@ void SetTrackVisualsCommand::PopulateOrExchange(ShuttleGui & S)
          .Optional( bHasHeight      )
          .TieNumericTextBox(  XXO("Height:"),        mHeight );
 
-      S
-         .Optional( bHasColour      )
-         .TieChoice(          XXO("Color:"),         mColour,
-            Msgids(  kColourStrings, nColours ) );
+      S.Optional( bHasColour      )
+         .Target( mColour )
+         .AddChoice( XXO("Color:"), Msgids(  kColourStrings, nColours ) );
       
       {
          auto symbols = DiscoverSubViewTypes();
@@ -383,19 +382,19 @@ void SetTrackVisualsCommand::PopulateOrExchange(ShuttleGui & S)
              symbols, std::mem_fn( &EnumValueSymbol::Msgid ) );
          S
             .Optional( bHasDisplayType )
-            .TieChoice(          XXO("Display:"),       mDisplayType,
-               typeNames );
+            .Target( mDisplayType )
+            .AddChoice( XXO("Display:"), typeNames );
       }
 
       S
          .Optional( bHasScaleType   )
-         .TieChoice(          XXO("Scale:"),         mScaleType,
-            Msgids( kScaleTypeStrings, nScaleTypes ) );
+         .Target( mScaleType )
+         .AddChoice( XXO("Scale:"), Msgids( kScaleTypeStrings, nScaleTypes ) );
 
       S
          .Optional( bHasVZoom       )
-         .TieChoice(          XXO("VZoom:"),         mVZoom,
-            Msgids( kZoomTypeStrings, nZoomTypes ) );
+         .Target( mVZoom )
+         .AddChoice( XXO("VZoom:"), Msgids( kZoomTypeStrings, nZoomTypes ) );
 
       S
          .Optional( bHasVZoomTop    )
