@@ -362,10 +362,6 @@ void SpectrumPrefs::PopulateOrExchange(ShuttleGui & S)
    }
    S.EndScroller();
    
-   // Enabling and disabling belongs outside this function.
-   if( S.GetMode() != eIsGettingMetadata )
-      EnableDisableSTFTOnlyControls();
-
    mPopulating = false;
 }
 

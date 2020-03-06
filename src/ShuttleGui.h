@@ -40,7 +40,6 @@ enum teShuttleMode
    eIsCreating,
    eIsGettingFromDialog,
    eIsSettingToDialog,
-   eIsGettingMetadata,
 
    // Next two are only ever seen in constructor.
    // After that they revert to one of the modes above.
@@ -263,6 +262,31 @@ struct Item {
 
 }
 
+class PreferenceVisitor {
+public:
+   virtual ~PreferenceVisitor();
+   
+   virtual void Visit(
+      const wxString &Prompt,
+      const Setting<bool> &Setting) = 0;
+   
+   virtual void Visit(
+      const wxString &Prompt,
+      const Setting<int> &Setting) = 0;
+   
+   virtual void Visit(
+      const wxString &Prompt,
+      const Setting<double> &Setting) = 0;
+   
+   virtual void Visit(
+      const wxString &Prompt,
+      const Setting<wxString> &Setting) = 0;
+   
+   virtual void Visit(
+      const wxString &Prompt,
+      const ChoiceSetting &Setting) = 0;
+};
+
 class AUDACITY_DLL_API ShuttleGuiBase /* not final */
 {
 public:
@@ -270,7 +294,8 @@ public:
       wxWindow * pParent,
       teShuttleMode ShuttleMode,
       bool vertical, // Choose layout direction of topmost level sizer
-      wxSize minSize
+      wxSize minSize,
+      const std::shared_ptr< PreferenceVisitor > &pVisitor
    );
    virtual ~ShuttleGuiBase();
    void Init( bool vertical, wxSize minSize );
@@ -470,14 +495,14 @@ public:
 // Note that unlike the other Tie functions, ALL the arguments are const.
 // That's because the data is being exchanged between the dialog and mpShuttle
 // so it doesn't need an argument that is writeable.
-   virtual wxCheckBox * TieCheckBox(
+   wxCheckBox * TieCheckBox(
       const TranslatableLabel &Prompt,
       const BoolSetting &Setting);
-   virtual wxCheckBox * TieCheckBoxOnRight(
+   wxCheckBox * TieCheckBoxOnRight(
       const TranslatableLabel &Prompt,
       const BoolSetting &Setting);
 
-   virtual wxChoice *TieChoice(
+   wxChoice *TieChoice(
       const TranslatableLabel &Prompt,
       const ChoiceSetting &choiceSetting );
 
@@ -486,31 +511,31 @@ public:
    // This behaves just like the previous for building dialogs, but the
    // behavior is different when the call is intercepted for purposes of
    // emitting scripting information about Preferences.
-   virtual wxChoice * TieNumberAsChoice(
+  wxChoice * TieNumberAsChoice(
       const TranslatableLabel &Prompt,
       const IntSetting &Setting,
       const TranslatableStrings & Choices,
       const std::vector<int> * pInternalChoices = nullptr,
       int iNoMatchSelector = 0 );
 
-   virtual wxTextCtrl * TieTextBox(
+   wxTextCtrl * TieTextBox(
       const TranslatableLabel &Prompt,
       const StringSetting &Setting,
       const int nChars);
-   virtual wxTextCtrl * TieIntegerTextBox(
+   wxTextCtrl * TieIntegerTextBox(
       const TranslatableLabel & Prompt,
       const IntSetting &Setting,
       const int nChars);
-   virtual wxTextCtrl * TieNumericTextBox(
+   wxTextCtrl * TieNumericTextBox(
       const TranslatableLabel & Prompt,
       const DoubleSetting &Setting,
       const int nChars);
-   virtual wxSlider * TieSlider(
+   wxSlider * TieSlider(
       const TranslatableLabel & Prompt,
       const IntSetting &Setting,
       const int max,
       const int min = 0);
-   virtual wxSpinCtrl * TieSpinCtrl(
+   wxSpinCtrl * TieSpinCtrl(
       const TranslatableLabel &Prompt,
       const IntSetting &Setting,
       const int max,
@@ -586,6 +611,9 @@ protected:
 
 private:
    void DoDataShuttle( const wxString &Name, WrappedType & WrappedRef );
+   wxChoice *DoTieChoice(
+      const TranslatableLabel &Prompt,
+      const ChoiceSetting &choiceSetting );
    wxCheckBox * DoTieCheckBoxOnRight( const TranslatableLabel & Prompt, WrappedType & WrappedRef );
    wxTextCtrl * DoTieTextBox(
       const TranslatableLabel &Prompt,
@@ -614,6 +642,8 @@ protected:
 
    using RadioButtonList = std::vector< wxWindowRef >;
    std::shared_ptr< RadioButtonList > mRadioButtons;
+
+   std::shared_ptr< PreferenceVisitor > mpVisitor;
 };
 
 // A rarely used helper function that sets a pointer
@@ -667,8 +697,9 @@ public:
    ShuttleGui(
       wxWindow * pParent, teShuttleMode ShuttleMode,
       bool vertical = true, // Choose layout direction of topmost level sizer
-      wxSize minSize = { 250, 100 }
-   );
+      wxSize minSize = { 250, 100 },
+      const std::shared_ptr< PreferenceVisitor > &pVisitor = nullptr );
+
    ~ShuttleGui(void);
 public:
    ShuttleGui & Optional( bool & bVar );

@@ -29,6 +29,7 @@ class ShuttleGui;
 #endif
 
 class AudacityProject;
+class PreferenceVisitor;
 
 class AUDACITY_DLL_API PrefsDialog /* not final */ : public wxDialogWrapper
 {
@@ -37,12 +38,12 @@ class AUDACITY_DLL_API PrefsDialog /* not final */ : public wxDialogWrapper
       AudacityProject *pProject, // may be null
       const TranslatableString &titlePrefix = XO("Preferences:"),
       PrefsPanel::Factories &factories =
-         PrefsPanel::DefaultFactories());
+         PrefsPanel::DefaultFactories(),
+      const std::shared_ptr< PreferenceVisitor > &pVisitor = {} );
    virtual ~PrefsDialog();
 
    // Defined this so a protected virtual can be invoked after the constructor
    int ShowModal() override;
-   void ShuttleAll( ShuttleGui & S);
 
    void OnCategoryChange(wxCommandEvent & e);
    void OnOK(wxCommandEvent & e);
@@ -83,7 +84,8 @@ public:
    GlobalPrefsDialog(
       wxWindow * parent, AudacityProject *pProject,
       PrefsPanel::Factories &factories =
-         PrefsPanel::DefaultFactories());
+         PrefsPanel::DefaultFactories(),
+      const std::shared_ptr< PreferenceVisitor > &pVisitor = nullptr );
    virtual ~GlobalPrefsDialog();
    long GetPreferredPage() override;
    void SavePreferredPage() override;
