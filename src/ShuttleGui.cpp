@@ -2716,6 +2716,25 @@ void ShuttleGuiBase::SetProportions( int Default )
    miProp = Default;
 }
 
+namespace {
+template< typename Target,
+   typename Adaptor = DialogDefinition::SettingAdaptor< Target > >
+inline bool VisitPref(
+   PreferenceVisitor &visitor, wxWindow *pWind )
+{
+   const auto pValidator =
+      dynamic_cast< DialogDefinition::AdaptingValidatorBase< Target > * >(
+         pWind->GetValidator() );
+   if ( pValidator ) {
+      auto pAdaptor = dynamic_cast< Adaptor * >( &pValidator->GetAdaptor() );
+      if ( pAdaptor ) {
+         visitor.Visit( pWind->GetLabel(), pAdaptor->GetSetting() );
+         return true;
+      }
+   }
+   return false;
+}
+}
 
 void ShuttleGuiBase::CheckEventType(
    const DialogDefinition::BaseItem &item,
@@ -2771,7 +2790,8 @@ void ShuttleGuiBase::ApplyText( const DialogDefinition::ControlText &text,
 void ShuttleGuiBase::ApplyItem( int step,
    const DialogDefinition::BaseItem &item,
    const std::shared_ptr< DialogDefinition::ValidationState > &pState,
-   wxWindow *pWind, wxWindow *pDlg )
+   wxWindow *pWind, wxWindow *pDlg,
+   PreferenceVisitor *pVisitor )
 {
    if ( step == 0 ) {
       // Do these steps before adding the window to the sizer
@@ -2814,6 +2834,17 @@ void ShuttleGuiBase::ApplyItem( int step,
 
       if ( item.mValidatorSetter )
          item.mValidatorSetter( pState )( pWind );
+
+         if ( pVisitor ) {
+            // Detect set-up of shuttlings into preferences
+            auto &visitor = *pVisitor;
+            VisitPref< bool >( visitor, pWind ) ||
+            VisitPref< int,
+               DialogDefinition::ChoiceSettingAdaptor >( visitor, pWind ) ||
+            VisitPref< int >( visitor, pWind ) ||
+            VisitPref< double >( visitor, pWind ) ||
+            VisitPref< wxString >( visitor, pWind );
+         }
 
       if ( item.mComputedText ) {
          // Decorate the validator (if there is one) with a text updater
@@ -2897,7 +2928,8 @@ void ShuttleGuiBase::UpdateSizersCore(bool bPrepend, int Flags, bool prompt)
       if (!prompt)
          ApplyItem( 0, mItem,
             mpState -> mpValidationState,
-            mpWind, mpState -> mpDlg );
+            mpWind, mpState -> mpDlg,
+            mpState -> mpVisitor.get() );
 
       if( mpState -> mpSizer){
          if( bPrepend )
@@ -2913,7 +2945,8 @@ void ShuttleGuiBase::UpdateSizersCore(bool bPrepend, int Flags, bool prompt)
       if (!prompt) {
          ApplyItem( 1, mItem,
             mpState -> mpValidationState,
-            mpWind, mpState -> mpDlg );
+            mpWind, mpState -> mpDlg,
+            mpState -> mpVisitor.get() );
          // Reset to defaults
          mItem = {};
       }

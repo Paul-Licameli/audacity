@@ -1411,7 +1411,8 @@ public:
    static void ApplyItem( int step,
       const DialogDefinition::BaseItem &item,
       const std::shared_ptr< DialogDefinition::ValidationState > &pState,
-      wxWindow *pWind, wxWindow *pDlg );
+      wxWindow *pWind, wxWindow *pDlg,
+      PreferenceVisitor *pVisitor = nullptr );
 
    // If none of the items is default,
    // then the first of these buttons, if any, that is included will be default:
