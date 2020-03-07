@@ -36,6 +36,7 @@ class MidiIOPrefs final : public PrefsPanel
    bool Validate() override;
    wxString HelpPageName() override;
    void PopulateOrExchange(ShuttleGui & S) override;
+   bool TransferDataToWindow() override;
 
  private:
    void Populate();

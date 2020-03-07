@@ -80,10 +80,14 @@ void LibraryPrefs::Populate()
    ShuttleGui S(this, eIsCreatingFromPrefs);
    PopulateOrExchange(S);
    // ----------------------- End of main section --------------
+}
 
+bool LibraryPrefs::TransferDataToWindow()
+{
    // Set the MP3 Version string.
    SetMP3VersionText();
    SetFFmpegVersionText();
+   return true;
 }
 
 /// This PopulateOrExchange function is a good example of mixing the fully

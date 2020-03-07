@@ -174,9 +174,13 @@ void DirectoriesPrefs::Populate()
    ShuttleGui S(this, eIsCreatingFromPrefs);
    PopulateOrExchange(S);
    // ----------------------- End of main section --------------
+}
 
+bool DirectoriesPrefs::TransferDataToWindow()
+{
    wxCommandEvent e;
    OnTempText(e);
+   return true;
 }
 
 void DirectoriesPrefs::PopulateOrExchange(ShuttleGui &S)

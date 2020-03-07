@@ -29,6 +29,7 @@ class MousePrefs final : public PrefsPanel
    bool Commit() override;
    wxString HelpPageName() override;
    void PopulateOrExchange(ShuttleGui & S) override;
+   bool TransferDataToWindow() override;
 
  private:
    void Populate();

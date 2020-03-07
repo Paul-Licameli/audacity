@@ -96,9 +96,13 @@ void DevicePrefs::Populate()
    ShuttleGui S(this, eIsCreatingFromPrefs);
    PopulateOrExchange(S);
    // ----------------------- End of main section --------------
+}
 
+bool DevicePrefs::TransferDataToWindow()
+{
    wxCommandEvent e;
    OnHost(e);
+   return true;
 }
 
 

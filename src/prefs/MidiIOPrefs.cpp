@@ -98,9 +98,13 @@ void MidiIOPrefs::Populate()
    ShuttleGui S(this, eIsCreatingFromPrefs);
    PopulateOrExchange(S);
    // ----------------------- End of main section --------------
+}
 
+bool MidiIOPrefs::TransferDataToWindow()
+{
    wxCommandEvent e;
    OnHost(e);
+   return true;
 }
 
 /// Gets the lists of names and lists of labels which are

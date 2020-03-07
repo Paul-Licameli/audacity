@@ -39,6 +39,7 @@ class AUDACITY_DLL_API QualityPrefs final : public PrefsPanel
 
  private:
    void Populate();
+   bool TransferDataToWindow() override;
    void GetNamesAndLabels();
    void OnSampleRateChoice(wxCommandEvent & e);
 

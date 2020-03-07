@@ -95,6 +95,10 @@ void MousePrefs::Populate()
    // initialised with values from gPrefs.
    ShuttleGui S(this, eIsCreatingFromPrefs);
    PopulateOrExchange(S);
+}
+
+bool MousePrefs::TransferDataToWindow()
+{
    // ----------------------- End of main section --------------
    CreateList();
    if (mList->GetItemCount() > 0) {
@@ -103,6 +107,7 @@ void MousePrefs::Populate()
       mList->SetItemState(0, wxLIST_STATE_FOCUSED | wxLIST_STATE_SELECTED,
          wxLIST_STATE_FOCUSED | wxLIST_STATE_SELECTED);
    }
+   return true;
 }
 
 /// Places controls on the panel and also exchanges data with them.

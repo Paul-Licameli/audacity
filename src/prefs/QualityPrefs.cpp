@@ -75,9 +75,13 @@ void QualityPrefs::Populate()
    ShuttleGui S(this, eIsCreatingFromPrefs);
    PopulateOrExchange(S);
    // ----------------------- End of main section --------------
+}
 
+bool QualityPrefs::TransferDataToWindow()
+{
    wxCommandEvent e;
    OnSampleRateChoice(e); // Enable/disable the control.
+   return true;   
 }
 
 /// Gets the lists of names and lists of labels which are

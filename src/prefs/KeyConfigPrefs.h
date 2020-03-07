@@ -42,6 +42,7 @@ public:
    void Cancel() override;
    wxString HelpPageName() override;
    void PopulateOrExchange(ShuttleGui & S) override;
+   bool TransferDataToWindow() override;
 
 private:
    void Populate();

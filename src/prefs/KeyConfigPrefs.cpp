@@ -145,7 +145,10 @@ void KeyConfigPrefs::Populate()
    }
 
    PopulateOrExchange(S);
+}
 
+bool KeyConfigPrefs::TransferDataToWindow()
+{
    mCommandSelected = wxNOT_FOUND;
 
    mManager = &CommandManager::Get( *mProject );
@@ -167,6 +170,7 @@ void KeyConfigPrefs::Populate()
    }
 
    mView->SetView(mViewType);
+   return true;
 }
 
 /// Normally in classes derived from PrefsPanel this function
