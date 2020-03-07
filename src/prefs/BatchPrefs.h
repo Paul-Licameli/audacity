@@ -33,8 +33,6 @@ public:
    void PopulateOrExchange(ShuttleGui & S) override;
 
 private:
-   void Populate();
-
    DECLARE_EVENT_TABLE()
 };
 

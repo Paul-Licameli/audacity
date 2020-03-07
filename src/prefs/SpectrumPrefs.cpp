@@ -113,12 +113,6 @@ void SpectrumPrefs::Populate(size_t windowSize)
    for (int i = 0; i < NumWindowFuncs(); i++) {
       mTypeChoices.push_back( WindowFuncName(i) );
    }
-
-   //------------------------- Main section --------------------
-   // Now construct the GUI itself.
-   ShuttleGui S(this, eIsCreatingFromPrefs);
-   PopulateOrExchange(S);
-   // ----------------------- End of main section --------------
 }
 
 void SpectrumPrefs::PopulatePaddingChoices(size_t windowSize)

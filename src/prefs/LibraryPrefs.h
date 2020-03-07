@@ -38,7 +38,6 @@ class LibraryPrefs final : public PrefsPanel
    bool TransferDataToWindow() override;
 
  private:
-   void Populate();
    void SetMP3VersionText(bool prompt = false);
    void SetFFmpegVersionText();
 

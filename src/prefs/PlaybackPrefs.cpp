@@ -30,7 +30,6 @@
 PlaybackPrefs::PlaybackPrefs(wxWindow * parent, wxWindowID winid)
 :  PrefsPanel(parent, winid, XO("Playback"))
 {
-   Populate();
 }
 
 PlaybackPrefs::~PlaybackPrefs()
@@ -50,17 +49,6 @@ TranslatableString PlaybackPrefs::GetDescription()
 wxString PlaybackPrefs::HelpPageName()
 {
    return "Playback_Preferences";
-}
-
-void PlaybackPrefs::Populate()
-{
-   //------------------------- Main section --------------------
-   // Now construct the GUI itself.
-   // Use 'eIsCreatingFromPrefs' so that the GUI is
-   // initialised with values from gPrefs.
-   ShuttleGui S(this, eIsCreatingFromPrefs);
-   PopulateOrExchange(S);
-   // ----------------------- End of main section --------------
 }
 
 namespace {

@@ -67,14 +67,6 @@ void QualityPrefs::Populate()
    // First any pre-processing for constructing the GUI.
    GetNamesAndLabels();
    mOtherSampleRateValue = QualitySettings::DefaultSampleRate.Read();
-
-   //------------------------- Main section --------------------
-   // Now construct the GUI itself.
-   // Use 'eIsCreatingFromPrefs' so that the GUI is
-   // initialised with values from gPrefs.
-   ShuttleGui S(this, eIsCreatingFromPrefs);
-   PopulateOrExchange(S);
-   // ----------------------- End of main section --------------
 }
 
 bool QualityPrefs::TransferDataToWindow()

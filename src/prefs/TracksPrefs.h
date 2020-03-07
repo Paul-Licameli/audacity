@@ -50,7 +50,6 @@ class AUDACITY_DLL_API TracksPrefs final : public PrefsPanel
    static WaveTrackViewConstants::ZoomPresets Zoom2Choice();
 
  private:
-   void Populate();
    void PopulateOrExchange(ShuttleGui & S) override;
 
    static int iPreferencePinned;

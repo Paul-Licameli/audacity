@@ -31,7 +31,6 @@
 EffectsPrefs::EffectsPrefs(wxWindow * parent, wxWindowID winid)
 :  PrefsPanel(parent, winid, XO("Effects"))
 {
-   Populate();
 }
 
 EffectsPrefs::~EffectsPrefs()
@@ -51,17 +50,6 @@ TranslatableString EffectsPrefs::GetDescription()
 wxString EffectsPrefs::HelpPageName()
 {
    return "Effects_Preferences";
-}
-
-void EffectsPrefs::Populate()
-{
-   //------------------------- Main section --------------------
-   // Now construct the GUI itself.
-   // Use 'eIsCreatingFromPrefs' so that the GUI is
-   // initialised with values from gPrefs.
-   ShuttleGui S(this, eIsCreatingFromPrefs);
-   PopulateOrExchange(S);
-   // ----------------------- End of main section --------------
 }
 
 ChoiceSetting EffectsGroupBy{

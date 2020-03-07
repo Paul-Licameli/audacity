@@ -38,9 +38,6 @@ class AUDACITY_DLL_API ImportExportPrefs final : public PrefsPanel
    bool Commit() override;
    wxString HelpPageName() override;
    void PopulateOrExchange(ShuttleGui & S) override;
-
- private:
-   void Populate();
 };
 
 #endif

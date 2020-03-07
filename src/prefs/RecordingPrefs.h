@@ -52,7 +52,6 @@ class RecordingPrefs final : public PrefsPanel
    void PopulateOrExchange(ShuttleGui & S) override;
 
  private:
-   void Populate();
    void OnToggleCustomName(wxCommandEvent & /* Evt */);
 
    wxTextCtrl *mToggleCustomName;

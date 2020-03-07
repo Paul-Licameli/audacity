@@ -33,9 +33,6 @@ class PlaybackPrefs final : public PrefsPanel
    void PopulateOrExchange(ShuttleGui & S) override;
    
    static bool GetUnpinnedScrubbingPreference();
-
- private:
-   void Populate();
 };
 
 #endif

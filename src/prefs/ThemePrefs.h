@@ -40,7 +40,6 @@ class ThemePrefs final : public PrefsPanel
    static void ApplyUpdatedImages();
 
  private:
-   void Populate();
    void PopulateOrExchange(ShuttleGui & S) override;
    void OnLoadThemeComponents(wxCommandEvent & e);
    void OnSaveThemeComponents(wxCommandEvent & e);

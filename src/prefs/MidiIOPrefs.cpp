@@ -90,14 +90,6 @@ void MidiIOPrefs::Populate()
    mRecordDevice = gPrefs->Read(L"/MidiIO/RecordingDevice", L"");
 #endif
 //   mRecordChannels = gPrefs->Read(L"/MidiIO/RecordChannels", 2L);
-
-   //------------------------- Main section --------------------
-   // Now construct the GUI itself.
-   // Use 'eIsCreatingFromPrefs' so that the GUI is
-   // initialised with values from gPrefs.
-   ShuttleGui S(this, eIsCreatingFromPrefs);
-   PopulateOrExchange(S);
-   // ----------------------- End of main section --------------
 }
 
 bool MidiIOPrefs::TransferDataToWindow()

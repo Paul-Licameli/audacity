@@ -64,7 +64,8 @@ ExtImportPrefs::ExtImportPrefs(wxWindow * parent, wxWindowID winid)
     PluginList(NULL), mCreateTable (false), mDragFocus (NULL),
     mFakeKeyEvent (false), mStopRecursiveSelection (false), last_selected (-1)
 {
-   Populate();
+   // Ensure Importer has current items
+   Importer::Get().ReadImportItems();
 
    // See bug #2315 for discussion
    // This should be reviewed and (possibly) removed after wx3.1.3.
@@ -87,21 +88,6 @@ TranslatableString ExtImportPrefs::GetDescription()
 wxString ExtImportPrefs::HelpPageName()
 {
    return "Extended_Import_Preferences";
-}
-
-/// Creates the dialog and its contents.
-void ExtImportPrefs::Populate()
-{
-   // Ensure Importer has current items
-   Importer::Get().ReadImportItems();
-
-   //------------------------- Main section --------------------
-   // Now construct the GUI itself.
-   // Use 'eIsCreatingFromPrefs' so that the GUI is
-   // initialised with values from gPrefs.
-   ShuttleGui S(this, eIsCreatingFromPrefs);
-   PopulateOrExchange(S);
-   // ----------------------- End of main section --------------
 }
 
 void ExtImportPrefs::PopulateOrExchange(ShuttleGui & S)

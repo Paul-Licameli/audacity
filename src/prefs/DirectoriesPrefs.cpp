@@ -142,7 +142,6 @@ DirectoriesPrefs::DirectoriesPrefs(wxWindow * parent, wxWindowID winid)
    mFreeSpace(NULL),
    mTempText(NULL)
 {
-   Populate();
 }
 
 DirectoriesPrefs::~DirectoriesPrefs()
@@ -162,18 +161,6 @@ TranslatableString DirectoriesPrefs::GetDescription()
 wxString DirectoriesPrefs::HelpPageName()
 {
    return "Directories_Preferences";
-}
-
-/// Creates the dialog and its contents.
-void DirectoriesPrefs::Populate()
-{
-   //------------------------- Main section --------------------
-   // Now construct the GUI itself.
-   // Use 'eIsCreatingFromPrefs' so that the GUI is
-   // initialised with values from gPrefs.
-   ShuttleGui S(this, eIsCreatingFromPrefs);
-   PopulateOrExchange(S);
-   // ----------------------- End of main section --------------
 }
 
 bool DirectoriesPrefs::TransferDataToWindow()

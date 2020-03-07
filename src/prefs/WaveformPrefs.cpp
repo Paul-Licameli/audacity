@@ -82,12 +82,6 @@ void WaveformPrefs::Populate()
 {
    // Reuse the same choices and codes as for Interface prefs
    GUIPrefs::GetRangeChoices(&mRangeChoices, &mRangeCodes);
-
-   //------------------------- Main section --------------------
-   // Now construct the GUI itself.
-   ShuttleGui S(this, eIsCreatingFromPrefs);
-   PopulateOrExchange(S);
-   // ----------------------- End of main section --------------
 }
 
 void WaveformPrefs::PopulateOrExchange(ShuttleGui & S)

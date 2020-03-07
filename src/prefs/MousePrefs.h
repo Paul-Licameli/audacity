@@ -32,7 +32,6 @@ class MousePrefs final : public PrefsPanel
    bool TransferDataToWindow() override;
 
  private:
-   void Populate();
    void CreateList();
    void AddItem(TranslatableString const & buttons,
                 TranslatableString const & tool,

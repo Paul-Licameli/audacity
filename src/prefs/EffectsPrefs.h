@@ -33,9 +33,6 @@ class EffectsPrefs final : public PrefsPanel
    bool Commit() override;
    wxString HelpPageName() override;
    void PopulateOrExchange(ShuttleGui & S) override;
-
- private:
-   void Populate();
 };
 
 AUDACITY_DLL_API extern ChoiceSetting EffectsGroupBy;

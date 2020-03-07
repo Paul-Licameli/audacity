@@ -272,7 +272,6 @@ TracksPrefs::TracksPrefs(wxWindow * parent, wxWindowID winid)
  * notes */
 :  PrefsPanel(parent, winid, XO("Tracks"))
 {
-   Populate();
 }
 
 TracksPrefs::~TracksPrefs()
@@ -292,24 +291,6 @@ TranslatableString TracksPrefs::GetDescription()
 wxString TracksPrefs::HelpPageName()
 {
    return "Tracks_Preferences";
-}
-
-void TracksPrefs::Populate()
-{
-   // Keep view choices and codes in proper correspondence --
-   // we don't display them by increasing integer values.
-
-
-   // How samples are displayed when zoomed in:
-
-
-   //------------------------- Main section --------------------
-   // Now construct the GUI itself.
-   // Use 'eIsCreatingFromPrefs' so that the GUI is
-   // initialised with values from gPrefs.
-   ShuttleGui S(this, eIsCreatingFromPrefs);
-   PopulateOrExchange(S);
-   // ----------------------- End of main section --------------
 }
 
 void TracksPrefs::PopulateOrExchange(ShuttleGui & S)

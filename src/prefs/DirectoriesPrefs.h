@@ -36,8 +36,6 @@ class DirectoriesPrefs final : public PrefsPanel
    bool TransferDataToWindow() override;
 
  private:
-   void Populate();
-
    void OnTempText(wxCommandEvent &evt);
    void OnTempBrowse(wxCommandEvent &evt);
 

@@ -60,8 +60,6 @@ enum
 MousePrefs::MousePrefs(wxWindow * parent, wxWindowID winid)
 :  PrefsPanel(parent, winid, XO("Mouse"))
 {
-   Populate();
-
    // See bug #2315 for discussion. This should be reviewed
    // and (possibly) removed after wx3.1.3.
    Bind(wxEVT_SHOW, &MousePrefs::OnShow, this);
@@ -84,17 +82,6 @@ TranslatableString MousePrefs::GetDescription()
 wxString MousePrefs::HelpPageName()
 {
    return "Mouse_Preferences";
-}
-
-/// Creates the dialog and its contents.
-void MousePrefs::Populate()
-{
-   //------------------------- Main section --------------------
-   // Now construct the GUI itself.
-   // Use 'eIsCreatingFromPrefs' so that the GUI is
-   // initialised with values from gPrefs.
-   ShuttleGui S(this, eIsCreatingFromPrefs);
-   PopulateOrExchange(S);
 }
 
 bool MousePrefs::TransferDataToWindow()

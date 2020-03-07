@@ -88,14 +88,6 @@ void DevicePrefs::Populate()
    mRecordDevice = AudioIORecordingDevice.Read();
    mRecordSource = AudioIORecordingSource.Read();
    mRecordChannels = AudioIORecordChannels.Read();
-
-   //------------------------- Main section --------------------
-   // Now construct the GUI itself.
-   // Use 'eIsCreatingFromPrefs' so that the GUI is
-   // initialised with values from gPrefs.
-   ShuttleGui S(this, eIsCreatingFromPrefs);
-   PopulateOrExchange(S);
-   // ----------------------- End of main section --------------
 }
 
 bool DevicePrefs::TransferDataToWindow()

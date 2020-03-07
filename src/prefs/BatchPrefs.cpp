@@ -31,7 +31,6 @@ END_EVENT_TABLE()
 BatchPrefs::BatchPrefs(wxWindow * parent, wxWindowID winid):
    PrefsPanel(parent, winid, XO("Batch"))
 {
-   Populate();
 }
 
 ComponentInterfaceSymbol BatchPrefs::GetSymbol()
@@ -47,18 +46,6 @@ TranslatableString BatchPrefs::GetDescription()
 wxString BatchPrefs::HelpPageName()
 {
    return  "Batch_Preferences";
-}
-
-/// Creates the dialog and its contents.
-void BatchPrefs::Populate( )
-{
-   //------------------------- Main section --------------------
-   // Now construct the GUI itself.
-   // Use 'eIsCreatingFromPrefs' so that the GUI is
-   // initialised with values from gPrefs.
-   ShuttleGui S(this, eIsCreatingFromPrefs);
-   PopulateOrExchange(S);
-   // ----------------------- End of main section --------------
 }
 
 /// Defines the dialog and does data exchange with it.

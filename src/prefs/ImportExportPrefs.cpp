@@ -26,7 +26,6 @@
 ImportExportPrefs::ImportExportPrefs(wxWindow * parent, wxWindowID winid)
 :   PrefsPanel(parent, winid, XO("Import / Export"))
 {
-   Populate();
 }
 
 ImportExportPrefs::~ImportExportPrefs()
@@ -46,18 +45,6 @@ TranslatableString ImportExportPrefs::GetDescription()
 wxString ImportExportPrefs::HelpPageName()
 {
    return "Import_-_Export_Preferences";
-}
-
-/// Creates the dialog and its contents.
-void ImportExportPrefs::Populate()
-{
-   //------------------------- Main section --------------------
-   // Now construct the GUI itself.
-   // Use 'eIsCreatingFromPrefs' so that the GUI is
-   // initialised with values from gPrefs.
-   ShuttleGui S(this, eIsCreatingFromPrefs);
-   PopulateOrExchange(S);
-   // ----------------------- End of main section --------------
 }
 
 EnumLabelSetting< bool > ImportExportPrefs::ExportDownMixSetting{

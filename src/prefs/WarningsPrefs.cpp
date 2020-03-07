@@ -30,7 +30,6 @@
 WarningsPrefs::WarningsPrefs(wxWindow * parent, wxWindowID winid)
 :  PrefsPanel(parent, winid, XO("Warnings"))
 {
-   Populate();
 }
 
 WarningsPrefs::~WarningsPrefs()
@@ -50,17 +49,6 @@ TranslatableString WarningsPrefs::GetDescription()
 wxString WarningsPrefs::HelpPageName()
 {
    return "Warnings_Preferences";
-}
-
-void WarningsPrefs::Populate()
-{
-   //------------------------- Main section --------------------
-   // Now construct the GUI itself.
-   // Use 'eIsCreatingFromPrefs' so that the GUI is
-   // initialised with values from gPrefs.
-   ShuttleGui S(this, eIsCreatingFromPrefs);
-   PopulateOrExchange(S);
-   // ----------------------- End of main section --------------
 }
 
 void WarningsPrefs::PopulateOrExchange(ShuttleGui & S)

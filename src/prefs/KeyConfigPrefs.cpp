@@ -123,7 +123,7 @@ wxString KeyConfigPrefs::HelpPageName()
 
 void KeyConfigPrefs::Populate()
 {
-   ShuttleGui S(this, eIsCreatingFromPrefs);
+   ShuttleGui S(this, eIsCreating);
 
    if (!mProject) {
       S.StartVerticalLay(true);
@@ -143,8 +143,6 @@ void KeyConfigPrefs::Populate()
 
       return;
    }
-
-   PopulateOrExchange(S);
 }
 
 bool KeyConfigPrefs::TransferDataToWindow()

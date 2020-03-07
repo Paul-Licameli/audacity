@@ -36,7 +36,6 @@ class AUDACITY_DLL_API TracksBehaviorsPrefs final : public PrefsPanel
    static inline bool ScrollingPreferenceDefault() { return false; }
 
  private:
-   void Populate();
    void PopulateOrExchange(ShuttleGui & S) override;
 };
 

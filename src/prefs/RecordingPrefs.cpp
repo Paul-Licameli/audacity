@@ -45,7 +45,6 @@ RecordingPrefs::RecordingPrefs(wxWindow * parent, wxWindowID winid)
 {
    gPrefs->Read(L"/GUI/TrackNames/RecordingNameCustom", &mUseCustomTrackName, false);
    mOldNameChoice = mUseCustomTrackName;
-   Populate();
 }
 
 RecordingPrefs::~RecordingPrefs()
@@ -65,17 +64,6 @@ TranslatableString RecordingPrefs::GetDescription()
 wxString RecordingPrefs::HelpPageName()
 {
    return "Recording_Preferences";
-}
-
-void RecordingPrefs::Populate()
-{
-   //------------------------- Main section --------------------
-   // Now construct the GUI itself.
-   // Use 'eIsCreatingFromPrefs' so that the GUI is
-   // initialised with values from gPrefs.
-   ShuttleGui S(this, eIsCreatingFromPrefs);
-   PopulateOrExchange(S);
-   // ----------------------- End of main section --------------
 }
 
 void RecordingPrefs::PopulateOrExchange(ShuttleGui & S)

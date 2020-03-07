@@ -48,7 +48,6 @@ LibraryPrefs::LibraryPrefs(wxWindow * parent, wxWindowID winid)
 /* i18-hint: refers to optional plug-in software libraries */
 :   PrefsPanel(parent, winid, XO("Libraries"))
 {
-   Populate();
 }
 
 LibraryPrefs::~LibraryPrefs()
@@ -68,18 +67,6 @@ TranslatableString LibraryPrefs::GetDescription()
 wxString LibraryPrefs::HelpPageName()
 {
    return "Libraries_Preferences";
-}
-
-/// Creates the dialog and its contents.
-void LibraryPrefs::Populate()
-{
-   //------------------------- Main section --------------------
-   // Now construct the GUI itself.
-   // Use 'eIsCreatingFromPrefs' so that the GUI is
-   // initialised with values from gPrefs.
-   ShuttleGui S(this, eIsCreatingFromPrefs);
-   PopulateOrExchange(S);
-   // ----------------------- End of main section --------------
 }
 
 bool LibraryPrefs::TransferDataToWindow()

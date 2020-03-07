@@ -33,7 +33,6 @@ class WarningsPrefs final : public PrefsPanel
    wxString HelpPageName() override;
 
  private:
-   void Populate();
    void PopulateOrExchange(ShuttleGui & S) override;
 };
 
