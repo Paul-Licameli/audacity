@@ -14,6 +14,7 @@ Paul Licameli split from AudacityProject.cpp
 
 #include "AudioIOBase.h"
 #include "Project.h"
+#include "prefs/ImportExportPrefs.h"
 #include "prefs/GUIPrefs.h"
 #include "prefs/QualitySettings.h"
 #include "widgets/NumericTextCtrl.h"

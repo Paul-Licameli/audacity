@@ -650,15 +650,13 @@ bool ProjectAudioManager::DoRecord(AudacityProject &project,
 
       if( transportTracks.captureTracks.empty() )
       {   // recording to NEW track(s).
-         bool recordingNameCustom;
-
          // Count the tracks.
          auto &trackList = TrackList::Get( *p );
          auto numTracks = trackList.Leaders< const WaveTrack >().size();
 
          auto recordingChannels = std::max(1, AudioIORecordChannels.Read());
 
-         recordingNameCustom = RecordingSettings::CustomName.Read();
+         auto recordingNameCustom = RecordingSettings::CustomName.Read();
          auto useTrackNumber = RecordingTrackNumber.Read();
          auto useDateStamp = RecordingDateStamp.Read();
          auto useTimeStamp = RecordingTimeStamp.Read();

@@ -65,6 +65,7 @@
 #include "../prefs/GUIPrefs.h" // for GUIErgonomicTransportButtons
 #include "../prefs/RecordingPrefs.h"
 #include "../tracks/ui/Scrubbing.h"
+#include "../prefs/RecordingPrefs.h"
 #include "../toolbars/ToolManager.h"
 
 IMPLEMENT_CLASS(ControlToolBar, ToolBar);
