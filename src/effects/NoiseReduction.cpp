@@ -383,7 +383,7 @@ private:
 #endif
 
    // handlers
-   void OnGetProfile( wxCommandEvent &event );
+   void OnGetProfile();
    void OnNoiseReductionChoice( wxCommandEvent &event );
 #ifdef ADVANCED_SETTINGS
    void OnMethodChoice(wxCommandEvent &);
@@ -1369,8 +1369,7 @@ bool EffectNoiseReduction::Worker::ProcessOne
 //----------------------------------------------------------------------------
 
 enum {
-   ID_BUTTON_GETPROFILE = 10001,
-   ID_RADIOBUTTON_KEEPSIGNAL,
+   ID_RADIOBUTTON_KEEPSIGNAL = 10001,
 #ifdef ISOLATE_CHOICE
    ID_RADIOBUTTON_KEEPNOISE,
 #endif
@@ -1511,7 +1510,6 @@ BEGIN_EVENT_TABLE(EffectNoiseReduction::Dialog, wxDialogWrapper)
    EVT_BUTTON(wxID_OK, EffectNoiseReduction::Dialog::OnReduceNoise)
    EVT_BUTTON(wxID_CANCEL, EffectNoiseReduction::Dialog::OnCancel)
    EVT_BUTTON(ID_EFFECT_PREVIEW, EffectNoiseReduction::Dialog::OnPreview)
-   EVT_BUTTON(ID_BUTTON_GETPROFILE, EffectNoiseReduction::Dialog::OnGetProfile)
    EVT_BUTTON(wxID_HELP, EffectNoiseReduction::Dialog::OnHelp)
 
    EVT_RADIOBUTTON(ID_RADIOBUTTON_KEEPSIGNAL, EffectNoiseReduction::Dialog::OnNoiseReductionChoice)
@@ -1638,7 +1636,7 @@ void EffectNoiseReduction::Dialog::EnableDisableSensitivityControls()
 }
 #endif
 
-void EffectNoiseReduction::Dialog::OnGetProfile(wxCommandEvent & WXUNUSED(event))
+void EffectNoiseReduction::Dialog::OnGetProfile()
 {
    // Project has not be changed so skip pushing state
    EffectManager::Get().SetSkipStateFlag(true);
@@ -1719,7 +1717,7 @@ void EffectNoiseReduction::Dialog::PopulateOrExchange(ShuttleGui & S)
 
       //m_pButton_GetProfile =
       S
-         .Id(ID_BUTTON_GETPROFILE)
+         .Action( [this]{ OnGetProfile(); } )
          .AddButton(XXO("&Get Noise Profile"));
    }
    S.EndStatic();

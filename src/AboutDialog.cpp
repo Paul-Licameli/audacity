@@ -271,10 +271,6 @@ void AboutDialog::CreateCreditsList()
 
 // ----------------------------------------------------------------------------
 
-BEGIN_EVENT_TABLE(AboutDialog, wxDialogWrapper)
-   EVT_BUTTON(wxID_OK, AboutDialog::OnOK)
-END_EVENT_TABLE()
-
 IMPLEMENT_CLASS(AboutDialog, wxDialogWrapper)
 
 namespace {
@@ -311,6 +307,7 @@ AboutDialog::AboutDialog(wxWindow * parent)
    S
       .Id(wxID_OK)
       .Prop(0)
+      .Action( [this]{ OnOK(); } )
       .AddButton(XXO("OK"), wxALIGN_CENTER, true);
 
    Fit();
@@ -1219,7 +1216,7 @@ AboutDialog::~AboutDialog()
    sActiveInstance = {};
 }
 
-void AboutDialog::OnOK(wxCommandEvent & WXUNUSED(event))
+void AboutDialog::OnOK()
 {
 #ifdef __WXMAC__
    Destroy();

@@ -63,7 +63,7 @@ class ImportRawDialog final : public wxDialogWrapper {
 
    void OnOK(wxCommandEvent & event);
    void OnCancel(wxCommandEvent & event);
-   void OnPlay(wxCommandEvent & event);
+   void OnPlay();
    void OnChoice(wxCommandEvent & event);
 
    // in and out
@@ -284,13 +284,11 @@ void ImportRaw(const AudacityProject &project, wxWindow *parent, const wxString 
 
 enum {
    ChoiceID = 9000,
-   PlayID
 };
 
 BEGIN_EVENT_TABLE(ImportRawDialog, wxDialogWrapper)
    EVT_BUTTON(wxID_OK, ImportRawDialog::OnOK)
    EVT_BUTTON(wxID_CANCEL, ImportRawDialog::OnCancel)
-   EVT_BUTTON(PlayID, ImportRawDialog::OnPlay)
    EVT_CHOICE(ChoiceID, ImportRawDialog::OnChoice)
 END_EVENT_TABLE()
 
@@ -510,7 +508,7 @@ void ImportRawDialog::OnCancel(wxCommandEvent & WXUNUSED(event))
    EndModal(false);
 }
 
-void ImportRawDialog::OnPlay(wxCommandEvent & WXUNUSED(event))
+void ImportRawDialog::OnPlay()
 {
 }
 

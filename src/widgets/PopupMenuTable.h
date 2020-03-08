@@ -315,13 +315,13 @@ That's all!
 // begins function
 #define BEGIN_POPUP_MENU(HandlerClass) \
 void HandlerClass::Populate() { \
-   using My = HandlerClass; \
+   using My =  HandlerClass; \
    mTop = std::make_shared< PopupSubMenu >( \
          Id(), Caption(), *this ); \
    mStack.clear(); \
    mStack.push_back( mTop.get() );
 
-#define POPUP_MENU_FN( memFn ) ( (wxCommandEventFunction) (&My::memFn) )
+#define POPUP_MENU_FN( memFn ) ( (wxCommandEventFunction) (&My :: memFn) )
 
 #define POPUP_MENU_SUB_MENU(stringId, classname, pUserData ) \
    mStack.back()->items.push_back( \

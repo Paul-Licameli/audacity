@@ -55,11 +55,11 @@ private:
    // handlers
    void OnChar(wxKeyEvent &event);
    void OnGetURL(wxCommandEvent &event);
-   void OnExport(wxCommandEvent &event);
-   void OnGetForeground(wxCommandEvent & event);
-   void OnGetBackground(wxCommandEvent & event);
+   void OnExport();
+   void OnGetForeground();
+   void OnGetBackground();
    void results();
-   void OnReset(wxCommandEvent & event);
+   void OnReset();
    void OnClose(wxCommandEvent & event);
 
    wxTextCtrl *mForegroundRMSText;

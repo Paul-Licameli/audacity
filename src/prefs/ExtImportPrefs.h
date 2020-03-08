@@ -69,12 +69,12 @@ class ExtImportPrefs final : public PrefsPanel
    void OnRuleTableEdit(wxGridEvent& event);
    void OnRuleTableSelectRange(wxGridRangeSelectEvent& event);
    void OnRuleTableCellClick(wxGridEvent& event);
-   void OnAddRule(wxCommandEvent& event);
-   void OnDelRule(wxCommandEvent& event);
-   void OnRuleMoveUp(wxCommandEvent& event);
-   void OnRuleMoveDown(wxCommandEvent& event);
-   void OnFilterMoveUp(wxCommandEvent& event);
-   void OnFilterMoveDown(wxCommandEvent& event);
+   void OnAddRule();
+   void OnDelRule();
+   void OnRuleMoveUp();
+   void OnRuleMoveDown();
+   void OnFilterMoveUp();
+   void OnFilterMoveDown();
 
    void OnNavKey (wxNavigationKeyEvent& event);
 

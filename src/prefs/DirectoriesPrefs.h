@@ -37,10 +37,9 @@ class DirectoriesPrefs final : public PrefsPanel
 
  private:
    void OnTempText(wxCommandEvent &evt);
-   void OnTempBrowse(wxCommandEvent &evt);
+   void OnTempBrowse();
 
-   void OnBrowse(wxCommandEvent &evt);
-   void OnText(wxCommandEvent &evt);
+   void OnBrowse(int button);
 
    ReadOnlyText *mFreeSpace;
    wxTextCtrl *mTempText;

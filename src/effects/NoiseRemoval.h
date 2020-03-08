@@ -146,7 +146,7 @@ public:
 
 private:
    // handlers
-   void OnGetProfile( wxCommandEvent &event );
+   void OnGetProfile();
    void OnKeepNoise( wxCommandEvent &event );
    void OnPreview(wxCommandEvent &event);
    void OnRemoveNoise( wxCommandEvent &event );

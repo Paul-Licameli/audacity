@@ -71,14 +71,8 @@
 // in the expanded view (which start at 10,000).
 #define MacrosListID       7001
 #define CommandsListID     7002
-#define ApplyToProjectID   7003
-#define ApplyToFilesID     7004
-#define ExpandID           7005
-#define ShrinkID           7006
 
 BEGIN_EVENT_TABLE(ApplyMacroDialog, wxDialogWrapper)
-   EVT_BUTTON(ApplyToProjectID, ApplyMacroDialog::OnApplyToProject)
-   EVT_BUTTON(ApplyToFilesID, ApplyMacroDialog::OnApplyToFiles)
    EVT_BUTTON(wxID_CANCEL, ApplyMacroDialog::OnCancel)
    EVT_BUTTON(wxID_CLOSE, ApplyMacroDialog::OnCancel)
    EVT_BUTTON(wxID_HELP, ApplyMacroDialog::OnHelp)
@@ -158,8 +152,8 @@ void ApplyMacroDialog::PopulateOrExchange(ShuttleGui &S)
 
       wxButton* btn =
       S
-         .Id(ApplyToProjectID)
          .Text(XO("Apply macro to project"))
+         .Action( [this]{ OnApplyToProject(); } )
          .AddButton(XXO("&Project"));
 #if wxUSE_ACCESSIBILITY
       // so that name can be set on a standard control
@@ -168,8 +162,8 @@ void ApplyMacroDialog::PopulateOrExchange(ShuttleGui &S)
 
       btn =
       S
-         .Id(ApplyToFilesID)
          .Text(XO("Apply macro to files..."))
+         .Action( [this]{ OnApplyToFiles(); } )
          .AddButton(XXO("&Files..."));
 #if wxUSE_ACCESSIBILITY
       // so that name can be set on a standard control
@@ -183,7 +177,7 @@ void ApplyMacroDialog::PopulateOrExchange(ShuttleGui &S)
       /* i18n-hint: The Expand button makes the dialog bigger, with more in it */
       mResize =
       S
-         .Id(ExpandID)
+         .Action( [this]{ OnExpand(); } )
          .AddButton(XXO("&Expand"));
 
       S.AddSpace( 10,10,1 );
@@ -231,13 +225,17 @@ void ApplyMacroDialog::PopulateMacros()
    }
 }
 
+void ApplyMacroDialog::OnExpand()
+{
+}
+
 void ApplyMacroDialog::OnHelp(wxCommandEvent & WXUNUSED(event))
 {
    wxString page = GetHelpPageName();
    HelpSystem::ShowHelp(this, page, true);
 }
 
-void ApplyMacroDialog::OnApplyToProject(wxCommandEvent & WXUNUSED(event))
+void ApplyMacroDialog::OnApplyToProject()
 {
    long item = mMacros->GetNextItem(-1,
                                     wxLIST_NEXT_ALL,
@@ -338,7 +336,7 @@ void ApplyMacroDialog::ApplyMacroToProject( int iMacro, bool bHasGui )
    Raise();
 }
 
-void ApplyMacroDialog::OnApplyToFiles(wxCommandEvent & WXUNUSED(event))
+void ApplyMacroDialog::OnApplyToFiles()
 {
    long item = mMacros->GetNextItem(-1,
                                     wxLIST_NEXT_ALL,
@@ -513,53 +511,21 @@ void ApplyMacroDialog::OnCancel(wxCommandEvent & WXUNUSED(event))
 #include <wx/textdlg.h>
 #include "BatchCommandDialog.h"
 
-enum {
-   AddButtonID = 10000,
-   RemoveButtonID,
-   RenameButtonID,
-   RestoreButtonID,
-   ImportButtonID,
-   ExportButtonID,
-   SaveButtonID,
-
-   DefaultsButtonID,
-
-   InsertButtonID,
-   EditButtonID,
-   DeleteButtonID,
-   UpButtonID,
-   DownButtonID,
-
+//enum {
 // MacrosListID             7005
 // CommandsListID,       7002
 // Re-Use IDs from ApplyMacroDialog.
-   ApplyToProjectButtonID = ApplyToProjectID,
-   ApplyToFilesButtonID = ApplyToFilesID,
-};
+//};
 
 BEGIN_EVENT_TABLE(MacrosWindow, ApplyMacroDialog)
    EVT_LIST_ITEM_SELECTED(MacrosListID, MacrosWindow::OnMacroSelected)
    EVT_LIST_ITEM_SELECTED(CommandsListID, MacrosWindow::OnListSelected)
    EVT_LIST_BEGIN_LABEL_EDIT(MacrosListID, MacrosWindow::OnMacrosBeginEdit)
    EVT_LIST_END_LABEL_EDIT(MacrosListID, MacrosWindow::OnMacrosEndEdit)
-   EVT_BUTTON(AddButtonID, MacrosWindow::OnAdd)
-   EVT_BUTTON(RemoveButtonID, MacrosWindow::OnRemove)
-   EVT_BUTTON(RenameButtonID, MacrosWindow::OnRename)
-   EVT_BUTTON(RestoreButtonID, MacrosWindow::OnRestore)
-   EVT_BUTTON(ImportButtonID, MacrosWindow::OnImport)
-   EVT_BUTTON(ExportButtonID, MacrosWindow::OnExport)
-   EVT_BUTTON(SaveButtonID, MacrosWindow::OnSave)
 
-   EVT_BUTTON(ExpandID, MacrosWindow::OnExpand)
-   EVT_BUTTON(ShrinkID, MacrosWindow::OnShrink)
-   EVT_SIZE(MacrosWindow::OnSize)
+      EVT_SIZE(MacrosWindow::OnSize)
 
    EVT_LIST_ITEM_ACTIVATED(CommandsListID, MacrosWindow::OnCommandActivated)
-   EVT_BUTTON(InsertButtonID, MacrosWindow::OnInsert)
-   EVT_BUTTON(EditButtonID, MacrosWindow::OnEditCommandParams)
-   EVT_BUTTON(DeleteButtonID, MacrosWindow::OnDelete)
-   EVT_BUTTON(UpButtonID, MacrosWindow::OnUp)
-   EVT_BUTTON(DownButtonID, MacrosWindow::OnDown)
 
    EVT_BUTTON(wxID_OK, MacrosWindow::OnOK)
    EVT_BUTTON(wxID_CANCEL, MacrosWindow::OnCancel)
@@ -654,33 +620,34 @@ void MacrosWindow::PopulateOrExchange(ShuttleGui & S)
             S.StartVerticalLay(wxALIGN_TOP, 0);
             {
                S
-                  .Id(AddButtonID)
-                  .AddButton(XXO("&New"), wxALIGN_LEFT);
-
+                  .Action( [this]{ OnAdd(); } )
+                  .AddButton(XXO("&New"));
+   
                mRemove =
                S
-                  .Id(RemoveButtonID)
-                  .AddButton(XXO("Remo&ve"), wxALIGN_LEFT);
+                  .Action( [this]{ OnRemove(); } )
+                  .AddButton(XXO("Remo&ve"));
 
                mRename =
                S
-                  .Id(RenameButtonID)
-                  .AddButton(XXO("&Rename..."), wxALIGN_LEFT);
+                  .Action( [this]{ OnRename(); } )
+                  .AddButton(XXO("&Rename..."));
 
                mRestore =
                S
-                  .Id(RestoreButtonID)
-                  .AddButton(XXO("Re&store"), wxALIGN_LEFT);
+                  .Action( [this]{ OnRestore(); } )
+                  .AddButton(XXO("Re&store"));
 
                mImport =
                S
-                  .Id(ImportButtonID)
-                  .AddButton(XXO("I&mport..."), wxALIGN_LEFT);
+                  .Action( [this]{ OnImport(); } )
+                  .AddButton(XXO("I&mport..."));
 
                mExport =
                S
-                  .Id(ExportButtonID)
-                  .AddButton(XXO("E&xport..."), wxALIGN_LEFT);
+                  .Action( [this]{ OnExport(); } )
+                  .AddButton(XXO("E&xport..."));
+
             }
             S.EndVerticalLay();
          }
@@ -708,28 +675,28 @@ void MacrosWindow::PopulateOrExchange(ShuttleGui & S)
             S.StartVerticalLay(wxALIGN_TOP, 0);
             {
                S
-                  .Id(InsertButtonID)
+                  .Action( [this]{ OnInsert(); } )
                   .AddButton(XXO("&Insert"), wxALIGN_LEFT);
    
                S
-                  .Id(EditButtonID)
+                  .Action( [this]{ OnEditCommandParams(); } )
                   .AddButton(XXO("&Edit..."), wxALIGN_LEFT);
 
                S
-                  .Id(DeleteButtonID)
+                  .Action( [this]{ OnDelete(); } )
                   .AddButton(XXO("De&lete"), wxALIGN_LEFT);
 
                S
-                  .Id(UpButtonID)
+                  .Action( [this]{ OnUp(); } )
                   .AddButton(XXO("Move &Up"), wxALIGN_LEFT);
 
                S
-                  .Id(DownButtonID)
+                  .Action( [this]{ OnDown(); } )
                   .AddButton(XXO("Move &Down"), wxALIGN_LEFT);
 
                mSave =
                S
-                  .Id(SaveButtonID)
+                  .Action( [this]{ OnSave(); } )
                   .AddButton(XXO("&Save"), wxALIGN_LEFT);
                mSave->Enable( mChanged );
             }
@@ -746,14 +713,15 @@ void MacrosWindow::PopulateOrExchange(ShuttleGui & S)
       /* i18n-hint: The Shrink button makes the dialog smaller, with less in it */
       mResize =
       S
-         .Id(ShrinkID)
+         .Action( [this]{ OnShrink(); } )
          .AddButton(XXO("Shrin&k"));
 
       // Using variable text just to get the positioning options.
       S.Prop(0).AddVariableText(
          XO("Apply Macro to:"), false, wxALL | wxALIGN_CENTRE_VERTICAL );
-      wxButton* btn = S.Id(ApplyToProjectID)
+      wxButton* btn = S
          .Text(XO("Apply macro to project"))
+         .Action( [this]{ OnApplyToProject(); } )
          .AddButton(XXO("&Project"));
 #if wxUSE_ACCESSIBILITY
       // so that name can be set on a standard control
@@ -762,8 +730,8 @@ void MacrosWindow::PopulateOrExchange(ShuttleGui & S)
 
       btn =
       S
-         .Id(ApplyToFilesID)
          .Text(XO("Apply macro to files..."))
+         .Action( [this]{ OnApplyToFiles(); } )
          .AddButton(XXO("&Files..."));
 #if wxUSE_ACCESSIBILITY
       // so that name can be set on a standard control
@@ -883,15 +851,14 @@ void MacrosWindow::UpdateDisplay( bool bExpanded )
    SetTitle( Title );
 }
 
-void MacrosWindow::OnExpand(wxCommandEvent &WXUNUSED(event))
+void MacrosWindow::OnExpand()
 {  UpdateDisplay( true );}
 
-void MacrosWindow::OnShrink(wxCommandEvent &WXUNUSED(event))
-{  
+void MacrosWindow::OnShrink()
+{
    if( ChangeOK() )
       UpdateDisplay( false );
 }
-
 
 bool MacrosWindow::ChangeOK()
 {
@@ -1052,7 +1019,7 @@ void MacrosWindow::OnMacrosEndEdit(wxListEvent &event)
 }
 
 ///
-void MacrosWindow::OnAdd(wxCommandEvent & WXUNUSED(event))
+void MacrosWindow::OnAdd()
 {
    // Similar to Bug 2284 we may need to save a changed macro.
    if (!ChangeOK()) {
@@ -1107,7 +1074,7 @@ void MacrosWindow::OnAdd(wxCommandEvent & WXUNUSED(event))
 }
 
 ///
-void MacrosWindow::OnRemove(wxCommandEvent & WXUNUSED(event))
+void MacrosWindow::OnRemove()
 {
    long item = mMacros->GetNextItem(-1,
                                     wxLIST_NEXT_ALL,
@@ -1148,7 +1115,7 @@ void MacrosWindow::OnRemove(wxCommandEvent & WXUNUSED(event))
 }
 
 ///
-void MacrosWindow::OnRename(wxCommandEvent & WXUNUSED(event))
+void MacrosWindow::OnRename()
 {
    long item = mMacros->GetNextItem(-1,
                                     wxLIST_NEXT_ALL,
@@ -1162,7 +1129,7 @@ void MacrosWindow::OnRename(wxCommandEvent & WXUNUSED(event))
 }
 
 /// Reset a built in macro.
-void MacrosWindow::OnRestore(wxCommandEvent & WXUNUSED(event))
+void MacrosWindow::OnRestore()
 {
    mMacroCommands.RestoreMacro(mActiveMacro);
 
@@ -1173,7 +1140,7 @@ void MacrosWindow::OnRestore(wxCommandEvent & WXUNUSED(event))
 }
 
 ///
-void MacrosWindow::OnImport(wxCommandEvent & WXUNUSED(event))
+void MacrosWindow::OnImport()
 {
    if (!ChangeOK()) {
       return;
@@ -1200,7 +1167,7 @@ void MacrosWindow::OnImport(wxCommandEvent & WXUNUSED(event))
 }
 
 ///
-void MacrosWindow::OnExport(wxCommandEvent & WXUNUSED(event))
+void MacrosWindow::OnExport()
 {
    long item = mMacros->GetNextItem(-1,
                                     wxLIST_NEXT_ALL,
@@ -1212,7 +1179,7 @@ void MacrosWindow::OnExport(wxCommandEvent & WXUNUSED(event))
    mMacroCommands.WriteMacro(mMacros->GetItemText(item), this);
 }
 
-void MacrosWindow::OnSave(wxCommandEvent & WXUNUSED(event))
+void MacrosWindow::OnSave()
 {
    SaveChanges();
 }
@@ -1222,12 +1189,11 @@ void MacrosWindow::OnSave(wxCommandEvent & WXUNUSED(event))
 /// Bring up a dialog to allow its parameters to be edited.
 void MacrosWindow::OnCommandActivated(wxListEvent & WXUNUSED(event))
 {
-   wxCommandEvent dummy;
-   OnEditCommandParams( dummy );
+   OnEditCommandParams();
 }
 
 ///
-void MacrosWindow::OnInsert(wxCommandEvent & WXUNUSED(event))
+void MacrosWindow::OnInsert()
 {
    long item = mList->GetNextItem(-1,
                                   wxLIST_NEXT_ALL,
@@ -1266,7 +1232,7 @@ void MacrosWindow::InsertCommandAt(int item)
 
 }
 
-void MacrosWindow::OnEditCommandParams(wxCommandEvent & WXUNUSED(event))
+void MacrosWindow::OnEditCommandParams()
 {
    int item = mList->GetNextItem( -1, wxLIST_NEXT_ALL, wxLIST_STATE_SELECTED );
 
@@ -1306,7 +1272,7 @@ void MacrosWindow::OnEditCommandParams(wxCommandEvent & WXUNUSED(event))
 }
 
 ///
-void MacrosWindow::OnDelete(wxCommandEvent & WXUNUSED(event))
+void MacrosWindow::OnDelete()
 {
    long item = mList->GetNextItem(-1,
                                   wxLIST_NEXT_ALL,
@@ -1328,7 +1294,7 @@ void MacrosWindow::OnDelete(wxCommandEvent & WXUNUSED(event))
 }
 
 ///
-void MacrosWindow::OnUp(wxCommandEvent & WXUNUSED(event))
+void MacrosWindow::OnUp()
 {
    long item = mList->GetNextItem(-1,
                                   wxLIST_NEXT_ALL,
@@ -1350,7 +1316,7 @@ void MacrosWindow::OnUp(wxCommandEvent & WXUNUSED(event))
 }
 
 ///
-void MacrosWindow::OnDown(wxCommandEvent & WXUNUSED(event))
+void MacrosWindow::OnDown()
 {
    long item = mList->GetNextItem(-1,
                                   wxLIST_NEXT_ALL,
@@ -1371,18 +1337,18 @@ void MacrosWindow::OnDown(wxCommandEvent & WXUNUSED(event))
    PopulateList();
 }
 
-void MacrosWindow::OnApplyToProject(wxCommandEvent & event)
+void MacrosWindow::OnApplyToProject()
 {
    if( !SaveChanges() )
       return;
-   ApplyMacroDialog::OnApplyToProject( event );
+   ApplyMacroDialog::OnApplyToProject();
 }
 
-void MacrosWindow::OnApplyToFiles(wxCommandEvent & event)
+void MacrosWindow::OnApplyToFiles()
 {
    if( !SaveChanges() )
       return;
-   ApplyMacroDialog::OnApplyToFiles( event );
+   ApplyMacroDialog::OnApplyToFiles();
 }
 
 bool MacrosWindow::SaveChanges(){

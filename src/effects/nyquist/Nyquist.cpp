@@ -94,8 +94,6 @@ int NyquistEffect::mReentryCount = 0;
 enum
 {
    ID_Editor = 10000,
-   ID_Load,
-   ID_Save,
 
    ID_Slider = 11000,
    ID_Text = 12000,
@@ -119,9 +117,6 @@ static const wxChar *KEY_Parameters = L"Parameters";
 ///////////////////////////////////////////////////////////////////////////////
 
 BEGIN_EVENT_TABLE(NyquistEffect, wxEvtHandler)
-   EVT_BUTTON(ID_Load, NyquistEffect::OnLoad)
-   EVT_BUTTON(ID_Save, NyquistEffect::OnSave)
-
    EVT_COMMAND_RANGE(ID_Slider, ID_Slider+99,
                      wxEVT_COMMAND_SLIDER_UPDATED, NyquistEffect::OnSlider)
    EVT_COMMAND_RANGE(ID_Text, ID_Text+99,
@@ -2810,11 +2805,11 @@ void NyquistEffect::BuildPromptWindow(ShuttleGui & S)
       S.StartHorizontalLay(wxALIGN_CENTER, 0);
       {
          S
-            .Id(ID_Load)
+            .Action( [this]{ OnLoad(); } )
             .AddButton(XXO("&Load"));
 
          S
-            .Id(ID_Save)
+            .Action( [this]{ OnSave(); } )
             .AddButton(XXO("&Save"));
       }
       S.EndHorizontalLay();
@@ -3010,7 +3005,7 @@ static const FileNames::FileType
    , LispScripts = { XO("Lisp scripts"), { L"lsp" }, true }
 ;
 
-void NyquistEffect::OnLoad(wxCommandEvent & WXUNUSED(evt))
+void NyquistEffect::OnLoad()
 {
    if (mCommandText->IsModified())
    {
@@ -3048,7 +3043,7 @@ void NyquistEffect::OnLoad(wxCommandEvent & WXUNUSED(evt))
    }
 }
 
-void NyquistEffect::OnSave(wxCommandEvent & WXUNUSED(evt))
+void NyquistEffect::OnSave()
 {
    FileDialogWrapper dlog(
       mUIParent,
@@ -3336,10 +3331,6 @@ void NyquistEffect::OnText(wxCommandEvent & evt)
 ///////////////////////////////////////////////////////////////////////////////
 
 
-BEGIN_EVENT_TABLE(NyquistOutputDialog, wxDialogWrapper)
-   EVT_BUTTON(wxID_OK, NyquistOutputDialog::OnOk)
-END_EVENT_TABLE()
-
 NyquistOutputDialog::NyquistOutputDialog(wxWindow * parent, wxWindowID id,
                                        const TranslatableString & title,
                                        const TranslatableString & prompt,
@@ -3371,6 +3362,7 @@ NyquistOutputDialog::NyquistOutputDialog(wxWindow * parent, wxWindowID id,
          /* i18n-hint: In most languages OK is to be translated as OK.  It appears on a button.*/
          S
             .Id(wxID_OK)
+            .Action( [this]{ OnOk(); } )
             .AddButton( XXO("OK"), wxALIGN_CENTRE, true );
       }
       S.EndHorizontalLay();
@@ -3386,7 +3378,7 @@ NyquistOutputDialog::NyquistOutputDialog(wxWindow * parent, wxWindowID id,
 // NyquistOutputDialog implementation
 // ============================================================================
 
-void NyquistOutputDialog::OnOk(wxCommandEvent & /* event */)
+void NyquistOutputDialog::OnOk()
 {
    EndModal(wxID_OK);
 }

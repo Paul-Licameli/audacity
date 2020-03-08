@@ -82,8 +82,8 @@ private:
    void OnSizeChoice(wxCommandEvent & event);
    void OnFuncChoice(wxCommandEvent & event);
    void OnAxisChoice(wxCommandEvent & event);
-   void OnExport(wxCommandEvent & event);
-   void OnReplot(wxCommandEvent & event);
+   void OnExport();
+   void OnReplot();
    void OnGridOnOff(wxCommandEvent & event);
    void OnRecalc(wxCommandEvent & event);
 

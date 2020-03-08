@@ -587,8 +587,7 @@ bool EffectNoiseRemoval::ProcessOne(int count, WaveTrack * track,
 // WDR: event table for NoiseRemovalDialog
 
 enum {
-   ID_BUTTON_GETPROFILE = 10001,
-   ID_BUTTON_LEAVENOISE,
+   ID_BUTTON_LEAVENOISE = 10001,
    ID_RADIOBUTTON_KEEPSIGNAL,
    ID_RADIOBUTTON_KEEPNOISE,
    ID_SENSITIVITY_SLIDER,
@@ -622,7 +621,6 @@ BEGIN_EVENT_TABLE(NoiseRemovalDialog,wxDialogWrapper)
    EVT_BUTTON(wxID_OK, NoiseRemovalDialog::OnRemoveNoise)
    EVT_BUTTON(wxID_CANCEL, NoiseRemovalDialog::OnCancel)
    EVT_BUTTON(ID_EFFECT_PREVIEW, NoiseRemovalDialog::OnPreview)
-   EVT_BUTTON(ID_BUTTON_GETPROFILE, NoiseRemovalDialog::OnGetProfile)
    EVT_RADIOBUTTON(ID_RADIOBUTTON_KEEPNOISE, NoiseRemovalDialog::OnKeepNoise)
    EVT_RADIOBUTTON(ID_RADIOBUTTON_KEEPSIGNAL, NoiseRemovalDialog::OnKeepNoise)
    EVT_SLIDER(ID_SENSITIVITY_SLIDER, NoiseRemovalDialog::OnSensitivitySlider)
@@ -654,7 +652,7 @@ NoiseRemovalDialog::NoiseRemovalDialog(EffectNoiseRemoval * effect,
       (wxButton *)wxWindow::FindWindowById(wxID_OK, this);
 }
 
-void NoiseRemovalDialog::OnGetProfile( wxCommandEvent & WXUNUSED(event))
+void NoiseRemovalDialog::OnGetProfile()
 {
    EndModal(1);
 }
@@ -724,7 +722,7 @@ void NoiseRemovalDialog::PopulateOrExchange(ShuttleGui & S)
 
       m_pButton_GetProfile =
       S
-         .Id(ID_BUTTON_GETPROFILE)
+         .Action( [this]{ OnGetProfile(); } )
          .AddButton(XXO("&Get Noise Profile"));
    }
    S.EndStatic();

@@ -35,8 +35,8 @@ class MacroCommandDialog final : public wxDialogWrapper {
  private:
    void Populate();
    void PopulateOrExchange(ShuttleGui &S);
-   void OnEditParams(wxCommandEvent &event);
-   void OnUsePreset(wxCommandEvent &event);
+   void OnEditParams();
+   void OnUsePreset();
    void OnChoice(wxCommandEvent &event);
    void OnOk(wxCommandEvent &event);
    void OnCancel(wxCommandEvent &event);

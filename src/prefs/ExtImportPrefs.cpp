@@ -33,12 +33,6 @@ enum ExtImportPrefsControls
 {
    EIPPluginList = 20000,
    EIPRuleTable,
-   EIPAddRule,
-   EIPDelRule,
-   EIPMoveRuleUp,
-   EIPMoveRuleDown,
-   EIPMoveFilterUp,
-   EIPMoveFilterDown
 };
 
 BEGIN_EVENT_TABLE(ExtImportPrefs, PrefsPanel)
@@ -49,12 +43,6 @@ BEGIN_EVENT_TABLE(ExtImportPrefs, PrefsPanel)
    EVT_GRID_EDITOR_HIDDEN (ExtImportPrefs::OnRuleTableEdit)
    EVT_GRID_SELECT_CELL (ExtImportPrefs::OnRuleTableSelect)
    EVT_GRID_RANGE_SELECT (ExtImportPrefs::OnRuleTableSelectRange)
-   EVT_BUTTON(EIPAddRule,ExtImportPrefs::OnAddRule)
-   EVT_BUTTON(EIPDelRule,ExtImportPrefs::OnDelRule)
-   EVT_BUTTON(EIPMoveRuleUp,ExtImportPrefs::OnRuleMoveUp)
-   EVT_BUTTON(EIPMoveRuleDown,ExtImportPrefs::OnRuleMoveDown)
-   EVT_BUTTON(EIPMoveFilterUp,ExtImportPrefs::OnFilterMoveUp)
-   EVT_BUTTON(EIPMoveFilterDown,ExtImportPrefs::OnFilterMoveDown)
 END_EVENT_TABLE()
 
 ExtImportPrefs::ExtImportPrefs(wxWindow * parent, wxWindowID winid)
@@ -179,22 +167,22 @@ void ExtImportPrefs::PopulateOrExchange(ShuttleGui & S)
       {
          MoveRuleUp =
          S
-            .Id (EIPMoveRuleUp)
+            .Action( [this]{ OnRuleMoveUp(); } )
             .AddButton( XXO("Move rule &up") );
 
          MoveRuleDown =
          S
-            .Id (EIPMoveRuleDown)
+            .Action( [this]{ OnRuleMoveDown(); } )
             .AddButton( XXO("Move rule &down") );
 
          MoveFilterUp =
          S
-            .Id (EIPMoveFilterUp)
+            .Action( [this]{ OnFilterMoveUp(); } )
             .AddButton( XXO("Move f&ilter up") );
 
          MoveFilterDown =
          S
-            .Id (EIPMoveFilterDown)
+            .Action( [this]{ OnFilterMoveDown(); } )
             .AddButton( XXO("Move &filter down") );
       }
       S.EndHorizontalLay();
@@ -202,13 +190,13 @@ void ExtImportPrefs::PopulateOrExchange(ShuttleGui & S)
       {
          AddRule =
          S
-            .Id (EIPAddRule)
+            .Action( [this]{ OnAddRule(); } )
             .AddButton( XXO("&Add new rule") );
    
          DelRule =
          S
-            .Id (EIPDelRule)
-            .AddButton( XXO("De&lete selected rule") );
+            .Action( [this]{ OnDelRule(); } )
+            .AddButton(XXO("De&lete selected rule"));
       }
       S.EndHorizontalLay();
    }
@@ -628,7 +616,7 @@ void ExtImportPrefs::AddItemToTable (int index, const ExtImportItem *item)
    RuleTable->AutoSizeColumns ();
 }
 
-void ExtImportPrefs::OnAddRule(wxCommandEvent& WXUNUSED(event))
+void ExtImportPrefs::OnAddRule()
 {
    auto &items = Importer::Get().GetImportItems();
    auto uitem = Importer::Get().CreateDefaultImportItem();
@@ -641,7 +629,7 @@ void ExtImportPrefs::OnAddRule(wxCommandEvent& WXUNUSED(event))
    RuleTable->SetFocus();
 }
 
-void ExtImportPrefs::OnDelRule(wxCommandEvent& WXUNUSED(event))
+void ExtImportPrefs::OnDelRule()
 {
    if (last_selected < 0)
       return;
@@ -671,12 +659,12 @@ void ExtImportPrefs::OnDelRule(wxCommandEvent& WXUNUSED(event))
    }
 }
 
-void ExtImportPrefs::OnRuleMoveUp(wxCommandEvent& WXUNUSED(event))
+void ExtImportPrefs::OnRuleMoveUp()
 {
    DoOnRuleTableKeyDown (WXK_UP);
 }
 
-void ExtImportPrefs::OnRuleMoveDown(wxCommandEvent& WXUNUSED(event))
+void ExtImportPrefs::OnRuleMoveDown()
 {
    DoOnRuleTableKeyDown (WXK_DOWN);
 }
@@ -691,12 +679,12 @@ void ExtImportPrefs::FakeOnPluginKeyDown (int keycode)
    mFakeKeyEvent = false;
 }
 
-void ExtImportPrefs::OnFilterMoveUp(wxCommandEvent& WXUNUSED(event))
+void ExtImportPrefs::OnFilterMoveUp()
 {
    FakeOnPluginKeyDown (WXK_UP);
 }
 
-void ExtImportPrefs::OnFilterMoveDown(wxCommandEvent& WXUNUSED(event))
+void ExtImportPrefs::OnFilterMoveDown()
 {
    FakeOnPluginKeyDown (WXK_DOWN);
 }

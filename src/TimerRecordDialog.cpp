@@ -62,9 +62,7 @@ enum { // control IDs
    ID_DATEPICKER_END,
    ID_TIMETEXT_END,
    ID_TIMETEXT_DURATION,
-   ID_AUTOSAVEPATH_BUTTON,
    ID_AUTOSAVEPATH_TEXT,
-   ID_AUTOEXPORTPATH_BUTTON,
    ID_AUTOEXPORTPATH_TEXT,
    ID_AUTOSAVE_CHECKBOX,
    ID_AUTOEXPORT_CHECKBOX
@@ -137,9 +135,6 @@ BEGIN_EVENT_TABLE(TimerRecordDialog, wxDialogWrapper)
    EVT_BUTTON(wxID_HELP, TimerRecordDialog::OnHelpButtonClick)
 
    EVT_TIMER(TIMER_ID, TimerRecordDialog::OnTimer)
-
-   EVT_BUTTON(ID_AUTOSAVEPATH_BUTTON, TimerRecordDialog::OnAutoSavePathButton_Click)
-   EVT_BUTTON(ID_AUTOEXPORTPATH_BUTTON, TimerRecordDialog::OnAutoExportPathButton_Click)
 
    EVT_CHECKBOX(ID_AUTOSAVE_CHECKBOX, TimerRecordDialog::OnAutoSaveCheckBox_Change)
    EVT_CHECKBOX(ID_AUTOEXPORT_CHECKBOX, TimerRecordDialog::OnAutoExportCheckBox_Change)
@@ -300,7 +295,7 @@ void TimerRecordDialog::OnTimeText_Duration(wxCommandEvent& WXUNUSED(event))
 }
 
 // New events for timer recording automation
-void TimerRecordDialog::OnAutoSavePathButton_Click(wxCommandEvent& WXUNUSED(event))
+void TimerRecordDialog::OnAutoSavePathButton_Click()
 {
    auto &projectFileIO = ProjectFileIO::Get(mProject);
 
@@ -338,7 +333,7 @@ would overwrite another project.\nPlease try again and select an original name."
    this->UpdateTextBoxControls();
 }
 
-void TimerRecordDialog::OnAutoExportPathButton_Click(wxCommandEvent& WXUNUSED(event))
+void TimerRecordDialog::OnAutoExportPathButton_Click()
 {
    Exporter eExporter{ mProject };
 
@@ -871,12 +866,13 @@ void TimerRecordDialog::PopulateOrExchange(ShuttleGui& S)
                   S.GetParent(), ID_AUTOSAVEPATH_TEXT,
                   XO("Save Project As:"), sInitialValue);
                m_pTimerSavePathTextCtrl->SetReadOnly(true);
+
                S
                   .AddWindow(m_pTimerSavePathTextCtrl);
 
                m_pTimerSavePathButtonCtrl =
                S
-                  .Id(ID_AUTOSAVEPATH_BUTTON)
+                  .Action( [this]{ OnAutoSavePathButton_Click(); } )
                   .AddButton(XXO("Select..."));
             }
          }
@@ -899,12 +895,13 @@ void TimerRecordDialog::PopulateOrExchange(ShuttleGui& S)
                   S.GetParent(), ID_AUTOEXPORTPATH_TEXT,
                   XO("Export Project As:"), {});
                m_pTimerExportPathTextCtrl->SetReadOnly(true);
+
                S
                   .AddWindow(m_pTimerExportPathTextCtrl);
 
                m_pTimerExportPathButtonCtrl =
                S
-                  .Id(ID_AUTOEXPORTPATH_BUTTON)
+                  .Action( [this]{ OnAutoExportPathButton_Click(); } )
                   .AddButton(XXO("Select..."));
             }
             S.EndMultiColumn();

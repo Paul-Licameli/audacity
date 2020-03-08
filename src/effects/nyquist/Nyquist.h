@@ -182,8 +182,8 @@ private:
                            wxString *pExtraString = nullptr);
    double GetCtrlValue(const wxString &s);
 
-   void OnLoad(wxCommandEvent & evt);
-   void OnSave(wxCommandEvent & evt);
+   void OnLoad();
+   void OnSave();
    void OnDebug(wxCommandEvent & evt);
 
    void OnText(wxCommandEvent & evt);
@@ -300,10 +300,7 @@ public:
                        const TranslatableString &message);
 
 private:
-   void OnOk(wxCommandEvent & event);
-
-private:
-   DECLARE_EVENT_TABLE()
+   void OnOk();
 };
 
 

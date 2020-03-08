@@ -71,14 +71,14 @@ class ScreenshotBigDialog final : public wxFrame,
 
    void OnCloseWindow(wxCloseEvent & event);
    void OnUIUpdate(wxUpdateUIEvent & event);
-   void OnDirChoose(wxCommandEvent & event);
+   void OnDirChoose();
    void OnGetURL(wxCommandEvent & event);
    void OnClose(wxCommandEvent & event );
 
 
    void SizeMainWindow(int w, int h);
-   void OnMainWindowSmall(wxCommandEvent & event);
-   void OnMainWindowLarge(wxCommandEvent & event);
+   void OnMainWindowSmall();
+   void OnMainWindowLarge();
    void OnToggleBackgroundBlue(wxCommandEvent & event);
    void OnToggleBackgroundWhite(wxCommandEvent & event);
 
@@ -86,16 +86,16 @@ class ScreenshotBigDialog final : public wxFrame,
    void OnCaptureSomething(wxCommandEvent & event);
 
    void TimeZoom(double seconds);
-   void OnOneSec(wxCommandEvent & event);
-   void OnTenSec(wxCommandEvent & event);
-   void OnOneMin(wxCommandEvent & event);
-   void OnFiveMin(wxCommandEvent & event);
-   void OnOneHour(wxCommandEvent & event);
+   void OnOneSec();
+   void OnTenSec();
+   void OnOneMin();
+   void OnFiveMin();
+   void OnOneHour();
 
    void SizeTracks(int h);
-   void OnShortTracks(wxCommandEvent & event);
-   void OnMedTracks(wxCommandEvent & event);
-   void OnTallTracks(wxCommandEvent & event);
+   void OnShortTracks();
+   void OnMedTracks();
+   void OnTallTracks();
 
    // PrefsListener implementation
    void UpdatePrefs() override;
@@ -184,20 +184,7 @@ class ScreenFrameTimer final : public wxTimer
 enum
 {
    IdMainWindowSmall = 19200,
-   IdMainWindowLarge,
-
    IdDirectory,
-   IdDirChoose,
-
-   IdOneSec,
-   IdTenSec,
-   IdOneMin,
-   IdFiveMin,
-   IdOneHour,
-
-   IdShortTracks,
-   IdMedTracks,
-   IdTallTracks,
 
    IdDelayCheckBox,
 
@@ -250,23 +237,9 @@ BEGIN_EVENT_TABLE(ScreenshotBigDialog, wxFrame)
 
    EVT_UPDATE_UI(IdCaptureFullScreen,   ScreenshotBigDialog::OnUIUpdate)
 
-   EVT_BUTTON(IdMainWindowSmall,        ScreenshotBigDialog::OnMainWindowSmall)
-   EVT_BUTTON(IdMainWindowLarge,        ScreenshotBigDialog::OnMainWindowLarge)
    EVT_TOGGLEBUTTON(IdToggleBackgroundBlue,   ScreenshotBigDialog::OnToggleBackgroundBlue)
    EVT_TOGGLEBUTTON(IdToggleBackgroundWhite,  ScreenshotBigDialog::OnToggleBackgroundWhite)
    EVT_COMMAND_RANGE(IdCaptureFirst, IdCaptureLast, wxEVT_COMMAND_BUTTON_CLICKED, ScreenshotBigDialog::OnCaptureSomething)
-
-   EVT_BUTTON(IdOneSec,                 ScreenshotBigDialog::OnOneSec)
-   EVT_BUTTON(IdTenSec,                 ScreenshotBigDialog::OnTenSec)
-   EVT_BUTTON(IdOneMin,                 ScreenshotBigDialog::OnOneMin)
-   EVT_BUTTON(IdFiveMin,                ScreenshotBigDialog::OnFiveMin)
-   EVT_BUTTON(IdOneHour,                ScreenshotBigDialog::OnOneHour)
-
-   EVT_BUTTON(IdShortTracks,            ScreenshotBigDialog::OnShortTracks)
-   EVT_BUTTON(IdMedTracks,              ScreenshotBigDialog::OnMedTracks)
-   EVT_BUTTON(IdTallTracks,             ScreenshotBigDialog::OnTallTracks)
-
-   EVT_BUTTON(IdDirChoose,              ScreenshotBigDialog::OnDirChoose)
 END_EVENT_TABLE();
 
 // Must not be called before CreateStatusBar!
@@ -357,7 +330,7 @@ void ScreenshotBigDialog::PopulateOrExchange(ShuttleGui & S)
                   30 );
 
             S
-               .Id(IdDirChoose)
+               .Action( [this]{ OnDirChoose(); } )
                .AddButton(XXO("Choose..."));
          }
          S.EndMultiColumn();
@@ -370,11 +343,11 @@ void ScreenshotBigDialog::PopulateOrExchange(ShuttleGui & S)
          S.StartHorizontalLay();
          {
             S
-               .Id(IdMainWindowSmall)
+               .Action( [this]{ OnMainWindowSmall(); } )
                .AddButton(XXO("Resize Small"));
 
             S
-               .Id(IdMainWindowLarge)
+               .Action( [this]{ OnMainWindowLarge(); } )
                .AddButton(XXO("Resize Large"));
 
             mBlue = safenew wxToggleButton(S.GetParent(),
@@ -549,23 +522,23 @@ void ScreenshotBigDialog::PopulateOrExchange(ShuttleGui & S)
          S.StartHorizontalLay();
          {
             S
-               .Id(IdOneSec)
+               .Action( [this]{ OnOneSec(); } )
                .AddButton(XXO("One Sec"));
 
             S
-               .Id(IdTenSec)
+               .Action( [this]{ OnTenSec(); } )
                .AddButton(XXO("Ten Sec"));
 
             S
-               .Id(IdOneMin)
+               .Action( [this]{ OnOneMin(); } )
                .AddButton(XXO("One Min"));
 
             S
-               .Id(IdFiveMin)
+               .Action( [this]{ OnFiveMin(); } )
                .AddButton(XXO("Five Min"));
 
             S
-               .Id(IdOneHour)
+               .Action( [this]{ OnOneHour(); } )
                .AddButton(XXO("One Hour"));
          }
          S.EndHorizontalLay();
@@ -573,15 +546,15 @@ void ScreenshotBigDialog::PopulateOrExchange(ShuttleGui & S)
          S.StartHorizontalLay();
          {
             S
-               .Id(IdShortTracks)
+               .Action( [this]{ OnShortTracks(); } )
                .AddButton(XXO("Short Tracks"));
 
             S
-               .Id(IdMedTracks)
+               .Action( [this]{ OnMedTracks(); } )
                .AddButton(XXO("Medium Tracks"));
 
             S
-               .Id(IdTallTracks)
+               .Action( [this]{ OnTallTracks(); } )
                .AddButton(XXO("Tall Tracks"));
          }
          S.EndHorizontalLay();
@@ -699,7 +672,7 @@ void ScreenshotBigDialog::OnUIUpdate(wxUpdateUIEvent &  WXUNUSED(event))
 #endif
 }
 
-void ScreenshotBigDialog::OnDirChoose(wxCommandEvent & WXUNUSED(event))
+void ScreenshotBigDialog::OnDirChoose()
 {
    wxString current = mDirectoryTextBox->GetValue();
 
@@ -740,12 +713,12 @@ void ScreenshotBigDialog::SizeMainWindow(int w, int h)
    //ToolManager::Get( mContext.project ).Reset();
 }
 
-void ScreenshotBigDialog::OnMainWindowSmall(wxCommandEvent & WXUNUSED(event))
+void ScreenshotBigDialog::OnMainWindowSmall()
 {
    SizeMainWindow(680, 450);
 }
 
-void ScreenshotBigDialog::OnMainWindowLarge(wxCommandEvent & WXUNUSED(event))
+void ScreenshotBigDialog::OnMainWindowLarge()
 {
    SizeMainWindow(900, 600);
 }
@@ -862,27 +835,27 @@ void ScreenshotBigDialog::TimeZoom(double seconds)
    window.RedrawProject();
 }
 
-void ScreenshotBigDialog::OnOneSec(wxCommandEvent & WXUNUSED(event))
+void ScreenshotBigDialog::OnOneSec()
 {
    TimeZoom(1.0);
 }
 
-void ScreenshotBigDialog::OnTenSec(wxCommandEvent & WXUNUSED(event))
+void ScreenshotBigDialog::OnTenSec()
 {
    TimeZoom(10.0);
 }
 
-void ScreenshotBigDialog::OnOneMin(wxCommandEvent & WXUNUSED(event))
+void ScreenshotBigDialog::OnOneMin()
 {
    TimeZoom(60.0);
 }
 
-void ScreenshotBigDialog::OnFiveMin(wxCommandEvent & WXUNUSED(event))
+void ScreenshotBigDialog::OnFiveMin()
 {
    TimeZoom(300.0);
 }
 
-void ScreenshotBigDialog::OnOneHour(wxCommandEvent & WXUNUSED(event))
+void ScreenshotBigDialog::OnOneHour()
 {
    TimeZoom(3600.0);
 }
@@ -907,7 +880,7 @@ void ScreenshotBigDialog::SizeTracks(int h)
    ProjectWindow::Get( mContext.project ).RedrawProject();
 }
 
-void ScreenshotBigDialog::OnShortTracks(wxCommandEvent & WXUNUSED(event))
+void ScreenshotBigDialog::OnShortTracks()
 {
    for (auto t : TrackList::Get( mContext.project ).Any<WaveTrack>()) {
       auto &view = TrackView::Get( *t );
@@ -917,12 +890,12 @@ void ScreenshotBigDialog::OnShortTracks(wxCommandEvent & WXUNUSED(event))
    ProjectWindow::Get( mContext.project ).RedrawProject();
 }
 
-void ScreenshotBigDialog::OnMedTracks(wxCommandEvent & WXUNUSED(event))
+void ScreenshotBigDialog::OnMedTracks()
 {
    SizeTracks(60);
 }
 
-void ScreenshotBigDialog::OnTallTracks(wxCommandEvent & WXUNUSED(event))
+void ScreenshotBigDialog::OnTallTracks()
 {
    SizeTracks(85);
 }

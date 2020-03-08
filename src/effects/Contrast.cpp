@@ -150,13 +150,9 @@ void ContrastDialog::SetStartAndEndTime()
 // WDR: event table for ContrastDialog
 
 enum {
-   ID_BUTTON_USECURRENTF = 10001,
-   ID_BUTTON_USECURRENTB,
    //ID_BUTTON_GETURL,
-   ID_BUTTON_EXPORT,
-   ID_BUTTON_RESET,
    //ID_BUTTON_CLOSE,
-   ID_FOREGROUNDSTART_T,
+   ID_FOREGROUNDSTART_T = 10001,
    ID_FOREGROUNDEND_T,
    ID_BACKGROUNDSTART_T,
    ID_BACKGROUNDEND_T,
@@ -167,11 +163,7 @@ enum {
 };
 
 BEGIN_EVENT_TABLE(ContrastDialog,wxDialogWrapper)
-   EVT_BUTTON(ID_BUTTON_USECURRENTF, ContrastDialog::OnGetForeground)
-   EVT_BUTTON(ID_BUTTON_USECURRENTB, ContrastDialog::OnGetBackground)
    EVT_BUTTON(wxID_HELP, ContrastDialog::OnGetURL)
-   EVT_BUTTON(ID_BUTTON_EXPORT, ContrastDialog::OnExport)
-   EVT_BUTTON(ID_BUTTON_RESET, ContrastDialog::OnReset)
    EVT_BUTTON(wxID_CANCEL, ContrastDialog::OnClose)
 END_EVENT_TABLE()
 
@@ -278,7 +270,7 @@ ContrastDialog::ContrastDialog(wxWindow * parent, wxWindowID id,
 
          m_pButton_UseCurrentF =
          S
-            .Id(ID_BUTTON_USECURRENTF)
+            .Action( [this]{ OnGetForeground(); } )
             .AddButton(XXO("&Measure selection"));
 
          mForegroundRMSText =
@@ -315,7 +307,7 @@ ContrastDialog::ContrastDialog(wxWindow * parent, wxWindowID id,
 
          m_pButton_UseCurrentB =
          S
-            .Id(ID_BUTTON_USECURRENTB)
+            .Action( [this]{ OnGetBackground(); } )
             .AddButton(XXO("Mea&sure selection"));
 
          mBackgroundRMSText =
@@ -348,7 +340,7 @@ ContrastDialog::ContrastDialog(wxWindow * parent, wxWindowID id,
 
          m_pButton_Reset =
          S
-            .Id(ID_BUTTON_RESET)
+            .Action( [this]{ OnReset(); } )
             .AddButton(XXO("R&eset"));
 
          label = XO("&Difference:");
@@ -365,7 +357,7 @@ ContrastDialog::ContrastDialog(wxWindow * parent, wxWindowID id,
 
          m_pButton_Export =
          S
-            .Id(ID_BUTTON_EXPORT)
+            .Action( [this]{ OnExport(); } )
             .AddButton(XXO("E&xport..."));
       }
       S.EndMultiColumn();
@@ -410,13 +402,12 @@ void ContrastDialog::OnGetURL(wxCommandEvent & WXUNUSED(event))
 
 void ContrastDialog::OnClose(wxCommandEvent & WXUNUSED(event))
 {
-   wxCommandEvent dummyEvent;
-   OnReset(dummyEvent);
+   OnReset();
 
    Show(false);
 }
 
-void ContrastDialog::OnGetForeground(wxCommandEvent & /*event*/)
+void ContrastDialog::OnGetForeground()
 {
    auto p = FindProjectFromWindow( this );
    auto &selectedRegion = ViewInfo::Get( *p ).selectedRegion;
@@ -432,7 +423,7 @@ void ContrastDialog::OnGetForeground(wxCommandEvent & /*event*/)
    results();
 }
 
-void ContrastDialog::OnGetBackground(wxCommandEvent & /*event*/)
+void ContrastDialog::OnGetBackground()
 {
    auto p = FindProjectFromWindow( this );
    auto &selectedRegion = ViewInfo::Get( *p ).selectedRegion;
@@ -570,7 +561,7 @@ void ContrastDialog::results()
    }
 }
 
-void ContrastDialog::OnExport(wxCommandEvent & WXUNUSED(event))
+void ContrastDialog::OnExport()
 {
    // TODO: Handle silence checks better (-infinity dB)
    auto project = FindProjectFromWindow( this );
@@ -676,7 +667,7 @@ void ContrastDialog::OnExport(wxCommandEvent & WXUNUSED(event))
       << '\n';
 }
 
-void ContrastDialog::OnReset(wxCommandEvent & /*event*/)
+void ContrastDialog::OnReset()
 {
    mForegroundStartT->SetValue(0.0);
    mForegroundEndT->SetValue(0.0);

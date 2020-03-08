@@ -41,14 +41,12 @@ class ThemePrefs final : public PrefsPanel
 
  private:
    void PopulateOrExchange(ShuttleGui & S) override;
-   void OnLoadThemeComponents(wxCommandEvent & e);
-   void OnSaveThemeComponents(wxCommandEvent & e);
-   void OnLoadThemeCache(wxCommandEvent & e);
-   void OnSaveThemeCache(wxCommandEvent & e);
-   void OnReadThemeInternal(wxCommandEvent & e);
-   void OnSaveThemeAsCode(wxCommandEvent & e);
-
-   DECLARE_EVENT_TABLE()
+   void OnLoadThemeComponents();
+   void OnSaveThemeComponents();
+   void OnLoadThemeCache();
+   void OnSaveThemeCache();
+   void OnReadThemeInternal();
+   void OnSaveThemeAsCode();
 };
 
 #endif

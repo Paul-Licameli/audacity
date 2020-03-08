@@ -41,15 +41,13 @@ class LibraryPrefs final : public PrefsPanel
    void SetMP3VersionText(bool prompt = false);
    void SetFFmpegVersionText();
 
-   void OnMP3FindButton(wxCommandEvent & e);
-   void OnMP3DownButton(wxCommandEvent & e);
-   void OnFFmpegFindButton(wxCommandEvent & e);
-   void OnFFmpegDownButton(wxCommandEvent & e);
+   void OnMP3FindButton();
+   void OnMP3DownButton();
+   void OnFFmpegFindButton();
+   void OnFFmpegDownButton();
 
    ReadOnlyText *mMP3Version;
    ReadOnlyText *mFFmpegVersion;
-
-   DECLARE_EVENT_TABLE()
 };
 
 #ifdef EXPERIMENTAL_OD_FFMPEG

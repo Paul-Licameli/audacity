@@ -253,12 +253,12 @@ private:
    void PopulateOrExchange(ShuttleGui & S);
 
    // event handlers
-   void OnCancel(wxCommandEvent& evt);
-   void OnCopySelectedFiles(wxCommandEvent &evt);
+   void OnCancel();
+   void OnCopySelectedFiles();
    void OnList(wxListEvent &evt);
    void OnSize(wxSizeEvent &evt);
-   void OnNo(wxCommandEvent &evt);
-   void OnYes(wxCommandEvent &evt);
+   void OnNo();
+   void OnYes();
    void OnRightClick(wxListEvent& evt);
    void OnCopyToClipboard();
 
@@ -284,7 +284,6 @@ public:
 
 enum {
    FileListID = 6000,
-   CopySelectedFilesButtonID,
    FutureActionChoiceID
 };
 
@@ -292,11 +291,7 @@ BEGIN_EVENT_TABLE(DependencyDialog, wxDialogWrapper)
    EVT_LIST_ITEM_SELECTED(FileListID, DependencyDialog::OnList)
    EVT_LIST_ITEM_DESELECTED(FileListID, DependencyDialog::OnList)
    EVT_LIST_ITEM_RIGHT_CLICK(FileListID, DependencyDialog::OnRightClick )
-   EVT_BUTTON(CopySelectedFilesButtonID, DependencyDialog::OnCopySelectedFiles)
    EVT_SIZE(DependencyDialog::OnSize)
-   EVT_BUTTON(wxID_NO, DependencyDialog::OnNo) // mIsSaving ? "Cancel Save" : "Save Without Copying"
-   EVT_BUTTON(wxID_YES, DependencyDialog::OnYes) // "Copy All Files (Safer)"
-   EVT_BUTTON(wxID_CANCEL, DependencyDialog::OnCancel)  // "Cancel Save"
 END_EVENT_TABLE()
 
 DependencyDialog::DependencyDialog(wxWindow *parent,
@@ -363,9 +358,9 @@ void DependencyDialog::PopulateOrExchange(ShuttleGui& S)
 
          mCopySelectedFilesButton =
          S
-            .Id(CopySelectedFilesButtonID)
             .Focus()
             .Disable(mFileListCtrl->GetSelectedItemCount() <= 0)
+            .Action( [this]{ OnCopySelectedFiles(); } )
             .AddButton(
                XXO("Copy Selected Files"),
                wxALIGN_LEFT, true);
@@ -376,24 +371,24 @@ void DependencyDialog::PopulateOrExchange(ShuttleGui& S)
       {
          if (mIsSaving) {
             S
-               .Id(wxID_CANCEL)
+               .Action( [this]{ OnCancel(); } )
                .AddButton(XXO("Cancel Save"));
 
             S
-               .Id(wxID_NO)
+               .Action( [this]{ OnNo(); } )
                .AddButton(XXO("Save Without Copying"));
          }
          else
             S
-               .Id(wxID_NO)
+               .Action( [this]{ OnNo(); } )
                .AddButton(XXO("Do Not Copy"));
 
          mCopyAllFilesButton =
          S
-            .Id(wxID_YES)
             // Enabling mCopyAllFilesButton is also done in PopulateList,
             // but at its call above, mCopyAllFilesButton does not yet exist.
             .Disable(mHasMissingFiles)
+            .Action( [this]{ OnYes(); } )
             .AddButton(XXO("Copy All Files (Safer)"));
 
       }
@@ -506,19 +501,19 @@ void DependencyDialog::OnSize(wxSizeEvent &evt)
    wxDialogWrapper::OnSize(evt);
 }
 
-void DependencyDialog::OnNo(wxCommandEvent & WXUNUSED(event))
+void DependencyDialog::OnNo()
 {
    SaveFutureActionChoice();
    EndModal(wxID_NO);
 }
 
-void DependencyDialog::OnYes(wxCommandEvent & WXUNUSED(event))
+void DependencyDialog::OnYes()
 {
    SaveFutureActionChoice();
    EndModal(wxID_YES);
 }
 
-void DependencyDialog::OnCopySelectedFiles(wxCommandEvent & WXUNUSED(event))
+void DependencyDialog::OnCopySelectedFiles()
 {
    AliasedFileArray aliasedFilesToDelete, remainingAliasedFiles;
 
@@ -575,7 +570,7 @@ void DependencyDialog::OnCopyToClipboard()
    }
 }
 
-void DependencyDialog::OnCancel(wxCommandEvent& WXUNUSED(event))
+void DependencyDialog::OnCancel()
 {
    if (mIsSaving)
    {

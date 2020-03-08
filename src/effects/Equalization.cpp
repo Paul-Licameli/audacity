@@ -117,8 +117,6 @@ enum
    ID_Length = 10000,
    ID_dBMax,
    ID_dBMin,
-   ID_Clear,
-   ID_Invert,
    ID_Mode,
    ID_Draw,
    ID_Graphic,
@@ -126,7 +124,6 @@ enum
    ID_Linear,
    ID_Grid,
    ID_Curve,
-   ID_Manage,
    ID_Delete,
 #ifdef EXPERIMENTAL_EQ_SSE_THREADED
    ID_DefaultMath,
@@ -134,7 +131,6 @@ enum
    ID_SSEThreaded,
    ID_AVX,
    ID_AVXThreaded,
-   ID_Bench,
 #endif
    ID_Slider,   // needs to come last
 };
@@ -223,9 +219,6 @@ BEGIN_EVENT_TABLE(EffectEqualization, wxEvtHandler)
    EVT_CHOICE( ID_Interp, EffectEqualization::OnInterp )
 
    EVT_CHOICE( ID_Curve, EffectEqualization::OnCurve )
-   EVT_BUTTON( ID_Manage, EffectEqualization::OnManage )
-   EVT_BUTTON( ID_Clear, EffectEqualization::OnClear )
-   EVT_BUTTON( ID_Invert, EffectEqualization::OnInvert )
 
    EVT_RADIOBUTTON(ID_Draw, EffectEqualization::OnDrawMode)
    EVT_RADIOBUTTON(ID_Graphic, EffectEqualization::OnGraphicMode)
@@ -238,7 +231,6 @@ BEGIN_EVENT_TABLE(EffectEqualization, wxEvtHandler)
    EVT_RADIOBUTTON(ID_SSEThreaded, EffectEqualization::OnProcessingRadio)
    EVT_RADIOBUTTON(ID_AVX, EffectEqualization::OnProcessingRadio)
    EVT_RADIOBUTTON(ID_AVXThreaded, EffectEqualization::OnProcessingRadio)
-   EVT_BUTTON(ID_Bench, EffectEqualization::OnBench)
 #endif
 END_EVENT_TABLE()
 
@@ -1104,18 +1096,18 @@ void EffectEqualization::PopulateOrExchange(ShuttleGui & S)
             S.EndHorizontalLay();
 
             S
-               .Id(ID_Manage)
+               .Action( [this]{ OnManage(); } )
                .AddButton(XXO("S&ave/Manage Curves..."));
          }
 
          S.StartHorizontalLay(wxALIGN_LEFT | wxALIGN_CENTER_VERTICAL, 1);
          {
             S
-               .Id(ID_Clear)
+               .Action( [this]{ Flatten(); } )
                .AddButton(XXO("Fla&tten"));
 
             S
-               .Id(ID_Invert)
+               .Action( [this]{ OnInvert(); } )
                .AddButton(XXO("&Invert"));
 
             mGridOnOff =
@@ -1199,7 +1191,7 @@ void EffectEqualization::PopulateOrExchange(ShuttleGui & S)
          S.EndRadioButtonGroup();
 
          S
-            .Id(ID_Bench)
+            .Action( [this]{ OnBench(); } )
             .AddButton(XXO("&Bench"));
       }
       S.EndHorizontalLay();
@@ -2991,7 +2983,7 @@ void EffectEqualization::OnCurve(wxCommandEvent & WXUNUSED(event))
 //
 // User wants to modify the list in some way
 //
-void EffectEqualization::OnManage(wxCommandEvent & WXUNUSED(event))
+void EffectEqualization::OnManage()
 {
    EditCurvesDialog d(mUIParent, this);
    d.ShowModal();
@@ -3003,12 +2995,7 @@ void EffectEqualization::OnManage(wxCommandEvent & WXUNUSED(event))
    mUIParent->Layout();
 }
 
-void EffectEqualization::OnClear(wxCommandEvent & WXUNUSED(event))
-{
-   Flatten();
-}
-
-void EffectEqualization::OnInvert(wxCommandEvent & WXUNUSED(event)) // Inverts any curve
+void EffectEqualization::OnInvert() // Inverts any curve
 {
    if(!mDrawMode)   // Graphic (Slider) mode. Invert the sliders.
    {
@@ -3126,7 +3113,7 @@ void EffectEqualization::OnProcessingRadio(wxCommandEvent & event)
 
 };
 
-void EffectEqualization::OnBench( wxCommandEvent & event)
+void EffectEqualization::OnBench()
 {
    mBench=true;
    // OnOk(event);
@@ -3417,14 +3404,6 @@ void EqualizationPanel::OnCaptureLost(wxMouseCaptureLostEvent & WXUNUSED(event))
 /// Constructor
 
 BEGIN_EVENT_TABLE(EditCurvesDialog, wxDialogWrapper)
-   EVT_BUTTON(UpButtonID, EditCurvesDialog::OnUp)
-   EVT_BUTTON(DownButtonID, EditCurvesDialog::OnDown)
-   EVT_BUTTON(RenameButtonID, EditCurvesDialog::OnRename)
-   EVT_BUTTON(DeleteButtonID, EditCurvesDialog::OnDelete)
-   EVT_BUTTON(ImportButtonID, EditCurvesDialog::OnImport)
-   EVT_BUTTON(ExportButtonID, EditCurvesDialog::OnExport)
-   EVT_BUTTON(LibraryButtonID, EditCurvesDialog::OnLibrary)
-   EVT_BUTTON(DefaultsButtonID, EditCurvesDialog::OnDefaults)
    EVT_BUTTON(wxID_OK, EditCurvesDialog::OnOK)
    EVT_LIST_ITEM_SELECTED(CurvesListID,
                           EditCurvesDialog::OnListSelectionChange)
@@ -3481,35 +3460,35 @@ void EditCurvesDialog::PopulateOrExchange(ShuttleGui & S)
       S.StartVerticalLay(0);
       {
          S
-            .Id(UpButtonID)
+            .Action( [this]{ OnUp(); } )
             .AddButton(XXO("Move &Up"), wxALIGN_LEFT);
 
          S
-            .Id(DownButtonID)
+            .Action( [this]{ OnDown(); } )
             .AddButton(XXO("Move &Down"), wxALIGN_LEFT);
 
          S
-            .Id(RenameButtonID)
+            .Action( [this]{ OnRename(); } )
             .AddButton(XXO("&Rename..."), wxALIGN_LEFT);
 
          S
-            .Id(DeleteButtonID)
+            .Action( [this]{ OnDelete(); } )
             .AddButton(XXO("D&elete..."), wxALIGN_LEFT);
 
          S
-            .Id(ImportButtonID)
+            .Action( [this]{ OnImport(); } )
             .AddButton(XXO("I&mport..."), wxALIGN_LEFT);
 
          S
-            .Id(ExportButtonID)
+            .Action( [this]{ OnExport(); } )
             .AddButton(XXO("E&xport..."), wxALIGN_LEFT);
 
          S
-            .Id(LibraryButtonID)
+            .Action( [this]{ OnLibrary(); } )
             .AddButton(XXO("&Get More..."), wxALIGN_LEFT);
 
          S
-            .Id(DefaultsButtonID)
+            .Action( [this]{ OnDefaults(); } )
             .AddButton(XXO("De&faults"), wxALIGN_LEFT);
       }
       S.EndVerticalLay();
@@ -3542,7 +3521,7 @@ void EditCurvesDialog::PopulateList(int position)
    mList->SetItemState(position, wxLIST_STATE_SELECTED|wxLIST_STATE_FOCUSED, wxLIST_STATE_SELECTED|wxLIST_STATE_FOCUSED);
 }
 
-void EditCurvesDialog::OnUp(wxCommandEvent & WXUNUSED(event))
+void EditCurvesDialog::OnUp()
 {
    long item = mList->GetNextItem(-1, wxLIST_NEXT_ALL, wxLIST_STATE_SELECTED);
    if ( item == -1 )
@@ -3574,7 +3553,7 @@ void EditCurvesDialog::OnUp(wxCommandEvent & WXUNUSED(event))
    }
 }
 
-void EditCurvesDialog::OnDown(wxCommandEvent & WXUNUSED(event))
+void EditCurvesDialog::OnDown()
 {  // looks harder than OnUp as we need to seek backwards up the list, hence GetPreviousItem
    long item = GetPreviousItem(mList->GetItemCount());
    if( item == -1 )
@@ -3613,7 +3592,7 @@ long EditCurvesDialog::GetPreviousItem(long item)  // wx doesn't have this
 }
 
 // Rename curve/curves
-void EditCurvesDialog::OnRename(wxCommandEvent & WXUNUSED(event))
+void EditCurvesDialog::OnRename()
 {
    wxString name;
    int numCurves = mEditCurves.size();
@@ -3729,7 +3708,7 @@ void EditCurvesDialog::OnRename(wxCommandEvent & WXUNUSED(event))
 }
 
 // Delete curve/curves
-void EditCurvesDialog::OnDelete(wxCommandEvent & WXUNUSED(event))
+void EditCurvesDialog::OnDelete()
 {
    // We could count them here
    // And then put in a 'Delete N items?' prompt.
@@ -3828,7 +3807,7 @@ static const FileNames::FileTypes &XMLtypes()
    return results;
 }
 
-void EditCurvesDialog::OnImport( wxCommandEvent & WXUNUSED(event))
+void EditCurvesDialog::OnImport()
 {
    FileDialogWrapper filePicker(
       this,
@@ -3851,7 +3830,7 @@ void EditCurvesDialog::OnImport( wxCommandEvent & WXUNUSED(event))
    return;
 }
 
-void EditCurvesDialog::OnExport( wxCommandEvent & WXUNUSED(event))
+void EditCurvesDialog::OnExport()
 {
    FileDialogWrapper filePicker(this, XO("Export EQ curves as..."),
       FileNames::DataDir(), L"",
@@ -3902,13 +3881,13 @@ void EditCurvesDialog::OnExport( wxCommandEvent & WXUNUSED(event))
          XO("No curves exported") );
 }
 
-void EditCurvesDialog::OnLibrary( wxCommandEvent & WXUNUSED(event))
+void EditCurvesDialog::OnLibrary()
 {
    // full path to wiki.
    wxLaunchDefaultBrowser(L"https://wiki.audacityteam.org/wiki/EQCurvesDownload");
 }
 
-void EditCurvesDialog::OnDefaults( wxCommandEvent & WXUNUSED(event))
+void EditCurvesDialog::OnDefaults()
 {
    EQCurveArray temp;
    temp = mEffect->mCurves;

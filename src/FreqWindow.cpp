@@ -96,12 +96,10 @@ enum {
 
    FreqZoomSliderID,
    FreqPanScrollerID,
-   FreqExportButtonID,
    FreqAlgChoiceID,
    FreqSizeChoiceID,
    FreqFuncChoiceID,
    FreqAxisChoiceID,
-   ReplotButtonID,
    GridOnOffID
 };
 
@@ -173,8 +171,6 @@ BEGIN_EVENT_TABLE(FrequencyPlotDialog, wxDialogWrapper)
    EVT_CHOICE(FreqSizeChoiceID, FrequencyPlotDialog::OnSizeChoice)
    EVT_CHOICE(FreqFuncChoiceID, FrequencyPlotDialog::OnFuncChoice)
    EVT_CHOICE(FreqAxisChoiceID, FrequencyPlotDialog::OnAxisChoice)
-   EVT_BUTTON(FreqExportButtonID, FrequencyPlotDialog::OnExport)
-   EVT_BUTTON(ReplotButtonID, FrequencyPlotDialog::OnReplot)
    EVT_BUTTON(wxID_CANCEL, FrequencyPlotDialog::OnCloseButton)
    EVT_BUTTON(wxID_HELP, FrequencyPlotDialog::OnGetURL)
    EVT_CHECKBOX(GridOnOffID, FrequencyPlotDialog::OnGridOnOff)
@@ -485,7 +481,7 @@ void FrequencyPlotDialog::Populate()
 
       mExportButton =
       S
-         .Id(FreqExportButtonID)
+         .Action( [this]{ OnExport(); } )
          .AddButton(XXO("&Export..."));
 
       S.AddSpace(5);
@@ -517,7 +513,7 @@ void FrequencyPlotDialog::Populate()
 
       mReplotButton =
       S
-         .Id(ReplotButtonID)
+         .Action( [this]{ OnReplot(); } )
          .AddButton(XXO("&Replot..."));
 
       S.AddSpace(5);
@@ -1082,7 +1078,7 @@ void FrequencyPlotDialog::Recalc()
    DrawPlot();
 }
 
-void FrequencyPlotDialog::OnExport(wxCommandEvent & WXUNUSED(event))
+void FrequencyPlotDialog::OnExport()
 {
    wxString fName = _("spectrum.txt");
 
@@ -1126,7 +1122,7 @@ void FrequencyPlotDialog::OnExport(wxCommandEvent & WXUNUSED(event))
    }
 }
 
-void FrequencyPlotDialog::OnReplot(wxCommandEvent & WXUNUSED(event))
+void FrequencyPlotDialog::OnReplot()
 {
    dBRange = GUIdBRange.Read();
    if(dBRange < 90.)

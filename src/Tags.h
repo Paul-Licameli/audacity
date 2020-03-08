@@ -169,17 +169,17 @@ class TagsEditorDialog final : public wxDialogWrapper
 
    void OnChange(wxGridEvent & event);
 
-   void OnEdit(wxCommandEvent & event);
-   void OnReset(wxCommandEvent & event);
+   void OnEdit();
+   void OnReset();
 
-   void OnClear(wxCommandEvent & event);
+   void OnClear();
 
-   void OnLoad(wxCommandEvent & event);
-   void OnSave(wxCommandEvent & event);
-   void OnSaveDefaults(wxCommandEvent & event);
+   void OnLoad();
+   void OnSave();
+   void OnSaveDefaults();
 
-   void OnAdd(wxCommandEvent & event);
-   void OnRemove(wxCommandEvent & event);
+   void OnAdd();
+   void OnRemove();
 
    void OnOk(wxCommandEvent & event);
    void DoCancel(bool escKey);

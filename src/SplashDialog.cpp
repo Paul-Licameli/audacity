@@ -55,7 +55,6 @@ enum
 };
 
 BEGIN_EVENT_TABLE(SplashDialog, wxDialogWrapper)
-   EVT_BUTTON(wxID_OK, SplashDialog::OnOK)
    EVT_CHECKBOX( DontShowID, SplashDialog::OnDontShow )
 END_EVENT_TABLE()
 
@@ -151,6 +150,7 @@ void SplashDialog::Populate( ShuttleGui & S )
       S
          .Id(wxID_OK)
          .Prop(0)
+         .Action( [this]{ OnOK(); } )
          .AddButton(XXO("OK"), wxALIGN_RIGHT| wxALL, true);
    }
    S.EndVerticalLay();
@@ -167,7 +167,7 @@ void SplashDialog::OnDontShow( wxCommandEvent & Evt )
    gPrefs->Flush();
 }
 
-void SplashDialog::OnOK(wxCommandEvent & WXUNUSED(event))
+void SplashDialog::OnOK()
 {
    Show( false );
 

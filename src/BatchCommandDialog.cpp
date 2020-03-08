@@ -43,15 +43,11 @@ selected command.
 
 
 #define CommandsListID        7001
-#define EditParamsButtonID    7002
-#define UsePresetButtonID     7003
 
 BEGIN_EVENT_TABLE(MacroCommandDialog, wxDialogWrapper)
    EVT_BUTTON(wxID_OK,                     MacroCommandDialog::OnOk)
    EVT_BUTTON(wxID_CANCEL,                 MacroCommandDialog::OnCancel)
    EVT_BUTTON(wxID_HELP,                   MacroCommandDialog::OnHelp)
-   EVT_BUTTON(EditParamsButtonID,          MacroCommandDialog::OnEditParams)
-   EVT_BUTTON(UsePresetButtonID,           MacroCommandDialog::OnUsePreset)
    EVT_LIST_ITEM_ACTIVATED(CommandsListID, MacroCommandDialog::OnItemSelected)
    EVT_LIST_ITEM_SELECTED(CommandsListID,  MacroCommandDialog::OnItemSelected)
 END_EVENT_TABLE();
@@ -92,14 +88,14 @@ void MacroCommandDialog::PopulateOrExchange(ShuttleGui &S)
 
          mEditParams =
          S
-            .Id(EditParamsButtonID)
             .Disable() // disable button as box is empty
+            .Action( [this]{ OnEditParams(); } )
             .AddButton(XXO("&Edit Parameters"));
 
          mUsePreset =
          S
-            .Id(UsePresetButtonID)
             .Disable() // disable button as box is empty
+            .Action( [this]{ OnUsePreset(); } )
             .AddButton(XXO("&Use Preset"));
       }
       S.EndMultiColumn();
@@ -233,7 +229,7 @@ void MacroCommandDialog::OnItemSelected(wxListEvent &event)
    mParameters->SetValue(params);
 }
 
-void MacroCommandDialog::OnEditParams(wxCommandEvent & WXUNUSED(event))
+void MacroCommandDialog::OnEditParams()
 {
    auto command = mInternalCommandName;
    wxString params  = mParameters->GetValue();
@@ -244,7 +240,7 @@ void MacroCommandDialog::OnEditParams(wxCommandEvent & WXUNUSED(event))
    mParameters->Refresh();
 }
 
-void MacroCommandDialog::OnUsePreset(wxCommandEvent & WXUNUSED(event))
+void MacroCommandDialog::OnUsePreset()
 {
    auto command = mInternalCommandName;
    wxString params  = mParameters->GetValue();

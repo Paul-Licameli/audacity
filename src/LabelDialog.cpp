@@ -66,21 +66,12 @@ class RowData
 };
 
 enum {
-   ID_INSERTA = 11000,
-   ID_INSERTB,
-   ID_REMOVE,
-   ID_IMPORT,
-   ID_EXPORT
+   ID_IMPORT = 11000,
 };
 
 BEGIN_EVENT_TABLE(LabelDialog, wxDialogWrapper)
    EVT_GRID_SELECT_CELL(LabelDialog::OnSelectCell)
    EVT_GRID_CELL_CHANGED(LabelDialog::OnCellChange)
-   EVT_BUTTON(ID_INSERTA, LabelDialog::OnInsert)
-   EVT_BUTTON(ID_INSERTB, LabelDialog::OnInsert)
-   EVT_BUTTON(ID_REMOVE,  LabelDialog::OnRemove)
-   EVT_BUTTON(ID_IMPORT,  LabelDialog::OnImport)
-   EVT_BUTTON(ID_EXPORT,  LabelDialog::OnExport)
    EVT_BUTTON(wxID_OK,      LabelDialog::OnOK)
    EVT_BUTTON(wxID_CANCEL,  LabelDialog::OnCancel)
    EVT_COMMAND(wxID_ANY, EVT_TIMETEXTCTRL_UPDATED, LabelDialog::OnUpdate)
@@ -266,11 +257,11 @@ void LabelDialog::PopulateOrExchange( ShuttleGui & S )
       S.StartVerticalLay(0);
       {
          //S
-         //   .Id(ID_INSERTA)
+            //.Action( [this]{ OnInsertA )
          //   .AddButton(XO("&Insert"), wxALIGN_LEFT);
 
          S
-            .Id(ID_INSERTB)
+            .Action( [this]{ OnInsert(); } )
             .AddButton(XXO("&Insert"), wxALIGN_LEFT);
 
          //S
@@ -278,15 +269,15 @@ void LabelDialog::PopulateOrExchange( ShuttleGui & S )
          //   .AddButton(XO("&Edit"), wxALIGN_LEFT);
 
          S
-            .Id(ID_REMOVE)
+            .Action( [this]{ OnRemove(); } )
             .AddButton(XXO("De&lete"), wxALIGN_LEFT);
 
          S
-            .Id(ID_IMPORT)
+            .Action( [this]{ OnImport(); } )
             .AddButton(XXO("I&mport..."), wxALIGN_LEFT);
 
          S
-            .Id(ID_EXPORT)
+            .Action( [this]{ OnExport(); } )
             .AddButton(XXO("&Export..."), wxALIGN_LEFT);
       }
       S.EndVerticalLay();
@@ -481,10 +472,8 @@ void LabelDialog::FindAllLabels()
 
    FindInitialRow();
 
-   if (mData.size() == 0) {
-      wxCommandEvent e;
-      OnInsert(e);
-   }
+   if (mData.size() == 0)
+      OnInsert();
 }
 
 void LabelDialog::AddLabels(const LabelTrack *t)
@@ -567,7 +556,17 @@ void LabelDialog::OnFreqUpdate(wxCommandEvent &event)
    event.Skip(false);
 }
 
-void LabelDialog::OnInsert(wxCommandEvent &event)
+void LabelDialog::OnInsertA()
+{
+   OnInsert( true );
+}
+
+void LabelDialog::OnInsertB()
+{
+   OnInsert();
+}
+
+void LabelDialog::OnInsert( bool buttonA )
 {
    int cnt = mData.size();
    int row = 0;
@@ -592,7 +591,7 @@ void LabelDialog::OnInsert(wxCommandEvent &event)
    }
 
    // Insert NEW label before or after the current row
-   if (event.GetId() == ID_INSERTA && row < cnt) {
+   if (buttonA && row < cnt) {
       row++;
    }
    mData.insert(mData.begin() + row, RowData(index, L"", SelectedRegion()));
@@ -607,7 +606,7 @@ void LabelDialog::OnInsert(wxCommandEvent &event)
    mGrid->ShowCellEditControl();
 }
 
-void LabelDialog::OnRemove(wxCommandEvent & WXUNUSED(event))
+void LabelDialog::OnRemove()
 {
    int row = mGrid->GetGridCursorRow();
    int col = mGrid->GetGridCursorCol();
@@ -645,7 +644,7 @@ void LabelDialog::OnRemove(wxCommandEvent & WXUNUSED(event))
    }
 }
 
-void LabelDialog::OnImport(wxCommandEvent & WXUNUSED(event))
+void LabelDialog::OnImport()
 {
    // Ask user for a filename
    wxString fileName =
@@ -685,7 +684,7 @@ void LabelDialog::OnImport(wxCommandEvent & WXUNUSED(event))
    }
 }
 
-void LabelDialog::OnExport(wxCommandEvent & WXUNUSED(event))
+void LabelDialog::OnExport()
 {
    int cnt = mData.size();
 

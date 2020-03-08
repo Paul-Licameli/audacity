@@ -46,8 +46,8 @@ class HistoryDialog final : public wxDialogWrapper,
    void OnCloseWindow(wxCloseEvent & event);
    void OnListKeyDown(wxKeyEvent & event);
    void OnItemSelected(wxListEvent & event);
-   void OnDiscard(wxCommandEvent & event);
-   void OnDiscardClipboard(wxCommandEvent & event);
+   void OnDiscard();
+   void OnDiscardClipboard();
    void OnCompact(wxCommandEvent & event);
    void OnGetURL(wxCommandEvent & event);
 

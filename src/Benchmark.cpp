@@ -57,10 +57,10 @@ public:
 
 private:
    // WDR: handler declarations
-   void OnRun( wxCommandEvent &event );
-   void OnSave( wxCommandEvent &event );
-   void OnClear( wxCommandEvent &event );
-   void OnClose( wxCommandEvent &event );
+   void OnRun();
+   void OnSave();
+   void OnClear();
+   void OnClose();
 
    void Printf(const TranslatableString &str);
    void HoldPrint(bool hold);
@@ -81,9 +81,6 @@ private:
    bool      mEditDetail;
 
    wxTextCtrl  *mText;
-
-private:
-   DECLARE_EVENT_TABLE()
 };
 
 void RunBenchmark( wxWindow *parent, AudacityProject &project )
@@ -114,22 +111,12 @@ XO("This will close all project windows (without saving)\nand open the Audacity 
 //
 
 enum {
-   RunID = 1000,
-   BSaveID,
-   ClearID,
-   StaticTextID,
+   StaticTextID = 1000,
    BlockSizeID,
    DataSizeID,
    NumEditsID,
    RandSeedID
 };
-
-BEGIN_EVENT_TABLE(BenchmarkDialog, wxDialogWrapper)
-   EVT_BUTTON( RunID,   BenchmarkDialog::OnRun )
-   EVT_BUTTON( BSaveID,  BenchmarkDialog::OnSave )
-   EVT_BUTTON( ClearID, BenchmarkDialog::OnClear )
-   EVT_BUTTON( wxID_CANCEL, BenchmarkDialog::OnClose )
-END_EVENT_TABLE()
 
 BenchmarkDialog::BenchmarkDialog(
    wxWindow *parent, AudacityProject &project)
@@ -159,7 +146,7 @@ BenchmarkDialog::BenchmarkDialog(
 
 // WDR: handler implementations for BenchmarkDialog
 
-void BenchmarkDialog::OnClose(wxCommandEvent & WXUNUSED(event))
+void BenchmarkDialog::OnClose()
 {
    EndModal(0);
 }
@@ -242,16 +229,16 @@ void BenchmarkDialog::MakeBenchmarkDialog()
          S.StartHorizontalLay(wxALIGN_LEFT, false);
          {
             S
-               .Id(RunID)
+               .Action( [this]{ OnRun(); } )
                .AddButton(XXO("Run"), wxALIGN_CENTRE, true);
-   
+
             S
-               .Id(BSaveID)
+               .Action( [this]{ OnSave(); } )
                .AddButton(XXO("Save"));
-            /* i18n-hint verb; to empty or erase */
-   
+
             S
-               .Id(ClearID)
+               .Action( [this]{ OnClear(); } )
+               /* i18n-hint verb; to empty or erase */
                .AddButton(XXO("Clear"));
          }
          S.EndHorizontalLay();
@@ -266,7 +253,7 @@ void BenchmarkDialog::MakeBenchmarkDialog()
          {
             /* i18n-hint verb */
             S
-               .Id(wxID_CANCEL)
+               .Action( [this]{ OnClose(); } )
                .AddButton(XXO("Close"));
          }
          S.EndHorizontalLay();
@@ -279,7 +266,7 @@ void BenchmarkDialog::MakeBenchmarkDialog()
    SetSizeHints(GetSize());
 }
 
-void BenchmarkDialog::OnSave( wxCommandEvent & WXUNUSED(event))
+void BenchmarkDialog::OnSave()
 {
 /* i18n-hint: Benchmark means a software speed test;
    leave untranslated file extension .txt */
@@ -300,7 +287,7 @@ void BenchmarkDialog::OnSave( wxCommandEvent & WXUNUSED(event))
    mText->SaveFile(fName);
 }
 
-void BenchmarkDialog::OnClear(wxCommandEvent & WXUNUSED(event))
+void BenchmarkDialog::OnClear()
 {
    mText->Clear();
 }
@@ -332,7 +319,7 @@ void BenchmarkDialog::FlushPrint()
    mToPrint = L"";
 }
 
-void BenchmarkDialog::OnRun( wxCommandEvent & WXUNUSED(event))
+void BenchmarkDialog::OnRun()
 {
    TransferDataFromWindow();
 

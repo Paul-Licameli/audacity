@@ -32,18 +32,6 @@ MP3 and FFmpeg encoding libraries.
 
 ////////////////////////////////////////////////////////////////////////////////
 
-#define ID_MP3_FIND_BUTTON          7001
-#define ID_MP3_DOWN_BUTTON          7002
-#define ID_FFMPEG_FIND_BUTTON       7003
-#define ID_FFMPEG_DOWN_BUTTON       7004
-
-BEGIN_EVENT_TABLE(LibraryPrefs, PrefsPanel)
-   EVT_BUTTON(ID_MP3_FIND_BUTTON, LibraryPrefs::OnMP3FindButton)
-   EVT_BUTTON(ID_MP3_DOWN_BUTTON, LibraryPrefs::OnMP3DownButton)
-   EVT_BUTTON(ID_FFMPEG_FIND_BUTTON, LibraryPrefs::OnFFmpegFindButton)
-   EVT_BUTTON(ID_FFMPEG_DOWN_BUTTON, LibraryPrefs::OnFFmpegDownButton)
-END_EVENT_TABLE()
-
 LibraryPrefs::LibraryPrefs(wxWindow * parent, wxWindowID winid)
 /* i18-hint: refers to optional plug-in software libraries */
 :   PrefsPanel(parent, winid, XO("Libraries"))
@@ -119,10 +107,10 @@ void LibraryPrefs::PopulateOrExchange(ShuttleGui & S)
                true, wxALL | wxALIGN_RIGHT | wxALIGN_CENTRE_VERTICAL);
 
          S
-            .Id(ID_FFMPEG_FIND_BUTTON)
 #if !defined(USE_FFMPEG) || defined(DISABLE_DYNAMIC_LOADING_FFMPEG)
             .Disable()
 #endif
+            .Action([this]{ OnFFmpegFindButton(); } )
             .AddButton(XXO("Loca&te..."),
                        wxALL | wxALIGN_LEFT | wxALIGN_CENTRE_VERTICAL);
 
@@ -131,10 +119,10 @@ void LibraryPrefs::PopulateOrExchange(ShuttleGui & S)
                true, wxALL | wxALIGN_RIGHT | wxALIGN_CENTRE_VERTICAL);
 
          S
-            .Id(ID_FFMPEG_DOWN_BUTTON)
 #if !defined(USE_FFMPEG) || defined(DISABLE_DYNAMIC_LOADING_FFMPEG)
             .Disable()
 #endif
+            .Action([this]{ OnFFmpegDownButton(); } )
             .AddButton(XXO("Dow&nload"),
                wxALL | wxALIGN_LEFT | wxALIGN_CENTRE_VERTICAL);
       }
@@ -154,13 +142,13 @@ void LibraryPrefs::SetMP3VersionText(bool prompt)
 
 /// Opens a file-finder dialog so that the user can
 /// tell us where the MP3 library is.
-void LibraryPrefs::OnMP3FindButton(wxCommandEvent & WXUNUSED(event))
+void LibraryPrefs::OnMP3FindButton()
 {
    SetMP3VersionText(true);
 }
 
 /// Opens help on downloading a suitable MP3 library is.
-void LibraryPrefs::OnMP3DownButton(wxCommandEvent & WXUNUSED(event))
+void LibraryPrefs::OnMP3DownButton()
 {
    // Modal help dialogue required here
    HelpSystem::ShowHelp(this, L"FAQ:Installing_the_LAME_MP3_Encoder", true);
@@ -171,7 +159,7 @@ void LibraryPrefs::SetFFmpegVersionText()
    mFFmpegVersion->SetValue(GetFFmpegVersion());
 }
 
-void LibraryPrefs::OnFFmpegFindButton(wxCommandEvent & WXUNUSED(event))
+void LibraryPrefs::OnFFmpegFindButton()
 {
 #ifdef USE_FFMPEG
    FFmpegLibs* FFmpegLibsPtr = PickFFmpegLibs();
@@ -210,7 +198,7 @@ void LibraryPrefs::OnFFmpegFindButton(wxCommandEvent & WXUNUSED(event))
 #endif
 }
 
-void LibraryPrefs::OnFFmpegDownButton(wxCommandEvent & WXUNUSED(event))
+void LibraryPrefs::OnFFmpegDownButton()
 {
    HelpSystem::ShowHelp(this, L"FAQ:Installing_the_FFmpeg_Import_Export_Library", true);
 }

@@ -197,14 +197,13 @@ private:
    void OnDrawMode( wxCommandEvent &event );
    void OnGraphicMode( wxCommandEvent &event );
    void OnCurve( wxCommandEvent & event );
-   void OnManage( wxCommandEvent & event );
-   void OnClear( wxCommandEvent & event );
-   void OnInvert( wxCommandEvent & event );
+   void OnManage();
+   void OnInvert();
    void OnGridOnOff( wxCommandEvent & event );
    void OnLinFreq( wxCommandEvent & event );
 #ifdef EXPERIMENTAL_EQ_SSE_THREADED
    void OnProcessingRadio( wxCommandEvent & event );
-   void OnBench( wxCommandEvent & event );
+   void OnBench();
 #endif
 
 private:
@@ -368,10 +367,6 @@ private:
       DownButtonID,
       RenameButtonID,
       DeleteButtonID,
-      ImportButtonID,
-      ExportButtonID,
-      LibraryButtonID,
-      DefaultsButtonID
    };
 
    wxListCtrl *mList;   // List of curves.
@@ -381,15 +376,15 @@ private:
    void Populate();
    void PopulateOrExchange(ShuttleGui &S);
    void PopulateList(int position);
-   void OnUp(wxCommandEvent &event);
-   void OnDown(wxCommandEvent &event);
+   void OnUp();
+   void OnDown();
    long GetPreviousItem(long item);
-   void OnRename( wxCommandEvent &event );
-   void OnDelete( wxCommandEvent &event );
-   void OnImport( wxCommandEvent &event );
-   void OnExport( wxCommandEvent &event );
-   void OnLibrary( wxCommandEvent &event );
-   void OnDefaults( wxCommandEvent &event );
+   void OnRename();
+   void OnDelete();
+   void OnImport();
+   void OnExport();
+   void OnLibrary();
+   void OnDefaults();
    void OnOK(wxCommandEvent &event);
 
    void OnListSelectionChange( wxListEvent &event );

@@ -36,8 +36,9 @@ class ApplyMacroDialog : public wxDialogWrapper {
    // Populate methods NOT virtual.
    void Populate();
    void PopulateOrExchange( ShuttleGui & S );
-   virtual void OnApplyToProject(wxCommandEvent & event);
-   virtual void OnApplyToFiles(wxCommandEvent & event);
+   virtual void OnApplyToProject();
+   virtual void OnApplyToFiles();
+   virtual void OnExpand();
    virtual void OnCancel(wxCommandEvent & event);
    virtual void OnHelp(wxCommandEvent & event);
 
@@ -83,8 +84,8 @@ private:
 
    void Populate();
    void PopulateOrExchange(ShuttleGui &S);
-   void OnApplyToProject(wxCommandEvent & event) override;
-   void OnApplyToFiles(wxCommandEvent & event) override;
+   void OnApplyToProject() override;
+   void OnApplyToFiles() override;
    void OnCancel(wxCommandEvent &event) override;
 
    virtual wxString GetHelpPageName() override {return 
@@ -101,25 +102,24 @@ private:
    void OnListSelected(wxListEvent &event);
    void OnMacrosBeginEdit(wxListEvent &event);
    void OnMacrosEndEdit(wxListEvent &event);
-   void OnAdd(wxCommandEvent &event);
-   void OnRemove(wxCommandEvent &event);
-   void OnRename(wxCommandEvent &event);
-   void OnRestore(wxCommandEvent &event);
-   void OnImport(wxCommandEvent &event);
-   void OnExport(wxCommandEvent &event);
-   void OnSave(wxCommandEvent &event);
-
-   void OnExpand(wxCommandEvent &event);
-   void OnShrink(wxCommandEvent &event);
+   void OnAdd();
+   void OnRemove();
+   void OnRename();
+   void OnRestore();
+   void OnImport();
+   void OnExport();
+   void OnSave();
+   void OnExpand() override;
+   void OnShrink();
    void OnSize(wxSizeEvent &event);
 
    void OnCommandActivated(wxListEvent &event);
-   void OnInsert(wxCommandEvent &event);
-   void OnEditCommandParams(wxCommandEvent &event);
+   void OnInsert();
+   void OnEditCommandParams();
 
-   void OnDelete(wxCommandEvent &event);
-   void OnUp(wxCommandEvent &event);
-   void OnDown(wxCommandEvent &event);
+   void OnDelete();
+   void OnUp();
+   void OnDown();
 
    void OnOK(wxCommandEvent &event);
 

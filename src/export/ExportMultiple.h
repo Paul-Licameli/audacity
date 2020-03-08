@@ -88,9 +88,9 @@ private:
    void EnableControls();
 
    void OnFormat(wxCommandEvent& event);
-   void OnOptions(wxCommandEvent& event);
-   void OnCreate(wxCommandEvent& event);
-   void OnChoose(wxCommandEvent& event);
+   void OnOptions();
+   void OnCreate();
+   void OnChoose();
    void OnLabel(wxCommandEvent& event);
    void OnFirst(wxCommandEvent& event);
    void OnFirstFileName(wxCommandEvent& event);

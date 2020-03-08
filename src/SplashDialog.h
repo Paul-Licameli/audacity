@@ -26,7 +26,7 @@ public:
 
    SplashDialog(wxWindow * parent);
    virtual ~ SplashDialog();
-   void OnOK(wxCommandEvent & event);
+   void OnOK();
    static void Show2( wxWindow * pParent );
 
    DECLARE_EVENT_TABLE()

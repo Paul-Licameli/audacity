@@ -47,7 +47,6 @@ enum {
    ID_FILESIZE,
    ID_TOTAL,
    ID_LEVELS,
-   ID_DISCARD,
    ID_DISCARD_CLIPBOARD,
    ID_COMPACT
 };
@@ -57,8 +56,6 @@ BEGIN_EVENT_TABLE(HistoryDialog, wxDialogWrapper)
    EVT_SIZE(HistoryDialog::OnSize)
    EVT_CLOSE(HistoryDialog::OnCloseWindow)
    EVT_LIST_ITEM_SELECTED(wxID_ANY, HistoryDialog::OnItemSelected)
-   EVT_BUTTON(ID_DISCARD, HistoryDialog::OnDiscard)
-   EVT_BUTTON(ID_DISCARD_CLIPBOARD, HistoryDialog::OnDiscardClipboard)
    EVT_BUTTON(ID_COMPACT, HistoryDialog::OnCompact)
    EVT_BUTTON(wxID_HELP, HistoryDialog::OnGetURL)
 END_EVENT_TABLE()
@@ -168,7 +165,7 @@ void HistoryDialog::Populate(ShuttleGui & S)
 
             mDiscard =
             S
-               .Id(ID_DISCARD)
+               .Action( [this]{ OnDiscard(); } )
                /* i18n-hint: (verb)*/
                .AddButton(XXO("&Discard"));
 #endif
@@ -182,7 +179,7 @@ void HistoryDialog::Populate(ShuttleGui & S)
 
 #if defined(ALLOW_DISCARD)
             S
-               .Id(ID_DISCARD_CLIPBOARD)
+               .Action( [this]{ OnDiscardClipboard(); } )
                .AddButton(XXO("D&iscard"));
 #endif
          }
@@ -299,7 +296,7 @@ void HistoryDialog::UpdateLevels()
 #endif
 }
 
-void HistoryDialog::OnDiscard(wxCommandEvent & WXUNUSED(event))
+void HistoryDialog::OnDiscard()
 {
    int i = mLevels->GetValue();
 
@@ -313,7 +310,7 @@ void HistoryDialog::OnDiscard(wxCommandEvent & WXUNUSED(event))
    DoUpdate();
 }
 
-void HistoryDialog::OnDiscardClipboard(wxCommandEvent & WXUNUSED(event))
+void HistoryDialog::OnDiscardClipboard()
 {
    Clipboard::Get().Clear();
 }

@@ -77,10 +77,7 @@ namespace {
 
 enum {
    FormatID = 10001,
-   OptionsID,
    DirID,
-   CreateID,
-   ChooseID,
    LabelID,
    FirstID,
    FirstFileNameID,
@@ -98,9 +95,6 @@ enum {
 
 BEGIN_EVENT_TABLE(ExportMultipleDialog, wxDialogWrapper)
    EVT_CHOICE(FormatID, ExportMultipleDialog::OnFormat)
-//   EVT_BUTTON(OptionsID, ExportMultipleDialog::OnOptions)
-   EVT_BUTTON(CreateID, ExportMultipleDialog::OnCreate)
-   EVT_BUTTON(ChooseID, ExportMultipleDialog::OnChoose)
    EVT_BUTTON(wxID_OK, ExportMultipleDialog::OnExport)
    EVT_BUTTON(wxID_CANCEL, ExportMultipleDialog::OnCancel)
    EVT_BUTTON(wxID_HELP, ExportMultipleDialog::OnHelp)
@@ -284,11 +278,11 @@ void ExportMultipleDialog::PopulateOrExchange(ShuttleGui& S)
                            64);
 
             S
-               .Id(ChooseID)
+               .Action( [this]{ OnChoose(); } )
                .AddButton(XXO("Choose..."));
 
             S
-               .Id(CreateID)
+               .Action( [this]{ OnCreate(); } )
                .AddButton(XXO("Create"));
 
             mFormat =
@@ -316,8 +310,8 @@ void ExportMultipleDialog::PopulateOrExchange(ShuttleGui& S)
 
             mBook =
             S
-               .Id(OptionsID)
                .Style(wxBORDER_STATIC)
+               // .Action( [this]{ OnOptions )
                .StartSimplebook();
 
             if (S.GetMode() == eIsCreating)
@@ -532,7 +526,7 @@ void ExportMultipleDialog::OnFormat(wxCommandEvent& WXUNUSED(event))
    EnableControls();
 }
 
-void ExportMultipleDialog::OnOptions(wxCommandEvent& WXUNUSED(event))
+void ExportMultipleDialog::OnOptions()
 {
    const int sel = mFormat->GetSelection();
    if (sel != wxNOT_FOUND)
@@ -556,7 +550,7 @@ void ExportMultipleDialog::OnOptions(wxCommandEvent& WXUNUSED(event))
    mPlugins[mPluginIndex]->DisplayOptions(this,mSubFormatIndex);
 }
 
-void ExportMultipleDialog::OnCreate(wxCommandEvent& WXUNUSED(event))
+void ExportMultipleDialog::OnCreate()
 {
    wxFileName fn;
 
@@ -576,7 +570,7 @@ void ExportMultipleDialog::OnCreate(wxCommandEvent& WXUNUSED(event))
       this);
 }
 
-void ExportMultipleDialog::OnChoose(wxCommandEvent& WXUNUSED(event))
+void ExportMultipleDialog::OnChoose()
 {
    wxDirDialogWrapper dlog(this,
       XO("Choose a location to save the exported files"),

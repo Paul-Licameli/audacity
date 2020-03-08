@@ -39,24 +39,6 @@ Provides:
 
 wxDEFINE_EVENT(EVT_THEME_CHANGE, wxCommandEvent);
 
-enum eThemePrefsIds {
-   idLoadThemeCache=7000,
-   idSaveThemeCache,
-   idLoadThemeComponents,
-   idSaveThemeComponents,
-   idReadThemeInternal,
-   idSaveThemeAsCode
-};
-
-BEGIN_EVENT_TABLE(ThemePrefs, PrefsPanel)
-   EVT_BUTTON(idLoadThemeCache,      ThemePrefs::OnLoadThemeCache)
-   EVT_BUTTON(idSaveThemeCache,      ThemePrefs::OnSaveThemeCache)
-   EVT_BUTTON(idLoadThemeComponents, ThemePrefs::OnLoadThemeComponents)
-   EVT_BUTTON(idSaveThemeComponents, ThemePrefs::OnSaveThemeComponents)
-   EVT_BUTTON(idReadThemeInternal,   ThemePrefs::OnReadThemeInternal)
-   EVT_BUTTON(idSaveThemeAsCode,     ThemePrefs::OnSaveThemeAsCode)
-END_EVENT_TABLE()
-
 ThemePrefs::ThemePrefs(wxWindow * parent, wxWindowID winid)
 /* i18n-hint: A theme is a consistent visual style across an application's
  graphical user interface, including choices of colors, and similarity of images
@@ -118,11 +100,11 @@ void ThemePrefs::PopulateOrExchange(ShuttleGui & S)
       S.StartHorizontalLay(wxALIGN_LEFT);
       {
          S
-            .Id(idSaveThemeCache)
+            .Action( [this]{ OnSaveThemeCache(); } )
             .AddButton(XXO("Save Theme Cache"));
 
          S
-            .Id(idLoadThemeCache)
+            .Action( [this]{ OnLoadThemeCache(); } )
             .AddButton(XXO("Load Theme Cache"));
 
          // This next button is only provided in Debug mode.
@@ -130,12 +112,12 @@ void ThemePrefs::PopulateOrExchange(ShuttleGui & S)
          // and who wish to generate a NEW ThemeAsCeeCode.h and compile it in.
 #ifdef _DEBUG
          S
-            .Id(idSaveThemeAsCode)
+            .Action( [this]{ OnSaveThemeAsCode(); } )
             .AddButton( VerbatimLabel("Output Sourcery") );
 #endif
 
          S
-            .Id(idReadThemeInternal)
+            .Action( [this]{ OnReadThemeInternal(); } )
             .AddButton(XXO("&Defaults"));
       }
       S.EndHorizontalLay();
@@ -155,11 +137,11 @@ void ThemePrefs::PopulateOrExchange(ShuttleGui & S)
       S.StartHorizontalLay(wxALIGN_LEFT);
       {
          S
-            .Id(idSaveThemeComponents)
+            .Action( [this]{ OnSaveThemeComponents(); } )
             .AddButton( XXO("Save Files"));
 
          S
-            .Id(idLoadThemeComponents)
+            .Action( [this]{ OnLoadThemeComponents(); } )
             .AddButton( XXO("Load Files"));
       }
       S.EndHorizontalLay();
@@ -170,41 +152,41 @@ void ThemePrefs::PopulateOrExchange(ShuttleGui & S)
 }
 
 /// Load Theme from multiple png files.
-void ThemePrefs::OnLoadThemeComponents(wxCommandEvent & WXUNUSED(event))
+void ThemePrefs::OnLoadThemeComponents()
 {
    theTheme.LoadComponents();
    ApplyUpdatedImages();
 }
 
 /// Save Theme to multiple png files.
-void ThemePrefs::OnSaveThemeComponents(wxCommandEvent & WXUNUSED(event))
+void ThemePrefs::OnSaveThemeComponents()
 {
    theTheme.SaveComponents();
 }
 
 /// Load Theme from single png file.
-void ThemePrefs::OnLoadThemeCache(wxCommandEvent & WXUNUSED(event))
+void ThemePrefs::OnLoadThemeCache()
 {
    theTheme.ReadImageCache();
    ApplyUpdatedImages();
 }
 
 /// Save Theme to single png file.
-void ThemePrefs::OnSaveThemeCache(wxCommandEvent & WXUNUSED(event))
+void ThemePrefs::OnSaveThemeCache()
 {
    theTheme.CreateImageCache();
    theTheme.WriteImageMap();// bonus - give them the html version.
 }
 
 /// Read Theme from internal storage.
-void ThemePrefs::OnReadThemeInternal(wxCommandEvent & WXUNUSED(event))
+void ThemePrefs::OnReadThemeInternal()
 {
    theTheme.ReadImageCache( theTheme.GetFallbackThemeType() );
    ApplyUpdatedImages();
 }
 
 /// Save Theme as C source code.
-void ThemePrefs::OnSaveThemeAsCode(wxCommandEvent & WXUNUSED(event))
+void ThemePrefs::OnSaveThemeAsCode()
 {
    theTheme.SaveThemeAsCode();
    theTheme.WriteImageDefs();// bonus - give them the Defs too.

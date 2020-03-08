@@ -98,13 +98,6 @@
    FFMPEG_EXPORT_CTRL_ID_ENTRY(FELastID), \
  \
    FFMPEG_EXPORT_CTRL_ID_ENTRY(FEPresetID), \
-   FFMPEG_EXPORT_CTRL_ID_ENTRY(FESavePresetID), \
-   FFMPEG_EXPORT_CTRL_ID_ENTRY(FELoadPresetID), \
-   FFMPEG_EXPORT_CTRL_ID_ENTRY(FEDeletePresetID), \
-   FFMPEG_EXPORT_CTRL_ID_ENTRY(FEAllFormatsID), \
-   FFMPEG_EXPORT_CTRL_ID_ENTRY(FEAllCodecsID), \
-   FFMPEG_EXPORT_CTRL_ID_ENTRY(FEImportPresetsID), \
-   FFMPEG_EXPORT_CTRL_ID_ENTRY(FEExportPresetsID) \
 
 // First the enumeration
 #define FFMPEG_EXPORT_CTRL_ID_FIRST_ENTRY(name, num)  name = num
@@ -771,12 +764,6 @@ bool ExportFFmpegWMAOptions::TransferDataFromWindow()
 // ExportFFmpegCustomOptions Class
 //----------------------------------------------------------------------------
 
-#define OpenID 9000
-
-BEGIN_EVENT_TABLE(ExportFFmpegCustomOptions, wxPanelWrapper)
-   EVT_BUTTON(OpenID, ExportFFmpegCustomOptions::OnOpen)
-END_EVENT_TABLE()
-
 ExportFFmpegCustomOptions::ExportFFmpegCustomOptions(wxWindow *parent, int WXUNUSED(format))
 :  wxPanelWrapper(parent, wxID_ANY),
    mFormat( nullptr ),
@@ -802,9 +789,8 @@ void ExportFFmpegCustomOptions::PopulateOrExchange(ShuttleGui & S)
       S.StartVerticalLay(wxCENTER, 0);
       {
          S
-            .Id(OpenID)
+            .Action( [this]{ OnOpen(); } )
             .AddButton(XXO("Open custom FFmpeg format options"));
-
          S.StartMultiColumn(2, wxCENTER);
          {
             S
@@ -851,7 +837,7 @@ bool ExportFFmpegCustomOptions::TransferDataFromWindow()
 
 ///
 ///
-void ExportFFmpegCustomOptions::OnOpen(wxCommandEvent & WXUNUSED(evt))
+void ExportFFmpegCustomOptions::OnOpen()
 {
    // Show "Locate FFmpeg" dialog
    PickFFmpegLibs();
@@ -1306,13 +1292,6 @@ BEGIN_EVENT_TABLE(ExportFFmpegOptions, wxDialogWrapper)
    EVT_BUTTON(wxID_HELP,ExportFFmpegOptions::OnGetURL)
    EVT_LISTBOX(FEFormatID,ExportFFmpegOptions::OnFormatList)
    EVT_LISTBOX(FECodecID,ExportFFmpegOptions::OnCodecList)
-   EVT_BUTTON(FEAllFormatsID,ExportFFmpegOptions::OnAllFormats)
-   EVT_BUTTON(FEAllCodecsID,ExportFFmpegOptions::OnAllCodecs)
-   EVT_BUTTON(FESavePresetID,ExportFFmpegOptions::OnSavePreset)
-   EVT_BUTTON(FELoadPresetID,ExportFFmpegOptions::OnLoadPreset)
-   EVT_BUTTON(FEDeletePresetID,ExportFFmpegOptions::OnDeletePreset)
-   EVT_BUTTON(FEImportPresetsID,ExportFFmpegOptions::OnImportPresets)
-   EVT_BUTTON(FEExportPresetsID,ExportFFmpegOptions::OnExportPresets)
 END_EVENT_TABLE()
 
 /// Describes format-codec compatibility
@@ -1890,23 +1869,23 @@ void ExportFFmpegOptions::PopulateOrExchange(ShuttleGui & S)
             .AddCombo(XXO("Preset:"), FFmpegPreset.Read(), mPresetNames);
 
          S
-            .Id(FELoadPresetID)
+            .Action( [this]{ OnLoadPreset(); } )
             .AddButton(XXO("Load Preset"));
 
          S
-            .Id(FESavePresetID)
+            .Action( [this]{ OnSavePreset(); } )
             .AddButton(XXO("Save Preset"));
 
          S
-            .Id(FEDeletePresetID)
+            .Action( [this]{ OnDeletePreset(); } )
             .AddButton(XXO("Delete Preset"));
 
          S
-            .Id(FEImportPresetsID)
+            .Action( [this]{ OnImportPresets(); } )
             .AddButton(XXO("Import Presets"));
 
          S
-            .Id(FEExportPresetsID)
+            .Action( [this]{ OnExportPresets(); } )
             .AddButton(XXO("Export Presets"));
       }
       S.EndMultiColumn();
@@ -1941,11 +1920,11 @@ void ExportFFmpegOptions::PopulateOrExchange(ShuttleGui & S)
             S.SetStretchyRow(1);
    
             S
-               .Id(FEAllFormatsID)
+               .Action( [this]{ OnAllFormats(); } )
                .AddButton(XXO("Show All Formats"));
    
             S
-               .Id(FEAllCodecsID)
+               .Action( [this]{ OnAllCodecs(); } )
                .AddButton(XXO("Show All Codecs"));
    
             mFormatList =
@@ -2330,7 +2309,7 @@ int ExportFFmpegOptions::FetchCompatibleFormatList(const AVCodecID id, wxString 
 
 ///
 ///
-void ExportFFmpegOptions::OnDeletePreset(wxCommandEvent& WXUNUSED(event))
+void ExportFFmpegOptions::OnDeletePreset()
 {
    wxComboBox *preset = dynamic_cast<wxComboBox*>(FindWindowById(FEPresetID,this));
    wxString presetname = preset->GetValue();
@@ -2358,7 +2337,7 @@ void ExportFFmpegOptions::OnDeletePreset(wxCommandEvent& WXUNUSED(event))
 
 ///
 ///
-void ExportFFmpegOptions::OnSavePreset(wxCommandEvent& WXUNUSED(event))
+void ExportFFmpegOptions::OnSavePreset()
 {  const bool kCheckForOverwrite = true;
    SavePreset(kCheckForOverwrite);
 }
@@ -2390,7 +2369,7 @@ bool ExportFFmpegOptions::SavePreset(bool bCheckForOverwrite)
 
 ///
 ///
-void ExportFFmpegOptions::OnLoadPreset(wxCommandEvent& WXUNUSED(event))
+void ExportFFmpegOptions::OnLoadPreset()
 {
    wxComboBox *preset = dynamic_cast<wxComboBox*>(FindWindowById(FEPresetID,this));
    wxString presetname = preset->GetValue();
@@ -2418,7 +2397,7 @@ static const FileNames::FileTypes &FileTypes()
 
 ///
 ///
-void ExportFFmpegOptions::OnImportPresets(wxCommandEvent& WXUNUSED(event))
+void ExportFFmpegOptions::OnImportPresets()
 {
    wxString path;
    FileDialogWrapper dlg(this,
@@ -2437,7 +2416,7 @@ void ExportFFmpegOptions::OnImportPresets(wxCommandEvent& WXUNUSED(event))
 
 ///
 ///
-void ExportFFmpegOptions::OnExportPresets(wxCommandEvent& WXUNUSED(event))
+void ExportFFmpegOptions::OnExportPresets()
 {
    const bool kCheckForOverwrite = true;
    // Bug 1180 save any pending preset before exporting the lot.
@@ -2467,7 +2446,7 @@ void ExportFFmpegOptions::OnExportPresets(wxCommandEvent& WXUNUSED(event))
 
 ///
 ///
-void ExportFFmpegOptions::OnAllFormats(wxCommandEvent& WXUNUSED(event))
+void ExportFFmpegOptions::OnAllFormats()
 {
    mShownFormatNames = mFormatNames;
    mFormatList->Clear();
@@ -2476,7 +2455,7 @@ void ExportFFmpegOptions::OnAllFormats(wxCommandEvent& WXUNUSED(event))
 
 ///
 ///
-void ExportFFmpegOptions::OnAllCodecs(wxCommandEvent& WXUNUSED(event))
+void ExportFFmpegOptions::OnAllCodecs()
 {
    mShownCodecNames = mCodecNames;
    mCodecList->Clear();

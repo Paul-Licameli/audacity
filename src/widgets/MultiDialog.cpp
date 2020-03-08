@@ -51,23 +51,13 @@ public:
    ~MultiDialog() {};
 
 private:
-   void OnOK( wxCommandEvent &event );
-   void OnShowLog(wxCommandEvent& event);
-   void OnHelp(wxCommandEvent& event);
+   void OnOK();
+   void OnShowLog();
+   void OnHelp();
 
    wxRadioBox* mRadioBox;
    wxString mHelpPage;
-
-   DECLARE_EVENT_TABLE()
 };
-
-#define ID_SHOW_LOG_BUTTON 3333
-
-BEGIN_EVENT_TABLE(MultiDialog, wxDialogWrapper)
-   EVT_BUTTON( wxID_OK, MultiDialog::OnOK )
-   EVT_BUTTON(ID_SHOW_LOG_BUTTON, MultiDialog::OnShowLog)
-   EVT_BUTTON(wxID_HELP, MultiDialog::OnHelp)
-END_EVENT_TABLE()
 
 MultiDialog::MultiDialog(wxWindow * pParent,
                          const TranslatableString &message,
@@ -133,7 +123,7 @@ MultiDialog::MultiDialog(wxWindow * pParent,
             if (log)
             {
                S
-                  .Id(ID_SHOW_LOG_BUTTON)
+                  .Action( [this]{ OnShowLog(); } )
                   .AddButton(
                      XXO("Show Log for Details"), wxALIGN_LEFT | wxALL,
                      // set default to encourage user to look at files.
@@ -144,13 +134,12 @@ MultiDialog::MultiDialog(wxWindow * pParent,
 
             auto pButton =
             S
-               .Id(wxID_OK)
                .AddButton(XXO("OK"), wxALIGN_CENTER, !log);
 
             if (!mHelpPage.IsEmpty()) {
                auto pHelpBtn =
                S
-                  .Id(wxID_HELP)
+                  .Action( [this]{ OnHelp(); } )
                   .AddBitmapButton(theTheme.Bitmap(bmpHelpIcon), wxALIGN_CENTER, false);
 
                pHelpBtn->SetToolTip(XO("Help").Translation());
@@ -167,12 +156,12 @@ MultiDialog::MultiDialog(wxWindow * pParent,
    GetSizer()->SetSizeHints(this);
 }
 
-void MultiDialog::OnOK(wxCommandEvent & WXUNUSED(event))
+void MultiDialog::OnOK()
 {
    EndModal(mRadioBox->GetSelection());
 }
 
-void MultiDialog::OnShowLog(wxCommandEvent & WXUNUSED(event))
+void MultiDialog::OnShowLog()
 {
    auto logger = AudacityLogger::Get();
    if (logger) {
@@ -180,7 +169,7 @@ void MultiDialog::OnShowLog(wxCommandEvent & WXUNUSED(event))
    }
 }
 
-void MultiDialog::OnHelp(wxCommandEvent & WXUNUSED(event))
+void MultiDialog::OnHelp()
 {
    HelpSystem::ShowHelp(FindWindow(wxID_HELP), mHelpPage, true);
 }

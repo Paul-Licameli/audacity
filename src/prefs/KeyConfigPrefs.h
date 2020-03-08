@@ -62,12 +62,12 @@ private:
    void OnShow(wxShowEvent & e);
 
    void OnViewBy(wxCommandEvent & e);
-   void OnDefaults(wxCommandEvent & e);
+   void OnDefaults();
    void OnImportDefaults( int id );
-   void OnImport(wxCommandEvent & e);
-   void OnExport(wxCommandEvent & e);
-   void OnSet(wxCommandEvent & e);
-   void OnClear(wxCommandEvent & e);
+   void OnImport();
+   void OnExport();
+   void OnSet();
+   void OnClear();
    void OnSelected(wxCommandEvent & e);
 
    void OnHotkeyKeyDown(wxKeyEvent & e);

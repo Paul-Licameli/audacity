@@ -73,10 +73,12 @@ class LabelDialog final : public wxDialogWrapper
 
    void OnUpdate(wxCommandEvent &event);
    void OnFreqUpdate(wxCommandEvent &event);
-   void OnInsert(wxCommandEvent &event);
-   void OnRemove(wxCommandEvent &event);
-   void OnImport(wxCommandEvent &event);
-   void OnExport(wxCommandEvent &event);
+   void OnInsertA();
+   void OnInsertB();
+   void OnInsert( bool buttonA = false );
+   void OnRemove();
+   void OnImport();
+   void OnExport();
    void OnSelectCell(wxGridEvent &event);
    void OnCellChange(wxGridEvent &event);
    void OnChangeTrack(wxGridEvent &event, int row, RowData *rd);

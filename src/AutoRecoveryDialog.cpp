@@ -46,10 +46,10 @@ private:
    void PopulateList();
    bool HaveChecked();
 
-   void OnQuitAudacity(wxCommandEvent &evt);
-   void OnDiscardSelected(wxCommandEvent &evt);
-   void OnRecoverSelected(wxCommandEvent &evt);
-   void OnSkip(wxCommandEvent &evt);
+   void OnQuitAudacity();
+   void OnDiscardSelected();
+   void OnRecoverSelected();
+   void OnSkip();
    void OnColumnClicked(wxListEvent &evt);
    void OnItemActivated(wxListEvent &evt);
    void OnListKeyDown(wxKeyEvent &evt);
@@ -58,15 +58,10 @@ private:
    wxListCtrl *mFileList;
    AudacityProject *mProject;
 
-public:
-   DECLARE_EVENT_TABLE()
+   DECLARE_EVENT_TABLE();
 };
 
 BEGIN_EVENT_TABLE(AutoRecoveryDialog, wxDialogWrapper)
-   EVT_BUTTON(ID_QUIT_AUDACITY, AutoRecoveryDialog::OnQuitAudacity)
-   EVT_BUTTON(ID_DISCARD_SELECTED, AutoRecoveryDialog::OnDiscardSelected)
-   EVT_BUTTON(ID_RECOVER_SELECTED, AutoRecoveryDialog::OnRecoverSelected)
-   EVT_BUTTON(ID_SKIP, AutoRecoveryDialog::OnSkip)
    EVT_LIST_COL_CLICK(ID_FILE_LIST, AutoRecoveryDialog::OnColumnClicked)
    EVT_LIST_ITEM_ACTIVATED(ID_FILE_LIST, AutoRecoveryDialog::OnItemActivated)
 END_EVENT_TABLE()
@@ -131,19 +126,19 @@ void AutoRecoveryDialog::PopulateOrExchange(ShuttleGui &S)
       S.StartHorizontalLay(wxALIGN_CENTRE, 0);
       {
          S
-            .Id(ID_QUIT_AUDACITY)
+            .Action( [this]{ OnQuitAudacity(); } )
             .AddButton(XXO("&Quit Audacity"));
 
          S
-            .Id(ID_DISCARD_SELECTED)
+            .Action( [this]{ OnDiscardSelected(); } )
             .AddButton(XXO("&Discard Selected"));
 
          S
-            .Id(ID_RECOVER_SELECTED)
+            .Action( [this]{ OnRecoverSelected(); } )
             .AddButton(XXO("&Recover Selected"), wxALIGN_CENTRE, true);
 
          S
-            .Id(ID_SKIP)
+            .Action( [this]{ OnSkip(); } )
             .AddButton(XXO("&Skip"));
 
          SetAffirmativeId(ID_RECOVER_SELECTED);
@@ -247,12 +242,12 @@ bool AutoRecoveryDialog::HaveChecked()
    return false;
 }
 
-void AutoRecoveryDialog::OnQuitAudacity(wxCommandEvent &WXUNUSED(evt))
+void AutoRecoveryDialog::OnQuitAudacity()
 {
    EndModal(ID_QUIT_AUDACITY);
 }
 
-void AutoRecoveryDialog::OnDiscardSelected(wxCommandEvent &WXUNUSED(evt))
+void AutoRecoveryDialog::OnDiscardSelected()
 {
    if (!HaveChecked())
    {
@@ -333,7 +328,7 @@ void AutoRecoveryDialog::OnDiscardSelected(wxCommandEvent &WXUNUSED(evt))
    }
 }
 
-void AutoRecoveryDialog::OnRecoverSelected(wxCommandEvent &WXUNUSED(evt))
+void AutoRecoveryDialog::OnRecoverSelected()
 {
    if (!HaveChecked())
    {
@@ -370,7 +365,7 @@ void AutoRecoveryDialog::OnRecoverSelected(wxCommandEvent &WXUNUSED(evt))
    EndModal(ID_RECOVER_SELECTED);
 }
 
-void AutoRecoveryDialog::OnSkip(wxCommandEvent &WXUNUSED(evt))
+void AutoRecoveryDialog::OnSkip()
 {
    EndModal(ID_SKIP);
 }
