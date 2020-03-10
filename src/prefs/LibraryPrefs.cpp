@@ -115,10 +115,6 @@ void LibraryPrefs::PopulateOrExchange(ShuttleGui & S)
                        wxALL | wxALIGN_LEFT | wxALIGN_CENTRE_VERTICAL);
 
          S
-            .AddVariableText(XO("FFmpeg Library:"),
-               true, wxALL | wxALIGN_RIGHT | wxALIGN_CENTRE_VERTICAL);
-
-         S
 #if !defined(USE_FFMPEG) || defined(DISABLE_DYNAMIC_LOADING_FFMPEG)
             .Disable()
 #endif

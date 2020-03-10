@@ -1568,20 +1568,6 @@ EffectNoiseReduction::Dialog::Dialog
 #endif
 {
    EffectDialog::Init();
-
-   wxButton *const pButtonPreview =
-      (wxButton *)wxWindow::FindWindowById(ID_EFFECT_PREVIEW, this);
-   wxButton *const pButtonReduceNoise =
-      (wxButton *)wxWindow::FindWindowById(wxID_OK, this);
-
-   if (mbHasProfile || mbAllowTwiddleSettings) {
-      pButtonPreview->Enable(!mbAllowTwiddleSettings);
-      pButtonReduceNoise->SetFocus();
-   }
-   else {
-      pButtonPreview->Enable(false);
-      pButtonReduceNoise->Enable(false);
-   }
 }
 
 void EffectNoiseReduction::Dialog::DisableControlsIfIsolating()
@@ -1858,9 +1844,16 @@ void EffectNoiseReduction::Dialog::PopulateOrExchange(ShuttleGui & S)
    S.EndStatic();
 #endif
 
+   using DialogDefinition::Item;
    S
-      .AddStandardButtons(
-         eOkButton | eCancelButton | ePreviewButton| eHelpButton );
+      .AddStandardButtons( eCancelButton | eHelpButton, {
+         S.Item( ePreviewButton )
+            .Disable( !mbHasProfile || mbAllowTwiddleSettings ),
+
+         (mbHasProfile || mbAllowTwiddleSettings)
+            ? S.Item( eOkButton ).Focus()
+            : S.Item( eOkButton ).Disable( true )
+      } );
 }
 
 bool EffectNoiseReduction::Dialog::TransferDataToWindow()

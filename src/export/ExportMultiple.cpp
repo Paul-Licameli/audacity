@@ -478,7 +478,9 @@ void ExportMultipleDialog::PopulateOrExchange(ShuttleGui& S)
    S.EndHorizontalLay();
 
    S
-      .AddStandardButtons(eOkButton | eCancelButton | eHelpButton);
+      .AddStandardButtons( eCancelButton | eHelpButton, {
+         S.Item( eOkButton )
+      } );
 
    mExport = (wxButton *)wxWindow::FindWindowById(wxID_OK, this);
    mExport->SetLabel(_("Export"));

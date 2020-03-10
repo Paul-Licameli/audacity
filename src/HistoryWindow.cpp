@@ -186,12 +186,13 @@ void HistoryDialog::Populate(ShuttleGui & S)
          S.EndMultiColumn();
       }
       S.EndStatic();
+      S.AddStandardButtons(eOkButton, {
+            S.Item( eHelpButton )
+         }
 #if defined(ALLOW_DISCARD)
-      mCompact = safenew wxButton(this, ID_COMPACT, _("&Compact"));
-      S.AddStandardButtons(eOkButton | eHelpButton, {}, mCompact);
-#else
-      S.AddStandardButtons(eOkButton | eHelpButton);
+         , (mCompact = safenew wxButton(this, ID_COMPACT, _("&Compact")))
 #endif
+      );
    }
    S.EndVerticalLay();
    // ----------------------- End of main section --------------

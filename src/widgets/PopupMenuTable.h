@@ -315,7 +315,7 @@ That's all!
 // begins function
 #define BEGIN_POPUP_MENU(HandlerClass) \
 void HandlerClass::Populate() { \
-   using My =  HandlerClass; \
+   using  My =  HandlerClass; \
    mTop = std::make_shared< PopupSubMenu >( \
          Id(), Caption(), *this ); \
    mStack.clear(); \

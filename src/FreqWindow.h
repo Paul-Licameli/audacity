@@ -122,7 +122,6 @@ private:
    std::unique_ptr<wxCursor> mArrowCursor;
    std::unique_ptr<wxCursor> mCrossCursor;
 
-   wxButton *mCloseButton;
    wxButton *mExportButton;
    wxButton *mReplotButton;
    wxCheckBox *mGridOnOff;

@@ -207,7 +207,6 @@ void HelpSystem::ShowHtmlText(wxWindow *pParent,
          .AddWindow( html );
 
       S
-         .Id( wxID_CANCEL )
          .Action( [pWnd]{ pWnd->OnClose(); } )
          .AddButton( XXO("Close"), wxALIGN_CENTER, true );
    }

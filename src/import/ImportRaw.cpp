@@ -456,7 +456,9 @@ ImportRawDialog::ImportRawDialog(wxWindow * parent,
       // Preview Pane goes here
       //
 
-      S.AddStandardButtons();
+      S.AddStandardButtons( eCancelButton, {
+         S.Item( eOkButton )
+      });
       // Find the OK button, and change its text to 'Import'.
       // We MUST set mOK because it is used later.
       mOK = (wxButton *)wxWindow::FindWindowById(wxID_OK, this);
@@ -525,7 +527,6 @@ void ImportRawDialog::OnChoice(wxCommandEvent & WXUNUSED(event))
    info.channels = mChannelChoice->GetSelection() + 1;
    info.samplerate = 44100;
 
-   //mOK = (wxButton *)wxWindow::FindWindowById(wxID_OK, this);
    if (sf_format_check(&info)) {
       mOK->Enable(true);
       return;

@@ -134,6 +134,7 @@ MultiDialog::MultiDialog(wxWindow * pParent,
 
             auto pButton =
             S
+               .Action( [this]{ OnOK(); } )
                .AddButton(XXO("OK"), wxALIGN_CENTER, !log);
 
             if (!mHelpPage.IsEmpty()) {

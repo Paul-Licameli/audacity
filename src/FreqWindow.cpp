@@ -518,14 +518,14 @@ void FrequencyPlotDialog::Populate()
 
       S.AddSpace(5);
 
-      //mCloseButton = S.Id(wxID_CANCEL).AddButton(XO("&Close"));
-
       //S.AddSpace(5);
    }
    S.EndMultiColumn();
 
    S
-      .AddStandardButtons( eHelpButton | eCloseButton );
+      .AddStandardButtons( eHelpButton, {
+         S.Item( eCloseButton ).Default()
+      } );
 
    // -------------------------------------------------------------------
    // ROW 8: Spacer
@@ -545,9 +545,6 @@ void FrequencyPlotDialog::Populate()
       mAxisChoice->Disable();
    }
    mLogAxis = mAxis != 0;
-
-   mCloseButton = static_cast<wxButton*>(FindWindowById( wxID_CANCEL ));
-   mCloseButton->SetDefault();
 
    Layout();
    Fit();

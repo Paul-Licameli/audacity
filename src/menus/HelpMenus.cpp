@@ -51,7 +51,10 @@ void ShowDiagnostics(
 
       wxButton *save = safenew wxButton(S.GetParent(), wxID_OK, _("&Save"));
       S
-         .AddStandardButtons(eCancelButton, {}, save);
+         .AddStandardButtons( eCancelButton, {
+            S.Item( eOkButton )
+         },
+         save );
    }
    S.EndVerticalLay();
 
@@ -150,10 +153,6 @@ QuickFixDialog::QuickFixDialog(wxWindow * pParent, AudacityProject &project) :
    SetMinSize( sz );
    SetMaxSize( sz );
 
-   // The close button has the cancel id and acts exactly the same as cancel.
-   wxButton * pWin = (wxButton*)FindWindowById( wxID_CANCEL );
-   if( pWin )
-      pWin->SetFocus( );
    Center();
 }
 
@@ -249,7 +248,9 @@ void QuickFixDialog::PopulateOrExchange(ShuttleGui & S)
    S.StartHorizontalLay(wxALIGN_CENTER_HORIZONTAL, 0);
    {
       S
-         .AddStandardButtons(eCloseButton + (bStuckInMode ? 0 : eHelpButton));
+         .AddStandardButtons((bStuckInMode ? 0 : eHelpButton), {
+            S.Item( eCloseButton ).Focus()
+         });
    }
    S.EndHorizontalLay();
 
