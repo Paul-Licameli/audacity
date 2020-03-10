@@ -78,7 +78,7 @@
 
 #endif 
 #include "SseMathFuncs.h"
-#include <intrin.h>
+//#include <intrin.h>
 
 #ifndef M_PI
 #define	M_PI		3.14159265358979323846  /* pi */
@@ -1757,6 +1757,7 @@ void ReorderToFreq4xSinCosTableBR16(FFTParam *hFFT, fft_type *buffer, fft_type *
 */
 void RealFFTf1xFastMathBR24(fft_type *buffer, FFTParam *h)
 {
+#if 0
    fft_type *A, *B;
    fft_type *endptr1, *endptr2;
    int br1Index, br2Index;
@@ -1881,6 +1882,7 @@ void RealFFTf1xFastMathBR24(fft_type *buffer, FFTParam *h)
    v1=buffer[0]-buffer[1];
    buffer[0]+=buffer[1];
    buffer[1]=v1;
+#endif
 }
 
 /* Description: This routine performs an inverse FFT to real data.
@@ -1904,6 +1906,7 @@ void RealFFTf1xFastMathBR24(fft_type *buffer, FFTParam *h)
 */
 void InverseRealFFTf1xFastMathBR24(fft_type *buffer, FFTParam *h)
 {
+#if 0
    fft_type *A,*B;
    fft_type *endptr1,*endptr2;
    int br1Index; 
@@ -2021,6 +2024,7 @@ void InverseRealFFTf1xFastMathBR24(fft_type *buffer, FFTParam *h)
       }
       ButterfliesPerGroup >>= 1;
    }
+#endif
 }
 
 void ReorderToFreq1xFastMathBR24(FFTParam *hFFT, fft_type *buffer, fft_type *RealOut, fft_type *ImagOut)
@@ -2056,6 +2060,7 @@ void ReorderToTime1xFastMathBR24(FFTParam *hFFT, fft_type *buffer, fft_type *Tim
 
 void RealFFTf4xFastMathBR24(fft_type *buffer, FFTParam *h)
 {
+#if 0
 
    __m128 *localBuffer=(__m128 *)buffer;
 
@@ -2181,6 +2186,7 @@ void RealFFTf4xFastMathBR24(fft_type *buffer, FFTParam *h)
    v1=_mm_sub_ps(localBuffer[0], localBuffer[1]);
    localBuffer[0]=_mm_add_ps(localBuffer[0], localBuffer[1]);
    localBuffer[1]=v1;
+#endif
 }
 
 /* Description: This routine performs an inverse FFT to real data.
@@ -2204,6 +2210,7 @@ void RealFFTf4xFastMathBR24(fft_type *buffer, FFTParam *h)
 */
 void InverseRealFFTf4xFastMathBR24(fft_type *buffer, FFTParam *h)
 {
+#if 0
 
    __m128 *localBuffer=(__m128 *)buffer;
 
@@ -2327,6 +2334,7 @@ void InverseRealFFTf4xFastMathBR24(fft_type *buffer, FFTParam *h)
       }
       ButterfliesPerGroup >>= 1;
    }
+#endif
 }
 
 void ReorderToFreq4xFastMathBR24(FFTParam *hFFT, fft_type *buffer, fft_type *RealOut, fft_type *ImagOut)
@@ -2392,6 +2400,7 @@ void ReorderToTime4xFastMathBR24(FFTParam *hFFT, fft_type *buffer, fft_type *Tim
 */
 void RealFFTf1xFastMathBR16(fft_type *buffer, FFTParam *h)
 {
+#if 0
    fft_type *A,*B;
    fft_type *endptr1,*endptr2;
    int br1Index, br2Index;
@@ -2512,6 +2521,7 @@ void RealFFTf1xFastMathBR16(fft_type *buffer, FFTParam *h)
    v1=buffer[0]-buffer[1];
    buffer[0]+=buffer[1];
    buffer[1]=v1;
+#endif
 }
 
 /* Description: This routine performs an inverse FFT to real data.
@@ -2535,6 +2545,7 @@ void RealFFTf1xFastMathBR16(fft_type *buffer, FFTParam *h)
 */
 void InverseRealFFTf1xFastMathBR16(fft_type *buffer, FFTParam *h)
 {
+#if 0
    fft_type *A,*B;
    fft_type *endptr1,*endptr2;
    int br1Index; 
@@ -2652,6 +2663,7 @@ void InverseRealFFTf1xFastMathBR16(fft_type *buffer, FFTParam *h)
       }
       ButterfliesPerGroup >>= 1;
    }
+#endif
 }
 
 void ReorderToFreq1xFastMathBR16(FFTParam *hFFT, fft_type *buffer, fft_type *RealOut, fft_type *ImagOut)
@@ -2686,6 +2698,7 @@ void ReorderToTime1xFastMathBR16(FFTParam *hFFT, fft_type *buffer, fft_type *Tim
 
 void RealFFTf4xFastMathBR16(fft_type *buffer, FFTParam *h)
 {
+#if 0
 
    __m128 *localBuffer = (__m128 *)buffer;
 
@@ -2811,6 +2824,7 @@ void RealFFTf4xFastMathBR16(fft_type *buffer, FFTParam *h)
    v1=_mm_sub_ps(localBuffer[0], localBuffer[1]);
    localBuffer[0]=_mm_add_ps(localBuffer[0], localBuffer[1]);
    localBuffer[1]=v1;
+#endif
 }
 
 /* Description: This routine performs an inverse FFT to real data.
@@ -2834,6 +2848,7 @@ void RealFFTf4xFastMathBR16(fft_type *buffer, FFTParam *h)
 */
 void InverseRealFFTf4xFastMathBR16(fft_type *buffer, FFTParam *h)
 {
+#if 0
 
    __m128 *localBuffer=(__m128 *)buffer;
 
@@ -2957,6 +2972,7 @@ void InverseRealFFTf4xFastMathBR16(fft_type *buffer, FFTParam *h)
       }
       ButterfliesPerGroup >>= 1;
    }
+#endif
 }
 
 void ReorderToFreq4xFastMathBR16(FFTParam *hFFT, fft_type *buffer, fft_type *RealOut, fft_type *ImagOut)

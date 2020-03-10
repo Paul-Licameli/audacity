@@ -14,7 +14,7 @@
 
 
 
-#if !defined(EXPERIMENTAL_NOISE_REDUCTION)
+#if 1//!defined(EXPERIMENTAL_NOISE_REDUCTION)
 
 #include "Effect.h"
 #include "EffectUI.h"

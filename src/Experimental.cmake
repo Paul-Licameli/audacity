@@ -30,7 +30,7 @@
 set( EXPERIMENTAL_OPTIONS_LIST
    # ACH 08 Jan 2014
    # EQ accelerated code
-   #EQ_SSE_THREADED
+   EQ_SSE_THREADED
 
    # LLL, 09 Nov 2013:
    # Allow all WASAPI devices, not just loopback
@@ -51,7 +51,7 @@ set( EXPERIMENTAL_OPTIONS_LIST
    SYNC_LOCK
 
    # DA: Enables dark audacity theme and customisations.
-   #DA
+   DA
 
    # Define this so that sync-lock tiles shine through spectrogram.
    # The spectrogram pastes a bitmap over the tiles.
@@ -75,14 +75,14 @@ set( EXPERIMENTAL_OPTIONS_LIST
 
    #August 2009 - Theming not locked down enough for a stable release.
    # This turns on the Theme panel in Prefs dialog. It is independent of THEMING.
-   #THEME_PREFS
+   THEME_PREFS
 
    # This shows the zoom toggle button on the edit toolbar.
    ZOOM_TOGGLE_BUTTON
 
    #ROLL_UP_DIALOG
    #RIGHT_ALIGNED_TEXTBOXES
-   #VOICE_DETECTION
+   VOICE_DETECTION
 
    # Effect categorisation. Adds support for arranging effects in categories
    # and displaying those categories as submenus in the Effect menu.
@@ -100,7 +100,7 @@ set( EXPERIMENTAL_OPTIONS_LIST
    # A spectrumLogF-like view mode with notes quantization.
    # Just select the "Find Notes" checkbox in the spectrum prefs
    # to activate it instead of the Spectrum log(f) mode.
-   #FIND_NOTES
+   FIND_NOTES
 
    # AM, 22.Nov 2007:
    # A Frequency Grid for the Spectrum Log(f) & Find Notes modes
@@ -136,7 +136,7 @@ set( EXPERIMENTAL_OPTIONS_LIST
    #NOTEBOOK
 
    #Automatically tries to find an acceptable input volume
-   #AUTOMATED_INPUT_LEVEL_ADJUSTMENT
+   AUTOMATED_INPUT_LEVEL_ADJUSTMENT
 
    # Module prefs provides a panel in prefs where users can choose which modules
    # to enable.
@@ -146,7 +146,7 @@ set( EXPERIMENTAL_OPTIONS_LIST
    REALTIME_AUDACITY_EFFECTS
 
    # Define to include the effects rack (such as it is).
-   #EFFECTS_RACK
+   EFFECTS_RACK
 
    # Define to make the meters look like a row of LEDs
    #METER_LED_STYLE

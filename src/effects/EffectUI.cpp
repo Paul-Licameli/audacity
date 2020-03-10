@@ -28,6 +28,7 @@
 #include <wx/dcmemory.h>
 #include <wx/defs.h>
 #include <wx/bmpbuttn.h>
+#include <wx/dcmemory.h>
 #include <wx/frame.h>
 #include <wx/imaglist.h>
 #include <wx/settings.h>
