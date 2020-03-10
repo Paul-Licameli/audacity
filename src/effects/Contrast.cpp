@@ -162,11 +162,6 @@ enum {
    ID_RESULTSDB_TEXT
 };
 
-BEGIN_EVENT_TABLE(ContrastDialog,wxDialogWrapper)
-   EVT_BUTTON(wxID_HELP, ContrastDialog::OnGetURL)
-   EVT_BUTTON(wxID_CANCEL, ContrastDialog::OnClose)
-END_EVENT_TABLE()
-
 void ContrastDialog::OnChar(wxKeyEvent &event)
 {
    // Is this still required?
@@ -365,7 +360,10 @@ ContrastDialog::ContrastDialog(wxWindow * parent, wxWindowID id,
    S.EndStatic();
 
    S
-      .AddStandardButtons(eCloseButton |eHelpButton);
+      .AddStandardButtons( 0, {
+         S.Item( eCloseButton ).Action( [this]{ OnClose(); } ),
+         S.Item( eHelpButton ).Action( [this]{ OnGetURL(); } )
+      });
 
 #if 0
    S.StartMultiColumn(3, wxEXPAND);
@@ -393,14 +391,14 @@ ContrastDialog::ContrastDialog(wxWindow * parent, wxWindowID id,
    Center();
 }
 
-void ContrastDialog::OnGetURL(wxCommandEvent & WXUNUSED(event))
+void ContrastDialog::OnGetURL()
 {
    // Original help page is back on-line (March 2016), but the manual should be more reliable.
    // http://www.eramp.com/WCAG_2_audio_contrast_tool_help.htm
    HelpSystem::ShowHelp(this, L"Contrast");
 }
 
-void ContrastDialog::OnClose(wxCommandEvent & WXUNUSED(event))
+void ContrastDialog::OnClose()
 {
    OnReset();
 

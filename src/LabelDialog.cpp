@@ -72,12 +72,9 @@ enum {
 BEGIN_EVENT_TABLE(LabelDialog, wxDialogWrapper)
    EVT_GRID_SELECT_CELL(LabelDialog::OnSelectCell)
    EVT_GRID_CELL_CHANGED(LabelDialog::OnCellChange)
-   EVT_BUTTON(wxID_OK,      LabelDialog::OnOK)
-   EVT_BUTTON(wxID_CANCEL,  LabelDialog::OnCancel)
    EVT_COMMAND(wxID_ANY, EVT_TIMETEXTCTRL_UPDATED, LabelDialog::OnUpdate)
    EVT_COMMAND(wxID_ANY, EVT_FREQUENCYTEXTCTRL_UPDATED,
                LabelDialog::OnFreqUpdate)
-   EVT_BUTTON(wxID_HELP, LabelDialog::OnHelp)
 END_EVENT_TABLE()
 
 LabelDialog::LabelDialog(wxWindow *parent,
@@ -287,12 +284,16 @@ void LabelDialog::PopulateOrExchange( ShuttleGui & S )
    S.StartHorizontalLay(wxALIGN_RIGHT, false);
    {
       S
-         .AddStandardButtons( eOkButton | eCancelButton | eHelpButton);
+         .AddStandardButtons( 0, {
+           S.Item( eOkButton ).Action( [this]{ OnOK(); } ),
+           S.Item( eCancelButton ).Action( [this]{ OnCancel(); } ),
+           S.Item( eHelpButton ).Action( [this]{ OnHelp(); } )
+         });
    }
    S.EndHorizontalLay();
 }
 
-void LabelDialog::OnHelp(wxCommandEvent & WXUNUSED(event))
+void LabelDialog::OnHelp()
 {
    wxString page = GetHelpPageName();
    HelpSystem::ShowHelp(this, page, true);
@@ -935,7 +936,7 @@ void LabelDialog::WriteSize(){
    gPrefs->Flush();
 }
 
-void LabelDialog::OnOK(wxCommandEvent & WXUNUSED(event))
+void LabelDialog::OnOK()
 {
    if (mGrid->IsCellEditControlShown()) {
       mGrid->SaveEditControlValue();
@@ -952,7 +953,7 @@ void LabelDialog::OnOK(wxCommandEvent & WXUNUSED(event))
    return;
 }
 
-void LabelDialog::OnCancel(wxCommandEvent & WXUNUSED(event))
+void LabelDialog::OnCancel()
 {
    if (mGrid->IsCellEditControlShown()) {
       auto editor = mGrid->GetCellEditor(mGrid->GetGridCursorRow(),

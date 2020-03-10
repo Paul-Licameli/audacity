@@ -363,10 +363,6 @@ wxAccStatus TreeCtrlAx::Select(int childId, wxAccSelectionFlags selectFlags)
 
 
 BEGIN_EVENT_TABLE(PrefsDialog, wxDialogWrapper)
-   EVT_BUTTON(wxID_OK, PrefsDialog::OnOK)
-   EVT_BUTTON(wxID_CANCEL, PrefsDialog::OnCancel)
-   EVT_BUTTON(wxID_PREVIEW, PrefsDialog::OnPreview)
-   EVT_BUTTON(wxID_HELP, PrefsDialog::OnHelp)
    EVT_TREE_KEY_DOWN(wxID_ANY, PrefsDialog::OnTreeKeyDown) // Handles key events when tree has focus
 END_EVENT_TABLE()
 
@@ -537,7 +533,12 @@ PrefsDialog::PrefsDialog(
    S.EndVerticalLay();
 
    S
-      .AddStandardButtons(eOkButton | eCancelButton | ePreviewButton | eHelpButton);
+      .AddStandardButtons( 0, {
+         S.Item( eOkButton ).Action( [this]{ OnOK(); } ),
+         S.Item( eCancelButton ).Action( [this]{ OnCancel(); } ),
+         S.Item( ePreviewButton ).Action( [this]{ OnPreview(); } ),
+         S.Item( eHelpButton ).Action( [this]{ OnHelp(); } ),
+      });
 
    if (mUniquePage && !mUniquePage->ShowsPreviewButton()) {
       wxWindow *const previewButton =
@@ -623,7 +624,7 @@ int PrefsDialog::ShowModal()
    return wxDialogWrapper::ShowModal();
 }
 
-void PrefsDialog::OnCancel(wxCommandEvent & WXUNUSED(event))
+void PrefsDialog::OnCancel()
 {
    RecordExpansionState();
 
@@ -657,12 +658,12 @@ PrefsPanel * PrefsDialog::GetCurrentPanel()
    }
 }
 
-void PrefsDialog::OnPreview(wxCommandEvent & WXUNUSED(event))
+void PrefsDialog::OnPreview()
 {
    GetCurrentPanel()->Preview();
 }
 
-void PrefsDialog::OnHelp(wxCommandEvent & WXUNUSED(event))
+void PrefsDialog::OnHelp()
 {
    wxString page = GetCurrentPanel()->HelpPageName();
    HelpSystem::ShowHelp(this, page, true);
@@ -671,12 +672,12 @@ void PrefsDialog::OnHelp(wxCommandEvent & WXUNUSED(event))
 void PrefsDialog::OnTreeKeyDown(wxTreeEvent & event)
 {
    if(event.GetKeyCode() == WXK_RETURN)
-      OnOK(event);
+      OnOK();
    else
       event.Skip(); // Ensure standard behavior when enter is not pressed
 }
 
-void PrefsDialog::OnOK(wxCommandEvent & WXUNUSED(event))
+void PrefsDialog::OnOK()
 {
    RecordExpansionState();
 
@@ -841,7 +842,7 @@ void DoReloadPreferences( AudacityProject &project )
          &GetProjectFrame( project ) /* parent */, &project );
       wxCommandEvent Evt;
       //dialog.Show();
-      dialog.OnOK(Evt);
+      dialog.OnOK();
    }
 
    // LL:  Moved from PrefsDialog since wxWidgets on OSX can't deal with

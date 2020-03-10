@@ -388,10 +388,10 @@ private:
 #ifdef ADVANCED_SETTINGS
    void OnMethodChoice(wxCommandEvent &);
 #endif
-   void OnPreview(wxCommandEvent &event);
-   void OnReduceNoise( wxCommandEvent &event );
-   void OnCancel( wxCommandEvent &event );
-   void OnHelp( wxCommandEvent &event );
+   void OnPreview();
+   void OnReduceNoise();
+   void OnCancel();
+   void OnHelp();
 
    void OnText(wxCommandEvent &event);
    void OnSlider(wxCommandEvent &event);
@@ -1507,10 +1507,6 @@ return table;
 
 
 BEGIN_EVENT_TABLE(EffectNoiseReduction::Dialog, wxDialogWrapper)
-   EVT_BUTTON(wxID_OK, EffectNoiseReduction::Dialog::OnReduceNoise)
-   EVT_BUTTON(wxID_CANCEL, EffectNoiseReduction::Dialog::OnCancel)
-   EVT_BUTTON(ID_EFFECT_PREVIEW, EffectNoiseReduction::Dialog::OnPreview)
-   EVT_BUTTON(wxID_HELP, EffectNoiseReduction::Dialog::OnHelp)
 
    EVT_RADIOBUTTON(ID_RADIOBUTTON_KEEPSIGNAL, EffectNoiseReduction::Dialog::OnNoiseReductionChoice)
 #ifdef ISOLATE_CHOICE
@@ -1657,7 +1653,7 @@ void EffectNoiseReduction::Dialog::OnMethodChoice(wxCommandEvent &)
 }
 #endif
 
-void EffectNoiseReduction::Dialog::OnPreview(wxCommandEvent & WXUNUSED(event))
+void EffectNoiseReduction::Dialog::OnPreview()
 {
    if (!TransferDataFromWindow())
       return;
@@ -1670,7 +1666,7 @@ void EffectNoiseReduction::Dialog::OnPreview(wxCommandEvent & WXUNUSED(event))
    m_pEffect->Preview( false );
 }
 
-void EffectNoiseReduction::Dialog::OnReduceNoise( wxCommandEvent & WXUNUSED(event))
+void EffectNoiseReduction::Dialog::OnReduceNoise()
 {
    // On wxGTK (wx2.8.12), the default action is still executed even if
    // the button is disabled.  This appears to affect all wxDialogs, not
@@ -1683,12 +1679,12 @@ void EffectNoiseReduction::Dialog::OnReduceNoise( wxCommandEvent & WXUNUSED(even
    EndModal(2);
 }
 
-void EffectNoiseReduction::Dialog::OnCancel(wxCommandEvent & WXUNUSED(event))
+void EffectNoiseReduction::Dialog::OnCancel()
 {
    EndModal(0);
 }
 
-void EffectNoiseReduction::Dialog::OnHelp(wxCommandEvent & WXUNUSED(event))
+void EffectNoiseReduction::Dialog::OnHelp()
 {
    HelpSystem::ShowHelp(this, "Noise_Reduction", true);
 }
@@ -1846,13 +1842,19 @@ void EffectNoiseReduction::Dialog::PopulateOrExchange(ShuttleGui & S)
 
    using DialogDefinition::Item;
    S
-      .AddStandardButtons( eCancelButton | eHelpButton, {
-         S.Item( ePreviewButton )
-            .Disable( !mbHasProfile || mbAllowTwiddleSettings ),
+      .AddStandardButtons( 0, {
+         S.Item( eCancelButton ).Action( [this]{ OnCancel(); } ),
 
-         (mbHasProfile || mbAllowTwiddleSettings)
-            ? S.Item( eOkButton ).Focus()
-            : S.Item( eOkButton ).Disable( true )
+         S.Item( eHelpButton ).Action( [this]{ OnHelp(); } ),
+
+         S.Item( ePreviewButton )
+            .Disable( !mbHasProfile || mbAllowTwiddleSettings )
+            .Action( [this]{ OnPreview(); } ),
+
+         ((mbHasProfile || mbAllowTwiddleSettings)
+            ? S.Item( eOkButton ).Focus().Action( [this]{ OnReduceNoise(); } )
+            : S.Item( eOkButton ).Disable( true ).Action( [this]{ OnReduceNoise(); } ) )
+         
       } );
 }
 

@@ -369,8 +369,9 @@ private:
    void UpdateUI();
 
    void OnType(wxCommandEvent & evt);
-   void OnOk(wxCommandEvent & evt);
-   void OnCancel(wxCommandEvent & evt);
+   void OnOk( wxCommandEvent &evt );
+   void DoOk();
+   void OnCancel();
 
 private:
    wxChoice *mType;
@@ -391,8 +392,6 @@ enum
 BEGIN_EVENT_TABLE(EffectPresetsDialog, wxDialogWrapper)
    EVT_CHOICE(ID_Type, EffectPresetsDialog::OnType)
    EVT_LISTBOX_DCLICK(wxID_ANY, EffectPresetsDialog::OnOk)
-   EVT_BUTTON(wxID_OK, EffectPresetsDialog::OnOk)
-   EVT_BUTTON(wxID_CANCEL, EffectPresetsDialog::OnCancel)
 END_EVENT_TABLE()
 
 EffectPresetsDialog::EffectPresetsDialog(wxWindow *parent, Effect *effect)
@@ -422,7 +421,10 @@ EffectPresetsDialog::EffectPresetsDialog(wxWindow *parent, Effect *effect)
       }
       S.EndTwoColumn();
 
-      S.AddStandardButtons();
+      S.AddStandardButtons( 0, {
+         S.Item( eOkButton ).Action( [this]{ DoOk(); } ),
+         S.Item( eCancelButton ).Action( [this]{ OnCancel(); } )
+      });
    }
    S.EndVerticalLay();
 
@@ -604,12 +606,17 @@ void EffectPresetsDialog::OnType(wxCommandEvent & WXUNUSED(evt))
 
 void EffectPresetsDialog::OnOk(wxCommandEvent & WXUNUSED(evt))
 {
+   DoOk();
+}
+
+void EffectPresetsDialog::DoOk()
+{
    UpdateUI();
 
    EndModal(true);
 }
 
-void EffectPresetsDialog::OnCancel(wxCommandEvent & WXUNUSED(evt))
+void EffectPresetsDialog::OnCancel()
 {
    mSelection = wxEmptyString;
 

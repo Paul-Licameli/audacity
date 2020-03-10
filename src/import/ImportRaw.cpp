@@ -61,8 +61,8 @@ class ImportRawDialog final : public wxDialogWrapper {
                    int offset, double rate);
    ~ImportRawDialog();
 
-   void OnOK(wxCommandEvent & event);
-   void OnCancel(wxCommandEvent & event);
+   void OnOK();
+   void OnCancel();
    void OnPlay();
    void OnChoice(wxCommandEvent & event);
 
@@ -287,8 +287,6 @@ enum {
 };
 
 BEGIN_EVENT_TABLE(ImportRawDialog, wxDialogWrapper)
-   EVT_BUTTON(wxID_OK, ImportRawDialog::OnOK)
-   EVT_BUTTON(wxID_CANCEL, ImportRawDialog::OnCancel)
    EVT_CHOICE(ChoiceID, ImportRawDialog::OnChoice)
 END_EVENT_TABLE()
 
@@ -456,8 +454,9 @@ ImportRawDialog::ImportRawDialog(wxWindow * parent,
       // Preview Pane goes here
       //
 
-      S.AddStandardButtons( eCancelButton, {
-         S.Item( eOkButton )
+      S.AddStandardButtons( 0, {
+         S.Item( eOkButton ).Action( [this]{ OnOK(); } ),
+         S.Item( eCancelButton ).Action( [this]{ OnCancel(); } )
       });
       // Find the OK button, and change its text to 'Import'.
       // We MUST set mOK because it is used later.
@@ -476,7 +475,7 @@ ImportRawDialog::~ImportRawDialog()
 {
 }
 
-void ImportRawDialog::OnOK(wxCommandEvent & WXUNUSED(event))
+void ImportRawDialog::OnOK()
 {
    long l;
 
@@ -505,7 +504,7 @@ void ImportRawDialog::OnOK(wxCommandEvent & WXUNUSED(event))
    EndModal(true);
 }
 
-void ImportRawDialog::OnCancel(wxCommandEvent & WXUNUSED(event))
+void ImportRawDialog::OnCancel()
 {
    EndModal(false);
 }

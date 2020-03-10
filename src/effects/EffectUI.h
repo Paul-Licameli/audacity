@@ -143,11 +143,11 @@ private:
    void OnErase(wxEraseEvent & evt);
    void OnPaint(wxPaintEvent & evt);
    void OnClose(wxCloseEvent & evt);
-   void OnApply(wxCommandEvent & evt);
+   void OnApply();
    void DoCancel();
-   void OnCancel(wxCommandEvent & evt);
-   void OnHelp(wxCommandEvent & evt);
-   void OnDebug(wxCommandEvent & evt);
+   void OnCancel();
+   void OnHelp();
+   void OnDebug();
    void OnMenu();
    void OnEnable(wxCommandEvent & evt);
    void OnPlay();

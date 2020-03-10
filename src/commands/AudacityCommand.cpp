@@ -244,12 +244,6 @@ int AudacityCommand::MessageBox(
    return AudacityMessageBox(message, title, style, mUIParent);
 }
 
-BEGIN_EVENT_TABLE(AudacityCommandDialog, wxDialogWrapper)
-   EVT_BUTTON(wxID_OK, AudacityCommandDialog::OnOk)
-   EVT_BUTTON(wxID_HELP, AudacityCommandDialog::OnHelp)
-   EVT_BUTTON(wxID_CANCEL, AudacityCommandDialog::OnCancel)
-END_EVENT_TABLE()
-
 AudacityCommandDialog::AudacityCommandDialog(wxWindow * parent,
                            const TranslatableString & title,
                            AudacityCommand * pCommand,
@@ -268,7 +262,7 @@ AudacityCommandDialog::AudacityCommandDialog(wxWindow * parent,
 
 bool AudacityCommandDialog::Init()
 {
-   ShuttleGui S(this, eIsCreating);
+   ShuttleGui S{ this, eIsCreating };
 
    S.SetBorder(5);
    S.StartVerticalLay(true);
@@ -277,7 +271,21 @@ bool AudacityCommandDialog::Init()
 
       long buttons = eOkButton;
       S
-         .AddStandardButtons(buttons|mAdditionalButtons);
+         .AddStandardButtons( mAdditionalButtons, {
+            S.Item( eOkButton ).Action( [this]{ OnOk(); } ),
+            ( (mAdditionalButtons & eHelpButton)
+               ? S.Item(eHelpButton).Action( [this]{ OnHelp(); } )
+               : S.Item()
+            ),
+            ( (mAdditionalButtons & eCancelButton)
+               ? S.Item(eCancelButton).Action( [this]{ OnCancel(); } )
+               : S.Item()
+            ),
+            ( (mAdditionalButtons & eCloseButton)
+               ? S.Item(eCloseButton).Action( [this]{ OnCancel(); } )
+               : S.Item()
+            )
+         } );
    }
    S.EndVerticalLay();
 
@@ -316,7 +324,7 @@ bool AudacityCommandDialog::Validate()
    return true;
 }
 
-void AudacityCommandDialog::OnOk(wxCommandEvent & WXUNUSED(evt))
+void AudacityCommandDialog::OnOk()
 {
    // On wxGTK (wx2.8.12), the default action is still executed even if
    // the button is disabled.  This appears to affect all wxDialogs, not
@@ -330,12 +338,12 @@ void AudacityCommandDialog::OnOk(wxCommandEvent & WXUNUSED(evt))
 }
 
 
-void AudacityCommandDialog::OnCancel(wxCommandEvent & WXUNUSED(evt))
+void AudacityCommandDialog::OnCancel()
 {
    EndModal(false);
 }
 
-void AudacityCommandDialog::OnHelp(wxCommandEvent & WXUNUSED(event))
+void AudacityCommandDialog::OnHelp()
 {
    if( mpCommand )
    {

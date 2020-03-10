@@ -49,12 +49,11 @@ void ShowDiagnostics(
          .Style(wxTE_MULTILINE | wxTE_READONLY | wxTE_RICH)
          .AddTextWindow("");
 
-      wxButton *save = safenew wxButton(S.GetParent(), wxID_OK, _("&Save"));
       S
          .AddStandardButtons( eCancelButton, {
-            S.Item( eOkButton )
-         },
-         save );
+               S.Item( eOkButton )
+            },
+            safenew wxButton(S.GetParent(), wxID_OK, _("&Save")) );
    }
    S.EndVerticalLay();
 
@@ -110,8 +109,8 @@ public:
       const PrefSetter &prefSetter,
       const TranslatableString &Prompt, wxString Help );
 
-   void OnOk(wxCommandEvent &event);
-   void OnCancel(wxCommandEvent &event);
+   void OnOk();
+   void OnCancel();
    void OnHelp(const wxString &Str);
    void OnFix(const PrefSetter &setter, wxWindowID id);
 
@@ -121,17 +120,11 @@ public:
    bool mbSyncLocked;
    bool mbInSnapTo;
    bool mbSoundActivated;
-   DECLARE_EVENT_TABLE()
 };
 
 
 #define FixButtonID           7001
 #define HelpButtonID          7011
-
-BEGIN_EVENT_TABLE(QuickFixDialog, wxDialogWrapper)
-   EVT_BUTTON(wxID_OK,                                            QuickFixDialog::OnOk)
-   EVT_BUTTON(wxID_CANCEL,                                        QuickFixDialog::OnCancel)
-END_EVENT_TABLE();
 
 QuickFixDialog::QuickFixDialog(wxWindow * pParent, AudacityProject &project) :
       wxDialogWrapper(pParent, wxID_ANY, XO("Do you have these problems?"),
@@ -187,7 +180,6 @@ void QuickFixDialog::AddStuck( ShuttleGui & S, bool & bBool,
 
 void QuickFixDialog::PopulateOrExchange(ShuttleGui & S)
 {
-
    S.StartVerticalLay(1);
 
    S
@@ -247,31 +239,29 @@ void QuickFixDialog::PopulateOrExchange(ShuttleGui & S)
 
    S.StartHorizontalLay(wxALIGN_CENTER_HORIZONTAL, 0);
    {
-      S
-         .AddStandardButtons((bStuckInMode ? 0 : eHelpButton), {
-            S.Item( eCloseButton ).Focus()
+      S.
+         AddStandardButtons( 0, {
+            (bStuckInMode
+               ? S.Item()
+               : S.Item( eHelpButton )
+                  .Action([this]{ OnHelp( "Quick_Fix#" ); } )
+            ),
+            S.Item( eCloseButton ).Focus().Action( [this]{ OnCancel(); } )
          });
    }
    S.EndHorizontalLay();
 
    S.EndVerticalLay();
-
-   wxButton * pBtn = (wxButton*)FindWindowById( wxID_HELP );
-   if( pBtn )
-      pBtn->Bind( wxEVT_BUTTON, [this]( const wxCommandEvent & ){
-         OnHelp( "Quick_Fix#" );
-      } );
 }
 
-void QuickFixDialog::OnOk(wxCommandEvent &event)
+// Is this used?
+void QuickFixDialog::OnOk()
 {
-   (void)event;// Compiler food
    EndModal(wxID_OK);
 }
 
-void QuickFixDialog::OnCancel(wxCommandEvent &event)
+void QuickFixDialog::OnCancel()
 {
-   (void)event;// Compiler food
    EndModal(wxID_CANCEL);
 }
 

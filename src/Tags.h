@@ -159,7 +159,7 @@ class TagsEditorDialog final : public wxDialogWrapper
    void PopulateOrExchange(ShuttleGui & S);
 
    void OnDontShow( wxCommandEvent & Evt);
-   void OnHelp(wxCommandEvent & Evt);
+   void OnHelp();
    bool TransferDataToWindow() override;
    bool TransferDataFromWindow() override;
 
@@ -181,9 +181,9 @@ class TagsEditorDialog final : public wxDialogWrapper
    void OnAdd();
    void OnRemove();
 
-   void OnOk(wxCommandEvent & event);
+   void OnOk();
    void DoCancel(bool escKey);
-   void OnCancel(wxCommandEvent & event);
+   void OnCancel();
 
    void OnKeyDown(wxKeyEvent &event);
 

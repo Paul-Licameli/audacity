@@ -766,9 +766,6 @@ enum {
 
 BEGIN_EVENT_TABLE(TagsEditorDialog, wxDialogWrapper)
    EVT_GRID_CELL_CHANGED(TagsEditorDialog::OnChange)
-   EVT_BUTTON(wxID_HELP, TagsEditorDialog::OnHelp)
-   EVT_BUTTON(wxID_CANCEL, TagsEditorDialog::OnCancel)
-   EVT_BUTTON(wxID_OK, TagsEditorDialog::OnOk)
    EVT_CHECKBOX( DontShowID, TagsEditorDialog::OnDontShow )
    EVT_KEY_DOWN(TagsEditorDialog::OnKeyDown)
 END_EVENT_TABLE()
@@ -965,7 +962,11 @@ void TagsEditorDialog::PopulateOrExchange(ShuttleGui & S)
    S.EndVerticalLay();
 
    S
-      .AddStandardButtons(eOkButton | eCancelButton | eHelpButton);
+      .AddStandardButtons( 0, {
+         S.Item( eOkButton ).Action( [this]{ OnOk(); } ),
+         S.Item( eCancelButton ).Action( [this]{ OnCancel(); } ),
+         S.Item( eHelpButton ).Action( [this]{ OnHelp(); } )
+      });
 }
 
 void TagsEditorDialog::OnDontShow( wxCommandEvent & Evt )
@@ -975,7 +976,7 @@ void TagsEditorDialog::OnDontShow( wxCommandEvent & Evt )
    gPrefs->Flush();
 }
 
-void TagsEditorDialog::OnHelp(wxCommandEvent& WXUNUSED(event))
+void TagsEditorDialog::OnHelp()
 {
    HelpSystem::ShowHelp(this, L"Metadata_Editor", true);
 }
@@ -1422,7 +1423,7 @@ void TagsEditorDialog::OnRemove()
    }
 }
 
-void TagsEditorDialog::OnOk(wxCommandEvent & WXUNUSED(event))
+void TagsEditorDialog::OnOk()
 {
    if (mGrid->IsCellEditControlShown()) {
       mGrid->SaveEditControlValue();
@@ -1451,7 +1452,7 @@ void TagsEditorDialog::OnOk(wxCommandEvent & WXUNUSED(event))
    EndModal(wxID_OK);
 }
 
-void TagsEditorDialog::OnCancel(wxCommandEvent & WXUNUSED(event))
+void TagsEditorDialog::OnCancel()
 {
    DoCancel(false);
 }

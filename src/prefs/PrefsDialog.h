@@ -47,10 +47,10 @@ class AUDACITY_DLL_API PrefsDialog /* not final */ : public wxDialogWrapper
    int ShowModal() override;
 
    void OnCategoryChange(wxCommandEvent & e);
-   void OnOK(wxCommandEvent & e);
-   void OnCancel(wxCommandEvent & e);
-   void OnPreview(wxCommandEvent & e);
-   void OnHelp(wxCommandEvent & e);
+   void OnOK();
+   void OnCancel();
+   void OnPreview();
+   void OnHelp();
    void OnTreeKeyDown(wxTreeEvent & e); // Used to dismiss the dialog when enter is pressed with focus on tree
 
    void SelectPageByName(const wxString &pageName);

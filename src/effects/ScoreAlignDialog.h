@@ -95,8 +95,6 @@ public:
    wxSlider *mSmoothTimeSlider;
    wxStaticText *mSmoothTimeText;
 
-   wxButton *mDefaultButton;
-
    // constructors and destructors
    ScoreAlignDialog(ScoreAlignParams &params);
    ~ScoreAlignDialog();
@@ -118,8 +116,8 @@ private:
    };
 
    // handlers
-   void OnOK(wxCommandEvent & event);
-   void OnCancel(wxCommandEvent & event);
+   void OnOK();
+   void OnCancel();
    void OnSlider(wxCommandEvent & event);
    void OnDefault(wxCommandEvent & event);
 

@@ -276,7 +276,6 @@ wxDEFINE_EVENT(AUDACITY_FILE_SUFFIX_EVENT, wxCommandEvent);
 
 BEGIN_EVENT_TABLE(Exporter, wxEvtHandler)
    EVT_FILECTRL_FILTERCHANGED(wxID_ANY, Exporter::OnFilterChanged)
-   EVT_BUTTON(wxID_HELP, Exporter::OnHelp)
    EVT_COMMAND(wxID_ANY, AUDACITY_FILE_SUFFIX_EVENT, Exporter::OnExtensionChanged)
 END_EVENT_TABLE()
 
@@ -365,7 +364,7 @@ void Exporter::OnExtensionChanged(wxCommandEvent &evt)
    mDialog->SetFileExtension(evt.GetString().BeforeFirst(' ').Lower());
 }
 
-void Exporter::OnHelp(wxCommandEvent& WXUNUSED(evt))
+void Exporter::OnHelp()
 {
    wxWindow * pWin = FindProjectFrame( mProject );
    HelpSystem::ShowHelp(pWin, L"File_Export_Dialog", true);
@@ -963,7 +962,7 @@ void Exporter::CreateUserPaneCallback(wxWindow *parent, wxUIntPtr userdata)
 
 void Exporter::CreateUserPane(wxWindow *parent)
 {
-   ShuttleGui S(parent, eIsCreating);
+   ShuttleGui S{ parent, eIsCreating };
 
    S.StartStatic(XO("Format Options"), 1);
    {
@@ -1361,9 +1360,6 @@ enum
 };
 
 BEGIN_EVENT_TABLE( ExportMixerDialog, wxDialogWrapper )
-   EVT_BUTTON( wxID_OK, ExportMixerDialog::OnOk )
-   EVT_BUTTON( wxID_CANCEL, ExportMixerDialog::OnCancel )
-   EVT_BUTTON( wxID_HELP, ExportMixerDialog::OnMixerPanelHelp )
    EVT_SIZE( ExportMixerDialog::OnSize )
    EVT_SLIDER( ID_SLIDER_CHANNEL, ExportMixerDialog::OnSlider )
 END_EVENT_TABLE()
@@ -1414,7 +1410,7 @@ ExportMixerDialog::ExportMixerDialog( const TrackList *tracks, bool selectedOnly
    auto label = XO("Output Channels: %2d")
       .Format( mMixerSpec->GetNumChannels() );
 
-   ShuttleGui S{ this, eIsCreating };
+   ShuttleGui S(this, eIsCreating);
    {
       S.SetBorder( 5 );
 
@@ -1449,7 +1445,11 @@ ExportMixerDialog::ExportMixerDialog( const TrackList *tracks, bool selectedOnly
       S.EndHorizontalLay();
 
       S
-         .AddStandardButtons( eCancelButton | eOkButton | eHelpButton );
+         .AddStandardButtons( 0, {
+            S.Item( eOkButton ).Action( [this]{ OnOk(); } ),
+            S.Item( eCancelButton ).Action( [this]{ OnCancel(); } ),
+            S.Item( eHelpButton ).Action( [this]{ OnMixerPanelHelp(); } )
+         });
    }
 
    SetAutoLayout(true);
@@ -1485,17 +1485,17 @@ void ExportMixerDialog::OnSlider( wxCommandEvent & WXUNUSED(event))
    channels->SetName( label );
 }
 
-void ExportMixerDialog::OnOk(wxCommandEvent & WXUNUSED(event))
+void ExportMixerDialog::OnOk()
 {
    EndModal( wxID_OK );
 }
 
-void ExportMixerDialog::OnCancel(wxCommandEvent & WXUNUSED(event))
+void ExportMixerDialog::OnCancel()
 {
    EndModal( wxID_CANCEL );
 }
 
-void ExportMixerDialog::OnMixerPanelHelp(wxCommandEvent & WXUNUSED(event))
+void ExportMixerDialog::OnMixerPanelHelp()
 {
    HelpSystem::ShowHelp(this, L"Advanced_Mixing_Options", true);
 }

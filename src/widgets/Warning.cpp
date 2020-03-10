@@ -37,16 +37,10 @@ class WarningDialog final : public wxDialogWrapper
                  bool showCancelButton);
 
  private:
-   void OnOK(wxCommandEvent& event);
+   void OnOK();
 
    wxCheckBox *mCheckBox;
-
-   DECLARE_EVENT_TABLE()
 };
-
-BEGIN_EVENT_TABLE(WarningDialog, wxDialogWrapper)
-   EVT_BUTTON(wxID_OK, WarningDialog::OnOK)
-END_EVENT_TABLE()
 
 const TranslatableLabel &DefaultWarningFooter()
 {
@@ -81,14 +75,16 @@ WarningDialog::WarningDialog(wxWindow *parent, const TranslatableString &message
    S.SetBorder(0);
 
    S
-      .AddStandardButtons(showCancelButton ? eOkButton | eCancelButton : eOkButton);
+      .AddStandardButtons(showCancelButton ? eCancelButton : 0, {
+         S.Item( eOkButton ).Action( [this]{ OnOK(); } )
+      } );
 
    Layout();
    GetSizer()->Fit(this);
    CentreOnParent();
 }
 
-void WarningDialog::OnOK(wxCommandEvent& WXUNUSED(event))
+void WarningDialog::OnOK()
 {
    EndModal(mCheckBox->GetValue() ? wxID_NO : wxID_YES); // return YES, if message should be shown again
 }

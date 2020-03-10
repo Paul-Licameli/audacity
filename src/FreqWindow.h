@@ -73,8 +73,8 @@ private:
    void PlotPaint(wxPaintEvent & event);
 
    void OnCloseWindow(wxCloseEvent & event);
-   void OnCloseButton(wxCommandEvent & event);
-   void OnGetURL(wxCommandEvent & event);
+   void OnCloseButton();
+   void OnGetURL();
    void OnSize(wxSizeEvent & event);
    void OnPanScroller(wxScrollEvent & event);
    void OnZoomSlider(wxCommandEvent & event);

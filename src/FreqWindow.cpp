@@ -171,8 +171,6 @@ BEGIN_EVENT_TABLE(FrequencyPlotDialog, wxDialogWrapper)
    EVT_CHOICE(FreqSizeChoiceID, FrequencyPlotDialog::OnSizeChoice)
    EVT_CHOICE(FreqFuncChoiceID, FrequencyPlotDialog::OnFuncChoice)
    EVT_CHOICE(FreqAxisChoiceID, FrequencyPlotDialog::OnAxisChoice)
-   EVT_BUTTON(wxID_CANCEL, FrequencyPlotDialog::OnCloseButton)
-   EVT_BUTTON(wxID_HELP, FrequencyPlotDialog::OnGetURL)
    EVT_CHECKBOX(GridOnOffID, FrequencyPlotDialog::OnGridOnOff)
    EVT_COMMAND(wxID_ANY, EVT_FREQWINDOW_RECALC, FrequencyPlotDialog::OnRecalc)
 END_EVENT_TABLE()
@@ -523,8 +521,9 @@ void FrequencyPlotDialog::Populate()
    S.EndMultiColumn();
 
    S
-      .AddStandardButtons( eHelpButton, {
-         S.Item( eCloseButton ).Default()
+      .AddStandardButtons( 0, {
+         S.Item( eCloseButton ).Default().Action( [this]{ OnCloseButton(); } ),
+         S.Item( eHelpButton ).Action( [this]{ OnGetURL(); } )
       } );
 
    // -------------------------------------------------------------------
@@ -570,7 +569,7 @@ void FrequencyPlotDialog::Populate()
 #endif
 }
 
-void FrequencyPlotDialog::OnGetURL(wxCommandEvent & WXUNUSED(event))
+void FrequencyPlotDialog::OnGetURL()
 {
    // Original help page is back on-line (March 2016), but the manual should be more reliable.
    // http://www.eramp.com/WCAG_2_audio_contrast_tool_help.htm
@@ -1013,7 +1012,7 @@ void FrequencyPlotDialog::OnCloseWindow(wxCloseEvent & WXUNUSED(event))
    Show(false);
 }
 
-void FrequencyPlotDialog::OnCloseButton(wxCommandEvent & WXUNUSED(event))
+void FrequencyPlotDialog::OnCloseButton()
 {
    gPrefs->Write(L"/FrequencyPlotDialog/DrawGrid", mDrawGrid);
    gPrefs->Write(L"/FrequencyPlotDialog/SizeChoice", mSizeChoice->GetSelection());

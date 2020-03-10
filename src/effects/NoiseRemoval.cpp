@@ -612,9 +612,6 @@ enum {
 
 
 BEGIN_EVENT_TABLE(NoiseRemovalDialog,wxDialogWrapper)
-   EVT_BUTTON(wxID_OK, NoiseRemovalDialog::OnRemoveNoise)
-   EVT_BUTTON(wxID_CANCEL, NoiseRemovalDialog::OnCancel)
-   EVT_BUTTON(ID_EFFECT_PREVIEW, NoiseRemovalDialog::OnPreview)
    EVT_RADIOBUTTON(ID_RADIOBUTTON_KEEPNOISE, NoiseRemovalDialog::OnKeepNoise)
    EVT_RADIOBUTTON(ID_RADIOBUTTON_KEEPSIGNAL, NoiseRemovalDialog::OnKeepNoise)
    EVT_SLIDER(ID_SENSITIVITY_SLIDER, NoiseRemovalDialog::OnSensitivitySlider)
@@ -649,7 +646,7 @@ void NoiseRemovalDialog::OnKeepNoise( wxCommandEvent & WXUNUSED(event))
    mbLeaveNoise = mKeepNoise->GetValue();
 }
 
-void NoiseRemovalDialog::OnPreview(wxCommandEvent & WXUNUSED(event))
+void NoiseRemovalDialog::OnPreview()
 {
    // Save & restore parameters around Preview, because we didn't do OK.
    bool oldDoProfile = m_pEffect->mDoProfile;
@@ -680,7 +677,7 @@ void NoiseRemovalDialog::OnPreview(wxCommandEvent & WXUNUSED(event))
    m_pEffect->Preview( false );
 }
 
-void NoiseRemovalDialog::OnRemoveNoise( wxCommandEvent & WXUNUSED(event))
+void NoiseRemovalDialog::OnRemoveNoise()
 {
    // On wxGTK (wx2.8.12), the default action is still executed even if
    // the button is disabled.  This appears to affect all wxDialogs, not
@@ -694,7 +691,7 @@ void NoiseRemovalDialog::OnRemoveNoise( wxCommandEvent & WXUNUSED(event))
    EndModal(2);
 }
 
-void NoiseRemovalDialog::OnCancel(wxCommandEvent & WXUNUSED(event))
+void NoiseRemovalDialog::OnCancel()
 {
    EndModal(0);
 }
@@ -818,11 +815,15 @@ void NoiseRemovalDialog::PopulateOrExchange(ShuttleGui & S)
    S.EndStatic();
 
    S
-      .AddStandardButtons( eCancelButton, {
+      .AddStandardButtons( 0, {
          S.Item( ePreviewButton )
-            .Disable( !mbHasProfile || mbAllowTwiddleSettings ),
+            .Disable( !mbHasProfile || mbAllowTwiddleSettings )
+            .Action( [this]{ OnPreview(); } ),
          S.Item( eOkButton )
             .Disable( !mbHasProfile && !mbAllowTwiddleSettings )
+            .Action( [this]{ OnRemoveNoise(); } ),
+         S.Item( eCancelButton )
+            .Action( [this]{ OnCancel(); } )
       } );
 }
 

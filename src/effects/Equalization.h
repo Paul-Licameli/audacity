@@ -385,7 +385,7 @@ private:
    void OnExport();
    void OnLibrary();
    void OnDefaults();
-   void OnOK(wxCommandEvent &event);
+   void OnOK();
 
    void OnListSelectionChange( wxListEvent &event );
    DECLARE_EVENT_TABLE()

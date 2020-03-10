@@ -148,9 +148,9 @@ private:
    // handlers
    void OnGetProfile();
    void OnKeepNoise( wxCommandEvent &event );
-   void OnPreview(wxCommandEvent &event);
-   void OnRemoveNoise( wxCommandEvent &event );
-   void OnCancel( wxCommandEvent &event );
+   void OnPreview();
+   void OnRemoveNoise();
+   void OnCancel();
 
    void OnSensitivityText(wxCommandEvent & event);
    void OnGainText(wxCommandEvent & event);

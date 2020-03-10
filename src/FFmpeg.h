@@ -187,13 +187,11 @@ public:
 
    void PopulateOrExchange(ShuttleGui & S);
 
-   void OnOk(wxCommandEvent & WXUNUSED(event));
+   void OnOk();
 
 private:
 
    wxCheckBox *mDontShow;
-
-   DECLARE_EVENT_TABLE()
 };
 
 /// Manages liabv* libraries - loads/unloads libraries, imports symbols.

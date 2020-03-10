@@ -72,12 +72,6 @@
 #define MacrosListID       7001
 #define CommandsListID     7002
 
-BEGIN_EVENT_TABLE(ApplyMacroDialog, wxDialogWrapper)
-   EVT_BUTTON(wxID_CANCEL, ApplyMacroDialog::OnCancel)
-   EVT_BUTTON(wxID_CLOSE, ApplyMacroDialog::OnCancel)
-   EVT_BUTTON(wxID_HELP, ApplyMacroDialog::OnHelp)
-END_EVENT_TABLE()
-
 ApplyMacroDialog::ApplyMacroDialog(
    wxWindow * parent, AudacityProject &project, bool bInherited):
    wxDialogWrapper(parent, wxID_ANY, MacrosPaletteTitle,
@@ -183,7 +177,10 @@ void ApplyMacroDialog::PopulateOrExchange(ShuttleGui &S)
       S.AddSpace( 10,10,1 );
 
       S
-         .AddStandardButtons( eCloseButton | eHelpButton);
+         .AddStandardButtons( 0, {
+            S.Item( eCloseButton ).Action( [this]{ OnCancel(); } ),
+            S.Item( eHelpButton ).Action( [this]{ OnHelp(); } )
+         });
    }
    S.EndHorizontalLay();
 }
@@ -229,7 +226,7 @@ void ApplyMacroDialog::OnExpand()
 {
 }
 
-void ApplyMacroDialog::OnHelp(wxCommandEvent & WXUNUSED(event))
+void ApplyMacroDialog::OnHelp()
 {
    wxString page = GetHelpPageName();
    HelpSystem::ShowHelp(this, page, true);
@@ -502,7 +499,7 @@ void ApplyMacroDialog::OnApplyToFiles()
    Raise();
 }
 
-void ApplyMacroDialog::OnCancel(wxCommandEvent & WXUNUSED(event))
+void ApplyMacroDialog::OnCancel()
 {
    Hide();
 }
@@ -526,10 +523,6 @@ BEGIN_EVENT_TABLE(MacrosWindow, ApplyMacroDialog)
       EVT_SIZE(MacrosWindow::OnSize)
 
    EVT_LIST_ITEM_ACTIVATED(CommandsListID, MacrosWindow::OnCommandActivated)
-
-   EVT_BUTTON(wxID_OK, MacrosWindow::OnOK)
-   EVT_BUTTON(wxID_CANCEL, MacrosWindow::OnCancel)
-   EVT_BUTTON(wxID_CLOSE, MacrosWindow::OnCancel)
 
    EVT_KEY_DOWN(MacrosWindow::OnKeyDown)
 END_EVENT_TABLE()
@@ -744,7 +737,11 @@ void MacrosWindow::PopulateOrExchange(ShuttleGui & S)
       // That difference is too slight to merit a button, and with the OK
       // button, people might expect the dialog to apply the macro too.
       S
-          .AddStandardButtons( /*eOkButton |*/ eCloseButton | eHelpButton);
+         .AddStandardButtons( 0, {
+            // S.Item( eOkButton ).Action( [this]{ OnOK(); } ),
+            S.Item( eCloseButton ).Action( [this]{ OnCancel(); } ),
+            S.Item( eHelpButton ).Action( [this]{ OnHelp(); } ),
+         });
    }
 
    S.EndHorizontalLay();
@@ -1369,7 +1366,7 @@ bool MacrosWindow::SaveChanges(){
 }
 
 /// Send changed values back to Prefs, and update Audacity.
-void MacrosWindow::OnOK(wxCommandEvent & WXUNUSED(event))
+void MacrosWindow::OnOK()
 {
    if( !SaveChanges() )
       return;
@@ -1378,7 +1375,7 @@ void MacrosWindow::OnOK(wxCommandEvent & WXUNUSED(event))
 }
 
 ///
-void MacrosWindow::OnCancel(wxCommandEvent &WXUNUSED(event))
+void MacrosWindow::OnCancel()
 {
    bool bWasChanged = mChanged;
    if (!ChangeOK()) {

@@ -837,11 +837,6 @@ bool Importer::Import( AudacityProject &project,
 // ImportStreamDialog
 //-------------------------------------------------------------------------
 
-BEGIN_EVENT_TABLE( ImportStreamDialog, wxDialogWrapper )
-   EVT_BUTTON( wxID_OK, ImportStreamDialog::OnOk )
-   EVT_BUTTON( wxID_CANCEL, ImportStreamDialog::OnCancel )
-END_EVENT_TABLE()
-
 ImportStreamDialog::ImportStreamDialog( ImportFileHandle *_mFile, wxWindow *parent, wxWindowID id, const TranslatableString &title,
                                        const wxPoint &position, const wxSize& size, long style ):
 wxDialogWrapper( parent, id, title, position, size, style | wxRESIZE_BORDER )
@@ -853,7 +848,7 @@ wxDialogWrapper( parent, id, title, position, size, style | wxRESIZE_BORDER )
    for (wxInt32 i = 0; i < scount; i++)
       mFile->SetStreamUsage(i, FALSE);
 
-   ShuttleGui S{ this, eIsCreating };
+   ShuttleGui S(this, eIsCreating);
    {
       S.SetBorder( 5 );
 
@@ -868,7 +863,10 @@ wxDialogWrapper( parent, id, title, position, size, style | wxRESIZE_BORDER )
                std::mem_fn( &TranslatableString::Translation ) ) );
 
       S
-         .AddStandardButtons();
+         .AddStandardButtons( 0, {
+            S.Item( eOkButton ).Action( [this]{ OnOk(); } ),
+            S.Item( eCancelButton ).Action( [this]{ OnCancel(); } )
+         });
    }
 
    SetAutoLayout(true);
@@ -882,7 +880,7 @@ ImportStreamDialog::~ImportStreamDialog()
 
 }
 
-void ImportStreamDialog::OnOk(wxCommandEvent & WXUNUSED(event))
+void ImportStreamDialog::OnOk()
 {
    wxArrayInt selitems;
    int sels = StreamList->GetSelections(selitems);
@@ -891,7 +889,7 @@ void ImportStreamDialog::OnOk(wxCommandEvent & WXUNUSED(event))
    EndModal( wxID_OK );
 }
 
-void ImportStreamDialog::OnCancel(wxCommandEvent & WXUNUSED(event))
+void ImportStreamDialog::OnCancel()
 {
    EndModal( wxID_CANCEL );
 }

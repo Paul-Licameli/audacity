@@ -157,16 +157,15 @@ public:
    bool Validate() override;
 
    virtual void PopulateOrExchange(ShuttleGui & S);
-   virtual void OnOk(wxCommandEvent & evt);
-   virtual void OnCancel(wxCommandEvent & evt);
-   virtual void OnHelp(wxCommandEvent & evt);
+   virtual void OnOk();
+   virtual void OnCancel();
+   virtual void OnHelp( );
 
 private:
    int mType;
    int mAdditionalButtons;
    AudacityCommand * mpCommand;
 
-   DECLARE_EVENT_TABLE()
    wxDECLARE_NO_COPY_CLASS(AudacityCommandDialog);
 };
 

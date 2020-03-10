@@ -427,8 +427,8 @@ private:
    void OnSort(wxListEvent & evt);
    void DoSort( int col );
    void OnListChar(wxKeyEvent & evt);
-   void OnOK(wxCommandEvent & evt);
-   void OnCancel(wxCommandEvent & evt);
+   void OnOK();
+   void OnCancel();
    void OnSelectAll();
    void OnClearAll();
    void OnEnable();
@@ -456,8 +456,6 @@ private:
 
 BEGIN_EVENT_TABLE(PluginRegistrationDialog, wxDialogWrapper)
    EVT_LIST_COL_CLICK(ID_List, PluginRegistrationDialog::OnSort)
-   EVT_BUTTON(wxID_OK, PluginRegistrationDialog::OnOK)
-   EVT_BUTTON(wxID_CANCEL, PluginRegistrationDialog::OnCancel)
    EVT_RADIOBUTTON(ID_ShowAll, PluginRegistrationDialog::OnChangedVisibility)
    EVT_RADIOBUTTON(ID_ShowEnabled, PluginRegistrationDialog::OnChangedVisibility)
    EVT_RADIOBUTTON(ID_ShowDisabled, PluginRegistrationDialog::OnChangedVisibility)
@@ -627,7 +625,10 @@ void PluginRegistrationDialog::PopulateOrExchange(ShuttleGui &S)
       S.EndVerticalLay();
 
       S
-         .AddStandardButtons(eOkButton | eCancelButton);
+         .AddStandardButtons(0, {
+            S.Item( eOkButton ).Action( [this]{ OnOK(); } ),
+            S.Item( eCancelButton ).Action( [this]{ OnCancel(); } )
+         });
    }
    S.EndVerticalLay();
 
@@ -987,7 +988,7 @@ void PluginRegistrationDialog::OnDisable()
    }
 }
 
-void PluginRegistrationDialog::OnOK(wxCommandEvent & WXUNUSED(evt))
+void PluginRegistrationDialog::OnOK()
 {
    PluginManager & pm = PluginManager::Get();
    ModuleManager & mm = ModuleManager::Get();
@@ -1088,7 +1089,7 @@ void PluginRegistrationDialog::OnOK(wxCommandEvent & WXUNUSED(evt))
    EndModal(wxID_OK);
 }
 
-void PluginRegistrationDialog::OnCancel(wxCommandEvent & WXUNUSED(evt))
+void PluginRegistrationDialog::OnCancel()
 {
    EndModal(wxID_CANCEL);
 }

@@ -54,13 +54,13 @@ public:
 private:
    // handlers
    void OnChar(wxKeyEvent &event);
-   void OnGetURL(wxCommandEvent &event);
+   void OnGetURL();
    void OnExport();
    void OnGetForeground();
    void OnGetBackground();
    void results();
    void OnReset();
-   void OnClose(wxCommandEvent & event);
+   void OnClose();
 
    wxTextCtrl *mForegroundRMSText;
    wxTextCtrl *mBackgroundRMSText;
@@ -79,9 +79,6 @@ private:
    void SetStartAndEndTime();
 
    double length;
-
-   DECLARE_EVENT_TABLE()
-
 };
 
 #endif

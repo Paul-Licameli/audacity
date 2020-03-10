@@ -26,10 +26,6 @@
 #include "prefs/GUIPrefs.h"
 #include "prefs/RecordingPrefs.h"
 
-BEGIN_EVENT_TABLE(SoundActivatedRecordDialog, wxDialogWrapper)
-   EVT_BUTTON(wxID_OK, SoundActivatedRecordDialog::OnOK)
-END_EVENT_TABLE()
-
 SoundActivatedRecordDialog::SoundActivatedRecordDialog(wxWindow* parent)
 : wxDialogWrapper(parent, -1, XO("Sound Activated Record"), wxDefaultPosition,
            wxDefaultSize, wxCAPTION )
@@ -67,10 +63,12 @@ void SoundActivatedRecordDialog::PopulateOrExchange(ShuttleGui & S)
    S.EndVerticalLay();
 
    S
-      .AddStandardButtons();
+      .AddStandardButtons( eCancelButton, {
+         S.Item( eOkButton ).Action( [this]{ OnOK(); } )
+      });
 }
 
-void SoundActivatedRecordDialog::OnOK(wxCommandEvent & WXUNUSED(event))
+void SoundActivatedRecordDialog::OnOK()
 {
    ShuttleGui S( this, eIsSavingToPrefs );
    PopulateOrExchange( S );

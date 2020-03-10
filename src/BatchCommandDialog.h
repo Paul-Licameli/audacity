@@ -38,9 +38,9 @@ class MacroCommandDialog final : public wxDialogWrapper {
    void OnEditParams();
    void OnUsePreset();
    void OnChoice(wxCommandEvent &event);
-   void OnOk(wxCommandEvent &event);
-   void OnCancel(wxCommandEvent &event);
-   void OnHelp(wxCommandEvent &event);
+   void OnOk();
+   void OnCancel();
+   void OnHelp();
    void OnItemSelected(wxListEvent &event);
    wxString GetHelpPageName() { return L"Scripting Reference" ; }
 

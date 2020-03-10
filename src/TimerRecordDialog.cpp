@@ -131,9 +131,6 @@ BEGIN_EVENT_TABLE(TimerRecordDialog, wxDialogWrapper)
 
    EVT_TEXT(ID_TIMETEXT_DURATION, TimerRecordDialog::OnTimeText_Duration)
 
-   EVT_BUTTON(wxID_OK, TimerRecordDialog::OnOK)
-   EVT_BUTTON(wxID_HELP, TimerRecordDialog::OnHelpButtonClick)
-
    EVT_TIMER(TIMER_ID, TimerRecordDialog::OnTimer)
 
    EVT_CHECKBOX(ID_AUTOSAVE_CHECKBOX, TimerRecordDialog::OnAutoSaveCheckBox_Change)
@@ -358,12 +355,12 @@ void TimerRecordDialog::OnAutoExportCheckBox_Change(wxCommandEvent& WXUNUSED(eve
    EnableDisableAutoControls(m_pTimerAutoExportCheckBoxCtrl->GetValue(), CONTROL_GROUP_EXPORT);
 }
 
-void TimerRecordDialog::OnHelpButtonClick(wxCommandEvent& WXUNUSED(event))
+void TimerRecordDialog::OnHelpButtonClick()
 {
    HelpSystem::ShowHelp(this, L"Timer_Record", true);
 }
 
-void TimerRecordDialog::OnOK(wxCommandEvent& WXUNUSED(event))
+void TimerRecordDialog::OnOK()
 {
    this->TransferDataFromWindow();
    if (!m_TimeSpan_Duration.IsPositive())
@@ -937,7 +934,10 @@ void TimerRecordDialog::PopulateOrExchange(ShuttleGui& S)
 
    // MY: Added the help button here
    S
-      .AddStandardButtons(eOkButton | eCancelButton | eHelpButton);
+      .AddStandardButtons(eCancelButton, {
+         S.Item( eOkButton ).Action( [this]{ OnOK(); } ),
+         S.Item( eHelpButton ).Action( [this]{ OnHelpButtonClick(); } )
+      });
 
    Layout();
    Fit();

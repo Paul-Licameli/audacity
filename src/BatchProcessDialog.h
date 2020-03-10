@@ -39,8 +39,8 @@ class ApplyMacroDialog : public wxDialogWrapper {
    virtual void OnApplyToProject();
    virtual void OnApplyToFiles();
    virtual void OnExpand();
-   virtual void OnCancel(wxCommandEvent & event);
-   virtual void OnHelp(wxCommandEvent & event);
+   virtual void OnCancel();
+   virtual void OnHelp();
 
    virtual wxString GetHelpPageName() {return "Apply_Macro";};
 
@@ -66,8 +66,6 @@ class ApplyMacroDialog : public wxDialogWrapper {
 protected:
    AudacityProject &mProject;
    const MacroCommandsCatalog mCatalog;
-
-   DECLARE_EVENT_TABLE()
 };
 
 class MacrosWindow final : public ApplyMacroDialog,
@@ -86,7 +84,7 @@ private:
    void PopulateOrExchange(ShuttleGui &S);
    void OnApplyToProject() override;
    void OnApplyToFiles() override;
-   void OnCancel(wxCommandEvent &event) override;
+   void OnCancel() override;
 
    virtual wxString GetHelpPageName() override {return 
       mbExpanded ? "Manage_Macros"
@@ -121,7 +119,7 @@ private:
    void OnUp();
    void OnDown();
 
-   void OnOK(wxCommandEvent &event);
+   void OnOK();
 
    void OnKeyDown(wxKeyEvent &event);
    void FitColumns();

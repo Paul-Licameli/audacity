@@ -60,7 +60,7 @@ class LabelDialog final : public wxDialogWrapper
    void Populate();
    void PopulateOrExchange( ShuttleGui & S );
    void PopulateLabels();
-   virtual void OnHelp(wxCommandEvent & event);
+   virtual void OnHelp();
    virtual wxString GetHelpPageName() {return "Labels_Editor";};
 
    bool TransferDataToWindow() override;
@@ -87,8 +87,8 @@ class LabelDialog final : public wxDialogWrapper
    void OnChangeEtime(wxGridEvent &event, int row, RowData *rd);
    void OnChangeLfreq(wxGridEvent &event, int row, RowData *rd);
    void OnChangeHfreq(wxGridEvent &event, int row, RowData *rd);
-   void OnOK(wxCommandEvent &event);
-   void OnCancel(wxCommandEvent &event);
+   void OnOK();
+   void OnCancel();
 
    void ReadSize();
    void WriteSize();

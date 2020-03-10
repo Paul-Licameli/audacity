@@ -313,7 +313,7 @@ public:
    ~LongMessageDialog();
 
    bool Init();
-   virtual void OnOk(wxCommandEvent & evt);
+   virtual void OnOk();
    virtual void OnCancel(wxCommandEvent & evt);
 
    static void AcceptText( const wxString & Text );
@@ -326,17 +326,12 @@ private:
    int mType;
    int mAdditionalButtons;
 
-   DECLARE_EVENT_TABLE()
    wxDECLARE_NO_COPY_CLASS(LongMessageDialog);
 };
 
 
 LongMessageDialog * LongMessageDialog::pDlg = NULL;
 
-
-BEGIN_EVENT_TABLE(LongMessageDialog, wxDialogWrapper)
-   EVT_BUTTON(wxID_OK, LongMessageDialog::OnOk)
-END_EVENT_TABLE()
 
 LongMessageDialog::LongMessageDialog(wxWindow * parent,
                            const TranslatableString & title,
@@ -372,7 +367,9 @@ bool LongMessageDialog::Init()
 
       long buttons = eOkButton;
       S
-         .AddStandardButtons(buttons|mAdditionalButtons);
+         .AddStandardButtons(mAdditionalButtons, {
+            S.Item(eOkButton).Action( [this]{ OnOk(); } )
+         });
    }
    S.EndVerticalLay();
 
@@ -383,7 +380,7 @@ bool LongMessageDialog::Init()
    return true;
 }
 
-void LongMessageDialog::OnOk(wxCommandEvent & WXUNUSED(evt)){
+void LongMessageDialog::OnOk(){
    //Close(true);
    Destroy();
 }

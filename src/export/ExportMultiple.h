@@ -98,9 +98,9 @@ private:
    void OnByName(wxCommandEvent& event);
    void OnByNumber(wxCommandEvent& event);
    void OnPrefix(wxCommandEvent& event);
-   void OnCancel(wxCommandEvent& event);
-   void OnHelp(wxCommandEvent& event);
-   void OnExport(wxCommandEvent& event);
+   void OnCancel();
+   void OnHelp();
+   void OnExport();
 
 private:
    Exporter mExporter;

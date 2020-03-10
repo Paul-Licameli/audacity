@@ -215,7 +215,7 @@ public:
    int GetAutoExportFilterIndex();
    wxFileName GetAutoExportFileName();
    void OnExtensionChanged(wxCommandEvent &evt);
-   void OnHelp(wxCommandEvent &evt);
+   void OnHelp();
 
 private:
    bool ExamineTracks();
@@ -313,9 +313,9 @@ private:
    wxArrayString mTrackNames;
 
 private:
-   void OnOk( wxCommandEvent &event );
-   void OnCancel( wxCommandEvent &event );
-   void OnMixerPanelHelp( wxCommandEvent &event );
+   void OnOk();
+   void OnCancel();
+   void OnMixerPanelHelp();
    void OnSlider( wxCommandEvent &event );
    void OnSize( wxSizeEvent &event );
 

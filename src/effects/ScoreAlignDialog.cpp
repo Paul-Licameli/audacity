@@ -75,7 +75,7 @@ ScoreAlignDialog::ScoreAlignDialog(ScoreAlignParams &params)
    //                     wxDefaultPosition, wxSize(20, 124),
    //                     wxSL_HORIZONTAL);
 
-   ShuttleGui S(this, eIsCreating);
+   auto S = ShuttleGui{ this, eIsCreating }.Rebind< My >();
    //ok->SetDefault();
 
    S.SetBorder(5);
@@ -247,11 +247,16 @@ ScoreAlignDialog::ScoreAlignDialog(ScoreAlignParams &params)
    S.EndMultiColumn();
    S.EndStatic();
 
-   mDefaultButton = safenew wxButton(this, ID_DEFAULT, _("Use Defaults"));
-   mDefaultButton->SetName(_("Restore Defaults"));
-
    S
-      .AddStandardButtons(eOkButton | eCancelButton, {}, mDefaultButton);
+      .AddStandardButtons(0, {
+            S.Item( eOkButton ).Action( [this]{ OnOK ),
+            S.Item( eCancelButton ).Action( [this]{ OnCancel )
+         },
+         safenew wxButton( this, ID_DEFAULT ),
+         S.Item()
+            .Label(XO("Use Defaults"))
+            .Name(XO("Restore Defaults"))
+            .Action( [this]{ OnDefault ) );
 
    S.EndVerticalLay();
    Layout();
@@ -287,12 +292,12 @@ ScoreAlignDialog::~ScoreAlignDialog()
 }
 
 
-//void ScoreAlignDialog::OnOK(wxCommandEvent & event)
+//void ScoreAlignDialog::OnOK()
 //{
 //   EndModal(wxID_OK);
 //}
 
-//void ScoreAlignDialog::OnCancel(wxCommandEvent & event)
+//void ScoreAlignDialog::OnCancel()
 //{
 //   EndModal(wxID_CANCEL);
 //}
@@ -303,7 +308,7 @@ void ScoreAlignDialog::OnSlider(wxCommandEvent & event)
 }
 
 
-void ScoreAlignDialog::OnDefault(wxCommandEvent & event)
+void ScoreAlignDialog::OnDefault()
 {
    mFramePeriodSlider->SetValue((int) (SA_DFT_FRAME_PERIOD * 100 + 0.5));
    mWindowSizeSlider->SetValue((int) (SA_DFT_WINDOW_SIZE * 100 + 0.5));
@@ -353,9 +358,6 @@ void CloseScoreAlignDialog()
 
 
 BEGIN_EVENT_TABLE(ScoreAlignDialog, wxDialogWrapper)
-//   EVT_BUTTON(wxID_OK, ScoreAlignDialog::OnOK)
-//   EVT_BUTTON(wxID_CANCEL, ScoreAlignDialog::OnCancel)
-   EVT_BUTTON(ID_DEFAULT, ScoreAlignDialog::OnDefault)
    EVT_SLIDER(ID_FRAMEPERIOD, ScoreAlignDialog::OnSlider)
    EVT_SLIDER(ID_WINDOWSIZE, ScoreAlignDialog::OnSlider)
    EVT_SLIDER(ID_SILENCETHRESHOLD, ScoreAlignDialog::OnSlider)

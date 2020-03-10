@@ -56,8 +56,6 @@ BEGIN_EVENT_TABLE(HistoryDialog, wxDialogWrapper)
    EVT_SIZE(HistoryDialog::OnSize)
    EVT_CLOSE(HistoryDialog::OnCloseWindow)
    EVT_LIST_ITEM_SELECTED(wxID_ANY, HistoryDialog::OnItemSelected)
-   EVT_BUTTON(ID_COMPACT, HistoryDialog::OnCompact)
-   EVT_BUTTON(wxID_HELP, HistoryDialog::OnGetURL)
 END_EVENT_TABLE()
 
 #define HistoryTitle XO("History")
@@ -187,10 +185,12 @@ void HistoryDialog::Populate(ShuttleGui & S)
       }
       S.EndStatic();
       S.AddStandardButtons(eOkButton, {
-            S.Item( eHelpButton )
+            S.Item( eHelpButton ).Action([this]{ OnGetURL(); })
          }
 #if defined(ALLOW_DISCARD)
-         , (mCompact = safenew wxButton(this, ID_COMPACT, _("&Compact")))
+         ,
+         (mCompact = safenew wxButton(this, ID_COMPACT, _("&Compact"))),
+         S.Item().Action([this]{ OnCompact(); })
 #endif
       );
    }
@@ -316,7 +316,7 @@ void HistoryDialog::OnDiscardClipboard()
    Clipboard::Get().Clear();
 }
 
-void HistoryDialog::OnCompact(wxCommandEvent & WXUNUSED(event))
+void HistoryDialog::OnCompact()
 {
    auto &projectFileIO = ProjectFileIO::Get(*mProject);
 
@@ -336,7 +336,7 @@ void HistoryDialog::OnCompact(wxCommandEvent & WXUNUSED(event))
       XO("History"));
 }
 
-void HistoryDialog::OnGetURL(wxCommandEvent & WXUNUSED(event))
+void HistoryDialog::OnGetURL()
 {
    HelpSystem::ShowHelp(this, L"Undo,_Redo_and_History");
 }

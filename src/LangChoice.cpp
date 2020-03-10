@@ -36,7 +36,7 @@ public:
    Identifier GetLang() { return mLang; }
 
 private:
-   void OnOk(wxCommandEvent & event);
+   void OnOk();
 
    wxChoice *mChoice;
    Identifier mLang;
@@ -44,8 +44,6 @@ private:
    int mNumLangs;
    Identifiers mLangCodes;
    TranslatableStrings mLangNames;
-
-   DECLARE_EVENT_TABLE()
 };
 
 Identifier ChooseLanguage(wxWindow *parent)
@@ -61,10 +59,6 @@ Identifier ChooseLanguage(wxWindow *parent)
 
    return returnVal;
 }
-
-BEGIN_EVENT_TABLE(LangChoiceDialog, wxDialogWrapper)
-    EVT_BUTTON(wxID_OK, LangChoiceDialog::OnOk)
-END_EVENT_TABLE()
 
 LangChoiceDialog::LangChoiceDialog(wxWindow * parent,
                                    wxWindowID id,
@@ -96,14 +90,16 @@ LangChoiceDialog::LangChoiceDialog(wxWindow * parent,
       S.SetBorder(0);
 
       S
-         .AddStandardButtons(eOkButton);
+         .AddStandardButtons( 0, {
+            S.Item( eOkButton ).Action( [this]{ OnOk(); } )
+         });
    }
    S.EndVerticalLay();
 
    Fit();
 }
 
-void LangChoiceDialog::OnOk(wxCommandEvent & WXUNUSED(event))
+void LangChoiceDialog::OnOk()
 {
    int ndx = mChoice->GetSelection();
    mLang = mLangCodes[ndx];

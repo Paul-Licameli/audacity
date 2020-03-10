@@ -198,20 +198,14 @@ public:
 
    void PopulateOrExchange(ShuttleGui &S);
 
-   void OnOk(wxCommandEvent &evt);
+   void OnOk();
 
 private:
    LV2Effect *mEffect;
    int mBufferSize;
    bool mUseLatency;
    bool mUseGUI;
-
-   DECLARE_EVENT_TABLE()
 };
-
-BEGIN_EVENT_TABLE(LV2EffectSettingsDialog, wxDialogWrapper)
-   EVT_BUTTON(wxID_OK, LV2EffectSettingsDialog::OnOk)
-END_EVENT_TABLE()
 
 LV2EffectSettingsDialog::LV2EffectSettingsDialog(wxWindow *parent, LV2Effect *effect)
 :  wxDialogWrapper(parent, wxID_ANY, XO("LV2 Effect Settings"))
@@ -310,14 +304,16 @@ void LV2EffectSettingsDialog::PopulateOrExchange(ShuttleGui &S)
    }
    S.EndHorizontalLay();
 
-   S.AddStandardButtons();
+   S.AddStandardButtons( eCancelButton, {
+      S.Item( eOkButton ).Action( [this]{ OnOk(); } )
+   });
 
    Layout();
    Fit();
    Center();
 }
 
-void LV2EffectSettingsDialog::OnOk(wxCommandEvent &WXUNUSED(evt))
+void LV2EffectSettingsDialog::OnOk()
 {
    if (!Validate())
    {

@@ -72,8 +72,8 @@ class ScreenshotBigDialog final : public wxFrame,
    void OnCloseWindow(wxCloseEvent & event);
    void OnUIUpdate(wxUpdateUIEvent & event);
    void OnDirChoose();
-   void OnGetURL(wxCommandEvent & event);
-   void OnClose(wxCommandEvent & event );
+   void OnGetURL();
+   void OnClose();
 
 
    void SizeMainWindow(int w, int h);
@@ -232,8 +232,6 @@ enum
 
 BEGIN_EVENT_TABLE(ScreenshotBigDialog, wxFrame)
    EVT_CLOSE(ScreenshotBigDialog::OnCloseWindow)
-   EVT_BUTTON(wxID_HELP, ScreenshotBigDialog::OnGetURL)
-   EVT_BUTTON(wxID_CANCEL, ScreenshotBigDialog::OnClose)
 
    EVT_UPDATE_UI(IdCaptureFullScreen,   ScreenshotBigDialog::OnUIUpdate)
 
@@ -562,7 +560,10 @@ void ScreenshotBigDialog::PopulateOrExchange(ShuttleGui & S)
       S.EndStatic();
 
       S
-         .AddStandardButtons(eCloseButton |eHelpButton);
+         .AddStandardButtons(0, {
+            S.Item( eCancelButton ).Action( [this]{ OnClose(); } ),
+            S.Item( eHelpButton ).Action( [this]{ OnGetURL(); } )
+         });
    }
    S.EndPanel();
 
@@ -630,7 +631,7 @@ void ScreenshotBigDialog::OnCloseWindow(wxCloseEvent &  WXUNUSED(event))
    Destroy();
 }
 
-void ScreenshotBigDialog::OnClose(wxCommandEvent &  WXUNUSED(event))
+void ScreenshotBigDialog::OnClose()
 {
    if (mDirectoryTextBox->IsModified()) {
       gPrefs->Write(L"/ScreenshotPath", mDirectoryTextBox->GetValue());
@@ -640,7 +641,7 @@ void ScreenshotBigDialog::OnClose(wxCommandEvent &  WXUNUSED(event))
    Destroy();
 }
 
-void ScreenshotBigDialog::OnGetURL(wxCommandEvent & WXUNUSED(event))
+void ScreenshotBigDialog::OnGetURL()
 {
    HelpSystem::ShowHelp(this, L"Screenshot");
 }

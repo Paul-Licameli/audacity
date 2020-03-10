@@ -95,9 +95,6 @@ enum {
 
 BEGIN_EVENT_TABLE(ExportMultipleDialog, wxDialogWrapper)
    EVT_CHOICE(FormatID, ExportMultipleDialog::OnFormat)
-   EVT_BUTTON(wxID_OK, ExportMultipleDialog::OnExport)
-   EVT_BUTTON(wxID_CANCEL, ExportMultipleDialog::OnCancel)
-   EVT_BUTTON(wxID_HELP, ExportMultipleDialog::OnHelp)
    EVT_RADIOBUTTON(LabelID, ExportMultipleDialog::OnLabel)
    EVT_RADIOBUTTON(TrackID, ExportMultipleDialog::OnTrack)
    EVT_RADIOBUTTON(ByNameAndNumberID, ExportMultipleDialog::OnByName)
@@ -479,7 +476,9 @@ void ExportMultipleDialog::PopulateOrExchange(ShuttleGui& S)
 
    S
       .AddStandardButtons( eCancelButton | eHelpButton, {
-         S.Item( eOkButton )
+         S.Item( eOkButton ).Action( [this]{ OnExport(); } ),
+         S.Item( eCancelButton ).Action( [this]{ OnCancel(); } ),
+         S.Item( eHelpButton ).Action( [this]{ OnHelp(); } )
       } );
 
    mExport = (wxButton *)wxWindow::FindWindowById(wxID_OK, this);
@@ -617,17 +616,17 @@ void ExportMultipleDialog::OnPrefix(wxCommandEvent& WXUNUSED(event))
    EnableControls();
 }
 
-void ExportMultipleDialog::OnCancel(wxCommandEvent& WXUNUSED(event))
+void ExportMultipleDialog::OnCancel()
 {
    EndModal(0);
 }
 
-void ExportMultipleDialog::OnHelp(wxCommandEvent& WXUNUSED(event))
+void ExportMultipleDialog::OnHelp()
 {
    HelpSystem::ShowHelp(this, L"Export_Multiple", true);
 }
 
-void ExportMultipleDialog::OnExport(wxCommandEvent& WXUNUSED(event))
+void ExportMultipleDialog::OnExport()
 {
    ShuttleGui S(this, eIsSavingToPrefs);
    PopulateOrExchange(S);

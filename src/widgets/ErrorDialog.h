@@ -40,9 +40,10 @@ private:
    bool dModal;
 
    void OnPane( wxCollapsiblePaneEvent &event );
-   void OnOk( wxCommandEvent &event );
-   void OnHelp( wxCommandEvent &event );
    DECLARE_EVENT_TABLE()
+
+   void OnOk();
+   void OnHelp();
 };
 
 /// Displays an error dialog with a button that offers help

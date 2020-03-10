@@ -45,9 +45,6 @@ selected command.
 #define CommandsListID        7001
 
 BEGIN_EVENT_TABLE(MacroCommandDialog, wxDialogWrapper)
-   EVT_BUTTON(wxID_OK,                     MacroCommandDialog::OnOk)
-   EVT_BUTTON(wxID_CANCEL,                 MacroCommandDialog::OnCancel)
-   EVT_BUTTON(wxID_HELP,                   MacroCommandDialog::OnHelp)
    EVT_LIST_ITEM_ACTIVATED(CommandsListID, MacroCommandDialog::OnItemSelected)
    EVT_LIST_ITEM_SELECTED(CommandsListID,  MacroCommandDialog::OnItemSelected)
 END_EVENT_TABLE();
@@ -139,7 +136,11 @@ void MacroCommandDialog::PopulateOrExchange(ShuttleGui &S)
    S.EndVerticalLay();
 
    S
-      .AddStandardButtons( eOkButton | eCancelButton | eHelpButton);
+      .AddStandardButtons( 0, {
+         S.Item( eOkButton ).Action( [this]{ OnOk(); } ),
+         S.Item( eCancelButton ).Action( [this]{ OnCancel(); } ),
+         S.Item( eHelpButton ).Action( [this]{ OnHelp(); } )
+      } );
 
    PopulateCommandList();
    if (mChoices->GetItemCount() > 0) {
@@ -171,7 +172,7 @@ void MacroCommandDialog::OnChoice(wxCommandEvent & WXUNUSED(event))
 {
 }
 
-void MacroCommandDialog::OnOk(wxCommandEvent & WXUNUSED(event))
+void MacroCommandDialog::OnOk()
 {
    mSelectedCommand = mInternalCommandName
       // .Strip(wxString::both) // PRL: used to do this, here only,
@@ -182,12 +183,12 @@ void MacroCommandDialog::OnOk(wxCommandEvent & WXUNUSED(event))
    EndModal(true);
 }
 
-void MacroCommandDialog::OnCancel(wxCommandEvent & WXUNUSED(event))
+void MacroCommandDialog::OnCancel()
 {
    EndModal(false);
 }
 
-void MacroCommandDialog::OnHelp(wxCommandEvent & WXUNUSED(event))
+void MacroCommandDialog::OnHelp()
 {
    wxString page = GetHelpPageName();
    HelpSystem::ShowHelp(this, page, true);
