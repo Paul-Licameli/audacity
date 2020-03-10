@@ -85,19 +85,11 @@ private:
    wxString MakeFileName(const wxString &input);
    // Dialog
    void PopulateOrExchange(ShuttleGui& S);
-   void EnableControls();
 
    void OnFormat(wxCommandEvent& event);
    void OnOptions();
    void OnCreate();
    void OnChoose();
-   void OnLabel(wxCommandEvent& event);
-   void OnFirst(wxCommandEvent& event);
-   void OnFirstFileName(wxCommandEvent& event);
-   void OnTrack(wxCommandEvent& event);
-   void OnByName(wxCommandEvent& event);
-   void OnByNumber(wxCommandEvent& event);
-   void OnPrefix(wxCommandEvent& event);
    void OnCancel();
    void OnHelp();
    void OnExport();
@@ -121,7 +113,6 @@ private:
                               plug-in */
    int mSubFormatIndex;       /**< The selected subformat number within the
                                 selected export plug-in set by mPluginIndex */
-   bool mInitialized;
 
    // List of file actually exported
    FilePaths mExported;

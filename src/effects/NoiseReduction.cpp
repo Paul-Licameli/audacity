@@ -376,18 +376,9 @@ public:
    { return mTempSettings; }
 
 private:
-   void DisableControlsIfIsolating();
-
-#ifdef ADVANCED_SETTINGS
-   void EnableDisableSensitivityControls();
-#endif
-
    // handlers
    void OnGetProfile();
    void OnNoiseReductionChoice( wxCommandEvent &event );
-#ifdef ADVANCED_SETTINGS
-   void OnMethodChoice(wxCommandEvent &);
-#endif
    void OnPreview();
    void OnReduceNoise();
    void OnCancel();
@@ -406,6 +397,7 @@ private:
    bool mbAllowTwiddleSettings;
 
 
+public:
    wxRadioButton *mKeepSignal;
 #ifdef ISOLATE_CHOICE
    wxRadioButton *mKeepNoise;
@@ -1435,6 +1427,8 @@ struct ControlInfo {
 
    void CreateControls(int id, double &target, ShuttleGui &S) const
    {
+      auto pDlg = static_cast< EffectNoiseReduction::Dialog* >( S.GetParent() );
+      const auto fn = [this, pDlg]{ return enabler( *pDlg ); };
       wxTextCtrl *const text =
       S
          .Id(id + 1)
@@ -1443,6 +1437,7 @@ struct ControlInfo {
             &target,
             NumValidatorStyle::DEFAULT,
             valueMin, valueMax )
+         .Enable( fn )
          .AddTextBox(textBoxCaption, L"", 0);
 
       wxSlider *const slider =
@@ -1451,6 +1446,7 @@ struct ControlInfo {
          .Text( sliderName )
          .Style(wxSL_HORIZONTAL)
          .MinSize( { 150, -1 } )
+         .Enable( fn )
          .AddSlider( {}, 0, sliderMax);
    }
 
@@ -1464,38 +1460,82 @@ struct ControlInfo {
    const TranslatableLabel textBoxCaption;
    const TranslatableString sliderName;
 
+   using Dialog = EffectNoiseReduction::Dialog;
+   using Enabler = std::function<bool( Dialog& )> ;
+   Enabler enabler;
+
    ControlInfo(MemberPointer f, double vMin, double vMax, long sMax, const wxChar* fmt, bool fAsInt,
-      const TranslatableLabel &caption, const TranslatableString &name)
+      const TranslatableLabel &caption, const TranslatableString &name,
+      const Enabler &enabler = {})
       : field(f), valueMin(vMin), valueMax(vMax), sliderMax(sMax), format(fmt), formatAsInt(fAsInt)
-      , textBoxCaption(caption), sliderName(name)
+      , textBoxCaption(caption), sliderName(name), enabler{ enabler }
    {
    }
+};
+
+bool NoiseReductionEnabler( EffectNoiseReduction::Dialog &dialog )
+{
+   // If Isolate is chosen, disable controls that define
+   // "what to do with noise" rather than "what is noise."
+   // Else, enable them.
+   // This does NOT include sensitivity, NEW or old, nor
+   // the choice of window functions, size, or step.
+   // The method choice is not included, because it affects
+   // which sensitivity slider is operative, and that is part
+   // of what defines noise.
+
+   bool bIsolating =
+#ifdef ISOLATE_CHOICE
+      dialog.mKeepNoise->GetValue();
+#else
+      false;
+#endif
+
+   return !bIsolating;
 };
 
 const ControlInfo *controlInfo() {
    static const ControlInfo table[] = {
          ControlInfo(&EffectNoiseReduction::Settings::mNoiseGain,
          0.0, 48.0, 48, L"%d", true,
-         XXO("&Noise reduction (dB):"), XO("Noise reduction")),
+         XXO("&Noise reduction (dB):"), XO("Noise reduction"),
+         NoiseReductionEnabler ),
+
          ControlInfo(&EffectNoiseReduction::Settings::mNewSensitivity,
          0.0, 24.0, 48, L"%.2f", false,
-         XXO("&Sensitivity:"), XO("Sensitivity")),
+         XXO("&Sensitivity:"), XO("Sensitivity"),
+         []( EffectNoiseReduction::Dialog &dlg ) {
+            const auto pChoice = static_cast<wxChoice*>(
+               wxWindow::FindWindowById(ID_CHOICE_METHOD, &dlg));
+            return pChoice->GetSelection() != DM_OLD_METHOD;
+         } ),
+
 #ifdef ATTACK_AND_RELEASE
          ControlInfo(&EffectNoiseReduction::Settings::mAttackTime,
          0, 1.0, 100, L"%.2f", false,
-         XXO("Attac&k time (secs):"), XO("Attack time")),
+         XXO("Attac&k time (secs):"), XO("Attack time"),
+         NoiseReductionEnabler ),
+
          ControlInfo(&EffectNoiseReduction::Settings::mReleaseTime,
          0, 1.0, 100, L"%.2f", false,
-         XXO("R&elease time (secs):"), XO("Release time")),
+         XXO("R&elease time (secs):"), XO("Release time"),
+         NoiseReductionEnabler ),
 #endif
+
          ControlInfo(&EffectNoiseReduction::Settings::mFreqSmoothingBands,
          0, 12, 12, L"%d", true,
-         XXO("&Frequency smoothing (bands):"), XO("Frequency smoothing")),
+         XXO("&Frequency smoothing (bands):"), XO("Frequency smoothing"),
+         NoiseReductionEnabler ),
 
 #ifdef ADVANCED_SETTINGS
          ControlInfo(&EffectNoiseReduction::Settings::mOldSensitivity,
          -20.0, 20.0, 4000, L"%.2f", false,
-         XXO("Sensiti&vity (dB):"), XO("Old Sensitivity")),
+         XXO("Sensiti&vity (dB):"), XO("Old Sensitivity"),
+         []( EffectNoiseReduction::Dialog &dlg ) {
+            const auto pChoice = static_cast<wxChoice*>(
+               wxWindow::FindWindowById(ID_CHOICE_METHOD, &dlg));
+            return pChoice->GetSelection() == DM_OLD_METHOD;
+         } ),
          // add here
 #endif
    };
@@ -1514,10 +1554,6 @@ BEGIN_EVENT_TABLE(EffectNoiseReduction::Dialog, wxDialogWrapper)
 #endif
 #ifdef RESIDUE_CHOICE
    EVT_RADIOBUTTON(ID_RADIOBUTTON_RESIDUE, EffectNoiseReduction::Dialog::OnNoiseReductionChoice)
-#endif
-
-#ifdef ADVANCED_SETTINGS
-   EVT_CHOICE(ID_CHOICE_METHOD, EffectNoiseReduction::Dialog::OnMethodChoice)
 #endif
 
    EVT_SLIDER(ID_GAIN_SLIDER, EffectNoiseReduction::Dialog::OnSlider)
@@ -1566,58 +1602,6 @@ EffectNoiseReduction::Dialog::Dialog
    EffectDialog::Init();
 }
 
-void EffectNoiseReduction::Dialog::DisableControlsIfIsolating()
-{
-   // If Isolate is chosen, disable controls that define
-   // "what to do with noise" rather than "what is noise."
-   // Else, enable them.
-   // This does NOT include sensitivity, NEW or old, nor
-   // the choice of window functions, size, or step.
-   // The method choice is not included, because it affects
-   // which sensitivity slider is operative, and that is part
-   // of what defines noise.
-
-   static const int toDisable[] = {
-      ID_GAIN_SLIDER,
-      ID_GAIN_TEXT,
-
-      ID_FREQ_SLIDER,
-      ID_FREQ_TEXT,
-
-#ifdef ATTACK_AND_RELEASE
-      ID_ATTACK_TIME_SLIDER,
-      ID_ATTACK_TIME_TEXT,
-
-      ID_RELEASE_TIME_SLIDER,
-      ID_RELEASE_TIME_TEXT,
-#endif
-   };
-   static const int nToDisable = sizeof(toDisable) / sizeof(toDisable[0]);
-   
-   bool bIsolating = 
-#ifdef ISOLATE_CHOICE
-      mKeepNoise->GetValue();
-#else
-      false;
-#endif
-   for (int ii = nToDisable; ii--;)
-      wxWindow::FindWindowById(toDisable[ii], this)->Enable(!bIsolating);
-}
-
-#ifdef ADVANCED_SETTINGS
-void EffectNoiseReduction::Dialog::EnableDisableSensitivityControls()
-{
-   wxChoice *const pChoice =
-      static_cast<wxChoice*>(wxWindow::FindWindowById(ID_CHOICE_METHOD, this));
-   const bool bOldMethod =
-      pChoice->GetSelection() == DM_OLD_METHOD;
-   wxWindow::FindWindowById(ID_OLD_SENSITIVITY_SLIDER, this)->Enable(bOldMethod);
-   wxWindow::FindWindowById(ID_OLD_SENSITIVITY_TEXT, this)->Enable(bOldMethod);
-   wxWindow::FindWindowById(ID_NEW_SENSITIVITY_SLIDER, this)->Enable(!bOldMethod);
-   wxWindow::FindWindowById(ID_NEW_SENSITIVITY_TEXT, this)->Enable(!bOldMethod);
-}
-#endif
-
 void EffectNoiseReduction::Dialog::OnGetProfile()
 {
    // Project has not be changed so skip pushing state
@@ -1643,15 +1627,7 @@ void EffectNoiseReduction::Dialog::OnNoiseReductionChoice( wxCommandEvent & WXUN
    else
       mTempSettings.mNoiseReductionChoice = NRC_LEAVE_RESIDUE;
 #endif
-   DisableControlsIfIsolating();
 }
-
-#ifdef ADVANCED_SETTINGS
-void EffectNoiseReduction::Dialog::OnMethodChoice(wxCommandEvent &)
-{
-   EnableDisableSensitivityControls();
-}
-#endif
 
 void EffectNoiseReduction::Dialog::OnPreview()
 {
@@ -1879,12 +1855,6 @@ bool EffectNoiseReduction::Dialog::TransferDataToWindow()
 #endif
 #ifdef RESIDUE_CHOICE
    mResidue->SetValue(mTempSettings.mNoiseReductionChoice == NRC_LEAVE_RESIDUE);
-#endif
-
-   // Set the enabled states of controls
-   DisableControlsIfIsolating();
-#ifdef ADVANCED_SETTINGS
-   EnableDisableSensitivityControls();
 #endif
 
    return true;

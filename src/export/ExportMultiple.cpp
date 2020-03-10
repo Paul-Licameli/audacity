@@ -95,14 +95,6 @@ enum {
 
 BEGIN_EVENT_TABLE(ExportMultipleDialog, wxDialogWrapper)
    EVT_CHOICE(FormatID, ExportMultipleDialog::OnFormat)
-   EVT_RADIOBUTTON(LabelID, ExportMultipleDialog::OnLabel)
-   EVT_RADIOBUTTON(TrackID, ExportMultipleDialog::OnTrack)
-   EVT_RADIOBUTTON(ByNameAndNumberID, ExportMultipleDialog::OnByName)
-   EVT_RADIOBUTTON(ByNameID, ExportMultipleDialog::OnByName)
-   EVT_RADIOBUTTON(ByNumberID, ExportMultipleDialog::OnByNumber)
-   EVT_CHECKBOX(FirstID, ExportMultipleDialog::OnFirst)
-   EVT_TEXT(FirstFileNameID, ExportMultipleDialog::OnFirstFileName)
-   EVT_TEXT(PrefixID, ExportMultipleDialog::OnPrefix)
 END_EVENT_TABLE()
 
 BEGIN_EVENT_TABLE(SuccessDialog, wxDialogWrapper)
@@ -134,19 +126,12 @@ ExportMultipleDialog::ExportMultipleDialog(AudacityProject *project)
 
    ShuttleGui S(this, eIsCreatingFromPrefs);
 
-   // Creating some of the widgets cause events to fire
-   // and we don't want that until after we're completely
-   // created.  (Observed on Windows)
-   mInitialized = false;
    PopulateOrExchange(S);
-   mInitialized = true;
 
    Layout();
    Fit();
    SetMinSize(GetSize());
    Center();
-
-   EnableControls();
 }
 
 ExportMultipleDialog::~ExportMultipleDialog()
@@ -199,8 +184,6 @@ int ExportMultipleDialog::ShowModal()
    bool bPreferByLabels = bHasLabels && (mNumWaveTracks < 2);
    mLabel->SetValue(bPreferByLabels);
    mTrack->SetValue(!bPreferByLabels);
-
-   EnableControls();
 
    return wxDialogWrapper::ShowModal();
 }
@@ -489,41 +472,30 @@ void ExportMultipleDialog::PopulateOrExchange(ShuttleGui& S)
 
    S
       .AddStandardButtons( eCancelButton | eHelpButton, {
-         S.Item( eOkButton ).Action( [this]{ OnExport(); } ),
-         S.Item( eCancelButton ).Action( [this]{ OnCancel(); } ),
-         S.Item( eHelpButton ).Action( [this]{ OnHelp(); } )
+         S.Item( eOkButton )
+            .Enable( [this]{ return
+               !(mLabel->GetValue() && mFirst->GetValue() &&
+                  mFirstFileName->GetValue().empty() &&
+                  mPrefix->GetValue().empty())
+               &&
+               !(mByNumber->GetValue() &&
+                   mPrefix->GetValue().empty()); } )
+            .Action( [this]{ OnExport(); } ),
+         S
+            .Item( eCancelButton )
+            .Action( [this]{ OnCancel(); } ),
+         S
+            .Item( eHelpButton )
+         .Action( [this]{ OnHelp(); } )
       } );
 
    mExport = (wxButton *)wxWindow::FindWindowById(wxID_OK, this);
    mExport->SetLabel(_("Export"));
-
-}
-
-void ExportMultipleDialog::EnableControls()
-{
-   if (!mInitialized) {
-      return;
-   }
-
-   bool ok = true;
-
-   if (mLabel->GetValue() && mFirst->GetValue() &&
-       mFirstFileName->GetValue().empty() &&
-       mPrefix->GetValue().empty())
-      ok = false;
-
-   if (mByNumber->GetValue() &&
-       mPrefix->GetValue().empty())
-      ok = false;
-
-   mExport->Enable(ok);
 }
 
 void ExportMultipleDialog::OnFormat(wxCommandEvent& WXUNUSED(event))
 {
    mBook->ChangeSelection(mFormat->GetSelection());
-
-   EnableControls();
 }
 
 void ExportMultipleDialog::OnOptions()
@@ -578,41 +550,6 @@ void ExportMultipleDialog::OnChoose()
    dlog.ShowModal();
    if (!dlog.GetPath().empty())
       mDir->SetValue(dlog.GetPath());
-}
-
-void ExportMultipleDialog::OnLabel(wxCommandEvent& WXUNUSED(event))
-{
-   EnableControls();
-}
-
-void ExportMultipleDialog::OnFirst(wxCommandEvent& WXUNUSED(event))
-{
-   EnableControls();
-}
-
-void ExportMultipleDialog::OnFirstFileName(wxCommandEvent& WXUNUSED(event))
-{
-   EnableControls();
-}
-
-void ExportMultipleDialog::OnTrack(wxCommandEvent& WXUNUSED(event))
-{
-   EnableControls();
-}
-
-void ExportMultipleDialog::OnByName(wxCommandEvent& WXUNUSED(event))
-{
-   EnableControls();
-}
-
-void ExportMultipleDialog::OnByNumber(wxCommandEvent& WXUNUSED(event))
-{
-   EnableControls();
-}
-
-void ExportMultipleDialog::OnPrefix(wxCommandEvent& WXUNUSED(event))
-{
-   EnableControls();
 }
 
 void ExportMultipleDialog::OnCancel()
