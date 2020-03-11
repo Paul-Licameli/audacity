@@ -2029,14 +2029,6 @@ void EffectDialog::Init()
    Center();
 }
 
-/// This is a virtual function which will be overridden to
-/// provide the actual parameters that we want for each
-/// kind of dialog.
-void EffectDialog::PopulateOrExchange(ShuttleGui & WXUNUSED(S))
-{
-   return;
-}
-
 bool EffectDialog::TransferDataToWindow()
 {
    ShuttleGui S(this, eIsSettingToDialog);
