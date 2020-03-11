@@ -2005,10 +2005,6 @@ wxDialog *EffectUI::DialogFactory( wxWindow &parent, EffectHostInterface *pHost,
 }
 
 ///////////////////////////////////////////////////////////////////////////////
-BEGIN_EVENT_TABLE(EffectDialog, wxDialogWrapper)
-   EVT_BUTTON(wxID_OK, EffectDialog::OnOk)
-END_EVENT_TABLE()
-
 EffectDialog::EffectDialog(wxWindow * parent,
                            const TranslatableString & title,
                            int flags)
@@ -2062,17 +2058,3 @@ bool EffectDialog::Validate()
    return true;
 }
 
-void EffectDialog::OnOk(wxCommandEvent & WXUNUSED(evt))
-{
-   // On wxGTK (wx2.8.12), the default action is still executed even if
-   // the button is disabled.  This appears to affect all wxDialogs, not
-   // just our Effects dialogs.  So, this is a only temporary workaround
-   // for legacy effects that disable the OK button.  Hopefully this has
-   // been corrected in wx3.
-   if (FindWindow(wxID_OK)->IsEnabled() && Validate() && TransferDataFromWindow())
-   {
-      EndModal(true);
-   }
-
-   return;
-}

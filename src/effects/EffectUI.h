@@ -252,10 +252,8 @@ public:
 
    // NEW virtuals:
    virtual void PopulateOrExchange(ShuttleGui & S);
-   virtual void OnOk(wxCommandEvent & evt);
 
 private:
-   DECLARE_EVENT_TABLE()
    wxDECLARE_NO_COPY_CLASS(EffectDialog);
 };
 

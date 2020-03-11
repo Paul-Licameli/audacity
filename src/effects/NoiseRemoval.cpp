@@ -692,6 +692,14 @@ void NoiseRemovalDialog::OnPreview(wxCommandEvent & WXUNUSED(event))
 
 void NoiseRemovalDialog::OnRemoveNoise( wxCommandEvent & WXUNUSED(event))
 {
+   // On wxGTK (wx2.8.12), the default action is still executed even if
+   // the button is disabled.  This appears to affect all wxDialogs, not
+   // just our Effects dialogs.  So, this is a only temporary workaround
+   // for legacy effects that disable the OK button.  Hopefully this has
+   // been corrected in wx3.
+   if (!(FindWindow(wxID_OK)->IsEnabled() && Validate() && TransferDataFromWindow()))
+      return;
+
    mbLeaveNoise = mKeepNoise->GetValue();
    EndModal(2);
 }
