@@ -83,9 +83,9 @@ private:
    void Calc_PercentChange(); // Update m_dPercentChange based on NEW m_dSemitonesChange.
 
    // handlers
-   void OnChoice_FromPitch(wxCommandEvent & evt);
+   void OnChoice_FromPitch();
    void OnSpin_FromOctave(wxCommandEvent & evt);
-   void OnChoice_ToPitch(wxCommandEvent & evt);
+   void OnChoice_ToPitch();
    void OnSpin_ToOctave(wxCommandEvent & evt);
 
    void OnText_SemitonesChange(wxCommandEvent & evt);

@@ -211,11 +211,6 @@ static const std::vector< int > sampRates {
    48000,
 };
 
-#define ID_SET 7000
-#define ID_VBR 7001
-#define ID_ABR 7002
-#define ID_CBR 7003
-
 class ExportMP3Options final : public wxPanelWrapper
 {
 public:
@@ -226,10 +221,6 @@ public:
    void PopulateOrExchange(ShuttleGui & S);
    bool TransferDataFromWindow() override;
 
-   void OnSET(wxCommandEvent& evt);
-   void OnVBR(wxCommandEvent& evt);
-   void OnABR(wxCommandEvent& evt);
-   void OnCBR(wxCommandEvent& evt);
    void OnQuality(wxCommandEvent& evt);
    void OnMono();
 
@@ -245,8 +236,6 @@ private:
 
    //wxChoice *mMode;
 
-   wxSimplebook *mBook;
-
    long mSetRate;
    long mVbrRate;
    long mAbrRate;
@@ -256,10 +245,6 @@ private:
 };
 
 BEGIN_EVENT_TABLE(ExportMP3Options, wxPanelWrapper)
-   EVT_RADIOBUTTON(ID_SET,    ExportMP3Options::OnSET)
-   EVT_RADIOBUTTON(ID_VBR,    ExportMP3Options::OnVBR)
-   EVT_RADIOBUTTON(ID_ABR,    ExportMP3Options::OnABR)
-   EVT_RADIOBUTTON(ID_CBR,    ExportMP3Options::OnCBR)
    EVT_CHOICE(wxID_ANY,       ExportMP3Options::OnQuality)
 END_EVENT_TABLE()
 
@@ -360,22 +345,18 @@ void ExportMP3Options::PopulateOrExchange(ShuttleGui & S)
                      {
                         mSET =
                         S
-                           .Id(ID_SET)
                            .TieRadioButton();
 
                         mVBR =
                         S
-                           .Id(ID_VBR)
                            .TieRadioButton();
 
                         mABR =
                         S
-                           .Id(ID_ABR)
                            .TieRadioButton();
 
                         mCBR =
                         S
-                           .Id(ID_CBR)
                            .TieRadioButton();
                      }
                      S
@@ -385,8 +366,8 @@ void ExportMP3Options::PopulateOrExchange(ShuttleGui & S)
                }
                S.EndPanel();
 
-               mBook =
                S
+                  .Target( MP3RateModeSetting )
                   .StartSimplebook();
                {
                   S
@@ -533,34 +514,6 @@ int ValidateIndex( const std::vector<int> &values, int value, int defaultIndex )
    return ( iter != finish ) ? static_cast<int>( iter - start ) : defaultIndex;
 }
 
-}
-
-///
-///
-void ExportMP3Options::OnSET(wxCommandEvent& WXUNUSED(event))
-{
-   mBook->SetSelection( 0 );
-}
-
-///
-///
-void ExportMP3Options::OnVBR(wxCommandEvent& WXUNUSED(event))
-{
-   mBook->SetSelection( 1 );
-}
-
-///
-///
-void ExportMP3Options::OnABR(wxCommandEvent& WXUNUSED(event))
-{
-   mBook->SetSelection( 2 );
-}
-
-///
-///
-void ExportMP3Options::OnCBR(wxCommandEvent& WXUNUSED(event))
-{
-   mBook->SetSelection( 3 );
 }
 
 void ExportMP3Options::OnQuality(wxCommandEvent& WXUNUSED(event))

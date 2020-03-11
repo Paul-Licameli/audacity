@@ -39,7 +39,7 @@ class DevicePrefs final : public PrefsPanel
    void GetNamesAndLabels();
 
    void OnHost(wxCommandEvent & e);
-   void OnDevice(wxCommandEvent & e);
+   void OnDevice();
 
    TranslatableStrings mHostNames;
    Identifiers mHostLabels;

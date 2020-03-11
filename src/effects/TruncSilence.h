@@ -79,6 +79,7 @@ private:
    void Intersect(RegionList &dest, const RegionList & src);
 
    void OnControlChange(wxCommandEvent & evt);
+   void DoControlChange();
 
    bool ProcessIndependently();
    bool ProcessAll();
@@ -101,7 +102,6 @@ private:
    size_t mBlendFrameCount;
 
    wxTextCtrl *mThresholdText;
-   wxChoice *mActionChoice;
    wxTextCtrl *mInitialAllowedSilenceT;
    wxCheckBox *mIndependent;
 

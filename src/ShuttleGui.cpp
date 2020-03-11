@@ -274,6 +274,20 @@ bool ChoiceSettingAdaptor::Set( const TargetType &value )
    return mSetting.WriteIndex( value ) && gPrefs->Flush();
 }
 
+LabelSettingAdaptor::~LabelSettingAdaptor() = default;
+
+bool LabelSettingAdaptor::Get( TargetType &target ) const
+{
+   // to do: error handling
+   target = mSetting.ReadIndex();
+   return true;
+}
+
+bool LabelSettingAdaptor::Set( const TargetType &value )
+{
+   return mSetting.WriteIndex( value ) && gPrefs->Flush();
+}
+
 BoolValidator::BoolValidator(
    const std::shared_ptr< ValidationState > &pValidationState,
    const std::shared_ptr< AdaptorType > &pAdaptor )

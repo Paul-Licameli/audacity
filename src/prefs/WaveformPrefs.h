@@ -40,7 +40,7 @@ public:
 private:
    void Populate();
 
-   void OnControl(wxCommandEvent&);
+   void OnControl();
    void OnDefaults(wxCommandEvent&);
    DECLARE_EVENT_TABLE()
 

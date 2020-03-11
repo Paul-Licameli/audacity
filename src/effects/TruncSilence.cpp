@@ -133,7 +133,6 @@ const ComponentInterfaceSymbol EffectTruncSilence::Symbol
 namespace{ BuiltinEffectsModule::Registration< EffectTruncSilence > reg; }
 
 BEGIN_EVENT_TABLE(EffectTruncSilence, wxEvtHandler)
-   EVT_CHOICE(wxID_ANY, EffectTruncSilence::OnControlChange)
    EVT_TEXT(wxID_ANY, EffectTruncSilence::OnControlChange)
 END_EVENT_TABLE()
 
@@ -799,10 +798,10 @@ void EffectTruncSilence::PopulateOrExchange(ShuttleGui & S)
       {
          // Action choices
          auto actionChoices = Msgids( kActionStrings, nActions );
-         mActionChoice =
          S
             .Target( mActionIndex )
             .MinSize( { -1, -1 } )
+            .Action( [this]{ DoControlChange(); } )
             .AddChoice( {}, actionChoices );
       }
       S.EndHorizontalLay();
@@ -1002,8 +1001,11 @@ void EffectTruncSilence::BlendFrames(float* buffer, int blendFrameCount, int lef
 
 void EffectTruncSilence::OnControlChange(wxCommandEvent & WXUNUSED(evt))
 {
-   mActionChoice->GetValidator()->TransferFromWindow();
+   DoControlChange();
+}
 
+void EffectTruncSilence::DoControlChange()
+{
    if (!EnableApply(mUIParent->TransferDataFromWindow()))
    {
       return;

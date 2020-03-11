@@ -21,7 +21,6 @@
 #include <vamp-hostsdk/PluginInputDomainAdapter.h>
 
 #include <wx/checkbox.h>
-#include <wx/choice.h>
 #include <wx/combobox.h>
 #include <wx/slider.h>
 #include <wx/statbox.h>
@@ -39,9 +38,7 @@
 
 enum
 {
-   ID_Program  =  10000,
    ID_Sliders  =  11000,
-   ID_Choices  =  12000,
    ID_Texts    =  13000,
    ID_Toggles  =  14000,
 };
@@ -55,7 +52,6 @@ enum
 BEGIN_EVENT_TABLE(VampEffect, wxEvtHandler)
     EVT_SLIDER(wxID_ANY, VampEffect::OnSlider)
     EVT_TEXT(wxID_ANY, VampEffect::OnTextCtrl)
-    EVT_CHOICE(wxID_ANY, VampEffect::OnChoice)
 END_EVENT_TABLE()
 
 VampEffect::VampEffect(std::unique_ptr<Vamp::Plugin> &&plugin,
@@ -538,7 +534,7 @@ void VampEffect::PopulateOrExchange(ShuttleGui & S)
    mSliders.reinit( count );
    mFields.reinit( count );
    mLabels.reinit( count );
-   mChoices.reinit( count );
+   mChosen.resize( count, 0 );
    mValues.reinit( count );
 
    wxScrolledWindow *scroller =
@@ -557,12 +553,16 @@ void VampEffect::PopulateOrExchange(ShuttleGui & S)
                S
                   .AddPrompt(XXO("Program"));
 
-               mProgram =
                S
-                  .Id(ID_Program)
                   .Text(XO("Program"))
                   .MinSize( { -1, -1 } )
                   .Position(wxEXPAND | wxALIGN_CENTER_VERTICAL | wxALL)
+                  .Target( mChosenProgram )
+                  .Action( [this](){
+                     auto &plugin = *mPlugin;
+                     auto programs = plugin.getPrograms();
+                     plugin.selectProgram( programs[ mChosenProgram ] );
+                  } )
                   .AddChoice( {},
                      [&]{
                         TranslatableStrings choices;
@@ -588,7 +588,6 @@ void VampEffect::PopulateOrExchange(ShuttleGui & S)
                float value = mPlugin->getParameter(mParameters[p].identifier);
 
                mToggles[p] = false;
-               mChoices[p] = NULL;
                mSliders[p] = NULL;
                mFields[p] = NULL;
                mValues[p] = 0.0;
@@ -643,12 +642,15 @@ void VampEffect::PopulateOrExchange(ShuttleGui & S)
                      choices.push_back( Verbatim( choice ) );
                   }
 
-                  mChoices[p] =
                   S
-                     .Id(ID_Choices + p)
                      .Text({ Verbatim( labelText ), {}, Verbatim( tip ) })
                      .Position(wxEXPAND | wxALIGN_CENTER_VERTICAL | wxALL)
                      .MinSize( { -1, -1 } )
+                     .Target( mChosen[p] )
+                     .Action( [this, p](){
+                        mPlugin->setParameter(
+                           mParameters[p].identifier, mChosen[p]);
+                     } )
                      .AddChoice( {}, choices, selected );
 
                   S.AddSpace(1, 1);
@@ -761,7 +763,7 @@ void VampEffect::UpdateFromPlugin()
                mParameters[p].quantizeStep == 1.0 &&
                !mParameters[p].valueNames.empty())
       {
-         mChoices[p]->SetSelection(size_t(value - mParameters[p].minValue + 0.5));
+         mChosen[p] = size_t(value - mParameters[p].minValue + 0.5);
       }
       else
       {
@@ -785,22 +787,6 @@ void VampEffect::UpdateFromPlugin()
          mSliders[p]->SetValue((int)(((value - lower) / range) * 1000.0 + 0.5));
       }
    }
-}
-
-void VampEffect::OnChoice(wxCommandEvent & evt)
-{
-   int p = evt.GetId();
-
-   // special value for programs
-   if (p == ID_Program)
-   {
-      Vamp::Plugin::ProgramList programs = mPlugin->getPrograms();
-      mPlugin->selectProgram(programs[evt.GetInt()]);
-      TransferDataToWindow();
-      return;
-   }
-
-   mPlugin->setParameter(mParameters[p - ID_Choices].identifier, evt.GetInt());
 }
 
 void VampEffect::OnSlider(wxCommandEvent & evt)

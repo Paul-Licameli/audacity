@@ -102,9 +102,6 @@ static void SaveEncoding(int type, int val)
 // ExportPCMOptions Class
 //----------------------------------------------------------------------------
 
-#define ID_HEADER_CHOICE           7102
-#define ID_ENCODING_CHOICE         7103
-
 class ExportPCMOptions final : public wxPanelWrapper
 {
 public:
@@ -115,8 +112,8 @@ public:
    void PopulateOrExchange(ShuttleGui & S);
 
    void OnShow(wxShowEvent & evt);
-   void OnHeaderChoice(wxCommandEvent & evt);
-   void OnEncodingChoice(wxCommandEvent & evt);
+   void OnHeaderChoice();
+   void OnEncodingChoice();
 
 private:
 
@@ -128,24 +125,17 @@ private:
 
    std::vector<int> mHeaderIndexes;
    TranslatableStrings mHeaderNames;
-   wxChoice *mHeaderChoice;
    int mHeaderFromChoice;
 
    std::vector<int> mEncodingIndexes;
    TranslatableStrings mEncodingNames;
+   int mHeaderChoice = 0;
    wxChoice *mEncodingChoice;
    int mEncodingFromChoice;
 
    int mSelFormat;
    int mType;
-
-   DECLARE_EVENT_TABLE()
 };
-
-BEGIN_EVENT_TABLE(ExportPCMOptions, wxPanelWrapper)
-   EVT_CHOICE(ID_HEADER_CHOICE, ExportPCMOptions::OnHeaderChoice)
-   EVT_CHOICE(ID_ENCODING_CHOICE, ExportPCMOptions::OnEncodingChoice)
-END_EVENT_TABLE()
 
 ExportPCMOptions::ExportPCMOptions(wxWindow *parent, int selformat)
 :  wxPanelWrapper(parent, wxID_ANY)
@@ -192,9 +182,9 @@ void ExportPCMOptions::PopulateOrExchange(ShuttleGui & S)
             S.SetStretchyCol(1);
             if (mSelFormat == FMT_OTHER)
             {
-               mHeaderChoice =
                S
-                  .Id(ID_HEADER_CHOICE)
+                  .Target( mHeaderChoice )
+                  .Action( [this]{ OnHeaderChoice(); } )
                   .AddChoice(XXO("Header:"),
                              mHeaderNames,
                              mHeaderFromChoice);
@@ -202,7 +192,8 @@ void ExportPCMOptions::PopulateOrExchange(ShuttleGui & S)
 
             mEncodingChoice =
             S
-               .Id(ID_ENCODING_CHOICE)
+               .Target( mEncodingFromChoice )
+               .Action( [this]{ OnEncodingChoice(); } )
                .AddChoice(XXO("Encoding:"),
                           mEncodingNames,
                           mEncodingFromChoice);
@@ -229,12 +220,12 @@ void ExportPCMOptions::OnShow(wxShowEvent & evt)
    }
 }
 
-void ExportPCMOptions::OnHeaderChoice(wxCommandEvent & evt)
+void ExportPCMOptions::OnHeaderChoice()
 {
-   evt.Skip();
+//   evt.Skip();
 
    // Remember new selection
-   mHeaderFromChoice = evt.GetInt();
+   mHeaderFromChoice = mHeaderChoice;
 
    // Get the type for this selection
    mType = sf_header_index_to_type(mHeaderIndexes[mHeaderFromChoice]);
@@ -252,19 +243,13 @@ void ExportPCMOptions::OnHeaderChoice(wxCommandEvent & evt)
       mEncodingChoice->AppendString(mEncodingNames[i].Translation());
    }
 
-   // Select the desired encoding
-   mEncodingChoice->SetSelection(mEncodingFromChoice);
-
    // Send the event indicating a file suffix change.
    SendSuffixEvent();
 }
 
-void ExportPCMOptions::OnEncodingChoice(wxCommandEvent & evt)
+void ExportPCMOptions::OnEncodingChoice()
 {
-   evt.Skip();
-
-   // Remember new selection
-   mEncodingFromChoice = evt.GetInt();
+//   evt.Skip();
 
    // And save it
    SaveEncoding(mType, sf_encoding_index_to_subtype(mEncodingIndexes[mEncodingFromChoice]));

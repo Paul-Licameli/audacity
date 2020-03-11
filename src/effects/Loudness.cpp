@@ -19,8 +19,6 @@
 
 #include <math.h>
 
-#include <wx/simplebook.h>
-
 #include "Internat.h"
 #include "../Prefs.h"
 #include "../ProjectFileManager.h"
@@ -57,8 +55,6 @@ static auto NormalizeTo = Parameter<int>(
                            L"NormalizeTo",         kLoudness , 0    ,   nAlgos-1, 1  );
 
 BEGIN_EVENT_TABLE(EffectLoudness, wxEvtHandler)
-   EVT_CHOICE(wxID_ANY, EffectLoudness::OnChoice)
-   EVT_CHOICE(wxID_ANY, EffectLoudness::OnUpdateUI)
    EVT_TEXT(wxID_ANY, EffectLoudness::OnUpdateUI)
 END_EVENT_TABLE()
 
@@ -266,8 +262,9 @@ void EffectLoudness::PopulateOrExchange(ShuttleGui & S)
                   .AddVariableText(XO("&Normalize"), false,
                      wxALIGN_CENTER_VERTICAL | wxALIGN_LEFT);
 
-               mChoice = S
+               S
                   .Target( mNormalizeTo )
+                  .Action( [this]{ OnChoice(); } )
                   .AddChoice( {},
                      Msgids(kNormalizeTargetStrings, nAlgos),
                      mNormalizeTo );
@@ -278,8 +275,8 @@ void EffectLoudness::PopulateOrExchange(ShuttleGui & S)
 
                // Use a notebook so we can have two controls but show only one
                // They target different variables with their validators
-               mBook =
                S
+                  .Target( mNormalizeTo )
                   .StartSimplebook();
                {
                   S.StartNotebookPage({});
@@ -354,8 +351,7 @@ void EffectLoudness::PopulateOrExchange(ShuttleGui & S)
 bool EffectLoudness::TransferDataToWindow()
 {
    // adjust controls which depend on mchoice
-   wxCommandEvent dummy;
-   OnChoice(dummy);
+   OnChoice();
    return true;
 }
 
@@ -524,10 +520,8 @@ bool EffectLoudness::UpdateProgress()
    return !TotalProgress(mProgressVal, mProgressMsg);
 }
 
-void EffectLoudness::OnChoice(wxCommandEvent & WXUNUSED(evt))
+void EffectLoudness::OnChoice()
 {
-   mChoice->GetValidator()->TransferFromWindow();
-   mBook->SetSelection( mNormalizeTo );
    UpdateUI();
 }
 
@@ -538,6 +532,7 @@ void EffectLoudness::OnUpdateUI(wxCommandEvent & WXUNUSED(evt))
 
 void EffectLoudness::UpdateUI()
 {
+   // FIX THIS
    if (!mUIParent->TransferDataFromWindow())
    {
       mWarning->SetLabel(_("(Maximum 0dB)"));

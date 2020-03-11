@@ -34,7 +34,6 @@
 
 #include <wx/choice.h>
 #include <wx/log.h>
-#include <wx/simplebook.h>
 #include <wx/slider.h>
 #include <wx/stattext.h>
 #include <wx/textctrl.h>
@@ -177,7 +176,6 @@ const ComponentInterfaceSymbol EffectDistortion::Symbol
 namespace{ BuiltinEffectsModule::Registration< EffectDistortion > reg; }
 
 BEGIN_EVENT_TABLE(EffectDistortion, wxEvtHandler)
-   EVT_CHOICE(ID_Type, EffectDistortion::OnTypeChoice)
    EVT_TEXT(ID_Threshold, EffectDistortion::OnThresholdText)
    EVT_SLIDER(ID_Threshold, EffectDistortion::OnThresholdSlider)
    EVT_TEXT(ID_NoiseFloor, EffectDistortion::OnNoiseFloorText)
@@ -344,16 +342,14 @@ void EffectDistortion::PopulateOrExchange(ShuttleGui & S)
    {
       S.StartMultiColumn(4, wxCENTER);
       {
-         mTypeChoiceCtrl =
          S
-            .Id(ID_Type)
             .MinSize( { -1, -1 } )
             .Target( mTableChoiceIndx )
             .AddChoice(XXO("Distortion type:"),
                Msgids(kTableTypeStrings, nTableTypes));
 
-         mBook1 =
          S
+            .Target( mTableChoiceIndx )
             .StartSimplebook();
          {
             size_t ii = 0;
@@ -368,8 +364,8 @@ void EffectDistortion::PopulateOrExchange(ShuttleGui & S)
 
       S.StartStatic(XO("Threshold controls"));
       {
-         mBook2 =
          S
+            .Target( mTableChoiceIndx )
             .StartSimplebook();
          {
             size_t ii = 0;
@@ -382,8 +378,8 @@ void EffectDistortion::PopulateOrExchange(ShuttleGui & S)
 
       S.StartStatic(XO("Parameter controls"));
       {
-         mBook3 =
          S
+            .Target( mTableChoiceIndx )
             .StartSimplebook();
          {
             size_t ii = 0;
@@ -745,17 +741,7 @@ size_t EffectDistortion::InstanceProcess(EffectDistortionState& data, float** in
    return blockLen;
 }
 
-void EffectDistortion::OnTypeChoice(wxCommandEvent& /*evt*/)
-{
-   mParams = mPageParams[ mTableChoiceIndx ];
-   mTypeChoiceCtrl->GetValidator()->TransferFromWindow();
-   Init();
-   for ( auto pBook : { mBook1, mBook2, mBook3 } )
-      pBook->SetSelection( mTableChoiceIndx );
-   if ( mUIParent )
-      mUIParent->TransferDataToWindow();
-}
-
+//?
 void EffectDistortion::OnThresholdText(wxCommandEvent& /*evt*/)
 {
    auto &controls = mControls[ mTableChoiceIndx ];

@@ -85,8 +85,6 @@ BEGIN_EVENT_TABLE(EffectChangeSpeed, wxEvtHandler)
     EVT_TEXT(ID_PercentChange, EffectChangeSpeed::OnText_PercentChange)
     EVT_TEXT(ID_Multiplier, EffectChangeSpeed::OnText_Multiplier)
     EVT_SLIDER(ID_PercentChange, EffectChangeSpeed::OnSlider_PercentChange)
-    EVT_CHOICE(ID_FromVinyl, EffectChangeSpeed::OnChoice_Vinyl)
-    EVT_CHOICE(ID_ToVinyl, EffectChangeSpeed::OnChoice_Vinyl)
     EVT_TEXT(ID_ToLength, EffectChangeSpeed::OnTimeCtrl_ToLength)
     EVT_COMMAND(ID_ToLength, EVT_TIMETEXTCTRL_UPDATED, EffectChangeSpeed::OnTimeCtrlUpdate)
 END_EVENT_TABLE()
@@ -336,6 +334,8 @@ void EffectChangeSpeed::PopulateOrExchange(ShuttleGui & S)
              */
             .Text(XO("From rpm"))
             .MinSize( { 100, -1 } )
+            .Target( mFromVinyl )
+            .Action( [this]{ OnChoice_Vinyl(); } )
             /* i18n-hint: changing speed of audio "from" one value "to" another */
             .AddChoice(XXC("&from", "change speed"), kVinylStrings);
 
@@ -347,6 +347,8 @@ void EffectChangeSpeed::PopulateOrExchange(ShuttleGui & S)
              */
             .Text(XO("To rpm"))
             .MinSize( { 100, -1 } )
+            .Target( mToVinyl )
+            .Action( [this]{ OnChoice_Vinyl(); } )
             /* i18n-hint: changing speed of audio "from" one value "to" another */
             .AddChoice(XXC("&to", "change speed"), kVinylStrings);
       }
@@ -575,7 +577,7 @@ void EffectChangeSpeed::OnText_PercentChange(wxCommandEvent & WXUNUSED(evt))
 
    Update_Text_Multiplier();
    Update_Slider_PercentChange();
-   Update_Vinyl();
+   Update_VinylControls();
    Update_TimeCtrl_ToLength();
 }
 
@@ -587,7 +589,7 @@ void EffectChangeSpeed::OnText_Multiplier(wxCommandEvent & WXUNUSED(evt))
 
    Update_Text_PercentChange();
    Update_Slider_PercentChange();
-   Update_Vinyl();
+   Update_VinylControls();
    Update_TimeCtrl_ToLength();
 }
 
@@ -601,16 +603,14 @@ void EffectChangeSpeed::OnSlider_PercentChange(wxCommandEvent & WXUNUSED(evt))
 
    Update_Text_PercentChange();
    Update_Text_Multiplier();
-   Update_Vinyl();
+   Update_VinylControls();
    Update_TimeCtrl_ToLength();
 }
 
-void EffectChangeSpeed::OnChoice_Vinyl(wxCommandEvent & WXUNUSED(evt))
+void EffectChangeSpeed::OnChoice_Vinyl()
 {
    // Treat mpChoice_FromVinyl and mpChoice_ToVinyl as one control since we need
    // both to calculate Percent Change.
-   mFromVinyl = mpChoice_FromVinyl->GetSelection();
-   mToVinyl = mpChoice_ToVinyl->GetSelection();
    // Use this as the 'preferred' choice.
    if (mFromVinyl != kVinyl_NA) {
       SetPrivateConfig(GetCurrentSettingsGroup(), L"VinylChoice", mFromVinyl);
@@ -654,7 +654,7 @@ void EffectChangeSpeed::OnTimeCtrl_ToLength(wxCommandEvent & WXUNUSED(evt))
    Update_Text_PercentChange();
    Update_Text_Multiplier();
    Update_Slider_PercentChange();
-   Update_Vinyl();
+   Update_VinylControls();
 }
 
 void EffectChangeSpeed::OnTimeCtrlUpdate(wxCommandEvent & evt)
@@ -711,7 +711,7 @@ void EffectChangeSpeed::Update_Slider_PercentChange()
 }
 
 void EffectChangeSpeed::Update_Vinyl()
-// Update Vinyl controls from percent change.
+// Update Vinyl values from percent change.
 {
    // Match Vinyl rpm when within 0.01% of a standard ratio.
    // Ratios calculated as: ((toRPM / fromRPM) - 1) * 100 * 100
@@ -723,44 +723,50 @@ void EffectChangeSpeed::Update_Vinyl()
    {
       case 0: // toRPM is the same as fromRPM
          if (mFromVinyl != kVinyl_NA) {
-            mpChoice_ToVinyl->SetSelection(mpChoice_FromVinyl->GetSelection());
+            mToVinyl = mFromVinyl;
          } else {
             // Use the last saved option.
             GetPrivateConfig(GetCurrentSettingsGroup(), L"VinylChoice", mFromVinyl, 0);
-            mpChoice_FromVinyl->SetSelection(mFromVinyl);
-            mpChoice_ToVinyl->SetSelection(mFromVinyl);
+            mToVinyl = mFromVinyl;
          }
          break;
       case 3500:
-         mpChoice_FromVinyl->SetSelection(kVinyl_33AndAThird);
-         mpChoice_ToVinyl->SetSelection(kVinyl_45);
+         mFromVinyl = kVinyl_33AndAThird;
+         mToVinyl = kVinyl_45;
          break;
       case 13400:
-         mpChoice_FromVinyl->SetSelection(kVinyl_33AndAThird);
-         mpChoice_ToVinyl->SetSelection(kVinyl_78);
+         mFromVinyl = kVinyl_33AndAThird;
+         mToVinyl = kVinyl_78;
          break;
       case -2593:
-         mpChoice_FromVinyl->SetSelection(kVinyl_45);
-         mpChoice_ToVinyl->SetSelection(kVinyl_33AndAThird);
+         mFromVinyl = kVinyl_45;
+         mToVinyl = kVinyl_33AndAThird;
          break;
       case 7333:
-         mpChoice_FromVinyl->SetSelection(kVinyl_45);
-         mpChoice_ToVinyl->SetSelection(kVinyl_78);
+         mFromVinyl = kVinyl_45;
+         mToVinyl = kVinyl_78;
          break;
       case -5727:
-         mpChoice_FromVinyl->SetSelection(kVinyl_78);
-         mpChoice_ToVinyl->SetSelection(kVinyl_33AndAThird);
+         mFromVinyl = kVinyl_78;
+         mToVinyl = kVinyl_33AndAThird;
          break;
       case -4231:
-         mpChoice_FromVinyl->SetSelection(kVinyl_78);
-         mpChoice_ToVinyl->SetSelection(kVinyl_45);
+         mFromVinyl = kVinyl_78;
+         mToVinyl = kVinyl_45;
          break;
       default:
-         mpChoice_ToVinyl->SetSelection(kVinyl_NA);
+         mToVinyl = kVinyl_NA;
    }
    // and update variables.
    mFromVinyl = mpChoice_FromVinyl->GetSelection();
    mToVinyl = mpChoice_ToVinyl->GetSelection();
+}
+
+void EffectChangeSpeed::Update_VinylControls()
+{
+   Update_Vinyl();
+   mpChoice_FromVinyl->SetSelection( mFromVinyl );
+   mpChoice_ToVinyl->SetSelection( mToVinyl );
 }
 
 void EffectChangeSpeed::Update_TimeCtrl_ToLength()

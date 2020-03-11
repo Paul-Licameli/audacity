@@ -65,7 +65,7 @@ private:
    void OnText_PercentChange(wxCommandEvent & evt);
    void OnText_Multiplier(wxCommandEvent & evt);
    void OnSlider_PercentChange(wxCommandEvent & evt);
-   void OnChoice_Vinyl(wxCommandEvent & evt);
+   void OnChoice_Vinyl();
    void OnTimeCtrl_ToLength(wxCommandEvent & evt);
    void OnTimeCtrlUpdate(wxCommandEvent & evt);
 
@@ -75,7 +75,8 @@ private:
    void UpdateMultiplier();
    void Update_Text_Multiplier();      // Update control per current m_PercentChange.
    void Update_Slider_PercentChange(); // Update control per current m_PercentChange.
-   void Update_Vinyl();                // Update Vinyl controls for NEW percent change.
+   void Update_Vinyl();                // Update Vinyl values for NEW percent change.
+   void Update_VinylControls();        // Update Vinyl values, and controls too
    void Update_TimeCtrl_ToLength();    // Update target length controls for NEW percent change.
    void UpdateUI();                    // Enable / disable OK / preview.
 

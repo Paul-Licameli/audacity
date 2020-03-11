@@ -73,12 +73,12 @@ private:
    void OnSize( wxSizeEvent & evt );
    void OnSlider( wxCommandEvent & evt );
 
-   void OnOrder( wxCommandEvent & evt );
+   void OnOrder();
    void OnCutoff( wxCommandEvent & evt );
    void OnRipple( wxCommandEvent & evt );
    void OnStopbandRipple( wxCommandEvent & evt );
-   void OnFilterType( wxCommandEvent & evt );
-   void OnFilterSubtype( wxCommandEvent & evt );
+   void OnFilterType();
+   void OnFilterSubtype();
 
    void OnSliderDBMAX( wxCommandEvent & evt );
    void OnSliderDBMIN( wxCommandEvent & evt );
@@ -105,10 +105,6 @@ private:
    wxSlider *mdBMaxSlider;
 
    wxTextCtrl *mCutoffCtl;
-
-   wxChoice *mFilterTypeCtl;
-   wxChoice *mFilterSubTypeCtl;
-   wxChoice *mFilterOrderCtl;
 
    RulerPanel *mdBRuler;
    RulerPanel *mfreqRuler;

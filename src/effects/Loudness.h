@@ -22,7 +22,6 @@
 #include "../Shuttle.h"
 
 class wxChoice;
-class wxSimplebook;
 class ShuttleGui;
 
 class EffectLoudness final : public Effect
@@ -66,7 +65,7 @@ private:
                          sampleCount pos, size_t len);
 
    bool UpdateProgress();
-   void OnChoice(wxCommandEvent & evt);
+   void OnChoice();
    void OnUpdateUI(wxCommandEvent & evt);
    void UpdateUI();
 
@@ -90,8 +89,6 @@ private:
    float  mRMS[2];
    std::unique_ptr<EBUR128> mLoudnessProcessor;
 
-   wxSimplebook *mBook;
-   wxChoice *mChoice;
    wxStaticText *mWarning;
 
    Floats mTrackBuffer[2];    // MM: must be increased once surround channels are supported

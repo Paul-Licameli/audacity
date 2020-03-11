@@ -64,7 +64,7 @@ class ImportRawDialog final : public wxDialogWrapper {
    void OnOK();
    void OnCancel();
    void OnPlay();
-   void OnChoice(wxCommandEvent & event);
+   void OnChoice();
 
    // in and out
    int mEncoding;
@@ -76,17 +76,15 @@ class ImportRawDialog final : public wxDialogWrapper {
  private:
 
    wxButton   *mOK;
-   wxChoice   *mEncodingChoice;
-   wxChoice   *mEndianChoice;
-   wxChoice   *mChannelChoice;
+   int   mEncodingChoice = 0;
+   int   mEndianChoice = 0;
+   int   mChannelChoice = 0;
    wxTextCtrl *mOffsetText;
    wxTextCtrl *mPercentText;
    wxComboBox *mRateText;
 
    int         mNumEncodings;
    ArrayOf<int> mEncodingSubtype;
-
-   DECLARE_EVENT_TABLE()
 };
 
 // This function leaves outTracks empty as an indication of error,
@@ -282,14 +280,6 @@ void ImportRaw(const AudacityProject &project, wxWindow *parent, const wxString 
 // ImportRawDialog
 //
 
-enum {
-   ChoiceID = 9000,
-};
-
-BEGIN_EVENT_TABLE(ImportRawDialog, wxDialogWrapper)
-   EVT_CHOICE(ChoiceID, ImportRawDialog::OnChoice)
-END_EVENT_TABLE()
-
 ImportRawDialog::ImportRawDialog(wxWindow * parent,
                                  int encoding, unsigned channels,
                                  int offset, double rate)
@@ -384,26 +374,21 @@ ImportRawDialog::ImportRawDialog(wxWindow * parent,
       S.SetBorder(5);
       S.StartTwoColumn();
       {
-         mEncodingChoice =
          S
-            .Id(ChoiceID)
+            .Action( [this]{ OnChoice(); } )
             .AddChoice(XXO("Encoding:"),
                encodings,
                selection);
 
-         mEndianChoice =
          S
-            .Id(ChoiceID)
+            .Action( [this]{ OnChoice(); } )
             .AddChoice(XXO("Byte order:"),
                endians,
                endian);
 
-         mChannelChoice =
          S
-            .Id(ChoiceID)
-            .AddChoice(XXO("Channels:"),
-               chans,
-               mChannels - 1);
+            .Action( [this]{ OnChoice(); } )
+            .AddChoice(XXO("Channels:"), chans, mChannels - 1);
       }
       S.EndTwoColumn();
 
@@ -485,9 +470,9 @@ void ImportRawDialog::OnOK()
 {
    long l;
 
-   mEncoding = mEncodingSubtype[mEncodingChoice->GetSelection()];
-   mEncoding += (mEndianChoice->GetSelection() * 0x10000000);
-   mChannels = mChannelChoice->GetSelection() + 1;
+   mEncoding = mEncodingSubtype[mEncodingChoice];
+   mEncoding += (mEndianChoice * 0x10000000);
+   mChannels = mChannelChoice + 1;
    mOffsetText->GetValue().ToLong(&l);
    mOffset = l;
    mPercentText->GetValue().ToDouble(&mPercent);
@@ -519,17 +504,17 @@ void ImportRawDialog::OnPlay()
 {
 }
 
-void ImportRawDialog::OnChoice(wxCommandEvent & WXUNUSED(event))
+void ImportRawDialog::OnChoice()
 {
    SF_INFO info;
 
    memset(&info, 0, sizeof(SF_INFO));
 
-   mEncoding = mEncodingSubtype[mEncodingChoice->GetSelection()];
-   mEncoding += (mEndianChoice->GetSelection() * 0x10000000);
+   mEncoding = mEncodingSubtype[mEncodingChoice];
+   mEncoding += (mEndianChoice * 0x10000000);
 
    info.format = mEncoding | SF_FORMAT_RAW;
-   info.channels = mChannelChoice->GetSelection() + 1;
+   info.channels = mChannelChoice + 1;
    info.samplerate = 44100;
 
    if (sf_format_check(&info)) {
@@ -540,7 +525,7 @@ void ImportRawDialog::OnChoice(wxCommandEvent & WXUNUSED(event))
    // Try it with 1-channel
    info.channels = 1;
    if (sf_format_check(&info)) {
-      mChannelChoice->SetSelection(0);
+      mChannelChoice = 0;
       mOK->Enable(true);
       return;
    }

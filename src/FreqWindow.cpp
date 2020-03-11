@@ -167,13 +167,22 @@ BEGIN_EVENT_TABLE(FrequencyPlotDialog, wxDialogWrapper)
    EVT_SIZE(FrequencyPlotDialog::OnSize)
    EVT_SLIDER(FreqZoomSliderID, FrequencyPlotDialog::OnZoomSlider)
    EVT_COMMAND_SCROLL(FreqPanScrollerID, FrequencyPlotDialog::OnPanScroller)
-   EVT_CHOICE(FreqAlgChoiceID, FrequencyPlotDialog::OnAlgChoice)
-   EVT_CHOICE(FreqSizeChoiceID, FrequencyPlotDialog::OnSizeChoice)
-   EVT_CHOICE(FreqFuncChoiceID, FrequencyPlotDialog::OnFuncChoice)
-   EVT_CHOICE(FreqAxisChoiceID, FrequencyPlotDialog::OnAxisChoice)
    EVT_CHECKBOX(GridOnOffID, FrequencyPlotDialog::OnGridOnOff)
    EVT_COMMAND(wxID_ANY, EVT_FREQWINDOW_RECALC, FrequencyPlotDialog::OnRecalc)
 END_EVENT_TABLE()
+
+static TranslatableStrings sizeChoices{
+   Verbatim( "128" ) ,
+   Verbatim( "256" ) ,
+   Verbatim( "512" ) ,
+   Verbatim( "1024" ) ,
+   Verbatim( "2048" ) ,
+   Verbatim( "4096" ) ,
+   Verbatim( "8192" ) ,
+   Verbatim( "16384" ) ,
+   Verbatim( "32768" ) ,
+   Verbatim( "65536" ) ,
+};
 
 FrequencyPlotDialog::FrequencyPlotDialog(wxWindow * parent, wxWindowID id,
                            AudacityProject &project,
@@ -221,19 +230,6 @@ void FrequencyPlotDialog::Populate()
          * "spectrum".  Do not translate it unless you are sure you
          * know the correct technical word in your language. */
       XO("Cepstrum") ,
-   };
-
-   TranslatableStrings sizeChoices{
-      Verbatim( "128" ) ,
-      Verbatim( "256" ) ,
-      Verbatim( "512" ) ,
-      Verbatim( "1024" ) ,
-      Verbatim( "2048" ) ,
-      Verbatim( "4096" ) ,
-      Verbatim( "8192" ) ,
-      Verbatim( "16384" ) ,
-      Verbatim( "32768" ) ,
-      Verbatim( "65536" ) ,
    };
 
    TranslatableStrings funcChoices;
@@ -461,17 +457,19 @@ void FrequencyPlotDialog::Populate()
 
       S.AddSpace(5);
 
-      mAlgChoice =
       S
-         .Id(FreqAlgChoiceID).Focus()
+         .Focus()
+         .Target( mAlgChoice )
+         .Action( [this]{ OnAlgChoice(); } )
          .MinSize( { wxDefaultCoord, wxDefaultCoord } )
          .AddChoice(XXO("&Algorithm:"), algChoices, mAlg);
 
       S.AddSpace(5);
 
-      mSizeChoice =
+      auto sizeChoice =
       S
-         .Id(FreqSizeChoiceID)
+         .Target( mSizeChoice )
+         .Action( [this]{ OnSizeChoice(); } )
          .MinSize( { wxDefaultCoord, wxDefaultCoord } )
          .AddChoice(XXO("&Size:"), sizeChoices, mSize);
 
@@ -491,22 +489,24 @@ void FrequencyPlotDialog::Populate()
 
       S.AddSpace(5);
 
-      mFuncChoice =
+      auto funcChoice =
       S
-         .Id(FreqFuncChoiceID)
+         .Target( mFuncChoice )
+         .Action( [this]{ OnFuncChoice(); } )
          .MinSize( { wxDefaultCoord, wxDefaultCoord } )
          .AddChoice(XXO("&Function:"), funcChoices, mFunc);
-      mFuncChoice->MoveAfterInTabOrder(mSizeChoice);
+      funcChoice->MoveAfterInTabOrder( sizeChoice );
 
       S.AddSpace(5);
 
-      mAxisChoice =
+      auto axisChoice =
       S
-         .Id(FreqAxisChoiceID)
+         .Target( mAxisChoice )
+         .Action( [this]{ OnAxisChoice(); } )
          .MinSize( { wxDefaultCoord, wxDefaultCoord } )
          .Enable( [this]{ return mAlg == SpectrumAnalyst::Spectrum; } )
          .AddChoice(XXO("&Axis:"), axisChoices, mAxis);
-      mAxisChoice->MoveAfterInTabOrder(mFuncChoice);
+      axisChoice->MoveAfterInTabOrder( funcChoice );
 
       S.AddSpace(5);
 
@@ -867,36 +867,36 @@ void FrequencyPlotDialog::OnZoomSlider(wxCommandEvent & WXUNUSED(event))
    DrawPlot();
 }
 
-void FrequencyPlotDialog::OnAlgChoice(wxCommandEvent & WXUNUSED(event))
+void FrequencyPlotDialog::OnAlgChoice()
 {
-   mAlg = SpectrumAnalyst::Algorithm(mAlgChoice->GetSelection());
+   mAlg = SpectrumAnalyst::Algorithm( mAlgChoice );
 
    // Log-frequency axis works for spectrum plots only.
    if (mAlg == SpectrumAnalyst::Spectrum)
-      mLogAxis = mAxisChoice->GetSelection() ? true : false;
+      mLogAxis = mAxisChoice;
    else
       mLogAxis = false;
 
    SendRecalcEvent();
 }
 
-void FrequencyPlotDialog::OnSizeChoice(wxCommandEvent & WXUNUSED(event))
+void FrequencyPlotDialog::OnSizeChoice()
 {
    long windowSize = 0;
-   mSizeChoice->GetStringSelection().ToLong(&windowSize);
+   sizeChoices[ mSizeChoice ].MSGID().GET().ToLong(&windowSize);
    mWindowSize = windowSize;
 
    SendRecalcEvent();
 }
 
-void FrequencyPlotDialog::OnFuncChoice(wxCommandEvent & WXUNUSED(event))
+void FrequencyPlotDialog::OnFuncChoice()
 {
    SendRecalcEvent();
 }
 
-void FrequencyPlotDialog::OnAxisChoice(wxCommandEvent & WXUNUSED(event))
+void FrequencyPlotDialog::OnAxisChoice()
 {
-   mLogAxis = mAxisChoice->GetSelection() ? true : false;
+   mLogAxis = mAxisChoice;
    DrawPlot();
 }
 
@@ -1011,10 +1011,10 @@ void FrequencyPlotDialog::OnCloseWindow(wxCloseEvent & WXUNUSED(event))
 void FrequencyPlotDialog::OnCloseButton()
 {
    gPrefs->Write(L"/FrequencyPlotDialog/DrawGrid", mDrawGrid);
-   gPrefs->Write(L"/FrequencyPlotDialog/SizeChoice", mSizeChoice->GetSelection());
-   gPrefs->Write(L"/FrequencyPlotDialog/AlgChoice", mAlgChoice->GetSelection());
-   gPrefs->Write(L"/FrequencyPlotDialog/FuncChoice", mFuncChoice->GetSelection());
-   gPrefs->Write(L"/FrequencyPlotDialog/AxisChoice", mAxisChoice->GetSelection());
+   gPrefs->Write(L"/FrequencyPlotDialog/SizeChoice", mSizeChoice);
+   gPrefs->Write(L"/FrequencyPlotDialog/AlgChoice", mAlgChoice);
+   gPrefs->Write(L"/FrequencyPlotDialog/FuncChoice", mFuncChoice);
+   gPrefs->Write(L"/FrequencyPlotDialog/AxisChoice", mAxisChoice);
    gPrefs->Flush();
    Show(false);
 }
@@ -1033,8 +1033,8 @@ void FrequencyPlotDialog::Recalc()
    }
 
    SpectrumAnalyst::Algorithm alg =
-      SpectrumAnalyst::Algorithm(mAlgChoice->GetSelection());
-   int windowFunc = mFuncChoice->GetSelection();
+      SpectrumAnalyst::Algorithm(mAlgChoice);
+   int windowFunc = mFuncChoice;
 
    wxWindow *hadFocus = FindFocus();
    // In wxMac, the skipped window MUST be a top level window.  I'd originally made it
@@ -1096,7 +1096,7 @@ void FrequencyPlotDialog::OnExport()
 
    const int processedSize = mAnalyst->GetProcessedSize();
    const float *const processed = mAnalyst->GetProcessed();
-   if (mAlgChoice->GetSelection() == 0) {
+   if (mAlgChoice == 0) {
       ss
          << XO("Frequency (Hz)\tLevel (dB)") << '\n';
       for (int i = 1; i < processedSize; i++)
@@ -1144,10 +1144,6 @@ void FrequencyPlotDialog::UpdatePrefs()
 
    auto zoomSlider = mZoomSlider->GetValue();
    auto drawGrid = mGridOnOff->GetValue();
-   auto sizeChoice = mSizeChoice->GetStringSelection();
-   auto algChoice = mAlgChoice->GetSelection();
-   auto funcChoice = mFuncChoice->GetSelection();
-   auto axisChoice = mAxisChoice->GetSelection();
 
    SetSizer(nullptr);
    DestroyChildren();
@@ -1159,19 +1155,16 @@ void FrequencyPlotDialog::UpdatePrefs()
    mDrawGrid = drawGrid;
    mGridOnOff->SetValue(drawGrid);
 
-   long windowSize = 0;
-   sizeChoice.ToLong(&windowSize);
+   long windowSize;
+   // reinterpret one of the verbatim strings above as a number
+   sizeChoices[mSizeChoice].MSGID().GET().ToLong(&windowSize);
    mWindowSize = windowSize;
-   mSizeChoice->SetStringSelection(sizeChoice);
 
-   mAlg = static_cast<SpectrumAnalyst::Algorithm>(algChoice);
-   mAlgChoice->SetSelection(algChoice);
+   mAlg = static_cast<SpectrumAnalyst::Algorithm>(mAlgChoice);
 
-   mFunc = funcChoice;
-   mFuncChoice->SetSelection(funcChoice);
+   mFunc = mFuncChoice;
 
-   mAxis = axisChoice;
-   mAxisChoice->SetSelection(axisChoice);
+   mAxis = mAxisChoice;
 
    if (shown) {
       Show(true);

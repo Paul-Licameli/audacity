@@ -74,9 +74,6 @@ enum
    ID_FilterPanel = 10000,
    ID_dBMax,
    ID_dBMin,
-   ID_Type,
-   ID_SubType,
-   ID_Order,
    ID_Ripple,
    ID_Cutoff,
    ID_StopbandRipple
@@ -149,9 +146,6 @@ BEGIN_EVENT_TABLE(EffectScienFilter, wxEvtHandler)
 
    EVT_SLIDER(ID_dBMax, EffectScienFilter::OnSliderDBMAX)
    EVT_SLIDER(ID_dBMin, EffectScienFilter::OnSliderDBMIN)
-   EVT_CHOICE(ID_Order, EffectScienFilter::OnOrder)
-   EVT_CHOICE(ID_Type, EffectScienFilter::OnFilterType)
-   EVT_CHOICE(ID_SubType, EffectScienFilter::OnFilterSubtype)
    EVT_TEXT(ID_Cutoff, EffectScienFilter::OnCutoff)
    EVT_TEXT(ID_Ripple, EffectScienFilter::OnRipple)
    EVT_TEXT(ID_StopbandRipple, EffectScienFilter::OnStopbandRipple)
@@ -457,20 +451,18 @@ void EffectScienFilter::PopulateOrExchange(ShuttleGui & S)
       {
          wxASSERT(nTypes == WXSIZEOF(kTypeStrings));
 
-         mFilterTypeCtl =
          S
-            .Id(ID_Type)
             .Focus()
-            .Target( mFilterType )
             .MinSize( { -1, -1 } )
+            .Target(mFilterType)
+            .Action( [this]{ OnFilterType(); } )
             .AddChoice(XXO("&Filter Type:"),
                Msgids(kTypeStrings, nTypes) );
 
-         mFilterOrderCtl =
          S
-            .Id(ID_Order)
-            .Target( mOrderIndex )
             .MinSize( { -1, -1 } )
+            .Target(mOrderIndex)
+            .Action( [this]{ OnOrder(); } )
             /*i18n-hint: 'Order' means the complexity of the filter, and is a number between 1 and 10.*/
             .AddChoice(XXO("O&rder:"),
                []{
@@ -500,11 +492,10 @@ void EffectScienFilter::PopulateOrExchange(ShuttleGui & S)
             .AddVariableText(XO("dB"),
                false, wxALL | wxALIGN_LEFT | wxALIGN_CENTER_VERTICAL);
 
-         mFilterSubTypeCtl =
          S
-            .Id(ID_SubType)
-            .Target( mFilterSubtype )
             .MinSize( { -1, -1 } )
+            .Target(mFilterSubtype)
+            .Action( [this]{ OnFilterSubtype(); } )
             .AddChoice(XXO("&Subtype:"),
                Msgids(kSubTypeStrings, nSubTypes) );
 
@@ -709,22 +700,19 @@ float EffectScienFilter::FilterMagnAtFreq(float Freq)
    return Magn;
 }
 
-void EffectScienFilter::OnOrder(wxCommandEvent & WXUNUSED(evt))
+void EffectScienFilter::OnOrder()
 {
-   mOrderIndex = mFilterOrderCtl->GetSelection();
    mOrder = mOrderIndex + 1;	// 0..n-1 -> 1..n
    mPanel->Refresh(false);
 }
 
-void EffectScienFilter::OnFilterType(wxCommandEvent & WXUNUSED(evt))
+void EffectScienFilter::OnFilterType()
 {
-   mFilterType = mFilterTypeCtl->GetSelection();
    mPanel->Refresh(false);
 }
 
-void EffectScienFilter::OnFilterSubtype(wxCommandEvent & WXUNUSED(evt))
+void EffectScienFilter::OnFilterSubtype()
 {
-   mFilterSubtype = mFilterSubTypeCtl->GetSelection();
    mPanel->Refresh(false);
 }
 

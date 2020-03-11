@@ -83,9 +83,7 @@ const ComponentInterfaceSymbol EffectChangePitch::Symbol
 namespace{ BuiltinEffectsModule::Registration< EffectChangePitch > reg; }
 
 BEGIN_EVENT_TABLE(EffectChangePitch, wxEvtHandler)
-   EVT_CHOICE(ID_FromPitch, EffectChangePitch::OnChoice_FromPitch)
    EVT_TEXT(ID_FromOctave, EffectChangePitch::OnSpin_FromOctave)
-   EVT_CHOICE(ID_ToPitch, EffectChangePitch::OnChoice_ToPitch)
    EVT_TEXT(ID_ToOctave, EffectChangePitch::OnSpin_ToOctave)
 
    EVT_TEXT(ID_SemitonesChange, EffectChangePitch::OnText_SemitonesChange)
@@ -253,7 +251,9 @@ void EffectChangePitch::PopulateOrExchange(ShuttleGui & S)
                /* i18n-hint: changing musical pitch "from" one value "to" another */
                .Text(XC("from", "change pitch"))
                .MinSize( { 80, -1 } )
-            /* i18n-hint: changing musical pitch "from" one value "to" another */
+               .Target( m_nFromPitch )
+               .Action( [this]{ OnChoice_FromPitch(); } )
+               /* i18n-hint: changing musical pitch "from" one value "to" another */
                .AddChoice(XXC("&from", "change pitch"), pitch);
 
             m_pSpin_FromOctave =
@@ -269,6 +269,8 @@ void EffectChangePitch::PopulateOrExchange(ShuttleGui & S)
                /* i18n-hint: changing musical pitch "from" one value "to" another */
                .Text(XC("to", "change pitch"))
                .MinSize( { 80, -1 } )
+               .Target( m_nToPitch )
+               .Action( [this]{ OnChoice_ToPitch(); } )
                /* i18n-hint: changing musical pitch "from" one value "to" another */
                .AddChoice(XXC("&to", "change pitch"), pitch);
 
@@ -370,8 +372,6 @@ bool EffectChangePitch::TransferDataToWindow()
    Calc_ToFrequency();
    Calc_ToOctave(); // Call after Calc_ToFrequency().
 
-   Update_Choice_FromPitch();
-   Update_Choice_ToPitch();
    Update_Spin_FromOctave();
    Update_Spin_ToOctave();
    Update_Slider_PercentChange();
@@ -382,10 +382,7 @@ bool EffectChangePitch::TransferDataToWindow()
 bool EffectChangePitch::TransferDataFromWindow()
 {
    // from/to pitch controls
-   m_nFromPitch = m_pChoice_FromPitch->GetSelection();
    m_nFromOctave = m_pSpin_FromOctave->GetValue();
-
-   m_nToPitch = m_pChoice_ToPitch->GetSelection();
 
    // No need to update Slider_PercentChange here because TextCtrl_PercentChange
    // always tracks it & is more precise (decimal points).
@@ -505,9 +502,8 @@ void EffectChangePitch::Calc_PercentChange()
 
 
 // handlers
-void EffectChangePitch::OnChoice_FromPitch(wxCommandEvent & WXUNUSED(evt))
+void EffectChangePitch::OnChoice_FromPitch()
 {
-   m_nFromPitch = m_pChoice_FromPitch->GetSelection();
    m_FromFrequency = PitchToFreq(m_nFromPitch, m_nFromOctave);
 
    Calc_ToPitch();
@@ -515,7 +511,6 @@ void EffectChangePitch::OnChoice_FromPitch(wxCommandEvent & WXUNUSED(evt))
    Calc_ToOctave(); // Call after Calc_ToFrequency().
 
    {
-      Update_Choice_ToPitch();
       Update_Spin_ToOctave();
       Update_Text_FromFrequency();
       Update_Text_ToFrequency();
@@ -539,10 +534,8 @@ void EffectChangePitch::OnSpin_FromOctave(wxCommandEvent & WXUNUSED(evt))
    }
 }
 
-void EffectChangePitch::OnChoice_ToPitch(wxCommandEvent & WXUNUSED(evt))
+void EffectChangePitch::OnChoice_ToPitch()
 {
-   m_nToPitch = m_pChoice_ToPitch->GetSelection();
-
    Calc_SemitonesChange_fromPitches();
    Calc_PercentChange(); // Call *after* m_dSemitonesChange is updated.
    Calc_ToFrequency(); // Call *after* m_dPercentChange is updated.

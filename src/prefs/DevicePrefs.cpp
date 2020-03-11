@@ -44,13 +44,11 @@ other settings.
 enum {
    HostID = 10000,
    PlayID,
-   RecordID,
    ChannelsID
 };
 
 BEGIN_EVENT_TABLE(DevicePrefs, PrefsPanel)
    EVT_CHOICE(HostID, DevicePrefs::OnHost)
-   EVT_CHOICE(RecordID, DevicePrefs::OnDevice)
 END_EVENT_TABLE()
 
 DevicePrefs::DevicePrefs(wxWindow * parent, wxWindowID winid)
@@ -170,7 +168,7 @@ void DevicePrefs::PopulateOrExchange(ShuttleGui & S)
       {
          mRecord =
          S
-            .Id(RecordID)
+            .Action( [this]{ OnDevice(); } )
             .AddChoice(XXO("De&vice:"), {} );
 
          mChannels =
@@ -321,10 +319,10 @@ void DevicePrefs::OnHost(wxCommandEvent & e)
 
    ShuttleGui::SetMinSize(mPlay, mPlay->GetStrings());
    ShuttleGui::SetMinSize(mRecord, mRecord->GetStrings());
-   OnDevice(e);
+   OnDevice();
 }
 
-void DevicePrefs::OnDevice(wxCommandEvent & WXUNUSED(event))
+void DevicePrefs::OnDevice()
 {
    int ndx = mRecord->GetCurrentSelection();
    if (ndx == wxNOT_FOUND) {

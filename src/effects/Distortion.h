@@ -17,7 +17,6 @@
 #include "../Shuttle.h"
 
 class wxSlider;
-class wxSimplebook;
 class wxTextCtrl;
 class ShuttleGui;
 
@@ -134,8 +133,7 @@ private:
 
    enum control
    {
-      ID_Type = 10000,
-      ID_Threshold,
+      ID_Threshold = 10000,
       ID_NoiseFloor,
       ID_Param1,
       ID_Param2,
@@ -151,7 +149,6 @@ private:
 
    // Control Handlers
 
-   void OnTypeChoice(wxCommandEvent & evt);
    void OnThresholdText(wxCommandEvent & evt);
    void OnThresholdSlider(wxCommandEvent & evt);
    void OnNoiseFloorText(wxCommandEvent & evt);
@@ -206,10 +203,6 @@ private:
    double mMakeupGain;
 
    int mTypChoiceIndex;
-
-   wxChoice *mTypeChoiceCtrl;
-
-   wxSimplebook *mBook1, *mBook2, *mBook3;
 
    Params mParams;
    Params mPageParams[ nTableTypes ];

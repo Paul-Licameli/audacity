@@ -189,7 +189,7 @@ private:
    void OnErase( wxEvent &event );
    void OnSize( wxSizeEvent & event );
    void OnSlider( wxCommandEvent & event );
-   void OnInterp( wxCommandEvent & event );
+   void OnInterp();
    void OnSliderM( wxCommandEvent & event );
    void OnSliderDBMAX( wxCommandEvent & event );
    void OnSliderDBMIN( wxCommandEvent & event );
@@ -215,7 +215,7 @@ private:
    float mdBMax;
    float mdBMin;
    bool mDrawMode;
-   int mInterp;
+   int mInterp = 0;
    bool mDrawGrid;
 
    double mWhens[NUM_PTS];
@@ -261,7 +261,6 @@ private:
    //wxPanel *mGraphicPanel;
    wxRadioButton *mDraw;
    wxRadioButton *mGraphic;
-   wxChoice *mInterpChoice;
    wxChoice *mCurve;
    wxButton *mManage;
    wxStaticText *mMText;
