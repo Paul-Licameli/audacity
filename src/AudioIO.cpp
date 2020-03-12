@@ -457,6 +457,7 @@ time warp info and AudioIOListener and whether the playback is looped.
 #include "Resample.h"
 #include "RingBuffer.h"
 #include "prefs/GUISettings.h"
+#include "prefs/WarningsPrefs.h"
 #include "Prefs.h"
 #include "Project.h"
 #include "DBConnection.h"
@@ -1491,8 +1492,7 @@ int AudioIO::StartStream(const TransportTracks &tracks,
 {
    mLostSamples = 0;
    mLostCaptureIntervals.clear();
-   mDetectDropouts =
-      gPrefs->Read( WarningDialogKey(L"DropoutDetected"), true ) != 0;
+   mDetectDropouts = WarningsDropoutDetected.Read();
    auto cleanup = finally ( [this] { ClearRecordingException(); } );
 
    if( IsBusy() )

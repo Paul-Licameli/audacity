@@ -94,15 +94,13 @@ void WarningDialog::OnOK(wxCommandEvent& WXUNUSED(event))
 }
 
 int ShowWarningDialog(wxWindow *parent,
-                      const wxString &internalDialogName,
+                      BoolSetting &setting,
                       const TranslatableString &message,
                       bool showCancelButton,
                       const TranslatableLabel &footer)
 {
-   auto key = WarningDialogKey(internalDialogName);
-   if (!gPrefs->Read(key, (long) true)) {
+   if ( ! setting.Read() )
       return wxID_OK;
-   }
 
    WarningDialog dlog(parent, message, footer, showCancelButton);
 
@@ -110,7 +108,7 @@ int ShowWarningDialog(wxWindow *parent,
    if (retCode == wxID_CANCEL)
       return retCode;
 
-   gPrefs->Write(key, (retCode == wxID_YES));
+   setting.Write( retCode == wxID_YES );
    gPrefs->Flush();
    return wxID_OK;
 }

@@ -623,4 +623,17 @@ struct AUDACITY_DLL_API PreferenceInitializer {
    static void ReinitializeAll();
 };
 
+extern BoolSetting
+     WarningsCopyOrEditUncompressedDataAsk
+   , WarningsCopyOrEditUncompressedDataFirstAsk // not in the dialog
+   , WarningsDiskSpaceWarning
+   , WarningsDropoutDetected // in RecordingPrefs dialog
+   , WarningsEmptyCanBeDirty
+   , WarningsFirstProjectSave
+   , WarningsMissingExtension
+   , WarningsMixMono
+   , WarningsMixStereo
+   , WarningsMixUnknownChannels
+;
+
 #endif

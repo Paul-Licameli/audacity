@@ -584,3 +584,29 @@ bool BoolSetting::Toggle()
    else
       return value;
 }
+
+BoolSetting
+   WarningsCopyOrEditUncompressedDataAsk{
+      L"/Warnings/CopyOrEditUncompressedDataAsk",      true }
+,  WarningsCopyOrEditUncompressedDataFirstAsk{
+      L"/Warnings/CopyOrEditUncompressedDataFirstAsk", true }
+,  WarningsDiskSpaceWarning{
+      L"/Warnings/DiskSpaceWarning",                   true }
+,  WarningsDropoutDetected{
+      L"/Warnings/DropoutDetected",                    true }
+
+// This one doesn't follow the same config key path convention.  A legacy.
+,  WarningsEmptyCanBeDirty{
+      L"/GUI/EmptyCanBeDirty",                         true }
+
+,  WarningsFirstProjectSave{
+      L"/Warnings/FirstProjectSave",                   true }
+,  WarningsMissingExtension{
+      L"/Warnings/MissingExtension",                   true }
+,  WarningsMixMono{
+      L"/Warnings/MixMono",                            true }
+,  WarningsMixStereo{
+      L"/Warnings/MixStereo",                          true }
+,  WarningsMixUnknownChannels{
+      L"/Warnings/MixUnknownChannels",                 true }
+;

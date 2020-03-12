@@ -14,6 +14,7 @@
 #include "audacity/Types.h"
 
 #include <wx/defs.h>
+class BoolSetting;
 class wxString;
 class wxWindow;
 
@@ -22,12 +23,10 @@ AUDACITY_DLL_API
 const TranslatableLabel &DefaultWarningFooter();
 
 /// Displays a warning dialog with a check box.  If the user checks
-/// the box, the internalDialogName is noted in the
-/// preferences.  The internalDialogName is never seen by
-/// the user; it should be unique to each message.
+/// the box, that persists in the BoolSetting.
 AUDACITY_DLL_API
 int ShowWarningDialog(wxWindow *parent,
-                      const wxString &internalDialogName,
+                      BoolSetting &setting,
                       const TranslatableString &message,
                       bool showCancelButton = false,
                       // This message appears by the checkbox:

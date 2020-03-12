@@ -731,10 +731,10 @@ bool ExportCL::CheckFileName(wxFileName &filename, int WXUNUSED(format))
    ExtendPath ep;
 
    if (filename.GetExt().empty()) {
-      if (ShowWarningDialog(NULL,
-                            L"MissingExtension",
-                            XO("You've specified a file name without an extension. Are you sure?"),
-                            true) == wxID_CANCEL) {
+      if (ShowWarningDialog(nullptr,
+            WarningsMissingExtension,
+            XO("You've specified a file name without an extension. Are you sure?"),
+            true) == wxID_CANCEL) {
          return false;
       }
    }

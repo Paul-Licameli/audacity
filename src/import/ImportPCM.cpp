@@ -34,6 +34,7 @@
 
 #include "../ShuttleGui.h"
 
+#include "../prefs/WarningsPrefs.h"
 #include "../widgets/ProgressDialog.h"
 
 #ifndef SNDFILE_1

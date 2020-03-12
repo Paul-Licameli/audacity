@@ -53,6 +53,7 @@
 #include "../Mix.h"
 #include "../Prefs.h"
 #include "../prefs/ImportExportPrefs.h"
+#include "../prefs/WarningsPrefs.h"
 #include "../Project.h"
 #include "../ProjectHistory.h"
 #include "../ProjectSettings.h"
@@ -858,26 +859,26 @@ bool Exporter::CheckMix(bool prompt /*= true*/ )
             exportedChannels = mChannels;
 
          if (prompt) {
-            auto pWindow = ProjectWindow::Find(mProject);
+            auto pWindow = ProjectWindow::Find( mProject );
             if (exportedChannels == 1) {
                if (ShowWarningDialog(pWindow,
-                  L"MixMono",
-                  XO("Your tracks will be mixed down and exported as one mono file."),
-                  true) == wxID_CANCEL)
+                                     WarningsMixMono,
+                                     XO("Your tracks will be mixed down and exported as one mono file."),
+                                     true) == wxID_CANCEL)
                   return false;
             }
             else if (exportedChannels == 2) {
                if (ShowWarningDialog(pWindow,
-                  L"MixStereo",
-                  XO("Your tracks will be mixed down and exported as one stereo file."),
-                  true) == wxID_CANCEL)
+                                     WarningsMixStereo,
+                                     XO("Your tracks will be mixed down and exported as one stereo file."),
+                                     true) == wxID_CANCEL)
                   return false;
             }
             else {
                if (ShowWarningDialog(pWindow,
-                  L"MixUnknownChannels",
-                  XO("Your tracks will be mixed down to one exported file according to the encoder settings."),
-                  true) == wxID_CANCEL)
+                                     WarningsMixUnknownChannels,
+                                     XO("Your tracks will be mixed down to one exported file according to the encoder settings."),
+                                     true) == wxID_CANCEL)
                   return false;
             }
          }

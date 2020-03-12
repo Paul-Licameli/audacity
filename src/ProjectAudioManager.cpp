@@ -33,6 +33,7 @@ Paul Licameli split from ProjectManager.cpp
 #include "WaveTrack.h"
 #include "toolbars/ToolManager.h"
 #include "prefs/TracksPrefs.h"
+#include "prefs/WarningsPrefs.h"
 #include "tracks/ui/Scrubbing.h"
 #include "tracks/ui/TrackView.h"
 #include "widgets/ErrorDialog.h"
@@ -916,7 +917,7 @@ void ProjectAudioManager::OnAudioIOStopRecording()
             // to the event loop while still inside the timer callback,
             // entering StopStream() recursively
             wxTheApp->CallAfter( [&] {
-               ShowWarningDialog(&window, L"DropoutDetected", XO("\
+               ShowWarningDialog(&window, WarningsDropoutDetected, XO("\
 Recorded audio was lost at the labeled locations. Possible causes:\n\
 \n\
 Other applications are competing with Audacity for processor time\n\
