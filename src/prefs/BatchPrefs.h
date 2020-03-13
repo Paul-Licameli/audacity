@@ -36,4 +36,6 @@ private:
    DECLARE_EVENT_TABLE()
 };
 
+extern BoolSetting BatchDebug;
+
 #endif

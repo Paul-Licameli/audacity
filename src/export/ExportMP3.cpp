@@ -268,9 +268,18 @@ BEGIN_EVENT_TABLE(ExportMP3Options, wxPanelWrapper)
    EVT_CHECKBOX(ID_MONO,      ExportMP3Options::OnMono)
 END_EVENT_TABLE()
 
+// Settings available for use elsewhere
+IntSetting MP3SBitrate{ L"/FileFormats/MP3SetRate", PRESET_STANDARD };
+IntSetting MP3VBitrate{ L"/FileFormats/MP3VbrRate", QUALITY_2 };
+IntSetting MP3ABitrate{ L"/FileFormats/MP3AbrRate", 192 };
+IntSetting MP3CBitrate{ L"/FileFormats/MP3CbrRate", 192 };
+
 namespace {
 
+// Other settings private to this file
 BoolSetting MP3ForceMono{ L"/FileFormats/MP3ForceMono", false };
+
+//IntSetting MP3VarMode{ L"/FileFormats/MP3VarMode", ROUTINE_FAST };
 
 }
 
@@ -279,10 +288,10 @@ BoolSetting MP3ForceMono{ L"/FileFormats/MP3ForceMono", false };
 ExportMP3Options::ExportMP3Options(wxWindow *parent, int WXUNUSED(format))
 :  wxPanelWrapper(parent, wxID_ANY)
 {
-   mSetRate = gPrefs->Read(MP3SBitrate, PRESET_STANDARD);
-   mVbrRate = gPrefs->Read(MP3VBitrate, QUALITY_2);
-   mAbrRate = gPrefs->Read(MP3ABitrate, 192);
-   mCbrRate = gPrefs->Read(MP3CBitrate, 192);
+   mSetRate = MP3SBitrate.Read();
+   mVbrRate = MP3VBitrate.Read();
+   mAbrRate = MP3ABitrate.Read();
+   mCbrRate = MP3CBitrate.Read();
 
    ShuttleGui S(this, eIsCreatingFromPrefs);
    PopulateOrExchange(S);
@@ -458,7 +467,7 @@ void ExportMP3Options::PopulateOrExchange(ShuttleGui & S)
                   .Disable(!enable)
                   .TieNumberAsChoice(
                      XXO("Variable Speed:"),
-                     { L"/FileFormats/MP3VarMode", ROUTINE_FAST },
+                     MP3VarMode,
                      varModeNames );
                */
    
@@ -520,10 +529,10 @@ bool ExportMP3Options::TransferDataFromWindow()
    ShuttleGui S(this, eIsSavingToPrefs);
    PopulateOrExchange(S);
 
-   gPrefs->Write(MP3SBitrate, mSetRate);
-   gPrefs->Write(MP3VBitrate, mVbrRate);
-   gPrefs->Write(MP3ABitrate, mAbrRate);
-   gPrefs->Write(MP3CBitrate, mCbrRate);
+   MP3SBitrate.Write( mSetRate );
+   MP3VBitrate.Write( mVbrRate );
+   MP3ABitrate.Write( mAbrRate );
+   MP3CBitrate.Write( mCbrRate );
    gPrefs->Flush();
 
    return true;
@@ -1849,31 +1858,31 @@ ProgressResult ExportMP3::Export(AudacityProject *project,
    int highrate = 48000;
    int lowrate = 8000;
    int bitrate = 0;
-   int brate;
-   //int vmode;
 
    auto rmode = MP3RateModeSetting.ReadEnumWithDefault( MODE_CBR );
-   // gPrefs->Read(L"/FileFormats/MP3VarMode", &vmode, ROUTINE_FAST);
+   //auto vmode = MP3VarMode.Read();
    auto cmode = MP3ChannelModeSetting.ReadEnumWithDefault( CHANNEL_STEREO );
    bool forceMono = MP3ForceMono.Read();
 
+   int brate;
+
    // Set the bitrate/quality and mode
    if (rmode == MODE_SET) {
-      gPrefs->Read(MP3SBitrate, &brate, 128);
+      brate = MP3SBitrate.ReadWithDefault( 128 );
       brate = ValidateValue(setRateNames.size(), brate, PRESET_STANDARD);
       //int r = ValidateValue( varModeNames.size(), vmode, ROUTINE_FAST );
       exporter.SetMode(MODE_SET);
       exporter.SetQuality(brate/*, r*/);
    }
    else if (rmode == MODE_VBR) {
-      gPrefs->Read(MP3VBitrate, &brate, 128);
+      brate = MP3VBitrate.ReadWithDefault( 128 );
       brate = ValidateValue( varRateNames.size(), brate, QUALITY_2 );
       //int r = ValidateValue( varModeNames.size(), vmode, ROUTINE_FAST );
       exporter.SetMode(MODE_VBR);
       exporter.SetQuality(brate/*, r*/);
    }
    else if (rmode == MODE_ABR) {
-      gPrefs->Read(MP3ABitrate, &brate, 128);
+      brate = MP3ABitrate.ReadWithDefault( 128 );
       brate = ValidateIndex( fixRateValues, brate, 6 /* 128 kbps */ );
       bitrate = fixRateValues[ brate ];
       exporter.SetMode(MODE_ABR);
@@ -1887,7 +1896,7 @@ ProgressResult ExportMP3::Export(AudacityProject *project,
       }
    }
    else {
-      gPrefs->Read(MP3CBitrate, &brate, 128);
+      brate = MP3CBitrate.ReadWithDefault( 128 );
       brate = ValidateIndex( fixRateValues, brate, 6 /* 128 kbps */ );
       bitrate = fixRateValues[ brate ];
       exporter.SetMode(MODE_CBR);

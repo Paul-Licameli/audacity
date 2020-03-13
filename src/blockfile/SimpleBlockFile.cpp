@@ -46,6 +46,10 @@ to get its definition, rather than rolling our own.
 #include "../DirManager.h"
 #include "../Prefs.h"
 
+#ifdef DEPRECATED_AUDIO_CACHE
+   #include "../prefs/DirectoriesPrefs.h" // for DirectoriesCacheBlockFiles
+#endif
+
 #include "../FileFormats.h"
 
 #include "sndfile.h"

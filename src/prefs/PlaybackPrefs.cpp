@@ -24,6 +24,7 @@
 #include <wx/defs.h>
 #include <wx/textctrl.h>
 
+#include "../AudioIOBase.h"
 #include "../ShuttleGui.h"
 #include "../Prefs.h"
 
@@ -52,14 +53,6 @@ wxString PlaybackPrefs::HelpPageName()
 }
 
 namespace {
-   const char *UnpinnedScrubbingPreferenceKey()
-   {
-      return "/AudioIO/UnpinnedScrubbing";
-   }
-   bool UnpinnedScrubbingPreferenceDefault()
-   {
-      return true;
-   }
    int iPreferenceUnpinned = -1;
 }
 
@@ -77,8 +70,7 @@ void PlaybackPrefs::PopulateOrExchange(ShuttleGui & S)
          S
             .Text({ {}, suffix })
             .TieNumericTextBox(XXO("&Length:"),
-                                 {L"/AudioIO/EffectsPreviewLen",
-                                  6.0},
+                                 AudioIOEffectsPreviewLen,
                                  9);
    
          S
@@ -97,8 +89,7 @@ void PlaybackPrefs::PopulateOrExchange(ShuttleGui & S)
          S
             .Text({ {}, suffix })
             .TieNumericTextBox(XXO("&Before cut region:"),
-                                 {L"/AudioIO/CutPreviewBeforeLen",
-                                  2.0},
+                                 AudioIOCutPreviewBeforeLen,
                                  9);
 
          S
@@ -107,8 +98,7 @@ void PlaybackPrefs::PopulateOrExchange(ShuttleGui & S)
          S
             .Text({ {}, suffix })
             .TieNumericTextBox(XXO("&After cut region:"),
-                                 {L"/AudioIO/CutPreviewAfterLen",
-                                  1.0},
+                                 AudioIOCutPreviewAfterLen,
                                  9);
 
          S
@@ -125,8 +115,7 @@ void PlaybackPrefs::PopulateOrExchange(ShuttleGui & S)
          S
             .Text({ {}, suffix })
             .TieNumericTextBox(XXO("&Short period:"),
-                                 {L"/AudioIO/SeekShortPeriod",
-                                  1.0},
+                                 AudioIOSeekShortPeriod,
                                  9);
 
          S
@@ -135,8 +124,7 @@ void PlaybackPrefs::PopulateOrExchange(ShuttleGui & S)
          S
             .Text({ {}, suffix })
             .TieNumericTextBox(XXO("Lo&ng period:"),
-                                 {L"/AudioIO/SeekLongPeriod",
-                                  15.0},
+                                 AudioIOSeekLongPeriod,
                                  9);
 
          S
@@ -151,15 +139,14 @@ void PlaybackPrefs::PopulateOrExchange(ShuttleGui & S)
       S.StartVerticalLay();
       {
          S
-            .TieCheckBox(XXO("&Vari-Speed Play"), {"/AudioIO/VariSpeedPlay", true});
+            .TieCheckBox(XXO("&Vari-Speed Play"), AudioIOVariSpeedPlay);
 
          S
-            .TieCheckBox(XXO("&Micro-fades"), {"/AudioIO/Microfades", false});
+            .TieCheckBox(XXO("&Micro-fades"), AudioIOMicrofades);
 
          S
             .TieCheckBox(XXO("Always scrub un&pinned"),
-               {UnpinnedScrubbingPreferenceKey(),
-                UnpinnedScrubbingPreferenceDefault()});
+               AudioIOUnpinnedScrubbing);
       }
       S.EndVerticalLay();
    }
@@ -174,9 +161,7 @@ bool PlaybackPrefs::GetUnpinnedScrubbingPreference()
 {
    if ( iPreferenceUnpinned >= 0 )
       return iPreferenceUnpinned == 1;
-   bool bResult = gPrefs->ReadBool(
-      UnpinnedScrubbingPreferenceKey(),
-      UnpinnedScrubbingPreferenceDefault());
+   auto bResult = AudioIOUnpinnedScrubbing.Read();
    iPreferenceUnpinned = bResult ? 1: 0;
    return bResult;
 }

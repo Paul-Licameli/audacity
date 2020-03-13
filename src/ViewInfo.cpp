@@ -18,6 +18,7 @@ Paul Licameli
 #include "Project.h"
 #include "xml/XMLWriter.h"
 #include "prefs/TracksBehaviorsPrefs.h"
+#include "prefs/TracksPrefs.h"
 #include "xml/XMLWriter.h"
 
 wxDEFINE_EVENT( EVT_SELECTED_REGION_CHANGE, SelectedRegionEvent );
@@ -181,8 +182,7 @@ ViewInfo::ViewInfo(double start, double screenDuration, double pixelsPerSecond)
 void ViewInfo::UpdateSelectedPrefs( int id )
 {
    if (id == UpdateScrollPrefsID())
-      gPrefs->Read(L"/GUI/AutoScroll", &bUpdateTrackIndicator,
-                   true);
+      bUpdateTrackIndicator = TracksAutoScroll.Read();
    ZoomInfo::UpdateSelectedPrefs( id );
 }
 
@@ -190,11 +190,9 @@ void ViewInfo::UpdatePrefs()
 {
    ZoomInfo::UpdatePrefs();
 #ifdef EXPERIMENTAL_SCROLLING_LIMITS
-   gPrefs->Read(TracksBehaviorsPrefs::ScrollingPreferenceKey(), &bScrollBeyondZero,
-                TracksBehaviorsPrefs::ScrollingPreferenceDefault());
+   bScrollBeyondZero = TracksBehaviorsScrollBeyondZero.Read();
 #endif
-   gPrefs->Read(L"/GUI/AdjustSelectionEdges", &bAdjustSelectionEdges,
-      true);
+   bAdjustSelectionEdges = TracksBehaviorsAdjustSelectionEdges.Read();
 
    UpdateSelectedPrefs( UpdateScrollPrefsID() );
 }

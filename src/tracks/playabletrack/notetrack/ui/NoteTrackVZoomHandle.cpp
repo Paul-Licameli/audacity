@@ -25,6 +25,7 @@ Paul Licameli split from TrackPanel.cpp
 #include "../../../../widgets/MenuHandle.h"
 #include "../../../../../images/Cursors.h"
 #include "../../../../Prefs.h"
+#include "../../../../prefs/TracksBehaviorsPrefs.h"
 
 namespace
 {
@@ -42,8 +43,7 @@ namespace
    bool IsDragZooming(int zoomStart, int zoomEnd)
    {
       const int DragThreshold = 3;// Anything over 3 pixels is a drag, else a click.
-      bool bVZoom;
-      gPrefs->Read(L"/GUI/VerticalZooming", &bVZoom, false);
+      auto bVZoom = TracksBehaviorsAdvancedVerticalZooming.Read();
       return bVZoom && (abs(zoomEnd - zoomStart) > DragThreshold);
    }
 
@@ -72,8 +72,7 @@ HitTestPreview NoteTrackVZoomHandle::HitPreview(const wxMouseState &state)
       ::MakeCursor(wxCURSOR_MAGNIFIER, ZoomOutCursorXpm, 19, 15);
    static  wxCursor arrowCursor{ wxCURSOR_ARROW };
 
-   bool bVZoom;
-   gPrefs->Read(L"/GUI/VerticalZooming", &bVZoom, false);
+   auto bVZoom = TracksBehaviorsAdvancedVerticalZooming.Read();
    bVZoom &= !state.RightIsDown();
    const auto message = bVZoom ? 
       XO("Click to vertically zoom in. Shift-click to zoom out. Drag to specify a zoom region.") :
@@ -254,8 +253,7 @@ void NoteTrackVRulerMenuTable::OnZoom( int iZoomCode ){
 BEGIN_POPUP_MENU(NoteTrackVRulerMenuTable)
 
    // Accelerators only if zooming enabled.
-   bool bVZoom;
-   gPrefs->Read(L"/GUI/VerticalZooming", &bVZoom, false);
+   auto bVZoom = TracksBehaviorsAdvancedVerticalZooming.Read();
 
    BeginSection( "Zoom" );
       BeginSection( "Basic" );
@@ -300,7 +298,7 @@ UIHandle::Result NoteTrackVZoomHandle::Release
    const bool rightUp = event.RightUp();
 
 
-   // Popup menu... 
+   // Popup menu...
    if (
        rightUp &&
        !(event.ShiftDown() || event.CmdDown()))
@@ -318,8 +316,7 @@ UIHandle::Result NoteTrackVZoomHandle::Release
       return data.result;
    }
 
-   bool bVZoom;
-   gPrefs->Read(L"/GUI/VerticalZooming", &bVZoom, false);
+   auto bVZoom = TracksBehaviorsAdvancedVerticalZooming.Read();
    bVZoom &= event.GetId() != kCaptureLostEventId;
    if( !bVZoom )
       return RefreshAll;

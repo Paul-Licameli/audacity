@@ -61,7 +61,7 @@ void BatchPrefs::PopulateOrExchange( ShuttleGui & S )
 #ifdef _DEBUG
       S
          .TieCheckBox( XXO("&Don't apply effects in batch mode"),
-            {L"/Batch/Debug", false});
+            BatchDebug);
 #endif
    }
    S.EndStatic();
@@ -98,3 +98,6 @@ PrefsPanel::Registration sAttachment{ "Batch",
 };
 }
 #endif
+
+BoolSetting BatchDebug{ L"/Batch/Debug", false };
+

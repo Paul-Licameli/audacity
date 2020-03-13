@@ -170,7 +170,7 @@ void GUIPrefs::PopulateOrExchange(ShuttleGui & S)
 // later want to have configurable button order.
 //      S
 //         .TieCheckBox( XXO("&Ergonomic order of Transport Toolbar buttons"),
-//            L"/GUI/ErgonomicTransportButtons", true );
+//            GUIErgonomicTransportButtons );
 
    }
    S.EndStatic();
@@ -180,37 +180,37 @@ void GUIPrefs::PopulateOrExchange(ShuttleGui & S)
       S
          // Start wording of options with a verb, if possible.
          .TieCheckBox(XXO("Show 'How to Get &Help' at launch"),
-            {L"/GUI/ShowSplashScreen", true});
+            GUIShowSplashScreen);
 
       S
-        .TieCheckBox(XXO("Show e&xtra menus"),
-           {L"/GUI/ShowExtraMenus", false});
+         .TieCheckBox(XXO("Show e&xtra menus"),
+           GUIShowExtraMenus);
 
 #ifdef EXPERIMENTAL_THEME_PREFS
       // We do not want to make this option mainstream.  It's a 
       // convenience for developers.
       S
          .TieCheckBox(XXO("Show alternative &styling (Mac vs PC)"),
-            {L"/GUI/ShowMac", false});
+            GUIShowMac);
 #endif
 
       S
          .TieCheckBox(XXO("&Beep on completion of longer activities"),
-            {L"/GUI/BeepOnCompletion", false});
+            GUIBeepOnCompletion);
 
       S
          .TieCheckBox(XXO("Re&tain labels if selection snaps to a label"),
-            {L"/GUI/RetainLabels", false});
+            GUIRetainLabels);
 
       S
          .TieCheckBox(XXO("B&lend system and Audacity theme"),
-            {L"/GUI/BlendThemes", true});
+            GUIBlendThemes);
 
 #ifndef __WXMAC__
       /* i18n-hint: RTL stands for 'Right to Left'  */
       S
          .TieCheckBox(XXO("Use mostly Left-to-Right layouts in RTL languages"),
-            {"/GUI/RtlWorkaround", true});
+            GUIRtlWorkaround);
 #endif
 #ifdef EXPERIMENTAL_CEE_NUMBERS_OPTION
       S.TieCheckBox(XXO("Never use comma as decimal point"),
@@ -224,11 +224,11 @@ void GUIPrefs::PopulateOrExchange(ShuttleGui & S)
    {
       S
          .TieCheckBox(XXO("Show Timeline Tooltips"),
-            {L"/QuickPlay/ToolTips", true});
+            QuickPlayToolTips);
 
       S
          .TieCheckBox(XXO("Show Scrub Ruler"),
-            {L"/QuickPlay/ScrubbingEnabled", false});
+            QuickPlayScrubbingEnabled);
    }
    S.EndStatic();
 
@@ -299,3 +299,37 @@ PrefsPanel::Registration sAttachment{ "GUI",
    }
 };
 }
+
+void RTL_WORKAROUND( wxWindow *pWnd )
+{
+#ifndef __WXMAC__
+   if ( GUIRtlWorkaround.Read() )
+      pWnd->SetLayoutDirection(wxLayout_LeftToRight);
+#else
+   (void)pWnd;
+#endif
+}
+
+BoolSetting GUIErgonomicTransportButtons{
+   L"/GUI/ErgonomicTransportButtons", true
+};
+BoolSetting GUIBeepOnCompletion{
+   L"/GUI/BeepOnCompletion", false };
+BoolSetting GUIBlendThemes{
+   L"/GUI/BlendThemes",      true  };
+BoolSetting GUIRetainLabels{
+   L"/GUI/RetainLabels",     false };
+BoolSetting GUIRtlWorkaround{
+   L"/GUI/RtlWorkaround",    true  };
+BoolSetting GUIShowExtraMenus{
+   L"/GUI/ShowExtraMenus",   false };
+BoolSetting GUIShowMac{
+   L"/GUI/ShowMac",          false };
+BoolSetting GUIShowSplashScreen{
+   L"/GUI/ShowSplashScreen", true  };
+
+BoolSetting QuickPlayScrubbingEnabled{
+   L"/QuickPlay/ScrubbingEnabled",   false};
+BoolSetting QuickPlayToolTips{
+   L"/QuickPlay/ToolTips",   true};
+

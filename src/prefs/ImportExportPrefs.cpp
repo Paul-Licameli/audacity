@@ -119,12 +119,12 @@ void ImportExportPrefs::PopulateOrExchange(ShuttleGui & S)
 
       S
          .TieCheckBox(XXO("S&how Metadata Tags editor before export"),
-            {L"/AudioFiles/ShowId3Dialog", true});
+            ImportExportShowId3Dialog);
 
       S
          /* i18n-hint 'blank space' is space on the tracks with no audio in it*/
          .TieCheckBox(XXO("&Ignore blank space at the beginning"),
-            {L"/AudioFiles/SkipSilenceAtBeginning", false});
+            ImportExportSkipStartingSilence);
    }
    S.EndStatic();
 
@@ -193,3 +193,9 @@ PrefsPanel::Registration sAttachment{ "ImportExport",
    }
 };
 }
+
+BoolSetting ImportExportShowId3Dialog{
+   L"/AudioFiles/ShowId3Dialog",          true };
+BoolSetting ImportExportSkipStartingSilence{
+   L"/AudioFiles/SkipSilenceAtBeginning", false };
+

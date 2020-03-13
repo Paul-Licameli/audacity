@@ -47,6 +47,7 @@
 #include <wx/stattext.h>
 
 #include "../Prefs.h"
+#include "../prefs/GUIPrefs.h"
 
 // This really should be a Preferences setting
 static const unsigned char beep[] =
@@ -1597,10 +1598,9 @@ void ProgressDialog::OnCloseWindow(wxCloseEvent & WXUNUSED(event))
 void ProgressDialog::Beep() const
 {
    int after;
-   bool should;
    wxString name;
 
-   gPrefs->Read(L"/GUI/BeepOnCompletion", &should, false);
+   auto should = GUIBeepOnCompletion.Read();
    gPrefs->Read(L"/GUI/BeepAfterDuration", &after, 60);
    gPrefs->Read(L"/GUI/BeepFileName", &name, wxEmptyString);
 

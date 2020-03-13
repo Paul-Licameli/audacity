@@ -45,12 +45,6 @@ wxString TracksBehaviorsPrefs::HelpPageName()
    return "Tracks_Behaviors_Preferences";
 }
 
-const wxChar *TracksBehaviorsPrefs::ScrollingPreferenceKey()
-{
-   static auto string = L"/GUI/ScrollBeyondZero";
-   return string;
-}
-
 ChoiceSetting TracksBehaviorsSolo{
    L"/GUI/Solo",
    {
@@ -71,42 +65,42 @@ void TracksBehaviorsPrefs::PopulateOrExchange(ShuttleGui & S)
    {
       S
          .TieCheckBox(XXO("&Select all audio, if selection required"),
-            {L"/GUI/SelectAllOnNone", false});
+            TracksBehaviorsSelectAllOnNone);
 
       /* i18n-hint: Cut-lines are lines that can expand to show the cut audio.*/
       S
          .TieCheckBox(XXO("Enable cut &lines"),
-            {L"/GUI/EnableCutLines", false});
+            TracksBehaviorsCutLines);
 
       S
          .TieCheckBox(XXO("Enable &dragging selection edges"),
-            {L"/GUI/AdjustSelectionEdges", true});
+            TracksBehaviorsAdjustSelectionEdges);
 
       S
          .TieCheckBox(XXO("Editing a clip can &move other clips"),
-            {L"/GUI/EditClipCanMove", true});
+            TracksBehaviorsClipsCanMove);
 
       S
          .TieCheckBox(XXO("\"Move track focus\" c&ycles repeatedly through tracks"),
-            {L"/GUI/CircularTrackNavigation", false});
+            TracksBehaviorsCircularNavigation);
 
       S
          .TieCheckBox(XXO("&Type to create a label"),
-            {L"/GUI/TypeToCreateLabel", false});
+            TracksBehaviorsTypeToCreateLabel);
 
       S
          .TieCheckBox(XXO("Use dialog for the &name of a new label"),
-            {L"/GUI/DialogForNameNewLabel", false});
+            TracksBehaviorsDialogForNameNewLabel);
 
 #ifdef EXPERIMENTAL_SCROLLING_LIMITS
       S
          .TieCheckBox(XXO("Enable scrolling left of &zero"),
-            {ScrollingPreferenceKey(), ScrollingPreferenceDefault()});
+            TracksBehaviorsScrollBeyondZero);
 #endif
 
       S
          .TieCheckBox(XXO("Advanced &vertical zooming"),
-            {L"/GUI/VerticalZooming", false});
+            TracksBehaviorsAdvancedVerticalZooming);
 
       S.AddSpace(10);
 
@@ -148,11 +142,30 @@ PrefsPanel::Registration sAttachment{ "TracksBehaviors",
 // SyncLock.
 bool GetEditClipsCanMove()
 {
-   bool mIsSyncLocked;
-   gPrefs->Read(L"/GUI/SyncLockTracks", &mIsSyncLocked, false);
+   bool mIsSyncLocked = TracksBehaviorsSyncLockTracks.Read();
    if( mIsSyncLocked )
       return true;
-   bool editClipsCanMove;
-   gPrefs->Read(L"/GUI/EditClipCanMove", &editClipsCanMove, true);
-   return editClipsCanMove;
+   return TracksBehaviorsClipsCanMove.Read();
 }
+
+BoolSetting TracksBehaviorsAdjustSelectionEdges{
+   L"/GUI/AdjustSelectionEdges",    true  };
+BoolSetting TracksBehaviorsCircularNavigation{
+   L"/GUI/CircularTrackNavigation", false };
+BoolSetting TracksBehaviorsClipsCanMove{
+   L"/GUI/EditClipCanMove",         true  };
+BoolSetting TracksBehaviorsCutLines{
+   L"/GUI/EnableCutLines",          false };
+BoolSetting TracksBehaviorsDialogForNameNewLabel{
+   L"/GUI/DialogForNameNewLabel",   false };
+BoolSetting TracksBehaviorsSelectAllOnNone{
+   L"/GUI/SelectAllOnNone",         false };
+BoolSetting TracksBehaviorsSyncLockTracks{
+   L"/GUI/SyncLockTracks",          false  };
+BoolSetting TracksBehaviorsTypeToCreateLabel{
+   L"/GUI/TypeToCreateLabel",       false };
+BoolSetting TracksBehaviorsScrollBeyondZero{
+   L"/GUI/ScrollBeyondZero",        false };
+BoolSetting TracksBehaviorsAdvancedVerticalZooming{
+   L"/GUI/VerticalZooming",         false };
+

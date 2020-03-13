@@ -20,7 +20,9 @@
 #include "../tracks/playabletrack/wavetrack/ui/WaveTrackViewConstants.h"
 #include "WaveformSettings.h" // for ScaleTypeValues
 
+class BoolSetting;
 class ShuttleGui;
+class StringSetting;
 
 #define TRACKS_PREFS_PLUGIN_SYMBOL ComponentInterfaceSymbol{ XO("Tracks") }
 
@@ -41,8 +43,6 @@ class AUDACITY_DLL_API TracksPrefs final : public PrefsPanel
    static double GetPinnedHeadPositionPreference();
    static void SetPinnedHeadPositionPreference(double value, bool flush = false);
    
-   static wxString GetDefaultAudioTrackNamePreference();
-
    static WaveTrackViewConstants::Display ViewModeChoice();
    static WaveformSettings::ScaleTypeValues WaveformScaleChoice();
    static WaveTrackViewConstants::SampleDisplay SampleViewChoice();
@@ -54,5 +54,19 @@ class AUDACITY_DLL_API TracksPrefs final : public PrefsPanel
 
    static int iPreferencePinned;
 };
+
+extern BoolSetting AudioIOPinnedHead;
+extern DoubleSetting AudioIOPinnedHeadPosition; // a fraction in [ 0, 1 ]
+
+extern BoolSetting
+     TracksAutoScroll
+   , TracksCollapseToHalfWave
+   , TracksFitVerticallyZoomed
+   , TracksShowName
+;
+
+extern StringSetting
+     TracksDefaultName
+;
 
 #endif

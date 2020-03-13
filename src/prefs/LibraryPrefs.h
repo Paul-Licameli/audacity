@@ -52,4 +52,8 @@ class LibraryPrefs final : public PrefsPanel
    DECLARE_EVENT_TABLE()
 };
 
+#ifdef EXPERIMENTAL_OD_FFMPEG
+extern BoolSetting LibraryFFmpegOnDemand;
+#endif
+
 #endif

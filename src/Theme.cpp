@@ -77,6 +77,7 @@ can't be.
 #include "ImageManipulation.h"
 #include "Internat.h"
 #include "MemoryX.h"
+#include "prefs/GUIPrefs.h" // CYCLE
 #include "widgets/AudacityMessageBox.h"
 
 // JKC: First get the MAC specific images.
@@ -930,7 +931,7 @@ bool ThemeBase::ReadImageCache( teThemeType type, bool bOkIfNotFound)
 //      ImageCache.InitAlpha();
 //   }
 
-   gPrefs->Read(L"/GUI/BlendThemes", &bRecolourOnLoad, true);
+   bRecolourOnLoad = GUIBlendThemes.Read();
 
    if(  type == themeFromFile )
    {

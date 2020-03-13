@@ -24,6 +24,7 @@ Paul Licameli split from TrackPanel.cpp
 #include "../../Track.h"
 #include "../../ViewInfo.h"
 #include "../../WaveTrack.h"
+#include "../../prefs/GUIPrefs.h"
 #include "../../prefs/PlaybackPrefs.h"
 #include "../../prefs/TracksPrefs.h"
 #include "../../toolbars/ToolManager.h"
@@ -1017,34 +1018,15 @@ void Scrubber::OnSeek(const CommandContext&)
    CheckMenuItems();
 }
 
-#if 1
-namespace {
-   static const wxChar *scrubEnabledPrefName = L"/QuickPlay/ScrubbingEnabled";
-
-   bool ReadScrubEnabledPref()
-   {
-      bool result {};
-      gPrefs->Read(scrubEnabledPrefName, &result, false);
-
-      return result;
-   }
-
-   void WriteScrubEnabledPref(bool value)
-   {
-      gPrefs->Write(scrubEnabledPrefName, value);
-   }
-}
-#endif
-
 void Scrubber::UpdatePrefs()
 {
-   mShowScrubbing = ReadScrubEnabledPref();
+   mShowScrubbing = QuickPlayScrubbingEnabled.Read();
 }
 
 void Scrubber::OnToggleScrubRuler(const CommandContext&)
 {
    mShowScrubbing = !mShowScrubbing;
-   WriteScrubEnabledPref(mShowScrubbing);
+   QuickPlayScrubbingEnabled.Write(mShowScrubbing);
    gPrefs->Flush();
    const auto toolbar =
       ToolManager::Get( *mProject ).GetToolBar( ScrubbingBarID );

@@ -37,6 +37,7 @@
 #include "ProjectSettings.h"
 #include "UndoManager.h"
 #include "commands/CommandManager.h"
+#include "prefs/TracksBehaviorsPrefs.h"
 #include "toolbars/ToolManager.h"
 #include "widgets/AudacityMessageBox.h"
 #include "widgets/ErrorDialog.h"
@@ -95,8 +96,7 @@ MenuManager::~MenuManager()
 
 void MenuManager::UpdatePrefs()
 {
-   bool bSelectAllIfNone;
-   gPrefs->Read(L"/GUI/SelectAllOnNone", &bSelectAllIfNone, false);
+   auto bSelectAllIfNone = TracksBehaviorsSelectAllOnNone.Read();
    // 0 is grey out, 1 is Autoselect, 2 is Give warnings.
 #ifdef EXPERIMENTAL_DA
    // DA warns or greys out.
@@ -589,9 +589,7 @@ void MenuManager::ModifyToolbarMenus(AudacityProject &project)
 
    // These don't really belong here, but it's easier and especially so for
    // the Edit toolbar and the sync-lock menu item.
-   bool active;
-
-   gPrefs->Read(L"/GUI/SyncLockTracks", &active, false);
+   bool active = TracksBehaviorsSyncLockTracks.Read();
    settings.SetSyncLock(active);
 
    CommandManager::Get( project ).UpdateCheckmarks( project );

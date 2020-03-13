@@ -324,4 +324,36 @@ extern StringSetting
 
 #endif
 
+extern BoolSetting
+     FFmpegBitReservoir
+   , FFmpegUseLPC // not used
+   , FFmpegVariableBlockLen
+;
+
+extern IntSetting
+     AACQuality
+   , AC3BitRate
+   , AMRNBBitRate
+   , FFmpegBitRate
+   , FFmpegCompLevel
+   , FFmpegCutOff
+   , FFmpegFrameSize
+   , FFmpegLPCCoefPrec
+   , FFmpegMaxPartOrder
+   , FFmpegMinPartOrder
+   , FFmpegMaxPredOrder
+   , FFmpegMinPredOrder
+   , FFmpegMuxRate
+   , FFmpegPacketSize
+   , FFmpegPredictionOrderMethod
+   , FFmpegQuality
+   , FFmpegSampleRate
+   , WMABitRate
+;
+
+extern StringSetting
+     FFmpegLanguage
+   , FFmpegTag
+;
+
 #endif //__EXPORT_FFMPEG_DIALOGS_H__

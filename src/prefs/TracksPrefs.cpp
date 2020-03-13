@@ -30,29 +30,6 @@
 int TracksPrefs::iPreferencePinned = -1;
 
 namespace {
-   const wxChar *PinnedHeadPreferenceKey()
-   {
-      return L"/AudioIO/PinnedHead";
-   }
-
-   bool PinnedHeadPreferenceDefault()
-   {
-      return false;
-   }
-   
-   const wxChar *PinnedHeadPositionPreferenceKey()
-   {
-      return L"/AudioIO/PinnedHeadPosition";
-   }
-
-   double PinnedHeadPositionPreferenceDefault()
-   {
-      return 0.5;
-   }
-}
-
-
-namespace {
    const auto waveformScaleKey = L"/GUI/DefaultWaveformScaleChoice";
    const auto dbValueString = L"dB";
 }
@@ -303,27 +280,27 @@ void TracksPrefs::PopulateOrExchange(ShuttleGui & S)
    {
       S
          .TieCheckBox(XXO("Auto-&fit track height"),
-            {L"/GUI/TracksFitVerticallyZoomed", false});
+            TracksFitVerticallyZoomed);
 
       S
          .TieCheckBox(XXO("Sho&w track name as overlay"),
-            {L"/GUI/ShowTrackNameInWaveform", false});
+            TracksShowName);
 
 #ifdef EXPERIMENTAL_HALF_WAVE
       S
          .TieCheckBox(XXO("Use &half-wave display when collapsed"),
-            {L"/GUI/CollapseToHalfWave", false});
+            TracksCollapseToHalfWave);
 #endif
 
 #ifdef SHOW_PINNED_UNPINNED_IN_PREFS
       S
          .TieCheckBox(XXO("&Pinned Recording/Playback head"),
-            {PinnedHeadPreferenceKey(), PinnedHeadPreferenceDefault()});
+            AudioIOPinnedHead);
 #endif
 
       S
          .TieCheckBox(XXO("A&uto-scroll if head unpinned"),
-            {L"/GUI/AutoScroll", true});
+            TracksAutoScroll);
 
       S.AddSpace(10);
 
@@ -334,8 +311,7 @@ void TracksPrefs::PopulateOrExchange(ShuttleGui & S)
          S
             .TieNumericTextBox(
                XXO("Pinned &head position"),
-               {PinnedHeadPositionPreferenceKey(),
-                PinnedHeadPositionPreferenceDefault()},
+               AudioIOPinnedHeadPosition,
                30 );
 #endif
 
@@ -350,8 +326,7 @@ void TracksPrefs::PopulateOrExchange(ShuttleGui & S)
 
          S
             .TieTextBox(XXO("Default audio track &name:"),
-               {L"/GUI/TrackNames/DefaultTrackName",
-                  _("Audio Track")},
+               TracksDefaultName,
                       30);
       }
       S.EndMultiColumn();
@@ -379,7 +354,7 @@ bool TracksPrefs::GetPinnedHeadPreference()
    // Correct solution would be to re-write wxFileConfig to be efficient.
    if( iPreferencePinned >= 0 )
       return iPreferencePinned == 1;
-   bool bResult = gPrefs->ReadBool(PinnedHeadPreferenceKey(), PinnedHeadPreferenceDefault());
+   auto bResult = AudioIOPinnedHead.Read();
    iPreferencePinned = bResult ? 1: 0;
    return bResult;
 }
@@ -387,39 +362,23 @@ bool TracksPrefs::GetPinnedHeadPreference()
 void TracksPrefs::SetPinnedHeadPreference(bool value, bool flush)
 {
    iPreferencePinned = value ? 1 :0;
-   gPrefs->Write(PinnedHeadPreferenceKey(), value);
+   AudioIOPinnedHead.Write( value );
    if(flush)
       gPrefs->Flush();
 }
 
 double TracksPrefs::GetPinnedHeadPositionPreference()
 {
-   auto value = gPrefs->ReadDouble(
-      PinnedHeadPositionPreferenceKey(),
-      PinnedHeadPositionPreferenceDefault());
+   auto value = AudioIOPinnedHeadPosition.Read();
    return std::max(0.0, std::min(1.0, value));
 }
 
 void TracksPrefs::SetPinnedHeadPositionPreference(double value, bool flush)
 {
    value = std::max(0.0, std::min(1.0, value));
-   gPrefs->Write(PinnedHeadPositionPreferenceKey(), value);
+   AudioIOPinnedHeadPosition.Write( value );
    if(flush)
       gPrefs->Flush();
-}
-
-wxString TracksPrefs::GetDefaultAudioTrackNamePreference()
-{
-   const auto name =
-      gPrefs->Read(L"/GUI/TrackNames/DefaultTrackName", L"");
-
-   if (name.empty() || ( name == "Audio Track" ))
-      // When nothing was specified,
-      // the default-default is whatever translation of...
-      /* i18n-hint: The default name for an audio track. */
-      return _("Audio Track");
-   else
-      return name;
 }
 
 bool TracksPrefs::Commit()
@@ -431,8 +390,8 @@ bool TracksPrefs::Commit()
 
    // Bug 1661: Don't store the name for new tracks if the name is the
    // default in that language.
-   if (GetDefaultAudioTrackNamePreference() == _("Audio Track")) {
-      gPrefs->DeleteEntry(L"/GUI/TrackNames/DefaultTrackName");
+   if (TracksDefaultName.Read() == _("Audio Track")) {
+      TracksDefaultName.Delete();
       gPrefs->Flush();
    }
 
@@ -448,3 +407,33 @@ PrefsPanel::Registration sAttachment{ "Tracks",
    }
 };
 }
+
+BoolSetting AudioIOPinnedHead{
+   L"/AudioIO/PinnedHead",                       false };
+DoubleSetting AudioIOPinnedHeadPosition{
+   L"/AudioIO/PinnedHeadPosition",               0.5 };
+
+BoolSetting TracksAutoScroll{
+   L"/GUI/AutoScroll",                true };
+BoolSetting TracksCollapseToHalfWave{
+   L"/GUI/CollapseToHalfWave",        false };
+BoolSetting TracksFitVerticallyZoomed{
+   L"/GUI/TracksFitVerticallyZoomed", false };
+BoolSetting TracksShowName{
+   L"/GUI/ShowTrackNameInWaveform",   false };
+
+StringSetting TracksDefaultName{
+   L"/GUI/TrackNames/DefaultTrackName",
+   [] {
+      const auto name = TracksDefaultName.ReadWithDefault( {} );
+      
+      if (name.empty() || ( name == "Audio Track" ))
+         // When nothing was specified,
+         // the default-default is whatever translation of...
+      /* i18n-hint: The default name for an audio track. */
+         return _("Audio Track");
+         else
+            return name;
+   }
+};
+

@@ -1063,6 +1063,8 @@ DoubleSetting AudioIOLatencyCorrection{
    L"/AudioIO/LatencyCorrection", -130.0 };
 DoubleSetting AudioIOLatencyDuration{
    L"/AudioIO/LatencyDuration", 100.0 };
+BoolSetting AudioIOMicrofades{
+   L"/AudioIO/Microfades",                       false };
 StringSetting AudioIOPlaybackDevice{
    L"/AudioIO/PlaybackDevice", L"" };
 IntSetting AudioIORecordChannels{
@@ -1073,3 +1075,24 @@ StringSetting AudioIORecordingSource{
    L"/AudioIO/RecordingSource", L"" };
 IntSetting AudioIORecordingSourceIndex{
    L"/AudioIO/RecordingSourceIndex", -1 };
+
+// Following Settings objects are not used in this file but live under
+// the same config group as the others, so we define them together here:
+
+DoubleSetting AudioIOCutPreviewAfterLen{
+   L"/AudioIO/CutPreviewAfterLen",               1.0 };
+DoubleSetting AudioIOCutPreviewBeforeLen{
+   L"/AudioIO/CutPreviewBeforeLen",              2.0 };
+DoubleSetting AudioIOEffectsPreviewLen{
+   L"/AudioIO/EffectsPreviewLen",                6.0 };
+DoubleSetting AudioIOSeekLongPeriod{
+   L"/AudioIO/SeekLongPeriod",                   15.0 };
+DoubleSetting AudioIOSeekShortPeriod{
+   L"/AudioIO/SeekShortPeriod",                  1.0 };
+BoolSetting AudioIOUnpinnedScrubbing{
+   L"/AudioIO/UnpinnedScrubbing",                true };
+BoolSetting AudioIOVariSpeedPlay{
+   L"/AudioIO/VariSpeedPlay",                    true };
+
+IntSetting MidiIOSynthLatency{
+   L"/MidiIO/SynthLatency",                      5 };

@@ -26,6 +26,7 @@ other settings.
 #include "DevicePrefs.h"
 #include "AudioIOBase.h"
 
+#include "AudioIOBase.h"
 #include "RecordingPrefs.h"
 
 #include <wx/defs.h>

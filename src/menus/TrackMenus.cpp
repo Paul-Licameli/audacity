@@ -28,6 +28,7 @@
 #include "../effects/EffectManager.h"
 #include "../effects/EffectUI.h"
 #include "../prefs/QualitySettings.h"
+#include "../prefs/TracksBehaviorsPrefs.h"
 #include "../tracks/playabletrack/wavetrack/ui/WaveTrackControls.h"
 #include "../widgets/ASlider.h"
 #include "../widgets/AudacityMessageBox.h"
@@ -1077,9 +1078,7 @@ void OnSyncLock(const CommandContext &context)
    auto &project = context.project;
    auto &trackPanel = TrackPanel::Get( project );
 
-   bool bSyncLockTracks;
-   gPrefs->Read(L"/GUI/SyncLockTracks", &bSyncLockTracks, false);
-   gPrefs->Write(L"/GUI/SyncLockTracks", !bSyncLockTracks);
+   TracksBehaviorsSyncLockTracks.Toggle();
    gPrefs->Flush();
 
    // Toolbar, project sync-lock handled within
@@ -1445,7 +1444,7 @@ BaseItemSharedPtr TracksMenu()
       Section( "",
          Command( L"SyncLock", XXO("Sync-&Lock Tracks (on/off)"),
             FN(OnSyncLock), AlwaysEnabledFlag,
-            Options{}.CheckTest( L"/GUI/SyncLockTracks", false ) )
+            Options{}.CheckTest( TracksBehaviorsSyncLockTracks ) )
       )
 
 #endif

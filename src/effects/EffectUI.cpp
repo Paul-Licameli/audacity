@@ -21,6 +21,7 @@
 #include "../TrackPanelAx.h"
 #include "../widgets/MenuHandle.h"
 #include "RealtimeEffectManager.h"
+#include "../prefs/GUIPrefs.h"
 
 #if defined(EXPERIMENTAL_EFFECTS_RACK)
 
@@ -1438,9 +1439,8 @@ void EffectUIHost::OnRewind(wxCommandEvent & WXUNUSED(evt))
    if (mPlaying)
    {
       auto gAudioIO = AudioIO::Get();
-      double seek;
-      gPrefs->Read(L"/AudioIO/SeekShortPeriod", &seek, 1.0);
-      
+      auto seek = AudioIOSeekShortPeriod.Read();
+
       double pos = gAudioIO->GetStreamTime();
       if (pos - seek < mRegion.t0())
       {
@@ -1459,9 +1459,8 @@ void EffectUIHost::OnFFwd(wxCommandEvent & WXUNUSED(evt))
 {
    if (mPlaying)
    {
-      double seek;
-      gPrefs->Read(L"/AudioIO/SeekShortPeriod", &seek, 1.0);
-      
+      auto seek = AudioIOSeekShortPeriod.Read();
+
       auto gAudioIO = AudioIO::Get();
       double pos = gAudioIO->GetStreamTime();
       if (mRegion.t0() < mRegion.t1() && pos + seek > mRegion.t1())

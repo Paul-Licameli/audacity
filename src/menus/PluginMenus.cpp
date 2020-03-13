@@ -669,13 +669,8 @@ void AddEffectMenuItemGroup(
    bool isDefault)
 {
    const int namesCnt = (int) names.size();
-   int perGroup;
 
-#if defined(__WXGTK__)
-   gPrefs->Read(L"/Effects/MaxPerGroup", &perGroup, 15);
-#else
-   gPrefs->Read(L"/Effects/MaxPerGroup", &perGroup, 0);
-#endif
+   auto perGroup = EffectsMaxPerGroup.Read();
 
    int groupCnt = namesCnt;
    for (int i = 0; i < namesCnt; i++)

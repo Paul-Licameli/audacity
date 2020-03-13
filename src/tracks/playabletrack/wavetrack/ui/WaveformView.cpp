@@ -29,6 +29,7 @@ Paul Licameli split from WaveTrackView.cpp
 #include "../../../../ViewInfo.h"
 #include "../../../../WaveClip.h"
 #include "../../../../WaveTrack.h"
+#include "../../../../prefs/TracksPrefs.h"
 #include "../../../../prefs/WaveformSettings.h"
 #include "../../../../widgets/MenuHandle.h"
 
@@ -112,8 +113,7 @@ void WaveformView::DoSetMinimized( bool minimized )
    auto wt = static_cast<WaveTrack*>( FindTrack().get() );
 
 #ifdef EXPERIMENTAL_HALF_WAVE
-   bool bHalfWave;
-   gPrefs->Read(L"/GUI/CollapseToHalfWave", &bHalfWave, false);
+   auto bHalfWave = TracksCollapseToHalfWave.Read();
    if( bHalfWave )
    {
       if (minimized)

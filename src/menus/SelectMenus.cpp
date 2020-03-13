@@ -999,8 +999,8 @@ void OnSelectAllTime(const CommandContext &context)
 
 void UpdatePrefs() override
 {
-   gPrefs->Read(L"/AudioIO/SeekShortPeriod", &mSeekInfo.mSeekShort, 1.0);
-   gPrefs->Read(L"/AudioIO/SeekLongPeriod", &mSeekInfo.mSeekLong, 15.0);
+   mSeekInfo.mSeekShort = AudioIOSeekShortPeriod.Read();
+   mSeekInfo.mSeekLong = AudioIOSeekLongPeriod.Read();
 }
 Handler()
 {

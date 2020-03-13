@@ -21,6 +21,7 @@ Paul Licameli split from WaveTrackVZoomHandle.cpp
 #include "../../../../TrackPanelMouseEvent.h"
 #include "../../../../WaveTrack.h"
 #include "../../../../prefs/SpectrogramSettings.h"
+#include "../../../../prefs/TracksBehaviorsPrefs.h"
 #include "../../../../widgets/MenuHandle.h"
 
 SpectrumVZoomHandle::SpectrumVZoomHandle
@@ -286,8 +287,7 @@ EndSection();
 
 BeginSection( "Zoom" );
    // Accelerators only if zooming enabled.
-   bool bVZoom;
-   gPrefs->Read(L"/GUI/VerticalZooming", &bVZoom, false);
+   auto bVZoom = TracksBehaviorsAdvancedVerticalZooming.Read();
 
    AppendItem( "Reset", OnZoomResetID,         XXO("Zoom Reset"),
               POPUP_MENU_FN( OnZoomReset ) );

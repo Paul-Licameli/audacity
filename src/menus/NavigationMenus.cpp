@@ -11,6 +11,7 @@
 #include "../TrackPanelAx.h"
 #include "../commands/CommandContext.h"
 #include "../commands/CommandManager.h"
+#include "../prefs/TracksBehaviorsPrefs.h"
 #include "../toolbars/ToolManager.h"
 #include "../widgets/AButton.h"
 #include "../widgets/ASlider.h"
@@ -527,8 +528,7 @@ void OnToggle(const CommandContext &context)
 
 void UpdatePrefs() override
 {
-   mCircularTrackNavigation =
-      gPrefs->ReadBool(L"/GUI/CircularTrackNavigation", false);
+   mCircularTrackNavigation = TracksBehaviorsCircularNavigation.Read();
 }
 Handler()
 {

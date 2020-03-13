@@ -246,7 +246,7 @@ void TrackArtist::UpdateSelectedPrefs( int id )
    if( id == ShowClippingPrefsID())
       mShowClipping = gPrefs->Read(L"/GUI/ShowClipping", mShowClipping);
    if( id == ShowTrackNameInWaveformPrefsID())
-      mbShowTrackNameInTrack = gPrefs->ReadBool(L"/GUI/ShowTrackNameInWaveform", false);
+      mbShowTrackNameInTrack = TracksShowName.Read();
 }
 
 void TrackArtist::UpdatePrefs()

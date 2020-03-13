@@ -65,6 +65,8 @@
 #include "../widgets/ErrorDialog.h"
 #include "../FileNames.h"
 
+#include "../prefs/GUIPrefs.h" // for GUIErgonomicTransportButtons
+#include "../prefs/RecordingPrefs.h"
 #include "../tracks/ui/Scrubbing.h"
 #include "../toolbars/ToolManager.h"
 
@@ -102,7 +104,7 @@ static const TranslatableString
 ControlToolBar::ControlToolBar( AudacityProject &project )
 : ToolBar(project, TransportBarID, XO("Transport"), L"Control")
 {
-   gPrefs->Read(L"/GUI/ErgonomicTransportButtons", &mErgonomicTransportButtons, true);
+   mErgonomicTransportButtons =  GUIErgonomicTransportButtons.Read();
    mStrLocale = gPrefs->Read(L"/Locale/Language", L"");
 
    mSizer = NULL;
@@ -211,7 +213,7 @@ void ControlToolBar::Populate()
       ID_RECORD_BUTTON, false, XO("Record"), [this]{ OnRecord(); }) ;
 
    bool bPreferNewTrack;
-   gPrefs->Read("/GUI/PreferNewTrackRecord",&bPreferNewTrack, false);
+   bPreferNewTrack = RecordingPreferNewTrack.Read();
    if( !bPreferNewTrack )
       MakeAlternateImages(*mRecord, 1, bmpRecordBelow, bmpRecordBelow,
          bmpRecordBelowDisabled);
@@ -274,8 +276,7 @@ void ControlToolBar::RegenerateTooltips()
             break;
          case ID_RECORD_BUTTON:
             // With shift
-            {  bool bPreferNewTrack;
-               gPrefs->Read("/GUI/PreferNewTrackRecord",&bPreferNewTrack, false);
+            {  bool bPreferNewTrack = RecordingPreferNewTrack.Read();
                // For the shortcut tooltip.
                commands.push_back( {
                   L"Record2ndChoice",
@@ -309,9 +310,9 @@ void ControlToolBar::RegenerateTooltips()
 void ControlToolBar::UpdatePrefs()
 {
    bool updated = false;
-   bool active;
 
-   gPrefs->Read( L"/GUI/ErgonomicTransportButtons", &active, true );
+   bool active =  GUIErgonomicTransportButtons.Read();
+
    if( mErgonomicTransportButtons != active )
    {
       mErgonomicTransportButtons = active;
@@ -765,12 +766,7 @@ void ControlToolBar::StartScrolling()
          // Display a fixed recording head while scrolling the waves continuously.
          // If you overdub, you may want to anticipate some context in existing tracks,
          // so center the head.  If not, put it rightmost to display as much wave as we can.
-         bool duplex;
-#ifdef EXPERIMENTAL_DA
-         gPrefs->Read(L"/AudioIO/Duplex", &duplex, false);
-#else
-         gPrefs->Read(L"/AudioIO/Duplex", &duplex, true);
-#endif
+         auto duplex = AudioIODuplex.Read();
          if (duplex) {
             // See if there is really anything being overdubbed
             if (gAudioIO->GetNumPlaybackChannels() == 0)

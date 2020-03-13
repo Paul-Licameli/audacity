@@ -23,6 +23,7 @@
 class wxArrayString;
 class wxListBox;
 class AudacityProject;
+class BoolSetting;
 class Tags;
 class WaveTrackFactory;
 class Track;
@@ -209,5 +210,7 @@ private:
 private:
    DECLARE_EVENT_TABLE()
 };
+
+extern BoolSetting ExtendedImportUsersSelectionOverrides;
 
 #endif

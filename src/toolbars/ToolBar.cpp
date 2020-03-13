@@ -52,6 +52,7 @@ in which buttons can be placed.
 #include "../widgets/AButton.h"
 #include "../widgets/Grabber.h"
 #include "../Prefs.h"
+#include "../prefs/GUIPrefs.h"
 
 ////////////////////////////////////////////////////////////
 /// ToolBarResizer
@@ -777,7 +778,7 @@ void ToolBar:: MakeButtonBackgroundsLarge()
    bool bUseAqua = false;
 
 #ifdef EXPERIMENTAL_THEME_PREFS
-   gPrefs->Read( L"/GUI/ShowMac", &bUseAqua, false);
+   bUseAqua = GUIShowMac.Read();
 #endif
 
 #ifdef USE_AQUA_THEME
@@ -803,7 +804,7 @@ void ToolBar::MakeButtonBackgroundsSmall()
    bool bUseAqua = false;
 
 #ifdef EXPERIMENTAL_THEME_PREFS
-   gPrefs->Read( L"/GUI/ShowMac", &bUseAqua, false);
+   bUseAqua = GUIShowMac.Read();
 #endif
 
 #ifdef USE_AQUA_THEME

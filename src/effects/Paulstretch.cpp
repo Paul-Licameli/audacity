@@ -25,6 +25,7 @@
 
 #include <wx/valgen.h>
 
+#include "../AudioIOBase.h"
 #include "../Shuttle.h"
 #include "../ShuttleGui.h"
 #include "../FFT.h"
@@ -292,8 +293,7 @@ bool EffectPaulstretch::ProcessOne(WaveTrack *track,double t0,double t1,int coun
       maxTimeRes = maxTimeRes / track->GetRate();
 
       if (this->IsPreviewing()) {
-         double defaultPreviewLen;
-         gPrefs->Read(L"/AudioIO/EffectsPreviewLen", &defaultPreviewLen, 6.0);
+         auto defaultPreviewLen = AudioIOEffectsPreviewLen.Read();
 
          if ((minDuration / mProjectRate) < defaultPreviewLen) {
             ::Effect::MessageBox(

@@ -15,6 +15,7 @@
 #include "../commands/CommandContext.h"
 #include "../commands/CommandManager.h"
 #include "../prefs/GUIPrefs.h"
+#include "../prefs/TracksBehaviorsPrefs.h"
 #include "../prefs/TracksPrefs.h"
 #include "../tracks/ui/TrackView.h"
 
@@ -250,8 +251,7 @@ void OnAdvancedVZoom(const CommandContext &context)
    auto &project = context.project;
    auto &commandManager = CommandManager::Get( project );
 
-   bool checked = !gPrefs->Read(L"/GUI/VerticalZooming", 0L);
-   gPrefs->Write(L"/GUI/VerticalZooming", checked);
+   auto checked = TracksBehaviorsAdvancedVerticalZooming.Toggle();
    gPrefs->Flush();
    commandManager.Check(L"AdvancedVZoom", checked);
    MenuCreator::RebuildAllMenuBars();
@@ -314,8 +314,8 @@ void OnShowExtraMenus(const CommandContext &context)
    auto &project = context.project;
    auto &commandManager = CommandManager::Get( project );
 
-   bool checked = !gPrefs->Read(L"/GUI/ShowExtraMenus", 0L);
-   gPrefs->Write(L"/GUI/ShowExtraMenus", checked);
+   bool checked = !GUIShowExtraMenus.Read();
+   GUIShowExtraMenus.Write( checked );
    gPrefs->Flush();
    commandManager.Check(L"ShowExtraMenus", checked);
    MenuCreator::RebuildAllMenuBars();
@@ -344,8 +344,8 @@ void OnShowNameOverlay(const CommandContext &context)
    auto &commandManager = CommandManager::Get( project );
    auto &trackPanel = TrackPanel::Get( project );
 
-   bool checked = !gPrefs->Read(L"/GUI/ShowTrackNameInWaveform", 0L);
-   gPrefs->Write(L"/GUI/ShowTrackNameInWaveform", checked);
+   bool checked = !TracksShowName.Read();
+   TracksShowName.Write(checked);
    gPrefs->Flush();
    commandManager.Check(L"ShowTrackNameInWaveform", checked);
 
@@ -432,7 +432,7 @@ BaseItemSharedPtr ViewMenu()
             Section( "",
                Command( L"AdvancedVZoom", XXO("Advanced &Vertical Zooming"),
                   FN(OnAdvancedVZoom), AlwaysEnabledFlag,
-                  Options{}.CheckTest( L"/GUI/VerticalZooming", false ) )
+                  Options{}.CheckTest( TracksBehaviorsAdvancedVerticalZooming ) )
             )
          ),
 
@@ -462,10 +462,10 @@ BaseItemSharedPtr ViewMenu()
       Section( "Other",
          Command( L"ShowExtraMenus", XXO("&Extra Menus (on/off)"),
             FN(OnShowExtraMenus), AlwaysEnabledFlag,
-            Options{}.CheckTest( L"/GUI/ShowExtraMenus", false ) ),
+            Options{}.CheckTest( GUIShowExtraMenus ) ),
          Command( L"ShowTrackNameInWaveform", XXO("Track &Name (on/off)"),
             FN(OnShowNameOverlay), AlwaysEnabledFlag,
-            Options{}.CheckTest( L"/GUI/ShowTrackNameInWaveform", false ) ),
+            Options{}.CheckTest( TracksShowName ) ),
          Command( L"ShowClipping", XXO("&Show Clipping (on/off)"),
             FN(OnShowClipping), AlwaysEnabledFlag,
             Options{}.CheckTest( L"/GUI/ShowClipping", false ) )

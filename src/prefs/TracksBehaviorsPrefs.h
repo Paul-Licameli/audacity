@@ -16,6 +16,7 @@
 
 #include "PrefsPanel.h"
 
+class BoolSetting;
 class ChoiceSetting;
 class ShuttleGui;
 
@@ -32,12 +33,22 @@ class AUDACITY_DLL_API TracksBehaviorsPrefs final : public PrefsPanel
    bool Commit() override;
    wxString HelpPageName() override;
 
-   static const wxChar *ScrollingPreferenceKey();
-   static inline bool ScrollingPreferenceDefault() { return false; }
-
  private:
    void PopulateOrExchange(ShuttleGui & S) override;
 };
+
+extern AUDACITY_DLL_API BoolSetting
+     TracksBehaviorsAdjustSelectionEdges
+   , TracksBehaviorsAdvancedVerticalZooming
+   , TracksBehaviorsCircularNavigation
+   , TracksBehaviorsClipsCanMove
+   , TracksBehaviorsCutLines
+   , TracksBehaviorsDialogForNameNewLabel
+   , TracksBehaviorsScrollBeyondZero
+   , TracksBehaviorsSelectAllOnNone
+   , TracksBehaviorsSyncLockTracks
+   , TracksBehaviorsTypeToCreateLabel
+;
 
 extern AUDACITY_DLL_API ChoiceSetting TracksBehaviorsSolo;
 

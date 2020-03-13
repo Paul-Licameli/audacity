@@ -44,6 +44,7 @@
 #include "../ShuttleGui.h"
 #include "../Tags.h"
 #include "../WaveTrack.h"
+#include "../prefs/ImportExportPrefs.h"
 #include "../widgets/HelpSystem.h"
 #include "../widgets/AudacityMessageBox.h"
 #include "../widgets/ErrorDialog.h"
@@ -216,6 +217,11 @@ int ExportMultipleDialog::ShowModal()
 
    return wxDialogWrapper::ShowModal();
 }
+
+namespace {
+BoolSetting OverwriteExisting{
+   L"/Export/OverwriteExisting", false};
+};
 
 void ExportMultipleDialog::PopulateOrExchange(ShuttleGui& S)
 {
@@ -471,7 +477,7 @@ void ExportMultipleDialog::PopulateOrExchange(ShuttleGui& S)
       S
          .Id(OverwriteID)
          .TieCheckBox( XXO("Overwrite existing files"),
-            {L"/Export/OverwriteExisting", false} );
+            OverwriteExisting );
    }
    S.EndHorizontalLay();
 
@@ -897,7 +903,7 @@ ProgressResult ExportMultipleDialog::ExportMultipleByLabel(bool byName,
             bool bCancelled = !setting.filetags.ShowEditDialog(
                ProjectWindow::Find( mProject ),
                XO("Edit Metadata Tags"), bShowTagsDialog);
-            gPrefs->Read(L"/AudioFiles/ShowId3Dialog", &bShowTagsDialog, true);
+            bShowTagsDialog = ImportExportShowId3Dialog.Read();
             settings.SetShowId3Dialog( bShowTagsDialog );
             if( bCancelled )
                return ProgressResult::Cancelled;
@@ -1041,7 +1047,7 @@ ProgressResult ExportMultipleDialog::ExportMultipleByTrack(bool byName,
             bool bCancelled = !setting.filetags.ShowEditDialog(
                ProjectWindow::Find( mProject ),
                XO("Edit Metadata Tags"), bShowTagsDialog);
-            gPrefs->Read(L"/AudioFiles/ShowId3Dialog", &bShowTagsDialog, true);
+            bShowTagsDialog = ImportExportShowId3Dialog.Read();
             settings.SetShowId3Dialog( bShowTagsDialog );
             if( bCancelled )
                return ProgressResult::Cancelled;

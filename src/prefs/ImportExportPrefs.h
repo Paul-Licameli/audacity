@@ -17,6 +17,7 @@
 
 #include "PrefsPanel.h"
 
+class BoolSetting;
 class ShuttleGui;
 
 #define IMPORT_EXPORT_PREFS_PLUGIN_SYMBOL ComponentInterfaceSymbol{ XO("IMPORT EXPORT") }
@@ -39,5 +40,10 @@ class AUDACITY_DLL_API ImportExportPrefs final : public PrefsPanel
    wxString HelpPageName() override;
    void PopulateOrExchange(ShuttleGui & S) override;
 };
+
+extern BoolSetting
+     ImportExportShowId3Dialog
+   , ImportExportSkipStartingSilence
+;
 
 #endif

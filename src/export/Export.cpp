@@ -416,8 +416,7 @@ bool Exporter::DoEditMetadata(AudacityProject &project,
          Tags::Set( project, newTags );
          ProjectHistory::Get( project ).PushState( title, shortUndoDescription);
       }
-      bool bShowInFuture;
-      gPrefs->Read(L"/AudioFiles/ShowId3Dialog", &bShowInFuture, true);
+      bool bShowInFuture = ImportExportShowId3Dialog.Read();
       settings.SetShowId3Dialog( bShowInFuture );
       return true;
    }
@@ -588,9 +587,7 @@ bool Exporter::ExamineTracks()
       // Bug 1904 
       // Previously we always skipped initial silent space.
       // Now skipping it is an opt-in option.
-      bool skipSilenceAtBeginning;
-      gPrefs->Read(L"/AudioFiles/SkipSilenceAtBeginning",
-                                      &skipSilenceAtBeginning, false);
+      bool skipSilenceAtBeginning= ImportExportSkipStartingSilence.Read();
       if (skipSilenceAtBeginning)
          mT0 = earliestBegin;
    }

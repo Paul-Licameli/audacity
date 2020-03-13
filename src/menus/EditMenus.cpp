@@ -22,6 +22,7 @@
 #include "../effects/TimeWarper.h"
 #include "../export/Export.h"
 #include "../prefs/PrefsDialog.h"
+#include "../prefs/TracksBehaviorsPrefs.h"
 #include "../tracks/labeltrack/ui/LabelTrackView.h"
 #include "../widgets/AudacityMessageBox.h"
 
@@ -262,7 +263,7 @@ void OnCut(const CommandContext &context)
       },
 #endif
       [&](WaveTrack *wt, const Track::Fallthrough &fallthrough) {
-         if (gPrefs->Read(L"/GUI/EnableCutLines", (long)0)) {
+         if ( TracksBehaviorsCutLines.Read() ) {
             wt->ClearAndAddCutLine(
                selectedRegion.t0(),
                selectedRegion.t1());

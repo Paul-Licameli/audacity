@@ -24,6 +24,7 @@
 #include "ShuttleGui.h"
 #include "Prefs.h"
 #include "prefs/GUISettings.h"
+#include "prefs/RecordingPrefs.h"
 
 BEGIN_EVENT_TABLE(SoundActivatedRecordDialog, wxDialogWrapper)
    EVT_BUTTON(wxID_OK, SoundActivatedRecordDialog::OnOK)
@@ -57,7 +58,7 @@ void SoundActivatedRecordDialog::PopulateOrExchange(ShuttleGui & S)
       S
          .TieSlider(
             XXO("Activation level (dB):"),
-            {L"/AudioIO/SilenceLevel", -50},
+            AudioIOSilenceLevel,
             0, -gPrefs->Read(ENV_DB_KEY, ENV_DB_RANGE) )
             ->SetMinSize(wxSize(300, wxDefaultCoord));
 

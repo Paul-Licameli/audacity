@@ -14,6 +14,8 @@ Paul Licameli split from AudioIO.h
 
 
 
+#include "Prefs.h"
+
 #include <cfloat>
 #include <functional>
 #include <vector>
@@ -27,6 +29,8 @@ typedef void PaStream;
 #if USE_PORTMIXER
 typedef void PxMixer;
 #endif
+
+#include "Prefs.h"
 
 class AudioIOBase;
 
@@ -337,6 +341,20 @@ protected:
    /** \brief How many sample rates to try */
    static const int NumRatesToTry;
 };
+
+extern StringSetting AudioIOHost;
+extern DoubleSetting AudioIOLatencyCorrection; // milliseconds
+extern BoolSetting AudioIOMicrofades;
+
+extern DoubleSetting AudioIOCutPreviewBeforeLen; // seconds
+extern DoubleSetting AudioIOCutPreviewAfterLen; // seconds
+extern DoubleSetting AudioIOEffectsPreviewLen; // seconds
+extern DoubleSetting AudioIOSeekLongPeriod; // seconds
+extern DoubleSetting AudioIOSeekShortPeriod; // seconds
+extern BoolSetting AudioIOUnpinnedScrubbing;
+extern BoolSetting AudioIOVariSpeedPlay;
+
+extern IntSetting MidiIOSynthLatency; // milliseconds
 
 #endif
 

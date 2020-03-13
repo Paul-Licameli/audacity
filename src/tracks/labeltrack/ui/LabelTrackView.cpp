@@ -32,6 +32,8 @@ Paul Licameli split from TrackPanel.cpp
 #include "../../../TrackPanelMouseEvent.h"
 #include "../../../UndoManager.h"
 #include "../../../ViewInfo.h"
+#include "../../../prefs/TracksPrefs.h"
+#include "../../../prefs/TracksBehaviorsPrefs.h"
 #include "../../../widgets/ErrorDialog.h"
 #include "../../../widgets/MenuHandle.h"
 
@@ -432,7 +434,7 @@ void LabelTrackView::ComputeLayout(const wxRect & r, const ZoomInfo &zoomInfo) c
    bool bAvoidName = false;
    const int nRows = std::min((r.height / yRowHeight) + 1, MAX_NUM_ROWS);
    if( nRows > 2 )
-      bAvoidName = gPrefs->ReadBool(L"/GUI/ShowTrackNameInWaveform", false);
+      bAvoidName = TracksShowName.Read();
    // Initially none of the rows have been used.
    // So set a value that is less than any valid value.
    {
@@ -1316,8 +1318,7 @@ bool LabelTrackView::DoCaptureKey(
       }
    }
    else {
-      bool typeToCreateLabel;
-      gPrefs->Read(L"/GUI/TypeToCreateLabel", &typeToCreateLabel, false);
+      auto typeToCreateLabel = TracksBehaviorsTypeToCreateLabel.Read();
       if (IsGoodLabelFirstKey(event) && typeToCreateLabel) {
 
 
@@ -1737,8 +1738,7 @@ bool LabelTrackView::DoChar(
          event.Skip();
          return false;
       }
-      bool useDialog;
-      gPrefs->Read(L"/GUI/DialogForNameNewLabel", &useDialog, false);
+      auto useDialog = TracksBehaviorsDialogForNameNewLabel.Read();
       auto &selectedRegion = ViewInfo::Get( project ).selectedRegion;
       if (useDialog) {
          wxString title;

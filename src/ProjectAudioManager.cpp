@@ -33,6 +33,7 @@ Paul Licameli split from ProjectManager.cpp
 #include "WaveTrack.h"
 #include "toolbars/ToolManager.h"
 #include "prefs/RecordingSettings.h"
+#include "prefs/RecordingPrefs.h"
 #include "prefs/TracksPrefs.h"
 #include "prefs/WarningsPrefs.h"
 #include "tracks/ui/Scrubbing.h"
@@ -218,9 +219,8 @@ int ProjectAudioManager::PlayPlayRegion(const SelectedRegion &selectedRegion,
       if (cutpreview) {
          const double tless = std::min(t0, t1);
          const double tgreater = std::max(t0, t1);
-         double beforeLen, afterLen;
-         gPrefs->Read(L"/AudioIO/CutPreviewBeforeLen", &beforeLen, 2.0);
-         gPrefs->Read(L"/AudioIO/CutPreviewAfterLen", &afterLen, 1.0);
+         auto beforeLen = AudioIOCutPreviewBeforeLen.Read();
+         auto afterLen = AudioIOCutPreviewAfterLen.Read();
          double tcp0 = tless-beforeLen;
          double diff = tgreater - tless;
          double tcp1 = (tgreater+afterLen) - diff;
@@ -465,8 +465,7 @@ WaveTrackArray ProjectAudioManager::ChooseExistingRecordingTracks(
 /*! @excsafety{Strong} -- For state of current project's tracks */
 void ProjectAudioManager::OnRecord(bool altAppearance)
 {
-   bool bPreferNewTrack;
-   gPrefs->Read("/GUI/PreferNewTrackRecord", &bPreferNewTrack, false);
+   auto bPreferNewTrack = RecordingPreferNewTrack.Read();
    const bool appendRecord = (altAppearance == bPreferNewTrack);
 
    // Code from CommandHandler start...
@@ -562,15 +561,7 @@ void ProjectAudioManager::OnRecord(bool altAppearance)
 
 bool ProjectAudioManager::UseDuplex()
 {
-   bool duplex;
-   gPrefs->Read(L"/AudioIO/Duplex", &duplex,
-#ifdef EXPERIMENTAL_DA
-      false
-#else
-      true
-#endif
-      );
-   return duplex;
+   return AudioIODuplex.Read();
 }
 
 bool ProjectAudioManager::DoRecord(AudacityProject &project,
@@ -659,8 +650,7 @@ bool ProjectAudioManager::DoRecord(AudacityProject &project,
 
       if( transportTracks.captureTracks.empty() )
       {   // recording to NEW track(s).
-         bool recordingNameCustom, useTrackNumber, useDateStamp, useTimeStamp;
-         wxString defaultTrackName, defaultRecordingTrackName;
+         bool recordingNameCustom;
 
          // Count the tracks.
          auto &trackList = TrackList::Get( *p );
@@ -669,11 +659,11 @@ bool ProjectAudioManager::DoRecord(AudacityProject &project,
          auto recordingChannels = std::max(1, AudioIORecordChannels.Read());
 
          recordingNameCustom = RecordingSettings::CustomName.Read();
-         gPrefs->Read(L"/GUI/TrackNames/TrackNumber", &useTrackNumber, false);
-         gPrefs->Read(L"/GUI/TrackNames/DateStamp", &useDateStamp, false);
-         gPrefs->Read(L"/GUI/TrackNames/TimeStamp", &useTimeStamp, false);
-         defaultTrackName = TracksPrefs::GetDefaultAudioTrackNamePreference();
-         gPrefs->Read(L"/GUI/TrackNames/RecodingTrackName", &defaultRecordingTrackName, defaultTrackName);
+         auto useTrackNumber = RecordingTrackNumber.Read();
+         auto useDateStamp = RecordingDateStamp.Read();
+         auto useTimeStamp = RecordingTimeStamp.Read();
+         auto defaultTrackName = TracksDefaultName.Read();
+         auto defaultRecordingTrackName = RecordingTrackName.Read();
 
          wxString baseTrackName = recordingNameCustom? defaultRecordingTrackName : defaultTrackName;
 

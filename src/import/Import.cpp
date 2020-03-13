@@ -497,8 +497,9 @@ bool Importer::Import( AudacityProject &project,
    wxString mime_type = L"*";
 
    // First, add user-selected filter
-   bool usersSelectionOverrides;
-   gPrefs->Read(L"/ExtendedImport/OverrideExtendedImportByOpenFileDialogChoice", &usersSelectionOverrides, false);
+   auto usersSelectionOverrides =
+      // Default not as in the preference dialog?
+      ExtendedImportUsersSelectionOverrides.ReadWithDefault( false );
 
    if (usersSelectionOverrides)
    {
@@ -894,3 +895,9 @@ void ImportStreamDialog::OnCancel(wxCommandEvent & WXUNUSED(event))
 {
    EndModal( wxID_CANCEL );
 }
+
+BoolSetting ExtendedImportUsersSelectionOverrides{
+   L"/ExtendedImport/OverrideExtendedImportByOpenFileDialogChoice",
+   true
+};
+

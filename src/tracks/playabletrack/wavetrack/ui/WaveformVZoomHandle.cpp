@@ -20,6 +20,7 @@ Paul Licameli split from WaveTrackVZoomHandle.cpp
 #include "../../../../RefreshCode.h"
 #include "../../../../TrackPanelMouseEvent.h"
 #include "../../../../WaveTrack.h"
+#include "../../../../prefs/TracksBehaviorsPrefs.h"
 #include "../../../../prefs/WaveformSettings.h"
 #include "../../../../widgets/MenuHandle.h"
 
@@ -265,8 +266,7 @@ PopupMenuTable &WaveformVRulerMenuTable::Instance()
 
 BEGIN_POPUP_MENU(WaveformVRulerMenuTable)
    // Accelerators only if zooming enabled.
-   bool bVZoom;
-   gPrefs->Read(L"/GUI/VerticalZooming", &bVZoom, false);
+   auto bVZoom = TracksBehaviorsAdvancedVerticalZooming.Read();
 
    BeginSection( "Scales" );
    {

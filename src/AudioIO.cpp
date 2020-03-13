@@ -1401,7 +1401,7 @@ bool AudioIO::StartPortAudioStream(const AudioIOStartStreamOptions &options,
             mPreviousHWPlaythrough = Px_GetPlaythrough(mPortMixer);
 
             // Bug 388.  Feature not supported.
-            //gPrefs->Read(L"/AudioIO/Playthrough", &playthrough, false);
+            //AudioIOPlaythrough.Read( &playthrough );
             if (playthrough)
                Px_SetPlaythrough(mPortMixer, 1.0);
             else
@@ -1446,7 +1446,7 @@ void AudioIO::StartMonitoring( const AudioIOStartStreamOptions &options )
    bool success;
    auto captureFormat = QualitySettings::SampleFormatChoice();
    auto captureChannels = AudioIORecordChannels.Read();
-   gPrefs->Read(L"/AudioIO/SWPlaythrough", &mSoftwarePlaythrough, false);
+   mSoftwarePlaythrough = AudioIOSWPlaythrough.Read();
    int playbackChannels = 0;
 
    if (mSoftwarePlaythrough)
@@ -1525,11 +1525,10 @@ int AudioIO::StartStream(const TransportTracks &tracks,
    mUsingAlsa = (AudioIOHost.Read() == L"ALSA");
 #endif
 
-   gPrefs->Read(L"/AudioIO/SWPlaythrough", &mSoftwarePlaythrough, false);
-   gPrefs->Read(L"/AudioIO/SoundActivatedRecord", &mPauseRec, false);
-   gPrefs->Read(L"/AudioIO/Microfades", &mbMicroFades, false);
-   int silenceLevelDB;
-   gPrefs->Read(L"/AudioIO/SilenceLevel", &silenceLevelDB, -50);
+   mSoftwarePlaythrough = AudioIOSWPlaythrough.Read();
+   mPauseRec = AudioIOSoundActivatedRecord.Read();
+   mbMicroFades = AudioIOMicrofades.Read();
+   auto silenceLevelDB = AudioIOSilenceLevel.Read();
    int dBRange;
    dBRange = gPrefs->Read(ENV_DB_KEY, ENV_DB_RANGE);
    if(silenceLevelDB < -dBRange)
@@ -1542,7 +1541,7 @@ int AudioIO::StartStream(const TransportTracks &tracks,
       // The behavior (as of 2.3.1) was the latter, the code suggested that
       // the intent was the former;  I preserve the behavior, but uncomment
       // this if you disagree.
-      // gPrefs->Write(L"/AudioIO/SilenceLevel", silenceLevelDB);
+      // AudioIOSilenceLevel.Write( silenceLevelDB );
       // gPrefs->Flush();
    }
    mSilenceLevel = DB_TO_LINEAR(silenceLevelDB);  // meter goes -dBRange dB -> 0dB
@@ -2093,8 +2092,7 @@ bool AudioIoCallback::StartPortMidiStream()
    PmDeviceID playbackDevice = Pm_GetDefaultOutputDeviceID();
    wxString playbackDeviceName = gPrefs->Read(L"/MidiIO/PlaybackDevice",
                                               L"");
-   mSynthLatency = gPrefs->Read(L"/MidiIO/SynthLatency",
-                                DEFAULT_SYNTH_LATENCY);
+   mSynthLatency = MidiIOSynthLatency.Read();
    if (wxStrcmp(playbackDeviceName, L"") != 0) {
       for (i = 0; i < Pm_CountDevices(); i++) {
          const PmDeviceInfo *info = Pm_GetDeviceInfo(i);
@@ -3440,14 +3438,11 @@ void AudioIoCallback::AllNotesOff(bool looping)
 #include "ProjectStatus.h"
 
 void AudioIO::AILAInitialize() {
-   gPrefs->Read(L"/AudioIO/AutomatedInputLevelAdjustment", &mAILAActive,         false);
-   gPrefs->Read(L"/AudioIO/TargetPeak",            &mAILAGoalPoint,      AILA_DEF_TARGET_PEAK);
-   gPrefs->Read(L"/AudioIO/DeltaPeakVolume",       &mAILAGoalDelta,      AILA_DEF_DELTA_PEAK);
-   gPrefs->Read(L"/AudioIO/AnalysisTime",          &mAILAAnalysisTime,   AILA_DEF_ANALYSIS_TIME);
-   gPrefs->Read(L"/AudioIO/NumberAnalysis",        &mAILATotalAnalysis,  AILA_DEF_NUMBER_ANALYSIS);
-   mAILAGoalDelta         /= 100.0;
-   mAILAGoalPoint         /= 100.0;
-   mAILAAnalysisTime      /= 1000.0;
+   mAILAActive = AudioIOAutomatedInputLevelAdjustment.Read();
+   mAILAGoalPoint = AudioIOTargetPeak.Read() / 100.0;
+   mAILAGoalDelta = AudioIODeltaPeakVolume.Read() / 100.0;
+   mAILAAnalysisTime = AudioIOAnalysisTime.Read() / 1000.0;
+   mAILATotalAnalysis = AudioIONumberAnalysis.Read();
    mAILAMax                = 0.0;
    mAILALastStartTime      = max(0.0, mPlaybackSchedule.mT0);
    mAILAClipped            = false;

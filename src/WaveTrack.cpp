@@ -104,7 +104,7 @@ WaveTrack::WaveTrack( const SampleBlockFactoryPtr &pFactory,
    mOldGain[0] = 0.0;
    mOldGain[1] = 0.0;
    mWaveColorIndex = 0;
-   SetDefaultName(TracksPrefs::GetDefaultAudioTrackNamePreference());
+   SetDefaultName(TracksDefaultName.Read());
    SetName(GetDefaultName());
    mDisplayMin = -1.0;
    mDisplayMax = 1.0;
@@ -1145,7 +1145,7 @@ void WaveTrack::SyncLockAdjust(double oldT1, double newT1)
       {
          // Check if clips can move
          bool clipsCanMove = true;
-         gPrefs->Read(L"/GUI/EditClipCanMove", &clipsCanMove);
+         TracksBehaviorsClipsCanMove.Write( clipsCanMove );
          if (clipsCanMove) {
             auto tmp = Cut (oldT1, GetEndTime() + 1.0/GetRate());
 

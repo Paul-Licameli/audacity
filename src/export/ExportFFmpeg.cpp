@@ -438,7 +438,8 @@ bool ExportFFmpeg::InitCodecs(AudacityProject *project)
    {
    case FMT_M4A:
    {
-      int q = gPrefs->Read(L"/FileFormats/AACQuality",-99999);
+      int q =
+         AACQuality.ReadWithDefault( -99999 ); // Not the same as in the dialog?
       mEncAudioCodecCtx->global_quality = q;
       q = wxClip( q, 98 * mChannels, 160 * mChannels);
       // Set bit rate to between 98 kbps and 320 kbps (if two channels)
@@ -448,13 +449,14 @@ bool ExportFFmpeg::InitCodecs(AudacityProject *project)
       break;
    }
    case FMT_AC3:
-      mEncAudioCodecCtx->bit_rate = gPrefs->Read(L"/FileFormats/AC3BitRate", 192000);
+      mEncAudioCodecCtx->bit_rate =
+         AC3BitRate.ReadWithDefault( 192000 ); // Not the same as in the dialog?
       if (!CheckSampleRate(mSampleRate,ExportFFmpegAC3Options::iAC3SampleRates[0], ExportFFmpegAC3Options::iAC3SampleRates[2], &ExportFFmpegAC3Options::iAC3SampleRates[0]))
          mSampleRate = AskResample(mEncAudioCodecCtx->bit_rate,mSampleRate, ExportFFmpegAC3Options::iAC3SampleRates[0], ExportFFmpegAC3Options::iAC3SampleRates[2], &ExportFFmpegAC3Options::iAC3SampleRates[0]);
       break;
    case FMT_AMRNB:
       mSampleRate = 8000;
-      mEncAudioCodecCtx->bit_rate = gPrefs->Read(L"/FileFormats/AMRNBBitRate", 12200);
+      mEncAudioCodecCtx->bit_rate = AMRNBBitRate.Read();
       break;
    case FMT_OPUS:
       av_dict_set(&options, "b", gPrefs->Read(L"/FileFormats/OPUSBitRate", L"128000").ToUTF8(), 0);
@@ -466,34 +468,40 @@ bool ExportFFmpeg::InitCodecs(AudacityProject *project)
       av_dict_set(&options, "mapping_family", mChannels <= 2 ? "0" : "255", 0);
       break;
    case FMT_WMA2:
-      mEncAudioCodecCtx->bit_rate = gPrefs->Read(L"/FileFormats/WMABitRate", 198000);
+      mEncAudioCodecCtx->bit_rate =
+         WMABitRate.ReadWithDefault( 198000 ); // Not the same as in the dialog?
       if (!CheckSampleRate(mSampleRate,ExportFFmpegWMAOptions::iWMASampleRates[0], ExportFFmpegWMAOptions::iWMASampleRates[4], &ExportFFmpegWMAOptions::iWMASampleRates[0]))
          mSampleRate = AskResample(mEncAudioCodecCtx->bit_rate,mSampleRate, ExportFFmpegWMAOptions::iWMASampleRates[0], ExportFFmpegWMAOptions::iWMASampleRates[4], &ExportFFmpegWMAOptions::iWMASampleRates[0]);
       break;
    case FMT_OTHER:
-      av_dict_set(&mEncAudioStream->metadata, "language", gPrefs->Read(L"/FileFormats/FFmpegLanguage",L"").ToUTF8(), 0);
-      mEncAudioCodecCtx->sample_rate = gPrefs->Read(L"/FileFormats/FFmpegSampleRate",(long)0);
+      av_dict_set(&mEncAudioStream->metadata, "language", FFmpegLanguage.Read().ToUTF8(), 0);
+      mEncAudioCodecCtx->sample_rate = FFmpegSampleRate.Read();
       if (mEncAudioCodecCtx->sample_rate != 0) mSampleRate = mEncAudioCodecCtx->sample_rate;
-      mEncAudioCodecCtx->bit_rate = gPrefs->Read(L"/FileFormats/FFmpegBitRate", (long)0);
-      strncpy((char *)&mEncAudioCodecCtx->codec_tag,gPrefs->Read(L"/FileFormats/FFmpegTag",L"").mb_str(wxConvUTF8),4);
-      mEncAudioCodecCtx->global_quality = gPrefs->Read(L"/FileFormats/FFmpegQuality",(long)-99999);
-      mEncAudioCodecCtx->cutoff = gPrefs->Read(L"/FileFormats/FFmpegCutOff",(long)0);
+      mEncAudioCodecCtx->bit_rate = FFmpegBitRate.Read();
+      strncpy((char *)&mEncAudioCodecCtx->codec_tag,FFmpegTag.Read().mb_str(wxConvUTF8),4);
+      mEncAudioCodecCtx->global_quality =
+         FFmpegQuality.ReadWithDefault( -99999 ); // Not the same as in the dialog?
+      mEncAudioCodecCtx->cutoff = FFmpegCutOff.Read();
       mEncAudioCodecCtx->flags2 = 0;
-      if (gPrefs->Read(L"/FileFormats/FFmpegBitReservoir",true))
+      if (FFmpegBitReservoir.Read())
          av_dict_set(&options, "reservoir", "1", 0);
-      if (gPrefs->Read(L"/FileFormats/FFmpegVariableBlockLen",true)) mEncAudioCodecCtx->flags2 |= 0x0004; //WMA only?
-      mEncAudioCodecCtx->compression_level = gPrefs->Read(L"/FileFormats/FFmpegCompLevel",-1);
-      mEncAudioCodecCtx->frame_size = gPrefs->Read(L"/FileFormats/FFmpegFrameSize",(long)0);
+      if (FFmpegVariableBlockLen.Read())
+         mEncAudioCodecCtx->flags2 |= 0x0004; //WMA only?
+      mEncAudioCodecCtx->compression_level =
+         FFmpegCompLevel.ReadWithDefault( -1 ); // Not the same as in the dialog?
+      mEncAudioCodecCtx->frame_size = FFmpegFrameSize.Read();
 
 //FIXME The list of supported options for the selected encoder should be extracted instead of a few hardcoded
-      set_dict_int(&options, "lpc_coeff_precision",     gPrefs->Read(L"/FileFormats/FFmpegLPCCoefPrec",(long)0));
-      set_dict_int(&options, "min_prediction_order",    gPrefs->Read(L"/FileFormats/FFmpegMinPredOrder",(long)-1));
-      set_dict_int(&options, "max_prediction_order",    gPrefs->Read(L"/FileFormats/FFmpegMaxPredOrder",(long)-1));
-      set_dict_int(&options, "min_partition_order",     gPrefs->Read(L"/FileFormats/FFmpegMinPartOrder",(long)-1));
-      set_dict_int(&options, "max_partition_order",     gPrefs->Read(L"/FileFormats/FFmpegMaxPartOrder",(long)-1));
-      set_dict_int(&options, "prediction_order_method", gPrefs->Read(L"/FileFormats/FFmpegPredOrderMethod",(long)0));
-      set_dict_int(&options, "muxrate",                 gPrefs->Read(L"/FileFormats/FFmpegMuxRate",(long)0));
-      mEncFormatCtx->packet_size = gPrefs->Read(L"/FileFormats/FFmpegPacketSize",(long)0);
+      set_dict_int(&options, "lpc_coeff_precision",     FFmpegLPCCoefPrec.Read());
+      set_dict_int(&options, "min_prediction_order",    FFmpegMinPredOrder.Read());
+      set_dict_int(&options, "max_prediction_order",    FFmpegMaxPredOrder.Read());
+      set_dict_int(&options, "min_partition_order",     FFmpegMinPartOrder.Read());
+      set_dict_int(&options, "max_partition_order",     FFmpegMaxPartOrder.Read());
+      set_dict_int(&options, "prediction_order_method",
+         FFmpegPredictionOrderMethod.ReadWithDefault( 0 ) // Not the same as in the dialog?
+      );
+      set_dict_int(&options, "muxrate",                 FFmpegMuxRate.Read());
+      mEncFormatCtx->packet_size = FFmpegPacketSize.Read();
       codec = avcodec_find_encoder_by_name( FFmpegCodec.Read().ToUTF8() );
       if (!codec)
          mEncAudioCodecCtx->codec_id = mEncFormatDesc->audio_codec;

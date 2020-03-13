@@ -108,6 +108,7 @@
 
 #ifdef EXPERIMENTAL_EQ_SSE_THREADED
 #include "Equalization48x.h"
+#include "../prefs/EffectsPrefs.h"
 #endif
 
 
@@ -293,8 +294,7 @@ EffectEqualization::EffectEqualization(int Options)
    mEQVals[NUMBER_OF_BANDS] = 0.;
 
 #ifdef EXPERIMENTAL_EQ_SSE_THREADED
-   bool useSSE;
-   GetPrivateConfig(GetCurrentSettingsGroup(), L"/SSE/GUI", useSSE, false);
+   bool useSSE = SSEGUI.Read();
    if(useSSE && !mEffectEqualization48x)
       mEffectEqualization48x = std::make_unique<EffectEqualization48x>();
    else if(!useSSE)

@@ -14,6 +14,7 @@
 #include "../WaveTrack.h"
 #include "../commands/CommandContext.h"
 #include "../commands/CommandManager.h"
+#include "../prefs/TracksBehaviorsPrefs.h"
 #include "../tracks/labeltrack/ui/LabelTrackView.h"
 
 // private helper classes and functions
@@ -54,8 +55,7 @@ int DoAddLabel(
 
    wxString title;      // of label
 
-   bool useDialog;
-   gPrefs->Read(L"/GUI/DialogForNameNewLabel", &useDialog, false);
+   auto useDialog = TracksBehaviorsDialogForNameNewLabel.Read();
    if (useDialog) {
       if (LabelTrackView::DialogForLabelName(
          project, region, wxEmptyString, title) == wxID_CANCEL)
@@ -376,9 +376,7 @@ void OnPasteNewLabel(const CommandContext &context)
 
 void OnToggleTypeToCreateLabel(const CommandContext &WXUNUSED(context) )
 {
-   bool typeToCreateLabel;
-   gPrefs->Read(L"/GUI/TypeToCreateLabel", &typeToCreateLabel, false);
-   gPrefs->Write(L"/GUI/TypeToCreateLabel", !typeToCreateLabel);
+   TracksBehaviorsTypeToCreateLabel.Toggle();
    gPrefs->Flush();
    MenuManager::ModifyAllProjectToolbarMenus();
 }
@@ -407,7 +405,7 @@ void OnCutLabels(const CommandContext &context)
    };
    EditClipboardByLabel( project, tracks, selectedRegion, copyfunc );
 
-   bool enableCutlines = gPrefs->ReadBool(L"/GUI/EnableCutLines", false);
+   bool enableCutlines = TracksBehaviorsCutLines.Read();
    auto editfunc = [&](Track *track, double t0, double t1)
    {
       track->TypeSwitch(
@@ -729,7 +727,7 @@ BaseItemSharedPtr LabelEditMenus()
          Command( L"TypeToCreateLabel",
             XXO("&Type to Create a Label (on/off)"),
             FN(OnToggleTypeToCreateLabel), AlwaysEnabledFlag,
-            Options{}.CheckTest(L"/GUI/TypeToCreateLabel", false) )
+            Options{}.CheckTest( TracksBehaviorsTypeToCreateLabel ) )
       )
    ), // first menu
 

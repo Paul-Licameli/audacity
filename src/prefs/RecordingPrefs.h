@@ -19,10 +19,11 @@
 #include "PrefsPanel.h"
 
 class wxTextCtrl;
+class BoolSetting;
 class ShuttleGui;
+class StringSetting;
 
 #ifdef EXPERIMENTAL_AUTOMATED_INPUT_LEVEL_ADJUSTMENT
-   #define AILA_DEF_TARGET_PEAK 92
    #define AILA_DEF_DELTA_PEAK 2
    #define AILA_DEF_ANALYSIS_TIME 1000
    #define AILA_DEF_NUMBER_ANALYSIS 5
@@ -32,12 +33,6 @@ class ShuttleGui;
    L"Recording", \
    XO("Recording")  /* XC("Recording", "preference") */ \
 }
-
-#define AUDIO_PRE_ROLL_KEY (L"/AudioIO/PreRoll")
-#define DEFAULT_PRE_ROLL_SECONDS 5.0
-
-#define AUDIO_ROLL_CROSSFADE_KEY (L"/AudioIO/Crossfade")
-#define DEFAULT_ROLL_CROSSFADE_MS 10.0
 
 class RecordingPrefs final : public PrefsPanel
 {
@@ -59,5 +54,34 @@ class RecordingPrefs final : public PrefsPanel
 
    DECLARE_EVENT_TABLE()
 };
+
+extern BoolSetting
+     RecordingDateStamp
+   , RecordingPreferNewTrack
+   , RecordingTimeStamp
+   , RecordingTrackNumber
+;
+
+// extern BoolSetting AudioIOPlaythrough;
+
+extern DoubleSetting AudioIOCrossfade; // milliseconds
+extern BoolSetting AudioIODuplex;
+extern DoubleSetting AudioIOPreRoll; //seconds
+extern IntSetting AudioIOSilenceLevel; // dB
+extern BoolSetting AudioIOSoundActivatedRecord;
+extern BoolSetting AudioIOSWPlaythrough;
+
+extern StringSetting
+     RecordingTrackName
+;
+
+#ifdef EXPERIMENTAL_AUTOMATED_INPUT_LEVEL_ADJUSTMENT
+extern BoolSetting AudioIOAutomatedInputLevelAdjustment;
+extern IntSetting AudioIODeltaPeakVolume; // percentage
+extern IntSetting AudioIOTargetPeak; // percentage
+
+extern IntSetting AudioIOAnalysisTime; // milliseconds
+extern IntSetting AudioIONumberAnalysis; // Limit number of iterations
+#endif
 
 #endif

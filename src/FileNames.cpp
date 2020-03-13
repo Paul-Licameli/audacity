@@ -815,4 +815,3 @@ wxString FileNames::AbbreviatePath( const wxFileName &fileName )
 #endif
    return target;
 }
-

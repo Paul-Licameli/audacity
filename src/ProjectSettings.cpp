@@ -14,9 +14,12 @@ Paul Licameli split from AudacityProject.cpp
 
 #include "AudioIOBase.h"
 #include "Project.h"
+#include "prefs/GUIPrefs.h"
 #include "prefs/QualitySettings.h"
 #include "widgets/NumericTextCtrl.h"
+#include "prefs/ImportExportPrefs.h"
 #include "prefs/TracksBehaviorsPrefs.h"
+#include "prefs/TracksPrefs.h"
 
 wxDEFINE_EVENT(EVT_PROJECT_SETTINGS_CHANGE, wxCommandEvent);
 
@@ -80,6 +83,7 @@ ProjectSettings::ProjectSettings(AudacityProject &project)
       gPrefs->Flush();
    }
    gPrefs->Read(L"/GUI/SyncLockTracks", &mIsSyncLocked, false);
+   mIsSyncLocked = TracksBehaviorsSyncLockTracks.Read();
 
    bool multiToolActive = false;
    gPrefs->Read(L"/GUI/ToolBars/Tools/MultiToolActive", &multiToolActive);
@@ -94,15 +98,14 @@ ProjectSettings::ProjectSettings(AudacityProject &project)
 
 void ProjectSettings::UpdatePrefs()
 {
-   gPrefs->Read(L"/AudioFiles/ShowId3Dialog", &mShowId3Dialog, true);
+   mShowId3Dialog = ImportExportShowId3Dialog.Read();
    mEmptyCanBeDirty = WarningsEmptyCanBeDirty.Read();
-   gPrefs->Read(L"/GUI/ShowSplashScreen", &mShowSplashScreen, true);
+   mShowSplashScreen = GUIShowSplashScreen.Read();
    mSoloPref = TracksBehaviorsSolo.Read();
    // Update the old default to the NEW default.
    if (mSoloPref == L"Standard")
       mSoloPref = L"Simple";
-   gPrefs->Read(L"/GUI/TracksFitVerticallyZoomed",
-      &mTracksFitVerticallyZoomed, false);
+   mTracksFitVerticallyZoomed = TracksFitVerticallyZoomed.Read();
    //   gPrefs->Read(L"/GUI/UpdateSpectrogram",
    //     &mViewInfo.bUpdateSpectrogram, true);
 

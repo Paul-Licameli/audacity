@@ -48,6 +48,7 @@
 #include "Project.h"
 #include "ProjectFileIORegistry.h"
 #include "ShuttleGui.h"
+#include "prefs/ImportExportPrefs.h"
 #include "widgets/Grid.h"
 #include "widgets/AudacityMessageBox.h"
 #include "widgets/HelpSystem.h"
@@ -869,8 +870,7 @@ TagsEditorDialog::~TagsEditorDialog()
 
 void TagsEditorDialog::PopulateOrExchange(ShuttleGui & S)
 {
-   bool bShow;
-   gPrefs->Read(L"/AudioFiles/ShowId3Dialog", &bShow, true );
+   bool bShow = ImportExportShowId3Dialog.Read();
 
    S.StartVerticalLay();
    {
@@ -994,7 +994,7 @@ void TagsEditorDialog::PopulateOrExchange(ShuttleGui & S)
 void TagsEditorDialog::OnDontShow( wxCommandEvent & Evt )
 {
    bool bShow = !Evt.IsChecked();
-   gPrefs->Write(L"/AudioFiles/ShowId3Dialog", bShow );
+   ImportExportShowId3Dialog.Write( bShow );
    gPrefs->Flush();
 }
 

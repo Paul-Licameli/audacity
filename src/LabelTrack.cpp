@@ -47,6 +47,7 @@ for drawing different aspects of the label and its text box.
 #include "prefs/ImportExportPrefs.h"
 
 #include "effects/TimeWarper.h"
+#include "prefs/GUIPrefs.h"
 #include "widgets/AudacityMessageBox.h"
 
 wxDEFINE_EVENT(EVT_LABELTRACK_ADDITION, LabelTrackEvent);
@@ -469,10 +470,8 @@ auto LabelStruct::RegionRelation(
       double reg_t0, double reg_t1, const LabelTrack * WXUNUSED(parent)) const
 -> TimeRelations
 {
-   bool retainLabels = false;
-
    wxASSERT(reg_t0 <= reg_t1);
-   gPrefs->Read(L"/GUI/RetainLabels", &retainLabels);
+   auto retainLabels = GUIRetainLabels.Read();
 
    if(retainLabels) {
 

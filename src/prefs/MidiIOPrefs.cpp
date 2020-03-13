@@ -26,6 +26,8 @@ other settings.
 
 #include "MidiIOPrefs.h"
 
+#include "AudioIOBase.h"
+
 #ifdef EXPERIMENTAL_MIDI_OUT
 
 #include <wx/defs.h>
@@ -166,7 +168,7 @@ void MidiIOPrefs::PopulateOrExchange( ShuttleGui & S ) {
          mLatency =
          S
             .TieIntegerTextBox(XXO("MIDI Synth L&atency (ms):"),
-               {L"/MidiIO/SynthLatency", DEFAULT_SYNTH_LATENCY}, 3);
+               MidiIOSynthLatency, 3);
       }
       S.EndMultiColumn();
    }

@@ -37,14 +37,15 @@ class wxWindow;
 //----------------------------------------------------------------------------
 TranslatableString GetMP3Version(wxWindow *parent, bool prompt);
 
+class IntSetting;
 // Set bitrate preference
-static const auto MP3SBitrate = L"/FileFormats/MP3SetRate";
+extern IntSetting MP3SBitrate;
 // Variable bitrate preference
-static const auto MP3VBitrate = L"/FileFormats/MP3VbrRate";
+extern IntSetting MP3VBitrate;
 // Average bitrate preference
-static const auto MP3ABitrate = L"/FileFormats/MP3AbrRate";
+extern IntSetting MP3ABitrate;
 // Constant bitrate preference
-static const auto MP3CBitrate = L"/FileFormats/MP3CbrRate";
+extern IntSetting MP3CBitrate;
 
 #endif
 

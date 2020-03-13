@@ -49,6 +49,7 @@
 #include "../Prefs.h"
 #include "../Project.h"
 #include "../UndoManager.h"
+#include "../prefs/TracksBehaviorsPrefs.h"
 #include "../widgets/AButton.h"
 
 #include "../commands/CommandContext.h"
@@ -261,8 +262,7 @@ void EditToolBar::ForAllButtons(int Action)
       p = &mProject;
       cm = &CommandManager::Get( *p );
 #ifdef OPTION_SYNC_LOCK_BUTTON
-      bool bSyncLockTracks;
-      gPrefs->Read(L"/GUI/SyncLockTracks", &bSyncLockTracks, false);
+      bool bSyncLockTracks = TracksBehaviorsSyncLockTracks.Read();
 
       if (bSyncLockTracks)
          mButtons[ETBSyncLockID]->PushDown();

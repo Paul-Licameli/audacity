@@ -61,23 +61,23 @@ void WarningsPrefs::PopulateOrExchange(ShuttleGui & S)
    {
       S
          .TieCheckBox(XXO("Saving &projects"),
-            {L"/Warnings/FirstProjectSave", true});
+            WarningsFirstProjectSave);
 
       S
          .TieCheckBox(XXO("Saving &empty project"),
-            {L"/GUI/EmptyCanBeDirty", true});
+            WarningsEmptyCanBeDirty);
 
       S
          .TieCheckBox(XXO("Mixing down to &mono during export"),
-            {L"/Warnings/MixMono", true});
+            WarningsMixMono);
 
       S
          .TieCheckBox(XXO("Mixing down to &stereo during export"),
-            {L"/Warnings/MixStereo", true});
+            WarningsMixStereo);
 
       S
          .TieCheckBox(XXO("Mixing down on export (&Custom FFmpeg or external program)"),
-            {L"/Warnings/MixUnknownChannels", true});
+            WarningsMixUnknownChannels);
 
       S
          .TieCheckBox(XXO("Missing file &name extension during export"),

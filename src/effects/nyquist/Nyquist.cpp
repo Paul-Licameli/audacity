@@ -51,6 +51,7 @@ effects from this one class.
 #include <wx/stdpaths.h>
 
 #include "../EffectManager.h"
+#include "../../AudioIOBase.h"
 #include "../../FileNames.h"
 #include "../../LabelTrack.h"
 #include "Languages.h"
@@ -791,8 +792,7 @@ bool NyquistEffect::Process()
       mProps += wxString::Format(L"(putprop '*PROJECT* %d 'MIDITRACKS)\n", numMidi);
       mProps += wxString::Format(L"(putprop '*PROJECT* %d 'TIMETRACKS)\n", numTime);
 
-      double previewLen = 6.0;
-      gPrefs->Read(L"/AudioIO/EffectsPreviewLen", &previewLen);
+      auto previewLen = AudioIOEffectsPreviewLen.Read();
       mProps += wxString::Format(L"(putprop '*PROJECT* (float %s) 'PREVIEW-DURATION)\n",
                                  Internat::ToString(previewLen));
 

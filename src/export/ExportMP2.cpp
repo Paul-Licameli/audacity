@@ -149,6 +149,12 @@ ExportMP2Options::~ExportMP2Options()
    TransferDataFromWindow();
 }
 
+namespace {
+
+IntSetting BitRate{ L"/FileFormats/MP2Bitrate", 160};
+
+}
+
 ///
 ///
 void ExportMP2Options::PopulateOrExchange(ShuttleGui & S)
@@ -162,8 +168,7 @@ void ExportMP2Options::PopulateOrExchange(ShuttleGui & S)
             S
                .TieNumberAsChoice(
                   XXO("Bit Rate:"),
-                  {L"/FileFormats/MP2Bitrate",
-                   160},
+                  BitRate,
                   BitRateNames,
                   &BitRateValues );
          }
@@ -245,7 +250,7 @@ ProgressResult ExportMP2::Export(AudacityProject *project,
 {
    const auto &settings = ProjectSettings::Get( *project );
    bool stereo = (channels == 2);
-   long bitrate = gPrefs->Read(L"/FileFormats/MP2Bitrate", 160);
+   long bitrate = BitRate.Read();
    double rate = settings.GetRate();
    const auto &tracks = TrackList::Get( *project );
 

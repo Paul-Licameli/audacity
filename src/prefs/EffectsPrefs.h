@@ -35,5 +35,16 @@ class EffectsPrefs final : public PrefsPanel
    void PopulateOrExchange(ShuttleGui & S) override;
 };
 
-AUDACITY_DLL_API extern ChoiceSetting EffectsGroupBy;
+extern AUDACITY_DLL_API BoolSetting
+     PluginsCheckForUpdates
+   , PluginsRescan
+;
+
+extern AUDACITY_DLL_API BoolSetting
+     SSEGUI
+;
+
+extern AUDACITY_DLL_API ChoiceSetting EffectsGroupBy;
+extern AUDACITY_DLL_API IntSetting EffectsMaxPerGroup;
+
 #endif

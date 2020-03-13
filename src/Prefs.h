@@ -537,7 +537,7 @@ public:
    bool WriteEnum( Enum value )
    { return WriteInt( static_cast<int>( value ) ); }
 
-};
+}; 
 
 /// Adapts EnumSettingBase to a particular enumeration type
 template< typename Enum >
@@ -626,7 +626,6 @@ struct AUDACITY_DLL_API PreferenceInitializer {
 extern BoolSetting
      WarningsCopyOrEditUncompressedDataAsk
    , WarningsCopyOrEditUncompressedDataFirstAsk // not in the dialog
-   , WarningsDiskSpaceWarning
    , WarningsDropoutDetected // in RecordingPrefs dialog
    , WarningsEmptyCanBeDirty
    , WarningsFirstProjectSave
