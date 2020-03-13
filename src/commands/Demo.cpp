@@ -54,10 +54,12 @@ void DemoCommand::PopulateOrExchange(ShuttleGui & S)
    S.StartMultiColumn(2, wxALIGN_CENTER);
    {
       S
-         .TieTextBox(XXO("Delay time (seconds):"),delay);
-   
+         .Target( delay )
+         .AddTextBox( XXO("Delay time (seconds):") );
+
       S
-         .TieTextBox(XXO("Decay factor:"),decay);
+         .Target( decay )
+         .AddTextBox( XXO("Decay factor:") );
    }
    S.EndMultiColumn();
 }

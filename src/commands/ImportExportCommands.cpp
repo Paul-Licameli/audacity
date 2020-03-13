@@ -45,7 +45,8 @@ void ImportCommand::PopulateOrExchange(ShuttleGui & S)
    S.StartMultiColumn(2, wxALIGN_CENTER);
    {
       S
-         .TieTextBox(XXO("File Name:"),mFileName);
+         .Target( mFileName )
+         .AddTextBox(XXO("File Name:"));
    }
    S.EndMultiColumn();
 }
@@ -86,10 +87,12 @@ void ExportCommand::PopulateOrExchange(ShuttleGui & S)
    S.StartMultiColumn(2, wxALIGN_CENTER);
    {
       S
-         .TieTextBox(XXO("File Name:"),mFileName);
+         .Target( mFileName )
+         .AddTextBox(XXO("File Name:"));
 
       S
-         .TieTextBox(XXO("Number of Channels:"),mnChannels);
+         .Target( mnChannels )
+         .AddTextBox( XXO("Number of Channels:") );
    }
    S.EndMultiColumn();
 }

@@ -81,11 +81,13 @@ void SelectTimeCommand::PopulateOrExchange(ShuttleGui & S)
 
       S
          .Optional( bHasT0 )
-         .TieTextBox(XXO("Start Time:"), mT0);
+         .Target( mT0 )
+         .AddTextBox( XXO("Start Time:") );
 
       S
          .Optional( bHasT1 )
-         .TieTextBox(XXO("End Time:"),   mT1);
+         .Target( mT1 )
+         .AddTextBox( XXO("End Time:") );
       // Chooses what time is relative to.
 
       S
@@ -171,11 +173,13 @@ void SelectFrequenciesCommand::PopulateOrExchange(ShuttleGui & S)
 
       S
          .Optional( bHasTop    )
-         .TieTextBox(XXO("High:"), mTop);
+         .Target( mTop )
+         .AddTextBox( XXO("High:") );
 
       S
          .Optional( bHasBottom )
-         .TieTextBox(XXO("Low:"),  mBottom);
+         .Target( mBottom )
+         .AddTextBox( XXO("Low:") );
    }
    S.EndMultiColumn();
 }
@@ -229,11 +233,13 @@ void SelectTracksCommand::PopulateOrExchange(ShuttleGui & S)
 
       S
          .Optional( bHasFirstTrack)
-         .TieTextBox(XXO("First Track:"),mFirstTrack);
+         .Target( mFirstTrack )
+         .AddTextBox( XXO("First Track:") );
 
       S
          .Optional( bHasNumTracks)
-         .TieTextBox(XXO("Track Count:"),mNumTracks);
+         .Target( mNumTracks )
+         .AddTextBox( XXO("Track Count:") );
    }
    S.EndMultiColumn();
    S.StartMultiColumn(2, wxALIGN_CENTER);

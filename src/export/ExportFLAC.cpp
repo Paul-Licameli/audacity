@@ -126,10 +126,11 @@ void ExportFLACOptions::PopulateOrExchange(ShuttleGui & S)
          S.StartMultiColumn(2, wxCENTER);
          {
             S
-               .TieChoice( XXO("Level:"), FLACLevel);
-
+               .Target( FLACLevel )
+               .AddChoice( XXO("Level:"));
             S
-               .TieChoice( XXO("Bit depth:"), FLACBitDepth);
+               .Target( FLACBitDepth )
+               .AddChoice( XXO("Bit depth:"));
          }
          S.EndMultiColumn();
       }

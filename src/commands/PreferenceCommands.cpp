@@ -42,7 +42,8 @@ void GetPreferenceCommand::PopulateOrExchange(ShuttleGui & S)
    S.StartMultiColumn(2, wxALIGN_CENTER);
    {
       S
-         .TieTextBox(XXO("Name:"),mName);
+         .Target( mName )
+         .AddTextBox(XXO("Name:"));
    }
    S.EndMultiColumn();
 }
@@ -77,10 +78,12 @@ void SetPreferenceCommand::PopulateOrExchange(ShuttleGui & S)
    S.StartMultiColumn(2, wxALIGN_CENTER);
    {
       S
-         .TieTextBox(XXO("Name:"),mName);
+         .Target( mName )
+         .AddTextBox(XXO("Name:"));
 
       S
-         .TieTextBox(XXO("Value:"),mValue);
+         .Target( mValue )
+         .AddTextBox(XXO("Value:"));
 
       S
          .Target(mbReload)

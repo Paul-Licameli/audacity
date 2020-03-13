@@ -200,16 +200,14 @@ void SpectrumPrefs::PopulateOrExchange(ShuttleGui & S)
             mMinFreq =
             S
                .Id(ID_MINIMUM)
-               .TieNumericTextBox(XXO("Mi&n Frequency (Hz):"),
-                  mTempSettings.minFreq,
-                  12);
+                  .Target( mTempSettings.minFreq )
+                  .AddTextBox(XXO("Mi&n Frequency (Hz):"), {}, 12);
 
             mMaxFreq =
             S
                .Id(ID_MAXIMUM)
-               .TieNumericTextBox(XXO("Ma&x Frequency (Hz):"),
-                  mTempSettings.maxFreq,
-                  12);
+                  .Target( mTempSettings.maxFreq )
+                  .AddTextBox(XXO("Ma&x Frequency (Hz):"), {}, 12);
          }
          S.EndMultiColumn();
       }
@@ -227,31 +225,28 @@ void SpectrumPrefs::PopulateOrExchange(ShuttleGui & S)
             S
                .Id(ID_GAIN)
                .Enable( enabler )
-               .TieNumericTextBox(XXO("&Gain (dB):"),
-                  mTempSettings.gain,
-                  8);
+               .Target( mTempSettings.gain )
+               .AddTextBox(XXO("&Gain (dB):"), {}, 8);
 
             mRange =
             S
                .Id(ID_RANGE)
                .Enable( enabler )
-               .TieNumericTextBox(XXO("&Range (dB):"),
-                  mTempSettings.range,
-                  8);
+               .Target( mTempSettings.range )
+               .AddTextBox(XXO("&Range (dB):"), {}, 8);
 
             mFrequencyGain =
             S
                .Id(ID_FREQUENCY_GAIN)
                .Enable( enabler )
-               .TieNumericTextBox(XXO("High &boost (dB/dec):"),
-                  mTempSettings.frequencyGain,
-                  8);
+               .Target( mTempSettings.frequencyGain )
+               .AddTextBox(XXO("High &boost (dB/dec):"), {}, 8);
 
             // i18n-hint Scheme refers to a color scheme for spectrogram colors
             S
                .Id(ID_COLOR_SCHEME)
-               .TieChoice(XXC("Sche&me", "spectrum prefs"),
-                  (int&)mTempSettings.colorScheme,
+               .Target( mTempSettings.colorScheme )
+               .AddChoice(XXC("Sche&me", "spectrum prefs"),
                   Msgids( SpectrogramSettings::GetColorSchemeNames() ) );
          }
          S.EndMultiColumn();
@@ -329,17 +324,13 @@ void SpectrumPrefs::PopulateOrExchange(ShuttleGui & S)
       {
          S.StartTwoColumn();
          {
-            mFindNotesMinA =
             S
-               .TieNumericTextBox(XXO("Minimum Amplitude (dB):"),
-                  mTempSettings.findNotesMinA,
-                  8);
+               .Target( mTempSettings.findNotesMinA )
+               .AddTextBox(XXO("Minimum Amplitude (dB):"), {}, 8);
 
-            mFindNotesN =
             S
-               .TieNumericTextBox(XXO("Max. Number of Notes (1..128):"),
-                  mTempSettings.numberOfMaxima,
-                  8);
+               .Target( mTempSettings.numberOfMaxima )
+               .AddTextBox(XXO("Max. Number of Notes (1..128):"), {}, 8);
          }
          S.EndTwoColumn();
 
@@ -409,18 +400,7 @@ bool SpectrumPrefs::Validate()
    }
 
 #ifdef EXPERIMENTAL_FIND_NOTES
-   long findNotesMinA;
-   if (!mFindNotesMinA->GetValue().ToLong(&findNotesMinA)) {
-      AudacityMessageBox( XO("The minimum amplitude (dB) must be an integer") );
-      return false;
-   }
-
-   long findNotesN;
-   if (!mFindNotesN->GetValue().ToLong(&findNotesN)) {
-      AudacityMessageBox( XO("The maximum number of notes must be an integer") );
-      return false;
-   }
-   if (findNotesN < 1 || findNotesN > 128) {
+   if ( mTempSettings.numberOfMaxima < 1 || mTempSettings.numberOfMaxima > 128) {
       AudacityMessageBox( XO(
 "The maximum number of notes must be in the range 1..128") );
       return false;

@@ -185,10 +185,10 @@ void EffectsPrefs::PopulateOrExchange(ShuttleGui & S)
    {
       S.StartMultiColumn(2);
       {
-         wxChoice *c =
          S
             .MinSize()
-            .TieChoice( XXO("S&ort or Group:"), EffectsGroupBy);
+            .Target( EffectsGroupBy )
+            .AddChoice( XXO("S&ort or Group:") );
 
          S
             .Target( EffectsMaxPerGroup )

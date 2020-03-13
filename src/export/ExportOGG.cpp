@@ -90,7 +90,8 @@ void ExportOGGOptions::PopulateOrExchange(ShuttleGui & S)
 
             S
                .Prop(1)
-               .TieSlider( XXO("Quality:"), mOggQualityUnscaled, 10 );
+               .Target( mOggQualityUnscaled )
+               .AddSlider( XXO("Quality:"), 0, 10 );
          }
          S.EndMultiColumn();
       }

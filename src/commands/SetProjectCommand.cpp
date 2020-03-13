@@ -57,11 +57,13 @@ void SetProjectCommand::PopulateOrExchange(ShuttleGui & S)
    {
       S
          .Optional( bHasName      )
-         .TieTextBox(         XXO("Name:"),     mName );
+         .Target( mName )
+         .AddTextBox( XXO("Name:") );
 
       S
          .Optional( bHasRate      )
-         .TieTextBox(         XXO("Rate:"),     mRate );
+         .Target( mRate )
+         .AddTextBox( XXO("Rate:") );
 
       S
          .Target( bHasSizing )
@@ -73,16 +75,20 @@ void SetProjectCommand::PopulateOrExchange(ShuttleGui & S)
    S.StartMultiColumn(2, wxALIGN_CENTER);
    {
       S
-         .TieNumericTextBox(  XXO("X:"),        mPosX );
+         .Target( mPosX )
+         .AddTextBox( XXO("X:") );
 
       S
-         .TieNumericTextBox(  XXO("Y:"),        mPosY );
+         .Target( mPosY )
+         .AddTextBox( XXO("Y:") );
 
       S
-         .TieNumericTextBox(  XXO("Width:"),    mWidth );
+         .Target( mWidth )
+         .AddTextBox( XXO("Width:") );
 
       S
-         .TieNumericTextBox(  XXO("Height:"),   mHeight );
+         .Target( mHeight )
+         .AddTextBox( XXO("Height:") );
    }
    S.EndMultiColumn();
 }

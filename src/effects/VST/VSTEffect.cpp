@@ -812,9 +812,9 @@ void VSTEffectOptionsDialog::PopulateOrExchange(ShuttleGui & S)
                   .Target( mBufferSize,
                      NumValidatorStyle::DEFAULT, 8, 1048576 * 1)
                   .MinSize( { 100, -1 } )
-                  .TieNumericTextBox(XXO("&Buffer Size (8 to 1048576 samples):"),
-                                       mBufferSize,
-                                       12);
+                  .Target( mBufferSize )
+                  .AddTextBox(XXO("&Buffer Size (8 to 1048576 samples):"),
+                     {}, 12 );
             }
             S.EndHorizontalLay();
          }

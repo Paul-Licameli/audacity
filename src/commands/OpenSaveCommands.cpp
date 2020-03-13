@@ -47,7 +47,8 @@ void OpenProjectCommand::PopulateOrExchange(ShuttleGui & S)
    S.StartMultiColumn(2, wxALIGN_CENTER);
    {
       S
-         .TieTextBox(XXO("File Name:"),mFileName);
+         .Target( mFileName )
+         .AddTextBox(XXO("File Name:"));
 
       S
          .Target(mbAddToHistory)
@@ -100,7 +101,8 @@ void SaveProjectCommand::PopulateOrExchange(ShuttleGui & S)
    S.StartMultiColumn(2, wxALIGN_CENTER);
    {
       S
-         .TieTextBox(XXO("File Name:"),mFileName);
+         .Target( mFileName )
+         .AddTextBox(XXO("File Name:"));
 
       S
          .Target( mbAddToHistory )
@@ -134,7 +136,9 @@ void SaveCopyCommand::PopulateOrExchange(ShuttleGui & S)
 
    S.StartMultiColumn(2, wxALIGN_CENTER);
    {
-      S.TieTextBox(XXO("File Name:"),mFileName);
+      S
+         .Target(mFileName)
+         .AddTextBox(XXO("File Name:"));
    }
    S.EndMultiColumn();
 }

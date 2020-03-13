@@ -107,7 +107,8 @@ void TracksBehaviorsPrefs::PopulateOrExchange(ShuttleGui & S)
       S.StartMultiColumn(2);
       {
          S
-            .TieChoice( XXO("Solo &Button:"), TracksBehaviorsSolo);
+            .Target( TracksBehaviorsSolo )
+            .AddChoice( XXO("Solo &Button:") );
       }
       S.EndMultiColumn();
    }

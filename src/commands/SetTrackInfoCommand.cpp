@@ -86,16 +86,17 @@ void SetTrackBase::PopulateOrExchange(ShuttleGui & S)
    S.AddSpace(0, 5);
    S.StartMultiColumn(3, wxEXPAND);
    {
-      S
-         .SetStretchyCol( 2 );
+      S.SetStretchyCol( 2 );
 
       S
          .Optional( bHasTrackIndex  )
-         .TieNumericTextBox(  XO("Track Index:"),   mTrackIndex );
+         .Target( mTrackIndex )
+         .AddTextBox( XO("Track Index:") );
 
       S
          .Optional( bHasChannelIndex)
-         .TieNumericTextBox(  XO("Channel Index:"), mChannelIndex );
+         .Target( mChannelIndex )
+         .AddTextBox( XO("Channel Index:") );
    }
    S.EndMultiColumn();
 #endif
@@ -148,12 +149,12 @@ void SetTrackStatusCommand::PopulateOrExchange(ShuttleGui & S)
    SetTrackBase::PopulateOrExchange( S );
    S.StartMultiColumn(3, wxEXPAND);
    {
-      S
-         .SetStretchyCol( 2 );
+      S.SetStretchyCol( 2 );
 
       S
          .Optional( bHasTrackName   )
-         .TieTextBox(         XXO("Name:"),          mTrackName );
+         .Target( mTrackName )
+         .AddTextBox( XXO("Name:") );
    }
    S.EndMultiColumn();
    S.StartMultiColumn(2, wxEXPAND);
@@ -242,11 +243,13 @@ void SetTrackAudioCommand::PopulateOrExchange(ShuttleGui & S)
 
       S
          .Optional( bHasGain        )
-         .TieSlider(          XXO("Gain:"),          mGain, 36.0,-36.0);
+         .Target( mGain )
+         .AddSlider(          XXO("Gain:"),          0, 36.0,-36.0);
 
       S
          .Optional( bHasPan         )
-         .TieSlider(          XXO("Pan:"),           mPan,  100.0, -100.0);
+         .Target( mPan )
+         .AddSlider(          XXO("Pan:"),           0,  100.0, -100.0);
    }
    S.EndMultiColumn();
 }
@@ -370,7 +373,8 @@ void SetTrackVisualsCommand::PopulateOrExchange(ShuttleGui & S)
 
       S
          .Optional( bHasHeight      )
-         .TieNumericTextBox(  XXO("Height:"),        mHeight );
+         .Target( mHeight )
+         .AddTextBox( XXO("Height:") );
 
       S.Optional( bHasColour      )
          .Target( mColour )
@@ -398,11 +402,13 @@ void SetTrackVisualsCommand::PopulateOrExchange(ShuttleGui & S)
 
       S
          .Optional( bHasVZoomTop    )
-         .TieTextBox(         XXO("VZoom Top:"),     mVZoomTop );
+         .Target( mVZoomTop )
+         .AddTextBox( XXO("VZoom Top:")  );
 
       S
          .Optional( bHasVZoomBottom )
-         .TieTextBox(         XXO("VZoom Bottom:"),  mVZoomBottom );
+         .Target( mVZoomBottom )
+         .AddTextBox( XXO("VZoom Bottom:") );
    }
    S.EndMultiColumn();
    S.StartMultiColumn(2, wxEXPAND);
@@ -425,7 +431,8 @@ void SetTrackVisualsCommand::PopulateOrExchange(ShuttleGui & S)
       auto schemes = SpectrogramSettings::GetColorSchemeNames();
       S
          .Optional( bHasSpecColorScheme)
-         .TieChoice( XXC("Sche&me", "spectrum prefs"), mSpecColorScheme,
+         .Target( mSpecColorScheme )
+         .AddChoice( XXC("Sche&me", "spectrum prefs"),
             Msgids( schemes.data(), schemes.size() ) );
    }
    S.EndMultiColumn();

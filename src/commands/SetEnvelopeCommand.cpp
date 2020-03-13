@@ -55,11 +55,13 @@ void SetEnvelopeCommand::PopulateOrExchange(ShuttleGui & S)
    {
       S
          .Optional( bHasT           )
-         .TieNumericTextBox(  XXO("Time:"),          mT );
+         .Target( mT )
+         .AddTextBox( XXO("Time:") );
 
       S
          .Optional( bHasV           )
-         .TieNumericTextBox(  XXO("Value:"),         mV );
+         .Target( mV )
+         .AddTextBox( XXO("Value:") );
 
       S
          .Optional( bHasDelete      )

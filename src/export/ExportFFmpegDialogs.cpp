@@ -580,36 +580,32 @@ void ExportFFmpegOPUSOptions::PopulateOrExchange(ShuttleGui & S)
             S.StartMultiColumn(2, wxCENTER);
             {
                S
-                  .TieChoice(
-                     XXO("Bit Rate:"),
-                     OPUSBitrate);
+                  .Target( OPUSBitrate )
+                  .AddChoice( XXO("Bit Rate:") );
 
                S
-                  .TieChoice(
-                     XXO("Compression"),
-                     OPUSCompression);
+                  .Target( OPUSCompression )
+                  .AddChoice( XXO("Compression") );
 
                S
-                  .TieChoice(
-                     XXO("Frame Duration:"),
-                     OPUSFrameDuration);
+                  .Target( OPUSFrameDuration )
+                  .AddChoice( XXO("Frame Duration:") );
             }
             S.EndMultiColumn();
 
             S.StartMultiColumn(2, wxCENTER);
             {
-               S.TieChoice(
-                  XXO("Vbr Mode:"),
-                  OPUSVbrMode);
+               S
+                  .Target( OPUSVbrMode )
+                  .AddChoice( XXO("Vbr Mode:") );
 
-               S.TieChoice(
-                  XXO("Application:"),
-                  OPUSApplication);
+               S
+                  .Target( OPUSApplication )
+                  .AddChoice( XXO("Application:") );
 
-               S.TieChoice(
-                  XXO("Cutoff:"),
-                  OPUSCutoff);
-
+               S
+                  .Target( OPUSCutoff )
+                  .AddChoice( XXO("Cutoff:") );
             }
             S.EndMultiColumn();
          }
@@ -1976,7 +1972,8 @@ void ExportFFmpegOptions::PopulateOrExchange(ShuttleGui & S)
                         AV_CODEC_ID_AAC,
                      } ) )
                      .MinSize( { 100, -1 } )
-                     .TieChoice(XXO("Profile:"), AACProfiles);
+                     .Target( AACProfiles )
+                     .AddChoice( XXO("Profile:") );
                }
                S.EndMultiColumn();
             }

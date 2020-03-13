@@ -251,14 +251,12 @@ void LV2EffectSettingsDialog::PopulateOrExchange(ShuttleGui &S)
 
             S.StartHorizontalLay(wxALIGN_LEFT);
             {
-               wxTextCtrl *t;
-               t =
+               auto t =
                S
-                  .TieNumericTextBox(
+                  .Target( mBufferSize )
+                  .AddTextBox(
                      XXO("&Buffer Size (8 to %d) samples:")
-                        .Format( DEFAULT_BLOCKSIZE ),
-                     mBufferSize,
-                     12);
+                        .Format( DEFAULT_BLOCKSIZE ), {}, 12 );
                t->SetMinSize(wxSize(100, -1));
                t->SetValidator(vld);
             }

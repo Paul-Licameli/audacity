@@ -55,22 +55,26 @@ void SetLabelCommand::PopulateOrExchange(ShuttleGui & S)
    S.StartMultiColumn(2, wxALIGN_CENTER);
    {
       S
-         .TieNumericTextBox( XXO("Label Index"), mLabelIndex );
+         .Target( mLabelIndex )
+         .AddTextBox( XXO("Label Index") );
    }
    S.EndMultiColumn();
    S.StartMultiColumn(3, wxALIGN_CENTER);
    {
       S
          .Optional( bHasText      )
-         .TieTextBox(         XXO("Text:"),     mText );
+         .Target( mText )
+         .AddTextBox( XXO("Text:") );
 
       S
          .Optional( bHasT0        )
-         .TieNumericTextBox(  XXO("Start:"),    mT0 );
+         .Target( mT0 )
+         .AddTextBox( XXO("Start:") );
 
       S
          .Optional( bHasT1        )
-         .TieNumericTextBox(  XXO("End:"),      mT1 );
+         .Target( mT1 )
+         .AddTextBox( XXO("End:") );
 
       S
          .Optional( bHasSelected  )

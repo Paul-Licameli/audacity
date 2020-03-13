@@ -75,27 +75,33 @@ void DragCommand::PopulateOrExchange(ShuttleGui & S)
       /* i18n-hint abbreviates "Identity" or "Identifier" */
       S
          .Optional( bHasId         )
-         .TieNumericTextBox(  XXO("Id:"),          mId );
+         .Target( mId )
+         .AddTextBox( XXO("Id:") );
 
       S
          .Optional( bHasWinName    )
-         .TieTextBox(         XXO("Window Name:"), mWinName );
+         .Target( mWinName )
+         .AddTextBox( XXO("Window Name:") );
 
       S
          .Optional( bHasFromX      )
-         .TieNumericTextBox(  XXO("From X:"),      mFromX );
+         .Target( mFromX )
+         .AddTextBox( XXO("From X:") );
 
       S
          .Optional( bHasFromY      )
-         .TieNumericTextBox(  XXO("From Y:"),      mFromY );
+         .Target( mFromY )
+         .AddTextBox( XXO("From Y:") );
 
       S
          .Optional( bHasToX        )
-         .TieNumericTextBox(  XXO("To X:"),        mToX );
+         .Target( mToX )
+         .AddTextBox( XXO("To X:") );
 
       S
          .Optional( bHasToY        )
-         .TieNumericTextBox(  XXO("To Y:"),        mToY );
+         .Target( mToY )
+         .AddTextBox( XXO("To Y:") );
 
       S
          .Optional( bHasRelativeTo )

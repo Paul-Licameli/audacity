@@ -124,13 +124,14 @@ void QualityPrefs::PopulateOrExchange(ShuttleGui & S)
             // Now do the edit box...
             S
                .Enable( [this]{ return UseOtherRate(); } )
-               .TieNumericTextBox( {}, mOtherSampleRateValue, 15);
+               .Target( mOtherSampleRateValue )
+               .AddTextBox( {}, {}, 15);
          }
          S.EndHorizontalLay();
 
          S
-            .TieChoice( XXO("Default Sample &Format:"),
-                       QualitySettings::SampleFormatSetting );
+            .Target( QualitySettings::SampleFormatSetting )
+            .AddChoice( XXO("Default Sample &Format:") );
       }
       S.EndMultiColumn();
    }
@@ -142,12 +143,13 @@ void QualityPrefs::PopulateOrExchange(ShuttleGui & S)
       S.StartMultiColumn(2, wxEXPAND);
       {
          S
-            .TieChoice(XXO("Sample Rate Con&verter:"),
-               Resample::FastMethodSetting);
+            .Target( Resample::FastMethodSetting )
+            .AddChoice( XXO("Sample Rate Con&verter:") );
 
-         /* i18n-hint: technical term for randomization to reduce undesirable resampling artifacts */
          S
-            .TieChoice( XXO("&Dither:"), Dither::FastSetting );
+            .Target( Dither::FastSetting )
+            /* i18n-hint: technical term for randomization to reduce undesirable resampling artifacts */
+            .AddChoice( XXO("&Dither:") );
       }
       S.EndMultiColumn();
    }
@@ -158,13 +160,13 @@ void QualityPrefs::PopulateOrExchange(ShuttleGui & S)
       S.StartMultiColumn(2);
       {
          S
-            .TieChoice( XXO("Sample Rate Conver&ter:"),
-               Resample::BestMethodSetting );
+            .Target( Resample::BestMethodSetting )
+            .AddChoice( XXO("Sample Rate Conver&ter:") );
 
-         /* i18n-hint: technical term for randomization to reduce undesirable resampling artifacts */
          S
-            .TieChoice( XXO("Dit&her:"),
-               Dither::BestSetting );
+            .Target( Dither::BestSetting )
+            /* i18n-hint: technical term for randomization to reduce undesirable resampling artifacts */
+            .AddChoice( XXO("Dit&her:") );
       }
       S.EndMultiColumn();
    }

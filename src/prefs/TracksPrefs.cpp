@@ -120,7 +120,7 @@ public:
    }
 };
 
-static TracksViewModeEnumSetting viewModeSetting()
+static TracksViewModeEnumSetting &viewModeSetting()
 {
    // Do a delayed computation, so that registration of sub-view types completes
    // first
@@ -135,12 +135,13 @@ static TracksViewModeEnumSetting viewModeSetting()
    symbols.push_back( WaveTrackViewConstants::MultiViewSymbol );
    ids.push_back( WaveTrackViewConstants::MultiView );
 
-   return {
+   static TracksViewModeEnumSetting result {
       key3,
       symbols,
       0, // Waveform
       ids
    };
+   return result;
 }
 
 WaveTrackViewConstants::Display TracksPrefs::ViewModeChoice()
@@ -314,13 +315,16 @@ void TracksPrefs::PopulateOrExchange(ShuttleGui & S)
 #endif
 
          S
-            .TieChoice( XXO("Default &view mode:"), viewModeSetting() );
+            .Target< ChoiceSetting& >( viewModeSetting() )
+            .AddChoice(XXO("Default &view mode:") );
 
          S
-            .TieChoice( XXO("Default Waveform scale:"), waveformScaleSetting );
+            .Target( waveformScaleSetting )
+            .AddChoice( XXO("Default Waveform scale:") );
 
          S
-            .TieChoice( XXO("Display &samples:"), sampleDisplaySetting );
+            .Target( sampleDisplaySetting )
+            .AddChoice(XXO("Display &samples:") );
 
          S
             .Target( TracksDefaultName )
@@ -335,10 +339,12 @@ void TracksPrefs::PopulateOrExchange(ShuttleGui & S)
       S.StartMultiColumn(4);
       {
          S
-            .TieChoice( XXO("Preset 1:"), zoom1Setting );
+            .Target( zoom1Setting )
+            .AddChoice(XXO("Preset 1:") );
 
          S
-            .TieChoice( XXO("Preset 2:"), zoom2Setting );
+            .Target( zoom2Setting )
+            .AddChoice(XXO("Preset 2:") );
       }
    }
    S.EndStatic();

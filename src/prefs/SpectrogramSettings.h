@@ -137,7 +137,7 @@ public:
 
       csNumColorScheme,
    };
-   ColorScheme colorScheme;
+   int colorScheme;
 
    class ColorSchemeEnumSetting : public EnumSetting< ColorScheme > {
        using EnumSetting< ColorScheme >::EnumSetting;

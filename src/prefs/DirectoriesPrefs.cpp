@@ -186,19 +186,19 @@ void DirectoriesPrefs::PopulateOrExchange(ShuttleGui &S)
             .SetStretchyCol(1);
 
          S.Id(OpenTextID);
-         mOpenText = S.TieTextBox(XXO("O&pen:"),
-                                      {PreferenceKey(Operation::Open, PathType::User),
-                                       L""},
-                                      30);
+         mOpenText =
+         S
+            .Target(*PreferenceSetting(Operation::Open, PathType::User))
+            .AddTextBox(XXO("O&pen:"), {}, 30);
          S
             .Action([this]{ OnBrowse(OpenCommand); })
             .AddButton(XXO("&Browse..."));
 
          S.Id(SaveTextID);
-         mSaveText = S.TieTextBox(XXO("S&ave:"),
-                                      {PreferenceKey(Operation::Save, PathType::User),
-                                       L""},
-                                      30);
+         mSaveText =
+         S
+            .Target(*PreferenceSetting(Operation::Save, PathType::User))
+            .AddTextBox(XXO("S&ave:"), {}, 30);
          if( mSaveText )
             mSaveText->SetValidator(FilesystemValidator(XO("Projects cannot be saved to FAT drives.")));
 
@@ -207,28 +207,29 @@ void DirectoriesPrefs::PopulateOrExchange(ShuttleGui &S)
             .AddButton(XXO("B&rowse..."));
 
          S.Id(ImportTextID);
-         mImportText = S.TieTextBox(XXO("&Import:"),
-                                    {PreferenceKey(Operation::Import, PathType::User),
-                                     L""},
-                                    30);
+         mImportText =
+         S
+            .Target(*PreferenceSetting(Operation::Import, PathType::User))
+            .AddTextBox(XXO("&Import:"), {}, 30);
          S
             .Action([this]{ OnBrowse(ImportCommand); })
             .AddButton(XXO("Br&owse..."));
 
          S.Id(ExportTextID);
-         mExportText = S.TieTextBox(XXO("&Export:"),
-                                    {PreferenceKey(Operation::Export, PathType::User),
-                                     L""},
-                                    30);
+         mExportText =
+         S
+            .Target(*PreferenceSetting(Operation::Export, PathType::User))
+            .AddTextBox(XXO("&Export:"), {}, 30);
+
          S
             .Action([this]{ OnBrowse(ExportCommand); })
             .AddButton(XXO("Bro&wse..."));
 
          S.Id(MacrosTextID);
-         mMacrosText = S.TieTextBox(XXO("&Macro output:"),
-                                    {PreferenceKey(Operation::MacrosOut, PathType::User),
-                                     L""},
-                                    30);
+         mMacrosText =
+         S
+            .Target(*PreferenceSetting(Operation::MacrosOut, PathType::User))
+            .AddTextBox(XXO("&Macro output:"), {}, 30);
          S
             .Action([this]{ OnBrowse(MacrosCommand); })
             .AddButton(XXO("Bro&wse..."));
@@ -244,10 +245,10 @@ void DirectoriesPrefs::PopulateOrExchange(ShuttleGui &S)
          S.SetStretchyCol(1);
 
          S.Id(TempTextID);
-         mTempText = S.TieTextBox(XXO("&Location:"),
-                                  {PreferenceKey(Operation::Temp, PathType::_None),
-                                   L""},
-                                  30);
+         mTempText =
+         S
+            .Target(*PreferenceSetting(Operation::Temp, PathType::_None))
+            .AddTextBox(XXO("&Location:"), {}, 30);
          if( mTempText )
             mTempText->SetValidator(FilesystemValidator(XO("Temporary files directory cannot be on a FAT drive.")));
 

@@ -347,7 +347,7 @@ void SpectrogramSettings::SavePrefs()
 
    gPrefs->Write(L"/Spectrum/WindowType", windowType);
 
-   colorSchemeSetting.WriteEnum(colorScheme);
+   colorSchemeSetting.WriteEnum(static_cast<ColorScheme>(colorScheme));
 
    gPrefs->Write(L"/Spectrum/ScaleType", (int) scaleType);
 

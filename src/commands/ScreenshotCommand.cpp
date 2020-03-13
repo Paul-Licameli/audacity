@@ -126,10 +126,11 @@ void ScreenshotCommand::PopulateOrExchange(ShuttleGui & S)
    S.StartMultiColumn(2, wxALIGN_CENTER);
    {
       S
-         .TieTextBox(  XXO("Path:"), mPath);
+         .Target( mPath )
+         .AddTextBox( XXO("Path:") );
 
       S
-        .Target( mWhat )
+         .Target( mWhat )
          .AddChoice( XXO("Capture What:"),
             Msgids(kCaptureWhatStrings, nCaptureWhats));
 
