@@ -67,34 +67,36 @@ void RecordingPrefs::PopulateOrExchange(ShuttleGui & S)
    {
       // Start wording of options with a verb, if possible.
       S
-         .TieCheckBox(XXO("Play &other tracks while recording (overdub)"),
-            AudioIODuplex);
+         .Target( AudioIODuplex )
+         .AddCheckBox( XXO("Play &other tracks while recording (overdub)") );
 
 //#if defined(__WXMAC__)
 // Bug 388.  Feature not supported on any Mac Hardware.
 #if 0
       S
-         .TieCheckBox(XO("Use &hardware to play other tracks"),
-            AudioIOPlaythrough);
+         .Target( AudioIOPlaythrough )
+         .AddCheckBox( XO("Use &hardware to play other tracks") );
 #endif
 
       S
-         .TieCheckBox(XXO("&Software playthrough of input"),
-            AudioIOSWPlaythrough);
+         .Target( AudioIOSWPlaythrough )
+         .AddCheckBox( XXO("&Software playthrough of input") );
 
 #if !defined(__WXMAC__)
       //S
       //   .AddUnits(XO("     (uncheck when recording computer playback)"));
 #endif
 
-       S
-         .TieCheckBox(XXO("Record on a new track"),
-            RecordingPreferNewTrack);
+      S
+         .Target( RecordingPreferNewTrack )
+         .AddCheckBox( XXO("Record on a new track") );
 
-/* i18n-hint: Dropout is a loss of a short sequence audio sample data from the recording */
-       S
-         .TieCheckBox(XXO("Detect dropouts"),
-            WarningsDropoutDetected);
+      S
+         .Target( WarningsDropoutDetected )
+         /* i18n-hint: Dropout is a loss of a short sequence audio sample data from the recording */
+         .AddCheckBox( XXO("Detect dropouts") );
+
+
    }
    S.EndStatic();
 
@@ -102,17 +104,17 @@ void RecordingPrefs::PopulateOrExchange(ShuttleGui & S)
       .StartStatic(XO("Sound Activated Recording"));
    {
       S
-         .TieCheckBox(XXO("&Enable"),
-            AudioIOSoundActivatedRecord);
+         .Target( AudioIOSoundActivatedRecord )
+         .AddCheckBox( XXO("&Enable") );
 
       S.StartMultiColumn(2, wxEXPAND);
       {
          S.SetStretchyCol(1);
 
          S
-            .TieSlider(XXO("Le&vel (dB):"),
-               AudioIOSilenceLevel,
-               0, -GUIdBRange.Read());
+            .Target( AudioIOSilenceLevel )
+            .AddSlider(XXO("Le&vel (dB):"),
+               0, 0, -GUIdBRange.Read());
       }
       S.EndMultiColumn();
    }
@@ -140,9 +142,8 @@ void RecordingPrefs::PopulateOrExchange(ShuttleGui & S)
             S
                .Text(XO("Custom name text"))
                .Enable( []{ return RecordingSettings::CustomName.Read(); } )
-               .TieTextBox( {},
-                  RecordingTrackName,
-                  30);
+               .Target( RecordingTrackName )
+               .AddTextBox( {}, {}, 30);
          }
 
          S.EndMultiColumn();
@@ -153,16 +154,16 @@ void RecordingPrefs::PopulateOrExchange(ShuttleGui & S)
          S.StartMultiColumn(3);
          {
             S
-               .TieCheckBox(XXO("&Track Number"),
-                  RecordingTrackNumber);
+               .Target( RecordingTrackNumber )
+               .AddCheckBox( XXO("&Track Number") );
 
             S
-               .TieCheckBox(XXO("System &Date"),
-                  RecordingDateStamp);
+               .Target( RecordingDateStamp )
+               .AddCheckBox( XXO("System &Date") );
 
             S
-               .TieCheckBox(XXO("System T&ime"),
-                  RecordingTimeStamp);
+               .Target( RecordingTimeStamp )
+               .AddCheckBox( XXO("System T&ime") );
          }
          S.EndMultiColumn();
       }
@@ -175,42 +176,38 @@ void RecordingPrefs::PopulateOrExchange(ShuttleGui & S)
          .StartStatic(XO("Automated Recording Level Adjustment"));
       {
          S
-            .TieCheckBox(XXO("Enable Automated Recording Level Adjustment."),
-               AudioIOAutomatedInputLevelAdjustment);
+            .Target( AudioIOAutomatedInputLevelAdjustment )
+            .AddCheckBox( XXO("Enable Automated Recording Level Adjustment.") );
 
          S.StartMultiColumn(2, wxEXPAND);
          {
             S.SetStretchyCol(1);
 
             S
+               .Target( AudioIOTargetPeak )
                /* i18n-hint: Desired maximum (peak) volume for sound */
-               .TieSlider(XXO("Target Peak:"),
-                  AudioIOTargetPeak,
-                  100,
-                  0);
+               .AddSlider(XXO("Target Peak:"),
+                  0, 100, 0);
 
             S
-               .TieSlider(XXO("Within:"),
-                  AudioIODeltaPeakVolume,
-                  100,
-                  0);
+               .Target( AudioIODeltaPeakVolume )
+               .AddSlider(XXO("Within:"),
+                  0, 100, 0);
          }
          S.EndMultiColumn();
 
          S.StartThreeColumn();
          {
             S
-               .TieIntegerTextBox(XXO("Analysis Time:"),
-                  AudioIOAnalysisTime,
-                  9);
+               .Target( AudioIOAnalysisTime )
+               .AddTextBox(XXO("Analysis Time:"), {}, 9);
    
             S
               .AddUnits(XO("milliseconds (time of one analysis)"));
 
             S
-               .TieIntegerTextBox(XXO("Number of consecutive analysis:"),
-                  AudioIONumberAnalysis,
-                  2);
+               .Target( AudioIONumberAnalysis )
+               .AddTextBox(XXO("Number of consecutive analysis:"), {}, 2);
 
             S
                .AddUnits(XO("0 means endless"));
@@ -228,9 +225,8 @@ void RecordingPrefs::PopulateOrExchange(ShuttleGui & S)
             auto w =
             S
                .Text({ {}, XO("seconds") })
-               .TieNumericTextBox(XXO("Pre-ro&ll:"),
-                  AudioIOPreRoll,
-                  9);
+               .Target( AudioIOPreRoll )
+               .AddTextBox(XXO("Pre-ro&ll:"), {}, 9);
 
             S
                .AddUnits(XO("seconds"));
@@ -239,9 +235,8 @@ void RecordingPrefs::PopulateOrExchange(ShuttleGui & S)
             auto w =
             S
                .Text({ {}, XO("milliseconds") })
-               .TieNumericTextBox(XXO("Cross&fade:"),
-                  AudioIOCrossfade,
-                  9);
+               .Target( AudioIOCrossfade )
+               .AddTextBox(XXO("Cross&fade:"), {}, 9);
 
             S
                .AddUnits(XO("milliseconds"));

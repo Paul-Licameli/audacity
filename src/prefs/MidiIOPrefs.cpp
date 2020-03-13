@@ -167,10 +167,9 @@ void MidiIOPrefs::PopulateOrExchange( ShuttleGui & S ) {
             .Id(PlayID)
             .AddChoice( XXO("&Device:"), {} );
 
-         mLatency =
          S
-            .TieIntegerTextBox(XXO("MIDI Synth L&atency (ms):"),
-               MidiIOSynthLatency, 3);
+            .Target( MidiIOSynthLatency )
+            .AddTextBox(XXO("MIDI Synth L&atency (ms):"), {}, 3);
       }
       S.EndMultiColumn();
    }
@@ -299,12 +298,6 @@ bool MidiIOPrefs::Commit()
 
 bool MidiIOPrefs::Validate()
 {
-   long latency;
-   if (!mLatency->GetValue().ToLong(&latency)) {
-      AudacityMessageBox( XO(
-"The MIDI Synthesizer Latency must be an integer") );
-      return false;
-   }
    return true;
 }
 

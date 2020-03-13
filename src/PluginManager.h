@@ -23,6 +23,7 @@
 
 class wxArrayString;
 class FileConfig;
+class BoolSetting;
 
 ///////////////////////////////////////////////////////////////////////////////
 //
@@ -173,8 +174,8 @@ class AUDACITY_DLL_API PluginManager final : public PluginManagerInterface
 {
 public:
 
-   RegistryPath GetPluginEnabledSetting( const PluginID &ID );
-   RegistryPath GetPluginEnabledSetting( const PluginDescriptor &desc );
+   BoolSetting *GetPluginEnabledSetting( const PluginID &ID );
+   BoolSetting *GetPluginEnabledSetting( const PluginDescriptor &desc );
 
    // PluginManagerInterface implementation
 

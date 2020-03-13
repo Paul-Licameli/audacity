@@ -64,43 +64,43 @@ void TracksBehaviorsPrefs::PopulateOrExchange(ShuttleGui & S)
       .StartStatic(XO("Behaviors"));
    {
       S
-         .TieCheckBox(XXO("&Select all audio, if selection required"),
-            TracksBehaviorsSelectAllOnNone);
-
-      /* i18n-hint: Cut-lines are lines that can expand to show the cut audio.*/
-      S
-         .TieCheckBox(XXO("Enable cut &lines"),
-            TracksBehaviorsCutLines);
+         .Target( TracksBehaviorsSelectAllOnNone )
+         .AddCheckBox( XXO("&Select all audio, if selection required") );
 
       S
-         .TieCheckBox(XXO("Enable &dragging selection edges"),
-            TracksBehaviorsAdjustSelectionEdges);
+         .Target( TracksBehaviorsCutLines )
+          /* i18n-hint: Cut-lines are lines that can expand to show the cut audio.*/
+         .AddCheckBox( XXO("Enable cut &lines") );
 
       S
-         .TieCheckBox(XXO("Editing a clip can &move other clips"),
-            TracksBehaviorsClipsCanMove);
+         .Target( TracksBehaviorsAdjustSelectionEdges )
+         .AddCheckBox( XXO("Enable &dragging selection edges") );
 
       S
-         .TieCheckBox(XXO("\"Move track focus\" c&ycles repeatedly through tracks"),
-            TracksBehaviorsCircularNavigation);
+         .Target( TracksBehaviorsClipsCanMove )
+         .AddCheckBox( XXO("Editing a clip can &move other clips") );
 
       S
-         .TieCheckBox(XXO("&Type to create a label"),
-            TracksBehaviorsTypeToCreateLabel);
+         .Target( TracksBehaviorsCircularNavigation )
+         .AddCheckBox( XXO("\"Move track focus\" c&ycles repeatedly through tracks") );
 
       S
-         .TieCheckBox(XXO("Use dialog for the &name of a new label"),
-            TracksBehaviorsDialogForNameNewLabel);
+         .Target( TracksBehaviorsTypeToCreateLabel )
+         .AddCheckBox( XXO("&Type to create a label") );
+
+      S
+         .Target( TracksBehaviorsDialogForNameNewLabel )
+         .AddCheckBox( XXO("Use dialog for the &name of a new label") );
 
 #ifdef EXPERIMENTAL_SCROLLING_LIMITS
       S
-         .TieCheckBox(XXO("Enable scrolling left of &zero"),
-            TracksBehaviorsScrollBeyondZero);
+         .Target( TracksBehaviorsScrollBeyondZero )
+         .AddCheckBox( XXO("Enable scrolling left of &zero") );
 #endif
 
       S
-         .TieCheckBox(XXO("Advanced &vertical zooming"),
-            TracksBehaviorsAdvancedVerticalZooming);
+         .Target( TracksBehaviorsAdvancedVerticalZooming )
+         .AddCheckBox( XXO("Advanced &vertical zooming") );
 
       S.AddSpace(10);
 

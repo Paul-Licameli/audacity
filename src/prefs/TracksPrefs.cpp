@@ -279,28 +279,28 @@ void TracksPrefs::PopulateOrExchange(ShuttleGui & S)
       .StartStatic(XO("Display"));
    {
       S
-         .TieCheckBox(XXO("Auto-&fit track height"),
-            TracksFitVerticallyZoomed);
+         .Target( TracksFitVerticallyZoomed )
+         .AddCheckBox( XXO("Auto-&fit track height") );
 
       S
-         .TieCheckBox(XXO("Sho&w track name as overlay"),
-            TracksShowName);
+         .Target( TracksShowName )
+         .AddCheckBox( XXO("Sho&w audio track name as overlay") );
 
 #ifdef EXPERIMENTAL_HALF_WAVE
       S
-         .TieCheckBox(XXO("Use &half-wave display when collapsed"),
-            TracksCollapseToHalfWave);
+         .Target( TracksCollapseToHalfWave )
+         .AddCheckBox( XXO("Use &half-wave display when collapsed") );
 #endif
 
 #ifdef SHOW_PINNED_UNPINNED_IN_PREFS
       S
-         .TieCheckBox(XXO("&Pinned Recording/Playback head"),
-            AudioIOPinnedHead);
+         .Target( AudioIOPinnedHead )
+         .AddCheckBox( XXO("&Pinned Recording/Playback head") );
 #endif
 
       S
-         .TieCheckBox(XXO("A&uto-scroll if head unpinned"),
-            TracksAutoScroll);
+         .Target( TracksAutoScroll )
+         .AddCheckBox( XXO("A&uto-scroll if head unpinned") );
 
       S.AddSpace(10);
 
@@ -309,10 +309,8 @@ void TracksPrefs::PopulateOrExchange(ShuttleGui & S)
 #define SHOW_PINNED_POSITION_IN_PREFS
 #ifdef SHOW_PINNED_POSITION_IN_PREFS
          S
-            .TieNumericTextBox(
-               XXO("Pinned &head position"),
-               AudioIOPinnedHeadPosition,
-               30 );
+            .Target( AudioIOPinnedHeadPosition )
+            .AddTextBox(  XXO("Pinned &head position"), {}, 30);
 #endif
 
          S
@@ -325,9 +323,8 @@ void TracksPrefs::PopulateOrExchange(ShuttleGui & S)
             .TieChoice( XXO("Display &samples:"), sampleDisplaySetting );
 
          S
-            .TieTextBox(XXO("Default audio track &name:"),
-               TracksDefaultName,
-                      30);
+            .Target( TracksDefaultName )
+            .AddTextBox(XXO("Default audio track &name:"), {}, 30);
       }
       S.EndMultiColumn();
    }

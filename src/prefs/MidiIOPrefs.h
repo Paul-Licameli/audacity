@@ -56,7 +56,6 @@ class MidiIOPrefs final : public PrefsPanel
 
    wxChoice *mHost;
    wxChoice *mPlay;
-   wxTextCtrl *mLatency;
 #ifdef EXPERIMENTAL_MIDI_IN
    wxChoice *mRecord;
 #endif

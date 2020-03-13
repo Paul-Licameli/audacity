@@ -118,13 +118,13 @@ void ImportExportPrefs::PopulateOrExchange(ShuttleGui & S)
       S.EndPanel();
 
       S
-         .TieCheckBox(XXO("S&how Metadata Tags editor before export"),
-            ImportExportShowId3Dialog);
+         .Target( ImportExportShowId3Dialog )
+         .AddCheckBox( XXO("S&how Metadata Tags editor before export") );
 
       S
+         .Target( ImportExportSkipStartingSilence )
          /* i18n-hint 'blank space' is space on the tracks with no audio in it*/
-         .TieCheckBox(XXO("&Ignore blank space at the beginning"),
-            ImportExportSkipStartingSilence);
+         .AddCheckBox( XXO("S&kip silent space at the beginning") );
    }
    S.EndStatic();
 

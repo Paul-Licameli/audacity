@@ -167,48 +167,48 @@ void GUIPrefs::PopulateOrExchange(ShuttleGui & S)
 // JKC: This is a silly preference.  Kept here as a reminder that we may
 // later want to have configurable button order.
 //      S
-//         .TieCheckBox( XXO("&Ergonomic order of Transport Toolbar buttons"),
-//            GUIErgonomicTransportButtons );
+//         .Target( GUIErgonomicTransportButtons )
+//         .AddCheckBox( XXO("&Ergonomic order of Transport Toolbar buttons") );
 
    }
    S.EndStatic();
 
    S.StartStatic(XO("Options"));
    {
+      // Start wording of options with a verb, if possible.
       S
-         // Start wording of options with a verb, if possible.
-         .TieCheckBox(XXO("Show 'How to Get &Help' at launch"),
-            GUIShowSplashScreen);
+         .Target( GUIShowSplashScreen )
+         .AddCheckBox( XXO("Show 'How to Get &Help' at launch") );
 
       S
-         .TieCheckBox(XXO("Show e&xtra menus"),
-           GUIShowExtraMenus);
+         .Target( GUIShowExtraMenus )
+         .AddCheckBox( XXO("Show e&xtra menus") );
 
 #ifdef EXPERIMENTAL_THEME_PREFS
       // We do not want to make this option mainstream.  It's a 
       // convenience for developers.
       S
-         .TieCheckBox(XXO("Show alternative &styling (Mac vs PC)"),
-            GUIShowMac);
+          .Target( GUIShowMac )
+         .AddCheckBox( XXO("Show alternative &styling (Mac vs PC)") );
 #endif
 
       S
-         .TieCheckBox(XXO("&Beep on completion of longer activities"),
-            GUIBeepOnCompletion);
+         .Target( GUIBeepOnCompletion )
+         .AddCheckBox( XXO("&Beep on completion of longer activities") );
 
       S
-         .TieCheckBox(XXO("Re&tain labels if selection snaps to a label"),
-            GUIRetainLabels);
+         .Target( GUIRetainLabels )
+         .AddCheckBox( XXO("Re&tain labels if selection snaps to a label") );
 
       S
-         .TieCheckBox(XXO("B&lend system and Audacity theme"),
-            GUIBlendThemes);
+         .Target( GUIBlendThemes )
+         .AddCheckBox( XXO("B&lend system and Audacity theme") );
 
 #ifndef __WXMAC__
       /* i18n-hint: RTL stands for 'Right to Left'  */
       S
-         .TieCheckBox(XXO("Use mostly Left-to-Right layouts in RTL languages"),
-            GUIRtlWorkaround);
+         .Target( GUIRtlWorkaround )
+         .AddCheckBox( XXO("Use mostly Left-to-Right layouts in RTL languages") );
 #endif
 #ifdef EXPERIMENTAL_CEE_NUMBERS_OPTION
       S.TieCheckBox(XXO("Never use comma as decimal point"),
@@ -221,12 +221,11 @@ void GUIPrefs::PopulateOrExchange(ShuttleGui & S)
    S.StartStatic(XO("Timeline"));
    {
       S
-         .TieCheckBox(XXO("Show Timeline Tooltips"),
-            QuickPlayToolTips);
-
+         .Target( QuickPlayToolTips )
+         .AddCheckBox( XXO("Show Timeline Tooltips") );
       S
-         .TieCheckBox(XXO("Show Scrub Ruler"),
-            QuickPlayScrubbingEnabled);
+         .Target( QuickPlayScrubbingEnabled )
+         .AddCheckBox( XXO("Show Scrub Ruler") );
    }
    S.EndStatic();
 
