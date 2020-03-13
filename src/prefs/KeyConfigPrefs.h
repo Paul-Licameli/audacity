@@ -18,7 +18,6 @@ class ShuttleGui;
 #include <wx/defs.h>
 #include <wx/timer.h> // member variable
 
-#include "../Prefs.h"
 #include "PrefsPanel.h"
 
 class wxRadioButton;
@@ -104,8 +103,6 @@ private:
    std::vector<NormalizedKeyString> mStandardDefaultKeys; // The reduced set.
    std::vector<NormalizedKeyString> mKeys;
    std::vector<NormalizedKeyString> mNewKeys; // Used for work in progress.
-
-   LabelSetting mRadioSetting;
 
    DECLARE_EVENT_TABLE()
 };

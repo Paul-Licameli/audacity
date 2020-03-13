@@ -73,6 +73,17 @@ BEGIN_EVENT_TABLE(KeyConfigPrefs, PrefsPanel)
    EVT_TIMER(FilterTimerID, KeyConfigPrefs::OnFilterTimer)
 END_EVENT_TABLE()
 
+static LabelSetting radioSetting{
+   // This preference is used only by this dialog
+   L"/Prefs/KeyConfig/ViewBy",
+   {
+      { L"tree", XXO("&Tree") },
+      { L"name", XXO("&Name") },
+      { L"key", XXO("&Key") },
+   },
+   0 // tree
+};
+
 KeyConfigPrefs::KeyConfigPrefs(
    wxWindow * parent, wxWindowID winid, AudacityProject *pProject,
    const CommandID &name)
@@ -84,15 +95,6 @@ KeyConfigPrefs::KeyConfigPrefs(
    mFilterTimer(this, FilterTimerID),
    mFilterPending(false)
    , mProject{ pProject }
-   , mRadioSetting{
-      L"/Prefs/KeyConfig/ViewBy",
-      {
-         { L"tree", XXO("&Tree") },
-         { L"name", XXO("&Name") },
-         { L"key", XXO("&Key") },
-      },
-      0 // tree
-   }
 {
    Populate();
    if (!name.empty()) {
@@ -194,7 +196,7 @@ void KeyConfigPrefs::PopulateOrExchange(ShuttleGui & S)
             S.StartHorizontalLay();
             {
                S
-                  .StartRadioButtonGroup( mRadioSetting );
+                  .StartRadioButtonGroup( radioSetting );
                {
                   mViewByTree =
                   S
