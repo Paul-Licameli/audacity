@@ -14,6 +14,8 @@
 #include "Export.h"
 #include "../wxFileNameWrapper.h" // member variable
 
+#include "../ShuttleGui.h" // remove this?
+
 class wxButton;
 class wxCheckBox;
 class wxChoice;
@@ -86,7 +88,6 @@ private:
    // Dialog
    void PopulateOrExchange(ShuttleGui& S);
 
-   void OnFormat(wxCommandEvent& event);
    void OnOptions();
    void OnCreate();
    void OnChoose();
@@ -117,8 +118,6 @@ private:
    // List of file actually exported
    FilePaths mExported;
 
-   wxChoice      *mFormat;    /**< Drop-down list of export formats
-                                (combinations of plug-in and subformat) */
    wxButton      *mOptions;
 
    wxTextCtrl    *mDir;    /**< The directory all the exported files will end
@@ -144,12 +143,9 @@ private:
 
    wxButton      *mCancel;
 
-   wxSimplebook   *mBook;
-
    SelectionState &mSelectionState;
 
-   DECLARE_EVENT_TABLE()
-
+   std::shared_ptr< DialogDefinition::Adaptor< int > > mpTarget;
 };
 
 class SuccessDialog final : public wxDialogWrapper

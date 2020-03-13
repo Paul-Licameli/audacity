@@ -76,8 +76,7 @@ namespace {
 /* define our dynamic array of export settings */
 
 enum {
-   FormatID = 10001,
-   DirID,
+   DirID = 10001,
    LabelID,
    FirstID,
    FirstFileNameID,
@@ -91,10 +90,6 @@ enum {
 //
 // ExportMultipleDialog methods
 //
-
-BEGIN_EVENT_TABLE(ExportMultipleDialog, wxDialogWrapper)
-   EVT_CHOICE(FormatID, ExportMultipleDialog::OnFormat)
-END_EVENT_TABLE()
 
 BEGIN_EVENT_TABLE(SuccessDialog, wxDialogWrapper)
    EVT_LIST_KEY_DOWN(wxID_ANY, SuccessDialog::OnKeyDown)
@@ -130,8 +125,6 @@ ExportMultipleDialog::ExportMultipleDialog(AudacityProject *project)
       mPlugins.push_back(plugin.get());
 
    this->CountTracksAndLabels();
-
-   mBook = NULL;
 
    ShuttleGui S(this, eIsCreatingFromPrefs);
 
@@ -201,7 +194,7 @@ namespace {
 BoolSetting OverwriteExisting{
    L"/Export/OverwriteExisting", false};
 
-StringSetting ExportMultipleFormat{ "/Export/MultipleFormat", L"" };
+static StringSetting ExportMultipleFormat{ "/Export/MultipleFormat", L"" };
 }
 
 void ExportMultipleDialog::PopulateOrExchange(ShuttleGui& S)
@@ -258,6 +251,10 @@ void ExportMultipleDialog::PopulateOrExchange(ShuttleGui& S)
    }
 
    using namespace DialogDefinition;
+
+   mpTarget = Choice( ExportMultipleFormat, visibleFormats, formats );
+   const auto &pTarget = mpTarget;
+
    S.SetBorder(5);
    S.StartHorizontalLay(wxEXPAND, true);
    {
@@ -281,10 +278,8 @@ void ExportMultipleDialog::PopulateOrExchange(ShuttleGui& S)
                .Action( [this]{ OnCreate(); } )
                .AddButton(XXO("Create"));
 
-            mFormat =
             S
-               .Id(FormatID)
-               .Target( Choice( ExportMultipleFormat, visibleFormats, formats ) )
+               .Target( pTarget )
                .AddChoice( XXO("Format:") );
 
             S
@@ -296,8 +291,8 @@ void ExportMultipleDialog::PopulateOrExchange(ShuttleGui& S)
             S
                .AddPrompt(XXO("Options:"));
 
-            mBook =
             S
+               .Target( pTarget )
                .Style(wxBORDER_STATIC)
                // .Action( [this]{ OnOptions )
                .StartSimplebook();
@@ -314,7 +309,6 @@ void ExportMultipleDialog::PopulateOrExchange(ShuttleGui& S)
                      S.EndNotebookPage();
                   }
                }
-               mBook->ChangeSelection(mFormat->GetSelection());
             }
             S.EndSimplebook();
 
@@ -485,15 +479,10 @@ void ExportMultipleDialog::PopulateOrExchange(ShuttleGui& S)
       } );
 }
 
-void ExportMultipleDialog::OnFormat(wxCommandEvent& WXUNUSED(event))
-{
-   mBook->ChangeSelection(mFormat->GetSelection());
-}
-
 void ExportMultipleDialog::OnOptions()
 {
-   const int sel = mFormat->GetSelection();
-   if (sel != wxNOT_FOUND)
+   int sel;
+   if ( mpTarget->Get(sel) && sel >= 0 )
    {
      size_t c = 0;
      int i = -1;
@@ -569,8 +558,7 @@ void ExportMultipleDialog::OnExport()
       return;
    }
 
-   mFilterIndex = mFormat->GetSelection();
-   if (mFilterIndex != wxNOT_FOUND)
+   if ( mpTarget->Get( mFilterIndex ) && mFilterIndex != wxNOT_FOUND )
    {
       size_t c = 0;
       int i = -1;
@@ -584,7 +572,6 @@ void ExportMultipleDialog::OnExport()
                // needed to achieve it.
                mPluginIndex = i;
                mSubFormatIndex = j;
-               mBook->GetPage(mFilterIndex)->TransferDataFromWindow();
             }
          }
       }

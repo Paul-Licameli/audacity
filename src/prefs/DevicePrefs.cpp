@@ -42,8 +42,7 @@ other settings.
 #include "../DeviceManager.h"
 
 enum {
-   HostID = 10000,
-   PlayID,
+   PlayID = 10000,
    ChannelsID
 };
 
@@ -117,7 +116,6 @@ void DevicePrefs::PopulateOrExchange(ShuttleGui & S)
       {
          mHost =
          S
-            .Id(HostID)
             .Target( Choice( AudioIOHost, Verbatim( hostLabels ) ) )
             .Action( [this]{ OnHost(); } )
             .AddChoice( XXO("&Host:") );
