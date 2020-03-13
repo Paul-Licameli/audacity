@@ -189,24 +189,18 @@ void DevicePrefs::PopulateOrExchange(ShuttleGui & S)
    {
       S.StartThreeColumn();
       {
-         wxTextCtrl *w;
-         // only show the following controls if we use Portaudio v19, because
-         // for Portaudio v18 we always use default buffer sizes
-         w =
          S
             .Text({ {}, XO("milliseconds") })
-            .TieNumericTextBox(XXO("&Buffer length:"),
-                                 AudioIOLatencyDuration,
-                                 9);
+            .Target( AudioIOLatencyDuration )
+            .AddTextBox( XXO("&Buffer length:"), {}, 9 );
 
          S
             .AddUnits(XO("milliseconds"));
 
-         w =
          S
             .Text({ {}, XO("milliseconds") })
-            .TieNumericTextBox(XXO("&Latency compensation:"),
-               AudioIOLatencyCorrection, 9);
+            .Target( AudioIOLatencyCorrection )
+            .AddTextBox(XXO("&Latency compensation:"), {}, 9);
 
          S
             .AddUnits(XO("milliseconds"));

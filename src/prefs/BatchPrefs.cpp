@@ -60,8 +60,8 @@ void BatchPrefs::PopulateOrExchange( ShuttleGui & S )
    {
 #ifdef _DEBUG
       S
-         .TieCheckBox( XXO("&Don't apply effects in batch mode"),
-            BatchDebug);
+         .Target(BatchDebug)
+         .AddCheckBox( XXO("&Don't apply effects in batch mode") );
 #endif
    }
    S.EndStatic();

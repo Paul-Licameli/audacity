@@ -132,8 +132,8 @@ void ExportCLOptions::PopulateOrExchange(ShuttleGui & S)
             S.AddFixedText( {} );
 
             S
-               .TieCheckBox(XXO("Show output"),
-                  ExternalProgramShowOutput );
+               .Target( ExternalProgramShowOutput )
+               .AddCheckBox( XXO("Show output") );
          }
          S.EndMultiColumn();
       }
