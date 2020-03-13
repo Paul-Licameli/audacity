@@ -267,6 +267,7 @@ SliderDialog::SliderDialog(wxWindow * parent, wxWindowID id,
    wxDialogWrapper(parent,id,title,position),
    mStyle(style)
 {
+   using Options = DialogDefinition::StringValidator::Options;
    SetName();
    mpOrigin = pSource;
    mValue = mpOrigin->Get(false);
@@ -304,6 +305,7 @@ SliderDialog::SliderDialog(wxWindow * parent, wxWindowID id,
                prec, &mValue, trailing, mpOrigin->GetMinValue(), mpOrigin->GetMaxValue())
             .AddTextBox({}, wxEmptyString, 15);
       }
+
       mSlider = safenew ASlider(S.GetParent(),
                             wxID_ANY,
                             title,

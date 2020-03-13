@@ -43,7 +43,6 @@
 
 #include "../../ShuttleGui.h"
 #include "../../widgets/AudacityMessageBox.h"
-#include "../../widgets/valnum.h"
 #include "../../widgets/wxPanelWrapper.h"
 
 //

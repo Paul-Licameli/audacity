@@ -31,12 +31,11 @@
 #include <math.h>
 
 #include <wx/slider.h>
-#include <wx/valgen.h>
+#include <wx/textctrl.h>
 
 #include "../Prefs.h"
 #include "../ShuttleGui.h"
 #include "../widgets/AudacityMessageBox.h"
-#include "../widgets/valnum.h"
 
 #include "../WaveTrack.h"
 
@@ -324,8 +323,8 @@ void EffectClickRemoval::PopulateOrExchange(ShuttleGui & S)
       mThreshT =
       S
          .Id(ID_Thresh)
-         .Validator<IntegerValidator<int>>(
-            &mThresholdLevel, NumValidatorStyle::DEFAULT,
+         .Target( mThresholdLevel,
+            NumValidatorStyle::DEFAULT,
             Threshold.min, Threshold.max )
          .AddTextBox(XXO("&Threshold (lower is more sensitive):"),
                      L"",
@@ -336,7 +335,7 @@ void EffectClickRemoval::PopulateOrExchange(ShuttleGui & S)
          .Id(ID_Thresh)
          .Text(XO("Threshold"))
          .Style(wxSL_HORIZONTAL)
-         .Validator<wxGenericValidator>(&mThresholdLevel)
+         .Target( mThresholdLevel )
          .MinSize( { 150, -1 } )
          .AddSlider( {}, mThresholdLevel, Threshold.max, Threshold.min);
 
@@ -344,8 +343,8 @@ void EffectClickRemoval::PopulateOrExchange(ShuttleGui & S)
       mWidthT =
       S
          .Id(ID_Width)
-         .Validator<IntegerValidator<int>>(
-            &mClickWidth, NumValidatorStyle::DEFAULT, Width.min, Width.max)
+         .Target( mClickWidth,
+            NumValidatorStyle::DEFAULT, Width.min, Width.max)
          .AddTextBox(XXO("Max &Spike Width (higher is more sensitive):"),
                      L"",
                      10);
@@ -355,7 +354,7 @@ void EffectClickRemoval::PopulateOrExchange(ShuttleGui & S)
          .Id(ID_Width)
          .Text(XO("Max Spike Width"))
          .Style(wxSL_HORIZONTAL)
-         .Validator<wxGenericValidator>(&mClickWidth)
+         .Target( mClickWidth )
          .MinSize( { 150, -1 } )
          .AddSlider( {}, mClickWidth, Width.max, Width.min);
    }

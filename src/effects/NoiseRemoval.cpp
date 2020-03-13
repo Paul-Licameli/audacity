@@ -723,10 +723,9 @@ void NoiseRemovalDialog::PopulateOrExchange(ShuttleGui & S)
          mGainT =
          S
             .Id(ID_GAIN_TEXT)
-            .Validator<FloatingPointValidator<double>>(
-               0,
-               &mGain,
+            .Target( mGain,
                NumValidatorStyle::DEFAULT,
+               0,
                GAIN_MIN, GAIN_MAX )
             .AddTextBox(XXO("Noise re&duction (dB):"), L"", 0);
 
@@ -741,10 +740,9 @@ void NoiseRemovalDialog::PopulateOrExchange(ShuttleGui & S)
          mSensitivityT =
          S
             .Id(ID_SENSITIVITY_TEXT)
-            .Validator<FloatingPointValidator<double>>(
-               2,
-               &mSensitivity,
+            .Target( mSensitivity,
                NumValidatorStyle::DEFAULT,
+               2,
                SENSITIVITY_MIN / SENSITIVITY_SCALE + SENSITIVITY_ORIGIN,
                SENSITIVITY_MAX / SENSITIVITY_SCALE + SENSITIVITY_ORIGIN )
             .AddTextBox(XXO("&Sensitivity (dB):"), L"", 0);
@@ -760,10 +758,9 @@ void NoiseRemovalDialog::PopulateOrExchange(ShuttleGui & S)
          mFreqT =
          S
             .Id(ID_FREQ_TEXT)
-            .Validator<FloatingPointValidator<double>>(
-               0,
-               &mFreq,
+            .Target( mFreq,
                NumValidatorStyle::DEFAULT,
+               0,
                FREQ_MIN / FREQ_SCALE, FREQ_MAX / FREQ_SCALE )
             .AddTextBox(XXO("Fr&equency smoothing (Hz):"), L"", 0);
    
@@ -778,10 +775,9 @@ void NoiseRemovalDialog::PopulateOrExchange(ShuttleGui & S)
          mTimeT =
          S
             .Id(ID_TIME_TEXT)
-            .Validator<FloatingPointValidator<double>>(
-               2,
-               &mTime,
+            .Target( mTime,
                NumValidatorStyle::DEFAULT,
+               2,
                TIME_MIN / TIME_SCALE, TIME_MAX / TIME_SCALE )
             .AddTextBox(XXO("Attac&k/decay time (secs):"), L"", 0);
 

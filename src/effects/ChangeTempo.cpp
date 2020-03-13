@@ -20,19 +20,15 @@
 #if USE_SOUNDTOUCH
 #include "ChangeTempo.h"
 
-#if USE_SBSMS
-#include <wx/valgen.h>
-#endif
-
 #include <math.h>
 
 #include <wx/checkbox.h>
 #include <wx/slider.h>
 #include <wx/stattext.h>
+#include <wx/textctrl.h>
 
 #include "../ShuttleGui.h"
 #include "../widgets/numformatter.h"
-#include "../widgets/valnum.h"
 #include "TimeWarper.h"
 
 #include "LoadEffects.h"
@@ -219,8 +215,8 @@ void EffectChangeTempo::PopulateOrExchange(ShuttleGui & S)
          m_pTextCtrl_PercentChange =
          S
             .Id(ID_PercentChange)
-            .Validator<FloatingPointValidator<double>>(
-               3, &m_PercentChange, NumValidatorStyle::THREE_TRAILING_ZEROES,
+            .Target( m_PercentChange,
+               NumValidatorStyle::THREE_TRAILING_ZEROES, 3,
                Percentage.min, Percentage.max )
             .AddTextBox(XXO("Percent C&hange:"), L"", 12);
       }
@@ -247,10 +243,9 @@ void EffectChangeTempo::PopulateOrExchange(ShuttleGui & S)
                .Id(ID_FromBPM)
                /* i18n-hint: changing tempo "from" one value "to" another */
                .Text(XO("Beats per minute, from"))
-               .Validator<FloatingPointValidator<double>>(
-                  3, &m_FromBPM,
+               .Target( m_FromBPM,
                   NumValidatorStyle::THREE_TRAILING_ZEROES
-                     | NumValidatorStyle::ZERO_AS_BLANK)
+                     | NumValidatorStyle::ZERO_AS_BLANK, 3)
                /* i18n-hint: changing tempo "from" one value "to" another */
                .AddTextBox(XXC("&from", "change tempo"), L"", 12);
 
@@ -259,10 +254,9 @@ void EffectChangeTempo::PopulateOrExchange(ShuttleGui & S)
                .Id(ID_ToBPM)
                /* i18n-hint: changing tempo "from" one value "to" another */
                .Text(XO("Beats per minute, to"))
-               .Validator<FloatingPointValidator<double>>(
-                  3, &m_ToBPM,
+               .Target( m_ToBPM,
                   NumValidatorStyle::THREE_TRAILING_ZEROES
-                     | NumValidatorStyle::ZERO_AS_BLANK)
+                     | NumValidatorStyle::ZERO_AS_BLANK, 3)
                /* i18n-hint: changing tempo "from" one value "to" another */
                .AddTextBox(XXC("&to", "change tempo"), L"", 12);
          }
@@ -288,8 +282,8 @@ void EffectChangeTempo::PopulateOrExchange(ShuttleGui & S)
             m_pTextCtrl_ToLength =
             S
                .Id(ID_ToLength)
-               .Validator<FloatingPointValidator<double>>(
-                  2, &m_ToLength, NumValidatorStyle::TWO_TRAILING_ZEROES,
+               .Target( m_ToLength,
+                  NumValidatorStyle::TWO_TRAILING_ZEROES, 2,
                   // min and max need same precision as what we're validating (bug 963)
                   RoundValue( precision,
                      (m_FromLength * 100.0) / (100.0 + Percentage.max) ),
@@ -307,7 +301,7 @@ void EffectChangeTempo::PopulateOrExchange(ShuttleGui & S)
       {
          mUseSBSMSCheckBox =
          S
-            .Validator<wxGenericValidator>(&mUseSBSMS)
+            .Target( mUseSBSMS )
             .AddCheckBox(XXO("&Use high quality stretching (slow)"),
                                              mUseSBSMS);
       }

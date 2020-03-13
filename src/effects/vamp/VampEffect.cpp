@@ -32,7 +32,6 @@
 
 
 #include "../../ShuttleGui.h"
-#include "../../widgets/valnum.h"
 #include "../../widgets/AudacityMessageBox.h"
 
 #include "../../LabelTrack.h"
@@ -663,13 +662,13 @@ void VampEffect::PopulateOrExchange(ShuttleGui & S)
                      .Id(ID_Texts + p)
                      .Text({ Verbatim( labelText ), {}, Verbatim( tip ) })
                      .Position(wxALIGN_CENTER_VERTICAL | wxALL)
-                     .Validator<FloatingPointValidator<double>>(
-                        6, &mValues[p],
+                     .Target( mValues[p],
                         (range < 10
                            ? NumValidatorStyle::THREE_TRAILING_ZEROES
                            : range < 100
                               ? NumValidatorStyle::TWO_TRAILING_ZEROES
                               : NumValidatorStyle::ONE_TRAILING_ZERO),
+                        6,
                         mParameters[p].minValue, mParameters[p].maxValue)
                      .AddTextBox( {}, L"", 12);
 

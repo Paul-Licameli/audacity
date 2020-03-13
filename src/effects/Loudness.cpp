@@ -20,14 +20,12 @@
 #include <math.h>
 
 #include <wx/simplebook.h>
-#include <wx/valgen.h>
 
 #include "Internat.h"
 #include "../Prefs.h"
 #include "../ProjectFileManager.h"
 #include "../ShuttleGui.h"
 #include "../WaveTrack.h"
-#include "../widgets/valnum.h"
 #include "../widgets/ProgressDialog.h"
 
 #include "LoadEffects.h"
@@ -269,7 +267,7 @@ void EffectLoudness::PopulateOrExchange(ShuttleGui & S)
                      wxALIGN_CENTER_VERTICAL | wxALIGN_LEFT);
 
                mChoice = S
-                  .Validator<wxGenericValidator>( &mNormalizeTo )
+                  .Target( mNormalizeTo )
                   .AddChoice( {},
                      Msgids(kNormalizeTargetStrings, nAlgos),
                      mNormalizeTo );
@@ -291,9 +289,8 @@ void EffectLoudness::PopulateOrExchange(ShuttleGui & S)
                         S
                            /* i18n-hint: LUFS is a particular method for measuring loudnesss */
                            .Text( XO("Loudness LUFS") )
-                           .Validator<FloatingPointValidator<double>>(
-                              2, &mLUFSLevel,
-                              NumValidatorStyle::ONE_TRAILING_ZERO,
+                           .Target( mLUFSLevel,
+                              NumValidatorStyle::ONE_TRAILING_ZERO, 2,
                               LUFSLevel.min, LUFSLevel.max )
                            .AddTextBox( {}, L"", 10);
 
@@ -312,9 +309,8 @@ void EffectLoudness::PopulateOrExchange(ShuttleGui & S)
                      {
                         S
                            .Text( XO("RMS dB") )
-                           .Validator<FloatingPointValidator<double>>(
-                              2, &mRMSLevel,
-                              NumValidatorStyle::ONE_TRAILING_ZERO,
+                           .Target( mRMSLevel,
+                              NumValidatorStyle::ONE_TRAILING_ZERO, 2,
                               RMSLevel.min, RMSLevel.max )
                            .AddTextBox( {}, L"", 10);
 
@@ -337,12 +333,12 @@ void EffectLoudness::PopulateOrExchange(ShuttleGui & S)
 
             mStereoIndCheckBox =
             S
-               .Validator<wxGenericValidator>( &mStereoInd )
+               .Target( mStereoInd )
                .AddCheckBox(XXO("Normalize &stereo channels independently"),
                   mStereoInd );
 
             S
-               .Validator<wxGenericValidator>( &mDualMono )
+               .Target( mDualMono )
                .Enable( [this]{ return mNormalizeTo == kLoudness; } )
                .AddCheckBox(XXO("&Treat mono as dual-mono (recommended)"),
                   mDualMono );

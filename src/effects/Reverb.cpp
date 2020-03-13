@@ -22,10 +22,10 @@
 #include <wx/checkbox.h>
 #include <wx/slider.h>
 #include <wx/spinctrl.h>
+#include <wx/textctrl.h>
 
 #include "../Prefs.h"
 #include "../ShuttleGui.h"
-#include "../widgets/valnum.h"
 
 #include "Reverb_libSoX.h"
 

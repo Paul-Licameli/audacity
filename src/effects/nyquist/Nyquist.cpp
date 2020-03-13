@@ -45,7 +45,6 @@ effects from this one class.
 #include <wx/textdlg.h>
 #include <wx/tokenzr.h>
 #include <wx/txtstrm.h>
-#include <wx/valgen.h>
 #include <wx/wfstream.h>
 #include <wx/numformatter.h>
 #include <wx/stdpaths.h>
@@ -67,7 +66,6 @@ effects from this one class.
 #include "../../ViewInfo.h"
 #include "../../WaveClip.h"
 #include "../../WaveTrack.h"
-#include "../../widgets/valnum.h"
 #include "../../widgets/AudacityMessageBox.h"
 #include "../../Prefs.h"
 #include "../../wxFileNameWrapper.h"
@@ -2819,6 +2817,8 @@ void NyquistEffect::BuildPromptWindow(ShuttleGui & S)
 
 void NyquistEffect::BuildEffectWindow(ShuttleGui & S)
 {
+   using namespace DialogDefinition;
+
    auto scroller =
    S
       .Style(wxVSCROLL | wxTAB_TRAVERSAL)
@@ -2854,11 +2854,10 @@ void NyquistEffect::BuildEffectWindow(ShuttleGui & S)
                {
                   S.AddSpace(10, 10);
 
-                  auto item =
-                  S
+                  auto item = S
                      .Id(ID_Text + i)
-                     .Validator<wxGenericValidator>(&ctrl.valStr)
                      .Text( prompt.Stripped() )
+                     .Target( ctrl.valStr )
                      .AddTextBox( {}, L"", 50);
                }
                else if (ctrl.type == NYQ_CTRL_CHOICE)
@@ -2930,21 +2929,20 @@ void NyquistEffect::BuildEffectWindow(ShuttleGui & S)
                   if (ctrl.type == NYQ_CTRL_FLOAT || ctrl.type == NYQ_CTRL_FLOAT_TEXT)
                   {
                      double range = ctrl.high - ctrl.low;
-                     S.Validator<FloatingPointValidator<double>>(
-                        // > 12 decimal places can cause rounding errors in display.
-                        12, &ctrl.val,
+                     S.Target( ctrl.val,
                         // Set number of decimal places
                         (range < 10
                            ? NumValidatorStyle::THREE_TRAILING_ZEROES
                            : range < 100
                               ? NumValidatorStyle::TWO_TRAILING_ZEROES
                               : NumValidatorStyle::ONE_TRAILING_ZERO),
+                        12, // > 12 decimal places can cause rounding errors in display.
                         ctrl.low, ctrl.high );
                   }
                   else
                   {
-                     S.Validator<IntegerValidator<double>>(
-                        &ctrl.val, NumValidatorStyle::DEFAULT,
+                     S.Target( Transform< double, int >( ctrl.val ),
+                        NumValidatorStyle::DEFAULT,
                         (int) ctrl.low, (int) ctrl.high);
                   }
 

@@ -21,10 +21,6 @@ the pitch without changing the tempo.
 #include "ChangePitch.h"
 #include "LoadEffects.h"
 
-#if USE_SBSMS
-#include <wx/valgen.h>
-#endif
-
 #include <float.h>
 #include <math.h>
 
@@ -32,13 +28,12 @@ the pitch without changing the tempo.
 #include <wx/choice.h>
 #include <wx/slider.h>
 #include <wx/spinctrl.h>
-#include <wx/valtext.h>
+#include <wx/textctrl.h>
 
 #include "../PitchName.h"
 #include "../ShuttleGui.h"
 #include "../Spectrum.h"
 #include "../WaveTrack.h"
-#include "../widgets/valnum.h"
 #include "TimeWarper.h"
 
 // Soundtouch defines these as well, which are also in generated configmac.h
@@ -293,9 +288,8 @@ void EffectChangePitch::PopulateOrExchange(ShuttleGui & S)
             S
                .Id(ID_SemitonesChange)
                .Text(XO("Semitones (half-steps)"))
-               .Validator<FloatingPointValidator<double>>(
-                  2, &m_dSemitonesChange,
-                  NumValidatorStyle::TWO_TRAILING_ZEROES )
+               .Target( m_dSemitonesChange,
+                  NumValidatorStyle::TWO_TRAILING_ZEROES, 2 )
                .AddTextBox(XXO("&Semitones (half-steps):"), L"", 12);
          }
          S.EndHorizontalLay();
@@ -310,9 +304,8 @@ void EffectChangePitch::PopulateOrExchange(ShuttleGui & S)
             S
                .Id(ID_FromFrequency)
                .Text(XO("from (Hz)"))
-               .Validator<FloatingPointValidator<double>>(
-                  3, &m_FromFrequency,
-                  NumValidatorStyle::THREE_TRAILING_ZEROES,
+               .Target( m_FromFrequency,
+                  NumValidatorStyle::THREE_TRAILING_ZEROES, 3,
                   0.0 )
                .AddTextBox(XXO("f&rom"), L"", 12);
 
@@ -320,9 +313,8 @@ void EffectChangePitch::PopulateOrExchange(ShuttleGui & S)
             S
                .Id(ID_ToFrequency)
                .Text(XO("to (Hz)"))
-               .Validator<FloatingPointValidator<double>>(
-                  3, &m_ToFrequency,
-                  NumValidatorStyle::THREE_TRAILING_ZEROES,
+               .Target( m_ToFrequency,
+                  NumValidatorStyle::THREE_TRAILING_ZEROES, 3,
                   0.0 )
                .AddTextBox(XXO("t&o"), L"", 12);
 
@@ -335,9 +327,8 @@ void EffectChangePitch::PopulateOrExchange(ShuttleGui & S)
             m_pTextCtrl_PercentChange =
             S
                .Id(ID_PercentChange)
-               .Validator<FloatingPointValidator<double>>(
-                  3, &m_dPercentChange,
-                  NumValidatorStyle::THREE_TRAILING_ZEROES,
+               .Target( m_dPercentChange,
+                  NumValidatorStyle::THREE_TRAILING_ZEROES, 3,
                   Percentage.min, Percentage.max )
                .AddTextBox(XXO("Percent C&hange:"), L"", 12);
          }
@@ -361,7 +352,7 @@ void EffectChangePitch::PopulateOrExchange(ShuttleGui & S)
       {
          mUseSBSMSCheckBox =
          S
-            .Validator<wxGenericValidator>(&mUseSBSMS)
+            .Target( mUseSBSMS )
             .AddCheckBox(XXO("&Use high quality stretching (slow)"),
                                              mUseSBSMS);
       }

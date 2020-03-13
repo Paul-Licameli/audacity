@@ -24,11 +24,11 @@
 #include <wx/checkbox.h>
 #include <wx/panel.h>
 #include <wx/slider.h>
+#include <wx/textctrl.h>
 
 #include "../Prefs.h"
 #include "../ShuttleGui.h"
 #include "../WaveTrack.h"
-#include "../widgets/valnum.h"
 
 enum 
 {
@@ -206,8 +206,8 @@ void EffectBassTreble::PopulateOrExchange(ShuttleGui & S)
          S
             .Id(ID_Bass)
             .Text(XO("Bass (dB):"))
-            .Validator<FloatingPointValidator<double>>(
-               1, &mBass, NumValidatorStyle::DEFAULT, Bass.min, Bass.max)
+            .Target( mBass,
+               NumValidatorStyle::DEFAULT, 1, Bass.min, Bass.max)
             .AddTextBox(XXO("Ba&ss (dB):"), L"", 10);
 
          mBassS =
@@ -221,8 +221,8 @@ void EffectBassTreble::PopulateOrExchange(ShuttleGui & S)
          mTrebleT =
          S
             .Id(ID_Treble)
-            .Validator<FloatingPointValidator<double>>(
-               1, &mTreble, NumValidatorStyle::DEFAULT, Treble.min, Treble.max)
+            .Target( mTreble,
+               NumValidatorStyle::DEFAULT, 1, Treble.min, Treble.max)
             .AddTextBox(XXO("&Treble (dB):"), L"", 10);
 
          mTrebleS =
@@ -246,8 +246,8 @@ void EffectBassTreble::PopulateOrExchange(ShuttleGui & S)
          mGainT =
          S
             .Id(ID_Gain)
-            .Validator<FloatingPointValidator<double>>(
-               1, &mGain, NumValidatorStyle::DEFAULT, Gain.min, Gain.max)
+            .Target( mGain,
+               NumValidatorStyle::DEFAULT, 1, Gain.min, Gain.max)
             .AddTextBox(XXO("&Volume (dB):"), L"", 10);
 
          mGainS =

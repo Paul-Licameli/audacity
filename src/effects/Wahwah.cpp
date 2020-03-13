@@ -25,9 +25,9 @@
 #include <math.h>
 
 #include <wx/slider.h>
+#include <wx/textctrl.h>
 
 #include "../ShuttleGui.h"
-#include "../widgets/valnum.h"
 
 enum
 {
@@ -212,8 +212,8 @@ void EffectWahwah::PopulateOrExchange(ShuttleGui & S)
       mFreqT =
       S
          .Id(ID_Freq)
-         .Validator<FloatingPointValidator<double>>(
-            5, &mFreq, NumValidatorStyle::ONE_TRAILING_ZERO, Freq.min, Freq.max)
+         .Target(  mFreq,
+            NumValidatorStyle::ONE_TRAILING_ZERO, 5, Freq.min, Freq.max)
          .AddTextBox(XXO("LFO Freq&uency (Hz):"), L"", 12);
 
       mFreqS =
@@ -227,8 +227,8 @@ void EffectWahwah::PopulateOrExchange(ShuttleGui & S)
       mPhaseT =
       S
          .Id(ID_Phase)
-         .Validator<FloatingPointValidator<double>>(
-            1, &mPhase, NumValidatorStyle::DEFAULT, Phase.min, Phase.max)
+         .Target( mPhase,
+            NumValidatorStyle::DEFAULT, 1, Phase.min, Phase.max)
          .AddTextBox(XXO("LFO Sta&rt Phase (deg.):"), L"", 12);
 
       mPhaseS =
@@ -243,8 +243,8 @@ void EffectWahwah::PopulateOrExchange(ShuttleGui & S)
       mDepthT =
       S
          .Id(ID_Depth)
-         .Validator<IntegerValidator<int>>(
-            &mDepth, NumValidatorStyle::DEFAULT, Depth.min, Depth.max)
+         .Target( mDepth,
+            NumValidatorStyle::DEFAULT, Depth.min, Depth.max)
          .AddTextBox(XXO("Dept&h (%):"), L"", 12);
 
       mDepthS =
@@ -258,8 +258,8 @@ void EffectWahwah::PopulateOrExchange(ShuttleGui & S)
       mResT =
       S
          .Id(ID_Res)
-         .Validator<FloatingPointValidator<double>>(
-            1, &mRes, NumValidatorStyle::DEFAULT, Res.min, Res.max)
+         .Target( mRes,
+            NumValidatorStyle::DEFAULT, 1, Res.min, Res.max)
          .AddTextBox(XXO("Reso&nance:"), L"", 12);
 
       mResS =
@@ -273,8 +273,8 @@ void EffectWahwah::PopulateOrExchange(ShuttleGui & S)
       mFreqOfsT =
       S
          .Id(ID_FreqOfs)
-         .Validator<IntegerValidator<int>>(
-            &mFreqOfs, NumValidatorStyle::DEFAULT, FreqOfs.min, FreqOfs.max)
+         .Target( mFreqOfs,
+            NumValidatorStyle::DEFAULT, FreqOfs.min, FreqOfs.max)
          .AddTextBox(XXO("Wah Frequency Offse&t (%):"), L"", 12);
 
       mFreqOfsS =
@@ -288,8 +288,8 @@ void EffectWahwah::PopulateOrExchange(ShuttleGui & S)
       mOutGainT =
       S
          .Id(ID_OutGain)
-         .Validator<FloatingPointValidator<double>>(
-            1, &mOutGain, NumValidatorStyle::DEFAULT, OutGain.min, OutGain.max)
+         .Target( mOutGain,
+            NumValidatorStyle::DEFAULT, 1, OutGain.min, OutGain.max)
          .AddTextBox(XXO("&Output gain (dB):"), L"", 12);
 
       mOutGainS =

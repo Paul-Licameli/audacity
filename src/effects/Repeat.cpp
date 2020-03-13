@@ -27,12 +27,12 @@
 #include <math.h>
 
 #include <wx/stattext.h>
+#include <wx/textctrl.h>
 
 #include "../LabelTrack.h"
 #include "../ShuttleGui.h"
 #include "../WaveTrack.h"
 #include "../widgets/NumericTextCtrl.h"
-#include "../widgets/valnum.h"
 
 #include "LoadEffects.h"
 
@@ -158,8 +158,8 @@ void EffectRepeat::PopulateOrExchange(ShuttleGui & S)
    {
       mRepeatCount =
       S
-         .Validator<IntegerValidator<int>>(
-            &repeatCount, NumValidatorStyle::DEFAULT,
+         .Target( repeatCount,
+            NumValidatorStyle::DEFAULT,
             Count.min, 2147483647 / mProjectRate )
          .AddTextBox(XXO("&Number of repeats to add:"), L"", 12);
    }

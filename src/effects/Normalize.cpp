@@ -23,13 +23,12 @@
 
 #include <wx/checkbox.h>
 #include <wx/stattext.h>
-#include <wx/valgen.h>
+#include <wx/textctrl.h>
 
 #include "../Prefs.h"
 #include "../ProjectFileManager.h"
 #include "../ShuttleGui.h"
 #include "../WaveTrack.h"
-#include "../widgets/valnum.h"
 #include "../widgets/ProgressDialog.h"
 
 // Define keys, defaults, minimums, and maximums for the effect parameters
@@ -269,7 +268,7 @@ void EffectNormalize::PopulateOrExchange(ShuttleGui & S)
          {
             mDCCheckBox =
             S
-               .Validator<wxGenericValidator>(&mDC)
+               .Target( mDC )
                .AddCheckBox(XXO("&Remove DC offset (center on 0.0 vertically)"),
                                         mDC);
 
@@ -278,16 +277,14 @@ void EffectNormalize::PopulateOrExchange(ShuttleGui & S)
                mGainCheckBox =
                S
                   .MinSize()
-                  .Validator<wxGenericValidator>(&mGain)
+                  .Target( mGain )
                   .AddCheckBox(XXO("&Normalize peak amplitude to   "),
                      mGain);
 
                S
                   .Text(XO("Peak amplitude dB"))
-                  .Validator<FloatingPointValidator<double>>(
-                     2,
-                     &mPeakLevel,
-                     NumValidatorStyle::ONE_TRAILING_ZERO,
+                  .Target( mPeakLevel,
+                     NumValidatorStyle::ONE_TRAILING_ZERO, 2,
                      PeakLevel.min,
                      PeakLevel.max )
                   .Enable( enabler )
@@ -306,7 +303,7 @@ void EffectNormalize::PopulateOrExchange(ShuttleGui & S)
             S.EndHorizontalLay();
 
             S
-               .Validator<wxGenericValidator>(&mStereoInd)
+               .Target( mStereoInd )
                .Enable( enabler )
                .AddCheckBox(XXO("N&ormalize stereo channels independently"),
                                                mStereoInd);

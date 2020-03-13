@@ -27,7 +27,6 @@
 
 
 #include "../ShuttleGui.h"
-#include "../widgets/valnum.h"
 #include "../widgets/AudacityMessageBox.h"
 
 #include "../LabelTrack.h"
@@ -222,13 +221,11 @@ void EffectFindClipping::PopulateOrExchange(ShuttleGui & S)
    S.StartMultiColumn(2, wxALIGN_CENTER);
    {
       S
-         .Validator<IntegerValidator<int>>(
-            &mStart, NumValidatorStyle::DEFAULT, Start.min)
+         .Target( mStart, NumValidatorStyle::DEFAULT, Start.min )
          .TieTextBox(XXO("&Start threshold (samples):"), mStart, 10);
 
       S
-         .Validator<IntegerValidator<int>>(
-            &mStop, NumValidatorStyle::DEFAULT, Stop.min)
+         .Target( mStop, NumValidatorStyle::DEFAULT, Stop.min )
          .TieTextBox(XXO("St&op threshold (samples):"), mStop, 10);
    }
    S.EndMultiColumn();

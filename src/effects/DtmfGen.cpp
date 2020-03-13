@@ -18,14 +18,12 @@
 #include "LoadEffects.h"
 
 #include <wx/slider.h>
-#include <wx/valgen.h>
-#include <wx/valtext.h>
 #include <wx/stattext.h>
+#include <wx/textctrl.h>
 
 #include "../Prefs.h"
 #include "../ShuttleGui.h"
 #include "../widgets/NumericTextCtrl.h"
-#include "../widgets/valnum.h"
 
 
 enum
@@ -55,20 +53,7 @@ static auto Amplitude = Parameter<double>(
 
 static const double kFadeInOut = 250.0; // used for fadein/out needed to remove clicking noise
 
-const static wxChar *kSymbols[] =
-{
-   L"0", L"1", L"2", L"3",
-   L"4", L"5", L"6", L"7",
-   L"8", L"9", L"*", L"#",
-   L"A", L"B", L"C", L"D",
-   L"a", L"b", L"c", L"d",
-   L"e", L"f", L"g", L"h",
-   L"i", L"j", L"k", L"l",
-   L"m", L"n", L"o", L"p",
-   L"q", L"r", L"s", L"t",
-   L"u", L"v", L"w", L"x",
-   L"y", L"z"
-};
+static const wxString kSymbols{ "0123456789*#ABCDabcdefghijklmnopqrstuvwxyz" };
 
 //
 // EffectDtmf
@@ -89,11 +74,7 @@ END_EVENT_TABLE()
 EffectDtmf::EffectDtmf()
    : mParameters {
       [this]{
-         wxString symbols;
-         for (unsigned int i = 0; i < WXSIZEOF(kSymbols); i++)
-            symbols += kSymbols[i];
-
-         if (Sequence.cache.find_first_not_of(symbols) != wxString::npos)
+         if (Sequence.cache.find_first_not_of(kSymbols) != wxString::npos)
             return false;
 
          Recalculate();
@@ -301,6 +282,8 @@ bool EffectDtmf::Init()
 
 void EffectDtmf::PopulateOrExchange(ShuttleGui & S)
 {
+   using namespace DialogDefinition;
+
    // dialog will be passed values from effect
    // Effect retrieves values from saved config
    // Dialog will take care of using them to initialize controls
@@ -314,16 +297,14 @@ void EffectDtmf::PopulateOrExchange(ShuttleGui & S)
       mDtmfSequenceT =
       S
          .Id(ID_Sequence)
-         .Validator([this]{
-            wxTextValidator vldDtmf(wxFILTER_INCLUDE_CHAR_LIST, &dtmfSequence);
-            vldDtmf.SetIncludes(wxArrayString(WXSIZEOF(kSymbols), kSymbols));
-            return vldDtmf; })
+         .Target( dtmfSequence,
+            StringValidator::Options{}.AllowedChars( kSymbols ) )
          .AddTextBox(XXO("DTMF &sequence:"), L"", 10);
 
       S
          .Id(ID_Amplitude)
-         .Validator<FloatingPointValidator<double>>(
-            3, &dtmfAmplitude, NumValidatorStyle::NO_TRAILING_ZEROES,
+         .Target( dtmfAmplitude,
+            NumValidatorStyle::NO_TRAILING_ZEROES, 3,
             Amplitude.min, Amplitude.max)
          .AddTextBox(XXO("&Amplitude (0-1):"), L"", 10);
 

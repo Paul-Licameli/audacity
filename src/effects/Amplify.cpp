@@ -31,12 +31,10 @@
 #include <wx/slider.h>
 #include <wx/stattext.h>
 #include <wx/textctrl.h>
-#include <wx/valtext.h>
 #include <wx/log.h>
 
 #include "../ShuttleGui.h"
 #include "../WaveTrack.h"
-#include "../widgets/valnum.h"
 
 
 enum
@@ -225,8 +223,8 @@ void EffectAmplify::PopulateOrExchange(ShuttleGui & S)
          mAmpT =
          S
             .Id(ID_Amp)
-            .Validator<FloatingPointValidator<double>>(
-               precision, &mAmp, NumValidatorStyle::ONE_TRAILING_ZERO, Amp.min, Amp.max )
+            .Target(  mAmp,
+               NumValidatorStyle::ONE_TRAILING_ZERO, precision, Amp.min, Amp.max )
             .AddTextBox(XXO("&Amplification (dB):"), L"", 12);
       }
       S.EndMultiColumn();
@@ -249,11 +247,11 @@ void EffectAmplify::PopulateOrExchange(ShuttleGui & S)
          mNewPeakT =
          S
             .Id(ID_Peak)
-            .Validator<FloatingPointValidator<double>>(
+            .Target( mNewPeak,
+               NumValidatorStyle::ONE_TRAILING_ZERO,
                // One extra decimal place so that rounding is visible to user
                // (see: bug 958)
                precision + 1,
-               &mNewPeak, NumValidatorStyle::ONE_TRAILING_ZERO,
                // min and max need same precision as what we're validating (bug 963)
                RoundValue( precision + 1, Amp.min + LINEAR_TO_DB(mPeak) ),
                RoundValue( precision + 1, Amp.max + LINEAR_TO_DB(mPeak) ) )

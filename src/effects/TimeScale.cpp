@@ -22,9 +22,9 @@
 #include <math.h>
 
 #include <wx/slider.h>
+#include <wx/textctrl.h>
 
 #include "../ShuttleGui.h"
-#include "../widgets/valnum.h"
 
 enum
 {
@@ -180,9 +180,8 @@ void EffectTimeScale::PopulateOrExchange(ShuttleGui & S)
             m_pTextCtrl_RatePercentChangeStart =
             S
                .Id(ID_RatePercentChangeStart)
-               .Validator<FloatingPointValidator<double>>(
-                  3, &m_RatePercentChangeStart,
-                  NumValidatorStyle::NO_TRAILING_ZEROES,
+               .Target( m_RatePercentChangeStart,
+                  NumValidatorStyle::NO_TRAILING_ZEROES, 3,
                   RatePercentStart.min, RatePercentStart.max )
                .AddTextBox( {}, L"", 12);
          }
@@ -206,9 +205,8 @@ void EffectTimeScale::PopulateOrExchange(ShuttleGui & S)
             m_pTextCtrl_RatePercentChangeEnd =
             S
                .Id(ID_RatePercentChangeEnd)
-               .Validator<FloatingPointValidator<double>>(
-                  3, &m_RatePercentChangeEnd,
-                  NumValidatorStyle::NO_TRAILING_ZEROES,
+               .Target( m_RatePercentChangeEnd,
+                  NumValidatorStyle::NO_TRAILING_ZEROES, 3,
                   RatePercentEnd.min, RatePercentEnd.max )
                .AddTextBox( {}, L"", 12);
          }
@@ -233,9 +231,8 @@ void EffectTimeScale::PopulateOrExchange(ShuttleGui & S)
             m_pTextCtrl_PitchHalfStepsStart =
             S
                .Id(ID_PitchHalfStepsStart)
-               .Validator<FloatingPointValidator<double>>(
-                  3, &m_PitchHalfStepsStart,
-                  NumValidatorStyle::NO_TRAILING_ZEROES,
+               .Target( m_PitchHalfStepsStart,
+                  NumValidatorStyle::NO_TRAILING_ZEROES, 3,
                   HalfStepsStart.min, HalfStepsStart.max )
                .AddTextBox(XXO("(&semitones) [-12 to 12]:"), L"", 12);
 
@@ -243,9 +240,8 @@ void EffectTimeScale::PopulateOrExchange(ShuttleGui & S)
             m_pTextCtrl_PitchPercentChangeStart =
             S
                .Id(ID_PitchPercentChangeStart)
-               .Validator<FloatingPointValidator<double>>(
-                  3, &m_PitchPercentChangeStart,
-                  NumValidatorStyle::NO_TRAILING_ZEROES,
+               .Target( m_PitchPercentChangeStart,
+                  NumValidatorStyle::NO_TRAILING_ZEROES, 3,
                   PitchPercentStart.min, PitchPercentStart.max )
                .AddTextBox(XXO("(%) [-50 to 100]:"), L"", 12);
          }
@@ -261,18 +257,16 @@ void EffectTimeScale::PopulateOrExchange(ShuttleGui & S)
             m_pTextCtrl_PitchHalfStepsEnd =
             S
                .Id(ID_PitchHalfStepsEnd)
-               .Validator<FloatingPointValidator<double>>(
-                  3, &m_PitchHalfStepsEnd,
-                  NumValidatorStyle::NO_TRAILING_ZEROES,
+               .Target( m_PitchHalfStepsEnd,
+                  NumValidatorStyle::NO_TRAILING_ZEROES, 3,
                   HalfStepsEnd.min, HalfStepsEnd.max )
                .AddTextBox(XXO("(s&emitones) [-12 to 12]:"), L"", 12);
 
             m_pTextCtrl_PitchPercentChangeEnd =
             S
                .Id(ID_PitchPercentChangeEnd)
-               .Validator<FloatingPointValidator<double>>(
-                  3, &m_PitchPercentChangeEnd,
-                  NumValidatorStyle::NO_TRAILING_ZEROES,
+               .Target( m_PitchPercentChangeEnd,
+                  NumValidatorStyle::NO_TRAILING_ZEROES, 3,
                   PitchPercentStart.min, PitchPercentStart.max)
                .AddTextBox(XXO("(%) [-50 to 100]:"), L"", 12);
          }

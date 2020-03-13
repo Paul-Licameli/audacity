@@ -42,7 +42,6 @@ with changes in the SpectralSelectionBar.
 #include <wx/combobox.h>
 #include <wx/settings.h>
 #include <wx/sizer.h>
-#include <wx/valtext.h>
 #include <wx/window.h>
 #endif
 #include <wx/statline.h>

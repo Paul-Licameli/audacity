@@ -26,9 +26,9 @@
 #include <math.h>
 
 #include <wx/slider.h>
+#include <wx/textctrl.h>
 
 #include "../ShuttleGui.h"
-#include "../widgets/valnum.h"
 
 enum
 {
@@ -222,8 +222,7 @@ void EffectPhaser::PopulateOrExchange(ShuttleGui & S)
       mStagesT =
       S
          .Id(ID_Stages)
-         .Validator<IntegerValidator<int>>(
-            &mStages, NumValidatorStyle::DEFAULT, Stages.min, Stages.max)
+         .Target( mStages, NumValidatorStyle::DEFAULT, Stages.min, Stages.max )
          .AddTextBox(XXO("&Stages:"), L"", 15);
 
       mStagesS =
@@ -238,8 +237,7 @@ void EffectPhaser::PopulateOrExchange(ShuttleGui & S)
       mDryWetT =
       S
          .Id(ID_DryWet)
-         .Validator<IntegerValidator<int>>(
-            &mDryWet, NumValidatorStyle::DEFAULT, DryWet.min, DryWet.max)
+         .Target( mDryWet, NumValidatorStyle::DEFAULT, DryWet.min, DryWet.max )
          .AddTextBox(XXO("&Dry/Wet:"), L"", 15);
 
       mDryWetS =
@@ -253,8 +251,8 @@ void EffectPhaser::PopulateOrExchange(ShuttleGui & S)
       mFreqT =
       S
          .Id(ID_Freq)
-         .Validator<FloatingPointValidator<double>>(
-            5, &mFreq, NumValidatorStyle::ONE_TRAILING_ZERO, Freq.min, Freq.max)
+         .Target( mFreq,
+            NumValidatorStyle::ONE_TRAILING_ZERO, 5, Freq.min, Freq.max )
          .AddTextBox(XXO("LFO Freq&uency (Hz):"), L"", 15);
 
       mFreqS =
@@ -268,8 +266,7 @@ void EffectPhaser::PopulateOrExchange(ShuttleGui & S)
       mPhaseT =
       S
          .Id(ID_Phase)
-         .Validator<FloatingPointValidator<double>>(
-            1, &mPhase, NumValidatorStyle::DEFAULT, Phase.min, Phase.max)
+         .Target( mPhase, NumValidatorStyle::DEFAULT, 1, Phase.min, Phase.max )
          .AddTextBox(XXO("LFO Sta&rt Phase (deg.):"), L"", 15);
 
       mPhaseS =
@@ -284,8 +281,7 @@ void EffectPhaser::PopulateOrExchange(ShuttleGui & S)
       mDepthT =
       S
          .Id(ID_Depth)
-         .Validator<IntegerValidator<int>>(
-            &mDepth, NumValidatorStyle::DEFAULT, Depth.min, Depth.max)
+         .Target( mDepth, NumValidatorStyle::DEFAULT, Depth.min, Depth.max )
          .AddTextBox(XXO("Dept&h:"), L"", 15);
 
       mDepthS =
@@ -299,8 +295,8 @@ void EffectPhaser::PopulateOrExchange(ShuttleGui & S)
       mFeedbackT =
       S
          .Id(ID_Feedback)
-         .Validator<IntegerValidator<int>>(
-            &mFeedback, NumValidatorStyle::DEFAULT, Feedback.min, Feedback.max)
+         .Target( mFeedback,
+            NumValidatorStyle::DEFAULT, Feedback.min, Feedback.max )
          .AddTextBox(XXO("Feedbac&k (%):"), L"", 15);
 
       mFeedbackS =
@@ -315,8 +311,8 @@ void EffectPhaser::PopulateOrExchange(ShuttleGui & S)
       mOutGainT =
       S
          .Id(ID_OutGain)
-         .Validator<FloatingPointValidator<double>>(
-            1, &mOutGain, NumValidatorStyle::DEFAULT, OutGain.min, OutGain.max)
+         .Target( mOutGain,
+            NumValidatorStyle::DEFAULT, 1, OutGain.min, OutGain.max )
          .AddTextBox(XXO("&Output gain (dB):"), L"", 12);
 
       mOutGainS =

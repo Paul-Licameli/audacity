@@ -21,11 +21,9 @@
 
 #include <wx/choice.h>
 #include <wx/textctrl.h>
-#include <wx/valgen.h>
 
 #include "../Prefs.h"
 #include "../ShuttleGui.h"
-#include "../widgets/valnum.h"
 #include "../widgets/NumericTextCtrl.h"
 
 enum kTypes
@@ -216,12 +214,12 @@ void EffectNoise::PopulateOrExchange(ShuttleGui & S)
    S.StartMultiColumn(2, wxCENTER);
    {
       S
-         .Validator<wxGenericValidator>(&mType)
+         .Target( mType )
          .AddChoice(XXO("&Noise type:"), Msgids(kTypeStrings, nTypes));
 
       S
-         .Validator<FloatingPointValidator<double>>(
-            6, &mAmp, NumValidatorStyle::NO_TRAILING_ZEROES, Amp.min, Amp.max )
+         .Target( mAmp,
+            NumValidatorStyle::NO_TRAILING_ZEROES, 6, Amp.min, Amp.max )
          .AddTextBox(XXO("&Amplitude (0-1):"), L"", 12);
 
       S

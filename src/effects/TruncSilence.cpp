@@ -26,7 +26,7 @@
 
 #include <wx/checkbox.h>
 #include <wx/choice.h>
-#include <wx/valgen.h>
+#include <wx/textctrl.h>
 
 #include "../AudioIOBase.h"
 #include "../Prefs.h"
@@ -35,7 +35,6 @@
 #include "../Shuttle.h"
 #include "../ShuttleGui.h"
 #include "../WaveTrack.h"
-#include "../widgets/valnum.h"
 #include "../widgets/AudacityMessageBox.h"
 
 class Enums {
@@ -771,8 +770,8 @@ void EffectTruncSilence::PopulateOrExchange(ShuttleGui & S)
          // Threshold
          mThresholdText =
          S
-            .Validator<FloatingPointValidator<double>>(
-               3, &mThresholdDB, NumValidatorStyle::NO_TRAILING_ZEROES,
+            .Target( mThresholdDB,
+               NumValidatorStyle::NO_TRAILING_ZEROES, 3,
                Threshold.min, Threshold.max )
             .Text({ {}, XO("db") })
             .AddTextBox(XXO("&Threshold:"), L"", 0);
@@ -782,9 +781,8 @@ void EffectTruncSilence::PopulateOrExchange(ShuttleGui & S)
          // Ignored silence
          mInitialAllowedSilenceT =
          S
-            .Validator<FloatingPointValidator<double>>(
-               3, &mInitialAllowedSilence,
-               NumValidatorStyle::NO_TRAILING_ZEROES,
+            .Target( mInitialAllowedSilence,
+               NumValidatorStyle::NO_TRAILING_ZEROES, 3,
                Minimum.min, Minimum.max)
             .Text({ {}, XO("seconds") })
             .AddTextBox(XXO("&Duration:"), L"", 12);
@@ -803,7 +801,7 @@ void EffectTruncSilence::PopulateOrExchange(ShuttleGui & S)
          auto actionChoices = Msgids( kActionStrings, nActions );
          mActionChoice =
          S
-            .Validator<wxGenericValidator>(&mActionIndex)
+            .Target( mActionIndex )
             .MinSize( { -1, -1 } )
             .AddChoice( {}, actionChoices );
       }
@@ -813,9 +811,8 @@ void EffectTruncSilence::PopulateOrExchange(ShuttleGui & S)
          // Truncation / Compression factor
 
          S
-            .Validator<FloatingPointValidator<double>>(
-               3, &mTruncLongestAllowedSilence,
-               NumValidatorStyle::NO_TRAILING_ZEROES,
+            .Target( mTruncLongestAllowedSilence,
+               NumValidatorStyle::NO_TRAILING_ZEROES, 3,
                Truncate.min, Truncate.max )
             .Text({ {}, XO("seconds") })
             .Enable( [this]{ return mActionIndex == kTruncate; } )
@@ -824,9 +821,8 @@ void EffectTruncSilence::PopulateOrExchange(ShuttleGui & S)
          S.AddUnits(XO("seconds"));
 
          S
-            .Validator<FloatingPointValidator<double>>(
-               3, &mSilenceCompressPercent,
-               NumValidatorStyle::NO_TRAILING_ZEROES,
+            .Target( mSilenceCompressPercent,
+               NumValidatorStyle::NO_TRAILING_ZEROES, 3,
                Compress.min, Compress.max )
             .Text({ {}, XO("%") })
             .Enable( [this]{ return mActionIndex == kCompress; } )

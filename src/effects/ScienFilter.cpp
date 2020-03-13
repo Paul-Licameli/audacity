@@ -48,7 +48,7 @@ a graph for EffectScienFilter.
 #include <wx/settings.h>
 #include <wx/slider.h>
 #include <wx/stattext.h>
-#include <wx/valgen.h>
+#include <wx/textctrl.h>
 
 #include "../AColor.h"
 #include "../AllThemeResources.h"
@@ -58,7 +58,6 @@ a graph for EffectScienFilter.
 #include "../ShuttleGui.h"
 #include "../Theme.h"
 #include "../WaveTrack.h"
-#include "../widgets/valnum.h"
 #include "../widgets/AudacityMessageBox.h"
 #include "../widgets/Ruler.h"
 #include "../widgets/WindowAccessible.h"
@@ -462,7 +461,7 @@ void EffectScienFilter::PopulateOrExchange(ShuttleGui & S)
          S
             .Id(ID_Type)
             .Focus()
-            .Validator<wxGenericValidator>(&mFilterType)
+            .Target( mFilterType )
             .MinSize( { -1, -1 } )
             .AddChoice(XXO("&Filter Type:"),
                Msgids(kTypeStrings, nTypes) );
@@ -470,7 +469,7 @@ void EffectScienFilter::PopulateOrExchange(ShuttleGui & S)
          mFilterOrderCtl =
          S
             .Id(ID_Order)
-            .Validator<wxGenericValidator>(&mOrderIndex)
+            .Target( mOrderIndex )
             .MinSize( { -1, -1 } )
             /*i18n-hint: 'Order' means the complexity of the filter, and is a number between 1 and 10.*/
             .AddChoice(XXO("O&rder:"),
@@ -491,16 +490,11 @@ void EffectScienFilter::PopulateOrExchange(ShuttleGui & S)
          S
             .Id(ID_Ripple)
             .Text(XO("Passband Ripple (dB)"))
-            .Validator<FloatingPointValidator<double>>(
-               1, &mRipple, NumValidatorStyle::DEFAULT,
+            .Target( mRipple,
+               NumValidatorStyle::DEFAULT, 1,
                Passband.min, Passband.max)
             .Enable( type1Enabler )
             .AddTextBox( {}, L"", 10);
-
-         S
-            .Enable( type1Enabler )
-            .AddVariableText(XO("dB"),
-               false, wxALL | wxALIGN_LEFT | wxALIGN_CENTER_VERTICAL);
 
          S
             .AddVariableText(XO("dB"),
@@ -509,7 +503,7 @@ void EffectScienFilter::PopulateOrExchange(ShuttleGui & S)
          mFilterSubTypeCtl =
          S
             .Id(ID_SubType)
-            .Validator<wxGenericValidator>(&mFilterSubtype)
+            .Target( mFilterSubtype )
             .MinSize( { -1, -1 } )
             .AddChoice(XXO("&Subtype:"),
                Msgids(kSubTypeStrings, nSubTypes) );
@@ -518,8 +512,8 @@ void EffectScienFilter::PopulateOrExchange(ShuttleGui & S)
          S
             .Id(ID_Cutoff)
             .Text(XO("Cutoff (Hz)"))
-            .Validator<FloatingPointValidator<double>>(
-               1, &mCutoff, NumValidatorStyle::DEFAULT,
+            .Target( mCutoff,
+               NumValidatorStyle::DEFAULT, 1,
                Cutoff.min, mNyquist - 1)
             .AddTextBox(XXO("C&utoff:"), L"", 10);
 
@@ -534,8 +528,8 @@ void EffectScienFilter::PopulateOrExchange(ShuttleGui & S)
          S
             .Id(ID_StopbandRipple)
             .Text(XO("Minimum S&topband Attenuation (dB)"))
-            .Validator<FloatingPointValidator<double>>(
-               1, &mStopbandRipple, NumValidatorStyle::DEFAULT,
+            .Target( mStopbandRipple,
+               NumValidatorStyle::DEFAULT, 1,
                Stopband.min, Stopband.max)
             .Enable( type2Enabler )
             .AddTextBox( {}, L"", 10);

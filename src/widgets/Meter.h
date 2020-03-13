@@ -249,7 +249,7 @@ class AUDACITY_DLL_API MeterPanel final
    double    mPeakHoldDuration;
    double    mT;
    double    mRate;
-   long      mMeterRefreshRate;
+   int       mMeterRefreshRate;
    long      mMeterDisabled; //is used as a bool, needs long for easy gPrefs...
 
    bool      mMonitoring;

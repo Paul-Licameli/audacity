@@ -24,7 +24,6 @@ of sample block storage.
 //#include <wx/choice.h>
 //#include <wx/stattext.h>
 #include <wx/stopwatch.h>
-#include <wx/valgen.h>
 #include <wx/valtext.h>
 
 #include "SampleBlock.h"
@@ -153,6 +152,8 @@ void BenchmarkDialog::OnClose()
 
 void BenchmarkDialog::MakeBenchmarkDialog()
 {
+   auto options = DialogDefinition::StringValidator::Options{}.Numeric();
+
    ShuttleGui S(this, eIsCreating);
 
    // Strings don't need to be translated because this class doesn't
@@ -166,7 +167,7 @@ void BenchmarkDialog::MakeBenchmarkDialog()
          //
          S
             .Id(BlockSizeID)
-            .Validator<wxTextValidator>(wxFILTER_NUMERIC, &mBlockSizeStr)
+            .Target(mBlockSizeStr, options)
             .AddTextBox(XXO("Disk Block Size (KB):"),
                                              L"",
                                              12);
@@ -174,7 +175,7 @@ void BenchmarkDialog::MakeBenchmarkDialog()
          //
          S
             .Id(NumEditsID)
-            .Validator<wxTextValidator>(wxFILTER_NUMERIC, &mNumEditsStr)
+            .Target(mNumEditsStr, options)
             .AddTextBox(XXO("Number of Edits:"),
                                             L"",
                                             12);
@@ -182,7 +183,7 @@ void BenchmarkDialog::MakeBenchmarkDialog()
          //
          S
             .Id(DataSizeID)
-            .Validator<wxTextValidator>(wxFILTER_NUMERIC, &mDataSizeStr)
+            .Target(mDataSizeStr, options)
             .AddTextBox(XXO("Test Data Size (MB):"),
                                             L"",
                                             12);
@@ -190,7 +191,7 @@ void BenchmarkDialog::MakeBenchmarkDialog()
          ///
          S
             .Id(RandSeedID)
-            .Validator<wxTextValidator>(wxFILTER_NUMERIC, &mRandSeedStr)
+            .Target(mRandSeedStr, options)
             /* i18n-hint: A "seed" is a number that initializes a
                pseudorandom number generating algorithm */
             .AddTextBox(XXO("Random Seed:"),
@@ -202,13 +203,13 @@ void BenchmarkDialog::MakeBenchmarkDialog()
 
       //
       S
-         .Validator<wxGenericValidator>(&mBlockDetail)
+         .Target(mBlockDetail)
          .AddCheckBox(XXO("Show detailed info about each block file"),
                            false);
 
       //
       S
-         .Validator<wxGenericValidator>(&mEditDetail)
+         .Target(mEditDetail)
          .AddCheckBox(XXO("Show detailed info about each editing operation"),
                            false);
 

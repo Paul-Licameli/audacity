@@ -27,7 +27,6 @@
 
 #include "../ShuttleGui.h"
 #include "../widgets/AudacityMessageBox.h"
-#include "../widgets/valnum.h"
 
 // Define keys, defaults, minimums, and maximums for the effect parameters
 //
@@ -149,14 +148,14 @@ void EffectEcho::PopulateOrExchange(ShuttleGui & S)
    S.StartMultiColumn(2, wxALIGN_CENTER);
    {
       S
-         .Validator<FloatingPointValidator<double>>(
-            3, &delay, NumValidatorStyle::NO_TRAILING_ZEROES,
+         .Target( delay,
+            NumValidatorStyle::NO_TRAILING_ZEROES, 3,
             Delay.min, Delay.max )
          .AddTextBox(XXO("&Delay time (seconds):"), L"", 10);
 
       S
-         .Validator<FloatingPointValidator<double>>(
-            3, &decay, NumValidatorStyle::NO_TRAILING_ZEROES,
+         .Target( decay,
+            NumValidatorStyle::NO_TRAILING_ZEROES, 3,
             Decay.min, Decay.max)
          .AddTextBox(XXO("D&ecay factor:"), L"", 10);
    }

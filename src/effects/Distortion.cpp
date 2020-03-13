@@ -33,15 +33,14 @@
 #endif
 
 #include <wx/choice.h>
-#include <wx/valgen.h>
 #include <wx/log.h>
 #include <wx/simplebook.h>
 #include <wx/slider.h>
 #include <wx/stattext.h>
+#include <wx/textctrl.h>
 
 #include "../Prefs.h"
 #include "../ShuttleGui.h"
-#include "../widgets/valnum.h"
 
 static const EnumValueSymbol kTableTypeStrings[nTableTypes] =
 {
@@ -349,7 +348,7 @@ void EffectDistortion::PopulateOrExchange(ShuttleGui & S)
          S
             .Id(ID_Type)
             .MinSize( { -1, -1 } )
-            .Validator<wxGenericValidator>(&mTableChoiceIndx)
+            .Target( mTableChoiceIndx )
             .AddChoice(XXO("Distortion type:"),
                Msgids(kTableTypeStrings, nTableTypes));
 
@@ -409,7 +408,7 @@ void EffectDistortion::PopulateCheckboxPage(
       .StartNotebookPage({});
    {
       if ( spec.dcBlockEnabled )
-         S.Validator<wxGenericValidator>( &params.mDCBlock );
+         S.Target( params.mDCBlock );
       else
          S.Disable();
 
@@ -457,8 +456,8 @@ void EffectDistortion::PopulateThresholdPage(
       if ( spec.thresholdName.empty() )
          S.Disable();
       else
-         S.Validator<FloatingPointValidator<double>>(
-            2, &params.mThreshold_dB, NumValidatorStyle::DEFAULT,
+         S.Target( params.mThreshold_dB,
+            NumValidatorStyle::DEFAULT, 2,
             Threshold_dB.min, Threshold_dB.max );
 
       controls.mThresholdT =
@@ -488,8 +487,8 @@ void EffectDistortion::PopulateThresholdPage(
       if ( spec.noiseFloorName.empty() )
          S.Disable();
       else
-         S.Validator<FloatingPointValidator<double>>(
-            2, &params.mNoiseFloor, NumValidatorStyle::DEFAULT,
+         S.Target( params.mNoiseFloor,
+            NumValidatorStyle::DEFAULT, 2,
             NoiseFloor.min, NoiseFloor.max );
 
       controls.mNoiseFloorT =
@@ -539,8 +538,8 @@ void EffectDistortion::PopulateParameterPage(
       if ( spec.param1Name.empty() )
          S.Disable();
       else
-         S.Validator<FloatingPointValidator<double>>(
-            2, &params.mParam1, NumValidatorStyle::DEFAULT,
+         S.Target( params.mParam1,
+            NumValidatorStyle::DEFAULT, 2,
             Param1.min, Param1.max );
 
       controls.mParam1T =
@@ -568,8 +567,8 @@ void EffectDistortion::PopulateParameterPage(
       if ( spec.param2Name.empty() )
          S.Disable();
       else
-         S.Validator<FloatingPointValidator<double>>(
-            2, &params.mParam2, NumValidatorStyle::DEFAULT,
+         S.Target( params.mParam2,
+            NumValidatorStyle::DEFAULT, 2,
             Param2.min, Param2.max );
 
       controls.mParam2T = S.Id(ID_Param2)
@@ -595,8 +594,8 @@ void EffectDistortion::PopulateParameterPage(
       if ( spec.repeatsName.empty() )
          S.Disable();
       else
-         S.Validator<IntegerValidator<int>>(
-            &params.mRepeats, NumValidatorStyle::DEFAULT,
+         S.Target( params.mRepeats,
+            NumValidatorStyle::DEFAULT,
             Repeats.min, Repeats.max );
 
       controls.mRepeatsT =
@@ -611,6 +610,7 @@ void EffectDistortion::PopulateParameterPage(
          .Text( label )
          .Disable( spec.repeatsName.empty() )
          .Style(wxSL_HORIZONTAL)
+         .Target( params.mRepeats )
          .AddSlider( {}, Repeats.def, Repeats.max, Repeats.min);
 
       S.AddSpace(20, 0);

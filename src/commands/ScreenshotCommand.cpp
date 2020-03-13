@@ -29,7 +29,6 @@ small calculations of rectangles.
 #include <wx/dcmemory.h>
 #include <wx/settings.h>
 #include <wx/bitmap.h>
-#include <wx/valgen.h>
 
 #include "../AdornedRulerPanel.h"
 #include "../BatchCommands.h"

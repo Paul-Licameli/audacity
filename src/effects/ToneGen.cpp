@@ -26,12 +26,11 @@ frequency changes smoothly during the tone.
 #include <float.h>
 
 #include <wx/choice.h>
-#include <wx/valgen.h>
+#include <wx/textctrl.h>
 
 #include "../Project.h"
 #include "../ProjectSettings.h"
 #include "../ShuttleGui.h"
-#include "../widgets/valnum.h"
 #include "../widgets/NumericTextCtrl.h"
 
 enum kInterpolations
@@ -300,7 +299,7 @@ void EffectToneGen::PopulateOrExchange(ShuttleGui & S)
    S.StartMultiColumn(2, wxCENTER);
    {
       S
-         .Validator<wxGenericValidator>(&mWaveform)
+         .Target( mWaveform )
          .AddChoice(XXO("&Waveform:"),
             Msgids( kWaveStrings, nWaveforms ) );
 
@@ -335,9 +334,8 @@ void EffectToneGen::PopulateOrExchange(ShuttleGui & S)
                t =
                S
                   .Text(XO("Frequency Hertz Start"))
-                  .Validator<FloatingPointValidator<double>>(
-                     6, &mFrequency[0],
-                     NumValidatorStyle::NO_TRAILING_ZEROES,
+                  .Target( mFrequency[0],
+                     NumValidatorStyle::NO_TRAILING_ZEROES, 6,
                      StartFreq.min,
                      mProjectRate / 2.0 )
                   .AddTextBox( {}, L"", 12);
@@ -349,9 +347,8 @@ void EffectToneGen::PopulateOrExchange(ShuttleGui & S)
                t =
                S
                   .Text(XO("Frequency Hertz End"))
-                  .Validator<FloatingPointValidator<double>>(
-                     6, &mFrequency[1],
-                     NumValidatorStyle::NO_TRAILING_ZEROES,
+                  .Target( mFrequency[1],
+                     NumValidatorStyle::NO_TRAILING_ZEROES, 6,
                      EndFreq.min,
                      mProjectRate / 2.0 )
                   .AddTextBox( {}, L"", 12);
@@ -370,8 +367,8 @@ void EffectToneGen::PopulateOrExchange(ShuttleGui & S)
                t =
                S
                   .Text(XO("Amplitude Start"))
-                  .Validator<FloatingPointValidator<double>>(
-                     6, &mAmplitude[0], NumValidatorStyle::NO_TRAILING_ZEROES,
+                  .Target( mAmplitude[0],
+                     NumValidatorStyle::NO_TRAILING_ZEROES, 6,
                      StartAmp.min, StartAmp.max )
                   .AddTextBox( {}, L"", 12);
             }
@@ -382,8 +379,8 @@ void EffectToneGen::PopulateOrExchange(ShuttleGui & S)
                t =
                S
                   .Text(XO("Amplitude End"))
-                  .Validator<FloatingPointValidator<double>>(
-                     6, &mAmplitude[1], NumValidatorStyle::NO_TRAILING_ZEROES,
+                  .Target( mAmplitude[1],
+                     NumValidatorStyle::NO_TRAILING_ZEROES, 6,
                      EndAmp.min, EndAmp.max )
                   .AddTextBox( {}, L"", 12);
             }
@@ -392,7 +389,7 @@ void EffectToneGen::PopulateOrExchange(ShuttleGui & S)
          S.EndHorizontalLay();
 
          S
-            .Validator<wxGenericValidator>(&mInterpolation)
+            .Target( mInterpolation )
             .AddChoice(XXO("I&nterpolation:"),
                Msgids( kInterStrings, nInterpolations ) );
       }
@@ -400,16 +397,16 @@ void EffectToneGen::PopulateOrExchange(ShuttleGui & S)
       {
          t =
          S
-            .Validator<FloatingPointValidator<double>>(
-               6, &mFrequency[0], NumValidatorStyle::NO_TRAILING_ZEROES,
+            .Target( mFrequency[0],
+               NumValidatorStyle::NO_TRAILING_ZEROES, 6,
                Frequency.min,
                mProjectRate / 2.0 )
             .AddTextBox(XXO("&Frequency (Hz):"), L"", 12);
 
          t =
          S
-            .Validator<FloatingPointValidator<double>>(
-               6, &mAmplitude[0], NumValidatorStyle::NO_TRAILING_ZEROES,
+            .Target( mAmplitude[0],
+               NumValidatorStyle::NO_TRAILING_ZEROES, 6,
                Amplitude.min, Amplitude.max )
             .AddTextBox(XXO("&Amplitude (0-1):"), L"", 12);
       }

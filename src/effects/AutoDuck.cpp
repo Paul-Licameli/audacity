@@ -25,13 +25,13 @@
 
 #include <wx/dcclient.h>
 #include <wx/dcmemory.h>
+#include <wx/textctrl.h>
 
 #include "../AColor.h"
 #include "../AllThemeResources.h"
 #include "../Prefs.h"
 #include "../ShuttleGui.h"
 #include "../Theme.h"
-#include "../widgets/valnum.h"
 
 #include "../WaveTrack.h"
 #include "../widgets/AudacityMessageBox.h"
@@ -402,8 +402,8 @@ void EffectAutoDuck::PopulateOrExchange(ShuttleGui & S)
       {
          mDuckAmountDbBox =
          S
-            .Validator<FloatingPointValidator<double>>(
-               1, &mDuckAmountDb, NumValidatorStyle::NO_TRAILING_ZEROES,
+            .Target( mDuckAmountDb,
+               NumValidatorStyle::NO_TRAILING_ZEROES, 1,
                DuckAmountDb.min, DuckAmountDb.max )
             .Text({ {}, XO("db") })
             .AddTextBox(XXO("Duck &amount:"), L"", 10);
@@ -412,8 +412,8 @@ void EffectAutoDuck::PopulateOrExchange(ShuttleGui & S)
 
          mMaximumPauseBox =
          S
-            .Validator<FloatingPointValidator<double>>(
-               2, &mMaximumPause, NumValidatorStyle::NO_TRAILING_ZEROES,
+            .Target(  mMaximumPause,
+               NumValidatorStyle::NO_TRAILING_ZEROES, 2,
                MaximumPause.min, MaximumPause.max )
             .Text({ {}, XO("seconds") })
             .AddTextBox(XXO("Ma&ximum pause:"), L"", 10);
@@ -422,17 +422,18 @@ void EffectAutoDuck::PopulateOrExchange(ShuttleGui & S)
 
          mOuterFadeDownLenBox =
          S
-            .Validator<FloatingPointValidator<double>>(
-               2, &mOuterFadeDownLen, NumValidatorStyle::NO_TRAILING_ZEROES,
-               OuterFadeDownLen.min, OuterFadeDownLen.max )
+            .Target( mOuterFadeDownLen,
+               NumValidatorStyle::NO_TRAILING_ZEROES, 2,
+               OuterFadeDownLen.min, OuterFadeDownLen.max)
             .Text({ {}, XO("seconds") })
             .AddTextBox(XXO("Outer fade &down length:"), L"", 10);
 
          S.AddUnits(XO("seconds"));
 
          mOuterFadeUpLenBox =
-         S.Validator<FloatingPointValidator<double>>(
-               2, &mOuterFadeUpLen, NumValidatorStyle::NO_TRAILING_ZEROES,
+         S
+            .Target( mOuterFadeUpLen,
+               NumValidatorStyle::NO_TRAILING_ZEROES, 2,
                OuterFadeUpLen.min, OuterFadeUpLen.max )
             .Text({ {}, XO("seconds") })
             .AddTextBox(XXO("Outer fade &up length:"), L"", 10);
@@ -441,8 +442,8 @@ void EffectAutoDuck::PopulateOrExchange(ShuttleGui & S)
 
          mInnerFadeDownLenBox =
          S
-            .Validator<FloatingPointValidator<double>>(
-               2, &mInnerFadeDownLen, NumValidatorStyle::NO_TRAILING_ZEROES,
+            .Target( mInnerFadeDownLen,
+               NumValidatorStyle::NO_TRAILING_ZEROES, 2,
                InnerFadeDownLen.min, InnerFadeDownLen.max )
             .Text({ {}, XO("seconds") })
             .AddTextBox(XXO("Inner fade d&own length:"), L"", 10);
@@ -450,8 +451,9 @@ void EffectAutoDuck::PopulateOrExchange(ShuttleGui & S)
          S.AddUnits(XO("seconds"));
 
          mInnerFadeUpLenBox =
-         S.Validator<FloatingPointValidator<double>>(
-               2, &mInnerFadeUpLen, NumValidatorStyle::NO_TRAILING_ZEROES,
+         S
+            .Target( mInnerFadeUpLen,
+               NumValidatorStyle::NO_TRAILING_ZEROES, 2,
                InnerFadeUpLen.min, InnerFadeUpLen.max )
             .Text({ {}, XO("seconds") })
             .AddTextBox(XXO("Inner &fade up length:"), L"", 10);
@@ -464,8 +466,8 @@ void EffectAutoDuck::PopulateOrExchange(ShuttleGui & S)
       {
          mThresholdDbBox =
          S
-            .Validator<FloatingPointValidator<double>>(
-               2, &mThresholdDb, NumValidatorStyle::NO_TRAILING_ZEROES,
+            .Target( mThresholdDb,
+               NumValidatorStyle::NO_TRAILING_ZEROES, 2,
                ThresholdDb.min, ThresholdDb.max )
             .Text({ {}, XO("db") })
             .AddTextBox(XXO("&Threshold:"), L"", 10);
