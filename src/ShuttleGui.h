@@ -1313,9 +1313,11 @@ public:
    void EndInvisiblePanel();
 
    // Introduce a sequence of calls to AddRadioButton.
+   // Target and action and other attributes can be specified, which will
+   // apply to each button, unless re-specified for an individual button.
    void StartRadioButtonGroup();
    // SettingName is a key in Preferences.
-   void StartRadioButtonGroup( const LabelSetting &Setting );
+   void StartRadioButtonGroup( LabelSetting &Setting );
 
    // End a sequence of calls to AddRadioButton.
    void EndRadioButtonGroup();
@@ -1523,10 +1525,11 @@ private:
 
    TranslatableLabels mRadioLabels;
    Identifiers mRadioValues;
-   wxString mRadioSettingName; /// The setting controlled by a group.
+   LabelSetting *mpRadioSetting = nullptr; /// The setting controlled by a group.
    Optional<WrappedType> mRadioValue;  /// The wrapped value associated with the active radio button.
    int mRadioCount = -1;       /// The index of this radio item.  -1 for none.
    wxString mRadioValueString; /// Unwrapped string value.
+   DialogDefinition::BaseItem mRadioItem;
    void DoAddRadioButton(
       const TranslatableLabel &Prompt, int style );
 
