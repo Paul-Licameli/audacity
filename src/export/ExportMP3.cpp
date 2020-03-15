@@ -220,20 +220,6 @@ public:
 
    void PopulateOrExchange(ShuttleGui & S);
    bool TransferDataFromWindow() override;
-
-   void OnMono();
-
-private:
-
-   bool mMonoValue = false;
-   wxRadioButton *mSET;
-   wxRadioButton *mVBR;
-   wxRadioButton *mABR;
-   wxRadioButton *mCBR;
-
-   wxChoice *mSetChoice, *mVbrChoice, *mAbrChoice, *mCbrChoice;
-
-   //wxChoice *mMode;
 };
 
 // Settings available for use elsewhere
@@ -303,8 +289,6 @@ static EnumLabelSetting< MP3ChannelMode > MP3ChannelModeSetting{
 ///
 void ExportMP3Options::PopulateOrExchange(ShuttleGui & S)
 {
-   mMonoValue = MP3ForceMono.Read();
-
    using namespace DialogDefinition;
    S.StartVerticalLay();
    {
@@ -327,19 +311,15 @@ void ExportMP3Options::PopulateOrExchange(ShuttleGui & S)
                      S
                         .StartRadioButtonGroup(MP3RateModeSetting);
                      {
-                        mSET =
                         S
                            .TieRadioButton();
 
-                        mVBR =
                         S
                            .TieRadioButton();
 
-                        mABR =
                         S
                            .TieRadioButton();
 
-                        mCBR =
                         S
                            .TieRadioButton();
                      }
@@ -357,7 +337,6 @@ void ExportMP3Options::PopulateOrExchange(ShuttleGui & S)
                   S
                      .StartNotebookPage({});
                   {
-                     mSetChoice =
                      S
                         .Target( NumberChoice( MP3SBitrate, setRateNames ) )
                         .AddChoice( XXO("Quality") );
@@ -368,7 +347,6 @@ void ExportMP3Options::PopulateOrExchange(ShuttleGui & S)
                   S
                      .StartNotebookPage({});
                   {
-                     mVbrChoice =
                      S
                         .Target( NumberChoice( MP3VBitrate, varRateNames ) )
                         .AddChoice( XXO("Quality") );
@@ -379,7 +357,6 @@ void ExportMP3Options::PopulateOrExchange(ShuttleGui & S)
                   S
                      .StartNotebookPage({});
                   {
-                     mAbrChoice =
                      S
                         .Target( NumberChoice( MP3ABitrate,
                            fixRateNames, fixRateValues ) )
@@ -391,7 +368,6 @@ void ExportMP3Options::PopulateOrExchange(ShuttleGui & S)
                   S
                      .StartNotebookPage({});
                   {
-                     mCbrChoice =
                      S
                         .Target( NumberChoice( MP3CBitrate,
                            fixRateNames, fixRateValues ) )
@@ -402,11 +378,16 @@ void ExportMP3Options::PopulateOrExchange(ShuttleGui & S)
                }
                
                /*
-               mMode =
                S
-                  .Enable( [this]{ return mSET && mVBR &&
-                     //??
-                     ( mSET->GetValue() || mVBR->GetValue() );
+                  .Enable( []{
+                     switch( MP3RateModeSetting.ReadEnum() )
+                     {
+                        case MODE_SET:
+                        case MODE_VBR:
+                           return true;
+                        default:
+                           return false;
+                     }
                   } )
                   .Target( NumberChoice( MP3VarMode, varModeNames ) )
                   .AddChoice( XXO("Variable Speed:") );
@@ -426,11 +407,11 @@ void ExportMP3Options::PopulateOrExchange(ShuttleGui & S)
                         S.StartRadioButtonGroup(MP3ChannelModeSetting);
                         {
                            S
-                              .Enable( [this]{ return !mMonoValue; } )
+                              .Enable( [this]{ return !MP3ForceMono.Read(); } )
                               .TieRadioButton();
 
                            S
-                              .Enable( [this]{ return !mMonoValue; } )
+                              .Enable( [this]{ return !MP3ForceMono.Read(); } )
                               .TieRadioButton();
                         }
                         S.EndRadioButtonGroup();
@@ -441,7 +422,6 @@ void ExportMP3Options::PopulateOrExchange(ShuttleGui & S)
 
                   S
                      .Target( MP3ForceMono )
-                     .Action( [this]{ OnMono(); } )
                      .AddCheckBox(XXO("Force export to mono"), false);
                }
                S.EndMultiColumn();
@@ -453,8 +433,6 @@ void ExportMP3Options::PopulateOrExchange(ShuttleGui & S)
       S.EndHorizontalLay();
    }
    S.EndVerticalLay();
-
-   OnMono(); //??    
 }
 
 ///
@@ -484,12 +462,6 @@ int ValidateIndex( const std::vector<int> &values, int value, int defaultIndex )
    return ( iter != finish ) ? static_cast<int>( iter - start ) : defaultIndex;
 }
 
-}
-
-void ExportMP3Options::OnMono()
-{
-   mMonoValue = MP3ForceMono.Read();
-   gPrefs->Flush();
 }
 
 //----------------------------------------------------------------------------
