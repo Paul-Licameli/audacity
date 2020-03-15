@@ -20,7 +20,6 @@ class wxButton;
 class wxCheckBox;
 class wxChoice;
 class wxListEvent;
-class wxRadioButton;
 class wxSimplebook;
 class wxStaticText;
 class wxTextCtrl;
@@ -132,10 +131,6 @@ private:
                                       the first label in the file */
 
    wxStaticText  *mTrackLabel;
-
-   wxRadioButton *mByNumberAndName; /**< button to choose number AND name for exported files */
-   wxRadioButton *mByName;    /**< button to choose naming exported file from label text */
-   wxRadioButton *mByNumber;  /**< button to choose numbering exported files */
 
    wxTextCtrl    *mPrefix;
 

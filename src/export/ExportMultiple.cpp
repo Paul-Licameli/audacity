@@ -27,7 +27,6 @@
 #include <wx/listbase.h>
 #include <wx/filefn.h>
 #include <wx/filename.h>
-#include <wx/radiobut.h>
 #include <wx/simplebook.h>
 #include <wx/statbox.h>
 #include <wx/stattext.h>
@@ -79,9 +78,6 @@ enum {
    DirID = 10001,
    FirstID,
    FirstFileNameID,
-   ByNameAndNumberID,
-   ByNameID,
-   ByNumberID,
    PrefixID,
 };
 
@@ -192,16 +188,23 @@ BoolSetting OverwriteExisting{
 static StringSetting ExportMultipleFormat{ "/Export/MultipleFormat", L"" };
 }
 
+enum NamingMethod : int {
+   ByName = 0,
+   ByNumberAndName,
+   ByNumber,
+};
+
 void ExportMultipleDialog::PopulateOrExchange(ShuttleGui& S)
 {
    const auto firstFileEnabler = [this]{
-      return mPreferByLabels && mByName && mByNumberAndName && mFirst &&
-         (mByName->GetValue() || mByNumberAndName->GetValue()) &&
+      return mFirst &&
+         mPreferByLabels &&
+         (radioSetting.ReadIndex() != ByNumber) &&
           mFirst->GetValue();
    };
 
    const auto byNumberEnabler =
-      [this]{ return mByNumber && mByNumber->GetValue(); };
+      [this]{ return radioSetting.ReadIndex() == ByNumber; };
 
    wxString name = mProject->GetProjectName();
    wxString defaultFormat = gPrefs->Read(L"/Export/Format", L"WAV");
@@ -399,19 +402,13 @@ void ExportMultipleDialog::PopulateOrExchange(ShuttleGui& S)
             S
                .StartRadioButtonGroup( radioSetting );
             {
-               mByName =
                S
-                  .Id(ByNameID)
                   .TieRadioButton();
 
-               mByNumberAndName =
                S
-                  .Id(ByNameAndNumberID)
                   .TieRadioButton();
 
-               mByNumber =
                S
-                  .Id(ByNumberID)
                   .TieRadioButton();
             }
             S
@@ -464,7 +461,7 @@ void ExportMultipleDialog::PopulateOrExchange(ShuttleGui& S)
                   mFirstFileName->GetValue().empty() &&
                   mPrefix->GetValue().empty())
                &&
-               !(mByNumber->GetValue() &&
+               !(radioSetting.ReadIndex() == ByNumber &&
                    mPrefix->GetValue().empty()); } )
             .Action( [this]{ OnExport(); } ),
 
@@ -611,15 +608,16 @@ void ExportMultipleDialog::OnExport()
       } );
    } );
 
+   const auto setting = radioSetting.ReadIndex();
    if ( mPreferByLabels ) {
-      ok = ExportMultipleByLabel(mByName->GetValue() || mByNumberAndName->GetValue(),
+      ok = ExportMultipleByLabel(setting != ByNumber,
                                  mPrefix->GetValue(),
-                                 mByNumberAndName->GetValue());
+                                 setting == ByNumberAndName);
    }
    else {
-      ok = ExportMultipleByTrack(mByName->GetValue() || mByNumberAndName->GetValue(),
+      ok = ExportMultipleByTrack(setting != ByNumber,
                                  mPrefix->GetValue(),
-                                 mByNumberAndName->GetValue());
+                                 setting == ByNumberAndName);
    }
 
    if (ok == ProgressResult::Success || ok == ProgressResult::Stopped) {
