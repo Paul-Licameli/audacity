@@ -25,7 +25,6 @@ class wxStaticText;
 class wxTextCtrl;
 class KeyView;
 struct NormalizedKeyString;
-enum ViewByType : int;
 
 #define KEY_CONFIG_PREFS_PLUGIN_SYMBOL ComponentInterfaceSymbol{ XO("Key Config") }
 
@@ -61,7 +60,7 @@ private:
    // and (possibly) removed after wx3.1.3.
    void OnShow(wxShowEvent & e);
 
-   void OnViewBy(wxCommandEvent & e);
+   void OnViewBy();
    void OnDefaults();
    void OnImportDefaults( int id );
    void OnImport();
@@ -87,11 +86,6 @@ private:
    wxStaticText *mFilterLabel;
    wxTimer mFilterTimer;
    bool mFilterPending;
-
-   ViewByType mViewType;
-   wxRadioButton *mViewByTree;
-   wxRadioButton *mViewByName;
-   wxRadioButton *mViewByKey;
 
    AudacityProject *mProject{};
 

@@ -59,7 +59,7 @@ public:
 // Types of view currently supported
 enum ViewByType : int
 {
-   ViewByTree,
+   ViewByTree = 0,
    ViewByName,
    ViewByKey
 };
