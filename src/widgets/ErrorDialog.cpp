@@ -62,7 +62,7 @@ ErrorDialog::ErrorDialog(
    dClose = Close;
    dModal = modal;
 
-   ShuttleGui S(this, eIsCreating);
+   ShuttleGui S{ this };
 
    S.SetBorder(2);
    S.StartHorizontalLay(wxEXPAND, 0);
@@ -97,7 +97,7 @@ ErrorDialog::ErrorDialog(
             .Prop(1)
             .AddWindow(pane);
 
-         ShuttleGui SI(pane->GetPane(), eIsCreating);
+         ShuttleGui SI(pane->GetPane());
          auto text = SI.AddTextWindow(log);
          text->SetInsertionPointEnd();
          text->ShowPosition(text->GetLastPosition());

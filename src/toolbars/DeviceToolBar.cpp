@@ -708,7 +708,7 @@ void DeviceToolBar::ShowComboDialog(wxChoice *combo, const TranslatableString &t
 
    wxDialogWrapper dlg(nullptr, wxID_ANY, title);
    dlg.SetName();
-   ShuttleGui S(&dlg, eIsCreating);
+   ShuttleGui S(&dlg);
    wxChoice *c;
 
    S.StartVerticalLay(true);

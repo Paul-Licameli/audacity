@@ -39,7 +39,7 @@ TimeDialog::TimeDialog(wxWindow *parent,
    mTimeCtrl(NULL)
 {
    SetName();
-   ShuttleGui S(this, eIsCreating);
+   ShuttleGui S(this);
    PopulateOrExchange(S);
 }
 

@@ -3330,7 +3330,7 @@ NyquistOutputDialog::NyquistOutputDialog(wxWindow * parent, wxWindowID id,
 {
    SetName();
 
-   ShuttleGui S{ this, eIsCreating };
+   auto S = ShuttleGui{ this };
    {
       S.SetBorder(10);
 

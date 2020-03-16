@@ -455,7 +455,7 @@ public:
       :  wxDialogWrapper(parent, wxID_ANY, XO("Locate FFmpeg"))
    {
       SetName();
-      ShuttleGui S(this, eIsCreating);
+      ShuttleGui S(this);
 
       mPath = path;
       mName = name;
@@ -578,7 +578,7 @@ FFmpegNotFoundDialog::FFmpegNotFoundDialog(wxWindow *parent)
    :  wxDialogWrapper(parent, wxID_ANY, XO("FFmpeg not found"))
 {
    SetName();
-   ShuttleGui S(this, eIsCreating);
+   ShuttleGui S(this);
    PopulateOrExchange(S);
 }
 

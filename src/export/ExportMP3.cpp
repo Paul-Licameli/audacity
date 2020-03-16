@@ -241,7 +241,7 @@ BoolSetting MP3ForceMono{ L"/FileFormats/MP3ForceMono", false };
 ExportMP3Options::ExportMP3Options(wxWindow *parent, int WXUNUSED(format))
 :  wxPanelWrapper(parent, wxID_ANY)
 {
-   ShuttleGui S(this, eIsCreating);
+   ShuttleGui S(this);
    PopulateOrExchange(S);
 
    TransferDataToWindow();
@@ -478,7 +478,7 @@ public:
    XO("Locate LAME"))
    {
       SetName();
-      ShuttleGui S(this, eIsCreating);
+      ShuttleGui S(this);
 
       mPath = path;
       mName = name;
@@ -1937,7 +1937,7 @@ int ExportMP3::AskResample(int bitrate, int rate, int lowrate, int highrate)
    wxDialogWrapper d(nullptr, wxID_ANY, XO("Invalid sample rate"));
    d.SetName();
    wxChoice *choice;
-   ShuttleGui S(&d, eIsCreating);
+   ShuttleGui S(&d);
 
    int selected = -1;
 

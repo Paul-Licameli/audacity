@@ -110,7 +110,7 @@ void LabelTrackMenuTable::OnSetFont(wxCommandEvent &)
    /* i18n-hint: (noun) This is the font for the label track.*/
    wxDialogWrapper dlg(mpData->pParent, wxID_ANY, XO("Label Track Font"));
    dlg.SetName();
-   ShuttleGui S(&dlg, eIsCreating);
+   ShuttleGui S(&dlg);
    wxSpinCtrl *sc;
 
    using namespace DialogDefinition;

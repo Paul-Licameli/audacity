@@ -73,7 +73,8 @@ ScoreAlignDialog::ScoreAlignDialog(ScoreAlignParams &params)
    //                     wxDefaultPosition, wxSize(20, 124),
    //                     wxSL_HORIZONTAL);
 
-   auto S = ShuttleGui{ this, eIsCreating }.Rebind< My >();
+   using namespace DialogDefinition;
+   auto S = ShuttleGui{ this };
    //ok->SetDefault();
 
    S.SetBorder(5);

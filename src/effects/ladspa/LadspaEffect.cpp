@@ -417,7 +417,7 @@ LadspaEffectOptionsDialog::LadspaEffectOptionsDialog(wxWindow * parent, EffectHo
 
    mHost->GetSharedConfig(L"Options", L"UseLatency", mUseLatency, true);
 
-   ShuttleGui S(this, eIsCreating);
+   ShuttleGui S(this);
    PopulateOrExchange(S);
 }
 

@@ -398,7 +398,7 @@ void RateMenuTable::OnRateOther(wxCommandEvent &)
    {
       wxDialogWrapper dlg(mpData->pParent, wxID_ANY, XO("Set Rate"));
       dlg.SetName();
-      ShuttleGui S(&dlg, eIsCreating);
+      ShuttleGui S(&dlg);
       wxString rate;
 
       rate.Printf(L"%ld", lrint(pTrack->GetRate()));

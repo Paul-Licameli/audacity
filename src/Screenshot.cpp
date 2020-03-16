@@ -298,7 +298,7 @@ ScreenshotBigDialog::~ScreenshotBigDialog()
 
 void ScreenshotBigDialog::Populate()
 {
-   ShuttleGui S(this, eIsCreating);
+   ShuttleGui S(this);
    PopulateOrExchange(S);
 }
 

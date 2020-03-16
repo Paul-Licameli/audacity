@@ -484,7 +484,7 @@ PluginRegistrationDialog::PluginRegistrationDialog(wxWindow *parent, EffectType 
 void PluginRegistrationDialog::Populate()
 {
    //------------------------- Main section --------------------
-   ShuttleGui S(this, eIsCreating);
+   ShuttleGui S(this);
    PopulateOrExchange(S);
    // ----------------------- End of main section --------------
 }

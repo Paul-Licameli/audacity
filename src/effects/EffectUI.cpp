@@ -849,7 +849,7 @@ wxPanel *EffectUIHost::BuildButtonBar(wxWindow *parent)
    bar->SetName(InaudibleString);
    bar->SetLabel(InaudibleString);
 
-   ShuttleGui S{ bar, eIsCreating,
+   auto S = ShuttleGui{ bar,
       false /* horizontal */,
       { -1, -1 } /* minimum size */
    };
@@ -1027,7 +1027,7 @@ bool EffectUIHost::Initialize()
    }
 
    EffectPanel *w {};
-   ShuttleGui S{ this, eIsCreating };
+   ShuttleGui S{ this };
    auto pState = S.GetValidationState();
    {
       S.StartHorizontalLay( wxEXPAND );
@@ -1039,7 +1039,7 @@ bool EffectUIHost::Initialize()
          uw->SetMinSize(wxSize(std::max(600, mParent->GetSize().GetWidth() * 2 / 3),
             mParent->GetSize().GetHeight() / 2));
 
-         ShuttleGui S1{ uw.get(), eIsCreating };
+         ShuttleGui S1{ uw.get() };
          if (!mClient->PopulateUI(S1))
          {
             return false;
@@ -1597,7 +1597,7 @@ void EffectUIHost::OnSaveAs()
    wxString name;
    wxDialogWrapper dlg(this, wxID_ANY, XO("Save Preset"));
    
-   ShuttleGui S(&dlg, eIsCreating);
+   ShuttleGui S(&dlg);
    
    S.StartPanel();
    {
@@ -2067,7 +2067,7 @@ EffectDialog::EffectDialog(wxWindow * parent,
 
 void EffectDialog::Init()
 {
-   ShuttleGui S(this, eIsCreating);
+   ShuttleGui S(this);
 
    S.SetBorder(5);
    S.StartVerticalLay(true);

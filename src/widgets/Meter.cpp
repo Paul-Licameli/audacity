@@ -1989,7 +1989,7 @@ void MeterPanel::OnPreferences()
 
    wxDialogWrapper dlg( FindProjectFrame( mProject ), wxID_ANY, title);
    dlg.SetName();
-   ShuttleGui S(&dlg, eIsCreating);
+   ShuttleGui S(&dlg);
    S.StartVerticalLay();
    {
       S

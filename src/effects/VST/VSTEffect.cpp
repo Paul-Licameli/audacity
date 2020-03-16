@@ -777,7 +777,7 @@ VSTEffectOptionsDialog::VSTEffectOptionsDialog(wxWindow * parent, EffectHostInte
    mHost->GetSharedConfig(L"Options", L"UseLatency", mUseLatency, true);
    mHost->GetSharedConfig(L"Options", L"UseGUI", mUseGUI, true);
 
-   ShuttleGui S(this, eIsCreating);
+   ShuttleGui S(this);
    PopulateOrExchange(S);
 }
 

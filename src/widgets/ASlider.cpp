@@ -281,7 +281,7 @@ SliderDialog::SliderDialog(wxWindow * parent, wxWindowID id,
       trailing = NumValidatorStyle::ONE_TRAILING_ZERO;
    }
 
-   ShuttleGui S(this, eIsCreating);
+   ShuttleGui S(this);
 
    S.StartVerticalLay();
    {

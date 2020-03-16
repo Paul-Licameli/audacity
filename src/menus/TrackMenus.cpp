@@ -733,7 +733,7 @@ void OnResample(const CommandContext &context)
    while (true)
    {
       wxDialogWrapper dlg(&window, wxID_ANY, XO("Resample"));
-      ShuttleGui S(&dlg, eIsCreating);
+      ShuttleGui S(&dlg);
       wxString rate;
 
       rate.Printf(L"%ld", lrint(projectRate));

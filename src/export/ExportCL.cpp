@@ -83,7 +83,7 @@ ExportCLOptions::ExportCLOptions(wxWindow *parent, int WXUNUSED(format))
    mHistory.Append(gPrefs->Read(L"/FileFormats/ExternalProgramExportCommand",
                                           mHistory[ 0 ]));
 
-   ShuttleGui S(this, eIsCreating);
+   ShuttleGui S(this);
    PopulateOrExchange(S);
 
    TransferDataToWindow();
@@ -577,7 +577,7 @@ ProgressResult ExportCL::Export(AudacityProject *project,
                    wxDEFAULT_DIALOG_STYLE | wxRESIZE_BORDER);
       dlg.SetName();
 
-      ShuttleGui S(&dlg, eIsCreating);
+      ShuttleGui S(&dlg);
 
       S
          .Style( wxTE_MULTILINE | wxTE_READONLY | wxTE_RICH )

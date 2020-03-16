@@ -295,7 +295,7 @@ ImportRawDialog::ImportRawDialog(wxWindow * parent,
    SetName();
 
    using namespace DialogDefinition;
-   ShuttleGui S(this, eIsCreating);
+   ShuttleGui S{ this };
    TranslatableStrings encodings;
    int num;
    int selection;

@@ -95,7 +95,7 @@ void HelpSystem::ShowInfoDialog( wxWindow *parent,
                 wxDEFAULT_DIALOG_STYLE | wxRESIZE_BORDER | wxMAXIMIZE_BOX /*| wxDEFAULT_FRAME_STYLE */);
 
    dlog.SetName();
-   ShuttleGui S(&dlog, eIsCreating);
+   ShuttleGui S(&dlog);
 
    S.StartVerticalLay(1);
    {
@@ -158,8 +158,7 @@ void HelpSystem::ShowHtmlText(wxWindow *pParent,
 
    // Bug 1412 workaround for 'extra window'.  Hide the 'fake' window.
    pFrame->SetTransparent(0);
-   ShuttleGui S{ pWnd, eIsCreating };
-
+   auto S = ShuttleGui{ pWnd };
    S
       .Style( wxNO_BORDER | wxTAB_TRAVERSAL )
       .Prop(true)

@@ -62,7 +62,7 @@ public:
 ExportFLACOptions::ExportFLACOptions(wxWindow *parent, int WXUNUSED(format))
 :  wxPanelWrapper(parent, wxID_ANY)
 {
-   ShuttleGui S(this, eIsCreating);
+   ShuttleGui S(this);
    PopulateOrExchange(S);
 
    TransferDataToWindow();

@@ -39,7 +39,7 @@ void ShowDiagnostics(
    auto &window = GetProjectFrame( project );
    wxDialogWrapper dlg( &window, wxID_ANY, description);
    dlg.SetName();
-   ShuttleGui S(&dlg, eIsCreating);
+   ShuttleGui S(&dlg);
 
    wxTextCtrl *text;
    S.StartVerticalLay();
@@ -140,7 +140,7 @@ QuickFixDialog::QuickFixDialog(wxWindow * pParent, AudacityProject &project) :
    mbInSnapTo = gPrefs->Read(L"/SnapTo", SNAP_OFF) !=0;
    mbSoundActivated = AudioIOSoundActivatedRecord.Read();
 
-   ShuttleGui S(this, eIsCreating);
+   ShuttleGui S(this);
    PopulateOrExchange(S);
 
    Fit();

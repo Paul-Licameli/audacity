@@ -309,7 +309,7 @@ DependencyDialog::DependencyDialog(wxWindow *parent,
    mMessageStaticText(NULL)
 {
    SetName();
-   ShuttleGui S(this, eIsCreating);
+   ShuttleGui S(this);
    PopulateOrExchange(S);
 }
 

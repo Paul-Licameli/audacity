@@ -673,7 +673,7 @@ NyqBench::NyqBench(wxWindow * parent)
 
    SetIcon(wxICON(AudacityLogo));
    SetBackgroundColour(wxSystemSettings::GetColour(wxSYS_COLOUR_3DFACE));
-   ShuttleGui S(this, eIsCreating);
+   ShuttleGui S(this);
    PopulateOrExchange(S);
    wxMenuBar *bar = new wxMenuBar();
 

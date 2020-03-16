@@ -722,17 +722,13 @@ bool ValidatorDecorator::TransferToWindow()
 }
 
 ShuttleGuiState::ShuttleGuiState(
-   wxWindow *pDlg, teShuttleMode ShuttleMode, bool vertical, wxSize minSize,
+   wxWindow *pDlg, bool vertical, wxSize minSize,
    const std::shared_ptr< PreferenceVisitor > &pVisitor )
    : mpDlg{ pDlg }
-   , mShuttleMode{ ShuttleMode }
    , mpVisitor{ pVisitor }
    , mpValidationState{ std::make_shared<DialogDefinition::ValidationState>() }
 {
-   wxASSERT( (pDlg != NULL ) || ( ShuttleMode != eIsCreating));
-
-   if( mShuttleMode != eIsCreating )
-      return;
+   wxASSERT( (pDlg != NULL ) );
 
    mpSizer = mpParent->GetSizer();
 
@@ -757,11 +753,11 @@ ShuttleGuiState::ShuttleGuiState(
 }
 
 ShuttleGuiBase::ShuttleGuiBase(
-   wxWindow * pParent, teShuttleMode ShuttleMode, bool vertical, wxSize minSize,
+   wxWindow * pParent, bool vertical, wxSize minSize,
    const std::shared_ptr< PreferenceVisitor > &pVisitor )
 {
    mpState = std::make_shared< ShuttleGuiState >(
-      pParent, ShuttleMode, vertical, minSize, pVisitor );
+      pParent, vertical, minSize, pVisitor );
 }
 
 ShuttleGuiBase::ShuttleGuiBase(
@@ -787,8 +783,6 @@ void ShuttleGuiBase::ResetId()
 /// Used to modify an already placed FlexGridSizer to make a column stretchy.
 void ShuttleGuiBase::SetStretchyCol( int i )
 {
-   if( mpState -> mShuttleMode != eIsCreating )
-      return;
    wxFlexGridSizer *pSizer = wxDynamicCast(mpState -> mpSizer, wxFlexGridSizer);
    wxASSERT( pSizer );
    pSizer->AddGrowableCol( i, 1 );
@@ -797,8 +791,6 @@ void ShuttleGuiBase::SetStretchyCol( int i )
 /// Used to modify an already placed FlexGridSizer to make a row stretchy.
 void ShuttleGuiBase::SetStretchyRow( int i )
 {
-   if( mpState -> mShuttleMode != eIsCreating )
-      return;
    wxFlexGridSizer *pSizer = wxDynamicCast(mpState -> mpSizer, wxFlexGridSizer);
    wxASSERT( pSizer );
    pSizer->AddGrowableRow( i, 1 );
@@ -810,8 +802,6 @@ void ShuttleGuiBase::SetStretchyRow( int i )
 /// Right aligned text string.
 void ShuttleGuiBase::AddPrompt(const TranslatableLabel &Prompt, int wrapWidth)
 {
-   if( mpState -> mShuttleMode != eIsCreating )
-      return;
    //wxLogDebug( "Prompt: [%s] Id:%i (%i)", Prompt.c_str(), miId, miIdSetByUser ) ;
    if( Prompt.empty() )
       return;
@@ -831,8 +821,6 @@ void ShuttleGuiBase::AddUnits(const TranslatableString &Units, int wrapWidth)
 {
    if( Units.empty() )
       return;
-   if( mpState -> mShuttleMode != eIsCreating )
-      return;
    miProp = 1;
    const auto translated = Units.Translation();
    auto text = safenew wxStaticText(GetParent(), -1, translated, wxDefaultPosition, mItem.mWindowSize,
@@ -849,8 +837,6 @@ void ShuttleGuiBase::AddTitle(const TranslatableString &Title, int wrapWidth)
 {
    if( Title.empty() )
       return;
-   if( mpState -> mShuttleMode != eIsCreating )
-      return;
    const auto translated = Title.Translation();
    auto text = safenew wxStaticText(GetParent(), -1, translated, wxDefaultPosition, mItem.mWindowSize,
       GetStyle( wxALIGN_CENTRE ));
@@ -865,8 +851,6 @@ void ShuttleGuiBase::AddTitle(const TranslatableString &Title, int wrapWidth)
 /// Useful for unique controls
 wxWindow * ShuttleGuiBase::AddWindow(wxWindow * pWindow)
 {
-   if( mpState -> mShuttleMode != eIsCreating )
-      return pWindow;
    mpWind = pWindow;
    SetProportions( 0 );
    UpdateSizersCore(false, wxALIGN_CENTRE | wxALL);
@@ -883,10 +867,6 @@ void ShuttleGuiBase::AddNumericTextCtrl(NumericConverter::Type type,
 {
    UseUpId();
    NumericTextCtrl * pCtrl = nullptr;
-   if( mpState -> mShuttleMode != eIsCreating ) {
-      mpWind = wxWindow::FindWindowById( miId, mpState -> mpDlg);
-      return;
-   }
    mpWind = pCtrl = safenew NumericTextCtrl( GetParent(), miId,
       type, formatName, value, sampleRate, options, pos, size );
    CheckEventType( mItem, {wxEVT_TEXT} );
@@ -898,10 +878,6 @@ void ShuttleGuiBase::AddCheckBox( const TranslatableLabel &Prompt, bool Selected
    auto realPrompt = Prompt.Translation();
 
    UseUpId();
-   if( mpState -> mShuttleMode != eIsCreating ) {
-      mpWind = wxWindow::FindWindowById( miId, mpState -> mpDlg);
-      return;
-   }
    wxCheckBox * pCheckBox;
    miProp=0;
    mpWind = pCheckBox = safenew wxCheckBox(GetParent(), miId, realPrompt, wxDefaultPosition, mItem.mWindowSize,
@@ -927,10 +903,6 @@ void ShuttleGuiBase::AddCheckBoxOnRight( const TranslatableLabel &Prompt, bool S
 {
    AddPrompt( Prompt );
    UseUpId();
-   if( mpState -> mShuttleMode != eIsCreating ) {
-      mpWind = wxWindow::FindWindowById( miId, mpState -> mpDlg);
-      return;
-   }
    wxCheckBox * pCheckBox;
    miProp=0;
    mpWind = pCheckBox = safenew wxCheckBox(GetParent(), miId, L"", wxDefaultPosition, mItem.mWindowSize,
@@ -944,10 +916,6 @@ void ShuttleGuiBase::AddButton(
    const TranslatableLabel &Label, int PositionFlags, bool setDefault)
 {
    UseUpId();
-   if( mpState -> mShuttleMode != eIsCreating ) {
-      mpWind = wxWindow::FindWindowById( miId, mpState -> mpDlg);
-      return;
-   }
    wxButton * pBtn;
    const auto translated = Label.Translation();
    mpWind = pBtn = safenew wxButton(GetParent(), miId,
@@ -965,10 +933,6 @@ void ShuttleGuiBase::AddBitmapButton(
    const wxBitmap &Bitmap, int PositionFlags, bool setDefault)
 {
    UseUpId();
-   if( mpState -> mShuttleMode != eIsCreating ) {
-      mpWind = wxWindow::FindWindowById( miId, mpState -> mpDlg);
-      return;
-   }
    wxBitmapButton * pBtn;
    mpWind = pBtn = safenew wxBitmapButton(GetParent(), miId, Bitmap,
       wxDefaultPosition, mItem.mWindowSize, GetStyle( wxBU_AUTODRAW ) );
@@ -986,10 +950,6 @@ void ShuttleGuiBase::AddChoice( const TranslatableLabel &Prompt,
 {
    AddPrompt( Prompt );
    UseUpId();
-   if( mpState -> mShuttleMode != eIsCreating ) {
-      mpWind = wxWindow::FindWindowById( miId, mpState -> mpDlg);
-      return;
-   }
    wxChoice * pChoice;
    miProp=0;
 
@@ -1030,8 +990,6 @@ void ShuttleGuiBase::AddFixedText(
 {
    const auto translated = Str.Translation();
    UseUpId();
-   if( mpState -> mShuttleMode != eIsCreating )
-      return;
    auto text = safenew wxStaticText(GetParent(),
       miId, translated, wxDefaultPosition, mItem.mWindowSize,
       GetStyle( wxALIGN_LEFT ));
@@ -1054,10 +1012,6 @@ void ShuttleGuiBase::AddVariableText(
 {
    const auto translated = Str.Translation();
    UseUpId();
-   if( mpState -> mShuttleMode != eIsCreating ) {
-      mpWind = wxWindow::FindWindowById( miId, mpState -> mpDlg);
-      return;
-   }
 
    wxStaticText *pStatic;
    auto text = pStatic = safenew wxStaticText(GetParent(), miId, translated,
@@ -1090,10 +1044,6 @@ void ShuttleGuiBase::AddReadOnlyText(
    mItem.miStyle = wxALIGN_CENTER_VERTICAL;
    AddPrompt( Caption );
    UseUpId();
-   if( mpState -> mShuttleMode != eIsCreating ) {
-      mpWind = wxWindow::FindWindowById( miId, mpState -> mpDlg);
-      return;
-   }
    ReadOnlyText * pReadOnlyText;
    miProp=0;
 
@@ -1110,10 +1060,6 @@ void ShuttleGuiBase::AddCombo(
    const auto translated = Prompt.Translation();
    AddPrompt( Prompt );
    UseUpId();
-   if( mpState -> mShuttleMode != eIsCreating ) {
-      mpWind = wxWindow::FindWindowById( miId, mpState -> mpDlg);
-      return;
-   }
    wxComboBox * pCombo;
    miProp=0;
 
@@ -1139,10 +1085,6 @@ void ShuttleGuiBase::DoAddRadioButton(
 {
    const auto translated = Prompt.Translation();
    UseUpId();
-   if( mpState -> mShuttleMode != eIsCreating ) {
-      mpWind = wxWindow::FindWindowById( miId, mpState -> mpDlg);
-      return;
-   }
    wxRadioButton * pRad;
    mpWind = pRad = safenew wxRadioButton(GetParent(), miId, translated,
       wxDefaultPosition, mItem.mWindowSize, GetStyle( style ) );
@@ -1179,10 +1121,6 @@ void ShuttleGuiBase::AddSlider(
 {
    AddPrompt( Prompt );
    UseUpId();
-   if( mpState -> mShuttleMode != eIsCreating ) {
-      mpWind = wxWindow::FindWindowById( miId, mpState -> mpDlg);
-      return;
-   }
    wxSlider * pSlider;
    mpWind = pSlider = safenew wxSliderWrapper(GetParent(), miId,
       pos, Min, Max,
@@ -1214,10 +1152,6 @@ void ShuttleGuiBase::AddSpinCtrl(
    const auto translated = Prompt.Translation();
    AddPrompt( Prompt );
    UseUpId();
-   if( mpState -> mShuttleMode != eIsCreating ) {
-      mpWind = wxWindow::FindWindowById( miId, mpState -> mpDlg);
-      return;
-   }
    wxSpinCtrl * pSpinCtrl;
    mpWind = pSpinCtrl = safenew wxSpinCtrl(GetParent(), miId,
       wxEmptyString,
@@ -1236,10 +1170,6 @@ void ShuttleGuiBase::AddTextBox(
    const auto translated = Prompt.Translation();
    AddPrompt( Prompt );
    UseUpId();
-   if( mpState -> mShuttleMode != eIsCreating ) {
-      mpWind = wxWindow::FindWindowById( miId, mpState -> mpDlg);
-      return;
-   }
    wxTextCtrl * pTextCtrl;
    wxSize Size(mItem.mWindowSize);
    if( nChars > 0 && Size.GetX() == -1 )
@@ -1273,10 +1203,6 @@ void ShuttleGuiBase::AddNumericTextBox(
    const auto translated = Prompt.Translation();
    AddPrompt( Prompt );
    UseUpId();
-   if( mpState -> mShuttleMode != eIsCreating ) {
-      mpWind = wxWindow::FindWindowById( miId, mpState -> mpDlg);
-      return;
-   }
    wxTextCtrl * pTextCtrl;
    wxSize Size(mItem.mWindowSize);
    if( nChars > 0 && Size.GetX() == -1 )
@@ -1308,10 +1234,6 @@ void ShuttleGuiBase::AddNumericTextBox(
 void ShuttleGuiBase::AddTextWindow(const wxString &Value)
 {
    UseUpId();
-   if( mpState -> mShuttleMode != eIsCreating ) {
-      mpWind = wxWindow::FindWindowById( miId, mpState -> mpDlg);
-      return;
-   }
    wxTextCtrl * pTextCtrl;
    SetProportions( 1 );
    mpWind = pTextCtrl = safenew wxTextCtrl(GetParent(), miId, Value,
@@ -1333,9 +1255,6 @@ void ShuttleGuiBase::AddConstTextBox(
    TranslatableLabel label{ Prompt };
    AddPrompt( label );
    UseUpId();
-   if( mpState -> mShuttleMode != eIsCreating )
-      return;
-//      return wxDynamicCast(wxWindow::FindWindowById( miId, mpDlg), wx);
    miProp=0;
    UpdateSizers();
    miProp=0;
@@ -1350,10 +1269,6 @@ void ShuttleGuiBase::AddConstTextBox(
 void ShuttleGuiBase::AddListBox(const wxArrayStringEx &choices)
 {
    UseUpId();
-   if( mpState -> mShuttleMode != eIsCreating ) {
-      mpWind = wxWindow::FindWindowById( miId, mpState -> mpDlg);
-      return;
-   }
    wxListBox * pListBox;
    SetProportions( 1 );
    mpWind = pListBox = safenew wxListBox(GetParent(), miId,
@@ -1367,10 +1282,6 @@ void ShuttleGuiBase::AddListBox(const wxArrayStringEx &choices)
 void ShuttleGuiBase::AddGrid()
 {
    UseUpId();
-   if( mpState -> mShuttleMode != eIsCreating ) {
-      mpWind = wxWindow::FindWindowById( miId, mpState -> mpDlg);
-      return;
-   }
    wxGrid * pGrid;
    SetProportions( 1 );
    mpWind = pGrid = safenew wxGrid(GetParent(), miId, wxDefaultPosition,
@@ -1384,10 +1295,6 @@ void ShuttleGuiBase::AddListControl(
    long listControlStyles )
 {
    UseUpId();
-   if( mpState -> mShuttleMode != eIsCreating ) {
-      mpWind = wxWindow::FindWindowById( miId, mpState -> mpDlg);
-      return;
-   }
    wxListCtrl * pListCtrl;
    SetProportions( 1 );
    mpWind = pListCtrl = safenew wxListCtrl(GetParent(), miId,
@@ -1403,10 +1310,6 @@ void ShuttleGuiBase::AddListControlReportMode(
    long listControlStyles )
 {
    UseUpId();
-   if( mpState -> mShuttleMode != eIsCreating ) {
-      mpWind = wxWindow::FindWindowById( miId, mpState -> mpDlg);
-      return;
-   }
    wxListCtrl * pListCtrl;
    SetProportions( 1 );
    auto Size = mItem.mWindowSize;
@@ -1456,10 +1359,6 @@ void ShuttleGuiBase::DoInsertListColumns(
 void ShuttleGuiBase::AddTree()
 {
    UseUpId();
-   if( mpState -> mShuttleMode != eIsCreating ) {
-      mpWind = wxWindow::FindWindowById( miId, mpState -> mpDlg);
-      return;
-   }
    wxTreeCtrl * pTreeCtrl;
    SetProportions( 1 );
    mpWind = pTreeCtrl = safenew wxTreeCtrl(GetParent(), miId, wxDefaultPosition, mItem.mWindowSize,
@@ -1471,9 +1370,6 @@ void ShuttleGuiBase::AddTree()
 void ShuttleGuiBase::AddIcon(wxBitmap *pBmp)
 {
    UseUpId();
-   if( mpState -> mShuttleMode != eIsCreating )
-//      return wxDynamicCast(wxWindow::FindWindowById( miId, mpDlg), wx);
-      return;
    wxBitmapButton * pBtn;
    mpWind = pBtn = safenew wxBitmapButton(GetParent(), miId, *pBmp,
       wxDefaultPosition, mItem.mWindowSize, GetStyle( wxBU_AUTODRAW ) );
@@ -1496,8 +1392,6 @@ ShuttleGuiBase & ShuttleGuiBase::Prop( int iProp )
 wxStaticBox * ShuttleGuiBase::StartStatic(const TranslatableString &Str, int iProp)
 {
    UseUpId();
-   if( mpState -> mShuttleMode != eIsCreating )
-      return NULL;
    auto translated = Str.Translation();
    wxStaticBox * pBox = safenew wxStaticBoxWrapper(
       GetParent(), miId, translated );
@@ -1524,8 +1418,6 @@ wxStaticBox * ShuttleGuiBase::StartStatic(const TranslatableString &Str, int iPr
 
 void ShuttleGuiBase::EndStatic()
 {
-   if( mpState -> mShuttleMode != eIsCreating )
-      return;
    mpState -> PopSizer();
    mpState -> mpParent = mpState -> mpParent->GetParent();
 }
@@ -1541,8 +1433,6 @@ void ShuttleGuiBase::EndStatic()
 wxScrolledWindow * ShuttleGuiBase::StartScroller(int iStyle)
 {
    UseUpId();
-   if( mpState -> mShuttleMode != eIsCreating )
-      return wxDynamicCast(wxWindow::FindWindowById( miId, mpState -> mpDlg), wxScrolledWindow);
 
    wxScrolledWindow * pScroller;
    mpWind = pScroller = safenew wxScrolledWindow(GetParent(), miId, wxDefaultPosition, mItem.mWindowSize,
@@ -1573,8 +1463,6 @@ wxScrolledWindow * ShuttleGuiBase::StartScroller(int iStyle)
 
 void ShuttleGuiBase::EndScroller()
 {
-   if( mpState -> mShuttleMode != eIsCreating )
-      return;
    wxSize ScrollSize = mpState -> mpSizer->GetMinSize();
    int yMin = ScrollSize.y+4;
    int xMin = ScrollSize.x+4;
@@ -1593,8 +1481,6 @@ void ShuttleGuiBase::EndScroller()
 wxPanel * ShuttleGuiBase::StartPanel(int iStyle)
 {
    UseUpId();
-   if( mpState -> mShuttleMode != eIsCreating )
-      return wxDynamicCast(wxWindow::FindWindowById( miId, mpState -> mpDlg), wxPanel);
    wxPanel * pPanel;
    mpWind = pPanel = safenew wxPanelWrapper( GetParent(), miId, wxDefaultPosition, mItem.mWindowSize,
       GetStyle( wxNO_BORDER ));
@@ -1620,8 +1506,6 @@ wxPanel * ShuttleGuiBase::StartPanel(int iStyle)
 
 void ShuttleGuiBase::EndPanel()
 {
-   if( mpState -> mShuttleMode != eIsCreating )
-      return;
    mpState -> PopSizer();
    mpState -> mpParent = mpState -> mpParent->GetParent();
 }
@@ -1629,8 +1513,6 @@ void ShuttleGuiBase::EndPanel()
 wxNotebook * ShuttleGuiBase::StartNotebook()
 {
    UseUpId();
-   if( mpState -> mShuttleMode != eIsCreating )
-      return wxDynamicCast(wxWindow::FindWindowById( miId, mpState -> mpDlg), wxNotebook);
    wxNotebook * pNotebook;
    mpWind = pNotebook = safenew wxNotebook(GetParent(),
       miId, wxDefaultPosition, mItem.mWindowSize, GetStyle( 0 ));
@@ -1650,8 +1532,6 @@ void ShuttleGuiBase::EndNotebook()
 wxSimplebook * ShuttleGuiBase::StartSimplebook()
 {
    UseUpId();
-   if( mpState -> mShuttleMode != eIsCreating )
-      return wxDynamicCast(wxWindow::FindWindowById( miId, mpState -> mpDlg), wxSimplebook);
    wxSimplebook * pNotebook;
    mpWind = pNotebook = safenew wxSimplebook(GetParent(),
       miId, wxDefaultPosition, mItem.mWindowSize, GetStyle( 0 ));
@@ -1671,9 +1551,6 @@ void ShuttleGuiBase::EndSimplebook()
 wxNotebookPage * ShuttleGuiBase::StartNotebookPage(
    const TranslatableString & Name )
 {
-   if( mpState -> mShuttleMode != eIsCreating )
-      return NULL;
-//      return wxDynamicCast(wxWindow::FindWindowById( miId, mpDlg), wx);
    auto pNotebook = static_cast< wxBookCtrlBase* >( mpState -> mpParent );
    wxNotebookPage * pPage = safenew wxPanelWrapper(GetParent());
    const auto translated = Name.Translation();
@@ -1693,8 +1570,6 @@ wxNotebookPage * ShuttleGuiBase::StartNotebookPage(
 
 void ShuttleGuiBase::EndNotebookPage()
 {
-   if( mpState -> mShuttleMode != eIsCreating )
-      return;
    mpState -> PopSizer();
    mpState -> mpParent = mpState -> mpParent->GetParent();
 }
@@ -1735,8 +1610,6 @@ void InvisiblePanel::OnPaint( wxPaintEvent & WXUNUSED(event))
 wxPanel * ShuttleGuiBase::StartInvisiblePanel()
 {
    UseUpId();
-   if( mpState -> mShuttleMode != eIsCreating )
-      return wxDynamicCast(wxWindow::FindWindowById( miId, mpState -> mpDlg), wxPanel);
    wxPanel * pPanel;
    mpWind = pPanel = safenew wxPanelWrapper(GetParent(), miId, wxDefaultPosition, mItem.mWindowSize,
       wxNO_BORDER);
@@ -1769,8 +1642,6 @@ void ShuttleGuiBase::EndInvisiblePanel()
 /// @param iProp         Proportionality for resizing.
 void ShuttleGuiBase::StartHorizontalLay( int PositionFlags, int iProp)
 {
-   if( mpState -> mShuttleMode != eIsCreating )
-      return;
    miSizerProp=iProp;
    mpSubSizer = std::make_unique<wxBoxSizer>( wxHORIZONTAL );
    // PRL:  wxALL has no effect because UpdateSizersCore ignores border
@@ -1779,15 +1650,11 @@ void ShuttleGuiBase::StartHorizontalLay( int PositionFlags, int iProp)
 
 void ShuttleGuiBase::EndHorizontalLay()
 {
-   if( mpState -> mShuttleMode != eIsCreating )
-      return;
    mpState -> PopSizer();
 }
 
 void ShuttleGuiBase::StartVerticalLay(int iProp)
 {
-   if( mpState -> mShuttleMode != eIsCreating )
-      return;
    miSizerProp=iProp;
    mpSubSizer = std::make_unique<wxBoxSizer>( wxVERTICAL );
    UpdateSizers();
@@ -1795,8 +1662,6 @@ void ShuttleGuiBase::StartVerticalLay(int iProp)
 
 void ShuttleGuiBase::StartVerticalLay(int PositionFlags, int iProp)
 {
-   if( mpState -> mShuttleMode != eIsCreating )
-      return;
    miSizerProp=iProp;
    mpSubSizer = std::make_unique<wxBoxSizer>( wxVERTICAL );
    // PRL:  wxALL has no effect because UpdateSizersCore ignores border
@@ -1805,15 +1670,11 @@ void ShuttleGuiBase::StartVerticalLay(int PositionFlags, int iProp)
 
 void ShuttleGuiBase::EndVerticalLay()
 {
-   if( mpState -> mShuttleMode != eIsCreating )
-      return;
    mpState -> PopSizer();
 }
 
 void ShuttleGuiBase::StartMultiColumn(int nCols, int PositionFlags)
 {
-   if( mpState -> mShuttleMode != eIsCreating )
-      return;
    mpSubSizer = std::make_unique<wxFlexGridSizer>( nCols );
    // PRL:  wxALL has no effect because UpdateSizersCore ignores border
    UpdateSizersCore( false, PositionFlags | wxALL );
@@ -1821,8 +1682,6 @@ void ShuttleGuiBase::StartMultiColumn(int nCols, int PositionFlags)
 
 void ShuttleGuiBase::EndMultiColumn()
 {
-   if( mpState -> mShuttleMode != eIsCreating )
-      return;
    mpState -> PopSizer();
 }
 
@@ -2443,9 +2302,6 @@ void ShuttleGuiBase::AddStandardButtons(
    long buttons, DialogDefinition::Items items, wxWindow *extra,
    DialogDefinition::Item extraItem )
 {
-   if( mpState -> mShuttleMode != eIsCreating )
-      return;
-
    StartVerticalLay( false );
 
    miSizerProp = false;
@@ -2461,9 +2317,6 @@ void ShuttleGuiBase::AddStandardButtons(
 
 wxSizerItem * ShuttleGuiBase::AddSpace( int width, int height, int prop )
 {
-   if( mpState -> mShuttleMode != eIsCreating )
-      return NULL;
-
 //   SetProportions(0);
   // return mpSizer->Add( width, height, miProp);
 

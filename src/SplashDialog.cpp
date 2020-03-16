@@ -72,7 +72,7 @@ SplashDialog::SplashDialog(wxWindow * parent)
 {
    SetName();
    m_pLogo = NULL; //v
-   ShuttleGui S( this, eIsCreating );
+   ShuttleGui S( this );
    Populate( S );
    Fit();
    this->Centre();

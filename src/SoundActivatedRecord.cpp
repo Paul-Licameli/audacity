@@ -32,7 +32,7 @@ SoundActivatedRecordDialog::SoundActivatedRecordDialog(wxWindow* parent)
 //           wxDefaultSize, wxCAPTION | wxTHICK_FRAME)
 {
    SetName();
-   ShuttleGui S(this, eIsCreating);
+   ShuttleGui S(this);
    PopulateOrExchange(S);
    Fit();
    Center();

@@ -64,7 +64,7 @@ ExportOGGOptions::ExportOGGOptions(wxWindow *parent, int WXUNUSED(format))
 {
    mOggQualityUnscaled = gPrefs->Read(L"/FileFormats/OggExportQuality",50)/10;
 
-   ShuttleGui S(this, eIsCreating);
+   ShuttleGui S(this);
    PopulateOrExchange(S);
 
    TransferDataToWindow();

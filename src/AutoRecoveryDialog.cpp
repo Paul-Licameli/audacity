@@ -73,7 +73,7 @@ AutoRecoveryDialog::AutoRecoveryDialog(AudacityProject *project)
    mProject(project)
 {
    SetName();
-   ShuttleGui S(this, eIsCreating);
+   ShuttleGui S(this);
    PopulateOrExchange(S);
 }
 

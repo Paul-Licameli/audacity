@@ -58,7 +58,7 @@ void ApplicationPrefs::Populate()
    // Now construct the GUI itself.
    // Use 'eIsCreatingFromPrefs' so that the GUI is
    // initialised with values from gPrefs.
-   ShuttleGui S(this, eIsCreating);
+   ShuttleGui S(this);
    PopulateOrExchange(S);
    // ----------------------- End of main section --------------
 }

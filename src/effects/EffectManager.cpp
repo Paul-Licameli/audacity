@@ -409,7 +409,7 @@ EffectPresetsDialog::EffectPresetsDialog(wxWindow *parent, Effect *effect)
    }
 
    using namespace DialogDefinition;
-   ShuttleGui S{ this, eIsCreating };
+   ShuttleGui S{ this };
    S.StartVerticalLay();
    {
       S.StartTwoColumn();

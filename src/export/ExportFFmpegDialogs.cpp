@@ -178,7 +178,7 @@ const int ExportFFmpegAC3Options::iAC3SampleRates[] = { 32000, 44100, 48000, 0 }
 ExportFFmpegAC3Options::ExportFFmpegAC3Options(wxWindow *parent, int WXUNUSED(format))
 :  wxPanelWrapper(parent, wxID_ANY)
 {
-   ShuttleGui S(this, eIsCreating);
+   ShuttleGui S(this);
    PopulateOrExchange(S);
 
    TransferDataToWindow();
@@ -232,7 +232,7 @@ bool ExportFFmpegAC3Options::TransferDataFromWindow()
 ExportFFmpegAACOptions::ExportFFmpegAACOptions(wxWindow *parent, int WXUNUSED(format))
 :  wxPanelWrapper(parent, wxID_ANY)
 {
-   ShuttleGui S(this, eIsCreating);
+   ShuttleGui S(this);
    PopulateOrExchange(S);
 
    TransferDataToWindow();
@@ -320,7 +320,7 @@ const std::vector< int > AMRNBBitRateValues
 ExportFFmpegAMRNBOptions::ExportFFmpegAMRNBOptions(wxWindow *parent, int WXUNUSED(format))
 :  wxPanelWrapper(parent, wxID_ANY)
 {
-   ShuttleGui S(this, eIsCreating);
+   ShuttleGui S(this);
    PopulateOrExchange(S);
 
    TransferDataToWindow();
@@ -543,7 +543,7 @@ namespace {
 ExportFFmpegOPUSOptions::ExportFFmpegOPUSOptions(wxWindow *parent, int WXUNUSED(format))
 :  wxPanelWrapper(parent, wxID_ANY)
 {
-   ShuttleGui S(this, eIsCreating);
+   ShuttleGui S(this);
    PopulateOrExchange(S);
 
    TransferDataToWindow();
@@ -669,7 +669,7 @@ const std::vector< int > WMABitRateValues{
 ExportFFmpegWMAOptions::ExportFFmpegWMAOptions(wxWindow *parent, int WXUNUSED(format))
 :  wxPanelWrapper(parent, wxID_ANY)
 {
-   ShuttleGui S(this, eIsCreating);
+   ShuttleGui S(this);
    PopulateOrExchange(S);
 
    TransferDataToWindow();
@@ -725,7 +725,7 @@ ExportFFmpegCustomOptions::ExportFFmpegCustomOptions(wxWindow *parent, int WXUNU
    mFormat( nullptr ),
    mCodec( nullptr )
 {
-   ShuttleGui S(this, eIsCreating);
+   ShuttleGui S(this);
    PopulateOrExchange(S);
 
    TransferDataToWindow();
@@ -1601,7 +1601,7 @@ ExportFFmpegOptions::ExportFFmpegOptions(wxWindow *parent)
             XO("Configure custom FFmpeg options"))
 {
    SetName();
-   ShuttleGui S(this, eIsCreating);
+   ShuttleGui S(this);
    PickFFmpegLibs();
    //FFmpegLibsInst()->LoadLibs( nullptr, true ); //Loaded at startup or from Prefs now
 

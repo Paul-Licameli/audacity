@@ -849,7 +849,7 @@ wxDialogWrapper( parent, id, title, position, size, style | wxRESIZE_BORDER )
    for (wxInt32 i = 0; i < scount; i++)
       mFile->SetStreamUsage(i, FALSE);
 
-   ShuttleGui S(this, eIsCreating);
+   ShuttleGui S{ this };
    {
       S.SetBorder( 5 );
 

@@ -74,7 +74,7 @@ MultiDialog::MultiDialog(wxWindow * pParent,
 {
    SetName();
 
-   ShuttleGui S{ this, eIsCreating };
+   auto S = ShuttleGui{ this };
    {
       S.SetBorder( 5 );
       S.StartVerticalLay( 0 );

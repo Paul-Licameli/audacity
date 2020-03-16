@@ -62,7 +62,7 @@ ErrorReportDialog::ErrorReportDialog(
 
    mReport = std::make_unique<audacity::sentry::Report> (ex);
 
-   ShuttleGui S(this, eIsCreating);
+   ShuttleGui S(this);
 
    const wxFont headingFont = wxFont(wxFontInfo(12).Bold());
    const wxFont textFont = wxFont(wxFontInfo(10));

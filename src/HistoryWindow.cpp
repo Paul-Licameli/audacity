@@ -74,7 +74,7 @@ HistoryDialog::HistoryDialog(AudacityProject *parent, UndoManager *manager):
 
    //------------------------- Main section --------------------
    // Construct the GUI.
-   ShuttleGui S(this, eIsCreating);
+   ShuttleGui S(this);
    Populate(S);
 
    wxTheApp->Bind(EVT_AUDIOIO_PLAYBACK,
@@ -417,7 +417,7 @@ void HistoryDialog::UpdatePrefs()
    DestroyChildren();
 
    SetTitle(HistoryTitle);
-   ShuttleGui S(this, eIsCreating);
+   ShuttleGui S(this);
    Populate(S);
 
    if (shown) {

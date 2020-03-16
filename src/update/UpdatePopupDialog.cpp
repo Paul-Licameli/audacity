@@ -33,7 +33,7 @@ UpdatePopupDialog::UpdatePopupDialog (wxWindow* parent, const VersionPatch& vers
         wxCAPTION),
       mVersionPatch(versionPatch)
 {
-    ShuttleGui S (this, eIsCreating);
+    ShuttleGui S(this);
     S.SetBorder (5);
     S.StartVerticalLay (wxEXPAND, 1);
     {

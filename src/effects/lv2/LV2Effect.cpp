@@ -216,7 +216,7 @@ LV2EffectSettingsDialog::LV2EffectSettingsDialog(wxWindow *parent, LV2Effect *ef
    mEffect->mHost->GetSharedConfig(L"Settings", L"UseLatency", mUseLatency, true);
    mEffect->mHost->GetSharedConfig(L"Settings", L"UseGUI", mUseGUI, true);
 
-   ShuttleGui S(this, eIsCreating);
+   ShuttleGui S(this);
    PopulateOrExchange(S);
 }
 

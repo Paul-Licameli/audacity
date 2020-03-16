@@ -262,7 +262,7 @@ AudacityCommandDialog::AudacityCommandDialog(wxWindow * parent,
 
 bool AudacityCommandDialog::Init()
 {
-   ShuttleGui S{ this, eIsCreating };
+   ShuttleGui S{ this };
 
    S.SetBorder(5);
    S.StartVerticalLay(true);

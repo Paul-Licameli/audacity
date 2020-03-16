@@ -63,11 +63,6 @@ class wxArrayStringEx;
 
 const int nMaxNestedSizers = 20;
 
-enum teShuttleMode
-{
-   eIsCreating,
-};
-
 class wxListCtrl;
 class wxCheckBox;
 class wxChoice;
@@ -1071,14 +1066,13 @@ public:
 struct ShuttleGuiState final
 {
    ShuttleGuiState(
-      wxWindow *pDlg, teShuttleMode ShuttleMode, bool vertical, wxSize minSize,
+      wxWindow *pDlg, bool vertical, wxSize minSize,
       const std::shared_ptr< PreferenceVisitor > &pVisitor );
 
    void PushSizer();
    void PopSizer();
 
    wxWindow *const mpDlg;
-   const teShuttleMode mShuttleMode;
 
    std::shared_ptr< PreferenceVisitor > mpVisitor;
 
@@ -1104,7 +1098,6 @@ class AUDACITY_DLL_API ShuttleGuiBase /* not final */
 public:
    ShuttleGuiBase(
       wxWindow * pParent,
-      teShuttleMode ShuttleMode,
       bool vertical, // Choose layout direction of topmost level sizer
       wxSize minSize,
       const std::shared_ptr< PreferenceVisitor > &pVisitor
@@ -1412,12 +1405,11 @@ public:
    {}
 
    TypedShuttleGui(
-      wxWindow * pParent, teShuttleMode ShuttleMode,
+      wxWindow * pParent,
       bool vertical = true, // Choose layout direction of topmost level sizer
       wxSize minSize = { 250, 100 },
       const std::shared_ptr< PreferenceVisitor > &pVisitor = nullptr )
-      : ShuttleGuiBase( pParent, EffectiveMode( ShuttleMode ),
-         vertical, minSize, pVisitor )
+      : ShuttleGuiBase( pParent, vertical, minSize, pVisitor )
    {
    };
 
@@ -1573,8 +1565,6 @@ public:
       { GetItem().MinSize(); return *this; }
    TypedShuttleGui &MinSize( wxSize sz )
       { GetItem().MinSize( sz ); return *this; }
-
-   teShuttleMode GetMode() { return mpState -> mShuttleMode; };
 
    operator WindowType* () const { return static_cast<WindowType*>(mpWind); }
    WindowType* operator -> () const { return *this; }
@@ -1813,14 +1803,6 @@ private:
    ItemType &&GetItem()
    {
       return std::move( static_cast<ItemType&>(mItem) );
-   }
-
-   inline teShuttleMode EffectiveMode( teShuttleMode inMode )
-   {
-      switch ( inMode ) {
-         default:
-            return inMode;
-      }
    }
 };
 

@@ -54,7 +54,7 @@ void AudacityFileConfig::Warn()
 {
    wxDialogWrapper dlg(nullptr, wxID_ANY, XO("Audacity Configuration Error"));
 
-   ShuttleGui S(&dlg, eIsCreating);
+   ShuttleGui S{&dlg};
 
    wxButton *retryButton;
    wxButton *quitButton;

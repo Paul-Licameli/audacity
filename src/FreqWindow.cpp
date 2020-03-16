@@ -260,7 +260,7 @@ void FrequencyPlotDialog::Populate()
    if(dBRange < 90.)
       dBRange = 90.;
 
-   ShuttleGui S(this, eIsCreating);
+   auto S = ShuttleGui(this);
 
    S.SetBorder(0);
 

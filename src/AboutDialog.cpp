@@ -295,7 +295,7 @@ AboutDialog::AboutDialog(wxWindow * parent)
    this->SetBackgroundColour(theTheme.Colour( clrAboutBoxBackground ));
    //this->SetBackgroundColour(theTheme.Colour( clrMedium ));
    icon = NULL;
-   ShuttleGui S( this, eIsCreating );
+   ShuttleGui S( this );
    S.StartNotebook();
    {
       PopulateAudacityPage( S );

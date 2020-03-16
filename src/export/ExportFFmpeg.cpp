@@ -1144,7 +1144,7 @@ int ExportFFmpeg::AskResample(int bitrate, int rate, int lowrate, int highrate, 
 #else
    wxDialogWrapper d(nullptr, wxID_ANY, XO("Invalid sample rate"));
    d.SetName();
-   ShuttleGui S(&d, eIsCreating);
+   ShuttleGui S(&d);
 
    int selected = -1;
 

@@ -1330,7 +1330,7 @@ public:
    CompactDialog(TranslatableString text)
    :  wxDialogWrapper(nullptr, wxID_ANY, XO("Compact Project"))
    {
-      ShuttleGui S(this, eIsCreating);
+      ShuttleGui S(this);
 
       S.StartVerticalLay(true);
       {
