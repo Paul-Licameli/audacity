@@ -158,7 +158,7 @@ ExportPCMOptions::ExportPCMOptions(wxWindow *parent, int selformat)
       GetEncodings();
    }
 
-   ShuttleGui S(this, eIsCreatingFromPrefs);
+   ShuttleGui S(this, eIsCreating);
    PopulateOrExchange(S);
 
    parent->Bind(wxEVT_SHOW, &ExportPCMOptions::OnShow, this);

@@ -480,7 +480,7 @@ PrefsDialog::PrefsDialog(
                   const auto &factory = node.factory;
                   const auto panel = factory(mCategories, wxID_ANY, pProject);
                   ShuttleGui S2(
-                     panel, eIsCreatingFromPrefs, true, { 250, 100 }, pVisitor );
+                     panel, eIsCreating, true, { 250, 100 }, pVisitor );
                   panel->PopulateOrExchange( S2 );
                   wxWindow *const w = panel;
                   if (stack.empty())
@@ -512,7 +512,7 @@ PrefsDialog::PrefsDialog(
          const auto &factory = node.factory;
          mUniquePage = factory(S.GetParent(), wxID_ANY, pProject);
          ShuttleGui S2(
-            mUniquePage, eIsCreatingFromPrefs, true, { 250, 100 }, pVisitor );
+            mUniquePage, eIsCreating, true, { 250, 100 }, pVisitor );
          mUniquePage->PopulateOrExchange( S2 );
          wxWindow * uniquePageWindow =
          S

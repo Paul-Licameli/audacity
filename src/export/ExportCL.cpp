@@ -83,7 +83,7 @@ ExportCLOptions::ExportCLOptions(wxWindow *parent, int WXUNUSED(format))
    mHistory.Append(gPrefs->Read(L"/FileFormats/ExternalProgramExportCommand",
                                           mHistory[ 0 ]));
 
-   ShuttleGui S(this, eIsCreatingFromPrefs);
+   ShuttleGui S(this, eIsCreating);
    PopulateOrExchange(S);
 
    TransferDataToWindow();

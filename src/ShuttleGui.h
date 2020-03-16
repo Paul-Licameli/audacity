@@ -69,11 +69,6 @@ enum teShuttleMode
    eIsGettingFromDialog,
    eIsSettingToDialog,
 
-   // Next two are only ever seen in constructor.
-   // After that they revert to one of the modes above.
-   // They are used to achieve 'two step' operation,
-   // where we transfer between two shuttles in one go.
-   eIsCreatingFromPrefs,
    eIsSavingToPrefs
 };
 
@@ -1827,8 +1822,6 @@ private:
    inline teShuttleMode EffectiveMode( teShuttleMode inMode )
    {
       switch ( inMode ) {
-         case eIsCreatingFromPrefs:
-            return eIsCreating;
          case eIsSavingToPrefs:
             return eIsGettingFromDialog;
          default:

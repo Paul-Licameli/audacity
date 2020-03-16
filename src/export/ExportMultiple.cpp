@@ -124,7 +124,7 @@ ExportMultipleDialog::ExportMultipleDialog(AudacityProject *project)
    bool bHasLabels = (mNumLabels > 0);
    mPreferByLabels = bHasLabels && (mNumWaveTracks < 2);
 
-   ShuttleGui S(this, eIsCreatingFromPrefs);
+   ShuttleGui S(this, eIsCreating);
 
    PopulateOrExchange(S);
 
