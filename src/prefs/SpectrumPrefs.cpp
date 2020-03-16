@@ -563,8 +563,6 @@ void SpectrumPrefs::OnDefaults(wxCommandEvent &)
       mTempSettings.ConvertToEnumeratedWindowSizes();
       mDefaulted = true;
       wxPanel::TransferDataToWindow();
-      ShuttleGui S(this, eIsSettingToDialog);
-      PopulateOrExchange(S);
    }
 }
 

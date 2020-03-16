@@ -308,8 +308,6 @@ void AudacityCommandDialog::PopulateOrExchange(ShuttleGui & S)
 bool AudacityCommandDialog::TransferDataToWindow()
 {
    wxDialog::TransferDataToWindow();
-   ShuttleGui S(this, eIsSettingToDialog);
-   PopulateOrExchange(S);
    return true;
 }
 

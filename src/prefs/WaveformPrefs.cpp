@@ -216,8 +216,6 @@ void WaveformPrefs::OnDefaults(wxCommandEvent &)
       mTempSettings.ConvertToEnumeratedDBRange();
       mDefaulted = true;
       wxPanel::TransferDataToWindow();
-      ShuttleGui S(this, eIsSettingToDialog);
-      PopulateOrExchange(S);
    }
 }
 
