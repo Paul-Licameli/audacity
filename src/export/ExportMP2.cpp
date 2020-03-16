@@ -182,8 +182,6 @@ void ExportMP2Options::PopulateOrExchange(ShuttleGui & S)
 bool ExportMP2Options::TransferDataFromWindow()
 {
    wxPanel::TransferDataFromWindow();
-   ShuttleGui S(this, eIsSavingToPrefs);
-   PopulateOrExchange(S);
 
    gPrefs->Flush();
 

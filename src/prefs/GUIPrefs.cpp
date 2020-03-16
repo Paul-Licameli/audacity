@@ -215,8 +215,6 @@ void GUIPrefs::PopulateOrExchange(ShuttleGui & S)
 bool GUIPrefs::Commit()
 {
    wxPanel::TransferDataFromWindow();
-   ShuttleGui S(this, eIsSavingToPrefs);
-   PopulateOrExchange(S);
 
    // If language has changed, we want to change it now, not on the next reboot.
    Identifier lang = LocaleLanguage.Read();

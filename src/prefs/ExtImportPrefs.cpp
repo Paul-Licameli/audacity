@@ -212,8 +212,6 @@ void ExtImportPrefs::PopulateOrExchange(ShuttleGui & S)
 bool ExtImportPrefs::Commit()
 {
    wxPanel::TransferDataFromWindow();
-   ShuttleGui S(this, eIsSavingToPrefs);
-   PopulateOrExchange(S);
 
    Importer::Get().WriteImportItems();
 

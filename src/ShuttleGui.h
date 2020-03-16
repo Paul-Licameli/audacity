@@ -66,10 +66,7 @@ const int nMaxNestedSizers = 20;
 enum teShuttleMode
 {
    eIsCreating,
-   eIsGettingFromDialog,
    eIsSettingToDialog,
-
-   eIsSavingToPrefs
 };
 
 class wxListCtrl;
@@ -1822,8 +1819,6 @@ private:
    inline teShuttleMode EffectiveMode( teShuttleMode inMode )
    {
       switch ( inMode ) {
-         case eIsSavingToPrefs:
-            return eIsGettingFromDialog;
          default:
             return inMode;
       }

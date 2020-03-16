@@ -474,8 +474,6 @@ void LadspaEffectOptionsDialog::OnOk()
    }
 
    wxDialog::TransferDataFromWindow();
-   ShuttleGui S(this, eIsGettingFromDialog);
-   PopulateOrExchange(S);
 
    mHost->SetSharedConfig(L"Options", L"UseLatency", mUseLatency);
 

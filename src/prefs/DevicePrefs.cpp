@@ -371,8 +371,6 @@ void DevicePrefs::OnDevice()
 bool DevicePrefs::Commit()
 {
    wxPanel::TransferDataFromWindow();
-   ShuttleGui S(this, eIsSavingToPrefs);
-   PopulateOrExchange(S);
    DeviceSourceMap *map = NULL;
 
    if (mPlay->GetCount() > 0) {

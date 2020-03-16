@@ -628,8 +628,6 @@ void AudioUnitEffectOptionsDialog::OnOk()
    }
 
    wxDialog::TransferDataFromWindow();
-   ShuttleGui S(this, eIsGettingFromDialog);
-   PopulateOrExchange(S);
 
    // un-translate the type
    auto uiType = UITypeChoices[ mUITypeIndex ].MSGID().GET();

@@ -204,8 +204,6 @@ void ThemePrefs::ApplyUpdatedImages()
 bool ThemePrefs::Commit()
 {
    wxPanel::TransferDataFromWindow();
-   ShuttleGui S(this, eIsSavingToPrefs);
-   PopulateOrExchange(S);
 
    return true;
 }

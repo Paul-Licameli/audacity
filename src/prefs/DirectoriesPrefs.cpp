@@ -449,8 +449,6 @@ bool DirectoriesPrefs::Validate()
 bool DirectoriesPrefs::Commit()
 {
    wxPanel::TransferDataFromWindow();
-   ShuttleGui S(this, eIsSavingToPrefs);
-   PopulateOrExchange(S);
 
    return true;
 }

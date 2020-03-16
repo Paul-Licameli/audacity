@@ -136,8 +136,6 @@ bool WaveformPrefs::Validate()
    // ToDo: use wxIntegerValidator<unsigned> when available
 
    wxPanel::TransferDataFromWindow();
-   ShuttleGui S(this, eIsGettingFromDialog);
-   PopulateOrExchange(S);
 
    // Delegate range checking to WaveformSettings class
    mTempSettings.ConvertToActualDBRange();
@@ -151,8 +149,6 @@ bool WaveformPrefs::Commit()
    const bool isOpenPage = this->IsShown();
 
    wxPanel::TransferDataFromWindow();
-   ShuttleGui S(this, eIsGettingFromDialog);
-   PopulateOrExchange(S);
 
    mTempSettings.ConvertToActualDBRange();
    WaveformSettings::Globals::Get().SavePrefs();

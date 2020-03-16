@@ -105,8 +105,6 @@ void ExportOGGOptions::PopulateOrExchange(ShuttleGui & S)
 bool ExportOGGOptions::TransferDataFromWindow()
 {
    wxPanel::TransferDataFromWindow();
-   ShuttleGui S(this, eIsSavingToPrefs);
-   PopulateOrExchange(S);
 
    gPrefs->Write(L"/FileFormats/OggExportQuality",mOggQualityUnscaled * 10);
    gPrefs->Flush();

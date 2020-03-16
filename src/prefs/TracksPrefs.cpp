@@ -389,8 +389,6 @@ bool TracksPrefs::Commit()
    // Bug 1583: Clear the caching of the preference pinned state.
    iPreferencePinned = -1;
    wxPanel::TransferDataFromWindow();
-   ShuttleGui S(this, eIsSavingToPrefs);
-   PopulateOrExchange(S);
 
    // Bug 1661: Don't store the name for new tracks if the name is the
    // default in that language.

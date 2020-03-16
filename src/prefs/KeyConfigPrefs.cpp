@@ -915,8 +915,6 @@ bool KeyConfigPrefs::Commit()
    }
 
    wxPanel::TransferDataFromWindow();
-   ShuttleGui S(this, eIsSavingToPrefs);
-   PopulateOrExchange(S);
 
    bool bFull = gPrefs->ReadBool(L"/GUI/Shortcuts/FullDefaults", false);
    for (size_t i = 0; i < mNames.size(); i++) {

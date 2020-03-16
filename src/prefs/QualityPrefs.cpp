@@ -180,8 +180,6 @@ bool QualityPrefs::UseOtherRate() const
 bool QualityPrefs::Commit()
 {
    wxPanel::TransferDataFromWindow();
-   ShuttleGui S(this, eIsSavingToPrefs);
-   PopulateOrExchange(S);
 
    // The complex compound control may have value 'other' in which case the
    // value in prefs comes from the second field.

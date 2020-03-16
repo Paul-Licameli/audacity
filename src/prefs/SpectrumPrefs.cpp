@@ -403,8 +403,6 @@ bool SpectrumPrefs::Validate()
 #endif //EXPERIMENTAL_FIND_NOTES
 
    wxPanel::TransferDataFromWindow();
-   ShuttleGui S(this, eIsSavingToPrefs);
-   PopulateOrExchange(S);
 
    // Delegate range checking to SpectrogramSettings class
    mTempSettings.ConvertToActualWindowSizes();
@@ -461,8 +459,6 @@ void SpectrumPrefs::Preview()
    const bool isOpenPage = this->IsShown();
 
    wxPanel::TransferDataFromWindow();
-   ShuttleGui S(this, eIsSavingToPrefs);
-   PopulateOrExchange(S);
 
 
    mTempSettings.ConvertToActualWindowSizes();

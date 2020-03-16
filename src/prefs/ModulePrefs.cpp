@@ -162,8 +162,6 @@ void ModulePrefs::PopulateOrExchange(ShuttleGui & S)
 bool ModulePrefs::Commit()
 {
    wxPanel::TransferDataFromWindow();
-   ShuttleGui S(this, eIsSavingToPrefs);
-   PopulateOrExchange(S);
    int i;
    for(i=0;i<(int)mPaths.size();i++)
       ModuleSettings::SetModuleStatus( mPaths[i], mStatuses[i] );

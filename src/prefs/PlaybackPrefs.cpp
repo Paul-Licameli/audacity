@@ -168,8 +168,6 @@ bool PlaybackPrefs::Commit()
    iPreferenceUnpinned = -1;
 
    wxPanel::TransferDataFromWindow();
-   ShuttleGui S(this, eIsSavingToPrefs);
-   PopulateOrExchange(S);
 
    return true;
 }

@@ -219,8 +219,6 @@ void ExportFFmpegAC3Options::PopulateOrExchange(ShuttleGui & S)
 bool ExportFFmpegAC3Options::TransferDataFromWindow()
 {
    wxPanel::TransferDataFromWindow();
-   ShuttleGui S(this, eIsSavingToPrefs);
-   PopulateOrExchange(S);
 
    gPrefs->Flush();
 
@@ -276,8 +274,6 @@ void ExportFFmpegAACOptions::PopulateOrExchange(ShuttleGui & S)
 bool ExportFFmpegAACOptions::TransferDataFromWindow()
 {
    wxPanel::TransferDataFromWindow();
-   ShuttleGui S(this, eIsSavingToPrefs);
-   PopulateOrExchange(S);
 
    gPrefs->Flush();
 
@@ -365,8 +361,6 @@ void ExportFFmpegAMRNBOptions::PopulateOrExchange(ShuttleGui & S)
 bool ExportFFmpegAMRNBOptions::TransferDataFromWindow()
 {
    wxPanel::TransferDataFromWindow();
-   ShuttleGui S(this, eIsSavingToPrefs);
-   PopulateOrExchange(S);
 
    gPrefs->Flush();
 
@@ -622,8 +616,7 @@ bool ExportFFmpegOPUSOptions::TransferDataToWindow()
 ///
 bool ExportFFmpegOPUSOptions::TransferDataFromWindow()
 {
-   ShuttleGui S(this, eIsSavingToPrefs);
-   PopulateOrExchange(S);
+   wxPanelWrapper::TransferDataFromWindow();
 
    gPrefs->Flush();
 
@@ -717,8 +710,6 @@ void ExportFFmpegWMAOptions::PopulateOrExchange(ShuttleGui & S)
 bool ExportFFmpegWMAOptions::TransferDataFromWindow()
 {
    wxPanel::TransferDataFromWindow();
-   ShuttleGui S(this, eIsSavingToPrefs);
-   PopulateOrExchange(S);
 
    gPrefs->Flush();
 
@@ -2600,8 +2591,6 @@ void ExportFFmpegOptions::OnOK()
    gPrefs->Flush();
 
    wxDialog::TransferDataFromWindow();
-   ShuttleGui S(this, eIsSavingToPrefs);
-   PopulateOrExchange(S);
 
    gPrefs->Flush();
 

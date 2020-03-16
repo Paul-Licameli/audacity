@@ -202,8 +202,6 @@ void LibraryPrefs::OnFFmpegDownButton()
 bool LibraryPrefs::Commit()
 {
    wxPanel::TransferDataFromWindow();
-   ShuttleGui S(this, eIsSavingToPrefs);
-   PopulateOrExchange(S);
 
    return true;
 }

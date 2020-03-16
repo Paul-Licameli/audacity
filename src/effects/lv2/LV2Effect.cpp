@@ -320,8 +320,6 @@ void LV2EffectSettingsDialog::OnOk()
    }
 
    wxDialog::TransferDataFromWindow();
-   ShuttleGui S(this, eIsGettingFromDialog);
-   PopulateOrExchange(S);
 
    mEffect->mHost->SetSharedConfig(L"Settings", L"BufferSize", mBufferSize);
    mEffect->mHost->SetSharedConfig(L"Settings", L"UseLatency", mUseLatency);

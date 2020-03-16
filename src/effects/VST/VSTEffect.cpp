@@ -876,8 +876,6 @@ void VSTEffectOptionsDialog::OnOk()
    }
 
    wxDialog::TransferDataFromWindow();
-   ShuttleGui S(this, eIsGettingFromDialog);
-   PopulateOrExchange(S);
 
    mHost->SetSharedConfig(L"Options", L"BufferSize", mBufferSize);
    mHost->SetSharedConfig(L"Options", L"UseLatency", mUseLatency);

@@ -2094,8 +2094,6 @@ bool EffectDialog::TransferDataToWindow()
 bool EffectDialog::TransferDataFromWindow()
 {
    wxDialog::TransferDataFromWindow();
-   ShuttleGui S(this, eIsGettingFromDialog);
-   PopulateOrExchange(S);
 
    return true;
 }

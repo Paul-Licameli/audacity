@@ -316,8 +316,6 @@ bool AudacityCommandDialog::TransferDataToWindow()
 bool AudacityCommandDialog::TransferDataFromWindow()
 {
    wxDialog::TransferDataFromWindow();
-   ShuttleGui S(this, eIsGettingFromDialog);
-   PopulateOrExchange(S);
    return true;
 }
 
