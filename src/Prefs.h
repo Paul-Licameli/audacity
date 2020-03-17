@@ -275,7 +275,12 @@ public:
 
    const wxString &Key() const { return mKey; }
    const Identifier GetDefault() const;
-   const EnumValueSymbols &GetSymbols() const { return mSymbols; }
+
+   const TranslatableStrings &GetLabels() const
+   { return GetSymbols().GetMsgids(); }
+
+   const Identifiers &GetValues() const
+   { return GetSymbols().GetInternals(); }
 
    Identifier Read() const;
 
@@ -289,6 +294,8 @@ public:
    void SetDefault( long value );
 
 protected:
+   const EnumValueSymbols &GetSymbols() const { return mSymbols; }
+
    size_t Find( const Identifier &value ) const;
    virtual void Migrate( wxString& );
 

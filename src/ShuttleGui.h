@@ -564,7 +564,8 @@ private:
    wxSpinCtrl * DoTieSpinCtrl( const TranslatableString &Prompt,
       WrappedType & WrappedRef, const int max, const int min = 0 );
 
-   std::vector<EnumValueSymbol> mRadioSymbols;
+   TranslatableStrings mRadioLabels;
+   Identifiers mRadioValues;
    wxString mRadioSettingName; /// The setting controlled by a group.
    Optional<WrappedType> mRadioValue;  /// The wrapped value associated with the active radio button.
    int mRadioCount;       /// The index of this radio item.  -1 for none.
