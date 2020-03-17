@@ -274,22 +274,22 @@ public:
    }
 
    const wxString &Key() const { return mKey; }
-   const EnumValueSymbol &Default() const;
+   const Identifier GetDefault() const;
    const EnumValueSymbols &GetSymbols() const { return mSymbols; }
 
-   wxString Read() const;
+   Identifier Read() const;
 
    // new direct use is discouraged but it may be needed in legacy code:
    // use a default in case the preference is not defined, which may not be
    // the default-default stored in this object.
-   wxString ReadWithDefault( const wxString & ) const;
+   Identifier ReadWithDefault( const Identifier & ) const;
 
-   bool Write( const wxString &value ); // you flush gPrefs afterward
+   bool Write( const Identifier &value ); // you flush gPrefs afterward
 
    void SetDefault( long value );
 
 protected:
-   size_t Find( const wxString &value ) const;
+   size_t Find( const Identifier &value ) const;
    virtual void Migrate( wxString& );
 
    const wxString mKey;

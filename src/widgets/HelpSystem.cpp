@@ -250,7 +250,7 @@ void HelpSystem::ShowHelp(wxWindow *parent,
       // these next lines are for legacy cfg files (pre 2.0) where we had different modes
       if( (HelpMode == L"Standard") || (HelpMode == L"InBrowser") )
       {
-         HelpMode = GUIManualLocation.Default().Internal();
+         HelpMode = GUIManualLocation.GetDefault().GET();
          GUIManualLocation.Write(HelpMode);
          gPrefs->Flush();
       }

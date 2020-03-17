@@ -1571,7 +1571,7 @@ void ShuttleGuiBase::StartRadioButtonGroup( const ChoiceSetting &Setting )
    mRadioSymbols = Setting.GetSymbols();
 
    // Configure the generic type mechanism to use OUR string.
-   mRadioValueString = Setting.Default().Internal();
+   mRadioValueString = Setting.GetDefault().GET();
    mRadioValue.emplace( mRadioValueString );
 
    // Now actually start the radio button group.
@@ -1953,7 +1953,7 @@ wxChoice *ShuttleGuiBase::TieChoice(
 
    const auto &symbols = choiceSetting.GetSymbols();
    const auto &SettingName = choiceSetting.Key();
-   const auto &Default = choiceSetting.Default().Internal();
+   const auto &Default = choiceSetting.GetDefault();
    const auto &Choices = symbols.GetMsgids();
    const auto &InternalChoices = symbols.GetInternals();
 
@@ -1961,7 +1961,7 @@ wxChoice *ShuttleGuiBase::TieChoice(
 
    int TempIndex=0;
 //   int TempIndex = TranslateToIndex( Default, InternalChoices );
-   wxString TempStr = Default;
+   wxString TempStr = Default.GET();
    WrappedType WrappedRef( TempStr );
    // Get from prefs does 1 and 2.
    // Put to prefs does 2 and 3.

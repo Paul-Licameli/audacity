@@ -154,7 +154,7 @@ void AddEffectMenuItems(
    auto groupBy = EffectsGroupBy.Read();
 
    bool grouped = false;
-   if (groupBy.StartsWith(L"groupby"))
+   if (groupBy.GET().StartsWith(L"groupby"))
    {
       grouped = true;
    }

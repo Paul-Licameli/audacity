@@ -290,7 +290,7 @@ wxChoice * ShuttleGuiGetDefinition::TieChoice(
    AddItem( choiceSetting.Key(), "id" );
    AddItem( Prompt.Translation(), "prompt" );
    AddItem( "enum", "type" );
-   AddItem( choiceSetting.Default().Internal(), "default"  );
+   AddItem( choiceSetting.GetDefault().GET(), "default"  );
    StartField( "enum" );
    StartArray();
    for ( const auto &choice : choiceSetting.GetSymbols().GetInternals() )

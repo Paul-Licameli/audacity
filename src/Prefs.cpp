@@ -224,24 +224,23 @@ const Identifiers &EnumValueSymbols::GetInternals() const
 }
 
 //////////
-const EnumValueSymbol &ChoiceSetting::Default() const
+const Identifier ChoiceSetting::GetDefault() const
 {
    if ( mDefaultSymbol >= 0 && mDefaultSymbol < (long)mSymbols.size() )
-      return mSymbols[ mDefaultSymbol ];
-   static EnumValueSymbol empty;
-   return empty;
+      return mSymbols[ mDefaultSymbol ].Internal();
+   return {};
 }
 
-wxString ChoiceSetting::Read() const
+Identifier ChoiceSetting::Read() const
 {
-   const auto &defaultValue = Default().Internal();
+   const auto &defaultValue = GetDefault();
    return ReadWithDefault( defaultValue );
 }
 
-wxString ChoiceSetting::ReadWithDefault( const wxString &defaultValue ) const
+Identifier ChoiceSetting::ReadWithDefault( const Identifier &defaultValue ) const
 {
    wxString value;
-   if ( !gPrefs->Read(mKey, &value, defaultValue) )
+   if ( !gPrefs->Read(mKey, &value, defaultValue.GET()) )
       if (!mMigrated) {
          const_cast<ChoiceSetting*>(this)->Migrate( value );
          mMigrated = true;
@@ -251,11 +250,11 @@ wxString ChoiceSetting::ReadWithDefault( const wxString &defaultValue ) const
    // in case we try to interpret config files from future versions
    auto index = Find( value );
    if ( index >= mSymbols.size() )
-      value = defaultValue;
+      return defaultValue;
    return value;
 }
 
-size_t ChoiceSetting::Find( const wxString &value ) const
+size_t ChoiceSetting::Find( const Identifier &value ) const
 {
    auto start = GetSymbols().begin();
    return size_t(
@@ -268,7 +267,7 @@ void ChoiceSetting::Migrate( wxString &value )
    (void)value;// Compiler food
 }
 
-bool ChoiceSetting::Write( const wxString &value )
+bool ChoiceSetting::Write( const Identifier &value )
 {
    auto index = Find( value );
    if (index >= mSymbols.size())
