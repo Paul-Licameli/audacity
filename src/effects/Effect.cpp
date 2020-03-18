@@ -879,6 +879,27 @@ void Effect::SetDuration(double seconds)
    return;
 }
 
+std::shared_ptr< DialogDefinition::Adaptor< double > > Effect::DurationTarget()
+{
+   struct MyAdaptor : DialogDefinition::Adaptor< double >
+   {
+      Effect &mEffect;
+      MyAdaptor( Effect &effect ) : mEffect{ effect } {}
+
+      bool Get( TargetType &target ) const override
+      {
+         target = mEffect.GetDuration();
+         return true;
+      }
+      bool Set( const TargetType &value ) override
+      {
+         mEffect.SetDuration( value );
+         return true;
+      }
+   };
+   return std::make_shared< MyAdaptor >( *this );
+}
+
 RegistryPath Effect::GetUserPresetsGroup(const RegistryPath & name)
 {
    RegistryPath group = L"UserPresets";

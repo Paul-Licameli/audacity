@@ -702,7 +702,7 @@ public:
    bool TransferToWindow() override;
 };
 
-// This can shuttle to text boxes, combos, and sliders.
+// This can shuttle to text boxes, combos, sliders, and NumericTextCtrl
 // For text boxes and combos, validates the characters
 class DoubleValidator
    : public wxValidator

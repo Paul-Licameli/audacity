@@ -114,6 +114,7 @@ for registering for changes.
 #include "../include/audacity/ComponentInterface.h"
 #include "widgets/ReadOnlyText.h"
 #include "widgets/valnum.h"
+#include "widgets/NumericTextCtrl.h"
 #include "widgets/wxPanelWrapper.h"
 #include "widgets/wxTextCtrlWrapper.h"
 #include "AllThemeResources.h"
@@ -556,6 +557,8 @@ bool DoubleValidator::TransferFromWindow()
    }
    else if ( auto pCtrl = dynamic_cast<wxSlider*>( GetWindow() ) )
       return mSlot = mpAdaptor->Set( pCtrl->GetValue() );
+   else if ( auto pCtrl = dynamic_cast<NumericTextCtrl*>( GetWindow() ) )
+      return mSlot = mpAdaptor->Set( pCtrl->GetValue() );
    return mSlot = false;
 }
 
@@ -571,6 +574,12 @@ bool DoubleValidator::TransferToWindow()
       return mDelegate->TransferToWindow();
    }
    else if ( auto pCtrl = dynamic_cast<wxSlider*>( GetWindow() ) ) {
+      if ( !mpAdaptor->Get( mTemp ) )
+         return false;
+      pCtrl->SetValue( mTemp );
+      return true;
+   }
+   else if ( auto pCtrl = dynamic_cast<NumericTextCtrl*>( GetWindow() ) ) {
       if ( !mpAdaptor->Get( mTemp ) )
          return false;
       pCtrl->SetValue( mTemp );
