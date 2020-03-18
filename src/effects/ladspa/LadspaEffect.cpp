@@ -41,7 +41,6 @@ effects from this one class.
 #include <wx/filename.h>
 #include <wx/log.h>
 #include <wx/sizer.h>
-#include <wx/slider.h>
 #include <wx/statbox.h>
 #include <wx/stattext.h>
 #include <wx/textctrl.h>
@@ -1195,7 +1194,6 @@ bool LadspaEffect::PopulateUI(ShuttleGui &S)
    mToggles.reinit( mData->PortCount );
    mSliders.reinit( mData->PortCount );
    mFields.reinit( mData->PortCount, true);
-   mLabels.reinit( mData->PortCount );
    mMeters.reinit( mData->PortCount );
 
    auto w = S.StartScroller(wxVSCROLL | wxTAB_TRAVERSAL);
@@ -1527,7 +1525,6 @@ bool LadspaEffect::CloseUI()
    mToggles.reset();
    mSliders.reset();
    mFields.reset();
-   mLabels.reset();
 
    mUIHost = NULL;
    mParent = NULL;

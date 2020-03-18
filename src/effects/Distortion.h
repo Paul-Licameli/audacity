@@ -16,8 +16,6 @@
 #include "Effect.h"
 #include "../Shuttle.h"
 
-class wxSlider;
-class wxTextCtrl;
 class ShuttleGui;
 
 #define STEPS 1024      // number of +ve or -ve steps in lookup tabe
@@ -77,20 +75,6 @@ public:
       int    mRepeats;
    };
    
-   struct Controls
-   {
-      wxSlider *mThresholdS = nullptr;
-      wxSlider *mNoiseFloorS = nullptr;
-      wxSlider *mParam1S = nullptr;
-      wxSlider *mParam2S = nullptr;
-      wxSlider *mRepeatsS = nullptr;
-      wxTextCtrl *mThresholdT = nullptr;
-      wxTextCtrl *mNoiseFloorT = nullptr;
-      wxTextCtrl *mParam1T = nullptr;
-      wxTextCtrl *mParam2T = nullptr;
-      wxTextCtrl *mRepeatsT = nullptr;
-   };
-
    // ComponentInterface implementation
 
    ComponentInterfaceSymbol GetSymbol() override;
@@ -126,19 +110,10 @@ public:
    void PopulateParameterPage(ShuttleGui &S, const UISpec &spec, size_t index);
    void PopulateOrExchange(ShuttleGui & S) override;
    bool Init() override;
-   bool TransferDataToWindow() override;
    bool TransferDataFromWindow() override;
 
 private:
 
-   enum control
-   {
-      ID_Threshold = 10000,
-      ID_NoiseFloor,
-      ID_Param1,
-      ID_Param2,
-      ID_Repeats,
-   };
    // EffectDistortion implementation
 
    void InstanceInit(EffectDistortionState & data, float sampleRate);
@@ -146,19 +121,6 @@ private:
                                float **inBlock,
                                float **outBlock,
                                size_t blockLen);
-
-   // Control Handlers
-
-   void OnThresholdText(wxCommandEvent & evt);
-   void OnThresholdSlider(wxCommandEvent & evt);
-   void OnNoiseFloorText(wxCommandEvent & evt);
-   void OnNoiseFloorSlider(wxCommandEvent & evt);
-   void OnParam1Text(wxCommandEvent & evt);
-   void OnParam1Slider(wxCommandEvent & evt);
-   void OnParam2Text(wxCommandEvent & evt);
-   void OnParam2Slider(wxCommandEvent & evt);
-   void OnRepeatsText(wxCommandEvent & evt);
-   void OnRepeatsSlider(wxCommandEvent & evt);
 
    void MakeTable();
    float WaveShaper(float sample);
@@ -206,11 +168,9 @@ private:
 
    Params mParams;
    Params mPageParams[ nTableTypes ];
-   Controls mControls[ nTableTypes ];
 
    CapturedParameters mParameters;
    CapturedParameters &Parameters() override { return mParameters; }
-   DECLARE_EVENT_TABLE()
 };
 
 #endif

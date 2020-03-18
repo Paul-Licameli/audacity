@@ -48,10 +48,6 @@ const ComponentInterfaceSymbol EffectNormalize::Symbol
 
 namespace{ BuiltinEffectsModule::Registration< EffectNormalize > reg; }
 
-BEGIN_EVENT_TABLE(EffectNormalize, wxEvtHandler)
-   EVT_TEXT(wxID_ANY, EffectNormalize::OnUpdateUI)
-END_EVENT_TABLE()
-
 EffectNormalize::EffectNormalize()
    : mParameters {
       mPeakLevel, PeakLevel,
@@ -255,6 +251,8 @@ bool EffectNormalize::Process()
 
 void EffectNormalize::PopulateOrExchange(ShuttleGui & S)
 {
+   using namespace DialogDefinition;
+   const auto pState = S.GetValidationState();
    const auto enabler = [this]{ return mGain; };
 
    mCreating = true;
@@ -265,20 +263,16 @@ void EffectNormalize::PopulateOrExchange(ShuttleGui & S)
       {
          S.StartVerticalLay(false);
          {
-            mDCCheckBox =
             S
                .Target( mDC )
-               .Action( [this]{ UpdateUI(); } )
                .AddCheckBox(XXO("&Remove DC offset (center on 0.0 vertically)"),
                                         mDC);
 
             S.StartHorizontalLay(wxALIGN_LEFT, false);
             {
-               mGainCheckBox =
                S
                   .MinSize()
                   .Target( mGain )
-                  .Action( [this]{ UpdateUI(); } )
                   .AddCheckBox(XXO("&Normalize peak amplitude to   "),
                      mGain);
 
@@ -296,8 +290,13 @@ void EffectNormalize::PopulateOrExchange(ShuttleGui & S)
                   .AddVariableText(XO("dB"), false,
                   wxALIGN_CENTER_VERTICAL | wxALIGN_LEFT);
 
-               mWarning =
+               // Warning label when the text boxes aren't okay
                S
+                  .VariableText( [pState]{ return Label(
+                     // TODO: recalculate layout here
+                     pState->Ok()
+                        ? TranslatableString{}
+                        : XO("(Maximum 0dB)") ); } )
                   .AddVariableText( {}, false,
                      wxALIGN_CENTER_VERTICAL | wxALIGN_LEFT);
             }
@@ -306,7 +305,6 @@ void EffectNormalize::PopulateOrExchange(ShuttleGui & S)
             S
                .Target( mStereoInd )
                .Enable( enabler )
-               .Action( [this]{ UpdateUI(); } )
                .AddCheckBox(XXO("N&ormalize stereo channels independently"),
                                                mStereoInd);
          }
@@ -316,13 +314,6 @@ void EffectNormalize::PopulateOrExchange(ShuttleGui & S)
    }
    S.EndVerticalLay();
    mCreating = false;
-}
-
-bool EffectNormalize::TransferDataToWindow()
-{
-   UpdateUI();
-
-   return true;
 }
 
 // EffectNormalize implementation
@@ -498,26 +489,6 @@ void EffectNormalize::ProcessData(float *buffer, size_t len, float offset)
       float adjFrame = (buffer[i] + offset) * mMult;
       buffer[i] = adjFrame;
    }
-}
-
-void EffectNormalize::OnUpdateUI(wxCommandEvent & WXUNUSED(evt))
-{
-   UpdateUI();
-}
-
-void EffectNormalize::UpdateUI()
-{
-
-   if (!mUIParent->TransferDataFromWindow())
-   {
-      mWarning->SetLabel(_("(Maximum 0dB)"));
-      EnableApply(false);
-      return;
-   }
-   mWarning->SetLabel(L"");
-
-   // Disallow OK/Preview if doing nothing
-   EnableApply(CanApply());
 }
 
 bool EffectNormalize::CanApply()

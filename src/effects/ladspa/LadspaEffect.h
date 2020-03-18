@@ -9,7 +9,6 @@
 **********************************************************************/
 
 class wxSlider;
-class wxStaticText;
 class wxTextCtrl;
 class wxCheckBox;
 
@@ -190,7 +189,6 @@ private:
    wxWindow *mParent;
    ArrayOf<wxSlider*> mSliders;
    ArrayOf<wxTextCtrl*> mFields;
-   ArrayOf<wxStaticText*> mLabels;
    ArrayOf<wxCheckBox*> mToggles;
    ArrayOf<LadspaEffectMeter *> mMeters;
 

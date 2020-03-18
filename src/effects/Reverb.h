@@ -15,8 +15,6 @@
 #include "Effect.h"
 #include "../Shuttle.h"
 
-class wxSlider;
-class wxSpinCtrl;
 class ShuttleGui;
 
 struct Reverb_priv_t;
@@ -67,29 +65,11 @@ public:
 
    bool Startup() override;
    void PopulateOrExchange(ShuttleGui & S) override;
-   bool TransferDataToWindow() override;
-   bool TransferDataFromWindow() override;
 
 private:
    // EffectReverb implementation
 
    void SetTitle(const wxString & name = {});
-
-#define SpinSliderHandlers(n) \
-   void On ## n ## Slider(wxCommandEvent & evt); \
-   void On ## n ## Text(wxCommandEvent & evt);
-
-   SpinSliderHandlers(RoomSize)
-   SpinSliderHandlers(PreDelay)
-   SpinSliderHandlers(Reverberance)
-   SpinSliderHandlers(HfDamping)
-   SpinSliderHandlers(ToneLow)
-   SpinSliderHandlers(ToneHigh)
-   SpinSliderHandlers(WetGain)
-   SpinSliderHandlers(DryGain)
-   SpinSliderHandlers(StereoWidth)
-
-#undef SpinSliderHandlers
 
 private:
    unsigned mNumChans {};
@@ -97,27 +77,8 @@ private:
 
    Params mParams;
 
-   bool mProcessingEvent;
-
-#define SpinSlider(n) \
-   wxSpinCtrl  *m ## n ## T; \
-   wxSlider    *m ## n ## S;
-
-   SpinSlider(RoomSize)
-   SpinSlider(PreDelay)
-   SpinSlider(Reverberance)
-   SpinSlider(HfDamping)
-   SpinSlider(ToneLow)
-   SpinSlider(ToneHigh)
-   SpinSlider(WetGain)
-   SpinSlider(DryGain)
-   SpinSlider(StereoWidth)
-
-#undef SpinSlider
-
    CapturedParameters mParameters;
    CapturedParameters &Parameters() override { return mParameters; }
-   DECLARE_EVENT_TABLE()
 };
 
 #endif

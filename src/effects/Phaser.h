@@ -19,8 +19,6 @@
 #include "Effect.h"
 #include "../Shuttle.h"
 
-class wxSlider;
-class wxTextCtrl;
 class ShuttleGui;
 
 #define NUM_STAGES 24
@@ -76,8 +74,6 @@ public:
    // Effect implementation
 
    void PopulateOrExchange(ShuttleGui & S) override;
-   bool TransferDataToWindow() override;
-   bool TransferDataFromWindow() override;
 
 private:
    // EffectPhaser implementation
@@ -85,21 +81,6 @@ private:
    void InstanceInit(EffectPhaserState & data, float sampleRate);
    size_t InstanceProcess(EffectPhaserState & data, float **inBlock, float **outBlock, size_t blockLen);
 
-   void OnStagesSlider(wxCommandEvent & evt);
-   void OnDryWetSlider(wxCommandEvent & evt);
-   void OnFeedbackSlider(wxCommandEvent & evt);
-   void OnDepthSlider(wxCommandEvent & evt);
-   void OnPhaseSlider(wxCommandEvent & evt);
-   void OnFreqSlider(wxCommandEvent & evt);
-   void OnGainSlider(wxCommandEvent & evt);
-
-   void OnStagesText(wxCommandEvent & evt);
-   void OnDryWetText(wxCommandEvent & evt);
-   void OnFeedbackText(wxCommandEvent & evt);
-   void OnDepthText(wxCommandEvent & evt);
-   void OnPhaseText(wxCommandEvent & evt);
-   void OnFreqText(wxCommandEvent & evt);
-   void OnGainText(wxCommandEvent & evt);
 /*
     Phaser Parameters
 
@@ -125,25 +106,8 @@ private:
    int mFeedback;
    double mOutGain;
 
-   wxTextCtrl *mStagesT;
-   wxTextCtrl *mDryWetT;
-   wxTextCtrl *mFreqT;
-   wxTextCtrl *mPhaseT;
-   wxTextCtrl *mDepthT;
-   wxTextCtrl *mFeedbackT;
-   wxTextCtrl *mOutGainT;
-
-   wxSlider *mStagesS;
-   wxSlider *mDryWetS;
-   wxSlider *mFreqS;
-   wxSlider *mPhaseS;
-   wxSlider *mDepthS;
-   wxSlider *mFeedbackS;
-   wxSlider *mOutGainS;
-
    CapturedParameters mParameters;
    CapturedParameters& Parameters() override { return mParameters; }
-   DECLARE_EVENT_TABLE()
 };
 
 #endif

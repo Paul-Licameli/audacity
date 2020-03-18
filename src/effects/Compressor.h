@@ -14,9 +14,6 @@
 #include "TwoPassSimpleMono.h"
 #include "../Shuttle.h"
 
-class wxCheckBox;
-class wxSlider;
-class wxStaticText;
 class EffectCompressorPanel;
 class ShuttleGui;
 
@@ -42,8 +39,6 @@ public:
 
    bool Startup() override;
    void PopulateOrExchange(ShuttleGui & S) override;
-   bool TransferDataToWindow() override;
-   bool TransferDataFromWindow() override;
 
 protected:
    // EffectTwoPassSimpleMono implementation
@@ -63,7 +58,6 @@ private:
    void Follow(float *buffer, float *env, size_t len, float *previous, size_t previous_len);
    float DoCompression(float x, double env);
 
-   void OnSlider(wxCommandEvent & evt);
    void UpdateUI();
 
 private:
@@ -96,32 +90,8 @@ private:
 
    EffectCompressorPanel *mPanel;
 
-   wxStaticText *mThresholdLabel;
-   wxSlider *mThresholdSlider;
-   wxStaticText *mThresholdText;
-
-   wxStaticText *mNoiseFloorLabel;
-   wxSlider *mNoiseFloorSlider;
-   wxStaticText *mNoiseFloorText;
-
-   wxStaticText *mRatioLabel;
-   wxSlider *mRatioSlider;
-   wxStaticText *mRatioText;
-
-   wxStaticText *mAttackLabel;
-   wxSlider *mAttackSlider;
-   wxStaticText *mAttackText;
-
-   wxStaticText *mDecayLabel;
-   wxSlider *mDecaySlider;
-   wxStaticText *mDecayText;
-
-   wxCheckBox *mGainCheckBox;
-   wxCheckBox *mPeakCheckBox;
-
    CapturedParameters mParameters;
    CapturedParameters &Parameters() override { return mParameters; }
-   DECLARE_EVENT_TABLE()
 };
 
 class EffectCompressorPanel final : public wxPanelWrapper

@@ -30,7 +30,6 @@ the pitch without changing the tempo.
 
 class wxSlider;
 class wxChoice;
-class wxCheckBox;
 class wxTextCtrl;
 class wxSpinCtrl;
 class ShuttleGui;
@@ -139,10 +138,6 @@ private:
    wxTextCtrl *   m_pTextCtrl_ToFrequency;
    wxTextCtrl *   m_pTextCtrl_PercentChange;
    wxSlider *     m_pSlider_PercentChange;
-
-#if USE_SBSMS
-   wxCheckBox *   mUseSBSMSCheckBox;
-#endif
 
    CapturedParameters mParameters;
    CapturedParameters &Parameters() override { return mParameters; }

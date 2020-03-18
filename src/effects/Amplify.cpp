@@ -24,34 +24,24 @@
 
 #include <math.h>
 #include <float.h>
-
-#include <wx/button.h>
-#include <wx/checkbox.h>
-#include <wx/sizer.h>
-#include <wx/slider.h>
-#include <wx/stattext.h>
-#include <wx/textctrl.h>
 #include <wx/log.h>
 
 #include "../ShuttleGui.h"
 #include "../WaveTrack.h"
 
 
-enum
-{
-   ID_Amp = 10000,
-   ID_Peak,
-};
-
 // Define keys, defaults, minimums, and maximums for the effect parameters
 //
 //     Name       Type     Key                     Def         Min         Max            Scale
 static auto Ratio = Parameter<float>(
                            L"Ratio",            0.9f,       0.003162f,  316.227766f,   1.0f  );
+// PRL:  Amp was never a parameter saved in settings!  But it
+// causes definition of some constants used below
 static auto Amp = Parameter<float>(
                            L"",                -0.91515f,  -50.0f,     50.0f,         10.0f );
 static auto Clipping = Parameter<bool>(
                            L"AllowClipping",    false,    false,  true,    1  );
+
 
 //
 // EffectAmplify
@@ -61,12 +51,6 @@ const ComponentInterfaceSymbol EffectAmplify::Symbol
 { XO("Amplify") };
 
 namespace{ BuiltinEffectsModule::Registration< EffectAmplify > reg; }
-
-BEGIN_EVENT_TABLE(EffectAmplify, wxEvtHandler)
-   EVT_SLIDER(ID_Amp, EffectAmplify::OnAmpSlider)
-   EVT_TEXT(ID_Amp, EffectAmplify::OnAmpText)
-   EVT_TEXT(ID_Peak, EffectAmplify::OnPeakText)
-END_EVENT_TABLE()
 
 EffectAmplify::EffectAmplify()
    : mParameters{
@@ -82,7 +66,7 @@ EffectAmplify::EffectAmplify()
    }
 {
    Parameters().Reset();
-   mRatioClip = 0.0;
+//   mRatio = DB_TO_LINEAR(Amp.def);
    mCanClip = false;
    mPeak = 0.0;
 
@@ -132,11 +116,11 @@ unsigned EffectAmplify::GetAudioOutCount()
 
 size_t EffectAmplify::ProcessBlock(float **inBlock, float **outBlock, size_t blockLen)
 {
-   for (decltype(blockLen) i = 0; i < blockLen; i++)
-   {
-      outBlock[0][i] = inBlock[0][i] * mRatio;
-   }
+   if ( !IsBatchProcessing() && !mCanClip && mRatio * mPeak > 1.0 )
+      mRatio = 1.0 / mPeak;
 
+   for (decltype(blockLen) i = 0; i < blockLen; i++)
+      outBlock[0][i] = inBlock[0][i] * mRatio;
    return blockLen;
 }
 
@@ -144,16 +128,10 @@ bool EffectAmplify::LoadFactoryDefaults()
 {
    Init();
 
-   mRatioClip = 0.0;
    if (mPeak > 0.0)
-   {
       mRatio = 1.0 / mPeak;
-      mRatioClip = mRatio;
-   }
    else
-   {
       mRatio = 1.0;
-   }
    mCanClip = false;
 
    return !mUIParent || mUIParent->TransferDataToWindow();
@@ -190,6 +168,7 @@ void EffectAmplify::Preview(bool dryOnly)
 
 void EffectAmplify::PopulateOrExchange(ShuttleGui & S)
 {
+   using namespace DialogDefinition;
    enum{ precision = 3 }; // allow (a generous) 3 decimal  places for Amplification (dB)
 
    bool batch = IsBatchProcessing();
@@ -201,51 +180,64 @@ void EffectAmplify::PopulateOrExchange(ShuttleGui & S)
    else 
    {
       if (mPeak > 0.0)
-      {
          mRatio = 1.0 / mPeak;
-         mRatioClip = mRatio;
-      }
       else
-      {
          mRatio = 1.0;
-      }
    }
+
+   // establish limited range of gain
+   mRatio = ClipRatio( mRatio );
 
    S.AddSpace(0, 5);
 
+   // There are three controls that all target mRatio, presenting it to the user
+   // in different terms.
    S.StartVerticalLay(0);
    {
-      // Amplitude
+      // Amplitude as text
       S.StartMultiColumn(2, wxCENTER);
       {
-         mAmpT =
          S
-            .Id(ID_Amp)
-            .Target(  mAmp,
-               NumValidatorStyle::ONE_TRAILING_ZERO, precision, Amp.min, Amp.max )
+            .Target( Transform( mRatio,
+                  [](double output){ return LINEAR_TO_DB( output ); },
+                  [this](double input){
+                     // maintain limited range of gain
+                     return ClipRatio( DB_TO_LINEAR( input ) ); } ),
+               NumValidatorStyle::ONE_TRAILING_ZERO, precision,
+               Amp.min, Amp.max )
             .AddTextBox(XXO("&Amplification (dB):"), L"", 12);
       }
       S.EndMultiColumn();
 
-      // Amplitude
+      // Amplitude as slider
       S.StartHorizontalLay(wxEXPAND);
       {
-         mAmpS =
          S
-            .Id(ID_Amp)
             .Style(wxSL_HORIZONTAL)
             .Text(XO("Amplification dB"))
+            .Target( Transform( mRatio,
+               [](double output){
+                  return LINEAR_TO_DB(output) * Amp.scale + 0.5; },
+               [this](double input){
+                  // maintain limited range of gain
+                  return ClipRatio( DB_TO_LINEAR( input / Amp.scale ) ); } ) )
             .AddSlider( {}, 0, Amp.max * Amp.scale, Amp.min * Amp.scale);
       }
       S.EndHorizontalLay();
 
-      // Peak
+      // New peak as text
       S.StartMultiColumn(2, wxCENTER);
       {
-         mNewPeakT =
          S
-            .Id(ID_Peak)
-            .Target( mNewPeak,
+            .Target( Transform( mRatio,
+               // Transformation depends on mPeak which is fixed after
+               // initializaton
+               [this](double output){ return LINEAR_TO_DB(output * mPeak); },
+               [this](double input) {
+                  // maintain limited range of gain
+                  return ClipRatio( (input == 0.0)
+                     ? 1.0 / mPeak
+                     : DB_TO_LINEAR(input) / mPeak ); } ),
                NumValidatorStyle::ONE_TRAILING_ZERO,
                // One extra decimal place so that rounding is visible to user
                // (see: bug 958)
@@ -257,12 +249,11 @@ void EffectAmplify::PopulateOrExchange(ShuttleGui & S)
       }
       S.EndMultiColumn();
 
-      // Clipping
+      // Clipping checkbox
       S.StartHorizontalLay(wxCENTER);
       {
          S
             .Disable( batch )
-            .Action( [this]{ OnClipCheckBox(); } )
             .Target( mCanClip )
             .AddCheckBox(XXO("Allo&w clipping"), false);
       }
@@ -273,115 +264,19 @@ void EffectAmplify::PopulateOrExchange(ShuttleGui & S)
    return;
 }
 
-bool EffectAmplify::TransferDataToWindow()
+double EffectAmplify::ClipRatio( double ratio )
 {
-   // limit range of gain
-   double dBInit = LINEAR_TO_DB(mRatio);
-   double dB = TrapDouble(dBInit, Amp.min, Amp.max);
-   if (dB != dBInit)
-      mRatio = DB_TO_LINEAR(dB);
+   static const auto MIN = DB_TO_LINEAR( Amp.min );
+   static const auto MAX = DB_TO_LINEAR( Amp.max );
+   ratio = TrapDouble( ratio, MIN, MAX );
 
-   mAmp = LINEAR_TO_DB(mRatio);
-
-   mAmpS->SetValue((int) (mAmp * Amp.scale + 0.5f));
-
-   mNewPeak = LINEAR_TO_DB(mRatio * mPeak);
-
-   CheckClip();
-
-   return true;
-}
-
-bool EffectAmplify::TransferDataFromWindow()
-{
-   mRatio = DB_TO_LINEAR(TrapDouble(mAmp * Amp.scale, Amp.min * Amp.scale, Amp.max * Amp.scale) / Amp.scale);
-
-   if (!mCanClip && mRatio * mPeak > 1.0)
-   {
-      mRatio = 1.0 / mPeak;
-   }
-
-   return true;
+   return ratio;
 }
 
 // EffectAmplify implementation
 
-void EffectAmplify::CheckClip()
-{
-   EnableApply(CanApply());
-}
-
 bool EffectAmplify::CanApply()
 {
-   return mCanClip || (mPeak > 0.0 && mRatio <= mRatioClip);
+   return mCanClip || (mPeak > 0.0 && mRatio <= 1.0 / mPeak);
 }
 
-void EffectAmplify::OnAmpText(wxCommandEvent & WXUNUSED(evt))
-{
-   if (!mAmpT->GetValidator()->TransferFromWindow())
-   {
-      EnableApply(false);
-      return;
-   }
-
-   mRatio = DB_TO_LINEAR(TrapDouble(mAmp * Amp.scale, Amp.min * Amp.scale, Amp.max * Amp.scale) / Amp.scale);
-
-   mAmpS->SetValue((int) (LINEAR_TO_DB(mRatio) * Amp.scale + 0.5));
-
-   mNewPeak = LINEAR_TO_DB(mRatio * mPeak);
-   mNewPeakT->GetValidator()->TransferToWindow();
-
-   CheckClip();
-}
-
-void EffectAmplify::OnPeakText(wxCommandEvent & WXUNUSED(evt))
-{
-   if (!mNewPeakT->GetValidator()->TransferFromWindow())
-   {
-      EnableApply(false);
-      return;
-   }
-
-   if (mNewPeak == 0.0)
-      mRatio = mRatioClip;
-   else
-      mRatio = DB_TO_LINEAR(mNewPeak) / mPeak;
-
-   double ampInit = LINEAR_TO_DB(mRatio);
-   mAmp = TrapDouble(ampInit, Amp.min, Amp.max);
-   if (mAmp != ampInit)
-      mRatio = DB_TO_LINEAR(mAmp);
-
-   mAmpT->GetValidator()->TransferToWindow();
-
-   mAmpS->SetValue((int) (mAmp * Amp.scale + 0.5f));
-
-   CheckClip();
-}
-
-void EffectAmplify::OnAmpSlider(wxCommandEvent & evt)
-{
-   double dB = evt.GetInt() / Amp.scale;
-   mRatio = DB_TO_LINEAR(TrapDouble(dB, Amp.min, Amp.max));
-
-   double dB2 = (evt.GetInt() - 1) / Amp.scale;
-   double ratio2 = DB_TO_LINEAR(TrapDouble(dB2, Amp.min, Amp.max));
-
-   if (!mCanClip && mRatio * mPeak > 1.0 && ratio2 * mPeak < 1.0)
-   {
-      mRatio = 1.0 / mPeak;
-   }
-
-   mAmp = LINEAR_TO_DB(mRatio);
-   mAmpT->GetValidator()->TransferToWindow();
-
-   mNewPeak = LINEAR_TO_DB(mRatio * mPeak);
-   mNewPeakT->GetValidator()->TransferToWindow();
-
-   CheckClip();
-}
-
-void EffectAmplify::OnClipCheckBox()
-{
-   CheckClip();
-}

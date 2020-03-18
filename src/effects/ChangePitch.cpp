@@ -24,7 +24,6 @@ the pitch without changing the tempo.
 #include <float.h>
 #include <math.h>
 
-#include <wx/checkbox.h>
 #include <wx/choice.h>
 #include <wx/slider.h>
 #include <wx/spinctrl.h>
@@ -351,7 +350,6 @@ void EffectChangePitch::PopulateOrExchange(ShuttleGui & S)
 #if USE_SBSMS
       S.StartMultiColumn(2);
       {
-         mUseSBSMSCheckBox =
          S
             .Target( mUseSBSMS )
             .AddCheckBox(XXO("&Use high quality stretching (slow)"),

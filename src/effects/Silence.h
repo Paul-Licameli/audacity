@@ -15,8 +15,6 @@
 
 #include "Generator.h"
 
-class NumericTextCtrl;
-
 class EffectSilence final : public Generator
 {
 public:
@@ -38,16 +36,11 @@ public:
    // Effect implementation
 
    void PopulateOrExchange(ShuttleGui & S) override;
-   bool TransferDataToWindow() override;
-   bool TransferDataFromWindow() override;
 
 protected:
    // Generator implementation
 
    bool GenerateTrack(WaveTrack *tmp, const WaveTrack &track, int ntrack) override;
-
-private:
-   NumericTextCtrl *mDurationT;
 };
 
 #endif

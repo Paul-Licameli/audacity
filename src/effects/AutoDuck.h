@@ -15,7 +15,6 @@
 #include "../Shuttle.h"
 
 class wxBitmap;
-class wxTextCtrl;
 class EffectAutoDuckPanel;
 class ShuttleGui;
 
@@ -54,8 +53,6 @@ private:
 
    bool ApplyDuckFade(int trackNum, WaveTrack *t, double t0, double t1);
 
-   void OnValueChanged(wxCommandEvent & evt);
-
 private:
    double mDuckAmountDb;
    double mInnerFadeDownLen;
@@ -67,18 +64,10 @@ private:
 
    const WaveTrack *mControlTrack;
 
-   wxTextCtrl *mDuckAmountDbBox;
-   wxTextCtrl *mInnerFadeDownLenBox;
-   wxTextCtrl *mInnerFadeUpLenBox;
-   wxTextCtrl *mOuterFadeDownLenBox;
-   wxTextCtrl *mOuterFadeUpLenBox;
-   wxTextCtrl *mThresholdDbBox;
-   wxTextCtrl *mMaximumPauseBox;
    EffectAutoDuckPanel *mPanel;
 
    CapturedParameters mParameters;
    CapturedParameters &Parameters() override { return mParameters; }
-   DECLARE_EVENT_TABLE()
 
    friend class EffectAutoDuckPanel;
 };

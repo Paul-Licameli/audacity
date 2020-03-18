@@ -30,20 +30,11 @@
 
 #include <math.h>
 
-#include <wx/slider.h>
-#include <wx/textctrl.h>
-
 #include "../Prefs.h"
 #include "../ShuttleGui.h"
 #include "../widgets/AudacityMessageBox.h"
 
 #include "../WaveTrack.h"
-
-enum
-{
-   ID_Thresh = 10000,
-   ID_Width
-};
 
 // Define keys, defaults, minimums, and maximums for the effect parameters
 //
@@ -57,13 +48,6 @@ const ComponentInterfaceSymbol EffectClickRemoval::Symbol
 { XO("Click Removal") };
 
 namespace{ BuiltinEffectsModule::Registration< EffectClickRemoval > reg; }
-
-BEGIN_EVENT_TABLE(EffectClickRemoval, wxEvtHandler)
-    EVT_SLIDER(ID_Thresh, EffectClickRemoval::OnThreshSlider)
-    EVT_SLIDER(ID_Width, EffectClickRemoval::OnWidthSlider)
-    EVT_TEXT(ID_Thresh, EffectClickRemoval::OnThreshText)
-    EVT_TEXT(ID_Width, EffectClickRemoval::OnWidthText)
-END_EVENT_TABLE()
 
 EffectClickRemoval::EffectClickRemoval()
    : mParameters{
@@ -320,9 +304,7 @@ void EffectClickRemoval::PopulateOrExchange(ShuttleGui & S)
    S.SetStretchyCol(2);
    {
       // Threshold
-      mThreshT =
       S
-         .Id(ID_Thresh)
          .Target( mThresholdLevel,
             NumValidatorStyle::DEFAULT,
             Threshold.min, Threshold.max )
@@ -330,9 +312,7 @@ void EffectClickRemoval::PopulateOrExchange(ShuttleGui & S)
                      L"",
                      10);
 
-      mThreshS =
       S
-         .Id(ID_Thresh)
          .Text(XO("Threshold"))
          .Style(wxSL_HORIZONTAL)
          .Target( mThresholdLevel )
@@ -340,18 +320,14 @@ void EffectClickRemoval::PopulateOrExchange(ShuttleGui & S)
          .AddSlider( {}, mThresholdLevel, Threshold.max, Threshold.min);
 
       // Click width
-      mWidthT =
       S
-         .Id(ID_Width)
          .Target( mClickWidth,
-            NumValidatorStyle::DEFAULT, Width.min, Width.max)
+            NumValidatorStyle::DEFAULT, Width.min, Width.max )
          .AddTextBox(XXO("Max &Spike Width (higher is more sensitive):"),
                      L"",
                      10);
 
-      mWidthS =
       S
-         .Id(ID_Width)
          .Text(XO("Max Spike Width"))
          .Style(wxSL_HORIZONTAL)
          .Target( mClickWidth )
@@ -363,26 +339,3 @@ void EffectClickRemoval::PopulateOrExchange(ShuttleGui & S)
    return;
 }
 
-void EffectClickRemoval::OnWidthText(wxCommandEvent & WXUNUSED(evt))
-{
-   mWidthT->GetValidator()->TransferFromWindow();
-   mWidthS->GetValidator()->TransferToWindow();
-}
-
-void EffectClickRemoval::OnThreshText(wxCommandEvent & WXUNUSED(evt))
-{
-   mThreshT->GetValidator()->TransferFromWindow();
-   mThreshS->GetValidator()->TransferToWindow();
-}
-
-void EffectClickRemoval::OnWidthSlider(wxCommandEvent & WXUNUSED(evt))
-{
-   mWidthS->GetValidator()->TransferFromWindow();
-   mWidthT->GetValidator()->TransferToWindow();
-}
-
-void EffectClickRemoval::OnThreshSlider(wxCommandEvent & WXUNUSED(evt))
-{
-   mThreshS->GetValidator()->TransferFromWindow();
-   mThreshT->GetValidator()->TransferToWindow();
-}

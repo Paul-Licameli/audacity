@@ -33,8 +33,6 @@
 #include <wx/brush.h>
 #include <wx/checkbox.h>
 #include <wx/dcclient.h>
-#include <wx/slider.h>
-#include <wx/stattext.h>
 
 #include "../AColor.h"
 #include "../Prefs.h"
@@ -45,15 +43,6 @@
 
 #include "../WaveTrack.h"
 #include "../AllThemeResources.h"
-
-enum
-{
-   ID_Threshold = 10000,
-   ID_NoiseFloor,
-   ID_Ratio,
-   ID_Attack,
-   ID_Decay
-};
 
 // Define keys, defaults, minimums, and maximums for the effect parameters
 //
@@ -81,10 +70,6 @@ const ComponentInterfaceSymbol EffectCompressor::Symbol
 { XO("Compressor") };
 
 namespace{ BuiltinEffectsModule::Registration< EffectCompressor > reg; }
-
-BEGIN_EVENT_TABLE(EffectCompressor, wxEvtHandler)
-   EVT_SLIDER(wxID_ANY, EffectCompressor::OnSlider)
-END_EVENT_TABLE()
 
 EffectCompressor::EffectCompressor()
    : mParameters{
@@ -182,9 +167,9 @@ TranslatableString AttackTimeFormat( double value )
 TranslatableString DecayTimeFormat( double value )
 { return XO("%.1f secs").Format( value ); }
 
-TranslatableString RatioTextFormat( int sliderValue, double value )
+TranslatableString RatioTextFormat( double value )
 {
-   auto format = (sliderValue % 10 == 0)
+   auto format = (fabs( value - (int)value ) < 0.05 )
       /* i18n-hint: Unless your language has a different convention for ratios,
        * like 8:1, leave as is.*/
       ? XO("%.0f:1")
@@ -194,9 +179,9 @@ TranslatableString RatioTextFormat( int sliderValue, double value )
    return format.Format( value );
 }
 
-TranslatableString RatioLabelFormat( int sliderValue, double value )
+TranslatableString RatioLabelFormat( double value )
 {
-   auto format = (sliderValue % 10 == 0)
+   auto format = (fabs( value - (int)value ) < 0.05 )
       ? XO("Ratio %.0f to 1")
       : XO("Ratio %.1f to 1");
    return format.Format( value );
@@ -206,6 +191,8 @@ TranslatableString RatioLabelFormat( int sliderValue, double value )
 
 void EffectCompressor::PopulateOrExchange(ShuttleGui & S)
 {
+   using namespace DialogDefinition;
+
    S.SetBorder(5);
 
    S.StartHorizontalLay(wxEXPAND, true);
@@ -232,117 +219,132 @@ void EffectCompressor::PopulateOrExchange(ShuttleGui & S)
       {
          S.SetStretchyCol(1);
 
-         mThresholdLabel =
          S
+            .VariableText( [this]{ return
+               XO("Threshold %d dB").Format( (int) mThresholdDB ); } )
             .AddVariableText(XO("&Threshold:"), true,
                wxALIGN_RIGHT | wxALIGN_CENTER_VERTICAL);
 
-         mThresholdSlider =
          S
-            .Id(ID_Threshold)
             .Text(XO("Threshold"))
             .Style(wxSL_HORIZONTAL)
+            .Target( mThresholdDB )
             .AddSlider( {},
                Threshold.def * Threshold.scale,
                Threshold.max * Threshold.scale,
                Threshold.min * Threshold.scale);
 
-         mThresholdText =
          S
+            .VariableText( [this]{
+               // fix for bug 577 (NVDA/Narrator screen readers do not read static text in dialogs)
+               auto str = ThresholdFormat((int) mThresholdDB);
+               return ControlText{ str, {}, {}, str }; } )
             .AddVariableText(ThresholdFormat(999), true,
                wxALIGN_LEFT | wxALIGN_CENTER_VERTICAL);
 
-         mNoiseFloorLabel =
          S
+            .VariableText( [this]{ return
+               XO("Noise Floor %d dB").Format( (int) mNoiseFloorDB ); } )
             .AddVariableText(XO("&Noise Floor:"), true,
                wxALIGN_RIGHT | wxALIGN_CENTER_VERTICAL);
 
-         mNoiseFloorSlider =
-         S.
-            Id(ID_NoiseFloor)
+         S
             .Text(XO("Noise Floor"))
             .Style(wxSL_HORIZONTAL)
+            .Target( Scale( mNoiseFloorDB, NoiseFloor.scale ) )
             .AddSlider( {},
                NoiseFloor.def * NoiseFloor.scale,
                NoiseFloor.max * NoiseFloor.scale,
                NoiseFloor.min * NoiseFloor.scale);
 
-         mNoiseFloorText =
          S
+            .VariableText( [this]{
+               // fix for bug 577 (NVDA/Narrator screen readers do not read static text in dialogs)
+               auto str = ThresholdFormat((int) mNoiseFloorDB);
+               return ControlText{ str, {}, {}, str }; } )
             .AddVariableText(ThresholdFormat(999),
                true, wxALIGN_LEFT | wxALIGN_CENTER_VERTICAL);
 
-         mRatioLabel =
          S
+            .VariableText( [this]{ return
+               RatioLabelFormat(mRatio); } )
             .AddVariableText(XO("&Ratio:"), true,
                wxALIGN_RIGHT | wxALIGN_CENTER_VERTICAL);
 
-         mRatioSlider =
          S
-            .Id(ID_Ratio)
             .Text(XO("Ratio"))
             .Style(wxSL_HORIZONTAL)
+            .Target( Scale( mRatio, Ratio.scale ) )
             .AddSlider( {},
                Ratio.def * Ratio.scale,
                Ratio.max * Ratio.scale,
                Ratio.min * Ratio.scale,
                -1, 5 /* page size */ );
 
-         mRatioText =
          S
-            .AddVariableText(RatioTextFormat( 1, 99.9 ), true,
+            .VariableText( [this]{
+               // fix for bug 577 (NVDA/Narrator screen readers do not read static text in dialogs)
+               auto str = RatioTextFormat(mRatio);
+               return ControlText{ str, {}, {}, str }; } )
+            .AddVariableText(RatioTextFormat( 99.9 ), true,
                wxALIGN_LEFT | wxALIGN_CENTER_VERTICAL);
 
-         mAttackLabel =
          S
          /* i18n-hint: Particularly in percussion, sounds can be regarded as having
           * an 'attack' phase where the sound builds up and a 'decay' where the
           * sound dies away.  So this means 'onset duration'.  */
+            .VariableText( [this]{ return
+               XO("Attack Time %.2f secs").Format( mAttackTime ); } )
             .AddVariableText(XO("&Attack Time:"), true,
                wxALIGN_RIGHT | wxALIGN_CENTER_VERTICAL);
 
-         mAttackSlider =
          S
-            .Id(ID_Attack)
          /* i18n-hint: Particularly in percussion, sounds can be regarded as having
           * an 'attack' phase where the sound builds up and a 'decay' where the
           * sound dies away.  So this means 'onset duration'.  */
             .Text(XO("Attack Time"))
             .Style(wxSL_HORIZONTAL)
+            .Target( Scale( mAttackTime, AttackTime.scale ) )
             .AddSlider( {},
                AttackTime.def * AttackTime.scale,
                AttackTime.max * AttackTime.scale,
                AttackTime.min * AttackTime.scale);
 
-         mAttackText =
          S
+            .VariableText( [this]{
+               // fix for bug 577 (NVDA/Narrator screen readers do not read static text in dialogs)
+               auto str = AttackTimeFormat( mAttackTime );
+               return ControlText{ str, {}, {}, str }; } )
             .AddVariableText(
                AttackTimeFormat(9.99),
                true, wxALIGN_LEFT | wxALIGN_CENTER_VERTICAL);
 
-         mDecayLabel =
          S
          /* i18n-hint: Particularly in percussion, sounds can be regarded as having
           * an 'attack' phase where the sound builds up and a 'decay' or 'release' where the
           * sound dies away.  */
+            .VariableText( [this]{ return
+               XO("Release Time %.1f secs").Format( mDecayTime ); } )
             .AddVariableText(XO("R&elease Time:"), true,
                wxALIGN_RIGHT | wxALIGN_CENTER_VERTICAL);
 
-         mDecaySlider =
          S
-            .Id(ID_Decay)
          /* i18n-hint: Particularly in percussion, sounds can be regarded as having
           * an 'attack' phase where the sound builds up and a 'decay' or 'release' where the
           * sound dies away.  */
             .Text(XO("Release Time"))
             .Style(wxSL_HORIZONTAL)
+            .Target( Scale( mDecayTime, ReleaseTime.scale ) )
             .AddSlider( {},
                ReleaseTime.def * ReleaseTime.scale,
                ReleaseTime.max * ReleaseTime.scale,
                ReleaseTime.min * ReleaseTime.scale);
 
-         mDecayText =
          S
+            .VariableText( [this]{
+               // fix for bug 577 (NVDA/Narrator screen readers do not read static text in dialogs)
+               auto str = DecayTimeFormat(mDecayTime);
+               return ControlText{ str, {}, {}, str }; } )
             .AddVariableText(
                DecayTimeFormat(99.9),
                true, wxALIGN_LEFT | wxALIGN_CENTER_VERTICAL);
@@ -353,48 +355,20 @@ void EffectCompressor::PopulateOrExchange(ShuttleGui & S)
 
    S.StartHorizontalLay(wxCENTER, false);
    {
-      mGainCheckBox =
       S
+         .Target( mNormalize )
       /* i18n-hint: Make-up, i.e. correct for any reduction, rather than fabricate it.*/
          .AddCheckBox(XXO("Ma&ke-up gain for 0 dB after compressing"),
             Normalize.def);
 
-      mPeakCheckBox =
       S
+         .Target( mUsePeak )
       /* i18n-hint: "Compress" here means reduce variations of sound volume,
        NOT related to file-size compression; Peaks means extremes in volume */
          .AddCheckBox(XXO("C&ompress based on Peaks"),
             UsePeak.def);
    }
    S.EndHorizontalLay();
-}
-
-bool EffectCompressor::TransferDataToWindow()
-{
-   mThresholdSlider->SetValue(lrint(mThresholdDB));
-   mNoiseFloorSlider->SetValue(lrint(mNoiseFloorDB * NoiseFloor.scale));
-   mRatioSlider->SetValue(lrint(mRatio * Ratio.scale));
-   mAttackSlider->SetValue(lrint(mAttackTime * AttackTime.scale));
-   mDecaySlider->SetValue(lrint(mDecayTime * ReleaseTime.scale));
-   mGainCheckBox->SetValue(mNormalize);
-   mPeakCheckBox->SetValue(mUsePeak);
-
-   UpdateUI();
-
-   return true;
-}
-
-bool EffectCompressor::TransferDataFromWindow()
-{
-   mThresholdDB = (double) mThresholdSlider->GetValue();
-   mNoiseFloorDB = (double) mNoiseFloorSlider->GetValue() / NoiseFloor.scale;
-   mRatio = (double) mRatioSlider->GetValue() / Ratio.scale;
-   mAttackTime = (double) mAttackSlider->GetValue() / 100.0; //AttackTime.scale;
-   mDecayTime = (double) mDecaySlider->GetValue() / ReleaseTime.scale;
-   mNormalize = mGainCheckBox->GetValue();
-   mUsePeak = mPeakCheckBox->GetValue();
-
-   return true;
 }
 
 // EffectTwoPassSimpleMono implementation
@@ -665,40 +639,9 @@ float EffectCompressor::DoCompression(float value, double env)
    return out;
 }
 
-void EffectCompressor::OnSlider(wxCommandEvent & WXUNUSED(evt))
-{
-   if ( mUIParent )
-      mUIParent->TransferDataFromWindow();
-   UpdateUI();
-}
-
 void EffectCompressor::UpdateUI()
 {
-   mThresholdLabel->SetName(wxString::Format(_("Threshold %d dB"), (int) mThresholdDB));
-   mThresholdText->SetLabel(ThresholdFormat((int) mThresholdDB).Translation());
-   mThresholdText->SetName(mThresholdText->GetLabel()); // fix for bug 577 (NVDA/Narrator screen readers do not read static text in dialogs)
-
-   mNoiseFloorLabel->SetName(wxString::Format(_("Noise Floor %d dB"), (int) mNoiseFloorDB));
-   mNoiseFloorText->SetLabel(ThresholdFormat((int) mNoiseFloorDB).Translation());
-   mNoiseFloorText->SetName(mNoiseFloorText->GetLabel()); // fix for bug 577 (NVDA/Narrator screen readers do not read static text in dialogs)
-
-   mRatioLabel->SetName(
-      RatioLabelFormat(mRatioSlider->GetValue(), mRatio).Translation());
-   mRatioText->SetLabel(
-      RatioTextFormat(mRatioSlider->GetValue(), mRatio).Translation());
-   mRatioText->SetName(mRatioText->GetLabel()); // fix for bug 577 (NVDA/Narrator screen readers do not read static text in dialogs)
-
-   mAttackLabel->SetName(wxString::Format(_("Attack Time %.2f secs"), mAttackTime));
-   mAttackText->SetLabel(AttackTimeFormat(mAttackTime).Translation());
-   mAttackText->SetName(mAttackText->GetLabel()); // fix for bug 577 (NVDA/Narrator screen readers do not read static text in dialogs)
-
-   mDecayLabel->SetName(wxString::Format(_("Release Time %.1f secs"), mDecayTime));
-   mDecayText->SetLabel(DecayTimeFormat(mDecayTime).Translation());
-   mDecayText->SetName(mDecayText->GetLabel()); // fix for bug 577 (NVDA/Narrator screen readers do not read static text in dialogs)
-
    mPanel->Refresh(false);
-
-   return;
 }
 
 //----------------------------------------------------------------------------

@@ -11,11 +11,6 @@
 #ifndef __AUDACITY_EFFECT_LOUDNESS__
 #define __AUDACITY_EFFECT_LOUDNESS__
 
-#include <wx/checkbox.h>
-#include <wx/choice.h>
-#include <wx/stattext.h>
-#include <wx/textctrl.h>
-
 #include "Effect.h"
 #include "Biquad.h"
 #include "EBUR128.h"
@@ -48,7 +43,6 @@ public:
    bool Startup() override;
    bool Process() override;
    void PopulateOrExchange(ShuttleGui & S) override;
-   bool TransferDataToWindow() override;
 
 private:
    // EffectLoudness implementation
@@ -65,9 +59,6 @@ private:
                          sampleCount pos, size_t len);
 
    bool UpdateProgress();
-   void OnChoice();
-   void OnUpdateUI(wxCommandEvent & evt);
-   void UpdateUI();
 
 private:
    bool   mStereoInd;
@@ -89,8 +80,6 @@ private:
    float  mRMS[2];
    std::unique_ptr<EBUR128> mLoudnessProcessor;
 
-   wxStaticText *mWarning;
-
    Floats mTrackBuffer[2];    // MM: must be increased once surround channels are supported
    size_t mTrackBufferLen;
    size_t mTrackBufferCapacity;
@@ -98,7 +87,6 @@ private:
 
    CapturedParameters mParameters;
    CapturedParameters& Parameters() override { return mParameters; }
-   DECLARE_EVENT_TABLE()
 };
 
 #endif

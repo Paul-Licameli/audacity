@@ -90,10 +90,6 @@ const ComponentInterfaceSymbol EffectPaulstretch::Symbol
 
 namespace{ BuiltinEffectsModule::Registration< EffectPaulstretch > reg; }
 
-BEGIN_EVENT_TABLE(EffectPaulstretch, wxEvtHandler)
-    EVT_TEXT(wxID_ANY, EffectPaulstretch::OnText)
-END_EVENT_TABLE()
-
 EffectPaulstretch::EffectPaulstretch()
    : mParameters {
       mAmount, Amount,
@@ -195,11 +191,6 @@ void EffectPaulstretch::PopulateOrExchange(ShuttleGui & S)
 };
 
 // EffectPaulstretch implementation
-
-void EffectPaulstretch::OnText(wxCommandEvent & WXUNUSED(evt))
-{
-   EnableApply(mUIParent->TransferDataFromWindow());
-}
 
 size_t EffectPaulstretch::GetBufferSize(double rate)
 {

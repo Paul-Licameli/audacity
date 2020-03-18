@@ -42,7 +42,6 @@ public:
 private:
    // EffectPaulstretch implementation
    
-   void OnText(wxCommandEvent & evt);
    size_t GetBufferSize(double rate);
 
    bool ProcessOne(WaveTrack *track, double t0, double t1, int count);
@@ -54,7 +53,6 @@ private:
 
    CapturedParameters mParameters;
    CapturedParameters& Parameters() override { return mParameters; }
-   DECLARE_EVENT_TABLE()
 };
 
 #endif

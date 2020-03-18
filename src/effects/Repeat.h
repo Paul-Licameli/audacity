@@ -42,12 +42,11 @@ public:
    bool Process() override;
    void PopulateOrExchange(ShuttleGui & S) override;
    bool TransferDataToWindow() override;
-   bool TransferDataFromWindow() override;
 
 private:
    // EffectRepeat implementation
 
-   void OnRepeatTextChange(wxCommandEvent & evt);
+   void OnRepeatTextChange();
    void DisplayNewTime();
 
    bool CanApply() override;
@@ -55,13 +54,11 @@ private:
 private:
    int repeatCount;
 
-   wxTextCtrl   *mRepeatCount;
    wxStaticText *mCurrentTime;
    wxStaticText *mTotalTime;
 
    CapturedParameters mParameters;
    CapturedParameters &Parameters() override { return mParameters; }
-   DECLARE_EVENT_TABLE()
 };
 
 #endif

@@ -19,27 +19,11 @@
 #include "LoadEffects.h"
 
 #include <wx/arrstr.h>
-#include <wx/slider.h>
-#include <wx/spinctrl.h>
-#include <wx/textctrl.h>
 
 #include "../Prefs.h"
 #include "../ShuttleGui.h"
 
 #include "Reverb_libSoX.h"
-
-enum 
-{
-   ID_RoomSize = 10000,
-   ID_PreDelay,
-   ID_Reverberance,
-   ID_HfDamping,
-   ID_ToneLow,
-   ID_ToneHigh,
-   ID_WetGain,
-   ID_DryGain,
-   ID_StereoWidth
-};
 
 // Define keys, defaults, minimums, and maximums for the effect parameters
 //
@@ -101,26 +85,6 @@ const ComponentInterfaceSymbol EffectReverb::Symbol
 
 namespace{ BuiltinEffectsModule::Registration< EffectReverb > reg; }
 
-BEGIN_EVENT_TABLE(EffectReverb, wxEvtHandler)
-
-#define SpinSliderEvent(n) \
-   EVT_SLIDER(ID_ ## n, EffectReverb::On ## n ## Slider) \
-   EVT_TEXT(ID_ ## n, EffectReverb::On ## n ## Text)
-
-   SpinSliderEvent(RoomSize)
-   SpinSliderEvent(PreDelay)
-   SpinSliderEvent(Reverberance)
-   SpinSliderEvent(HfDamping)
-   SpinSliderEvent(ToneLow)
-   SpinSliderEvent(ToneHigh)
-   SpinSliderEvent(WetGain)
-   SpinSliderEvent(DryGain)
-   SpinSliderEvent(StereoWidth)
-
-#undef SpinSliderEvent 
-
-END_EVENT_TABLE()
-
 EffectReverb::EffectReverb()
    : mParameters {
       mParams.mRoomSize,       RoomSize,
@@ -136,8 +100,6 @@ EffectReverb::EffectReverb()
    }
 {
    Parameters().Reset();
-   mProcessingEvent = false;
-
    SetLinearEffectFlag(true);
 }
 
@@ -386,32 +348,38 @@ bool EffectReverb::Startup()
 
 void EffectReverb::PopulateOrExchange(ShuttleGui & S)
 {
+   static const struct Entry{
+      const EffectParameter<double> &parameter;
+      TranslatableLabel prompt;
+      double Params::*target;
+   } table[] = {
+      { RoomSize,       XXO("&Room Size (%):"),    &Params::mRoomSize },
+      { PreDelay,       XXO("&Pre-delay (ms):"),   &Params::mPreDelay },
+      { Reverberance,   XXO("Rever&berance (%):"), &Params::mReverberance },
+      { HfDamping,      XXO("Da&mping (%):"),      &Params::mHfDamping },
+      { ToneLow,        XXO("Tone &Low (%):"),     &Params::mToneLow },
+      { ToneHigh,       XXO("Tone &High (%):"),    &Params::mToneHigh },
+      { WetGain,        XXO("Wet &Gain (dB):"),    &Params::mWetGain },
+      { DryGain,        XXO("Dr&y Gain (dB):"),    &Params::mDryGain },
+      { StereoWidth,    XXO("Stereo Wid&th (%):"), &Params::mStereoWidth },
+   };
+
    S.AddSpace(0, 5);
 
    S.StartMultiColumn(3, wxEXPAND);
    {
       S.SetStretchyCol(2);
-
-#define SpinSlider(n, p) \
-      m ## n ## T = S.Id(ID_ ## n). \
-         AddSpinCtrl( p, n.def, n.max, n.min); \
-      S; \
-      m ## n ## S = S.Id(ID_ ## n) \
-         .Style(wxSL_HORIZONTAL) \
-         .AddSlider( {}, n.def, n.max, n.min);
-
-      SpinSlider(RoomSize,       XXO("&Room Size (%):"))
-      SpinSlider(PreDelay,       XXO("&Pre-delay (ms):"))
-      SpinSlider(Reverberance,   XXO("Rever&berance (%):"))
-      SpinSlider(HfDamping,      XXO("Da&mping (%):"))
-      SpinSlider(ToneLow,        XXO("Tone &Low (%):"))
-      SpinSlider(ToneHigh,       XXO("Tone &High (%):"))
-      SpinSlider(WetGain,        XXO("Wet &Gain (dB):"))
-      SpinSlider(DryGain,        XXO("Dr&y Gain (dB):"))
-      SpinSlider(StereoWidth,    XXO("Stereo Wid&th (%):"))
-
-#undef SpinSlider
-
+      for ( auto &entry : table ) {
+         auto &param = entry.parameter;
+         auto &target = mParams.*( entry.target );
+         S
+            .Target( target )
+            .AddSpinCtrl( entry.prompt, param.def, param.max, param.min);
+         S
+            .Style( wxSL_HORIZONTAL )
+            .Target( target )
+            .AddSlider( {}, param.def, param.max, param.min );
+      }
    }
    S.EndMultiColumn();
 
@@ -425,68 +393,6 @@ void EffectReverb::PopulateOrExchange(ShuttleGui & S)
 
    return;
 }
-
-bool EffectReverb::TransferDataToWindow()
-{
-#define SetSpinSlider(n) \
-   m ## n ## S->SetValue((int) mParams.m ## n); \
-   m ## n ## T->SetValue(wxString::Format(L"%d", (int) mParams.m ## n));
-
-   SetSpinSlider(RoomSize);
-   SetSpinSlider(PreDelay);
-   SetSpinSlider(Reverberance);
-   SetSpinSlider(HfDamping);
-   SetSpinSlider(ToneLow);
-   SetSpinSlider(ToneHigh);
-   SetSpinSlider(WetGain);
-   SetSpinSlider(DryGain);
-   SetSpinSlider(StereoWidth);
-
-#undef SetSpinSlider
-   return true;
-}
-
-bool EffectReverb::TransferDataFromWindow()
-{
-   mParams.mRoomSize = mRoomSizeS->GetValue();
-   mParams.mPreDelay = mPreDelayS->GetValue();
-   mParams.mReverberance = mReverberanceS->GetValue();
-   mParams.mHfDamping = mHfDampingS->GetValue();
-   mParams.mToneLow = mToneLowS->GetValue();
-   mParams.mToneHigh = mToneHighS->GetValue();
-   mParams.mWetGain = mWetGainS->GetValue();
-   mParams.mDryGain = mDryGainS->GetValue();
-   mParams.mStereoWidth = mStereoWidthS->GetValue();
-   return true;
-}
-
-#define SpinSliderHandlers(n) \
-   void EffectReverb::On ## n ## Slider(wxCommandEvent & evt) \
-   { \
-      if (mProcessingEvent) return; \
-      mProcessingEvent = true; \
-      m ## n ## T->SetValue(wxString::Format(L"%d", evt.GetInt())); \
-      mProcessingEvent = false; \
-   } \
-   void EffectReverb::On ## n ## Text(wxCommandEvent & evt) \
-   { \
-      if (mProcessingEvent) return; \
-      mProcessingEvent = true; \
-      m ## n ## S->SetValue(TrapLong(evt.GetInt(), n.min, n.max)); \
-      mProcessingEvent = false; \
-   }
-
-SpinSliderHandlers(RoomSize)
-SpinSliderHandlers(PreDelay)
-SpinSliderHandlers(Reverberance)
-SpinSliderHandlers(HfDamping)
-SpinSliderHandlers(ToneLow)
-SpinSliderHandlers(ToneHigh)
-SpinSliderHandlers(WetGain)
-SpinSliderHandlers(DryGain)
-SpinSliderHandlers(StereoWidth)
-
-#undef SpinSliderHandlers
 
 void EffectReverb::SetTitle(const wxString & name)
 {

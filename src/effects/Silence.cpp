@@ -71,10 +71,10 @@ void EffectSilence::PopulateOrExchange(ShuttleGui & S)
       {
          S.AddPrompt(XXO("&Duration:"));
 
-         mDurationT =
          S
             .Text(XO("Duration"))
             .Position(wxALIGN_CENTER | wxALL)
+            .Target( DurationTarget() )
             .AddNumericTextCtrl( NumericConverter::TIME,
                GetDurationFormat(),
                GetDuration(),
@@ -87,20 +87,6 @@ void EffectSilence::PopulateOrExchange(ShuttleGui & S)
    S.EndVerticalLay();
 
    return;
-}
-
-bool EffectSilence::TransferDataToWindow()
-{
-   mDurationT->SetValue(GetDuration());
-
-   return true;
-}
-
-bool EffectSilence::TransferDataFromWindow()
-{
-   SetDuration(mDurationT->GetValue());
-
-   return true;
 }
 
 bool EffectSilence::GenerateTrack(WaveTrack *tmp,

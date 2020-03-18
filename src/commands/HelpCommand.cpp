@@ -123,7 +123,9 @@ void CommentCommand::PopulateOrExchange(ShuttleGui & S)
 
    S.StartMultiColumn(2, wxALIGN_CENTER);
    {
-      S.TieTextBox(XXO("_"),mComment,80);
+      S
+         .Target(mComment)
+         .AddTextBox(XXO("_"), {}, 80);
    }
    S.EndMultiColumn();
 }

@@ -98,10 +98,6 @@ const ComponentInterfaceSymbol EffectTone::Symbol
 
 namespace{ BuiltinEffectsModule::Registration< EffectTone > reg2; }
 
-BEGIN_EVENT_TABLE(EffectToneGen, wxEvtHandler)
-    EVT_TEXT(wxID_ANY, EffectToneGen::OnControlUpdate)
-END_EVENT_TABLE();
-
 EffectToneGen::EffectToneGen(bool isChirp)
    : mChirp{ isChirp }
    , mParameters{ mChirp
@@ -413,10 +409,10 @@ void EffectToneGen::PopulateOrExchange(ShuttleGui & S)
 
       S.AddPrompt(XXO("&Duration:"));
 
-      mToneDurationT =
       S
          .Text(XO("Duration"))
          .Position(wxALIGN_LEFT | wxALL)
+         .Target( DurationTarget() )
          .AddNumericTextCtrl( NumericConverter::TIME,
             GetDurationFormat(),
             GetDuration(),
@@ -429,13 +425,6 @@ void EffectToneGen::PopulateOrExchange(ShuttleGui & S)
    return;
 }
 
-bool EffectToneGen::TransferDataToWindow()
-{
-   mToneDurationT->SetValue(GetDuration());
-
-   return true;
-}
-
 bool EffectToneGen::TransferDataFromWindow()
 {
    if (!mChirp)
@@ -444,17 +433,6 @@ bool EffectToneGen::TransferDataFromWindow()
       mAmplitude[1] = mAmplitude[0];
    }
 
-   SetDuration(mToneDurationT->GetValue());
-
    return true;
 }
 
-// EffectToneGen implementation
-
-void EffectToneGen::OnControlUpdate(wxCommandEvent & WXUNUSED(evt))
-{
-   if (!EnableApply(mUIParent->TransferDataFromWindow()))
-   {
-      return;
-   }
-}

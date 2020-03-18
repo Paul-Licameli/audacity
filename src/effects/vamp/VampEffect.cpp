@@ -24,7 +24,6 @@
 #include <wx/combobox.h>
 #include <wx/slider.h>
 #include <wx/statbox.h>
-#include <wx/stattext.h>
 #include <wx/textctrl.h>
 #include <wx/scrolwin.h>
 #include <wx/version.h>
@@ -48,11 +47,6 @@ enum
 // VampEffect
 //
 ///////////////////////////////////////////////////////////////////////////////
-
-BEGIN_EVENT_TABLE(VampEffect, wxEvtHandler)
-    EVT_SLIDER(wxID_ANY, VampEffect::OnSlider)
-    EVT_TEXT(wxID_ANY, VampEffect::OnTextCtrl)
-END_EVENT_TABLE()
 
 VampEffect::VampEffect(std::unique_ptr<Vamp::Plugin> &&plugin,
                        const PluginPath & path,
@@ -529,13 +523,15 @@ void VampEffect::PopulateOrExchange(ShuttleGui & S)
 
    auto count = mParameters.size();
 
-   mToggles.reinit( count );
+   mToggles.reinit( count, true );
 
-   mSliders.reinit( count );
-   mFields.reinit( count );
-   mLabels.reinit( count );
+   mSliders.clear();
+   mSliders.resize( count, 0 );
+
+   mChosen.clear();
    mChosen.resize( count, 0 );
-   mValues.reinit( count );
+
+   mValues.reinit( count, true );
 
    wxScrolledWindow *scroller =
    S
@@ -586,11 +582,6 @@ void VampEffect::PopulateOrExchange(ShuttleGui & S)
                wxString unit = wxString::FromUTF8(mParameters[p].unit.c_str());
 
                float value = mPlugin->getParameter(mParameters[p].identifier);
-
-               mToggles[p] = false;
-               mSliders[p] = NULL;
-               mFields[p] = NULL;
-               mValues[p] = 0.0;
 
                wxString labelText = wxString::FromUTF8(mParameters[p].name.c_str());
                if (!unit.empty())
@@ -663,7 +654,6 @@ void VampEffect::PopulateOrExchange(ShuttleGui & S)
 
                   float range = mParameters[p].maxValue - mParameters[p].minValue;
 
-                  mFields[p] =
                   S
                      .Id(ID_Texts + p)
                      .Text({ Verbatim( labelText ), {}, Verbatim( tip ) })
@@ -676,18 +666,20 @@ void VampEffect::PopulateOrExchange(ShuttleGui & S)
                               : NumValidatorStyle::ONE_TRAILING_ZERO),
                         6,
                         mParameters[p].minValue, mParameters[p].maxValue)
+                     .Action( [this, p]{ OnTextCtrl( p ); } )
                      .AddTextBox( {}, L"", 12);
 
                   wxString str = Internat::ToDisplayString(mParameters[p].minValue);
                   S
                      .AddPrompt( VerbatimLabel( str ) );
 
-                  mSliders[p] =
                   S
                      .Id(ID_Sliders + p)
                      .Text({ Verbatim( labelText ), {}, Verbatim( tip ) })
                      .Style(wxSL_HORIZONTAL)
                      .MinSize( { 150, -1 } )
+                     .Target( mSliders[p] )
+                     .Action( [this, p]{ OnSlider( p ); } )
                      .AddSlider( {}, 0, 1000, 0);
 
                   str = Internat::ToDisplayString(mParameters[p].maxValue);
@@ -768,7 +760,6 @@ void VampEffect::UpdateFromPlugin()
       else
       {
          mValues[p] = value;
-         mFields[p]->GetValidator()->TransferToWindow();
 
          float lower = mParameters[p].minValue;
          float upper = mParameters[p].maxValue;
@@ -784,19 +775,17 @@ void VampEffect::UpdateFromPlugin()
             }
          }
 
-         mSliders[p]->SetValue((int)(((value - lower) / range) * 1000.0 + 0.5));
+         mSliders[p] = (int)(((value - lower) / range) * 1000.0 + 0.5);
       }
    }
 }
 
-void VampEffect::OnSlider(wxCommandEvent & evt)
+void VampEffect::OnSlider( int p )
 {
-   int p = evt.GetId() - ID_Sliders;
-
    float lower = mParameters[p].minValue;
    float upper = mParameters[p].maxValue;
    float range = upper - lower;
-   float val = (evt.GetInt() / 1000.0) * range;
+   float val = (mSliders[p] / 1000.0) * range;
 
    if (mParameters[p].isQuantized)
    {
@@ -811,17 +800,12 @@ void VampEffect::OnSlider(wxCommandEvent & evt)
    val += lower;
 
    mValues[p] = val;
-   mFields[p]->GetValidator()->TransferToWindow();
 
    mPlugin->setParameter(mParameters[p].identifier, val);
 }
 
-void VampEffect::OnTextCtrl(wxCommandEvent & evt)
+void VampEffect::OnTextCtrl( int p )
 {
-   int p = evt.GetId() - ID_Texts;
-
-   mFields[p]->GetValidator()->TransferFromWindow();
-
    float lower = mParameters[p].minValue;
    float upper = mParameters[p].maxValue;
    float range = upper - lower;
@@ -839,7 +823,7 @@ void VampEffect::OnTextCtrl(wxCommandEvent & evt)
 
    mPlugin->setParameter(mParameters[p].identifier, val);
 
-   mSliders[p]->SetValue((int)(((val - lower) / range) * 1000.0 + 0.5));
+   mSliders[p] = (int)(((val - lower) / range) * 1000.0 + 0.5);
 }
 
 #endif

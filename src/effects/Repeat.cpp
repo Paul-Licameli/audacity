@@ -47,10 +47,6 @@ const ComponentInterfaceSymbol EffectRepeat::Symbol
 
 namespace{ BuiltinEffectsModule::Registration< EffectRepeat > reg; }
 
-BEGIN_EVENT_TABLE(EffectRepeat, wxEvtHandler)
-   EVT_TEXT(wxID_ANY, EffectRepeat::OnRepeatTextChange)
-END_EVENT_TABLE()
-
 EffectRepeat::EffectRepeat()
    : mParameters{ repeatCount, Count }
 {
@@ -156,11 +152,11 @@ void EffectRepeat::PopulateOrExchange(ShuttleGui & S)
 {
    S.StartHorizontalLay(wxCENTER, false);
    {
-      mRepeatCount =
       S
          .Target( repeatCount,
             NumValidatorStyle::DEFAULT,
             Count.min, 2147483647 / mProjectRate )
+         .Action( [this]{ DisplayNewTime(); } )
          .AddTextBox(XXO("&Number of repeats to add:"), L"", 12);
    }
    S.EndHorizontalLay();
@@ -181,29 +177,15 @@ void EffectRepeat::PopulateOrExchange(ShuttleGui & S)
 
 bool EffectRepeat::TransferDataToWindow()
 {
-   mRepeatCount->ChangeValue(wxString::Format(L"%d", repeatCount));
-
    DisplayNewTime();
-
-   return true;
-}
-
-bool EffectRepeat::TransferDataFromWindow()
-{
-   long l;
-
-   mRepeatCount->GetValue().ToLong(&l);
-
-   repeatCount = (int) l;
 
    return true;
 }
 
 void EffectRepeat::DisplayNewTime()
 {
-   long l;
+   long l = repeatCount;
    wxString str;
-   mRepeatCount->GetValue().ToLong(&l);
 
    NumericConverter nc(NumericConverter::TIME,
                        GetSelectionFormat(),
@@ -217,7 +199,6 @@ void EffectRepeat::DisplayNewTime()
 
    if (l > 0) {
       EnableApply(true);
-      repeatCount = l;
 
       nc.SetValue((mT1 - mT0) * (repeatCount + 1));
       str = wxString::Format( _("New selection length: %s"), nc.GetString() );
@@ -235,7 +216,3 @@ bool EffectRepeat::CanApply()
    return repeatCount > 0;
 }
 
-void EffectRepeat::OnRepeatTextChange(wxCommandEvent & WXUNUSED(evt))
-{
-   DisplayNewTime();
-}

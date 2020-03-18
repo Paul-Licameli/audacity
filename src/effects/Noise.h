@@ -46,8 +46,6 @@ public:
 
    bool Startup() override;
    void PopulateOrExchange(ShuttleGui & S) override;
-   bool TransferDataToWindow() override;
-   bool TransferDataFromWindow() override;
 
 private:
    // EffectNoise implementation
@@ -57,8 +55,6 @@ private:
    double mAmp;
 
    float y, z, buf0, buf1, buf2, buf3, buf4, buf5, buf6;
-
-   NumericTextCtrl *mNoiseDurationT;
 
    CapturedParameters mParameters;
    CapturedParameters &Parameters() override { return mParameters; }

@@ -19,8 +19,6 @@
 #include "Effect.h"
 #include "../Shuttle.h"
 
-class wxSlider;
-class wxTextCtrl;
 class Envelope;
 class ShuttleGui;
 
@@ -55,11 +53,6 @@ private:
 
    bool RemoveClicks(size_t len, float *buffer);
 
-   void OnWidthText(wxCommandEvent & evt);
-   void OnThreshText(wxCommandEvent & evt);
-   void OnWidthSlider(wxCommandEvent & evt);
-   void OnThreshSlider(wxCommandEvent & evt);
-
 private:
    Envelope *mEnvelope;
 
@@ -68,15 +61,8 @@ private:
    int mThresholdLevel;
    int mClickWidth;
    int sep;
-
-   wxSlider *mWidthS;
-   wxSlider *mThreshS;
-   wxTextCtrl *mWidthT;
-   wxTextCtrl *mThreshT;
-
    CapturedParameters mParameters;
    CapturedParameters &Parameters() override { return mParameters; }
-   DECLARE_EVENT_TABLE()
 };
 
 #endif

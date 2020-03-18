@@ -21,8 +21,6 @@
 
 class ShuttleGui;
 class wxChoice;
-class wxTextCtrl;
-class wxCheckBox;
 
 class RegionList;
 
@@ -69,7 +67,6 @@ public:
 
    bool Process() override;
    void PopulateOrExchange(ShuttleGui & S) override;
-   bool TransferDataFromWindow() override;
 
 private:
    // EffectTruncSilence implementation
@@ -77,9 +74,6 @@ private:
    //ToDo ... put BlendFrames in Effects, Project, or other class
    // void BlendFrames(float* buffer, int leftIndex, int rightIndex, int blendFrameCount);
    void Intersect(RegionList &dest, const RegionList & src);
-
-   void OnControlChange(wxCommandEvent & evt);
-   void DoControlChange();
 
    bool ProcessIndependently();
    bool ProcessAll();
@@ -100,12 +94,6 @@ private:
    bool mbIndependent;
 
    size_t mBlendFrameCount;
-
-   wxTextCtrl *mThresholdText;
-   wxTextCtrl *mInitialAllowedSilenceT;
-   wxCheckBox *mIndependent;
-
-   DECLARE_EVENT_TABLE()
 };
 
 #endif

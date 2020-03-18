@@ -16,9 +16,6 @@
 #include "Biquad.h"
 #include "../Shuttle.h"
 
-class wxCheckBox;
-class wxStaticText;
-class wxTextCtrl;
 class ShuttleGui;
 
 class EffectNormalize final : public Effect
@@ -45,7 +42,6 @@ public:
    bool Startup() override;
    bool Process() override;
    void PopulateOrExchange(ShuttleGui & S) override;
-   bool TransferDataToWindow() override;
 
 private:
    // EffectNormalize implementation
@@ -58,9 +54,6 @@ private:
                      float &offset);
    void AnalyseDataDC(float *buffer, size_t len);
    void ProcessData(float *buffer, size_t len, float offset);
-
-   void OnUpdateUI(wxCommandEvent & evt);
-   void UpdateUI();
 
    bool CanApply() override;
 
@@ -75,14 +68,10 @@ private:
    float  mMult;
    double mSum;
 
-   wxCheckBox *mGainCheckBox;
-   wxCheckBox *mDCCheckBox;
-   wxStaticText *mWarning;
    bool mCreating;
 
    CapturedParameters mParameters;
    CapturedParameters& Parameters() override { return mParameters; }
-   DECLARE_EVENT_TABLE()
 };
 
 #endif

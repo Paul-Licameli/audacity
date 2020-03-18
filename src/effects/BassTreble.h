@@ -15,9 +15,6 @@
 #include "Effect.h"
 #include "../Shuttle.h"
 
-class wxSlider;
-class wxCheckBox;
-class wxTextCtrl;
 class ShuttleGui;
 
 class EffectBassTrebleState
@@ -70,7 +67,6 @@ public:
    // Effect Implementation
 
    void PopulateOrExchange(ShuttleGui & S) override;
-   bool TransferDataToWindow() override;
    bool TransferDataFromWindow() override;
 
    bool CheckWhetherSkipEffect() override;
@@ -85,37 +81,22 @@ private:
                     double& a0, double& a1, double& a2, double& b0, double& b1, double& b2);
    float DoFilter(EffectBassTrebleState & data, float in);
 
-   void OnBassText(wxCommandEvent & evt);
-   void OnTrebleText(wxCommandEvent & evt);
-   void OnGainText(wxCommandEvent & evt);
-   void OnBassSlider(wxCommandEvent & evt);
-   void OnTrebleSlider(wxCommandEvent & evt);
-   void OnGainSlider(wxCommandEvent & evt);
    void OnLinkCheckbox();
 
    // Auto-adjust gain to reduce variation in peak level
-   void UpdateGain(double oldVal, int control );
+   void UpdateGain();
 
 private:
    EffectBassTrebleState mMaster;
    std::vector<EffectBassTrebleState> mSlaves;
 
-   double      mBass;
-   double      mTreble;
+   double      mBass, mOldBass;
+   double      mTreble, mOldTreble;
    double      mGain;
    bool        mLink;
 
-   wxSlider    *mBassS;
-   wxSlider    *mTrebleS;
-   wxSlider    *mGainS;
-
-   wxTextCtrl  *mBassT;
-   wxTextCtrl  *mTrebleT;
-   wxTextCtrl  *mGainT;
-
    CapturedParameters mParameters;
    CapturedParameters &Parameters() override { return mParameters; }
-   DECLARE_EVENT_TABLE()
 };
 
 #endif

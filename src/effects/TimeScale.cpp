@@ -21,20 +21,7 @@
 
 #include <math.h>
 
-#include <wx/slider.h>
-#include <wx/textctrl.h>
-
 #include "../ShuttleGui.h"
-
-enum
-{
-   ID_RatePercentChangeStart = 10000,
-   ID_RatePercentChangeEnd,
-   ID_PitchHalfStepsStart,
-   ID_PitchHalfStepsEnd,
-   ID_PitchPercentChangeStart,
-   ID_PitchPercentChangeEnd
-};
 
 // Define keys, defaults, minimums, and maximums for the effect parameters
 //
@@ -60,17 +47,6 @@ const ComponentInterfaceSymbol EffectTimeScale::Symbol
 { L"Sliding Stretch", XO("Sliding Stretch") };
 
 namespace{ BuiltinEffectsModule::Registration< EffectTimeScale > reg; }
-
-BEGIN_EVENT_TABLE(EffectTimeScale, wxEvtHandler)
-   EVT_TEXT(ID_RatePercentChangeStart, EffectTimeScale::OnText_RatePercentChangeStart)
-   EVT_TEXT(ID_RatePercentChangeEnd, EffectTimeScale::OnText_RatePercentChangeEnd)
-   EVT_TEXT(ID_PitchHalfStepsStart, EffectTimeScale::OnText_PitchHalfStepsStart)
-   EVT_TEXT(ID_PitchHalfStepsEnd, EffectTimeScale::OnText_PitchHalfStepsEnd)
-   EVT_TEXT(ID_PitchPercentChangeStart, EffectTimeScale::OnText_PitchPercentChangeStart)
-   EVT_TEXT(ID_PitchPercentChangeEnd, EffectTimeScale::OnText_PitchPercentChangeEnd)
-   EVT_SLIDER(ID_RatePercentChangeStart, EffectTimeScale::OnSlider_RatePercentChangeStart)
-   EVT_SLIDER(ID_RatePercentChangeEnd, EffectTimeScale::OnSlider_RatePercentChangeEnd)
-END_EVENT_TABLE()
 
 EffectTimeScale::EffectTimeScale()
    : mParameters{
@@ -167,6 +143,7 @@ bool EffectTimeScale::Process()
 
 void EffectTimeScale::PopulateOrExchange(ShuttleGui & S)
 {
+   using namespace DialogDefinition;
    S.SetBorder(5);
    S.AddSpace(0, 5);
 
@@ -177,9 +154,7 @@ void EffectTimeScale::PopulateOrExchange(ShuttleGui & S)
       {
          S.StartMultiColumn(1, wxCENTER);
          {
-            m_pTextCtrl_RatePercentChangeStart =
             S
-               .Id(ID_RatePercentChangeStart)
                .Target( m_RatePercentChangeStart,
                   NumValidatorStyle::NO_TRAILING_ZEROES, 3,
                   RatePercentStart.min, RatePercentStart.max )
@@ -188,9 +163,8 @@ void EffectTimeScale::PopulateOrExchange(ShuttleGui & S)
          S.EndMultiColumn();
          S.StartHorizontalLay(wxEXPAND, 0);
          {
-            m_pSlider_RatePercentChangeStart =
             S
-               .Id(ID_RatePercentChangeStart)
+               .Target( m_RatePercentChangeStart )
                .Style(wxSL_HORIZONTAL)
                .AddSlider( {}, RatePercentStart.def, RatePercentStart.max, RatePercentStart.min);
          }
@@ -202,9 +176,7 @@ void EffectTimeScale::PopulateOrExchange(ShuttleGui & S)
       {
          S.StartMultiColumn(1, wxCENTER);
          {
-            m_pTextCtrl_RatePercentChangeEnd =
             S
-               .Id(ID_RatePercentChangeEnd)
                .Target( m_RatePercentChangeEnd,
                   NumValidatorStyle::NO_TRAILING_ZEROES, 3,
                   RatePercentEnd.min, RatePercentEnd.max )
@@ -213,9 +185,8 @@ void EffectTimeScale::PopulateOrExchange(ShuttleGui & S)
          S.EndMultiColumn();
          S.StartHorizontalLay(wxEXPAND, 0);
          {
-            m_pSlider_RatePercentChangeEnd =
             S
-               .Id(ID_RatePercentChangeEnd)
+               .Target( m_RatePercentChangeEnd )
                .Style(wxSL_HORIZONTAL)
                .AddSlider( {}, RatePercentEnd.def, RatePercentEnd.max, RatePercentEnd.min);
          }
@@ -228,18 +199,15 @@ void EffectTimeScale::PopulateOrExchange(ShuttleGui & S)
       {
          S.StartMultiColumn(2, wxCENTER);
          {
-            m_pTextCtrl_PitchHalfStepsStart =
             S
-               .Id(ID_PitchHalfStepsStart)
-               .Target( m_PitchHalfStepsStart,
+               .Target( Transform( m_PitchPercentChangeStart,
+                     PercentChangeToHalfSteps,
+                     HalfStepsToPercentChange ),
                   NumValidatorStyle::NO_TRAILING_ZEROES, 3,
                   HalfStepsStart.min, HalfStepsStart.max )
                .AddTextBox(XXO("(&semitones) [-12 to 12]:"), L"", 12);
 
-
-            m_pTextCtrl_PitchPercentChangeStart =
             S
-               .Id(ID_PitchPercentChangeStart)
                .Target( m_PitchPercentChangeStart,
                   NumValidatorStyle::NO_TRAILING_ZEROES, 3,
                   PitchPercentStart.min, PitchPercentStart.max )
@@ -254,17 +222,15 @@ void EffectTimeScale::PopulateOrExchange(ShuttleGui & S)
       {
          S.StartMultiColumn(2, wxCENTER);
          {
-            m_pTextCtrl_PitchHalfStepsEnd =
             S
-               .Id(ID_PitchHalfStepsEnd)
-               .Target( m_PitchHalfStepsEnd,
+               .Target( Transform( m_PitchPercentChangeEnd,
+                     PercentChangeToHalfSteps,
+                     HalfStepsToPercentChange ),
                   NumValidatorStyle::NO_TRAILING_ZEROES, 3,
                   HalfStepsEnd.min, HalfStepsEnd.max )
                .AddTextBox(XXO("(s&emitones) [-12 to 12]:"), L"", 12);
 
-            m_pTextCtrl_PitchPercentChangeEnd =
             S
-               .Id(ID_PitchPercentChangeEnd)
                .Target( m_PitchPercentChangeEnd,
                   NumValidatorStyle::NO_TRAILING_ZEROES, 3,
                   PitchPercentStart.min, PitchPercentStart.max)
@@ -277,14 +243,6 @@ void EffectTimeScale::PopulateOrExchange(ShuttleGui & S)
    S.EndMultiColumn();
 
    return;
-}
-
-bool EffectTimeScale::TransferDataToWindow()
-{
-   Update_Slider_RatePercentChangeStart();
-   Update_Slider_RatePercentChangeEnd();
-
-   return true;
 }
 
 inline double EffectTimeScale::PercentChangeToRatio(double percentChange)
@@ -300,124 +258,6 @@ inline double EffectTimeScale::HalfStepsToPercentChange(double halfSteps)
 inline double EffectTimeScale::PercentChangeToHalfSteps(double percentChange)
 {
    return 12.0 * log2(PercentChangeToRatio(percentChange));
-}
-
-void EffectTimeScale::Update_Text_RatePercentChangeStart()
-{
-   m_pTextCtrl_RatePercentChangeStart->GetValidator()->TransferToWindow();
-}
-
-void EffectTimeScale::Update_Text_RatePercentChangeEnd()
-{
-   m_pTextCtrl_RatePercentChangeEnd->GetValidator()->TransferToWindow();
-}
-
-void EffectTimeScale::Update_Slider_RatePercentChangeStart()
-{
-   m_pSlider_RatePercentChangeStart->SetValue((int)(m_RatePercentChangeStart + 0.5));
-}
-
-void EffectTimeScale::Update_Slider_RatePercentChangeEnd()
-{
-   m_pSlider_RatePercentChangeEnd->SetValue((int)(m_RatePercentChangeEnd + 0.5));
-}
-
-void EffectTimeScale::Update_Text_PitchHalfStepsStart()
-{
-   m_pTextCtrl_PitchHalfStepsStart->GetValidator()->TransferToWindow();
-}
-
-void EffectTimeScale::Update_Text_PitchHalfStepsEnd()
-{
-   m_pTextCtrl_PitchHalfStepsEnd->GetValidator()->TransferToWindow();
-}
-
-void EffectTimeScale::Update_Text_PitchPercentChangeStart()
-{
-   m_pTextCtrl_PitchPercentChangeStart->GetValidator()->TransferToWindow();
-}
-
-void EffectTimeScale::Update_Text_PitchPercentChangeEnd()
-{
-   m_pTextCtrl_PitchPercentChangeEnd->GetValidator()->TransferToWindow();
-}
-
-void EffectTimeScale::OnText_RatePercentChangeStart(wxCommandEvent & WXUNUSED(evt))
-{
-   if (!EnableApply(mUIParent->TransferDataFromWindow()))
-   {
-      return;
-   }
-
-   Update_Slider_RatePercentChangeStart();
-}
-
-void EffectTimeScale::OnText_RatePercentChangeEnd(wxCommandEvent & WXUNUSED(evt))
-{
-   if (!EnableApply(mUIParent->TransferDataFromWindow()))
-   {
-      return;
-   }
-
-   Update_Slider_RatePercentChangeEnd();
-}
-
-void EffectTimeScale::OnSlider_RatePercentChangeStart(wxCommandEvent & evt)
-{
-   m_RatePercentChangeStart = (double) evt.GetInt();
-
-   Update_Text_RatePercentChangeStart();
-}
-
-void EffectTimeScale::OnSlider_RatePercentChangeEnd(wxCommandEvent & evt)
-{
-   m_RatePercentChangeEnd = (double) evt.GetInt();
-
-   Update_Text_RatePercentChangeEnd();
-}
-
-void EffectTimeScale::OnText_PitchHalfStepsStart(wxCommandEvent & WXUNUSED(evt))
-{
-   if (!EnableApply(mUIParent->TransferDataFromWindow()))
-   {
-      return;
-   }
-
-   m_PitchPercentChangeStart = HalfStepsToPercentChange(m_PitchHalfStepsStart);
-   Update_Text_PitchPercentChangeStart();
-}
-
-void EffectTimeScale::OnText_PitchHalfStepsEnd(wxCommandEvent & WXUNUSED(evt))
-{
-   if (!EnableApply(mUIParent->TransferDataFromWindow()))
-   {
-      return;
-   }
-
-   m_PitchPercentChangeEnd = HalfStepsToPercentChange(m_PitchHalfStepsEnd);
-   Update_Text_PitchPercentChangeEnd();
-}
-
-void EffectTimeScale::OnText_PitchPercentChangeStart(wxCommandEvent & WXUNUSED(evt))
-{
-   if (!EnableApply(mUIParent->TransferDataFromWindow()))
-   {
-      return;
-   }
-
-   m_PitchHalfStepsStart = PercentChangeToHalfSteps(m_PitchPercentChangeStart);
-   Update_Text_PitchHalfStepsStart();
-}
-
-void EffectTimeScale::OnText_PitchPercentChangeEnd(wxCommandEvent & WXUNUSED(evt))
-{
-   if (!EnableApply(mUIParent->TransferDataFromWindow()))
-   {
-      return;
-   }
-
-   m_PitchHalfStepsEnd = PercentChangeToHalfSteps(m_PitchPercentChangeEnd);
-   Update_Text_PitchHalfStepsEnd();
 }
 
 #endif

@@ -45,12 +45,9 @@ public:
 
    void PopulateOrExchange(ShuttleGui & S) override;
    bool TransferDataFromWindow() override;
-   bool TransferDataToWindow() override;
 
 private:
    // EffectToneGen implementation
-
-   void OnControlUpdate(wxCommandEvent & evt);
 
 private:
    const bool mChirp;
@@ -68,12 +65,9 @@ private:
    double mAmplitude[2];
    double mLogFrequency[2];
 
-   NumericTextCtrl *mToneDurationT;
-
    void PostSet();
    CapturedParameters mParameters;
    CapturedParameters &Parameters() override { return mParameters; }
-   DECLARE_EVENT_TABLE()
 };
 
 class EffectChirp final : public EffectToneGen

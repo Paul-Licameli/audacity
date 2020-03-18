@@ -17,10 +17,6 @@
 #include "Effect.h"
 #include "../Shuttle.h"
 
-class wxSlider;
-class wxStaticText;
-class wxTextCtrl;
-class NumericTextCtrl;
 class ShuttleGui;
 
 class EffectDtmf final : public Effect
@@ -63,13 +59,6 @@ private:
                      sampleCount total, float amplitude);
    void Recalculate();
 
-   void UpdateUI();
-
-   void OnSequence(wxCommandEvent & evt);
-   void OnAmplitude(wxCommandEvent & evt);
-   void OnDuration(wxCommandEvent & evt);
-   void OnDutyCycle(wxCommandEvent & evt);
-
 private:
    sampleCount numSamplesSequence;  // total number of samples to generate
    sampleCount numSamplesTone;      // number of samples in a tone block
@@ -87,17 +76,8 @@ private:
    double dtmfDutyCycle;            // ratio of dtmfTone/(dtmfTone+dtmfSilence)
    double dtmfAmplitude;            // amplitude of dtmf tone sequence, restricted to (0-1)
 
-   wxTextCtrl *mDtmfSequenceT;
-   wxTextCtrl *mDtmfAmplitudeT;
-   wxSlider   *mDtmfDutyCycleS;
-   NumericTextCtrl *mDtmfDurationT;
-   wxStaticText *mDtmfToneT;
-   wxStaticText *mDtmfSilenceT;
-   wxStaticText *mDtmfDutyT;
-
    CapturedParameters mParameters;
    CapturedParameters &Parameters() override { return mParameters; }
-   DECLARE_EVENT_TABLE()
 };
 
 #endif

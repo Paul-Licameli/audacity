@@ -86,10 +86,6 @@ const ComponentInterfaceSymbol EffectAutoDuck::Symbol
 
 namespace{ BuiltinEffectsModule::Registration< EffectAutoDuck > reg; }
 
-BEGIN_EVENT_TABLE(EffectAutoDuck, wxEvtHandler)
-   EVT_TEXT(wxID_ANY, EffectAutoDuck::OnValueChanged)
-END_EVENT_TABLE()
-
 EffectAutoDuck::EffectAutoDuck()
    : mParameters{
       mDuckAmountDb, DuckAmountDb,
@@ -400,7 +396,6 @@ void EffectAutoDuck::PopulateOrExchange(ShuttleGui & S)
 
       S.StartMultiColumn(6, wxCENTER);
       {
-         mDuckAmountDbBox =
          S
             .Target( mDuckAmountDb,
                NumValidatorStyle::NO_TRAILING_ZEROES, 1,
@@ -410,9 +405,8 @@ void EffectAutoDuck::PopulateOrExchange(ShuttleGui & S)
 
          S.AddUnits(XO("dB"));
 
-         mMaximumPauseBox =
          S
-            .Target(  mMaximumPause,
+            .Target( mMaximumPause,
                NumValidatorStyle::NO_TRAILING_ZEROES, 2,
                MaximumPause.min, MaximumPause.max )
             .Text({ {}, XO("seconds") })
@@ -420,17 +414,15 @@ void EffectAutoDuck::PopulateOrExchange(ShuttleGui & S)
 
          S.AddUnits(XO("seconds"));
 
-         mOuterFadeDownLenBox =
          S
             .Target( mOuterFadeDownLen,
                NumValidatorStyle::NO_TRAILING_ZEROES, 2,
-               OuterFadeDownLen.min, OuterFadeDownLen.max)
+               OuterFadeDownLen.min, OuterFadeDownLen.max )
             .Text({ {}, XO("seconds") })
             .AddTextBox(XXO("Outer fade &down length:"), L"", 10);
 
          S.AddUnits(XO("seconds"));
 
-         mOuterFadeUpLenBox =
          S
             .Target( mOuterFadeUpLen,
                NumValidatorStyle::NO_TRAILING_ZEROES, 2,
@@ -440,7 +432,6 @@ void EffectAutoDuck::PopulateOrExchange(ShuttleGui & S)
 
          S.AddUnits(XO("seconds"));
 
-         mInnerFadeDownLenBox =
          S
             .Target( mInnerFadeDownLen,
                NumValidatorStyle::NO_TRAILING_ZEROES, 2,
@@ -450,7 +441,6 @@ void EffectAutoDuck::PopulateOrExchange(ShuttleGui & S)
 
          S.AddUnits(XO("seconds"));
 
-         mInnerFadeUpLenBox =
          S
             .Target( mInnerFadeUpLen,
                NumValidatorStyle::NO_TRAILING_ZEROES, 2,
@@ -464,7 +454,6 @@ void EffectAutoDuck::PopulateOrExchange(ShuttleGui & S)
 
       S.StartMultiColumn(3, wxCENTER);
       {
-         mThresholdDbBox =
          S
             .Target( mThresholdDb,
                NumValidatorStyle::NO_TRAILING_ZEROES, 2,
@@ -484,6 +473,8 @@ void EffectAutoDuck::PopulateOrExchange(ShuttleGui & S)
 
 bool EffectAutoDuck::TransferDataToWindow()
 {
+   // Picture depends on values associated with the text boxes.
+   // Redraw after any of them changes.
    mPanel->Refresh(false);
 
    return true;
@@ -559,11 +550,6 @@ bool EffectAutoDuck::ApplyDuckFade(int trackNum, WaveTrack* t,
    }
 
    return cancel;
-}
-
-void EffectAutoDuck::OnValueChanged(wxCommandEvent & WXUNUSED(evt))
-{
-   mPanel->Refresh(false);
 }
 
 /*
@@ -656,11 +642,11 @@ void EffectAutoDuckPanel::OnPaint(wxPaintEvent & WXUNUSED(evt))
    double innerFadeUpLen = 0;
    double outerFadeDownLen = 0;
    double outerFadeUpLen = 0;
-   mEffect->mDuckAmountDbBox->GetValue().ToDouble(&duckAmountDb);
-   mEffect->mInnerFadeDownLenBox->GetValue().ToDouble(&innerFadeDownLen);
-   mEffect->mInnerFadeUpLenBox->GetValue().ToDouble(&innerFadeUpLen);
-   mEffect->mOuterFadeDownLenBox->GetValue().ToDouble(&outerFadeDownLen);
-   mEffect->mOuterFadeUpLenBox->GetValue().ToDouble(&outerFadeUpLen);
+   duckAmountDb = mEffect->mDuckAmountDb;
+   innerFadeDownLen = mEffect->mInnerFadeDownLen;
+   innerFadeUpLen = mEffect->mInnerFadeUpLen;
+   outerFadeDownLen = mEffect->mOuterFadeDownLen;
+   outerFadeUpLen = mEffect->mOuterFadeUpLen;
 
    if (innerFadeDownLen < InnerFadeDownLen.min || innerFadeDownLen > InnerFadeDownLen.max ||
        innerFadeUpLen < InnerFadeUpLen.min     || innerFadeUpLen > InnerFadeUpLen.max     ||

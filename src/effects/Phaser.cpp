@@ -25,21 +25,7 @@
 
 #include <math.h>
 
-#include <wx/slider.h>
-#include <wx/textctrl.h>
-
 #include "../ShuttleGui.h"
-
-enum
-{
-   ID_Stages = 10000,
-   ID_DryWet,
-   ID_Freq,
-   ID_Phase,
-   ID_Depth,
-   ID_Feedback,
-   ID_OutGain
-};
 
 // Define keys, defaults, minimums, and maximums for the effect parameters
 //
@@ -73,23 +59,6 @@ const ComponentInterfaceSymbol EffectPhaser::Symbol
 { XO("Phaser") };
 
 namespace{ BuiltinEffectsModule::Registration< EffectPhaser > reg; }
-
-BEGIN_EVENT_TABLE(EffectPhaser, wxEvtHandler)
-    EVT_SLIDER(ID_Stages, EffectPhaser::OnStagesSlider)
-    EVT_SLIDER(ID_DryWet, EffectPhaser::OnDryWetSlider)
-    EVT_SLIDER(ID_Freq, EffectPhaser::OnFreqSlider)
-    EVT_SLIDER(ID_Phase, EffectPhaser::OnPhaseSlider)
-    EVT_SLIDER(ID_Depth, EffectPhaser::OnDepthSlider)
-    EVT_SLIDER(ID_Feedback, EffectPhaser::OnFeedbackSlider)
-    EVT_SLIDER(ID_OutGain, EffectPhaser::OnGainSlider)
-    EVT_TEXT(ID_Stages, EffectPhaser::OnStagesText)
-    EVT_TEXT(ID_DryWet, EffectPhaser::OnDryWetText)
-    EVT_TEXT(ID_Freq, EffectPhaser::OnFreqText)
-    EVT_TEXT(ID_Phase, EffectPhaser::OnPhaseText)
-    EVT_TEXT(ID_Depth, EffectPhaser::OnDepthText)
-    EVT_TEXT(ID_Feedback, EffectPhaser::OnFeedbackText)
-    EVT_TEXT(ID_OutGain, EffectPhaser::OnGainText)
-END_EVENT_TABLE()
 
 EffectPhaser::EffectPhaser()
    :mParameters {
@@ -212,6 +181,12 @@ size_t EffectPhaser::RealtimeProcess(int group,
 
 void EffectPhaser::PopulateOrExchange(ShuttleGui & S)
 {
+   using namespace DialogDefinition;
+
+   const    auto stagesTarget = Transform( mStages,
+      [](int output){ return output; },
+      [](int input){ return input & ~1; /* must be even */ } );
+
    S.SetBorder(5);
    S.AddSpace(0, 5);
 
@@ -219,134 +194,103 @@ void EffectPhaser::PopulateOrExchange(ShuttleGui & S)
    {
       S.SetStretchyCol(2);
 
-      mStagesT =
       S
-         .Id(ID_Stages)
-         .Target( mStages, NumValidatorStyle::DEFAULT, Stages.min, Stages.max )
+         .Target( stagesTarget,
+            NumValidatorStyle::DEFAULT, Stages.min, Stages.max)
          .AddTextBox(XXO("&Stages:"), L"", 15);
 
-      mStagesS =
       S
-         .Id(ID_Stages)
          .Text(XO("Stages"))
          .Style(wxSL_HORIZONTAL)
          .MinSize( { 100, -1 } )
+         .Target( stagesTarget )
          .AddSlider( {}, Stages.def * Stages.scale, Stages.max * Stages.scale, Stages.min * Stages.scale,
             2 /* line size */ );
 
-      mDryWetT =
       S
-         .Id(ID_DryWet)
          .Target( mDryWet, NumValidatorStyle::DEFAULT, DryWet.min, DryWet.max )
          .AddTextBox(XXO("&Dry/Wet:"), L"", 15);
 
-      mDryWetS =
       S
-         .Id(ID_DryWet)
          .Text(XO("Dry Wet"))
          .Style(wxSL_HORIZONTAL)
          .MinSize( { 100, -1 } )
+         .Target( Scale( mDryWet, DryWet.scale ) )
          .AddSlider( {}, DryWet.def * DryWet.scale, DryWet.max * DryWet.scale, DryWet.min * DryWet.scale);
 
-      mFreqT =
       S
-         .Id(ID_Freq)
          .Target( mFreq,
-            NumValidatorStyle::ONE_TRAILING_ZERO, 5, Freq.min, Freq.max )
+            NumValidatorStyle::ONE_TRAILING_ZERO, 5, Freq.min, Freq.max)
          .AddTextBox(XXO("LFO Freq&uency (Hz):"), L"", 15);
 
-      mFreqS =
       S
-         .Id(ID_Freq)
          .Text(XO("LFO frequency in hertz"))
          .Style(wxSL_HORIZONTAL)
          .MinSize( { 100, -1 } )
+         .Target( Transform( mFreq,
+            [](int output){ return output * Freq.scale; },
+            // Is this value clamp on slider input really needed?
+            [](int input){ return std::max( Freq.min, input / Freq.scale ); } ) )
          .AddSlider( {}, Freq.def * Freq.scale, Freq.max * Freq.scale, 0.0);
 
-      mPhaseT =
       S
-         .Id(ID_Phase)
          .Target( mPhase, NumValidatorStyle::DEFAULT, 1, Phase.min, Phase.max )
          .AddTextBox(XXO("LFO Sta&rt Phase (deg.):"), L"", 15);
 
-      mPhaseS =
       S
-         .Id(ID_Phase)
          .Text(XO("LFO start phase in degrees"))
          .Style(wxSL_HORIZONTAL)
          .MinSize( { 100, -1 } )
+         .Target( Transform( mPhase,
+            [](int output){ return output * Phase.scale; },
+            [](int input){
+               input = ((input + 5) / 10) * 10; // round to nearest multiple of 10
+               return std::min( Phase.max, input / Phase.scale ); } ) )
          .AddSlider( {}, Phase.def * Phase.scale, Phase.max * Phase.scale, Phase.min * Phase.scale,
             10 /* line size */ );
 
-      mDepthT =
       S
-         .Id(ID_Depth)
          .Target( mDepth, NumValidatorStyle::DEFAULT, Depth.min, Depth.max )
          .AddTextBox(XXO("Dept&h:"), L"", 15);
 
-      mDepthS =
       S
-         .Id(ID_Depth)
          .Text(XO("Depth in percent"))
          .Style(wxSL_HORIZONTAL)
          .MinSize( { 100, -1 } )
+         .Target( Scale( mDepth, Depth.scale ) )
          .AddSlider( {}, Depth.def * Depth.scale, Depth.max * Depth.scale, Depth.min * Depth.scale);
 
-      mFeedbackT =
       S
-         .Id(ID_Feedback)
          .Target( mFeedback,
             NumValidatorStyle::DEFAULT, Feedback.min, Feedback.max )
          .AddTextBox(XXO("Feedbac&k (%):"), L"", 15);
 
-      mFeedbackS =
       S
-         .Id(ID_Feedback)
          .Text(XO("Feedback in percent"))
          .Style(wxSL_HORIZONTAL)
          .MinSize( { 100, -1 } )
+         .Target( Transform( mPhase,
+            [](int output){ return output * Feedback.scale; },
+            [](int input){
+//         val = ((val + (val > 0 ? 5 : -5)) / 10) * 10; // round to nearest multiple of 10
+               input = ((input + 5) / 10) * 10; // round to nearest multiple of 10
+               return std::min( Feedback.max, input / Feedback.scale ); } ) )
          .AddSlider( {}, Feedback.def * Feedback.scale, Feedback.max * Feedback.scale, Feedback.min * Feedback.scale,
             10 /* line size */ );
 
-      mOutGainT =
       S
-         .Id(ID_OutGain)
          .Target( mOutGain,
-            NumValidatorStyle::DEFAULT, 1, OutGain.min, OutGain.max )
+            NumValidatorStyle::DEFAULT, 1, OutGain.min, OutGain.max)
          .AddTextBox(XXO("&Output gain (dB):"), L"", 12);
 
-      mOutGainS =
       S
-         .Id(ID_OutGain)
          .Text(XO("Output gain (dB)"))
          .Style(wxSL_HORIZONTAL)
          .MinSize( { 100, -1 } )
+         .Target( Scale( mOutGain, OutGain.scale ) )
          .AddSlider( {}, OutGain.def * OutGain.scale, OutGain.max * OutGain.scale, OutGain.min * OutGain.scale);
    }
    S.EndMultiColumn();
-}
-
-bool EffectPhaser::TransferDataToWindow()
-{
-   mStagesS->SetValue((int) (mStages * Stages.scale));
-   mDryWetS->SetValue((int) (mDryWet * DryWet.scale));
-   mFreqS->SetValue((int) (mFreq * Freq.scale));
-   mPhaseS->SetValue((int) (mPhase * Phase.scale));
-   mDepthS->SetValue((int) (mDepth * Depth.scale));
-   mFeedbackS->SetValue((int) (mFeedback * Feedback.scale));
-   mOutGainS->SetValue((int) (mOutGain * OutGain.scale));
-
-   return true;
-}
-
-bool EffectPhaser::TransferDataFromWindow()
-{
-   if (mStages & 1)    // must be even
-   {
-      mStages &= ~1;
-      mStagesT->GetValidator()->TransferToWindow();
-   }
-   return true;
 }
 
 // EffectPhaser implementation
@@ -420,129 +364,3 @@ size_t EffectPhaser::InstanceProcess(EffectPhaserState & data, float **inBlock, 
    return blockLen;
 }
 
-void EffectPhaser::OnStagesSlider(wxCommandEvent & evt)
-{
-   mStages = (evt.GetInt() / Stages.scale) & ~1;  // must be even;
-   mStagesT->GetValidator()->TransferToWindow();
-   EnableApply(mUIParent->Validate());
-}
-
-void EffectPhaser::OnDryWetSlider(wxCommandEvent & evt)
-{
-   mDryWet = evt.GetInt() / DryWet.scale;
-   mDryWetT->GetValidator()->TransferToWindow();
-   EnableApply(mUIParent->Validate());
-}
-
-void EffectPhaser::OnFreqSlider(wxCommandEvent & evt)
-{
-   mFreq = (double) evt.GetInt() / Freq.scale;
-   if (mFreq < Freq.min) mFreq = Freq.min;
-   mFreqT->GetValidator()->TransferToWindow();
-   EnableApply(mUIParent->Validate());
-}
-
-void EffectPhaser::OnPhaseSlider(wxCommandEvent & evt)
-{
-   int val = ((evt.GetInt() + 5) / 10) * 10; // round to nearest multiple of 10
-   val = val > Phase.max * Phase.scale ? Phase.max * Phase.scale : val;
-   mPhaseS->SetValue(val);
-   mPhase =  (double) val / Phase.scale;
-   mPhaseT->GetValidator()->TransferToWindow();
-   EnableApply(mUIParent->Validate());
-}
-
-void EffectPhaser::OnDepthSlider(wxCommandEvent & evt)
-{
-   mDepth = evt.GetInt() / Depth.scale;
-   mDepthT->GetValidator()->TransferToWindow();
-   EnableApply(mUIParent->Validate());
-}
-
-void EffectPhaser::OnFeedbackSlider(wxCommandEvent & evt)
-{
-   int val = evt.GetInt();
-   val = ((val + (val > 0 ? 5 : -5)) / 10) * 10; // round to nearest multiple of 10
-   val = val > Feedback.max * Feedback.scale ? Feedback.max * Feedback.scale : val;
-   mFeedbackS->SetValue(val);
-   mFeedback = val / Feedback.scale;
-   mFeedbackT->GetValidator()->TransferToWindow();
-   EnableApply(mUIParent->Validate());
-}
-
-void EffectPhaser::OnGainSlider(wxCommandEvent & evt)
-{
-   mOutGain = evt.GetInt() / OutGain.scale;
-   mOutGainT->GetValidator()->TransferToWindow();
-   EnableApply(mUIParent->Validate());
-}
-
-void EffectPhaser::OnStagesText(wxCommandEvent & WXUNUSED(evt))
-{
-   if (!EnableApply(mUIParent->TransferDataFromWindow()))
-   {
-      return;
-   }
-
-   mStagesS->SetValue((int) (mStages * Stages.scale));
-}
-
-void EffectPhaser::OnDryWetText(wxCommandEvent & WXUNUSED(evt))
-{
-   if (!EnableApply(mUIParent->TransferDataFromWindow()))
-   {
-      return;
-   }
-
-   mDryWetS->SetValue((int) (mDryWet * DryWet.scale));
-}
-
-void EffectPhaser::OnFreqText(wxCommandEvent & WXUNUSED(evt))
-{
-   if (!EnableApply(mUIParent->TransferDataFromWindow()))
-   {
-      return;
-   }
-
-   mFreqS->SetValue((int) (mFreq * Freq.scale));
-}
-
-void EffectPhaser::OnPhaseText(wxCommandEvent & WXUNUSED(evt))
-{
-   if (!EnableApply(mUIParent->TransferDataFromWindow()))
-   {
-      return;
-   }
-
-   mPhaseS->SetValue((int) (mPhase * Phase.scale));
-}
-
-void EffectPhaser::OnDepthText(wxCommandEvent & WXUNUSED(evt))
-{
-   if (!EnableApply(mUIParent->TransferDataFromWindow()))
-   {
-      return;
-   }
-
-   mDepthS->SetValue((int) (mDepth * Depth.scale));
-}
-
-void EffectPhaser::OnFeedbackText(wxCommandEvent & WXUNUSED(evt))
-{
-   if (!EnableApply(mUIParent->TransferDataFromWindow()))
-   {
-      return;
-   }
-
-   mFeedbackS->SetValue((int) (mFeedback * Feedback.scale));
-}
-
-void EffectPhaser::OnGainText(wxCommandEvent & WXUNUSED(evt))
-{
-   if (!EnableApply(mUIParent->TransferDataFromWindow()))
-   {
-      return;
-   }
-
-   mOutGainS->SetValue((int) (mOutGain * OutGain.scale));
-}

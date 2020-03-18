@@ -19,8 +19,6 @@
 #include "Effect.h"
 #include "../Shuttle.h"
 
-class wxSlider;
-class wxTextCtrl;
 class ShuttleGui;
 
 class EffectWahwahState
@@ -73,27 +71,12 @@ public:
    // Effect implementation
 
    void PopulateOrExchange(ShuttleGui & S) override;
-   bool TransferDataToWindow() override;
 
 private:
    // EffectWahwah implementation
 
    void InstanceInit(EffectWahwahState & data, float sampleRate);
    size_t InstanceProcess(EffectWahwahState & data, float **inBlock, float **outBlock, size_t blockLen);
-
-   void OnFreqSlider(wxCommandEvent & evt);
-   void OnPhaseSlider(wxCommandEvent & evt);
-   void OnDepthSlider(wxCommandEvent & evt);
-   void OnResonanceSlider(wxCommandEvent & evt);
-   void OnFreqOffSlider(wxCommandEvent & evt);
-   void OnGainSlider(wxCommandEvent & evt);
-
-   void OnFreqText(wxCommandEvent & evt);
-   void OnPhaseText(wxCommandEvent & evt);
-   void OnDepthText(wxCommandEvent & evt);
-   void OnResonanceText(wxCommandEvent & evt);
-   void OnFreqOffText(wxCommandEvent & evt);
-   void OnGainText(wxCommandEvent & evt);
 
 private:
    EffectWahwahState mMaster;
@@ -118,23 +101,8 @@ private:
    int mFreqOfs;
    double mOutGain;
 
-   wxTextCtrl *mFreqT;
-   wxTextCtrl *mPhaseT;
-   wxTextCtrl *mDepthT;
-   wxTextCtrl *mResT;
-   wxTextCtrl *mFreqOfsT;
-   wxTextCtrl *mOutGainT;
-
-   wxSlider *mFreqS;
-   wxSlider *mPhaseS;
-   wxSlider *mDepthS;
-   wxSlider *mResS;
-   wxSlider *mFreqOfsS;
-   wxSlider *mOutGainS;
-
    CapturedParameters mParameters;
    CapturedParameters& Parameters() override { return mParameters; }
-   DECLARE_EVENT_TABLE()
 };
 
 #endif

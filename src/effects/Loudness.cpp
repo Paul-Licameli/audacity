@@ -54,10 +54,6 @@ static auto DualMono = Parameter<bool>(
 static auto NormalizeTo = Parameter<int>(
                            L"NormalizeTo",         kLoudness , 0    ,   nAlgos-1, 1  );
 
-BEGIN_EVENT_TABLE(EffectLoudness, wxEvtHandler)
-   EVT_TEXT(wxID_ANY, EffectLoudness::OnUpdateUI)
-END_EVENT_TABLE()
-
 const ComponentInterfaceSymbol EffectLoudness::Symbol
 { XO("Loudness Normalization") };
 
@@ -250,6 +246,9 @@ bool EffectLoudness::Process()
 
 void EffectLoudness::PopulateOrExchange(ShuttleGui & S)
 {
+   using namespace DialogDefinition;
+   auto pState = S.GetValidationState();
+
    S.StartVerticalLay(0);
    {
       S.StartMultiColumn(2, wxALIGN_CENTER);
@@ -264,7 +263,6 @@ void EffectLoudness::PopulateOrExchange(ShuttleGui & S)
 
                S
                   .Target( mNormalizeTo )
-                  .Action( [this]{ OnChoice(); } )
                   .AddChoice( {},
                      Msgids(kNormalizeTargetStrings, nAlgos),
                      mNormalizeTo );
@@ -321,8 +319,13 @@ void EffectLoudness::PopulateOrExchange(ShuttleGui & S)
                }
                S.EndSimplebook();
 
-               mWarning =
+               // Warning label when the text boxes aren't okay
                S
+                  .VariableText( [pState]{ return Label(
+                     // TODO: recalculate layout here
+                     pState->Ok()
+                        ? TranslatableString{}
+                        : XO("(Maximum 0dB)") ); } )
                   .AddVariableText( {}, false,
                      wxALIGN_CENTER_VERTICAL | wxALIGN_LEFT);
             }
@@ -330,14 +333,12 @@ void EffectLoudness::PopulateOrExchange(ShuttleGui & S)
 
             S
                .Target( mStereoInd )
-               .Action( [this]{ UpdateUI(); } )
                .AddCheckBox(XXO("Normalize &stereo channels independently"),
                   mStereoInd );
 
             S
                .Target( mDualMono )
                .Enable( [this]{ return mNormalizeTo == kLoudness; } )
-               .Action( [this]{ UpdateUI(); } )
                .AddCheckBox(XXO("&Treat mono as dual-mono (recommended)"),
                   mDualMono );
          }
@@ -346,13 +347,6 @@ void EffectLoudness::PopulateOrExchange(ShuttleGui & S)
       S.EndMultiColumn();
    }
    S.EndVerticalLay();
-}
-
-bool EffectLoudness::TransferDataToWindow()
-{
-   // adjust controls which depend on mchoice
-   OnChoice();
-   return true;
 }
 
 // EffectLoudness implementation
@@ -520,26 +514,3 @@ bool EffectLoudness::UpdateProgress()
    return !TotalProgress(mProgressVal, mProgressMsg);
 }
 
-void EffectLoudness::OnChoice()
-{
-   UpdateUI();
-}
-
-void EffectLoudness::OnUpdateUI(wxCommandEvent & WXUNUSED(evt))
-{
-   UpdateUI();
-}
-
-void EffectLoudness::UpdateUI()
-{
-   // FIX THIS
-   if (!mUIParent->TransferDataFromWindow())
-   {
-      mWarning->SetLabel(_("(Maximum 0dB)"));
-      // TODO: recalculate layout here
-      EnableApply(false);
-      return;
-   }
-   mWarning->SetLabel(L"");
-   EnableApply(true);
-}

@@ -42,13 +42,9 @@ a graph for EffectScienFilter.
 #include <wx/setup.h> // for wxUSE_* macros
 
 #include <wx/brush.h>
-#include <wx/choice.h>
 #include <wx/dcclient.h>
 #include <wx/dcmemory.h>
 #include <wx/settings.h>
-#include <wx/slider.h>
-#include <wx/stattext.h>
-#include <wx/textctrl.h>
 
 #include "../AColor.h"
 #include "../AllThemeResources.h"
@@ -72,11 +68,6 @@ a graph for EffectScienFilter.
 enum
 {
    ID_FilterPanel = 10000,
-   ID_dBMax,
-   ID_dBMin,
-   ID_Ripple,
-   ID_Cutoff,
-   ID_StopbandRipple
 };
 
 enum kTypes
@@ -143,18 +134,11 @@ namespace{ BuiltinEffectsModule::Registration< EffectScienFilter > reg( true ); 
 
 BEGIN_EVENT_TABLE(EffectScienFilter, wxEvtHandler)
    EVT_SIZE(EffectScienFilter::OnSize)
-
-   EVT_SLIDER(ID_dBMax, EffectScienFilter::OnSliderDBMAX)
-   EVT_SLIDER(ID_dBMin, EffectScienFilter::OnSliderDBMIN)
-   EVT_TEXT(ID_Cutoff, EffectScienFilter::OnCutoff)
-   EVT_TEXT(ID_Ripple, EffectScienFilter::OnRipple)
-   EVT_TEXT(ID_StopbandRipple, EffectScienFilter::OnStopbandRipple)
 END_EVENT_TABLE()
 
 EffectScienFilter::EffectScienFilter()
    : mParameters{
       [this]{
-         mOrderIndex = mOrder - 1;
          CalcFilter();
          return true;
       },
@@ -174,8 +158,6 @@ EffectScienFilter::EffectScienFilter()
    mStopbandRipple = Stopband.def;
 
    SetLinearEffectFlag(true);
-
-   mOrderIndex = mOrder - 1;
 
    mdBMin = -30.0;
    mdBMax = 30.0;
@@ -331,11 +313,17 @@ bool EffectScienFilter::Init()
       selcount++;
    }
 
+   mPrevdBMax = mPrevdBMin = 0.0;
+   mdBMin = -30.0;
+   mdBMax = 30.0;
+
    return true;
 }
 
 void EffectScienFilter::PopulateOrExchange(ShuttleGui & S)
 {
+   using namespace DialogDefinition;
+
    const auto type1Enabler = [this]{ return mFilterType == kChebyshevTypeI; };
    const auto type2Enabler = [this]{ return mFilterType == kChebyshevTypeII; };
 
@@ -391,24 +379,30 @@ void EffectScienFilter::PopulateOrExchange(ShuttleGui & S)
          S
             .AddVariableText(XO("+ dB"), false, wxCENTER);
 
-         mdBMaxSlider =
+         wxSlider *slider =
          S
-            .Id(ID_dBMax)
-            .Text(XO("Max dB"))
             .Style(wxSL_VERTICAL | wxSL_INVERSE)
+            .VariableText( [this]{ return ControlText{ XO("Max dB"), {},
+               // tooltip
+               XO("%d dB").Format( (int)mdBMax )
+            }; } )
+            .Target( mdBMax )
             .AddSlider( {}, 10, 20, 0);
 #if wxUSE_ACCESSIBILITY
-         mdBMaxSlider->SetAccessible(safenew SliderAx(mdBMaxSlider, XO("%d dB")));
+         slider->SetAccessible(safenew SliderAx(slider, XO("%d dB")));
 #endif
 
-         mdBMinSlider =
+         slider =
          S
-            .Id(ID_dBMin)
-            .Text(XO("Min dB"))
             .Style(wxSL_VERTICAL | wxSL_INVERSE)
+            .VariableText( [this]{ return ControlText{ XO("Min dB"), {},
+               // tooltip
+               XO("%d dB").Format( (int)mdBMin )
+            }; } )
+            .Target( mdBMin )
             .AddSlider( {}, -10, -10, -120);
 #if wxUSE_ACCESSIBILITY
-         mdBMinSlider->SetAccessible(safenew SliderAx(mdBMinSlider, XO("%d dB")));
+         slider->SetAccessible(safenew SliderAx(slider, XO("%d dB")));
 #endif
 
          S
@@ -455,14 +449,14 @@ void EffectScienFilter::PopulateOrExchange(ShuttleGui & S)
             .Focus()
             .MinSize( { -1, -1 } )
             .Target(mFilterType)
-            .Action( [this]{ OnFilterType(); } )
             .AddChoice(XXO("&Filter Type:"),
                Msgids(kTypeStrings, nTypes) );
 
          S
             .MinSize( { -1, -1 } )
-            .Target(mOrderIndex)
-            .Action( [this]{ OnOrder(); } )
+            .Target( Transform( mOrder,
+               [](double output){ return output - 1; },
+               [](double input){ return input + 1; } ) )
             /*i18n-hint: 'Order' means the complexity of the filter, and is a number between 1 and 10.*/
             .AddChoice(XXO("O&rder:"),
                []{
@@ -480,12 +474,11 @@ void EffectScienFilter::PopulateOrExchange(ShuttleGui & S)
                false, wxALL | wxALIGN_RIGHT | wxALIGN_CENTER_VERTICAL);
 
          S
-            .Id(ID_Ripple)
             .Text(XO("Passband Ripple (dB)"))
+            .Enable( type1Enabler )
             .Target( mRipple,
                NumValidatorStyle::DEFAULT, 1,
                Passband.min, Passband.max)
-            .Enable( type1Enabler )
             .AddTextBox( {}, L"", 10);
 
          S
@@ -495,13 +488,10 @@ void EffectScienFilter::PopulateOrExchange(ShuttleGui & S)
          S
             .MinSize( { -1, -1 } )
             .Target(mFilterSubtype)
-            .Action( [this]{ OnFilterSubtype(); } )
             .AddChoice(XXO("&Subtype:"),
                Msgids(kSubTypeStrings, nSubTypes) );
 
-         mCutoffCtl =
          S
-            .Id(ID_Cutoff)
             .Text(XO("Cutoff (Hz)"))
             .Target( mCutoff,
                NumValidatorStyle::DEFAULT, 1,
@@ -517,12 +507,11 @@ void EffectScienFilter::PopulateOrExchange(ShuttleGui & S)
                false, wxALL | wxALIGN_RIGHT | wxALIGN_CENTER_VERTICAL);
 
          S
-            .Id(ID_StopbandRipple)
             .Text(XO("Minimum S&topband Attenuation (dB)"))
+            .Enable( type2Enabler )
             .Target( mStopbandRipple,
                NumValidatorStyle::DEFAULT, 1,
                Stopband.min, Stopband.max)
-            .Enable( type2Enabler )
             .AddTextBox( {}, L"", 10);
 
          S
@@ -541,61 +530,22 @@ void EffectScienFilter::PopulateOrExchange(ShuttleGui & S)
 //
 // Populate the window with relevant variables
 //
-bool EffectScienFilter::TransferDataToWindow()
-{
-   mOrderIndex = mOrder - 1;
-
-   mdBMinSlider->SetValue((int) mdBMin);
-   mdBMin = 0.0;                     // force refresh in TransferGraphLimitsFromWindow()
-
-   mdBMaxSlider->SetValue((int) mdBMax);
-   mdBMax = 0.0;                    // force refresh in TransferGraphLimitsFromWindow()
-
-   return TransferGraphLimitsFromWindow();
-}
 
 bool EffectScienFilter::TransferDataFromWindow()
 {
-   mOrder = mOrderIndex + 1;
-
    CalcFilter();
 
    return true;
 }
 
-// EffectScienFilter implementation
-
-//
-// Retrieve data from the window
-//
-bool EffectScienFilter::TransferGraphLimitsFromWindow()
+bool EffectScienFilter::TransferDataToWindow()
 {
-   // Read the sliders and send to the panel
-   wxString tip;
-
-   bool rr = false;
-   int dB = mdBMinSlider->GetValue();
-   if (dB != mdBMin) {
-      rr = true;
-      mdBMin = dB;
-      tip.Printf(_("%d dB"), (int)mdBMin);
-      mdBMinSlider->SetToolTip(tip);
-   }
-
-   dB = mdBMaxSlider->GetValue();
-   if (dB != mdBMax) {
-      rr = true;
-      mdBMax = dB;
-      tip.Printf(_("%d dB"),(int)mdBMax);
-      mdBMaxSlider->SetToolTip(tip);
-   }
-
-   if (rr) {
+   if ( mPrevdBMin != mdBMin || mPrevdBMax != mdBMax ) {
+      mPrevdBMin = mdBMin;
+      mPrevdBMax = mdBMax;
       mPanel->SetDbRange(mdBMin, mdBMax);
-   }
 
-   // Refresh ruler if values have changed
-   if (rr) {
+      // Refresh ruler if values have changed
       int w1, w2, h;
       mdBRuler->ruler.GetMaxSize(&w1, &h);
       mdBRuler->ruler.SetRange(mdBMax, mdBMin);
@@ -613,6 +563,8 @@ bool EffectScienFilter::TransferGraphLimitsFromWindow()
 
    return true;
 }
+
+// EffectScienFilter implementation
 
 void EffectScienFilter::CalcFilter()
 {
@@ -698,62 +650,6 @@ float EffectScienFilter::FilterMagnAtFreq(float Freq)
    }
 
    return Magn;
-}
-
-void EffectScienFilter::OnOrder()
-{
-   mOrder = mOrderIndex + 1;	// 0..n-1 -> 1..n
-   mPanel->Refresh(false);
-}
-
-void EffectScienFilter::OnFilterType()
-{
-   mPanel->Refresh(false);
-}
-
-void EffectScienFilter::OnFilterSubtype()
-{
-   mPanel->Refresh(false);
-}
-
-void EffectScienFilter::OnCutoff(wxCommandEvent & WXUNUSED(evt))
-{
-   if (!EnableApply(mUIParent->TransferDataFromWindow()))
-   {
-      return;
-   }
-
-   mPanel->Refresh(false);
-}
-
-void EffectScienFilter::OnRipple(wxCommandEvent & WXUNUSED(evt))
-{
-   if (!EnableApply(mUIParent->TransferDataFromWindow()))
-   {
-      return;
-   }
-
-   mPanel->Refresh(false);
-}
-
-void EffectScienFilter::OnStopbandRipple(wxCommandEvent & WXUNUSED(evt))
-{
-   if (!EnableApply(mUIParent->TransferDataFromWindow()))
-   {
-      return;
-   }
-
-   mPanel->Refresh(false);
-}
-
-void EffectScienFilter::OnSliderDBMIN(wxCommandEvent & WXUNUSED(evt))
-{
-   TransferGraphLimitsFromWindow();
-}
-
-void EffectScienFilter::OnSliderDBMAX(wxCommandEvent & WXUNUSED(evt))
-{
-   TransferGraphLimitsFromWindow();
 }
 
 void EffectScienFilter::OnSize(wxSizeEvent & evt)

@@ -21,10 +21,6 @@ Vaughan Johnson (Preview)
 #include "../Shuttle.h"
 
 class wxBitmap;
-class wxChoice;
-class wxSlider;
-class wxStaticText;
-class wxTextCtrl;
 class RulerPanel;
 class ShuttleGui;
 
@@ -66,22 +62,11 @@ public:
 private:
    // EffectScienFilter implementation
 
-   bool TransferGraphLimitsFromWindow();
    void CalcFilter();
    float FilterMagnAtFreq(float Freq);
 
    void OnSize( wxSizeEvent & evt );
    void OnSlider( wxCommandEvent & evt );
-
-   void OnOrder();
-   void OnCutoff( wxCommandEvent & evt );
-   void OnRipple( wxCommandEvent & evt );
-   void OnStopbandRipple( wxCommandEvent & evt );
-   void OnFilterType();
-   void OnFilterSubtype();
-
-   void OnSliderDBMAX( wxCommandEvent & evt );
-   void OnSliderDBMIN( wxCommandEvent & evt );
 
 private:
    double mCutoff;
@@ -90,21 +75,17 @@ private:
    int mFilterType;		// Butterworth etc.
    int mFilterSubtype;	// lowpass, highpass
    int mOrder;
-   int mOrderIndex;
    ArrayOf<Biquad> mpBiquad;
 
    double mdBMax;
    double mdBMin;
+   double mPrevdBMax, mPrevdBMin;
    bool mEditingBatchParams;
 
    double mLoFreq;
    double mNyquist;
 
    EffectScienFilterPanel *mPanel;
-   wxSlider *mdBMinSlider;
-   wxSlider *mdBMaxSlider;
-
-   wxTextCtrl *mCutoffCtl;
 
    RulerPanel *mdBRuler;
    RulerPanel *mfreqRuler;

@@ -20,19 +20,22 @@
 #else
 
 // Stub definitions
+
+#include "../Internat.h"
+
 struct ScoreAlignParams
 {
    int mStatus;
    double mMidiStart, mMidiEnd;
    double mAudioStart, mAudioEnd;
-   float mFramePeriod;
-   float mWindowSize;
-   float mSilenceThreshold;
-   float mForceFinalAlignment;
-   float mIgnoreSilence;
-   float mPresmoothTime;
-   float mLineTime;
-   float mSmoothTime;
+   double mFramePeriod;
+   double mWindowSize;
+   double mSilenceThreshold;
+   bool mForceFinalAlignment;
+   bool mIgnoreSilence;
+   double mPresmoothTime;
+   double mLineTime;
+   double mSmoothTime;
 };
 class SAProgress;
 class Alg_seq;
@@ -48,12 +51,30 @@ extern int scorealign(
    ScoreAlignParams params
 );
 
-#endif
+constexpr float
+     SA_DFT_FRAME_PERIOD = 0
+   , SA_DFT_WINDOW_SIZE = 0
+   , SA_DFT_SILENCE_THRESHOLD = 0
+   , SA_DFT_PRESMOOTH_TIME = 0
+   , SA_DFT_LINE_TIME = 0
+   , SA_DFT_SMOOTH_TIME = 0
+;
 
-class wxButton;
-class wxCheckBox;
-class wxSlider;
-class wxStaticText;
+constexpr bool
+     SA_DFT_FORCE_FINAL_ALIGNMENT = false
+   , SA_DFT_IGNORE_SILENCE = false
+;
+
+static const TranslatableString
+     SA_DFT_FRAME_PERIOD_TEXT
+   , SA_DFT_WINDOW_SIZE_TEXT
+   , SA_DFT_SILENCE_THRESHOLD_TEXT
+   , SA_DFT_PRESMOOTH_TIME_TEXT
+   , SA_DFT_LINE_TIME_TEXT
+   , SA_DFT_SMOOTH_TIME_TEXT
+;
+
+#endif
 
 void CloseScoreAlignDialog();
 
@@ -68,42 +89,15 @@ class ScoreAlignDialog final : public wxDialogWrapper
 public:
    ScoreAlignParams p;
 
-   wxStaticText *mFramePeriodLabel;
-   wxSlider *mFramePeriodSlider;
-   wxStaticText *mFramePeriodText;
-
-   wxStaticText *mWindowSizeLabel;
-   wxSlider *mWindowSizeSlider;
-   wxStaticText *mWindowSizeText;
-
-   wxStaticText *mSilenceThresholdLabel;
-   wxSlider *mSilenceThresholdSlider;
-   wxStaticText *mSilenceThresholdText;
-
-   wxStaticText *mPresmoothLabel;
-   wxSlider *mPresmoothSlider;
-   wxStaticText *mPresmoothText;
-
-   wxStaticText *mLineTimeLabel;
-   wxSlider *mLineTimeSlider;
-   wxStaticText *mLineTimeText;
-
-   wxStaticText *mSmoothTimeLabel;
-   wxSlider *mSmoothTimeSlider;
-   wxStaticText *mSmoothTimeText;
-
    // constructors and destructors
    ScoreAlignDialog(ScoreAlignParams &params);
    ~ScoreAlignDialog();
-
-   bool TransferDataFromWindow() override;
 
 private:
    enum {
      ID_BASE = 10000,
      ID_PRESMOOTH,
      ID_WINDOWSIZE,
-     ID_FRAMEPERIOD,
      ID_LINETIME,
      ID_SMOOTHTIME,
      ID_SILENCETHRESHOLD,
@@ -113,12 +107,7 @@ private:
    // handlers
    void OnOK();
    void OnCancel();
-   void OnSlider(wxCommandEvent & event);
-   void DoSlider();
-   void OnDefault(wxCommandEvent & event);
-
-   DECLARE_EVENT_TABLE()
-
+   void OnDefault();
 };
 
 #endif

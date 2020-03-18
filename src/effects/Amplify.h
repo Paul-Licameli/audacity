@@ -19,8 +19,6 @@
 #include "../Shuttle.h"
 
 
-class wxSlider;
-class wxTextCtrl;
 class ShuttleGui;
 
 class EffectAmplify final : public Effect
@@ -53,31 +51,18 @@ public:
    bool Init() override;
    void Preview(bool dryOnly) override;
    void PopulateOrExchange(ShuttleGui & S) override;
-   bool TransferDataToWindow() override;
-   bool TransferDataFromWindow() override;
 
 private:
    // EffectAmplify implementation
 
-   void OnAmpText(wxCommandEvent & evt);
-   void OnPeakText(wxCommandEvent & evt);
-   void OnAmpSlider(wxCommandEvent & evt);
-   void OnClipCheckBox();
-   void CheckClip();
+   double ClipRatio( double value );
    bool CanApply() override;
 
 private:
    double mPeak;
 
    double mRatio;
-   double mRatioClip;   // maximum value of mRatio which does not cause clipping
-   double mAmp;
-   double mNewPeak;
    bool mCanClip;
-
-   wxSlider *mAmpS;
-   wxTextCtrl *mAmpT;
-   wxTextCtrl *mNewPeakT;
 
    CapturedParameters mParameters;
    CapturedParameters mBatchParameters;
@@ -86,8 +71,6 @@ private:
       // is interactive only.
       return IsBatchProcessing() ? mBatchParameters : mParameters;
    }
-
-   DECLARE_EVENT_TABLE()
 };
 
 #endif // __AUDACITY_EFFECT_AMPLIFY__

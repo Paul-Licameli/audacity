@@ -225,10 +225,10 @@ void EffectNoise::PopulateOrExchange(ShuttleGui & S)
       S
          .AddPrompt(XXO("&Duration:"));
 
-      mNoiseDurationT =
       S
          .Text(XO("Duration"))
          .Position(wxALIGN_LEFT | wxALIGN_CENTER_VERTICAL | wxALL)
+         .Target( DurationTarget() )
          .AddNumericTextCtrl( NumericConverter::TIME,
             GetDurationFormat(),
             GetDuration(),
@@ -239,16 +239,3 @@ void EffectNoise::PopulateOrExchange(ShuttleGui & S)
    S.EndMultiColumn();
 }
 
-bool EffectNoise::TransferDataToWindow()
-{
-   mNoiseDurationT->SetValue(GetDuration());
-
-   return true;
-}
-
-bool EffectNoise::TransferDataFromWindow()
-{
-   SetDuration(mNoiseDurationT->GetValue());
-
-   return true;
-}

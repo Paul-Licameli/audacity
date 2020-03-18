@@ -166,7 +166,9 @@ void SaveLogCommand::PopulateOrExchange(ShuttleGui & S)
 
    S.StartMultiColumn(2, wxALIGN_CENTER);
    {
-      S.TieTextBox(XXO("File Name:"),mFileName);
+      S
+         .Target(mFileName)
+         .AddTextBox(XXO("File Name:"));
    }
    S.EndMultiColumn();
 }

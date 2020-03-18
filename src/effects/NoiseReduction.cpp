@@ -60,9 +60,6 @@
 #define finite(x) _finite(x)
 #endif
 
-#include <wx/button.h>
-#include <wx/choice.h>
-#include <wx/slider.h>
 #include <wx/textctrl.h>
 
 // SPECTRAL_SELECTION not to affect this effect for now, as there might be no indication that it does.
@@ -370,7 +367,6 @@ public:
        bool bAllowTwiddleSettings);
 
    void PopulateOrExchange(ShuttleGui & S) override;
-   bool TransferDataToWindow() override;
    bool TransferDataFromWindow() override;
 
    const Settings &GetTempSettings() const
@@ -384,9 +380,6 @@ private:
    void OnCancel();
    void OnHelp();
 
-   void OnText(wxCommandEvent &event);
-   void OnSlider(wxCommandEvent &event);
-
    // data members
 
    EffectNoiseReduction *m_pEffect;
@@ -395,9 +388,6 @@ private:
 
    bool mbHasProfile;
    bool mbAllowTwiddleSettings;
-
-private:
-    DECLARE_EVENT_TABLE()
 };
 
 const ComponentInterfaceSymbol EffectNoiseReduction::Symbol
@@ -1359,40 +1349,6 @@ bool EffectNoiseReduction::Worker::ProcessOne
 // EffectNoiseReduction::Dialog
 //----------------------------------------------------------------------------
 
-enum {
-   // Slider/text pairs
-   ID_GAIN_SLIDER = 10001,
-   ID_GAIN_TEXT,
-
-   ID_NEW_SENSITIVITY_SLIDER,
-   ID_NEW_SENSITIVITY_TEXT,
-
-#ifdef ATTACK_AND_RELEASE
-   ID_ATTACK_TIME_SLIDER,
-   ID_ATTACK_TIME_TEXT,
-
-   ID_RELEASE_TIME_SLIDER,
-   ID_RELEASE_TIME_TEXT,
-#endif
-
-   ID_FREQ_SLIDER,
-   ID_FREQ_TEXT,
-
-   END_OF_BASIC_SLIDERS,
-
-#ifdef ADVANCED_SETTINGS
-   ID_OLD_SENSITIVITY_SLIDER = END_OF_BASIC_SLIDERS,
-   ID_OLD_SENSITIVITY_TEXT,
-
-   END_OF_ADVANCED_SLIDERS,
-   END_OF_SLIDERS = END_OF_ADVANCED_SLIDERS,
-#else
-   END_OF_SLIDERS = END_OF_BASIC_SLIDERS,
-#endif
-
-   FIRST_SLIDER = ID_GAIN_SLIDER,
-};
-
 namespace {
 
 struct ControlInfo {
@@ -1412,13 +1368,12 @@ struct ControlInfo {
          0, sliderMax);
    }
 
-   void CreateControls(int id, double &target, ShuttleGui &S) const
+   void CreateControls(double &target, ShuttleGui &S) const
    {
       auto pDlg = static_cast< EffectNoiseReduction::Dialog* >( S.GetParent() );
       const auto fn = [this, pDlg]{ return enabler( *pDlg ); };
       wxTextCtrl *const text =
       S
-         .Id(id + 1)
          .Target( target,
             NumValidatorStyle::DEFAULT,
             formatAsInt ? 0 : 2,
@@ -1428,11 +1383,11 @@ struct ControlInfo {
 
       wxSlider *const slider =
       S
-         .Id(id)
          .Text( sliderName )
          .Style(wxSL_HORIZONTAL)
          .MinSize( { 150, -1 } )
          .Enable( fn )
+         .Target( target )
          .AddSlider( {}, 0, sliderMax);
    }
 
@@ -1481,8 +1436,8 @@ bool NoiseReductionEnabler( EffectNoiseReduction::Dialog &dialog )
    return !bIsolating;
 };
 
-const ControlInfo *controlInfo() {
-   static const ControlInfo table[] = {
+const std::vector<ControlInfo> &controlInfo() {
+   static const std::vector<ControlInfo> table{
          ControlInfo(&EffectNoiseReduction::Settings::mNoiseGain,
          0.0, 48.0, 48, L"%d", true,
          XXO("&Noise reduction (dB):"), XO("Noise reduction"),
@@ -1511,7 +1466,14 @@ const ControlInfo *controlInfo() {
          0, 12, 12, L"%d", true,
          XXO("&Frequency smoothing (bands):"), XO("Frequency smoothing"),
          NoiseReductionEnabler ),
+   };
 
+return table;
+}
+
+
+const std::vector<ControlInfo> &advancedControlInfo() {
+   static const std::vector<ControlInfo> table{
 #ifdef ADVANCED_SETTINGS
          ControlInfo(&EffectNoiseReduction::Settings::mOldSensitivity,
          -20.0, 20.0, 4000, L"%.2f", false,
@@ -1528,32 +1490,6 @@ return table;
 
 } // namespace
 
-
-BEGIN_EVENT_TABLE(EffectNoiseReduction::Dialog, wxDialogWrapper)
-
-   EVT_SLIDER(ID_GAIN_SLIDER, EffectNoiseReduction::Dialog::OnSlider)
-   EVT_TEXT(ID_GAIN_TEXT, EffectNoiseReduction::Dialog::OnText)
-
-   EVT_SLIDER(ID_NEW_SENSITIVITY_SLIDER, EffectNoiseReduction::Dialog::OnSlider)
-   EVT_TEXT(ID_NEW_SENSITIVITY_TEXT, EffectNoiseReduction::Dialog::OnText)
-
-   EVT_SLIDER(ID_FREQ_SLIDER, EffectNoiseReduction::Dialog::OnSlider)
-   EVT_TEXT(ID_FREQ_TEXT, EffectNoiseReduction::Dialog::OnText)
-
-#ifdef ATTACK_AND_RELEASE
-   EVT_SLIDER(ID_ATTACK_TIME_SLIDER, EffectNoiseReduction::Dialog::OnSlider)
-   EVT_TEXT(ID_ATTACK_TIME_TEXT, EffectNoiseReduction::Dialog::OnText)
-
-   EVT_SLIDER(ID_RELEASE_TIME_SLIDER, EffectNoiseReduction::Dialog::OnSlider)
-   EVT_TEXT(ID_RELEASE_TIME_TEXT, EffectNoiseReduction::Dialog::OnText)
-#endif
-
-
-#ifdef ADVANCED_SETTINGS
-   EVT_SLIDER(ID_OLD_SENSITIVITY_SLIDER, EffectNoiseReduction::Dialog::OnSlider)
-   EVT_TEXT(ID_OLD_SENSITIVITY_TEXT, EffectNoiseReduction::Dialog::OnText)
-#endif
-END_EVENT_TABLE()
 
 EffectNoiseReduction::Dialog::Dialog
 (EffectNoiseReduction *effect,
@@ -1642,10 +1578,8 @@ void EffectNoiseReduction::Dialog::PopulateOrExchange(ShuttleGui & S)
       S.StartMultiColumn(3, wxEXPAND);
       S.SetStretchyCol(2);
       {
-         for (int id = FIRST_SLIDER; id < END_OF_BASIC_SLIDERS; id += 2) {
-            const ControlInfo &info = controlInfo()[(id - FIRST_SLIDER) / 2];
-            info.CreateControls(id, mTempSettings.*(info.field), S);
-         }
+         for (const auto &info : controlInfo())
+            info.CreateControls(mTempSettings.*(info.field), S);
       }
       S.EndMultiColumn();
 
@@ -1753,10 +1687,8 @@ void EffectNoiseReduction::Dialog::PopulateOrExchange(ShuttleGui & S)
       S.StartMultiColumn(3, wxEXPAND);
       S.SetStretchyCol(2);
       {
-         for (int id = END_OF_BASIC_SLIDERS; id < END_OF_ADVANCED_SLIDERS; id += 2) {
-            const ControlInfo &info = controlInfo()[(id - FIRST_SLIDER) / 2];
-            info.CreateControls(id, mTempSettings.*(info.field), S);
-         }
+         for ( const auto &info : advancedControlInfo() )
+            info.CreateControls(mTempSettings.*(info.field), S);
       }
       S.EndMultiColumn();
    }
@@ -1781,24 +1713,6 @@ void EffectNoiseReduction::Dialog::PopulateOrExchange(ShuttleGui & S)
       } );
 }
 
-bool EffectNoiseReduction::Dialog::TransferDataToWindow()
-{
-   if (!EffectDialog::TransferDataToWindow())
-      return false;
-
-   for (int id = FIRST_SLIDER; id < END_OF_SLIDERS; id += 2) {
-      wxSlider* slider =
-         static_cast<wxSlider*>(wxWindow::FindWindowById(id, this));
-      wxTextCtrl* text =
-         static_cast<wxTextCtrl*>(wxWindow::FindWindowById(id + 1, this));
-      const ControlInfo &info = controlInfo()[(id - FIRST_SLIDER) / 2];
-      const double field = mTempSettings.*(info.field);
-      slider->SetValue(info.SliderSetting(field));
-   }
-
-   return true;
-}
-
 bool EffectNoiseReduction::Dialog::TransferDataFromWindow()
 {
    if( !wxWindow::Validate() )
@@ -1809,35 +1723,3 @@ bool EffectNoiseReduction::Dialog::TransferDataFromWindow()
 
    return mTempSettings.Validate(m_pEffect);
 }
-
-void EffectNoiseReduction::Dialog::OnText(wxCommandEvent &event)
-{
-   int id = event.GetId();
-   int idx = (id - FIRST_SLIDER - 1) / 2;
-   const ControlInfo &info = controlInfo()[idx];
-   wxTextCtrl* text =
-      static_cast<wxTextCtrl*>(wxWindow::FindWindowById(id, this));
-   text->GetValidator()->TransferFromWindow();
-
-   wxSlider* slider =
-      static_cast<wxSlider*>(wxWindow::FindWindowById(id - 1, this));
-   double &field = mTempSettings.*(info.field);
-   slider->SetValue(info.SliderSetting(field));
-}
-
-void EffectNoiseReduction::Dialog::OnSlider(wxCommandEvent &event)
-{
-   int id = event.GetId();
-   int idx = (id - FIRST_SLIDER) / 2;
-   const ControlInfo &info = controlInfo()[idx];
-   wxSlider* slider =
-      static_cast<wxSlider*>(wxWindow::FindWindowById(id, this));
-   wxTextCtrl* text =
-      static_cast<wxTextCtrl*>(wxWindow::FindWindowById(id + 1, this));
-   double &field = mTempSettings.*(info.field);
-
-   field = info.Value(slider->GetValue());
-
-   text->GetValidator()->TransferToWindow();
-}
-

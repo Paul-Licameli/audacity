@@ -34,9 +34,6 @@
 
 #include <wx/choice.h>
 #include <wx/log.h>
-#include <wx/slider.h>
-#include <wx/stattext.h>
-#include <wx/textctrl.h>
 
 #include "../Prefs.h"
 #include "../ShuttleGui.h"
@@ -108,8 +105,6 @@ static auto Repeats = Parameter<int>(
 // How many samples are processed before recomputing the lookup table again
 #define skipsamples 1000
 
-const double MIN_Threshold_Linear DB_TO_LINEAR(Threshold_dB.min);
-
 static const struct
 {
    const TranslatableString name;
@@ -174,19 +169,6 @@ const ComponentInterfaceSymbol EffectDistortion::Symbol
 { XO("Distortion") };
 
 namespace{ BuiltinEffectsModule::Registration< EffectDistortion > reg; }
-
-BEGIN_EVENT_TABLE(EffectDistortion, wxEvtHandler)
-   EVT_TEXT(ID_Threshold, EffectDistortion::OnThresholdText)
-   EVT_SLIDER(ID_Threshold, EffectDistortion::OnThresholdSlider)
-   EVT_TEXT(ID_NoiseFloor, EffectDistortion::OnNoiseFloorText)
-   EVT_SLIDER(ID_NoiseFloor, EffectDistortion::OnNoiseFloorSlider)
-   EVT_TEXT(ID_Param1, EffectDistortion::OnParam1Text)
-   EVT_SLIDER(ID_Param1, EffectDistortion::OnParam1Slider)
-   EVT_TEXT(ID_Param2, EffectDistortion::OnParam2Text)
-   EVT_SLIDER(ID_Param2, EffectDistortion::OnParam2Slider)
-   EVT_TEXT(ID_Repeats, EffectDistortion::OnRepeatsText)
-   EVT_SLIDER(ID_Repeats, EffectDistortion::OnRepeatsSlider)
-END_EVENT_TABLE()
 
 EffectDistortion::EffectDistortion()
    : mParameters{
@@ -399,7 +381,6 @@ void EffectDistortion::PopulateCheckboxPage(
    ShuttleGui &S, const UISpec &spec, size_t index )
 {
    auto &params = mPageParams[ index ];
-   Controls &controls = mControls[ index ];
    S
       .StartNotebookPage({});
    {
@@ -428,8 +409,8 @@ static TranslatableString LabelWithSuffix(
 void EffectDistortion::PopulateThresholdPage(
    ShuttleGui &S, const UISpec &spec, size_t index )
 {
+   using namespace DialogDefinition;
    auto &params = mPageParams[ index ];
-   Controls &controls = mControls[ index ];
    TranslatableString label;
 
    S
@@ -456,18 +437,17 @@ void EffectDistortion::PopulateThresholdPage(
             NumValidatorStyle::DEFAULT, 2,
             Threshold_dB.min, Threshold_dB.max );
 
-      controls.mThresholdT =
       S
-         .Id(ID_Threshold)
          .Text( label )
          .AddTextBox( {}, L"", 10);
 
-      controls.mThresholdS =
       S
-         .Id(ID_Threshold)
          .Text( label )
          .Disable( spec.thresholdName.empty() )
          .Style(wxSL_HORIZONTAL)
+         .Target( Transform( params.mThreshold_dB,
+             [](double output){ return DB_TO_LINEAR( output ) * Threshold_dB.scale; },
+             [](double input){ return LINEAR_TO_DB( input / Threshold_dB.scale ); } ) )
          .AddSlider( {}, 0,
             DB_TO_LINEAR(Threshold_dB.max) * Threshold_dB.scale,
             DB_TO_LINEAR(Threshold_dB.min) * Threshold_dB.scale);
@@ -487,18 +467,15 @@ void EffectDistortion::PopulateThresholdPage(
             NumValidatorStyle::DEFAULT, 2,
             NoiseFloor.min, NoiseFloor.max );
 
-      controls.mNoiseFloorT =
       S
-         .Id(ID_NoiseFloor)
          .Text( label )
          .AddTextBox( {}, L"", 10);
 
-      controls.mNoiseFloorS =
       S
-         .Id(ID_NoiseFloor)
          .Text( label )
          .Disable( spec.noiseFloorName.empty() )
          .Style(wxSL_HORIZONTAL)
+         .Target( params.mNoiseFloor )
          .AddSlider( {}, 0, NoiseFloor.max, NoiseFloor.min);
 
       S.AddSpace(20, 0);
@@ -511,7 +488,6 @@ void EffectDistortion::PopulateParameterPage(
    ShuttleGui &S, const UISpec &spec, size_t index )
 {
    auto &params = mPageParams[ index ];
-   Controls &controls = mControls[ index ];
    TranslatableString label, suffix;
 
    S
@@ -538,18 +514,15 @@ void EffectDistortion::PopulateParameterPage(
             NumValidatorStyle::DEFAULT, 2,
             Param1.min, Param1.max );
 
-      controls.mParam1T =
       S
-         .Id(ID_Param1)
          .Text( label )
          .AddTextBox( {}, L"", 10);
 
-      controls.mParam1S =
       S
-         .Id(ID_Param1)
          .Text( label )
          .Disable( spec.param1Name.empty() )
          .Style(wxSL_HORIZONTAL)
+         .Target( params.mParam1 )
          .AddSlider( {}, 0, Param1.max, Param1.min);
 
       S.AddSpace(20, 0);
@@ -567,16 +540,15 @@ void EffectDistortion::PopulateParameterPage(
             NumValidatorStyle::DEFAULT, 2,
             Param2.min, Param2.max );
 
-      controls.mParam2T = S.Id(ID_Param2)
+      S
          .Text( label )
          .AddTextBox( {}, L"", 10);
 
-      controls.mParam2S =
       S
-         .Id(ID_Param2)
          .Text( label )
          .Disable( spec.param2Name.empty() )
          .Style(wxSL_HORIZONTAL)
+         .Target( params.mParam2 )
          .AddSlider( {}, 0, Param2.max, Param2.min);
 
       S.AddSpace(20, 0);
@@ -594,15 +566,11 @@ void EffectDistortion::PopulateParameterPage(
             NumValidatorStyle::DEFAULT,
             Repeats.min, Repeats.max );
 
-      controls.mRepeatsT =
       S
-         .Id(ID_Repeats)
          .Text( label )
          .AddTextBox( {}, L"", 10);
 
-      controls.mRepeatsS =
       S
-         .Id(ID_Repeats)
          .Text( label )
          .Disable( spec.repeatsName.empty() )
          .Style(wxSL_HORIZONTAL)
@@ -622,23 +590,9 @@ bool EffectDistortion::Init()
    return true;
 }
 
-bool EffectDistortion::TransferDataToWindow()
-{
-   const auto thresholdLinear = DB_TO_LINEAR( mParams.mThreshold_dB );
-   auto &controls = mControls[ mTableChoiceIndx ];
-   controls.mThresholdS->SetValue((int) (thresholdLinear * Threshold_dB.scale + 0.5));
-   controls.mNoiseFloorS->SetValue((int) mParams.mNoiseFloor + 0.5);
-   controls.mParam1S->SetValue((int) mParams.mParam1 + 0.5);
-   controls.mParam2S->SetValue((int) mParams.mParam2 + 0.5);
-   controls.mRepeatsS->SetValue(mParams.mRepeats);
-
-   return true;
-}
-
 bool EffectDistortion::TransferDataFromWindow()
 {
    mParams = mPageParams[ mTableChoiceIndx ];
-
    return true;
 }
 
@@ -739,92 +693,6 @@ size_t EffectDistortion::InstanceProcess(EffectDistortionState& data, float** in
    }
 
    return blockLen;
-}
-
-//?
-void EffectDistortion::OnThresholdText(wxCommandEvent& /*evt*/)
-{
-   auto &controls = mControls[ mTableChoiceIndx ];
-   auto &params = mPageParams[ mTableChoiceIndx ];
-   controls.mThresholdT->GetValidator()->TransferFromWindow();
-   auto threshold = DB_TO_LINEAR(params.mThreshold_dB);
-   controls.mThresholdS->SetValue((int) (threshold * Threshold_dB.scale + 0.5));
-}
-
-void EffectDistortion::OnThresholdSlider(wxCommandEvent& evt)
-{
-   auto &controls = mControls[ mTableChoiceIndx ];
-   auto &params = mPageParams[ mTableChoiceIndx ];
-   auto threshold = (double) evt.GetInt() / Threshold_dB.scale;
-   params.mThreshold_dB = wxMax(LINEAR_TO_DB(threshold), Threshold_dB.min);
-   threshold = std::max(MIN_Threshold_Linear, threshold);
-   controls.mThresholdT->GetValidator()->TransferToWindow();
-}
-
-void EffectDistortion::OnNoiseFloorText(wxCommandEvent& /*evt*/)
-{
-   auto &controls = mControls[ mTableChoiceIndx ];
-   auto &params = mPageParams[ mTableChoiceIndx ];
-   controls.mNoiseFloorT->GetValidator()->TransferFromWindow();
-   controls.mNoiseFloorS->SetValue((int) floor(params.mNoiseFloor + 0.5));
-}
-
-void EffectDistortion::OnNoiseFloorSlider(wxCommandEvent& evt)
-{
-   auto &controls = mControls[ mTableChoiceIndx ];
-   auto &params = mPageParams[ mTableChoiceIndx ];
-   params.mNoiseFloor = (double) evt.GetInt();
-   controls.mNoiseFloorT->GetValidator()->TransferToWindow();
-}
-
-
-void EffectDistortion::OnParam1Text(wxCommandEvent& /*evt*/)
-{
-   auto &controls = mControls[ mTableChoiceIndx ];
-   auto &params = mPageParams[ mTableChoiceIndx ];
-   controls.mParam1T->GetValidator()->TransferFromWindow();
-   controls.mParam1S->SetValue((int) floor(params.mParam1 + 0.5));
-}
-
-void EffectDistortion::OnParam1Slider(wxCommandEvent& evt)
-{
-   auto &controls = mControls[ mTableChoiceIndx ];
-   auto &params = mPageParams[ mTableChoiceIndx ];
-   params.mParam1 = (double) evt.GetInt();
-   controls.mParam1T->GetValidator()->TransferToWindow();
-}
-
-void EffectDistortion::OnParam2Text(wxCommandEvent& /*evt*/)
-{
-   auto &controls = mControls[ mTableChoiceIndx ];
-   auto &params = mPageParams[ mTableChoiceIndx ];
-   controls.mParam2T->GetValidator()->TransferFromWindow();
-   controls.mParam2S->SetValue((int) floor(params.mParam2 + 0.5));
-}
-
-void EffectDistortion::OnParam2Slider(wxCommandEvent& evt)
-{
-   auto &controls = mControls[ mTableChoiceIndx ];
-   auto &params = mPageParams[ mTableChoiceIndx ];
-   params.mParam2 = (double) evt.GetInt();
-   controls.mParam2T->GetValidator()->TransferToWindow();
-}
-
-void EffectDistortion::OnRepeatsText(wxCommandEvent& /*evt*/)
-{
-   auto &controls = mControls[ mTableChoiceIndx ];
-   auto &params = mPageParams[ mTableChoiceIndx ];
-   controls.mRepeatsT->GetValidator()->TransferFromWindow();
-   controls.mRepeatsS->SetValue(params.mRepeats);
-}
-
-void EffectDistortion::OnRepeatsSlider(wxCommandEvent& evt)
-{
-   auto &controls = mControls[ mTableChoiceIndx ];
-   auto &params = mPageParams[ mTableChoiceIndx ];
-   params.mRepeats = evt.GetInt();
-   controls.mRepeatsT->GetValidator()->TransferToWindow();
-   
 }
 
 void EffectDistortion::MakeTable()

@@ -17,22 +17,9 @@
 #include "DtmfGen.h"
 #include "LoadEffects.h"
 
-#include <wx/slider.h>
-#include <wx/stattext.h>
-#include <wx/textctrl.h>
-
 #include "../Prefs.h"
 #include "../ShuttleGui.h"
-#include "../widgets/NumericTextCtrl.h"
 
-
-enum
-{
-   ID_Sequence,
-   ID_Amplitude,
-   ID_Duration,
-   ID_DutyCycle,
-};
 
 // DA: DTMF for Audacity uses a different string.
 #ifdef EXPERIMENTAL_DA
@@ -63,13 +50,6 @@ const ComponentInterfaceSymbol EffectDtmf::Symbol
 { XO("DTMF Tones") };
 
 namespace{ BuiltinEffectsModule::Registration< EffectDtmf > reg; }
-
-BEGIN_EVENT_TABLE(EffectDtmf, wxEvtHandler)
-    EVT_TEXT(ID_Sequence, EffectDtmf::OnSequence)
-    EVT_TEXT(ID_DutyCycle, EffectDtmf::OnAmplitude)
-    EVT_TEXT(ID_Duration, EffectDtmf::OnDuration)
-    EVT_SLIDER(ID_DutyCycle, EffectDtmf::OnDutyCycle)
-END_EVENT_TABLE()
 
 EffectDtmf::EffectDtmf()
    : mParameters {
@@ -291,18 +271,16 @@ void EffectDtmf::PopulateOrExchange(ShuttleGui & S)
    // value from saved config: this is useful is user wants to
    // replace selection with dtmf sequence
 
+   using namespace DialogDefinition;
    S.AddSpace(0, 5);
    S.StartMultiColumn(2, wxCENTER);
    {
-      mDtmfSequenceT =
       S
-         .Id(ID_Sequence)
          .Target( dtmfSequence,
             StringValidator::Options{}.AllowedChars( kSymbols ) )
          .AddTextBox(XXO("DTMF &sequence:"), L"", 10);
 
       S
-         .Id(ID_Amplitude)
          .Target( dtmfAmplitude,
             NumValidatorStyle::NO_TRAILING_ZEROES, 3,
             Amplitude.min, Amplitude.max)
@@ -310,10 +288,9 @@ void EffectDtmf::PopulateOrExchange(ShuttleGui & S)
 
       S.AddPrompt(XXO("&Duration:"));
 
-      mDtmfDurationT =
       S
-         .Id(ID_Duration)
          .Text(XO("Duration"))
+         .Target( DurationTarget() )
          .AddNumericTextCtrl( NumericConverter::TIME,
             GetDurationFormat(),
             GetDuration(),
@@ -324,11 +301,10 @@ void EffectDtmf::PopulateOrExchange(ShuttleGui & S)
       S
          .AddFixedText(XO("&Tone/silence ratio:"), false);
 
-      mDtmfDutyCycleS =
       S
-         .Id(ID_DutyCycle)
          .Style(wxSL_HORIZONTAL | wxEXPAND)
          .MinSize( { -1, -1 } )
+         .Target( Scale( dtmfDutyCycle, DutyCycle.scale ) )
          .AddSlider( {},
                      dtmfDutyCycle * DutyCycle.scale,
                      DutyCycle.max * DutyCycle.scale,
@@ -341,25 +317,34 @@ void EffectDtmf::PopulateOrExchange(ShuttleGui & S)
       S
          .AddFixedText(XO("Duty cycle:"), false);
 
-      mDtmfDutyT =
       S
-         .AddVariableText(XO("%.1f %%").Format( dtmfDutyCycle ), false);
+         .VariableText( [this]{
+            // fix for bug 577 (NVDA/Narrator screen readers do not read static text in dialogs)
+            auto name = XO("%.1f %%").Format( dtmfDutyCycle );
+            return ControlText{ name, {}, {}, name  }; } )
+         .AddVariableText({}, false);
       
       S
          .AddFixedText(XO("Tone duration:"), false);
 
-      mDtmfSilenceT =
       S
-         /* i18n-hint milliseconds */
-         .AddVariableText(XO("%.0f ms").Format( dtmfTone * 1000.0 ), false);
+         .VariableText( [this]{
+            // fix for bug 577 (NVDA/Narrator screen readers do not read static text in dialogs)
+            /* i18n-hint milliseconds */
+            auto name = XO("%.0f ms").Format( dtmfTone * 1000.0 );
+            return ControlText{ name, {}, {}, name  }; } )
+         .AddVariableText({}, false);
 
       S
          .AddFixedText(XO("Silence duration:"), false);
 
-      mDtmfToneT =
       S
-         /* i18n-hint milliseconds */
-         .AddVariableText(XO("%0.f ms").Format( dtmfSilence * 1000.0 ), false);
+         .VariableText( [this]{
+            // fix for bug 577 (NVDA/Narrator screen readers do not read static text in dialogs)
+            /* i18n-hint milliseconds */
+            auto name = XO("%.0f ms").Format( dtmfSilence * 1000.0 );
+            return ControlText{ name, {}, {}, name  }; } )
+         .AddVariableText({}, false);
    }
    S.EndMultiColumn();
 }
@@ -367,21 +352,11 @@ void EffectDtmf::PopulateOrExchange(ShuttleGui & S)
 bool EffectDtmf::TransferDataToWindow()
 {
    Recalculate();
-
-   mDtmfDutyCycleS->SetValue(dtmfDutyCycle * DutyCycle.scale);
-
-   mDtmfDurationT->SetValue(GetDuration());
-
-   UpdateUI();
-
    return true;
 }
 
 bool EffectDtmf::TransferDataFromWindow()
 {
-   dtmfDutyCycle = (double) mDtmfDutyCycleS->GetValue() / DutyCycle.scale;
-   SetDuration(mDtmfDurationT->GetValue());
-
    // recalculate to make sure all values are up-to-date. This is especially
    // important if the user did not change any values in the dialog
    Recalculate();
@@ -559,44 +534,3 @@ bool EffectDtmf::MakeDtmfTone(float *buffer, size_t len, float fs, wxChar tone, 
    return true;
 }
 
-void EffectDtmf::UpdateUI(void)
-{
-   mDtmfDutyT->SetLabel(wxString::Format(L"%.1f %%", dtmfDutyCycle));
-   mDtmfDutyT->SetName(mDtmfDutyT->GetLabel()); // fix for bug 577 (NVDA/Narrator screen readers do not read static text in dialogs)
-
-   mDtmfSilenceT->SetLabel(wxString::Format(_("%.0f ms"), dtmfTone * 1000.0));
-   mDtmfSilenceT->SetName(mDtmfSilenceT->GetLabel()); // fix for bug 577 (NVDA/Narrator screen readers do not read static text in dialogs)
-
-   mDtmfToneT->SetLabel(wxString::Format(_("%.0f ms"), dtmfSilence * 1000.0));
-   mDtmfToneT->SetName(mDtmfToneT->GetLabel()); // fix for bug 577 (NVDA/Narrator screen readers do not read static text in dialogs)
-}
-
-void EffectDtmf::OnSequence(wxCommandEvent & WXUNUSED(evt))
-{
-   dtmfSequence = mDtmfSequenceT->GetValue();
-   Recalculate();
-   UpdateUI();
-}
-
-void EffectDtmf::OnAmplitude(wxCommandEvent & WXUNUSED(evt))
-{
-   if (!mDtmfAmplitudeT->GetValidator()->TransferFromWindow())
-   {
-      return;
-   }
-   Recalculate();
-   UpdateUI();
-}
-void EffectDtmf::OnDuration(wxCommandEvent & WXUNUSED(evt))
-{
-   SetDuration(mDtmfDurationT->GetValue());
-   Recalculate();
-   UpdateUI();
-}
-
-void EffectDtmf::OnDutyCycle(wxCommandEvent & evt)
-{
-   dtmfDutyCycle = (double) evt.GetInt() / DutyCycle.scale;
-   Recalculate();
-   UpdateUI();
-}
