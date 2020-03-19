@@ -82,7 +82,8 @@ wxTextEntry *NumValidatorBase::GetTextEntry() const
         return combo;
 #endif // wxUSE_COMBOBOX
 
-   wxFAIL_MSG(L"Can only be used with wxTextCtrl or wxComboBox");
+// PRL commented this out
+//   wxFAIL_MSG(L"Can only be used with wxTextCtrl or wxComboBox");
 
    return NULL;
 }
@@ -162,6 +163,9 @@ bool NumValidatorBase::IsMinusOk(const wxString& val, int pos) const
 
 void NumValidatorBase::OnChar(wxKeyEvent& event)
 {
+   if (!GetTextEntry())
+      return;
+
    // By default we just validate this key so don't prevent the normal
    // handling from taking place.
    event.Skip();
