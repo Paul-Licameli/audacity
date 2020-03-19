@@ -20,6 +20,7 @@
 #include "TimeWarper.h"
 
 #include <algorithm>
+#include <cstring>
 
 #include <wx/defs.h>
 #include <wx/sizer.h>
@@ -1416,6 +1417,114 @@ bool Effect::InitPass1()
 bool Effect::InitPass2()
 {
    return false;
+}
+
+bool Effect::ForEachBlock(
+   const WaveTrack *const *ppTracks, size_t nTracks,
+   sampleCount start, sampleCount end, size_t maxBufferSize,
+   const BufferFunction &fn,
+   unsigned trackNum,
+   unsigned trackDenom,
+   const TranslatableString &progressMsg,
+   size_t step )
+{
+   if ( nTracks == 0 )
+      return true;
+
+   if ( trackDenom == 0 )
+      trackDenom = std::max( 1, GetNumWaveTracks() );
+
+   if ( maxBufferSize == 0 )
+      maxBufferSize = ppTracks[0]->GetMaxBlockSize();
+
+   if ( step == 0 )
+      step = maxBufferSize;
+
+   Floats buf{ maxBufferSize * nTracks };
+   std::vector<float*> buffers( nTracks );
+   {
+      auto ptr = buf.get();
+      for ( auto &buffer : buffers ) {
+         buffer = ptr;
+         ptr += maxBufferSize;
+      }
+   }
+   // catch memory allocation exceptions?
+
+   size_t saved = 0;
+   auto pos = start;
+   while ( pos < end ) {
+      const auto len =
+         limitSampleBufferSize( maxBufferSize - saved, end - pos );
+
+      size_t nRead = 0;
+      for ( size_t ii = 0; ii < nTracks; ++ii ) {
+         auto pTrack = ppTracks[ ii ];
+         size_t nn;
+         pTrack->GetFloats( buffers[ii], pos, len, fillZero, true, &nn );
+         nRead += nn;
+      }
+
+      if ( !fn( pos, len, buffers.data(), nRead ) )
+         return false;
+
+      if ( step < maxBufferSize ) {
+         saved = maxBufferSize - step;
+         for ( size_t ii = 0; ii < nTracks; ++ii ) {
+            auto ptr = buffers[ii];
+            std::memmove( ptr, ptr + step, saved * sizeof( float ) );
+         }
+      }
+
+      pos += std::min( step, len );
+
+      auto fraction = (pos - start).as_double() / (end - start).as_double();
+      if ( trackDenom > 0 &&
+         TotalProgress(
+            ( trackNum + fraction * nTracks ) / trackDenom, progressMsg ) )
+         return false;
+   }
+
+   return true;
+}
+
+bool Effect::TransformBlocks( const std::vector<WaveTrack*> &srcTracks,
+   const std::vector<WaveTrack*> &destTracks,
+   sampleCount start, sampleCount end, size_t maxBufferSize,
+   const BufferFunction &fn,
+   unsigned trackNum,
+   unsigned trackDenom,
+   const TranslatableString &progressMsg,
+   size_t step )
+{
+   return ForEachBlock( srcTracks.data(), srcTracks.size(),
+      start, end, maxBufferSize,
+   [&]( sampleCount pos, size_t len, float *const *buffers, size_t nInClips ){
+      fn( pos, len, buffers, nInClips );
+      for ( auto pTrack : destTracks ) {
+         pTrack->Append((samplePtr)(*buffers++), floatSample, len);
+      }
+      return true;
+   }, trackNum, trackDenom, progressMsg, step );
+}
+
+bool Effect::InPlaceTransformBlocks( const std::vector<WaveTrack*> &tracks,
+   sampleCount start, sampleCount end, size_t maxBufferSize,
+   const BufferFunction &fn,
+   unsigned trackNum,
+   unsigned trackDenom,
+   const TranslatableString &progressMsg,
+   size_t step )
+{
+   return ForEachBlock( tracks.data(), tracks.size(),
+      start, end, maxBufferSize,
+   [&]( sampleCount pos, size_t len, float *const *buffers, size_t nInClips ){
+      fn( pos, len, buffers, nInClips );
+      for ( auto pTrack : tracks ) {
+         pTrack->Set((samplePtr)(*buffers++), floatSample, pos, len);
+      }
+      return true;
+   }, trackNum, trackDenom, progressMsg, step );
 }
 
 bool Effect::Process()

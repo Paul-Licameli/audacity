@@ -465,8 +465,6 @@ bool EffectChangeSpeed::ProcessOne(WaveTrack * track,
    // the length of the selection being processed.
    auto inBufferSize = track->GetMaxBlockSize();
 
-   Floats inBuffer{ inBufferSize };
-
    // mFactor is at most 100-fold so this shouldn't overflow size_t
    auto outBufferSize = size_t( mFactor * inBufferSize + 10 );
    Floats outBuffer{ outBufferSize };
@@ -474,41 +472,22 @@ bool EffectChangeSpeed::ProcessOne(WaveTrack * track,
    // Set up the resampling stuff for this track.
    Resample resample(true, mFactor, mFactor); // constant rate resampling
 
-   //Go through the track one buffer at a time. samplePos counts which
-   //sample the current buffer starts at.
-   bool bResult = true;
-   auto samplePos = start;
-   while (samplePos < end) {
-      //Get a blockSize of samples (smaller than the size of the buffer)
-      auto blockSize = limitSampleBufferSize(
-         track->GetBestBlockSize(samplePos),
-         end - samplePos
-      );
-
-      //Get the samples from the track and put them in the buffer
-      track->GetFloats(inBuffer.get(), samplePos, blockSize);
-
+   bool bResult = ForEachBlock( { track }, start, end, inBufferSize,
+   [&]( sampleCount samplePos, size_t blockSize, float *const *buffers, size_t ){
+      auto inBuffer = buffers[0];
       const auto results = resample.Process(mFactor,
-                                    inBuffer.get(),
-                                    blockSize,
-                                    ((samplePos + blockSize) >= end),
-                                    outBuffer.get(),
-                                    outBufferSize);
+         (float*)inBuffer,
+         blockSize,
+         ((samplePos + blockSize) >= end),
+         outBuffer.get(),
+         outBufferSize);
       const auto outgen = results.second;
 
       if (outgen > 0)
          outputTrack->Append((samplePtr)outBuffer.get(), floatSample,
                              outgen);
-
-      // Increment samplePos
-      samplePos += results.first;
-
-      // Update the Progress meter
-      if (TrackProgress(mCurTrackNum, (samplePos - start).as_double() / len)) {
-         bResult = false;
-         break;
-      }
-   }
+      return true;
+   }, mCurTrackNum);
 
    // Flush the output WaveTrack (since it's buffered, too)
    outputTrack->Flush();

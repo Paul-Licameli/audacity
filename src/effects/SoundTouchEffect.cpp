@@ -198,29 +198,11 @@ bool EffectSoundTouch::ProcessOne(WaveTrack *track,
 
    auto outputTrack = track->EmptyCopy();
 
-   //Get the length of the buffer (as double). len is
-   //used simple to calculate a progress meter, so it is easier
-   //to make it a double now than it is to do it later
-   auto len = (end - start).as_double();
-
    {
-      //Initiate a processing buffer.  This buffer will (most likely)
-      //be shorter than the length of the track being processed.
-      Floats buffer{ track->GetMaxBlockSize() };
-
-      //Go through the track one buffer at a time. s counts which
-      //sample the current buffer starts at.
-      auto s = start;
-      while (s < end) {
-         //Get a block of samples (smaller than the size of the buffer)
-         const auto block = wxMin(8192,
-            limitSampleBufferSize( track->GetBestBlockSize(s), end - s ));
-
-         //Get the samples from the track and put them in the buffer
-         track->GetFloats(buffer.get(), s, block);
-
+      bool bResult = ForEachBlock( { track }, start, end, 8192,
+      [&]( sampleCount s, size_t block, float *const *buffers, size_t ){
          //Add samples to SoundTouch
-         mSoundTouch->putSamples(buffer.get(), block);
+         mSoundTouch->putSamples(buffers[0], block);
 
          //Get back samples from SoundTouch
          unsigned int outputCount = mSoundTouch->numSamples();
@@ -229,14 +211,8 @@ bool EffectSoundTouch::ProcessOne(WaveTrack *track,
             mSoundTouch->receiveSamples(buffer2.get(), outputCount);
             outputTrack->Append((samplePtr)buffer2.get(), floatSample, outputCount);
          }
-
-         //Increment s one blockfull of samples
-         s += block;
-
-         //Update the Progress meter
-         if (TrackProgress(mCurTrackNum, (s - start).as_double() / len))
-            return false;
-      }
+         return true;
+      }, mCurTrackNum );
 
       // Tell SoundTouch to finish processing any remaining samples
       mSoundTouch->flush();   // this should only be used for changeTempo - it dumps data otherwise with pRateTransposer->clear();
@@ -283,26 +259,15 @@ bool EffectSoundTouch::ProcessStereo(
    // Soundtouch sample is left-right pair.
    auto maxBlockSize = leftTrack->GetMaxBlockSize();
    {
-      Floats leftBuffer{ maxBlockSize };
-      Floats rightBuffer{ maxBlockSize };
       Floats soundTouchBuffer{ maxBlockSize * 2 };
 
-      // Go through the track one stereo buffer at a time.
-      // sourceSampleCount counts the sample at which the current buffer starts,
-      // per channel.
-      auto sourceSampleCount = start;
-      while (sourceSampleCount < end) {
-         auto blockSize = limitSampleBufferSize(
-            leftTrack->GetBestBlockSize(sourceSampleCount),
-            end - sourceSampleCount
-         );
-
-         // Get the samples from the tracks and put them in the buffers.
-         leftTrack->GetFloats((leftBuffer.get()), sourceSampleCount, blockSize);
-         rightTrack->GetFloats((rightBuffer.get()), sourceSampleCount, blockSize);
+      bool bResult = ForEachBlock( { leftTrack, rightTrack }, start, end, 0,
+      [&]( sampleCount sourceSampleCount, size_t blockSize, float *const *buffers, size_t ){
+         const auto leftBuffer = buffers[0];
+         const auto rightBuffer = buffers[1];
 
          // Interleave into soundTouchBuffer.
-         for (decltype(blockSize) index = 0; index < blockSize; index++) {
+         for (size_t index = 0; index < blockSize; index++) {
             soundTouchBuffer[index * 2] = leftBuffer[index];
             soundTouchBuffer[(index * 2) + 1] = rightBuffer[index];
          }
@@ -314,25 +279,8 @@ bool EffectSoundTouch::ProcessStereo(
          unsigned int outputCount = mSoundTouch->numSamples();
          if (outputCount > 0)
             this->ProcessStereoResults(outputCount, outputLeftTrack.get(), outputRightTrack.get());
-
-         //Increment sourceSampleCount one blockfull of samples
-         sourceSampleCount += blockSize;
-
-         //Update the Progress meter
-         // mCurTrackNum is left track. Include right track.
-         int nWhichTrack = mCurTrackNum;
-         double frac = (sourceSampleCount - start).as_double() / len;
-         if (frac < 0.5)
-            frac *= 2.0; // Show twice as far for each track, because we're doing 2 at once.
-         else
-         {
-            nWhichTrack++;
-            frac -= 0.5;
-            frac *= 2.0; // Show twice as far for each track, because we're doing 2 at once.
-         }
-         if (TrackProgress(nWhichTrack, frac))
-            return false;
-      }
+         return true;
+      }, mCurTrackNum );
 
       // Tell SoundTouch to finish processing any remaining samples
       mSoundTouch->flush();

@@ -185,16 +185,11 @@ bool EffectClickRemoval::ProcessOne(int count, WaveTrack * track, sampleCount st
    if (idealBlockLen % windowSize != 0)
       idealBlockLen += (windowSize - (idealBlockLen % windowSize));
 
-   bool bResult = true;
-   decltype(len) s = 0;
-   Floats buffer{ idealBlockLen };
    Floats datawindow{ windowSize };
-   while ((len - s) > windowSize / 2)
-   {
-      auto block = limitSampleBufferSize( idealBlockLen, len - s );
-
-      track->GetFloats(buffer.get(), start + s, block);
-
+   bool bResult = InPlaceTransformBlocks( { track },
+      start, start + len, idealBlockLen,
+   [&]( sampleCount pos, size_t block, float *const *buffers, size_t ){
+      auto buffer = buffers[0];
       for (decltype(block) i = 0; i + windowSize / 2 < block; i += windowSize / 2)
       {
          auto wcopy = std::min( windowSize, block - i );
@@ -208,19 +203,9 @@ bool EffectClickRemoval::ProcessOne(int count, WaveTrack * track, sampleCount st
 
          for(decltype(wcopy) j = 0; j < wcopy; j++)
            buffer[i+j] = datawindow[j];
-      }
-
-      if (mbDidSomething) // RemoveClicks() actually did something.
-         track->Set((samplePtr) buffer.get(), floatSample, start + s, block);
-
-      s += block;
-
-      if (TrackProgress(count, s.as_double() /
-                               len.as_double())) {
-         bResult = false;
-         break;
-      }
-   }
+      }      
+      return true;
+   }, count );
 
    return bResult;
 }

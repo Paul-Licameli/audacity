@@ -316,6 +316,83 @@ protected:
    virtual bool InitPass2();
    virtual int GetPass();
 
+   using BufferFunction =
+      // Takes stream position, samples per buffer, pointers to buffers,
+      // and (rarely needed) the number of newly read samples that were within
+      // clips
+      // Return value is false for failure
+      std::function< bool( sampleCount, size_t, float *const *, size_t ) >;
+
+   // Visit multiple parallel tracks
+   // Visits track samples without mutating them
+   // Returns false if the user cancelled or there is other error
+   bool ForEachBlock( const WaveTrack *const *ppTracks, size_t nTracks,
+     sampleCount start, sampleCount end,
+     // If 0 is passed, then an appropriate default size is used:
+     size_t maxBufferSize,
+     const BufferFunction &fn,
+     // Arguments used by progress bar update:
+     unsigned trackNum,
+     // Default means use GetNumWaveTracks(); negative, don't update progress:
+     unsigned trackDenom = 0,
+     const TranslatableString &progressMsg = {},
+     // Position is stepped other than by maxBufferSize, when nonzero:
+     size_t step = 0 );
+
+   // Returns false if the user cancelled or there is other error
+   bool ForEachBlock( const std::vector< const WaveTrack* > &tracks,
+     sampleCount start, sampleCount end,
+     // If 0 is passed, then an appropriate default size is used:
+     size_t maxBufferSize,
+     const BufferFunction &fn,
+     // Arguments used by progress bar update:
+     unsigned trackNum,
+     // Default means use GetNumWaveTracks(); negative, don't update progress:
+     unsigned trackDenom = 0,
+     const TranslatableString &progressMsg = {},
+     // Position is stepped other than by maxBufferSize, when nonzero:
+     size_t step = 0 )
+   {
+      return ForEachBlock( tracks.data(), tracks.size(),
+         start, end, maxBufferSize, fn,
+         trackNum, trackDenom, progressMsg, step );
+   }
+
+   // expects srcTracks.size() == destTracks.size()
+   // Appends modified buffers onto destTracks after each call to fn
+   // Returns false if the user cancelled or there is other error
+   // Does NOT guarantee that destTracks are unchanged in that case
+   bool TransformBlocks( const std::vector<WaveTrack*> &srcTracks,
+     // May be fewer than srcTracks:
+     const std::vector<WaveTrack*> &destTracks,
+     sampleCount start, sampleCount end,
+     // If 0 is passed, then an appropriate default size is used:
+     size_t maxBufferSize,
+     const BufferFunction &fn,
+     // Arguments used by progress bar update:
+     unsigned trackNum,
+     // Default means use GetNumWaveTracks(); negative, don't update progress:
+     unsigned trackDenom = 0,
+     const TranslatableString &progressMsg = {},
+     // Position is stepped other than by maxBufferSize, when nonzero:
+     size_t step = 0 );
+
+   // Copies modified buffers back into tracks after each call to fn
+   // Returns false if the user cancelled or there is other error
+   // Does NOT guarantee that tracks are unchanged in that case
+   bool InPlaceTransformBlocks( const std::vector<WaveTrack*> &tracks,
+     sampleCount start, sampleCount end,
+     // If 0 is passed, then an appropriate default size is used:
+     size_t maxBufferSize,
+     const BufferFunction &fn,
+     // Arguments used by progress bar update:
+     unsigned trackNum,
+     // Default means use GetNumWaveTracks(); negative, don't update progress:
+     unsigned trackDenom = 0,
+     const TranslatableString &progressMsg = {},
+     // Position is stepped other than by maxBufferSize, when nonzero:
+     size_t step = 0 );
+
    // clean up any temporary memory, needed only per invocation of the
    // effect, after either successful or failed or exception-aborted processing.
    // Invoked inside a "finally" block so it must be no-throw.

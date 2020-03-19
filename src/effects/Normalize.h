@@ -47,10 +47,10 @@ private:
    // EffectNormalize implementation
 
    bool ProcessOne(
-      WaveTrack * t, const TranslatableString &msg, double& progress, float offset);
+      WaveTrack * t, const TranslatableString &msg, unsigned count, float offset);
    bool AnalyseTrack(const WaveTrack * track, const TranslatableString &msg,
-                     double &progress, float &offset, float &extent);
-   bool AnalyseTrackData(const WaveTrack * track, const TranslatableString &msg, double &progress,
+                     unsigned count, float &offset, float &extent);
+   bool AnalyseTrackData(const WaveTrack * track, const TranslatableString &msg, unsigned count,
                      float &offset);
    void AnalyseDataDC(float *buffer, size_t len);
    void ProcessData(float *buffer, size_t len, float offset);

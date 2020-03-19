@@ -77,45 +77,10 @@ bool EffectSimpleMono::Process()
 bool EffectSimpleMono::ProcessOne(WaveTrack * track,
                                   sampleCount start, sampleCount end)
 {
-   //Get the length of the buffer (as double). len is
-   //used simple to calculate a progress meter, so it is easier
-   //to make it a double now than it is to do it later
-   auto len = (end - start).as_double();
-
-   //Initiate a processing buffer.  This buffer will (most likely)
-   //be shorter than the length of the track being processed.
-   Floats buffer{ track->GetMaxBlockSize() };
-
-   //Go through the track one buffer at a time. s counts which
-   //sample the current buffer starts at.
-   auto s = start;
-   while (s < end) {
-      //Get a block of samples (smaller than the size of the buffer)
-      //Adjust the block size if it is the final block in the track
-      const auto block =
-         limitSampleBufferSize( track->GetBestBlockSize(s), end - s );
-
-      //Get the samples from the track and put them in the buffer
-      track->GetFloats(buffer.get(), s, block);
-
-      //Process the buffer.  If it fails, clean up and exit.
-      if (!ProcessSimpleMono(buffer.get(), block))
-         //Return false because the effect failed.
-         return false;
-
-      //Processing succeeded. copy the newly-changed samples back
-      //onto the track.
-      track->Set((samplePtr) buffer.get(), floatSample, s, block);
-
-      //Increment s one blockfull of samples
-      s += block;
-
-      //Update the Progress meter
-      if (TrackProgress(mCurTrackNum,
-                        (s - start).as_double() /
-                        len))
-         return false;
-   }
+   bool bResult = InPlaceTransformBlocks( { track }, start, end, 0,
+   [this]( sampleCount s, size_t block, float *const *buffers, size_t ){
+      return ProcessSimpleMono(buffers[0], block);
+   }, mCurTrackNum );
 
    //Return true because the effect processing succeeded.
    return true;

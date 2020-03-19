@@ -1298,22 +1298,17 @@ bool EffectEqualization::ProcessOne(int count, WaveTrack * t,
    float *thisWindow = window1.get();
    float *lastWindow = window2.get();
 
-   auto originalLen = len;
-
    for(size_t i = 0; i < windowSize; i++)
       lastWindow[i] = 0;
 
    TrackProgress(count, 0.);
-   bool bLoopSuccess = true;
    size_t wcopy = 0;
    int offset = (mM - 1) / 2;
 
-   while (len != 0)
-   {
-      auto block = limitSampleBufferSize( idealBlockLen, len );
-
-      t->GetFloats(buffer.get(), s, block);
-
+   bool bLoopSuccess = TransformBlocks( { t }, { output.get() },
+      start, start + len, idealBlockLen,
+   [&]( sampleCount pos, size_t block, float *const *buffers, size_t ){
+      const auto buffer = buffers[0];
       for(size_t i = 0; i < block; i += L)   //go through block in lumps of length L
       {
          wcopy = std::min <size_t> (L, block - i);
@@ -1332,18 +1327,8 @@ bool EffectEqualization::ProcessOne(int count, WaveTrack * t,
 
          std::swap( thisWindow, lastWindow );
       }  //next i, lump of this block
-
-      output->Append((samplePtr)buffer.get(), floatSample, block);
-      len -= block;
-      s += block;
-
-      if (TrackProgress(count, ( s - start ).as_double() /
-                        originalLen.as_double()))
-      {
-         bLoopSuccess = false;
-         break;
-      }
-   }
+      return true;
+   }, count);
 
    if(bLoopSuccess)
    {
@@ -1370,7 +1355,7 @@ bool EffectEqualization::ProcessOne(int count, WaveTrack * t,
       // now move the appropriate bit of the output back to the track
       // (this could be enhanced in the future to use the tails)
       double offsetT0 = t->LongSamplesToTime(offset);
-      double lenT = t->LongSamplesToTime(originalLen);
+      double lenT = t->LongSamplesToTime(len);
       // 'start' is the sample offset in 't', the passed in track
       // 'startT' is the equivalent time value
       // 'output' starts at zero

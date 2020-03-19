@@ -46,18 +46,12 @@ public:
 private:
    // EffectLoudness implementation
 
-   void AllocBuffers();
-   void FreeBuffers();
+   void FindBufferCapacity();
    bool GetTrackRMS(WaveTrack* track, float& rms);
    bool ProcessOne(TrackIterRange<WaveTrack> range, bool analyse);
-   void LoadBufferBlock(TrackIterRange<WaveTrack> range,
-                        sampleCount pos, size_t len);
-   bool AnalyseBufferBlock();
-   bool ProcessBufferBlock();
-   void StoreBufferBlock(TrackIterRange<WaveTrack> range,
-                         sampleCount pos, size_t len);
 
-   bool UpdateProgress();
+   void AnalyseBufferBlock( size_t blockLen, float *const *buffers );
+   void ProcessBufferBlock( size_t blockLen, float *const *buffers );
 
 private:
    bool   mStereoInd;
@@ -68,10 +62,9 @@ private:
 
    double mCurT0;
    double mCurT1;
-   double mProgressVal;
+   unsigned mTrackCount;
    int    mSteps;
    TranslatableString mProgressMsg;
-   double mTrackLen;
    double mCurRate;
 
    float  mMult;
@@ -79,8 +72,6 @@ private:
    float  mRMS[2];
    std::unique_ptr<EBUR128> mLoudnessProcessor;
 
-   Floats mTrackBuffer[2];    // MM: must be increased once surround channels are supported
-   size_t mTrackBufferLen;
    size_t mTrackBufferCapacity;
    bool   mProcStereo;
 

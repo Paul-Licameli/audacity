@@ -140,8 +140,7 @@ bool EffectLoudness::Process()
    bool bGoodResult = true;
    auto topMsg = XO("Normalizing Loudness...\n");
 
-   AllocBuffers();
-   mProgressVal = 0;
+   FindBufferCapacity();
 
    for(auto track : mOutputTracks->Selected<WaveTrack>()
        + (mStereoInd ? &Track::Any : &Track::IsLeader))
@@ -213,7 +212,6 @@ bool EffectLoudness::Process()
       if(extent == 0.0)
       {
          mLoudnessProcessor.reset();
-         FreeBuffers();
          return false;
       }
       mMult = mRatio / extent;
@@ -240,7 +238,6 @@ bool EffectLoudness::Process()
 
    this->ReplaceProcessedTracks(bGoodResult);
    mLoudnessProcessor.reset();
-   FreeBuffers();
    return bGoodResult;
 }
 
@@ -353,7 +350,7 @@ void EffectLoudness::PopulateOrExchange(ShuttleGui & S)
 
 /// Get required buffer size for the largest whole track and allocate buffers.
 /// This reduces the amount of allocations required.
-void EffectLoudness::AllocBuffers()
+void EffectLoudness::FindBufferCapacity()
 {
    mTrackBufferCapacity = 0;
    bool stereoTrackFound = false;
@@ -370,18 +367,8 @@ void EffectLoudness::AllocBuffers()
          stereoTrackFound = true;
    }
 
-   // Initiate a processing buffer. This buffer will (most likely)
-   // be shorter than the length of the track being processed.
-   mTrackBuffer[0].reinit(mTrackBufferCapacity);
+   mTrackCount = 0;
 
-   if(!mStereoInd && stereoTrackFound)
-      mTrackBuffer[1].reinit(mTrackBufferCapacity);
-}
-
-void EffectLoudness::FreeBuffers()
-{
-   mTrackBuffer[0].reset();
-   mTrackBuffer[1].reset();
 }
 
 bool EffectLoudness::GetTrackRMS(WaveTrack* track, float& rms)
@@ -406,111 +393,52 @@ bool EffectLoudness::ProcessOne(TrackIterRange<WaveTrack> range, bool analyse)
    auto start = track->TimeToLongSamples(mCurT0);
    auto end   = track->TimeToLongSamples(mCurT1);
 
-   // Get the length of the buffer (as double). len is
-   // used simply to calculate a progress meter, so it is easier
-   // to make it a double now than it is to do it later
-   mTrackLen = (end - start).as_double();
-
    // Abort if the right marker is not to the right of the left marker
    if(mCurT1 <= mCurT0)
       return false;
 
    // Go through the track one buffer at a time. s counts which
    // sample the current buffer starts at.
-   auto s = start;
-   while(s < end)
-   {
-      // Get a block of samples (smaller than the size of the buffer)
-      // Adjust the block size if it is the final block in the track
-      auto blockLen = limitSampleBufferSize(
-         track->GetBestBlockSize(s),
-         mTrackBufferCapacity);
+   auto result = analyse
+      ? ForEachBlock( { range.begin(), range.end() },
+         start, end, mTrackBufferCapacity,
+      [&]( sampleCount s, size_t blockLen, float *const *buffers, size_t ) {
+         AnalyseBufferBlock( blockLen, buffers );
+         return true;
+      }, mTrackCount, GetNumWaveTracks() * mSteps, mProgressMsg )
 
-      const size_t remainingLen = (end - s).as_size_t();
-      blockLen = blockLen > remainingLen ? remainingLen : blockLen;
-      LoadBufferBlock(range, s, blockLen);
-
-      // Process the buffer.
-      if(analyse)
-      {
-         if(!AnalyseBufferBlock())
-            return false;
-      }
-      else
-      {
-         if(!ProcessBufferBlock())
-            return false;
-         StoreBufferBlock(range, s, blockLen);
-      }
-
-      // Increment s one blockfull of samples
-      s += blockLen;
-   }
-
-   // Return true because the effect processing succeeded ... unless cancelled
-   return true;
-}
-
-void EffectLoudness::LoadBufferBlock(TrackIterRange<WaveTrack> range,
-                                     sampleCount pos, size_t len)
-{
-   // Get the samples from the track and put them in the buffer
-   int idx = 0;
-   for(auto channel : range)
-   {
-      channel->GetFloats(mTrackBuffer[idx].get(), pos, len );
-      ++idx;
-   }
-   mTrackBufferLen = len;
+      : InPlaceTransformBlocks(
+         { range.begin(), range.end() },
+         start, end, mTrackBufferCapacity,
+      [&]( sampleCount s, size_t blockLen, float *const *buffers, size_t ) {
+         ProcessBufferBlock( blockLen, buffers );
+         return true;
+      }, mTrackCount, GetNumWaveTracks() * mSteps, mProgressMsg )
+   ;
+   mTrackCount += range.size();
+   return result;
 }
 
 /// Calculates sample sum (for DC) and EBU R128 weighted square sum
 /// (for loudness).
-bool EffectLoudness::AnalyseBufferBlock()
+void EffectLoudness::AnalyseBufferBlock( size_t blockLen, float *const *buffers )
 {
-   for(size_t i = 0; i < mTrackBufferLen; i++)
+   for(size_t i = 0; i < blockLen; i++)
    {
-      mLoudnessProcessor->ProcessSampleFromChannel(mTrackBuffer[0][i], 0);
+      mLoudnessProcessor->ProcessSampleFromChannel(buffers[0][i], 0);
       if(mProcStereo)
-         mLoudnessProcessor->ProcessSampleFromChannel(mTrackBuffer[1][i], 1);
+         mLoudnessProcessor->ProcessSampleFromChannel(buffers[1][i], 1);
       mLoudnessProcessor->NextSample();
    }
-
-   if(!UpdateProgress())
-      return false;
-   return true;
 }
 
-bool EffectLoudness::ProcessBufferBlock()
+void EffectLoudness::ProcessBufferBlock( size_t blockLen, float *const *buffers )
 {
-   for(size_t i = 0; i < mTrackBufferLen; i++)
+   for(size_t i = 0; i < blockLen; i++)
    {
-      mTrackBuffer[0][i] = mTrackBuffer[0][i] * mMult;
+      buffers[0][i] *= mMult;
       if(mProcStereo)
-         mTrackBuffer[1][i] = mTrackBuffer[1][i] * mMult;
+         buffers[1][i] *= mMult;
    }
-
-   if(!UpdateProgress())
-      return false;
-   return true;
-}
-
-void EffectLoudness::StoreBufferBlock(TrackIterRange<WaveTrack> range,
-                                      sampleCount pos, size_t len)
-{
-   int idx = 0;
-   for(auto channel : range)
-   {
-      // Copy the newly-changed samples back onto the track.
-      channel->Set((samplePtr) mTrackBuffer[idx].get(), floatSample, pos, len);
-      ++idx;
-   }
-}
-
-bool EffectLoudness::UpdateProgress()
-{
-   mProgressVal += (double(1+mProcStereo) * double(mTrackBufferLen)
-                 / (double(GetNumWaveTracks()) * double(mSteps) * mTrackLen));
-   return !TotalProgress(mProgressVal, mProgressMsg);
 }
 

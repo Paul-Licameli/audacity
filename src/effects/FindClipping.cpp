@@ -136,81 +136,65 @@ bool EffectFindClipping::ProcessOne(LabelTrack * lt,
                                     sampleCount start,
                                     sampleCount len)
 {
-   bool bGoodResult = true;
    size_t blockSize = (mStart * 1000);
 
    if (len < mStart) {
       return true;
    }
 
-   Floats buffer;
+   decltype(len) startrun = 0, stoprun = 0, samps = 0;
+   double startTime = -1.0;
+
+   bool bGoodResult;
    try {
-      // mStart should be positive.
-      // if we are throwing bad_alloc and mStart is negative, find out why.
-      if (mStart < 0 || (int)blockSize < mStart)
-         // overflow
-         throw std::bad_alloc{};
-      buffer.reinit(blockSize);
+
+   // mStart should be positive.
+   // if we are throwing bad_alloc and mStart is negative, find out why.
+   if (mStart < 0 || (int)blockSize < mStart)
+      // overflow
+      throw std::bad_alloc{};
+
+   bGoodResult = ForEachBlock( { wt }, start, start + len, blockSize,
+   [&]( sampleCount pos, size_t block, float *const *buffers, size_t ) {
+      for (size_t ii = 0 ; ii < block; ++ii) {
+         auto v = buffers[0][ii];
+         if (v >= MAX_AUDIO) {
+            if (startrun == 0) {
+               startTime = wt->LongSamplesToTime(pos);
+               samps = 0;
+            }
+            else {
+               stoprun = 0;
+            }
+            startrun++;
+            samps++;
+         }
+         else {
+            if (startrun >= mStart) {
+               stoprun++;
+               samps++;
+
+               if (stoprun >= mStop) {
+                  lt->AddLabel(SelectedRegion(startTime,
+                                             wt->LongSamplesToTime(pos - mStop)),
+                              wxString::Format(L"%lld of %lld", startrun.as_long_long(), (samps - mStop).as_long_long()));
+                  startrun = 0;
+                  stoprun = 0;
+                  samps = 0;
+               }
+            }
+            else {
+               startrun = 0;
+            }
+         }
+      }
+      return true;
+   }, count );
+
    }
    catch( const std::bad_alloc & ) {
       Effect::MessageBox( XO("Requested value exceeds memory capacity.") );
       return false;
-   }
-
-   float *ptr = buffer.get();
-
-   decltype(len) s = 0, startrun = 0, stoprun = 0, samps = 0;
-   decltype(blockSize) block = 0;
-   double startTime = -1.0;
-
-   while (s < len) {
-      if (block == 0) {
-         if (TrackProgress(count,
-                           s.as_double() /
-                           len.as_double() )) {
-            bGoodResult = false;
-            break;
-         }
-
-         block = limitSampleBufferSize( blockSize, len - s );
-
-         wt->GetFloats(buffer.get(), start + s, block);
-         ptr = buffer.get();
-      }
-
-      float v = fabs(*ptr++);
-      if (v >= MAX_AUDIO) {
-         if (startrun == 0) {
-            startTime = wt->LongSamplesToTime(start + s);
-            samps = 0;
-         }
-         else {
-            stoprun = 0;
-         }
-         startrun++;
-         samps++;
-      }
-      else {
-         if (startrun >= mStart) {
-            stoprun++;
-            samps++;
-
-            if (stoprun >= mStop) {
-               lt->AddLabel(SelectedRegion(startTime,
-                                          wt->LongSamplesToTime(start + s - mStop)),
-                           wxString::Format(L"%lld of %lld", startrun.as_long_long(), (samps - mStop).as_long_long()));
-               startrun = 0;
-               stoprun = 0;
-               samps = 0;
-            }
-         }
-         else {
-            startrun = 0;
-         }
-      }
-
-      s++;
-      block--;
    }
 
    return bGoodResult;

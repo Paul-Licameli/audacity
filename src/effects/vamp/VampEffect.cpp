@@ -346,8 +346,7 @@ bool VampEffect::Process()
 
    std::vector<std::shared_ptr<Effect::AddedAnalysisTrack>> addedTracks;
 
-   for (auto leader : inputTracks()->Leaders<const WaveTrack>())
-   {
+   for (auto leader : inputTracks()->Leaders<const WaveTrack>()) {
       auto channelGroup = TrackList::Channels(leader);
       auto left = *channelGroup.first++;
 
@@ -423,36 +422,16 @@ bool VampEffect::Process()
       ));
       LabelTrack *ltrack = addedTracks.back()->get();
 
-      FloatBuffers data{ channels, block };
-
-      auto originalLen = len;
-
-      auto pos = start;
-
-      while (len != 0)
-      {
-         const auto request = limitSampleBufferSize( block, len );
-
-         if (left)
-         {
-            left->GetFloats(data[0].get(), pos, request);
-         }
-
-         if (right)
-         {
-            right->GetFloats(data[1].get(), pos, request);
-         }
-
+      std::vector< const WaveTrack * > tracks{ left };
+      if (right)
+         tracks.push_back( right );
+      bool bResult = ForEachBlock( tracks, start, start + len, block,
+      [&]( sampleCount pos, size_t request, float *const *buffers, size_t ) {
          if (request < block)
-         {
-            for (unsigned int c = 0; c < channels; ++c)
-            {
-               for (decltype(block) i = request; i < block; ++i)
-               {
-                  data[c][i] = 0.f;
-               }
+            for (unsigned int c = 0; c < channels; ++c) {
+               const auto ptr = buffers[ c ];
+               std::fill(ptr + request, ptr + block, 0);
             }
-         }
 
          // UNSAFE_SAMPLE_COUNT_TRUNCATION
          // Truncation in case of very long tracks!
@@ -461,45 +440,21 @@ bool VampEffect::Process()
             (int)(mRate + 0.5)
          );
 
-         Vamp::Plugin::FeatureSet features = mPlugin->process(
-            reinterpret_cast< float** >( data.get() ), timestamp);
+         Vamp::Plugin::FeatureSet features =
+            mPlugin->process( buffers, timestamp );
          AddFeatures(ltrack, features);
 
-         if (len > (int)step)
-         {
-            len -= step;
-         }
-         else
-         {
-            len = 0;
-         }
-
-         pos += step;
-
-         if (channels > 1)
-         {
-            if (TrackGroupProgress(count,
-                  (pos - start).as_double() /
-                  originalLen.as_double() ))
-            {
-               return false;
-            }
-         }
-         else
-         {
-            if (TrackProgress(count,
-                  (pos - start).as_double() /
-                  originalLen.as_double() ))
-            {
-               return false;
-            }
-         }
-      }
+         return true;
+      }, count, GetNumWaveTracks(), {}, step );
+      if ( !bResult )
+         return false;
 
       Vamp::Plugin::FeatureSet features = mPlugin->getRemainingFeatures();
       AddFeatures(ltrack, features);
 
       prevTrackChannels = channels;
+
+      count += channelGroup.size();
    }
 
    // All completed without cancellation, so commit the addition of tracks now

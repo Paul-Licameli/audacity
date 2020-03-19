@@ -267,22 +267,14 @@ bool EffectAutoDuck::Process()
    {
       Floats rmsWindow{ kRMSWindowSize, true };
 
-      Floats buf{ kBufSize };
-
       // initialize the following two variables to prevent compiler warning
       double duckRegionStart = 0;
       sampleCount curSamplesPause = 0;
 
-      auto pos = start;
-
-      while (pos < end)
-      {
-         const auto len = limitSampleBufferSize( kBufSize, end - pos );
-         
-         mControlTrack->GetFloats(buf.get(), pos, len);
-
-         for (auto i = pos; i < pos + len; i++)
-         {
+      cancel = !ForEachBlock( { mControlTrack }, start, end, kBufSize,
+      [&]( sampleCount pos, size_t len, float *const *buffers, size_t ) {
+         const auto buf = buffers[0];
+         for (auto i = pos; i < pos + len; i++) {
             rmsSum -= rmsWindow[rmsPos];
             // i - pos is bounded by len:
             auto index = ( i - pos ).as_size_t();
@@ -328,22 +320,12 @@ bool EffectAutoDuck::Process()
                }
             }
          }
-
-         pos += len;
-
-         if (TotalProgress(
-            (pos - start).as_double() /
-            (end - start).as_double() /
-            (GetNumWaveTracks() + 1)
-         ))
-         {
-            cancel = true;
-            break;
-         }
-      }
+         return true;
+      }, 0, GetNumWaveTracks() + 1 );
+         // Progress denominator is one more than usual because of control track
 
       // apply last duck fade, if any
-      if (inDuckRegion)
+      if (!cancel && inDuckRegion)
       {
          double duckRegionEnd =
             mControlTrack->LongSamplesToTime(end - curSamplesPause);
@@ -496,9 +478,6 @@ bool EffectAutoDuck::ApplyDuckFade(int trackNum, WaveTrack* t,
    auto start = t->TimeToLongSamples(t0);
    auto end = t->TimeToLongSamples(t1);
 
-   Floats buf{ kBufSize };
-   auto pos = start;
-
    auto fadeDownSamples = t->TimeToLongSamples(
       mOuterFadeDownLen + mInnerFadeDownLen);
    if (fadeDownSamples < 1)
@@ -512,12 +491,8 @@ bool EffectAutoDuck::ApplyDuckFade(int trackNum, WaveTrack* t,
    float fadeDownStep = mDuckAmountDb / fadeDownSamples.as_double();
    float fadeUpStep = mDuckAmountDb / fadeUpSamples.as_double();
 
-   while (pos < end)
-   {
-      const auto len = limitSampleBufferSize( kBufSize, end - pos );
-
-      t->GetFloats(buf.get(), pos, len);
-
+   cancel = !InPlaceTransformBlocks( { t }, start, end, kBufSize,
+   [&]( sampleCount pos, size_t len, float *const *buffers, size_t ){
       for (auto i = pos; i < pos + len; i++)
       {
          float gainDown = fadeDownStep * (i - start).as_float();
@@ -532,22 +507,12 @@ bool EffectAutoDuck::ApplyDuckFade(int trackNum, WaveTrack* t,
             gain = mDuckAmountDb;
 
          // i - pos is bounded by len:
-         buf[ ( i - pos ).as_size_t() ] *= DB_TO_LINEAR(gain);
+         buffers[0][ ( i - pos ).as_size_t() ] *= DB_TO_LINEAR(gain);
       }
+      return true;
+   }, trackNum + 1, GetNumWaveTracks() + 1 );
+      // Progress denominator is one more than usual because of control track
 
-      t->Set((samplePtr)buf.get(), floatSample, pos, len);
-
-      pos += len;
-
-      float curTime = t->LongSamplesToTime(pos);
-      float fractionFinished = (curTime - mT0) / (mT1 - mT0);
-      if (TotalProgress( (trackNum + 1 + fractionFinished) /
-                         (GetNumWaveTracks() + 1) ))
-      {
-         cancel = true;
-         break;
-      }
-   }
 
    return cancel;
 }

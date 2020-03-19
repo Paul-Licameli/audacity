@@ -148,7 +148,7 @@ bool EffectNormalize::Process()
    //Iterate over each track
    this->CopyInputTracks(); // Set up mOutputTracks.
    bool bGoodResult = true;
-   double progress = 0;
+   unsigned count = 0;
    TranslatableString topMsg;
    if(mDC && mGain)
       topMsg = XO("Removing DC offset and Normalizing...\n");
@@ -197,7 +197,7 @@ bool EffectNormalize::Process()
             float offset = 0;
             float extent2 = 0;
             bGoodResult =
-               AnalyseTrack( channel, msg, progress, offset, extent2 );
+               AnalyseTrack( channel, msg, count++, offset, extent2 );
             if ( ! bGoodResult )
                goto break2;
             extent = std::max( extent, extent2 );
@@ -234,7 +234,7 @@ bool EffectNormalize::Process()
          auto pOffset = offsets.begin();
          for (auto channel : range) {
             if (false ==
-                (bGoodResult = ProcessOne(channel, msg, progress, *pOffset++)) )
+                (bGoodResult = ProcessOne(channel, msg, count++, *pOffset++)) )
                goto break2;
             // TODO: more-than-two-channels-message
             msg = topMsg +
@@ -319,7 +319,7 @@ void EffectNormalize::PopulateOrExchange(ShuttleGui & S)
 // EffectNormalize implementation
 
 bool EffectNormalize::AnalyseTrack(const WaveTrack * track, const TranslatableString &msg,
-                                   double &progress, float &offset, float &extent)
+                                   unsigned count, float &offset, float &extent)
 {
    bool result = true;
    float min, max;
@@ -332,7 +332,7 @@ bool EffectNormalize::AnalyseTrack(const WaveTrack * track, const TranslatableSt
 
       if(mDC)
       {
-         result = AnalyseTrackData(track, msg, progress, offset);
+         result = AnalyseTrackData(track, msg, count, offset);
          min += offset;
          max += offset;
       }
@@ -340,7 +340,7 @@ bool EffectNormalize::AnalyseTrack(const WaveTrack * track, const TranslatableSt
    else if(mDC)
    {
       min = -1.0, max = 1.0;   // sensible defaults?
-      result = AnalyseTrackData(track, msg, progress, offset);
+      result = AnalyseTrackData(track, msg, count, offset);
       min += offset;
       max += offset;
    }
@@ -358,10 +358,8 @@ bool EffectNormalize::AnalyseTrack(const WaveTrack * track, const TranslatableSt
 //AnalyseTrackData() takes a track, transforms it to bunch of buffer-blocks,
 //and executes selected AnalyseOperation on it...
 bool EffectNormalize::AnalyseTrackData(const WaveTrack * track, const TranslatableString &msg,
-                                double &progress, float &offset)
+                                unsigned count, float &offset)
 {
-   bool rc = true;
-
    //Transform the marker timepoints to samples
    auto start = track->TimeToLongSamples(mCurT0);
    auto end = track->TimeToLongSamples(mCurT1);
@@ -371,49 +369,22 @@ bool EffectNormalize::AnalyseTrackData(const WaveTrack * track, const Translatab
    //to make it a double now than it is to do it later
    auto len = (end - start).as_double();
 
-   //Initiate a processing buffer.  This buffer will (most likely)
-   //be shorter than the length of the track being processed.
-   Floats buffer{ track->GetMaxBlockSize() };
-
    mSum   = 0.0; // dc offset inits
 
    size_t blockSamples;
    sampleCount totalSamples = 0;
 
-   //Go through the track one buffer at a time. s counts which
-   //sample the current buffer starts at.
-   auto s = start;
-   while (s < end) {
-      //Get a block of samples (smaller than the size of the buffer)
-      //Adjust the block size if it is the final block in the track
-      const auto block = limitSampleBufferSize(
-         track->GetBestBlockSize(s),
-         end - s
-      );
-
-      //Get the samples from the track and put them in the buffer
-      track->GetFloats(buffer.get(), s, block, fillZero, true, &blockSamples);
+   bool rc = ForEachBlock({ track }, start, end, 0,
+   [&]( sampleCount s, size_t block, float *const *buffers, size_t blockSamples ){
       totalSamples += blockSamples;
-
-      //Process the buffer.
-      AnalyseDataDC(buffer.get(), block);
-
-      //Increment s one blockfull of samples
-      s += block;
-
-      //Update the Progress meter
-      if (TotalProgress(progress +
-                        ((s - start).as_double() / len)/double(2*GetNumWaveTracks()), msg)) {
-         rc = false; //lda .. break, not return, so that buffer is deleted
-         break;
-      }
-   }
+      AnalyseDataDC(buffers[0], block);
+      return true;
+   }, count, 2 * GetNumWaveTracks(), msg);
    if( totalSamples > 0 )
       offset = -mSum / totalSamples.as_double();  // calculate actual offset (amount that needs to be added on)
    else
       offset = 0.0;
 
-   progress += 1.0/double(2*GetNumWaveTracks());
    //Return true because the effect processing succeeded ... unless cancelled
    return rc;
 }
@@ -423,10 +394,8 @@ bool EffectNormalize::AnalyseTrackData(const WaveTrack * track, const Translatab
 // uses mMult and offset to normalize a track.
 // mMult must be set before this is called
 bool EffectNormalize::ProcessOne(
-   WaveTrack * track, const TranslatableString &msg, double &progress, float offset)
+   WaveTrack * track, const TranslatableString &msg, unsigned count, float offset)
 {
-   bool rc = true;
-
    //Transform the marker timepoints to samples
    auto start = track->TimeToLongSamples(mCurT0);
    auto end = track->TimeToLongSamples(mCurT1);
@@ -436,41 +405,13 @@ bool EffectNormalize::ProcessOne(
    //to make it a double now than it is to do it later
    auto len = (end - start).as_double();
 
-   //Initiate a processing buffer.  This buffer will (most likely)
-   //be shorter than the length of the track being processed.
-   Floats buffer{ track->GetMaxBlockSize() };
-
    //Go through the track one buffer at a time. s counts which
    //sample the current buffer starts at.
-   auto s = start;
-   while (s < end) {
-      //Get a block of samples (smaller than the size of the buffer)
-      //Adjust the block size if it is the final block in the track
-      const auto block = limitSampleBufferSize(
-         track->GetBestBlockSize(s),
-         end - s
-      );
-
-      //Get the samples from the track and put them in the buffer
-      track->GetFloats(buffer.get(), s, block);
-
-      //Process the buffer.
-      ProcessData(buffer.get(), block, offset);
-
-      //Copy the newly-changed samples back onto the track.
-      track->Set((samplePtr) buffer.get(), floatSample, s, block);
-
-      //Increment s one blockfull of samples
-      s += block;
-
-      //Update the Progress meter
-      if (TotalProgress(progress +
-                        ((s - start).as_double() / len)/double(2*GetNumWaveTracks()), msg)) {
-         rc = false; //lda .. break, not return, so that buffer is deleted
-         break;
-      }
-   }
-   progress += 1.0/double(2*GetNumWaveTracks());
+   bool rc = InPlaceTransformBlocks({ track }, start, end, 0,
+   [&]( sampleCount s, size_t block, float *const *buffers, size_t ){
+      ProcessData(buffers[0], block, offset);
+      return true;
+   }, count, 2 * GetNumWaveTracks(), msg );
 
    //Return true because the effect processing succeeded ... unless cancelled
    return rc;
