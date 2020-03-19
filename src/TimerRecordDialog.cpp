@@ -768,17 +768,16 @@ void TimerRecordDialog::PopulateOrExchange(ShuttleGui& S)
                .Text(XO("Start Date"))
                .AddWindow(m_pDatePickerCtrl_Start);
 
-            m_pTimeTextCtrl_Start = safenew NumericTextCtrl(
-               S.GetParent(), ID_TIMETEXT_START, NumericConverter::TIME,
-               {}, 0, 44100,
-               Options{}
-                  .MenuEnabled(false)
-                  .Format(strFormat)
-                  .Value(true, wxDateTime_to_AudacityTime(m_DateTime_Start)));
-
+            m_pTimeTextCtrl_Start =
             S
+               .Id(ID_TIMETEXT_START)
                .Text(XO("Start Time"))
-               .AddWindow(m_pTimeTextCtrl_Start);
+               .AddNumericTextCtrl( NumericConverter::TIME,
+                  {}, 0, 44100,
+                  Options{}
+                     .MenuEnabled(false)
+                     .Format(strFormat)
+                     .Value(true, wxDateTime_to_AudacityTime(m_DateTime_Start)));
          }
          S.EndStatic();
 
@@ -801,40 +800,40 @@ void TimerRecordDialog::PopulateOrExchange(ShuttleGui& S)
                .Text(XO("End Date"))
                .AddWindow(m_pDatePickerCtrl_End);
 
-            m_pTimeTextCtrl_End = safenew NumericTextCtrl(
-               S.GetParent(), ID_TIMETEXT_END, NumericConverter::TIME,
-               {}, 0, 44100,
-               Options{}
-                  .MenuEnabled(false)
-                  .Format(strFormat)
-                  .Value(true, wxDateTime_to_AudacityTime(m_DateTime_End)));
+            m_pTimeTextCtrl_End =
             S
+               .Id(ID_TIMETEXT_END)
                .Text(XO("End Time"))
-               .AddWindow(m_pTimeTextCtrl_End);
+               .AddNumericTextCtrl( NumericConverter::TIME,
+                  {}, 0, 44100,
+                  Options{}
+                     .MenuEnabled(false)
+                     .Format(strFormat)
+                     .Value(true, wxDateTime_to_AudacityTime(m_DateTime_End)));
          }
          S.EndStatic();
 
          S
             .StartStatic(XO("Duration"), true);
          {
-            m_pTimeTextCtrl_Duration = safenew NumericTextCtrl(
-               S.GetParent(), ID_TIMETEXT_DURATION, NumericConverter::TIME,
-               {}, 0, 44100,
-               Options{}
-                  .MenuEnabled(false)
-                  .Format(strFormat1)
-                  .Value(true, m_TimeSpan_Duration.GetSeconds().ToDouble()));
+            m_pTimeTextCtrl_Duration =
             S
-            /* i18n-hint: This string is used to configure the controls which shows the recording
-            * duration. As such it is important that only the alphabetic parts of the string
-            * are translated, with the numbers left exactly as they are.
-            * The string 'days' indicates that the first number in the control will be the number of days,
-            * then the 'h' indicates the second number displayed is hours, the 'm' indicates the third
-            * number displayed is minutes, and the 's' indicates that the fourth number displayed is
-            * seconds.
-            */
+               .Id(ID_TIMETEXT_DURATION)
+               /* i18n-hint: This string is used to configure the controls which shows the recording
+               * duration. As such it is important that only the alphabetic parts of the string
+               * are translated, with the numbers left exactly as they are.
+               * The string 'days' indicates that the first number in the control will be the number of days,
+               * then the 'h' indicates the second number displayed is hours, the 'm' indicates the third
+               * number displayed is minutes, and the 's' indicates that the fourth number displayed is
+               * seconds.
+               */
                .Text(XO("Duration"))
-               .AddWindow(m_pTimeTextCtrl_Duration);
+               .AddNumericTextCtrl( NumericConverter::TIME,
+                  {}, 0, 44100,
+                  Options{}
+                     .MenuEnabled(false)
+                     .Format(strFormat1)
+                     .Value(true, m_TimeSpan_Duration.GetSeconds().ToDouble()));
          }
          S.EndStatic();
       }

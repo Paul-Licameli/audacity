@@ -354,17 +354,16 @@ void EffectDtmf::PopulateOrExchange(ShuttleGui & S)
 
       S.AddPrompt(XXO("&Duration:"));
 
-      mDtmfDurationT = safenew
-         NumericTextCtrl(S.GetParent(), ID_Duration,
-                         NumericConverter::TIME,
-                         GetDurationFormat(),
-                         GetDuration(),
-                         mProjectRate,
-                         NumericTextCtrl::Options{}
-                            .AutoPos(true));
+      mDtmfDurationT =
       S
+         .Id(ID_Duration)
          .Text(XO("Duration"))
-         .AddWindow(mDtmfDurationT);
+         .AddNumericTextCtrl( NumericConverter::TIME,
+            GetDurationFormat(),
+            GetDuration(),
+            mProjectRate,
+            NumericTextCtrl::Options{}
+               .AutoPos(true));
 
       S
          .AddFixedText(XO("&Tone/silence ratio:"), false);

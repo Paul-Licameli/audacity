@@ -384,37 +384,31 @@ void EffectChangeSpeed::PopulateOrExchange(ShuttleGui & S)
             S
                .AddPrompt(XXO("C&urrent Length:"));
 
-            mpFromLengthCtrl = safenew
-                  NumericTextCtrl(S.GetParent(), wxID_ANY,
-                                 NumericConverter::TIME,
-                                 mFormat,
-                                 mFromLength,
-                                 mProjectRate,
-                                 NumericTextCtrl::Options{}
-                                  .ReadOnly(true)
-                                  .MenuEnabled(false));
-
+            mpFromLengthCtrl =
             S
 //?               .ToolTip(XO("Current length of selection."))
                /* i18n-hint: changing speed of audio "from" one value "to" another */
                .Text(XC("from", "change speed"))
                .Position(wxALIGN_LEFT)
-               .AddWindow(mpFromLengthCtrl);
+               .AddNumericTextCtrl(NumericConverter::TIME,
+                  mFormat,
+                  mFromLength,
+                  mProjectRate,
+                  NumericTextCtrl::Options{}
+                     .ReadOnly(true)
+                     .MenuEnabled(false));
 
             S.AddPrompt(XXO("&New Length:"));
 
-            mpToLengthCtrl = safenew
-                  NumericTextCtrl(S.GetParent(), ID_ToLength,
-                                 NumericConverter::TIME,
-                                 mFormat,
-                                 mToLength,
-                                 mProjectRate);
-
-            /* i18n-hint: changing speed of audio "from" one value "to" another */
+            mpToLengthCtrl =
             S
+               /* i18n-hint: changing a quantity "from" one value "to" another */
                .Text(XC("to", "change speed"))
                .Position(wxALIGN_LEFT)
-               .AddWindow(mpToLengthCtrl);
+               .AddNumericTextCtrl(NumericConverter::TIME,
+                  mFormat,
+                  mToLength,
+                  mProjectRate);
          }
          S.EndMultiColumn();
       }

@@ -246,19 +246,16 @@ void EffectNoise::PopulateOrExchange(ShuttleGui & S)
       S
          .AddPrompt(XXO("&Duration:"));
 
-      mNoiseDurationT = safenew
-         NumericTextCtrl(S.GetParent(), wxID_ANY,
-                         NumericConverter::TIME,
-                         GetDurationFormat(),
-                         GetDuration(),
-                         mProjectRate,
-                         NumericTextCtrl::Options{}
-                            .AutoPos(true));
-
+      mNoiseDurationT =
       S
          .Text(XO("Duration"))
          .Position(wxALIGN_LEFT | wxALIGN_CENTER_VERTICAL | wxALL)
-         .AddWindow(mNoiseDurationT);
+         .AddNumericTextCtrl( NumericConverter::TIME,
+            GetDurationFormat(),
+            GetDuration(),
+            mProjectRate,
+            NumericTextCtrl::Options{}
+               .AutoPos(true));
    }
    S.EndMultiColumn();
 }

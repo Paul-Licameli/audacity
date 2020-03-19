@@ -256,33 +256,25 @@ ContrastDialog::ContrastDialog(wxWindow * parent, wxWindowID id,
          S
             .AddFixedText(XO("&Foreground:"), false);
 
-         if (S.GetMode() == eIsCreating)
-         {
-            mForegroundStartT = safenew
-               NumericTextCtrl(S.GetParent(), ID_FOREGROUNDSTART_T,
-                         NumericConverter::TIME,
-                         NumericConverter::HundredthsFormat(),
-                         0.0,
-                         mProjectRate,
-                         options);
-         }
+         mForegroundStartT =
          S
+            .Id(ID_FOREGROUNDSTART_T)
             .Text(XO("Foreground start time"))
-            .AddWindow(mForegroundStartT);
+            .AddNumericTextCtrl( NumericConverter::TIME,
+               NumericConverter::HundredthsFormat(),
+               0.0,
+               mProjectRate,
+               options);
 
-         if (S.GetMode() == eIsCreating)
-         {
-            mForegroundEndT = safenew
-               NumericTextCtrl(S.GetParent(), ID_FOREGROUNDEND_T,
-                         NumericConverter::TIME,
-                         NumericConverter::HundredthsFormat(),
-                         0.0,
-                         mProjectRate,
-                         options);
-         }
+         mForegroundEndT =
          S
+            .Id(ID_FOREGROUNDEND_T)
             .Text(XO("Foreground end time"))
-            .AddWindow(mForegroundEndT);
+            .AddNumericTextCtrl( NumericConverter::TIME,
+               NumericConverter::HundredthsFormat(),
+               0.0,
+               mProjectRate,
+               options);
 
          m_pButton_UseCurrentF =
          S
@@ -297,36 +289,29 @@ ContrastDialog::ContrastDialog(wxWindow * parent, wxWindowID id,
             .AddTextBox( {}, L"", 17);
 
          //Background
+
          S
             .AddFixedText(XO("&Background:"));
 
-         if (S.GetMode() == eIsCreating)
-         {
-            mBackgroundStartT = safenew
-               NumericTextCtrl(S.GetParent(), ID_BACKGROUNDSTART_T,
-                         NumericConverter::TIME,
-                         NumericConverter::HundredthsFormat(),
-                         0.0,
-                         mProjectRate,
-                         options);
-         }
+         mBackgroundStartT =
          S
+            .Id(ID_BACKGROUNDSTART_T)
             .Text(XO("Background start time"))
-            .AddWindow(mBackgroundStartT);
+            .AddNumericTextCtrl( NumericConverter::TIME,
+               NumericConverter::HundredthsFormat(),
+               0.0,
+               mProjectRate,
+               options);
 
-         if (S.GetMode() == eIsCreating)
-         {
-            mBackgroundEndT = safenew
-               NumericTextCtrl(S.GetParent(), ID_BACKGROUNDEND_T,
-                         NumericConverter::TIME,
-                         NumericConverter::HundredthsFormat(),
-                         0.0,
-                         mProjectRate,
-                         options);
-         }
+         mBackgroundEndT =
          S
+            .Id(ID_BACKGROUNDEND_T)
             .Text(XO("Background end time"))
-            .AddWindow(mBackgroundEndT);
+            .AddNumericTextCtrl( NumericConverter::TIME,
+               NumericConverter::HundredthsFormat(),
+               0.0,
+               mProjectRate,
+               options);
 
          m_pButton_UseCurrentB =
          S

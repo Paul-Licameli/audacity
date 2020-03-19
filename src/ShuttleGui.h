@@ -24,6 +24,7 @@
 #include <wx/weakref.h>
 
 #include "Prefs.h"
+#include "widgets/NumericTextCtrl.h"
 #include "WrappedType.h"
 
 class ChoiceSetting;
@@ -342,6 +343,15 @@ public:
    );
 
    wxGrid * AddGrid();
+
+   NumericTextCtrl * AddNumericTextCtrl(NumericConverter::Type type,
+         const NumericFormatSymbol &formatName = {},
+         double value = 0.0,
+         double sampleRate = 44100,
+         const NumericTextCtrl::Options &options = {},
+         const wxPoint &pos = wxDefaultPosition,
+         const wxSize &size = wxDefaultSize);
+
    wxCheckBox * AddCheckBox( const TranslatableLabel &Prompt, bool Selected);
    wxCheckBox * AddCheckBoxOnRight( const TranslatableLabel &Prompt, bool Selected);
 

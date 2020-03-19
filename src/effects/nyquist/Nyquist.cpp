@@ -2884,18 +2884,15 @@ void NyquistEffect::BuildEffectWindow(ShuttleGui & S)
                                           .MenuEnabled(true)
                                           .ReadOnly(false);
 
-                  NumericTextCtrl *time = safenew
-                     NumericTextCtrl(S.GetParent(), (ID_Time + i),
-                                     NumericConverter::TIME,
-                                     GetSelectionFormat(),
-                                     ctrl.val,
-                                     mProjectRate,
-                                     options);
-
                   S
+                     .Id(ID_Time + i)
                      .Text( prompt.Stripped() )
                      .Position(wxALIGN_LEFT | wxALL)
-                     .AddWindow(time);
+                     .AddNumericTextCtrl( NumericConverter::TIME,
+                        GetSelectionFormat(),
+                        ctrl.val,
+                        mProjectRate,
+                        options);
                }
                else if (ctrl.type == NYQ_CTRL_FILE)
                {

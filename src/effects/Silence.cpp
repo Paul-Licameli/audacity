@@ -70,19 +70,17 @@ void EffectSilence::PopulateOrExchange(ShuttleGui & S)
       S.StartHorizontalLay();
       {
          S.AddPrompt(XXO("&Duration:"));
-         mDurationT = safenew
-            NumericTextCtrl(S.GetParent(), wxID_ANY,
-                              NumericConverter::TIME,
-                              GetDurationFormat(),
-                              GetDuration(),
-                               mProjectRate,
-                               NumericTextCtrl::Options{}
-                                  .AutoPos(true));
 
+         mDurationT =
          S
             .Text(XO("Duration"))
             .Position(wxALIGN_CENTER | wxALL)
-            .AddWindow(mDurationT);
+            .AddNumericTextCtrl( NumericConverter::TIME,
+               GetDurationFormat(),
+               GetDuration(),
+               mProjectRate,
+               NumericTextCtrl::Options{}
+                  .AutoPos(true));
       }
       S.EndHorizontalLay();
    }
