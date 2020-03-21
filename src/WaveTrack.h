@@ -259,7 +259,7 @@ private:
     */
    bool GetFloats(float *buffer, sampleCount start, size_t len,
       fillFormat fill = fillZero, bool mayThrow = true,
-      sampleCount * pNumWithinClips = nullptr) const
+      size_t * pNumWithinClips = nullptr) const
    {
       //! Cast the pointer to pass it to Get() which handles multiple destination formats
       return Get(reinterpret_cast<samplePtr>(buffer),
@@ -273,12 +273,11 @@ private:
     */
    bool Get(samplePtr buffer, sampleFormat format,
       sampleCount start, size_t len,
-      fillFormat fill = fillZero,
-      bool mayThrow = true,
+      fillFormat fill = fillZero, bool mayThrow = true,
       // Report how many samples were copied from within clips, rather than
       // filled according to fillFormat; but these were not necessarily one
       // contiguous range.
-      sampleCount * pNumWithinClips = nullptr) const;
+      size_t * pNumWithinClips = nullptr) const;
 
    void Set(constSamplePtr buffer, sampleFormat format,
                    sampleCount start, size_t len);

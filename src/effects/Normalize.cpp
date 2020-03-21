@@ -419,7 +419,7 @@ bool EffectNormalize::AnalyseTrackData(const WaveTrack * track, const Translatab
 
    mSum   = 0.0; // dc offset inits
 
-   sampleCount blockSamples;
+   size_t blockSamples;
    sampleCount totalSamples = 0;
 
    //Go through the track one buffer at a time. s counts which

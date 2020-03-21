@@ -1898,14 +1898,14 @@ float WaveTrack::GetRMS(double t0, double t1, bool mayThrow) const
 
 bool WaveTrack::Get(samplePtr buffer, sampleFormat format,
                     sampleCount start, size_t len, fillFormat fill,
-                    bool mayThrow, sampleCount * pNumWithinClips) const
+                    bool mayThrow, size_t * pNumWithinClips) const
 {
    // Simple optimization: When this buffer is completely contained within one clip,
    // don't clear anything (because we won't have to). Otherwise, just clear
    // everything to be on the safe side.
    bool doClear = true;
    bool result = true;
-   sampleCount samplesCopied = 0;
+   size_t samplesCopied = 0;
    for (const auto &clip: mClips)
    {
       if (start >= clip->GetStartSample() && start+len <= clip->GetEndSample())
@@ -1936,38 +1936,32 @@ bool WaveTrack::Get(samplePtr buffer, sampleFormat format,
    // Iterate the clips.  They are not necessarily sorted by time.
    for (const auto &clip: mClips)
    {
-      auto clipStart = clip->GetStartSample();
-      auto clipEnd = clip->GetEndSample();
-
-      if (clipEnd > start && clipStart < start+len)
+      const auto clipStart = clip->GetStartSample();
+      const auto clipLen = clip->GetNumSamples();
+      if ( clipStart + clipLen > start && start + len > clipStart )
       {
          // Clip sample region and Get/Put sample region overlap
-         auto samplesToCopy =
-            std::min( start+len - clipStart, clip->GetNumSamples() );
-         auto startDelta = clipStart - start;
-         decltype(startDelta) inclipDelta = 0;
-         if (startDelta < 0)
-         {
-            inclipDelta = -startDelta; // make positive value
-            samplesToCopy -= inclipDelta;
-            // samplesToCopy is now either len or
-            //    (clipEnd - clipStart) - (start - clipStart)
-            //    == clipEnd - start > 0
-            // samplesToCopy is not more than len
-            //
-            startDelta = 0;
-            // startDelta is zero
-         }
+         sampleCount inclipDelta = start - clipStart;
+         // assert -(int)len < inclipDelta < clipLen
+         const auto available = std::min( inclipDelta + len, clipLen );
+         size_t bufferDelta = 0;
+         size_t samplesToCopy = len;
+         if ( inclipDelta > 0 )
+            // either available == clipLen <= inclipDelta + len,
+            //    and therefore result <= len and result > 0
+            // or else result == len
+            samplesToCopy = (available - inclipDelta).as_size_t();
          else {
-            // startDelta is nonnegative and less than len
-            // samplesToCopy is positive and not more than len
+            // result is less than len
+            bufferDelta = (-inclipDelta).as_size_t();
+            // available is at most len
+            samplesToCopy = available.as_size_t();
+            inclipDelta = 0;
          }
 
          if (!clip->GetSamples(
-               (samplePtr)(((char*)buffer) +
-                           startDelta.as_size_t() *
-                           SAMPLE_SIZE(format)),
-               format, inclipDelta, samplesToCopy.as_size_t(), mayThrow ))
+               (samplePtr)( (char*)buffer + bufferDelta * SAMPLE_SIZE(format) ),
+               format, inclipDelta, samplesToCopy, mayThrow ) )
             result = false;
          else
             samplesCopied += samplesToCopy;
