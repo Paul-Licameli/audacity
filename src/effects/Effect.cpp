@@ -1444,6 +1444,10 @@ bool Effect::Process()
    return bGoodResult;
 }
 
+namespace {
+   inline void ClearBuffer( float *p, size_t n ) { std::fill( p, p + n, 0 ); }
+}
+
 bool Effect::ProcessPass()
 {
    bool bGoodResult = true;
@@ -1532,12 +1536,7 @@ bool Effect::ProcessPass()
 
             // We won't be using more than the first 2 buffers, so clear the rest (if any)
             for (size_t i = 2; i < mNumAudioIn; i++)
-            {
-               for (size_t j = 0; j < mBufferSize; j++)
-               {
-                  inBuffer[i][j] = 0.0;
-               }
-            }
+               ClearBuffer( &inBuffer[i][0], mBufferSize );
 
             // Always create the number of output buffers the client expects even if we don't have
             // the same number of channels.
@@ -1562,10 +1561,7 @@ bool Effect::ProcessPass()
          // Clear unused input buffers
          if (!right && !clear && mNumAudioIn > 1)
          {
-            for (size_t j = 0; j < mBufferSize; j++)
-            {
-               inBuffer[1][j] = 0.0;
-            }
+            ClearBuffer( &inBuffer[1][0], mBufferSize );
             clear = true;
          }
 
@@ -1714,12 +1710,7 @@ bool Effect::ProcessTrack(int count,
             // to the effect
             auto cnt = mBlockSize - curBlockSize;
             for (size_t i = 0; i < mNumChannels; i++)
-            {
-               for (decltype(cnt) j = 0 ; j < cnt; j++)
-               {
-                  inBufPos[i][j + curBlockSize] = 0.0;
-               }
-            }
+               ClearBuffer( &inBufPos[i][0], cnt );
 
             // Might be able to use up some of the delayed samples
             if (delayRemaining != 0)
@@ -1747,10 +1738,7 @@ bool Effect::ProcessTrack(int count,
                inBufPos[i] = inBuffer[i].get();
 
                // And clear
-               for (size_t j = 0; j < mBlockSize; j++)
-               {
-                  inBuffer[i][j] = 0.0;
-               }
+               ClearBuffer( &inBuffer[i][0], mBlockSize );
             }
             cleared = true;
          }
