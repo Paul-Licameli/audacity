@@ -61,8 +61,6 @@ preferences.
 #include <wx/textctrl.h>
 #include <wx/listctrl.h>
 
-#include "../include/audacity/EffectAutomationParameters.h" // for command automation
-
 #include "WrappedType.h"
 //#include "effects/Effect.h"
 

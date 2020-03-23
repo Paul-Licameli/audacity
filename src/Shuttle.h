@@ -12,6 +12,7 @@
 #define __AUDACITY_SHUTTLE__
 
 #include "../include/audacity/ComponentInterface.h"
+#include "../include/audacity/EffectAutomationParameters.h" // for CommandParameters
 
 class ComponentInterfaceSymbol;
 class WrappedType;
@@ -117,6 +118,134 @@ public:
 
    void SHUTTLE_PARAM( int &var, const EnumEffectParameter &name )
    { DefineEnum( var, name.key, name.def, name.symbols, name.nSymbols ); }
+};
+
+/**************************************************************************//**
+\brief An object that stores callback functions, generated from the constructor
+arguments.
+For each variable passed to the constructor:
+   Reset resets it to a default
+   Visit visits it with a ShuttleParams object
+   Get serializes it to a string
+   Set deserializes it from a string and returns a success flag
+The constructor arguments are alternating references to variables and
+EffectParameter objects (and optionally a first argument which is a function
+to be called at the end of Reset or Set, and returning a value for Set).
+********************************************************************************/
+struct CapturedParameters {
+public:
+   // Types of the callbacks
+   using ResetFunction = std::function< void() >;
+   using VisitFunction = std::function< void( ShuttleParams & S ) >;
+   using GetFunction = std::function< void( CommandParameters & parms ) >;
+   // Returns true if successful:
+   using SetFunction = std::function< bool ( CommandParameters & parms ) >;
+
+   // Another helper type
+   using PostSetFunction = std::function< bool() >;
+
+   // Constructors
+   CapturedParameters() = default;
+
+   template< typename ...Args >
+   // Arguments are references to variables, alternating with references to
+   // EffectParameter objects detailing the callback operations on them.
+   CapturedParameters( Args &...args )
+      : CapturedParameters( PostSetFunction{}, args... ) {}
+
+   template< typename Fn, typename ...Args,
+      // SFINAE: require that first arg be callable
+      typename = decltype( std::declval<Fn>()() )
+   >
+   // Like the previous, but with an extra first argument,
+   // which is called at the end of Reset or Set.  Its return value is
+   // ignored in Reset() and passed as the result of Set.
+   CapturedParameters( const Fn &PostSet, Args &...args )
+   {
+      PostSetFunction fn = PostSet;
+      Reset = [&args..., fn]{ DoReset( fn, args... ); };
+      Visit = [&args...]( ShuttleParams &S ){ DoVisit( S, args... ); };
+      Get = [&args...]( CommandParameters &parms ){ DoGet( parms, args... ); };
+      Set = [&args..., fn]( CommandParameters &parms ){
+         return DoSet( parms, fn, args... ); };
+   }
+
+   // True iff this was default-constructed
+   bool empty() const { return !Reset; }
+
+   // Callable as if they were const member functions
+   ResetFunction Reset;
+   VisitFunction Visit;
+   GetFunction Get;
+   SetFunction Set;
+
+private:
+   // Base cases stop recursions
+   static void DoReset( const PostSetFunction &fn ){ if (fn) fn(); }
+   static void DoVisit(ShuttleParams &){}
+   static void DoGet(CommandParameters &) {}
+   static bool DoSet( CommandParameters &, const PostSetFunction &fn )
+      { return !fn || fn(); }
+
+   // Recursive cases
+   template< typename Var, typename Type, typename ...Args >
+   static void DoReset( const PostSetFunction &fn,
+      Var &var, EffectParameter< Type > &param, Args &...others )
+   {
+      var = param.def;
+      DoReset( fn, others... );
+   }
+
+   template< typename Var, typename Type, typename ...Args >
+   static void DoVisit( ShuttleParams & S,
+      Var &var, EffectParameter< Type > &param, Args &...others )
+   {
+      S.Define( var, param.key, param.def, param.min, param.max, param.scale );
+      DoVisit( S, others... );
+   }
+   template< typename ...Args >
+   static void DoVisit( ShuttleParams & S,
+      int &var, EnumEffectParameter &param, Args &...others )
+   {
+      S.DefineEnum( var, param.key, param.def, param.symbols, param.nSymbols );
+      DoVisit( S, others... );
+   }
+
+   template< typename Var, typename Type, typename ...Args >
+   static void DoGet( CommandParameters & parms,
+      Var &var, EffectParameter< Type > &param, Args &...others )
+   {
+      parms.Write( param.key, static_cast<Type>(var) );
+      DoGet( parms, others... );
+   }
+   template< typename ...Args >
+   static void DoGet( CommandParameters & parms,
+      int &var, EnumEffectParameter &param, Args &...others )
+   {
+      parms.Write( param.key, param.symbols[ var ].Internal() );
+      DoGet( parms, others... );
+   }
+
+   template< typename Var, typename Type, typename ...Args >
+   static bool DoSet( CommandParameters & parms, const std::function<bool()> &fn,
+      Var &var, EffectParameter< Type > &param, Args &...others )
+   {
+      if (!parms.ReadAndVerify(param.key, &param.cache, param.def,
+         param.min, param.max))
+         return false;
+      var = param;
+      return DoSet( parms, fn, others... );
+   }
+   template< typename ...Args >
+   static bool DoSet( CommandParameters & parms, const std::function<bool()> &fn,
+      int &var, EnumEffectParameter &param, Args &...others )
+   {
+      if (!parms.ReadAndVerify(param.key, &param.cache, param.def,
+         param.symbols, param.nSymbols))
+         return false;
+      var = param;
+      return DoSet( parms, fn, others... );
+   }
 };
 
 /**************************************************************************//**
