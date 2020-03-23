@@ -59,13 +59,20 @@ enum
 // Define keys, defaults, minimums, and maximums for the effect parameters
 //
 //     Name          Type     Key                  Def      Min      Max      Scale
-Param( Threshold,    double,  L"Threshold",     -12.0,   -60.0,   -1.0,    1   );
-Param( NoiseFloor,   double,  L"NoiseFloor",    -40.0,   -80.0,   -20.0,   0.2   );
-Param( Ratio,        double,  L"Ratio",         2.0,     1.1,     10.0,    10  );
-Param( AttackTime,   double,  L"AttackTime",    0.2,     0.1,     5.0,     100 );
-Param( ReleaseTime,  double,  L"ReleaseTime",   1.0,     1.0,     30.0,    10  );
-Param( Normalize,    bool,    L"Normalize",     true,    false,   true,    1   );
-Param( UsePeak,      bool,    L"UsePeak",       false,   false,   true,    1   );
+static auto Threshold = Parameter<double>(
+                           L"Threshold",     -12.0,   -60.0,   -1.0,    1   );
+static auto NoiseFloor = Parameter<double>(
+                           L"NoiseFloor",    -40.0,   -80.0,   -20.0,   0.2   );
+static auto Ratio = Parameter<double>(
+                           L"Ratio",         2.0,     1.1,     10.0,    10  );
+static auto AttackTime = Parameter<double>(
+                           L"AttackTime",    0.2,     0.1,     5.0,     100 );
+static auto ReleaseTime = Parameter<double>(
+                           L"ReleaseTime",   1.0,     1.0,     30.0,    10  );
+static auto Normalize = Parameter<bool>(
+                           L"Normalize",     true,    false,   true,    1   );
+static auto UsePeak = Parameter<bool>(
+                           L"UsePeak",       false,   false,   true,    1   );
 
 //----------------------------------------------------------------------------
 // EffectCompressor
@@ -82,13 +89,13 @@ END_EVENT_TABLE()
 
 EffectCompressor::EffectCompressor()
 {
-   mThresholdDB = DEF_Threshold;
-   mNoiseFloorDB = DEF_NoiseFloor;
-   mAttackTime = DEF_AttackTime;          // seconds
-   mDecayTime = DEF_ReleaseTime;          // seconds
-   mRatio = DEF_Ratio;                    // positive number > 1.0
-   mNormalize = DEF_Normalize;
-   mUsePeak = DEF_UsePeak;
+   mThresholdDB = Threshold.def;
+   mNoiseFloorDB = NoiseFloor.def;
+   mAttackTime = AttackTime.def;          // seconds
+   mDecayTime = ReleaseTime.def;          // seconds
+   mRatio = Ratio.def;                    // positive number > 1.0
+   mNormalize = Normalize.def;
+   mUsePeak = UsePeak.def;
 
    mThreshold = 0.25;
    mNoiseFloor = 0.01;
@@ -140,13 +147,13 @@ bool EffectCompressor::DefineParams( ShuttleParams & S ){
 
 bool EffectCompressor::GetAutomationParameters(CommandParameters & parms)
 {
-   parms.Write(KEY_Threshold, mThresholdDB);
-   parms.Write(KEY_NoiseFloor, mNoiseFloorDB);
-   parms.Write(KEY_Ratio, mRatio);
-   parms.Write(KEY_AttackTime, mAttackTime);
-   parms.Write(KEY_ReleaseTime, mDecayTime);
-   parms.Write(KEY_Normalize, mNormalize);
-   parms.Write(KEY_UsePeak, mUsePeak);
+   parms.Write(Threshold.key, mThresholdDB);
+   parms.Write(NoiseFloor.key, mNoiseFloorDB);
+   parms.Write(Ratio.key, mRatio);
+   parms.Write(AttackTime.key, mAttackTime);
+   parms.Write(ReleaseTime.key, mDecayTime);
+   parms.Write(Normalize.key, mNormalize);
+   parms.Write(UsePeak.key, mUsePeak);
 
    return true;
 }
@@ -280,9 +287,9 @@ void EffectCompressor::PopulateOrExchange(ShuttleGui & S)
             .Text(XO("Threshold"))
             .Style(wxSL_HORIZONTAL)
             .AddSlider( {},
-               DEF_Threshold * SCL_Threshold,
-               MAX_Threshold * SCL_Threshold,
-               MIN_Threshold * SCL_Threshold);
+               Threshold.def * Threshold.scale,
+               Threshold.max * Threshold.scale,
+               Threshold.min * Threshold.scale);
 
          mThresholdText =
          S
@@ -300,9 +307,9 @@ void EffectCompressor::PopulateOrExchange(ShuttleGui & S)
             .Text(XO("Noise Floor"))
             .Style(wxSL_HORIZONTAL)
             .AddSlider( {},
-               DEF_NoiseFloor * SCL_NoiseFloor,
-               MAX_NoiseFloor * SCL_NoiseFloor,
-               MIN_NoiseFloor * SCL_NoiseFloor);
+               NoiseFloor.def * NoiseFloor.scale,
+               NoiseFloor.max * NoiseFloor.scale,
+               NoiseFloor.min * NoiseFloor.scale);
 
          mNoiseFloorText =
          S
@@ -320,9 +327,9 @@ void EffectCompressor::PopulateOrExchange(ShuttleGui & S)
             .Text(XO("Ratio"))
             .Style(wxSL_HORIZONTAL)
             .AddSlider( {},
-               DEF_Ratio * SCL_Ratio,
-               MAX_Ratio * SCL_Ratio,
-               MIN_Ratio * SCL_Ratio,
+               Ratio.def * Ratio.scale,
+               Ratio.max * Ratio.scale,
+               Ratio.min * Ratio.scale,
                -1, 5 /* page size */ );
 
          mRatioText =
@@ -347,9 +354,9 @@ void EffectCompressor::PopulateOrExchange(ShuttleGui & S)
             .Text(XO("Attack Time"))
             .Style(wxSL_HORIZONTAL)
             .AddSlider( {},
-               DEF_AttackTime * SCL_AttackTime,
-               MAX_AttackTime * SCL_AttackTime,
-               MIN_AttackTime * SCL_AttackTime);
+               AttackTime.def * AttackTime.scale,
+               AttackTime.max * AttackTime.scale,
+               AttackTime.min * AttackTime.scale);
 
          mAttackText =
          S
@@ -374,9 +381,9 @@ void EffectCompressor::PopulateOrExchange(ShuttleGui & S)
             .Text(XO("Release Time"))
             .Style(wxSL_HORIZONTAL)
             .AddSlider( {},
-               DEF_ReleaseTime * SCL_ReleaseTime,
-               MAX_ReleaseTime * SCL_ReleaseTime,
-               MIN_ReleaseTime * SCL_ReleaseTime);
+               ReleaseTime.def * ReleaseTime.scale,
+               ReleaseTime.max * ReleaseTime.scale,
+               ReleaseTime.min * ReleaseTime.scale);
 
          mDecayText =
          S
@@ -394,14 +401,14 @@ void EffectCompressor::PopulateOrExchange(ShuttleGui & S)
       S
       /* i18n-hint: Make-up, i.e. correct for any reduction, rather than fabricate it.*/
          .AddCheckBox(XXO("Ma&ke-up gain for 0 dB after compressing"),
-            DEF_Normalize);
+            Normalize.def);
 
       mPeakCheckBox =
       S
       /* i18n-hint: "Compress" here means reduce variations of sound volume,
        NOT related to file-size compression; Peaks means extremes in volume */
          .AddCheckBox(XXO("C&ompress based on Peaks"),
-            DEF_UsePeak);
+            UsePeak.def);
    }
    S.EndHorizontalLay();
 }
@@ -409,10 +416,10 @@ void EffectCompressor::PopulateOrExchange(ShuttleGui & S)
 bool EffectCompressor::TransferDataToWindow()
 {
    mThresholdSlider->SetValue(lrint(mThresholdDB));
-   mNoiseFloorSlider->SetValue(lrint(mNoiseFloorDB * SCL_NoiseFloor));
-   mRatioSlider->SetValue(lrint(mRatio * SCL_Ratio));
-   mAttackSlider->SetValue(lrint(mAttackTime * SCL_AttackTime));
-   mDecaySlider->SetValue(lrint(mDecayTime * SCL_ReleaseTime));
+   mNoiseFloorSlider->SetValue(lrint(mNoiseFloorDB * NoiseFloor.scale));
+   mRatioSlider->SetValue(lrint(mRatio * Ratio.scale));
+   mAttackSlider->SetValue(lrint(mAttackTime * AttackTime.scale));
+   mDecaySlider->SetValue(lrint(mDecayTime * ReleaseTime.scale));
    mGainCheckBox->SetValue(mNormalize);
    mPeakCheckBox->SetValue(mUsePeak);
 
@@ -429,10 +436,10 @@ bool EffectCompressor::TransferDataFromWindow()
    }
 
    mThresholdDB = (double) mThresholdSlider->GetValue();
-   mNoiseFloorDB = (double) mNoiseFloorSlider->GetValue() / SCL_NoiseFloor;
-   mRatio = (double) mRatioSlider->GetValue() / SCL_Ratio;
-   mAttackTime = (double) mAttackSlider->GetValue() / 100.0; //SCL_AttackTime;
-   mDecayTime = (double) mDecaySlider->GetValue() / SCL_ReleaseTime;
+   mNoiseFloorDB = (double) mNoiseFloorSlider->GetValue() / NoiseFloor.scale;
+   mRatio = (double) mRatioSlider->GetValue() / Ratio.scale;
+   mAttackTime = (double) mAttackSlider->GetValue() / 100.0; //AttackTime.scale;
+   mDecayTime = (double) mDecaySlider->GetValue() / ReleaseTime.scale;
    mNormalize = mGainCheckBox->GetValue();
    mUsePeak = mPeakCheckBox->GetValue();
 

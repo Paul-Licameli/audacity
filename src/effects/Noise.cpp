@@ -52,8 +52,10 @@ static const EnumValueSymbol kTypeStrings[nTypes] =
 // Define keys, defaults, minimums, and maximums for the effect parameters
 //
 //     Name    Type     Key               Def      Min   Max            Scale
-Param( Type,   int,     L"Type",       kWhite,  0,    nTypes - 1, 1  );
-Param( Amp,    double,  L"Amplitude",  0.8,     0.0,  1.0,           1  );
+static auto Type = EnumParameter(
+                           L"Type",       kWhite,  0,    nTypes - 1, 1, kTypeStrings, nTypes  );
+static auto Amp = Parameter<double>(
+                           L"Amplitude",  0.8,     0.0,  1.0,           1  );
 
 //
 // EffectNoise
@@ -66,8 +68,8 @@ namespace{ BuiltinEffectsModule::Registration< EffectNoise > reg; }
 
 EffectNoise::EffectNoise()
 {
-   mType = DEF_Type;
-   mAmp = DEF_Amp;
+   mType = Type.def;
+   mAmp = Amp.def;
 
    SetLinearEffectFlag(true);
 
@@ -181,8 +183,8 @@ bool EffectNoise::DefineParams( ShuttleParams & S ){
 
 bool EffectNoise::GetAutomationParameters(CommandParameters & parms)
 {
-   parms.Write(KEY_Type, kTypeStrings[mType].Internal());
-   parms.Write(KEY_Amp, mAmp);
+   parms.Write(Type.key, kTypeStrings[mType].Internal());
+   parms.Write(Amp.key, mAmp);
 
    return true;
 }
@@ -240,7 +242,7 @@ void EffectNoise::PopulateOrExchange(ShuttleGui & S)
 
       S
          .Validator<FloatingPointValidator<double>>(
-            6, &mAmp, NumValidatorStyle::NO_TRAILING_ZEROES, MIN_Amp, MAX_Amp )
+            6, &mAmp, NumValidatorStyle::NO_TRAILING_ZEROES, Amp.min, Amp.max )
          .AddTextBox(XXO("&Amplitude (0-1):"), L"", 12);
 
       S

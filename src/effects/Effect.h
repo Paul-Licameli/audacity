@@ -605,26 +605,19 @@ inline long TrapLong(long x, long min, long max)
    static const type SCL_ ## name = (scale);
 
 #define ReadParam(type, name) \
-   type name = DEF_ ## name; \
-   if (!parms.ReadAndVerify(KEY_ ## name, &name, DEF_ ## name, MIN_ ## name, MAX_ ## name)) \
+   if (!parms.ReadAndVerify(name.key, &name.cache, name.def, name.min, name.max)) \
       return false;
 
 #define ReadBasic(type, name) \
-   type name; \
-   wxUnusedVar(MIN_ ##name); \
-   wxUnusedVar(MAX_ ##name); \
-   wxUnusedVar(SCL_ ##name); \
-   if (!parms.ReadAndVerify(KEY_ ## name, &name, DEF_ ## name)) \
+   if (!parms.ReadAndVerify(name.key, &name.cache, name.def)) \
       return false;
 
 #define ReadAndVerifyEnum(name, list, listSize) \
-   int name; \
-   if (!parms.ReadAndVerify(KEY_ ## name, &name, DEF_ ## name, list, listSize)) \
+   if (!parms.ReadAndVerify(name.key, &name.cache, name.def, list, listSize)) \
       return false;
 
 #define ReadAndVerifyEnumWithObsoletes(name, list, listSize, obsoleteList, nObsolete) \
-   int name; \
-   if (!parms.ReadAndVerify(KEY_ ## name, &name, DEF_ ## name, \
+   if (!parms.ReadAndVerify( name.key, &name.cache, name.def, \
                             list, listSize, obsoleteList, nObsolete)) \
       return false;
 

@@ -50,8 +50,10 @@ enum
 // Define keys, defaults, minimums, and maximums for the effect parameters
 //
 //     Name       Type     Key               Def      Min      Max      Scale
-Param( Threshold, int,     L"Threshold",  200,     0,       900,     1  );
-Param( Width,     int,     L"Width",      20,      0,       40,      1  );
+static auto Threshold = Parameter<int>(
+                           L"Threshold",  200,     0,       900,     1  );
+static auto Width = Parameter<int>(
+                           L"Width",      20,      0,       40,      1  );
 
 const ComponentInterfaceSymbol EffectClickRemoval::Symbol
 { XO("Click Removal") };
@@ -67,8 +69,8 @@ END_EVENT_TABLE()
 
 EffectClickRemoval::EffectClickRemoval()
 {
-   mThresholdLevel = DEF_Threshold;
-   mClickWidth = DEF_Width;
+   mThresholdLevel = Threshold.def;
+   mClickWidth = Width.def;
 
    SetLinearEffectFlag(false);
 
@@ -113,8 +115,8 @@ bool EffectClickRemoval::DefineParams( ShuttleParams & S ){
 
 bool EffectClickRemoval::GetAutomationParameters(CommandParameters & parms)
 {
-   parms.Write(KEY_Threshold, mThresholdLevel);
-   parms.Write(KEY_Width, mClickWidth);
+   parms.Write(Threshold.key, mThresholdLevel);
+   parms.Write(Width.key, mClickWidth);
 
    return true;
 }
@@ -153,12 +155,12 @@ bool EffectClickRemoval::Startup()
    if (gPrefs->Exists(base))
    {
       mThresholdLevel = gPrefs->Read(base + L"ClickThresholdLevel", 200);
-      if ((mThresholdLevel < MIN_Threshold) || (mThresholdLevel > MAX_Threshold))
+      if ((mThresholdLevel < Threshold.min) || (mThresholdLevel > Threshold.max))
       {  // corrupted Prefs?
          mThresholdLevel = 0;  //Off-skip
       }
       mClickWidth = gPrefs->Read(base + L"ClickWidth", 20);
-      if ((mClickWidth < MIN_Width) || (mClickWidth > MAX_Width))
+      if ((mClickWidth < Width.min) || (mClickWidth > Width.max))
       {  // corrupted Prefs?
          mClickWidth = 0;  //Off-skip
       }
@@ -348,7 +350,7 @@ void EffectClickRemoval::PopulateOrExchange(ShuttleGui & S)
          .Id(ID_Thresh)
          .Validator<IntegerValidator<int>>(
             &mThresholdLevel, NumValidatorStyle::DEFAULT,
-            MIN_Threshold, MAX_Threshold )
+            Threshold.min, Threshold.max )
          .AddTextBox(XXO("&Threshold (lower is more sensitive):"),
                      L"",
                      10);
@@ -360,14 +362,14 @@ void EffectClickRemoval::PopulateOrExchange(ShuttleGui & S)
          .Style(wxSL_HORIZONTAL)
          .Validator<wxGenericValidator>(&mThresholdLevel)
          .MinSize( { 150, -1 } )
-         .AddSlider( {}, mThresholdLevel, MAX_Threshold, MIN_Threshold);
+         .AddSlider( {}, mThresholdLevel, Threshold.max, Threshold.min);
 
       // Click width
       mWidthT =
       S
          .Id(ID_Width)
          .Validator<IntegerValidator<int>>(
-            &mClickWidth, NumValidatorStyle::DEFAULT, MIN_Width, MAX_Width)
+            &mClickWidth, NumValidatorStyle::DEFAULT, Width.min, Width.max)
          .AddTextBox(XXO("Max &Spike Width (higher is more sensitive):"),
                      L"",
                      10);
@@ -379,7 +381,7 @@ void EffectClickRemoval::PopulateOrExchange(ShuttleGui & S)
          .Style(wxSL_HORIZONTAL)
          .Validator<wxGenericValidator>(&mClickWidth)
          .MinSize( { 150, -1 } )
-         .AddSlider( {}, mClickWidth, MAX_Width, MIN_Width);
+         .AddSlider( {}, mClickWidth, Width.max, Width.min);
    }
    S.EndMultiColumn();
 

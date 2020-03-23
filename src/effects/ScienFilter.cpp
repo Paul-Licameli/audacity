@@ -121,12 +121,18 @@ static_assert(nSubTypes == WXSIZEOF(kSubTypeStrings), "size mismatch");
 // Define keys, defaults, minimums, and maximums for the effect parameters
 //
 //     Name       Type     Key                     Def            Min   Max               Scale
-Param( Type,      int,     L"FilterType",       kButterworth,  0,    nTypes - 1,    1  );
-Param( Subtype,   int,     L"FilterSubtype",    kLowPass,      0,    nSubTypes - 1, 1  );
-Param( Order,     int,     L"Order",            1,             1,    10,               1  );
-Param( Cutoff,    float,   L"Cutoff",           1000.0,        1.0,  FLT_MAX,          1  );
-Param( Passband,  float,   L"PassbandRipple",   1.0,           0.0,  100.0,            1  );
-Param( Stopband,  float,   L"StopbandRipple",   30.0,          0.0,  100.0,            1  );
+static auto Type = EnumParameter(
+                           L"FilterType",       kButterworth,  0,    nTypes - 1,    1, kTypeStrings, nTypes  );
+static auto Subtype = EnumParameter(
+                           L"FilterSubtype",    kLowPass,      0,    nSubTypes - 1, 1, kSubTypeStrings, nSubTypes  );
+static auto Order = Parameter<int>(
+                           L"Order",            1,             1,    10,               1  );
+static auto Cutoff = Parameter<float>(
+                           L"Cutoff",           1000.0,        1.0,  FLT_MAX,          1  );
+static auto Passband = Parameter<float>(
+                           L"PassbandRipple",   1.0,           0.0,  100.0,            1  );
+static auto Stopband = Parameter<float>(
+                           L"StopbandRipple",   30.0,          0.0,  100.0,            1  );
 
 //----------------------------------------------------------------------------
 // EffectScienFilter
@@ -155,12 +161,12 @@ END_EVENT_TABLE()
 
 EffectScienFilter::EffectScienFilter()
 {
-   mOrder = DEF_Order;
-   mFilterType = DEF_Type;
-   mFilterSubtype = DEF_Subtype;
-   mCutoff = DEF_Cutoff;
-   mRipple = DEF_Passband;
-   mStopbandRipple = DEF_Stopband;
+   mOrder = Order.def;
+   mFilterType = Type.def;
+   mFilterSubtype = Subtype.def;
+   mCutoff = Cutoff.def;
+   mRipple = Passband.def;
+   mStopbandRipple = Stopband.def;
 
    SetLinearEffectFlag(true);
 
@@ -246,12 +252,12 @@ bool EffectScienFilter::DefineParams( ShuttleParams & S ){
 
 bool EffectScienFilter::GetAutomationParameters(CommandParameters & parms)
 {
-   parms.Write(KEY_Type, kTypeStrings[mFilterType].Internal());
-   parms.Write(KEY_Subtype, kSubTypeStrings[mFilterSubtype].Internal());
-   parms.Write(KEY_Order, mOrder);
-   parms.WriteFloat(KEY_Cutoff, mCutoff);
-   parms.WriteFloat(KEY_Passband, mRipple);
-   parms.WriteFloat(KEY_Stopband, mStopbandRipple);
+   parms.Write(Type.key, kTypeStrings[mFilterType].Internal());
+   parms.Write(Subtype.key, kSubTypeStrings[mFilterSubtype].Internal());
+   parms.Write(Order.key, mOrder);
+   parms.WriteFloat(Cutoff.key, mCutoff);
+   parms.WriteFloat(Passband.key, mRipple);
+   parms.WriteFloat(Stopband.key, mStopbandRipple);
 
    return true;
 }
@@ -299,7 +305,7 @@ bool EffectScienFilter::Startup()
 	   double dTemp;
       gPrefs->Read(base + L"Order", &mOrder, 1);
       mOrder = std::max (1, mOrder);
-      mOrder = std::min (MAX_Order, mOrder);
+      mOrder = std::min (Order.max, mOrder);
       gPrefs->Read(base + L"FilterType", &mFilterType, 0);
       mFilterType = std::max (0, mFilterType);
       mFilterType = std::min (2, mFilterType);
@@ -517,7 +523,7 @@ void EffectScienFilter::PopulateOrExchange(ShuttleGui & S)
             .Text(XO("Passband Ripple (dB)"))
             .Validator<FloatingPointValidator<float>>(
                1, &mRipple, NumValidatorStyle::DEFAULT,
-               MIN_Passband, MAX_Passband)
+               Passband.min, Passband.max)
             .AddTextBox( {}, L"", 10);
 
          mRippleCtlU =
@@ -539,7 +545,7 @@ void EffectScienFilter::PopulateOrExchange(ShuttleGui & S)
             .Text(XO("Cutoff (Hz)"))
             .Validator<FloatingPointValidator<float>>(
                1, &mCutoff, NumValidatorStyle::DEFAULT,
-               MIN_Cutoff, mNyquist - 1)
+               Cutoff.min, mNyquist - 1)
             .AddTextBox(XXO("C&utoff:"), L"", 10);
 
          S
@@ -556,7 +562,7 @@ void EffectScienFilter::PopulateOrExchange(ShuttleGui & S)
             .Text(XO("Minimum S&topband Attenuation (dB)"))
             .Validator<FloatingPointValidator<float>>(
                1, &mStopbandRipple, NumValidatorStyle::DEFAULT,
-               MIN_Stopband, MAX_Stopband)
+               Stopband.min, Stopband.max)
             .AddTextBox( {}, L"", 10);
 
          mStopbandRippleCtlU =

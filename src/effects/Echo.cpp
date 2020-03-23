@@ -33,8 +33,10 @@
 // Define keys, defaults, minimums, and maximums for the effect parameters
 //
 //     Name    Type     Key            Def   Min      Max      Scale
-Param( Delay,  float,   L"Delay",   1.0f, 0.001f,  FLT_MAX, 1.0f );
-Param( Decay,  float,   L"Decay",   0.5f, 0.0f,    FLT_MAX, 1.0f );
+static auto Delay = Parameter<float>(
+                           L"Delay",   1.0f, 0.001f,  FLT_MAX, 1.0f );
+static auto Decay = Parameter<float>(
+                           L"Decay",   0.5f, 0.0f,    FLT_MAX, 1.0f );
 
 const ComponentInterfaceSymbol EffectEcho::Symbol
 { XO("Echo") };
@@ -43,8 +45,8 @@ namespace{ BuiltinEffectsModule::Registration< EffectEcho > reg; }
 
 EffectEcho::EffectEcho()
 {
-   delay = DEF_Delay;
-   decay = DEF_Decay;
+   delay = Delay.def;
+   decay = Decay.def;
 
    SetLinearEffectFlag(true);
 }
@@ -148,8 +150,8 @@ bool EffectEcho::DefineParams( ShuttleParams & S ){
 
 bool EffectEcho::GetAutomationParameters(CommandParameters & parms)
 {
-   parms.WriteFloat(KEY_Delay, delay);
-   parms.WriteFloat(KEY_Decay, decay);
+   parms.WriteFloat(Delay.key, delay);
+   parms.WriteFloat(Decay.key, decay);
 
    return true;
 }
@@ -174,13 +176,13 @@ void EffectEcho::PopulateOrExchange(ShuttleGui & S)
       S
          .Validator<FloatingPointValidator<double>>(
             3, &delay, NumValidatorStyle::NO_TRAILING_ZEROES,
-            MIN_Delay, MAX_Delay )
+            Delay.min, Delay.max )
          .AddTextBox(XXO("&Delay time (seconds):"), L"", 10);
 
       S
          .Validator<FloatingPointValidator<double>>(
             3, &decay, NumValidatorStyle::NO_TRAILING_ZEROES,
-            MIN_Decay, MAX_Decay)
+            Decay.min, Decay.max)
          .AddTextBox(XXO("D&ecay factor:"), L"", 10);
    }
    S.EndMultiColumn();

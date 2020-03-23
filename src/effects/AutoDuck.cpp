@@ -40,13 +40,20 @@
 // Define keys, defaults, minimums, and maximums for the effect parameters
 //
 //     Name                Type     Key                     Def      Min      Max      Scale
-Param( DuckAmountDb,       double,  L"DuckAmountDb",     -12.0,   -24.0,   0.0,     1  );
-Param( InnerFadeDownLen,   double,  L"InnerFadeDownLen", 0.0,     0.0,     3.0,     1  );
-Param( InnerFadeUpLen,     double,  L"InnerFadeUpLen",   0.0,     0.0,     3.0,     1  );
-Param( OuterFadeDownLen,   double,  L"OuterFadeDownLen", 0.5,     0.0,     3.0,     1  );
-Param( OuterFadeUpLen,     double,  L"OuterFadeUpLen",   0.5,     0.0,     3.0,     1  );
-Param( ThresholdDb,        double,  L"ThresholdDb",      -30.0,   -100.0,  0.0,     1  );
-Param( MaximumPause,       double,  L"MaximumPause",     1.0,     0.0,     DBL_MAX, 1  );
+static auto DuckAmountDb = Parameter<double>(
+                           L"DuckAmountDb",     -12.0,   -24.0,   0.0,     1  );
+static auto InnerFadeDownLen = Parameter<double>(
+                           L"InnerFadeDownLen", 0.0,     0.0,     3.0,     1  );
+static auto InnerFadeUpLen = Parameter<double>(
+                           L"InnerFadeUpLen",   0.0,     0.0,     3.0,     1  );
+static auto OuterFadeDownLen = Parameter<double>(
+                           L"OuterFadeDownLen", 0.5,     0.0,     3.0,     1  );
+static auto OuterFadeUpLen = Parameter<double>(
+                           L"OuterFadeUpLen",   0.5,     0.0,     3.0,     1  );
+static auto ThresholdDb = Parameter<double>(
+                           L"ThresholdDb",      -30.0,   -100.0,  0.0,     1  );
+static auto MaximumPause = Parameter<double>(
+                           L"MaximumPause",     1.0,     0.0,     DBL_MAX, 1  );
 
 /*
  * Common constants
@@ -86,13 +93,13 @@ END_EVENT_TABLE()
 
 EffectAutoDuck::EffectAutoDuck()
 {
-   mDuckAmountDb = DEF_DuckAmountDb;
-   mInnerFadeDownLen = DEF_InnerFadeDownLen;
-   mInnerFadeUpLen = DEF_InnerFadeUpLen;
-   mOuterFadeDownLen = DEF_OuterFadeDownLen;
-   mOuterFadeUpLen = DEF_OuterFadeUpLen;
-   mThresholdDb = DEF_ThresholdDb;
-   mMaximumPause = DEF_MaximumPause;
+   mDuckAmountDb = DuckAmountDb.def;
+   mInnerFadeDownLen = InnerFadeDownLen.def;
+   mInnerFadeUpLen = InnerFadeUpLen.def;
+   mOuterFadeDownLen = OuterFadeDownLen.def;
+   mOuterFadeUpLen = OuterFadeUpLen.def;
+   mThresholdDb = ThresholdDb.def;
+   mMaximumPause = MaximumPause.def;
 
    SetLinearEffectFlag(true);
 
@@ -143,13 +150,13 @@ bool EffectAutoDuck::DefineParams( ShuttleParams & S ){
 
 bool EffectAutoDuck::GetAutomationParameters(CommandParameters & parms)
 {
-   parms.Write(KEY_DuckAmountDb, mDuckAmountDb);
-   parms.Write(KEY_InnerFadeDownLen, mInnerFadeDownLen);
-   parms.Write(KEY_InnerFadeUpLen, mInnerFadeUpLen);
-   parms.Write(KEY_OuterFadeDownLen, mOuterFadeDownLen);
-   parms.Write(KEY_OuterFadeUpLen, mOuterFadeUpLen);
-   parms.Write(KEY_ThresholdDb, mThresholdDb);
-   parms.Write(KEY_MaximumPause, mMaximumPause);
+   parms.Write(DuckAmountDb.key, mDuckAmountDb);
+   parms.Write(InnerFadeDownLen.key, mInnerFadeDownLen);
+   parms.Write(InnerFadeUpLen.key, mInnerFadeUpLen);
+   parms.Write(OuterFadeDownLen.key, mOuterFadeDownLen);
+   parms.Write(OuterFadeUpLen.key, mOuterFadeUpLen);
+   parms.Write(ThresholdDb.key, mThresholdDb);
+   parms.Write(MaximumPause.key, mMaximumPause);
 
    return true;
 }
@@ -192,13 +199,13 @@ bool EffectAutoDuck::Startup()
    // Load the old "current" settings
    if (gPrefs->Exists(base))
    {
-      gPrefs->Read(base + L"DuckAmountDb", &mDuckAmountDb, DEF_DuckAmountDb);
-      gPrefs->Read(base + L"InnerFadeDownLen", &mInnerFadeDownLen, DEF_InnerFadeDownLen);
-      gPrefs->Read(base + L"InnerFadeUpLen", &mInnerFadeUpLen, DEF_InnerFadeUpLen);
-      gPrefs->Read(base + L"OuterFadeDownLen", &mOuterFadeDownLen, DEF_OuterFadeDownLen);
-      gPrefs->Read(base + L"OuterFadeUpLen", &mOuterFadeUpLen, DEF_OuterFadeUpLen);
-      gPrefs->Read(base + L"ThresholdDb", &mThresholdDb, DEF_ThresholdDb);
-      gPrefs->Read(base + L"MaximumPause", &mMaximumPause, DEF_MaximumPause);
+      gPrefs->Read(base + L"DuckAmountDb", &mDuckAmountDb, DuckAmountDb.def);
+      gPrefs->Read(base + L"InnerFadeDownLen", &mInnerFadeDownLen, InnerFadeDownLen.def);
+      gPrefs->Read(base + L"InnerFadeUpLen", &mInnerFadeUpLen, InnerFadeUpLen.def);
+      gPrefs->Read(base + L"OuterFadeDownLen", &mOuterFadeDownLen, OuterFadeDownLen.def);
+      gPrefs->Read(base + L"OuterFadeUpLen", &mOuterFadeUpLen, OuterFadeUpLen.def);
+      gPrefs->Read(base + L"ThresholdDb", &mThresholdDb, ThresholdDb.def);
+      gPrefs->Read(base + L"MaximumPause", &mMaximumPause, MaximumPause.def);
 
       SaveUserPreset(GetCurrentSettingsGroup());
       
@@ -441,7 +448,7 @@ void EffectAutoDuck::PopulateOrExchange(ShuttleGui & S)
          S
             .Validator<FloatingPointValidator<double>>(
                1, &mDuckAmountDb, NumValidatorStyle::NO_TRAILING_ZEROES,
-               MIN_DuckAmountDb, MAX_DuckAmountDb )
+               DuckAmountDb.min, DuckAmountDb.max )
             .Text({ {}, XO("db") })
             .AddTextBox(XXO("Duck &amount:"), L"", 10);
 
@@ -451,7 +458,7 @@ void EffectAutoDuck::PopulateOrExchange(ShuttleGui & S)
          S
             .Validator<FloatingPointValidator<double>>(
                2, &mMaximumPause, NumValidatorStyle::NO_TRAILING_ZEROES,
-               MIN_MaximumPause, MAX_MaximumPause )
+               MaximumPause.min, MaximumPause.max )
             .Text({ {}, XO("seconds") })
             .AddTextBox(XXO("Ma&ximum pause:"), L"", 10);
 
@@ -461,7 +468,7 @@ void EffectAutoDuck::PopulateOrExchange(ShuttleGui & S)
          S
             .Validator<FloatingPointValidator<double>>(
                2, &mOuterFadeDownLen, NumValidatorStyle::NO_TRAILING_ZEROES,
-               MIN_OuterFadeDownLen, MAX_OuterFadeDownLen )
+               OuterFadeDownLen.min, OuterFadeDownLen.max )
             .Text({ {}, XO("seconds") })
             .AddTextBox(XXO("Outer fade &down length:"), L"", 10);
 
@@ -470,7 +477,7 @@ void EffectAutoDuck::PopulateOrExchange(ShuttleGui & S)
          mOuterFadeUpLenBox =
          S.Validator<FloatingPointValidator<double>>(
                2, &mOuterFadeUpLen, NumValidatorStyle::NO_TRAILING_ZEROES,
-               MIN_OuterFadeUpLen, MAX_OuterFadeUpLen )
+               OuterFadeUpLen.min, OuterFadeUpLen.max )
             .Text({ {}, XO("seconds") })
             .AddTextBox(XXO("Outer fade &up length:"), L"", 10);
 
@@ -480,7 +487,7 @@ void EffectAutoDuck::PopulateOrExchange(ShuttleGui & S)
          S
             .Validator<FloatingPointValidator<double>>(
                2, &mInnerFadeDownLen, NumValidatorStyle::NO_TRAILING_ZEROES,
-               MIN_InnerFadeDownLen, MAX_InnerFadeDownLen )
+               InnerFadeDownLen.min, InnerFadeDownLen.max )
             .Text({ {}, XO("seconds") })
             .AddTextBox(XXO("Inner fade d&own length:"), L"", 10);
 
@@ -489,7 +496,7 @@ void EffectAutoDuck::PopulateOrExchange(ShuttleGui & S)
          mInnerFadeUpLenBox =
          S.Validator<FloatingPointValidator<double>>(
                2, &mInnerFadeUpLen, NumValidatorStyle::NO_TRAILING_ZEROES,
-               MIN_InnerFadeUpLen, MAX_InnerFadeUpLen )
+               InnerFadeUpLen.min, InnerFadeUpLen.max )
             .Text({ {}, XO("seconds") })
             .AddTextBox(XXO("Inner &fade up length:"), L"", 10);
 
@@ -503,7 +510,7 @@ void EffectAutoDuck::PopulateOrExchange(ShuttleGui & S)
          S
             .Validator<FloatingPointValidator<double>>(
                2, &mThresholdDb, NumValidatorStyle::NO_TRAILING_ZEROES,
-               MIN_ThresholdDb, MAX_ThresholdDb )
+               ThresholdDb.min, ThresholdDb.max )
             .Text({ {}, XO("db") })
             .AddTextBox(XXO("&Threshold:"), L"", 10);
 
@@ -616,7 +623,7 @@ void EffectAutoDuck::OnValueChanged(wxCommandEvent & WXUNUSED(evt))
  */
 
 #define CONTROL_POINT_REGION 10 // pixel distance to click on a control point
-#define CONTROL_POINT_MIN_MOVE 5 // min mouse move until value is changed
+#define MIN_CONTROL_POINT_MOVE 5 // min mouse move until value is changed
 
 #define TEXT_DISTANCE 15 // pixel distance text <-> center of control point
 
@@ -707,11 +714,11 @@ void EffectAutoDuckPanel::OnPaint(wxPaintEvent & WXUNUSED(evt))
    mEffect->mOuterFadeDownLenBox->GetValue().ToDouble(&outerFadeDownLen);
    mEffect->mOuterFadeUpLenBox->GetValue().ToDouble(&outerFadeUpLen);
 
-   if (innerFadeDownLen < MIN_InnerFadeDownLen || innerFadeDownLen > MAX_InnerFadeDownLen ||
-       innerFadeUpLen < MIN_InnerFadeUpLen     || innerFadeUpLen > MAX_InnerFadeUpLen     ||
-       outerFadeDownLen < MIN_OuterFadeDownLen || outerFadeDownLen > MAX_OuterFadeDownLen ||
-       outerFadeUpLen < MIN_OuterFadeUpLen     || outerFadeUpLen > MAX_OuterFadeUpLen     ||
-       duckAmountDb < MIN_DuckAmountDb         || duckAmountDb > MAX_DuckAmountDb)
+   if (innerFadeDownLen < InnerFadeDownLen.min || innerFadeDownLen > InnerFadeDownLen.max ||
+       innerFadeUpLen < InnerFadeUpLen.min     || innerFadeUpLen > InnerFadeUpLen.max     ||
+       outerFadeDownLen < OuterFadeDownLen.min || outerFadeDownLen > OuterFadeDownLen.max ||
+       outerFadeUpLen < OuterFadeUpLen.min     || outerFadeUpLen > OuterFadeUpLen.max     ||
+       duckAmountDb < DuckAmountDb.min         || duckAmountDb > DuckAmountDb.max)
    {
       // values are out of range, no preview available
       wxString message = _("Preview not available");
@@ -932,7 +939,7 @@ void EffectAutoDuckPanel::OnMotion(wxMouseEvent & evt)
          else
             dist = abs(evt.GetX() - mMouseDownPoint.x);
 
-         if (dist >= CONTROL_POINT_MIN_MOVE)
+         if (dist >= MIN_CONTROL_POINT_MOVE)
             mControlPointMoveActivated = true;
       }
 
@@ -944,23 +951,23 @@ void EffectAutoDuckPanel::OnMotion(wxMouseEvent & evt)
          {
          case outerFadeDown:
             newValue = ((double)(FADE_DOWN_START - evt.GetX())) / FADE_SCALE;
-            mEffect->mOuterFadeDownLen = TrapDouble(newValue, MIN_OuterFadeDownLen, MAX_OuterFadeDownLen);
+            mEffect->mOuterFadeDownLen = TrapDouble(newValue, OuterFadeDownLen.min, OuterFadeDownLen.max);
             break;
          case outerFadeUp:
             newValue = ((double)(evt.GetX() - FADE_UP_START)) / FADE_SCALE;
-            mEffect->mOuterFadeUpLen = TrapDouble(newValue, MIN_OuterFadeUpLen, MAX_OuterFadeUpLen);
+            mEffect->mOuterFadeUpLen = TrapDouble(newValue, OuterFadeUpLen.min, OuterFadeUpLen.max);
             break;
          case innerFadeDown:
             newValue = ((double)(evt.GetX() - FADE_DOWN_START)) / FADE_SCALE;
-            mEffect->mInnerFadeDownLen = TrapDouble(newValue, MIN_InnerFadeDownLen, MAX_InnerFadeDownLen);
+            mEffect->mInnerFadeDownLen = TrapDouble(newValue, InnerFadeDownLen.min, InnerFadeDownLen.max);
             break;
          case innerFadeUp:
             newValue = ((double)(FADE_UP_START - evt.GetX())) / FADE_SCALE;
-            mEffect->mInnerFadeUpLen = TrapDouble(newValue, MIN_InnerFadeUpLen, MAX_InnerFadeUpLen);
+            mEffect->mInnerFadeUpLen = TrapDouble(newValue, InnerFadeUpLen.min, InnerFadeUpLen.max);
             break;
          case duckAmount:
             newValue = ((double)(DUCK_AMOUNT_START - evt.GetY())) / DUCK_AMOUNT_SCALE;
-            mEffect->mDuckAmountDb = TrapDouble(newValue, MIN_DuckAmountDb, MAX_DuckAmountDb);
+            mEffect->mDuckAmountDb = TrapDouble(newValue, DuckAmountDb.min, DuckAmountDb.max);
             break;
          case none:
             wxASSERT(false); // should not happen

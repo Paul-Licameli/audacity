@@ -36,10 +36,14 @@
 // Define keys, defaults, minimums, and maximums for the effect parameters
 //
 //     Name         Type     Key                        Def      Min      Max   Scale
-Param( PeakLevel,   double,  L"PeakLevel",           -1.0,    -145.0,  0.0,  1  );
-Param( RemoveDC,    bool,    L"RemoveDcOffset",      true,    false,   true, 1  );
-Param( ApplyGain,   bool,    L"ApplyGain",           true,    false,   true, 1  );
-Param( StereoInd,   bool,    L"StereoIndependent",   false,   false,   true, 1  );
+static auto PeakLevel = Parameter<double>(
+                           L"PeakLevel",           -1.0,    -145.0,  0.0,  1  );
+static auto RemoveDC = Parameter<bool>(
+                           L"RemoveDcOffset",      true,    false,   true, 1  );
+static auto ApplyGain = Parameter<bool>(
+                           L"ApplyGain",           true,    false,   true, 1  );
+static auto StereoInd = Parameter<bool>(
+                           L"StereoIndependent",   false,   false,   true, 1  );
 
 const ComponentInterfaceSymbol EffectNormalize::Symbol
 { XO("Normalize") };
@@ -53,10 +57,10 @@ END_EVENT_TABLE()
 
 EffectNormalize::EffectNormalize()
 {
-   mPeakLevel = DEF_PeakLevel;
-   mDC = DEF_RemoveDC;
-   mGain = DEF_ApplyGain;
-   mStereoInd = DEF_StereoInd;
+   mPeakLevel = PeakLevel.def;
+   mDC = RemoveDC.def;
+   mGain = ApplyGain.def;
+   mStereoInd = StereoInd.def;
 
    SetLinearEffectFlag(false);
 }
@@ -100,10 +104,10 @@ bool EffectNormalize::DefineParams( ShuttleParams & S ){
 
 bool EffectNormalize::GetAutomationParameters(CommandParameters & parms)
 {
-   parms.Write(KEY_PeakLevel, mPeakLevel);
-   parms.Write(KEY_ApplyGain, mGain);
-   parms.Write(KEY_RemoveDC, mDC);
-   parms.Write(KEY_StereoInd, mStereoInd);
+   parms.Write(PeakLevel.key, mPeakLevel);
+   parms.Write(ApplyGain.key, mGain);
+   parms.Write(RemoveDC.key, mDC);
+   parms.Write(StereoInd.key, mStereoInd);
 
    return true;
 }
@@ -174,7 +178,7 @@ bool EffectNormalize::Process()
    if( mGain )
    {
       // same value used for all tracks
-      ratio = DB_TO_LINEAR(TrapDouble(mPeakLevel, MIN_PeakLevel, MAX_PeakLevel));
+      ratio = DB_TO_LINEAR(TrapDouble(mPeakLevel, PeakLevel.min, PeakLevel.max));
    }
    else {
       ratio = 1.0;
@@ -316,8 +320,8 @@ void EffectNormalize::PopulateOrExchange(ShuttleGui & S)
                      2,
                      &mPeakLevel,
                      NumValidatorStyle::ONE_TRAILING_ZERO,
-                     MIN_PeakLevel,
-                     MAX_PeakLevel )
+                     PeakLevel.min,
+                     PeakLevel.max )
                   .AddTextBox( {}, L"", 10);
 
                mLeveldB =

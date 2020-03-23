@@ -72,8 +72,10 @@ enum {
 // Define keys, defaults, minimums, and maximums for the effect parameters
 //
 //     Name          Type     Key               Def   Min      Max      Scale
-Param( Percentage,   double,  L"Percentage", 0.0,  -99.0,   3000.0,  1  );
-Param( UseSBSMS,     bool,    L"SBSMS",     false, false,   true,    1  );
+static auto Percentage = Parameter<double>(
+                           L"Percentage", 0.0,  -99.0,   3000.0,  1  );
+static auto UseSBSMS = Parameter<bool>(
+                           L"SBSMS",     false, false,   true,    1  );
 
 // We warp the slider to go up to 400%, but user can enter up to 3000%
 static const double kSliderMax = 100.0;          // warped above zero to actually go up to 400%
@@ -103,13 +105,13 @@ END_EVENT_TABLE()
 
 EffectChangePitch::EffectChangePitch()
 {
-   m_dPercentChange = DEF_Percentage;
+   m_dPercentChange = Percentage.def;
    m_dSemitonesChange = 0.0;
    m_dStartFrequency = 0.0; // 0.0 => uninitialized
    m_bLoopDetect = false;
 
 #if USE_SBSMS
-   mUseSBSMS = DEF_UseSBSMS;
+   mUseSBSMS = UseSBSMS.def;
 #else
    mUseSBSMS = false;
 #endif
@@ -170,8 +172,8 @@ bool EffectChangePitch::DefineParams( ShuttleParams & S ){
 
 bool EffectChangePitch::GetAutomationParameters(CommandParameters & parms)
 {
-   parms.Write(KEY_Percentage, m_dPercentChange);
-   parms.Write(KEY_UseSBSMS, mUseSBSMS);
+   parms.Write(Percentage.key, m_dPercentChange);
+   parms.Write(UseSBSMS.key, mUseSBSMS);
 
    return true;
 }
@@ -369,7 +371,7 @@ void EffectChangePitch::PopulateOrExchange(ShuttleGui & S)
                .Validator<FloatingPointValidator<double>>(
                   3, &m_dPercentChange,
                   NumValidatorStyle::THREE_TRAILING_ZEROES,
-                  MIN_Percentage, MAX_Percentage )
+                  Percentage.min, Percentage.max )
                .AddTextBox(XXO("Percent C&hange:"), L"", 12);
          }
          S.EndHorizontalLay();
@@ -381,7 +383,7 @@ void EffectChangePitch::PopulateOrExchange(ShuttleGui & S)
                .Id(ID_PercentChange)
                .Text(XO("Percent Change"))
                .Style(wxSL_HORIZONTAL)
-               .AddSlider( {}, 0, (int)kSliderMax, (int)MIN_Percentage);
+               .AddSlider( {}, 0, (int)kSliderMax, (int)Percentage.min);
          }
          S.EndHorizontalLay();
       }
@@ -761,7 +763,7 @@ void EffectChangePitch::OnText_ToFrequency(wxCommandEvent & WXUNUSED(evt))
    // Success. Make sure OK and Preview are disabled if percent change is out of bounds.
    // Can happen while editing.
    // If the value is good, might also need to re-enable because of above clause.
-   bool bIsGoodValue = (m_dPercentChange > MIN_Percentage) && (m_dPercentChange <= MAX_Percentage);
+   bool bIsGoodValue = (m_dPercentChange > Percentage.min) && (m_dPercentChange <= Percentage.max);
    EnableApply(bIsGoodValue);
 }
 

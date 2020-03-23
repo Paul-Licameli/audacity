@@ -1,0 +1,7 @@
+s#DEF_([_a-zA-Z0-9]*)#\1.def#g
+s#KEY_([_a-zA-Z0-9]*)#\1.key#g
+s#MIN_([_a-zA-Z0-9]*)#\1.min#g
+s#MAX_([_a-zA-Z0-9]*)#\1.max#g
+s#SCL_([_a-zA-Z0-9]*)#\1.scale#g
+s#^Param\( *([_a-zA-Z0-9]*) *, *([^, ]*) *, *#auto \1 = Param<\2>(#
+s#Param<wxChar *[*]>#Param<const wxChar*>#

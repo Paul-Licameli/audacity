@@ -50,9 +50,12 @@ enum
 // Define keys, defaults, minimums, and maximums for the effect parameters
 //
 //     Name       Type     Key                     Def         Min         Max            Scale
-Param( Ratio,     float,   L"Ratio",            0.9f,       0.003162f,  316.227766f,   1.0f  );
-Param( Amp,       float,   L"",                -0.91515f,  -50.0f,     50.0f,         10.0f );
-Param( Clipping,  bool,    L"AllowClipping",    false,    false,  true,    1  );
+static auto Ratio = Parameter<float>(
+                           L"Ratio",            0.9f,       0.003162f,  316.227766f,   1.0f  );
+static auto Amp = Parameter<float>(
+                           L"",                -0.91515f,  -50.0f,     50.0f,         10.0f );
+static auto Clipping = Parameter<bool>(
+                           L"AllowClipping",    false,    false,  true,    1  );
 
 //
 // EffectAmplify
@@ -72,7 +75,7 @@ END_EVENT_TABLE()
 
 EffectAmplify::EffectAmplify()
 {
-   mAmp = DEF_Amp;
+   mAmp = Amp.def;
    mRatio = DB_TO_LINEAR(mAmp);
    mRatioClip = 0.0;
    mCanClip = false;
@@ -140,9 +143,9 @@ bool EffectAmplify::DefineParams( ShuttleParams & S ){
 
 bool EffectAmplify::GetAutomationParameters(CommandParameters & parms)
 {
-   parms.WriteFloat(KEY_Ratio, mRatio);
+   parms.WriteFloat(Ratio.key, mRatio);
    if (!IsBatchProcessing())
-      parms.WriteFloat(KEY_Clipping, mCanClip);
+      parms.WriteFloat(Clipping.key, mCanClip);
 
    return true;
 }
@@ -244,7 +247,7 @@ void EffectAmplify::PopulateOrExchange(ShuttleGui & S)
          S
             .Id(ID_Amp)
             .Validator<FloatingPointValidator<double>>(
-               precision, &mAmp, NumValidatorStyle::ONE_TRAILING_ZERO, MIN_Amp, MAX_Amp )
+               precision, &mAmp, NumValidatorStyle::ONE_TRAILING_ZERO, Amp.min, Amp.max )
             .AddTextBox(XXO("&Amplification (dB):"), L"", 12);
       }
       S.EndMultiColumn();
@@ -257,7 +260,7 @@ void EffectAmplify::PopulateOrExchange(ShuttleGui & S)
             .Id(ID_Amp)
             .Style(wxSL_HORIZONTAL)
             .Text(XO("Amplification dB"))
-            .AddSlider( {}, 0, MAX_Amp * SCL_Amp, MIN_Amp * SCL_Amp);
+            .AddSlider( {}, 0, Amp.max * Amp.scale, Amp.min * Amp.scale);
       }
       S.EndHorizontalLay();
 
@@ -273,8 +276,8 @@ void EffectAmplify::PopulateOrExchange(ShuttleGui & S)
                precision + 1,
                &mNewPeak, NumValidatorStyle::ONE_TRAILING_ZERO,
                // min and max need same precision as what we're validating (bug 963)
-               RoundValue( precision + 1, MIN_Amp + LINEAR_TO_DB(mPeak) ),
-               RoundValue( precision + 1, MAX_Amp + LINEAR_TO_DB(mPeak) ) )
+               RoundValue( precision + 1, Amp.min + LINEAR_TO_DB(mPeak) ),
+               RoundValue( precision + 1, Amp.max + LINEAR_TO_DB(mPeak) ) )
             .AddTextBox(XXO("&New Peak Amplitude (dB):"), L"", 12);
       }
       S.EndMultiColumn();
@@ -300,14 +303,14 @@ bool EffectAmplify::TransferDataToWindow()
 {
    // limit range of gain
    double dBInit = LINEAR_TO_DB(mRatio);
-   double dB = TrapDouble(dBInit, MIN_Amp, MAX_Amp);
+   double dB = TrapDouble(dBInit, Amp.min, Amp.max);
    if (dB != dBInit)
       mRatio = DB_TO_LINEAR(dB);
 
    mAmp = LINEAR_TO_DB(mRatio);
    mAmpT->GetValidator()->TransferToWindow();
 
-   mAmpS->SetValue((int) (mAmp * SCL_Amp + 0.5f));
+   mAmpS->SetValue((int) (mAmp * Amp.scale + 0.5f));
 
    mNewPeak = LINEAR_TO_DB(mRatio * mPeak);
    mNewPeakT->GetValidator()->TransferToWindow();
@@ -326,7 +329,7 @@ bool EffectAmplify::TransferDataFromWindow()
       return false;
    }
 
-   mRatio = DB_TO_LINEAR(TrapDouble(mAmp * SCL_Amp, MIN_Amp * SCL_Amp, MAX_Amp * SCL_Amp) / SCL_Amp);
+   mRatio = DB_TO_LINEAR(TrapDouble(mAmp * Amp.scale, Amp.min * Amp.scale, Amp.max * Amp.scale) / Amp.scale);
 
    mCanClip = mClip->GetValue();
 
@@ -353,9 +356,9 @@ void EffectAmplify::OnAmpText(wxCommandEvent & WXUNUSED(evt))
       return;
    }
 
-   mRatio = DB_TO_LINEAR(TrapDouble(mAmp * SCL_Amp, MIN_Amp * SCL_Amp, MAX_Amp * SCL_Amp) / SCL_Amp);
+   mRatio = DB_TO_LINEAR(TrapDouble(mAmp * Amp.scale, Amp.min * Amp.scale, Amp.max * Amp.scale) / Amp.scale);
 
-   mAmpS->SetValue((int) (LINEAR_TO_DB(mRatio) * SCL_Amp + 0.5));
+   mAmpS->SetValue((int) (LINEAR_TO_DB(mRatio) * Amp.scale + 0.5));
 
    mNewPeak = LINEAR_TO_DB(mRatio * mPeak);
    mNewPeakT->GetValidator()->TransferToWindow();
@@ -377,24 +380,24 @@ void EffectAmplify::OnPeakText(wxCommandEvent & WXUNUSED(evt))
       mRatio = DB_TO_LINEAR(mNewPeak) / mPeak;
 
    double ampInit = LINEAR_TO_DB(mRatio);
-   mAmp = TrapDouble(ampInit, MIN_Amp, MAX_Amp);
+   mAmp = TrapDouble(ampInit, Amp.min, Amp.max);
    if (mAmp != ampInit)
       mRatio = DB_TO_LINEAR(mAmp);
 
    mAmpT->GetValidator()->TransferToWindow();
 
-   mAmpS->SetValue((int) (mAmp * SCL_Amp + 0.5f));
+   mAmpS->SetValue((int) (mAmp * Amp.scale + 0.5f));
 
    CheckClip();
 }
 
 void EffectAmplify::OnAmpSlider(wxCommandEvent & evt)
 {
-   double dB = evt.GetInt() / SCL_Amp;
-   mRatio = DB_TO_LINEAR(TrapDouble(dB, MIN_Amp, MAX_Amp));
+   double dB = evt.GetInt() / Amp.scale;
+   mRatio = DB_TO_LINEAR(TrapDouble(dB, Amp.min, Amp.max));
 
-   double dB2 = (evt.GetInt() - 1) / SCL_Amp;
-   double ratio2 = DB_TO_LINEAR(TrapDouble(dB2, MIN_Amp, MAX_Amp));
+   double dB2 = (evt.GetInt() - 1) / Amp.scale;
+   double ratio2 = DB_TO_LINEAR(TrapDouble(dB2, Amp.min, Amp.max));
 
    if (!mClip->GetValue() && mRatio * mPeak > 1.0 && ratio2 * mPeak < 1.0)
    {

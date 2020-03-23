@@ -37,8 +37,10 @@
 // Define keys, defaults, minimums, and maximums for the effect parameters
 //
 //     Name    Type  Key                     Def   Min   Max      Scale
-Param( Start,  int,  L"Duty Cycle Start", 3,    1,    INT_MAX, 1   );
-Param( Stop,   int,  L"Duty Cycle End",   3,    1,    INT_MAX, 1   );
+static auto Start = Parameter<int>(
+                           L"Duty Cycle Start", 3,    1,    INT_MAX, 1   );
+static auto Stop = Parameter<int>(
+                           L"Duty Cycle End",   3,    1,    INT_MAX, 1   );
 
 const ComponentInterfaceSymbol EffectFindClipping::Symbol
 { XO("Find Clipping") };
@@ -47,8 +49,8 @@ namespace{ BuiltinEffectsModule::Registration< EffectFindClipping > reg; }
 
 EffectFindClipping::EffectFindClipping()
 {
-   mStart = DEF_Start;
-   mStop = DEF_Stop;
+   mStart = Start.def;
+   mStop = Stop.def;
 }
 
 EffectFindClipping::~EffectFindClipping()
@@ -88,8 +90,8 @@ bool EffectFindClipping::DefineParams( ShuttleParams & S ){
 
 bool EffectFindClipping::GetAutomationParameters(CommandParameters & parms)
 {
-   parms.Write(KEY_Start, mStart);
-   parms.Write(KEY_Stop, mStop);
+   parms.Write(Start.key, mStart);
+   parms.Write(Stop.key, mStop);
 
    return true;
 }
@@ -245,12 +247,12 @@ void EffectFindClipping::PopulateOrExchange(ShuttleGui & S)
    {
       S
          .Validator<IntegerValidator<int>>(
-            &mStart, NumValidatorStyle::DEFAULT, MIN_Start)
+            &mStart, NumValidatorStyle::DEFAULT, Start.min)
          .TieTextBox(XXO("&Start threshold (samples):"), mStart, 10);
 
       S
          .Validator<IntegerValidator<int>>(
-            &mStop, NumValidatorStyle::DEFAULT, MIN_Stop)
+            &mStop, NumValidatorStyle::DEFAULT, Stop.min)
          .TieTextBox(XXO("St&op threshold (samples):"), mStop, 10);
    }
    S.EndMultiColumn();

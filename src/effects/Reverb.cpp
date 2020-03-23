@@ -47,16 +47,26 @@ enum
 // Define keys, defaults, minimums, and maximums for the effect parameters
 //
 //     Name          Type     Key                  Def      Min      Max   Scale
-Param( RoomSize,     double,  L"RoomSize",      75,      0,       100,  1  );
-Param( PreDelay,     double,  L"Delay",         10,      0,       200,  1  );
-Param( Reverberance, double,  L"Reverberance",  50,      0,       100,  1  );
-Param( HfDamping,    double,  L"HfDamping",     50,      0,       100,  1  );
-Param( ToneLow,      double,  L"ToneLow",       100,     0,       100,  1  );
-Param( ToneHigh,     double,  L"ToneHigh",      100,     0,       100,  1  );
-Param( WetGain,      double,  L"WetGain",       -1,      -20,     10,   1  );
-Param( DryGain,      double,  L"DryGain",       -1,      -20,     10,   1  );
-Param( StereoWidth,  double,  L"StereoWidth",   100,     0,       100,  1  );
-Param( WetOnly,      bool,    L"WetOnly",       false,   false,   true, 1  );
+static auto RoomSize = Parameter<double>(
+                           L"RoomSize",      75,      0,       100,  1  );
+static auto PreDelay = Parameter<double>(
+                           L"Delay",         10,      0,       200,  1  );
+static auto Reverberance = Parameter<double>(
+                           L"Reverberance",  50,      0,       100,  1  );
+static auto HfDamping = Parameter<double>(
+                           L"HfDamping",     50,      0,       100,  1  );
+static auto ToneLow = Parameter<double>(
+                           L"ToneLow",       100,     0,       100,  1  );
+static auto ToneHigh = Parameter<double>(
+                           L"ToneHigh",      100,     0,       100,  1  );
+static auto WetGain = Parameter<double>(
+                           L"WetGain",       -1,      -20,     10,   1  );
+static auto DryGain = Parameter<double>(
+                           L"DryGain",       -1,      -20,     10,   1  );
+static auto StereoWidth = Parameter<double>(
+                           L"StereoWidth",   100,     0,       100,  1  );
+static auto WetOnly = Parameter<bool>(
+                           L"WetOnly",       false,   false,   true, 1  );
 
 static const struct
 {
@@ -116,16 +126,16 @@ END_EVENT_TABLE()
 
 EffectReverb::EffectReverb()
 {
-   mParams.mRoomSize = DEF_RoomSize;
-   mParams.mPreDelay = DEF_PreDelay;
-   mParams.mReverberance = DEF_Reverberance;
-   mParams.mHfDamping = DEF_HfDamping;
-   mParams.mToneLow = DEF_ToneLow;
-   mParams.mToneHigh = DEF_ToneHigh;
-   mParams.mWetGain = DEF_WetGain;
-   mParams.mDryGain = DEF_DryGain;
-   mParams.mStereoWidth = DEF_StereoWidth;
-   mParams.mWetOnly = DEF_WetOnly;
+   mParams.mRoomSize = RoomSize.def;
+   mParams.mPreDelay = PreDelay.def;
+   mParams.mReverberance = Reverberance.def;
+   mParams.mHfDamping = HfDamping.def;
+   mParams.mToneLow = ToneLow.def;
+   mParams.mToneHigh = ToneHigh.def;
+   mParams.mWetGain = WetGain.def;
+   mParams.mDryGain = DryGain.def;
+   mParams.mStereoWidth = StereoWidth.def;
+   mParams.mWetOnly = WetOnly.def;
 
    mProcessingEvent = false;
 
@@ -293,16 +303,16 @@ bool EffectReverb::DefineParams( ShuttleParams & S ){
 
 bool EffectReverb::GetAutomationParameters(CommandParameters & parms)
 {
-   parms.Write(KEY_RoomSize, mParams.mRoomSize);
-   parms.Write(KEY_PreDelay, mParams.mPreDelay);
-   parms.Write(KEY_Reverberance, mParams.mReverberance);
-   parms.Write(KEY_HfDamping, mParams.mHfDamping);
-   parms.Write(KEY_ToneLow, mParams.mToneLow);
-   parms.Write(KEY_ToneHigh, mParams.mToneHigh);
-   parms.Write(KEY_WetGain, mParams.mWetGain);
-   parms.Write(KEY_DryGain, mParams.mDryGain);
-   parms.Write(KEY_StereoWidth, mParams.mStereoWidth);
-   parms.Write(KEY_WetOnly, mParams.mWetOnly);
+   parms.Write(RoomSize.key, mParams.mRoomSize);
+   parms.Write(PreDelay.key, mParams.mPreDelay);
+   parms.Write(Reverberance.key, mParams.mReverberance);
+   parms.Write(HfDamping.key, mParams.mHfDamping);
+   parms.Write(ToneLow.key, mParams.mToneLow);
+   parms.Write(ToneHigh.key, mParams.mToneHigh);
+   parms.Write(WetGain.key, mParams.mWetGain);
+   parms.Write(DryGain.key, mParams.mDryGain);
+   parms.Write(StereoWidth.key, mParams.mStereoWidth);
+   parms.Write(WetOnly.key, mParams.mWetOnly);
 
    return true;
 }
@@ -380,16 +390,16 @@ bool EffectReverb::Startup()
    // Load the old "current" settings
    if (gPrefs->Exists(base))
    {
-      gPrefs->Read(base + L"RoomSize", &mParams.mRoomSize, DEF_RoomSize);
-      gPrefs->Read(base + L"Delay", &mParams.mPreDelay, DEF_PreDelay);
-      gPrefs->Read(base + L"Reverberance", &mParams.mReverberance, DEF_Reverberance);
-      gPrefs->Read(base + L"HfDamping", &mParams.mHfDamping, DEF_HfDamping);
-      gPrefs->Read(base + L"ToneLow", &mParams.mToneLow, DEF_ToneLow);
-      gPrefs->Read(base + L"ToneHigh", &mParams.mToneHigh, DEF_ToneHigh);
-      gPrefs->Read(base + L"WetGain", &mParams.mWetGain, DEF_WetGain);
-      gPrefs->Read(base + L"DryGain", &mParams.mDryGain, DEF_DryGain);
-      gPrefs->Read(base + L"StereoWidth", &mParams.mStereoWidth, DEF_StereoWidth);
-      gPrefs->Read(base + L"WetOnly", &mParams.mWetOnly, DEF_WetOnly);
+      gPrefs->Read(base + L"RoomSize", &mParams.mRoomSize, RoomSize.def);
+      gPrefs->Read(base + L"Delay", &mParams.mPreDelay, PreDelay.def);
+      gPrefs->Read(base + L"Reverberance", &mParams.mReverberance, Reverberance.def);
+      gPrefs->Read(base + L"HfDamping", &mParams.mHfDamping, HfDamping.def);
+      gPrefs->Read(base + L"ToneLow", &mParams.mToneLow, ToneLow.def);
+      gPrefs->Read(base + L"ToneHigh", &mParams.mToneHigh, ToneHigh.def);
+      gPrefs->Read(base + L"WetGain", &mParams.mWetGain, WetGain.def);
+      gPrefs->Read(base + L"DryGain", &mParams.mDryGain, DryGain.def);
+      gPrefs->Read(base + L"StereoWidth", &mParams.mStereoWidth, StereoWidth.def);
+      gPrefs->Read(base + L"WetOnly", &mParams.mWetOnly, WetOnly.def);
 
       SaveUserPreset(GetCurrentSettingsGroup());
 
@@ -406,16 +416,16 @@ bool EffectReverb::Startup()
          Params save = mParams;
          wxString name;
 
-         gPrefs->Read(path + L"RoomSize", &mParams.mRoomSize, DEF_RoomSize);
-         gPrefs->Read(path + L"Delay", &mParams.mPreDelay, DEF_PreDelay);
-         gPrefs->Read(path + L"Reverberance", &mParams.mReverberance, DEF_Reverberance);
-         gPrefs->Read(path + L"HfDamping", &mParams.mHfDamping, DEF_HfDamping);
-         gPrefs->Read(path + L"ToneLow", &mParams.mToneLow, DEF_ToneLow);
-         gPrefs->Read(path + L"ToneHigh", &mParams.mToneHigh, DEF_ToneHigh);
-         gPrefs->Read(path + L"WetGain", &mParams.mWetGain, DEF_WetGain);
-         gPrefs->Read(path + L"DryGain", &mParams.mDryGain, DEF_DryGain);
-         gPrefs->Read(path + L"StereoWidth", &mParams.mStereoWidth, DEF_StereoWidth);
-         gPrefs->Read(path + L"WetOnly", &mParams.mWetOnly, DEF_WetOnly);
+         gPrefs->Read(path + L"RoomSize", &mParams.mRoomSize, RoomSize.def);
+         gPrefs->Read(path + L"Delay", &mParams.mPreDelay, PreDelay.def);
+         gPrefs->Read(path + L"Reverberance", &mParams.mReverberance, Reverberance.def);
+         gPrefs->Read(path + L"HfDamping", &mParams.mHfDamping, HfDamping.def);
+         gPrefs->Read(path + L"ToneLow", &mParams.mToneLow, ToneLow.def);
+         gPrefs->Read(path + L"ToneHigh", &mParams.mToneHigh, ToneHigh.def);
+         gPrefs->Read(path + L"WetGain", &mParams.mWetGain, WetGain.def);
+         gPrefs->Read(path + L"DryGain", &mParams.mDryGain, DryGain.def);
+         gPrefs->Read(path + L"StereoWidth", &mParams.mStereoWidth, StereoWidth.def);
+         gPrefs->Read(path + L"WetOnly", &mParams.mWetOnly, WetOnly.def);
          gPrefs->Read(path + L"name", &name, wxEmptyString);
       
          if (!name.empty())
@@ -443,11 +453,11 @@ void EffectReverb::PopulateOrExchange(ShuttleGui & S)
 
 #define SpinSlider(n, p) \
       m ## n ## T = S.Id(ID_ ## n). \
-         AddSpinCtrl( p, DEF_ ## n, MAX_ ## n, MIN_ ## n); \
+         AddSpinCtrl( p, n.def, n.max, n.min); \
       S; \
       m ## n ## S = S.Id(ID_ ## n) \
          .Style(wxSL_HORIZONTAL) \
-         .AddSlider( {}, DEF_ ## n, MAX_ ## n, MIN_ ## n);
+         .AddSlider( {}, n.def, n.max, n.min);
 
       SpinSlider(RoomSize,       XXO("&Room Size (%):"))
       SpinSlider(PreDelay,       XXO("&Pre-delay (ms):"))
@@ -469,7 +479,7 @@ void EffectReverb::PopulateOrExchange(ShuttleGui & S)
       mWetOnlyC =
       S
          .Id(ID_WetOnly).
-            AddCheckBox(XXO("Wet O&nly"), DEF_WetOnly);
+            AddCheckBox(XXO("Wet O&nly"), WetOnly.def);
    }
    S.EndHorizontalLay();
 
@@ -532,7 +542,7 @@ bool EffectReverb::TransferDataFromWindow()
    { \
       if (mProcessingEvent) return; \
       mProcessingEvent = true; \
-      m ## n ## S->SetValue(TrapLong(evt.GetInt(), MIN_ ## n, MAX_ ## n)); \
+      m ## n ## S->SetValue(TrapLong(evt.GetInt(), n.min, n.max)); \
       mProcessingEvent = false; \
    }
 

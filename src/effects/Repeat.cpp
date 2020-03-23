@@ -40,7 +40,8 @@
 // Define keys, defaults, minimums, and maximums for the effect parameters
 //
 //     Name    Type  Key             Def  Min   Max      Scale
-Param( Count,  int,  L"Count",    1,  1,    INT_MAX, 1  );
+static auto Count = Parameter<int>(
+                           L"Count",    1,  1,    INT_MAX, 1  );
 
 const ComponentInterfaceSymbol EffectRepeat::Symbol
 { XO("Repeat") };
@@ -53,7 +54,7 @@ END_EVENT_TABLE()
 
 EffectRepeat::EffectRepeat()
 {
-   repeatCount = DEF_Count;
+   repeatCount = Count.def;
 
    SetLinearEffectFlag(true);
 }
@@ -94,7 +95,7 @@ bool EffectRepeat::DefineParams( ShuttleParams & S ){
 
 bool EffectRepeat::GetAutomationParameters(CommandParameters & parms)
 {
-   parms.Write(KEY_Count, repeatCount);
+   parms.Write(Count.key, repeatCount);
 
    return true;
 }
@@ -182,7 +183,7 @@ void EffectRepeat::PopulateOrExchange(ShuttleGui & S)
       S
          .Validator<IntegerValidator<int>>(
             &repeatCount, NumValidatorStyle::DEFAULT,
-            MIN_Count, 2147483647 / mProjectRate )
+            Count.min, 2147483647 / mProjectRate )
          .AddTextBox(XXO("&Number of repeats to add:"), L"", 12);
    }
    S.EndHorizontalLay();

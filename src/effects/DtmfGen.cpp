@@ -47,9 +47,12 @@ enum
 // Define keys, defaults, minimums, and maximums for the effect parameters
 //
 //     Name       Type        Key               Def                   Min      Max      Scale
-Param( Sequence,  wxString,   L"Sequence",   (L"" SHORT_APP_NAME),  L"", L"", L"");
-Param( DutyCycle, double,     L"Duty Cycle", 55.0,                 0.0,     100.0,   10.0   );
-Param( Amplitude, double,     L"Amplitude",  0.8,                  0.001,   1.0,     1      );
+static auto Sequence = Parameter<wxString>(
+                           L"Sequence",   (L"" SHORT_APP_NAME),  L"", L"", L"");
+static auto DutyCycle = Parameter<double>(
+                           L"Duty Cycle", 55.0,                 0.0,     100.0,   10.0   );
+static auto Amplitude = Parameter<double>(
+                           L"Amplitude",  0.8,                  0.001,   1.0,     1      );
 
 static const double kFadeInOut = 250.0; // used for fadein/out needed to remove clicking noise
 
@@ -86,9 +89,9 @@ END_EVENT_TABLE()
 
 EffectDtmf::EffectDtmf()
 {
-   dtmfDutyCycle = DEF_DutyCycle;
-   dtmfAmplitude = DEF_Amplitude;
-   dtmfSequence = DEF_Sequence;
+   dtmfDutyCycle = DutyCycle.def;
+   dtmfAmplitude = Amplitude.def;
+   dtmfSequence = Sequence.def;
    dtmfTone = 0.0;
    dtmfSilence = 0.0;
 }
@@ -253,9 +256,9 @@ bool EffectDtmf::DefineParams( ShuttleParams & S ){
 
 bool EffectDtmf::GetAutomationParameters(CommandParameters & parms)
 {
-   parms.Write(KEY_Sequence, dtmfSequence);
-   parms.Write(KEY_DutyCycle, dtmfDutyCycle);
-   parms.Write(KEY_Amplitude, dtmfAmplitude);
+   parms.Write(Sequence.key, dtmfSequence);
+   parms.Write(DutyCycle.key, dtmfDutyCycle);
+   parms.Write(Amplitude.key, dtmfAmplitude);
 
    return true;
 }
@@ -272,7 +275,7 @@ bool EffectDtmf::SetAutomationParameters(CommandParameters & parms)
       symbols += kSymbols[i];
    }
 
-   if (Sequence.find_first_not_of(symbols) != wxString::npos)
+   if (Sequence.cache.find_first_not_of(symbols) != wxString::npos)
    {
       return false;
    }
@@ -349,7 +352,7 @@ void EffectDtmf::PopulateOrExchange(ShuttleGui & S)
          .Id(ID_Amplitude)
          .Validator<FloatingPointValidator<double>>(
             3, &dtmfAmplitude, NumValidatorStyle::NO_TRAILING_ZEROES,
-            MIN_Amplitude, MAX_Amplitude)
+            Amplitude.min, Amplitude.max)
          .AddTextBox(XXO("&Amplitude (0-1):"), L"", 10);
 
       S.AddPrompt(XXO("&Duration:"));
@@ -374,9 +377,9 @@ void EffectDtmf::PopulateOrExchange(ShuttleGui & S)
          .Style(wxSL_HORIZONTAL | wxEXPAND)
          .MinSize( { -1, -1 } )
          .AddSlider( {},
-                     dtmfDutyCycle * SCL_DutyCycle,
-                     MAX_DutyCycle * SCL_DutyCycle,
-                     MIN_DutyCycle * SCL_DutyCycle);
+                     dtmfDutyCycle * DutyCycle.scale,
+                     DutyCycle.max * DutyCycle.scale,
+                     DutyCycle.min * DutyCycle.scale);
    }
    S.EndMultiColumn();
 
@@ -417,7 +420,7 @@ bool EffectDtmf::TransferDataToWindow()
       return false;
    }
 
-   mDtmfDutyCycleS->SetValue(dtmfDutyCycle * SCL_DutyCycle);
+   mDtmfDutyCycleS->SetValue(dtmfDutyCycle * DutyCycle.scale);
 
    mDtmfDurationT->SetValue(GetDuration());
 
@@ -433,7 +436,7 @@ bool EffectDtmf::TransferDataFromWindow()
       return false;
    }
 
-   dtmfDutyCycle = (double) mDtmfDutyCycleS->GetValue() / SCL_DutyCycle;
+   dtmfDutyCycle = (double) mDtmfDutyCycleS->GetValue() / DutyCycle.scale;
    SetDuration(mDtmfDurationT->GetValue());
 
    // recalculate to make sure all values are up-to-date. This is especially
@@ -469,7 +472,7 @@ void EffectDtmf::Recalculate()
          // Given this, the right thing to do is to divide the sequence duration
          // by dtmfNTones tones and (dtmfNTones-1) silences each sized according to the duty
          // cycle: original division was:
-         // slot=mDuration / (dtmfNTones*(dtmfDutyCycle/MAX_DutyCycle)+(dtmfNTones-1)*(1.0-dtmfDutyCycle/MAX_DutyCycle))
+         // slot=mDuration / (dtmfNTones*(dtmfDutyCycle/DutyCycle.max)+(dtmfNTones-1)*(1.0-dtmfDutyCycle/DutyCycle.max))
          // which can be simplified in the one below.
          // Then just take the part that belongs to tone or silence.
          //
@@ -650,7 +653,7 @@ void EffectDtmf::OnDuration(wxCommandEvent & WXUNUSED(evt))
 
 void EffectDtmf::OnDutyCycle(wxCommandEvent & evt)
 {
-   dtmfDutyCycle = (double) evt.GetInt() / SCL_DutyCycle;
+   dtmfDutyCycle = (double) evt.GetInt() / DutyCycle.scale;
    Recalculate();
    UpdateUI();
 }
