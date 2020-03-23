@@ -304,8 +304,7 @@ size_t EffectDistortion::RealtimeProcess(int group,
    return InstanceProcess(mSlaves[group], inbuf, outbuf, numSamples);
 }
 bool EffectDistortion::DefineParams( ShuttleParams & S ){
-   S.SHUTTLE_ENUM_PARAM( mTableChoiceIndx, TableTypeIndx,
-      kTableTypeStrings, nTableTypes );
+   S.SHUTTLE_PARAM( mTableChoiceIndx, TableTypeIndx );
    S.SHUTTLE_PARAM( mParams.mDCBlock,       DCBlock       );
    S.SHUTTLE_PARAM( mParams.mThreshold_dB,  Threshold_dB  );
    S.SHUTTLE_PARAM( mParams.mNoiseFloor,    NoiseFloor    );
@@ -332,12 +331,12 @@ bool EffectDistortion::GetAutomationParameters(CommandParameters & parms)
 bool EffectDistortion::SetAutomationParameters(CommandParameters & parms)
 {
    ReadAndVerifyEnum(TableTypeIndx, kTableTypeStrings, nTableTypes);
-   ReadAndVerifyBool(DCBlock);
-   ReadAndVerifyDouble(Threshold_dB);
-   ReadAndVerifyDouble(NoiseFloor);
-   ReadAndVerifyDouble(Param1);
-   ReadAndVerifyDouble(Param2);
-   ReadAndVerifyInt(Repeats);
+   ReadParam(DCBlock);
+   ReadParam(Threshold_dB);
+   ReadParam(NoiseFloor);
+   ReadParam(Param1);
+   ReadParam(Param2);
+   ReadParam(Repeats);
 
    mTableChoiceIndx = TableTypeIndx;
    mParams.mDCBlock = DCBlock;

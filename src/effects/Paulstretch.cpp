@@ -148,8 +148,8 @@ bool EffectPaulstretch::GetAutomationParameters(CommandParameters & parms)
 
 bool EffectPaulstretch::SetAutomationParameters(CommandParameters & parms)
 {
-   ReadAndVerifyFloat(Amount);
-   ReadAndVerifyFloat(Time);
+   ReadParam(Amount);
+   ReadParam(Time);
 
    mAmount = Amount;
    mTime_resolution = Time;

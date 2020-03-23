@@ -371,7 +371,7 @@ bool EffectEqualization::DefineParams( ShuttleParams & S ){
    S.SHUTTLE_PARAM( mM, FilterLength );
    //S.SHUTTLE_PARAM( mCurveName, CurveName);
    S.SHUTTLE_PARAM( mLin, InterpLin);
-   S.SHUTTLE_ENUM_PARAM( mInterp, InterpMeth, kInterpStrings, nInterpolations );
+   S.SHUTTLE_PARAM( mInterp, InterpMeth );
 
    // if saving the preferences...
    if( dynamic_cast<ShuttleGetAutomation*>(&S))
@@ -424,9 +424,9 @@ bool EffectEqualization::SetAutomationParameters(CommandParameters & parms)
    // Pretty sure the interpolation name shouldn't have been interpreted when
    // specified in chains, but must keep it that way for compatibility.
 
-   ReadAndVerifyInt(FilterLength);
-   //ReadAndVerifyString(CurveName);
-   ReadAndVerifyBool(InterpLin);
+   ReadParam(FilterLength);
+   //ReadParam(CurveName);
+   ReadParam(InterpLin);
    ReadAndVerifyEnum(InterpMeth, kInterpStrings, nInterpolations);
 
    mM = FilterLength;

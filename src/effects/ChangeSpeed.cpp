@@ -151,7 +151,7 @@ bool EffectChangeSpeed::GetAutomationParameters(CommandParameters & parms)
 
 bool EffectChangeSpeed::SetAutomationParameters(CommandParameters & parms)
 {
-   ReadAndVerifyDouble(Percentage);
+   ReadParam(Percentage);
 
    m_PercentChange = Percentage;
 

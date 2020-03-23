@@ -115,10 +115,8 @@ public:
    void SHUTTLE_PARAM( Var &var, const EffectParameter< Type > &name )
    { Define( var, name.key, name.def, name.min, name.max, name.scale ); }
 
-   void SHUTTLE_ENUM_PARAM(
-      int &var, const EffectParameter< int > &name,
-      const EnumValueSymbol strings[], size_t nStrings )
-   { DefineEnum( var, name.key, name.def, strings, nStrings ); }
+   void SHUTTLE_PARAM( int &var, const EnumEffectParameter &name )
+   { DefineEnum( var, name.key, name.def, name.symbols, name.nSymbols ); }
 };
 
 /**************************************************************************//**

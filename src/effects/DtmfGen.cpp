@@ -265,9 +265,9 @@ bool EffectDtmf::GetAutomationParameters(CommandParameters & parms)
 
 bool EffectDtmf::SetAutomationParameters(CommandParameters & parms)
 {
-   ReadAndVerifyDouble(DutyCycle);
-   ReadAndVerifyDouble(Amplitude);
-   ReadAndVerifyString(Sequence);
+   ReadParam(DutyCycle);
+   ReadParam(Amplitude);
+   ReadParam(Sequence);
 
    wxString symbols;
    for (unsigned int i = 0; i < WXSIZEOF(kSymbols); i++)

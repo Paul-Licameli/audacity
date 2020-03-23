@@ -158,8 +158,8 @@ bool EffectEcho::GetAutomationParameters(CommandParameters & parms)
 
 bool EffectEcho::SetAutomationParameters(CommandParameters & parms)
 {
-   ReadAndVerifyFloat(Delay);
-   ReadAndVerifyFloat(Decay);
+   ReadParam(Delay);
+   ReadParam(Decay);
 
    delay = Delay;
    decay = Decay;

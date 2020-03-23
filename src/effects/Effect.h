@@ -604,12 +604,8 @@ inline long TrapLong(long x, long min, long max)
    PRange(name, type, key, def, min, max); \
    static const type SCL_ ## name = (scale);
 
-#define ReadParam(type, name) \
+#define ReadParam(name) \
    if (!parms.ReadAndVerify(name.key, &name.cache, name.def, name.min, name.max)) \
-      return false;
-
-#define ReadBasic(type, name) \
-   if (!parms.ReadAndVerify(name.key, &name.cache, name.def)) \
       return false;
 
 #define ReadAndVerifyEnum(name, list, listSize) \
@@ -620,11 +616,5 @@ inline long TrapLong(long x, long min, long max)
    if (!parms.ReadAndVerify( name.key, &name.cache, name.def, \
                             list, listSize, obsoleteList, nObsolete)) \
       return false;
-
-#define ReadAndVerifyInt(name) ReadParam(int, name)
-#define ReadAndVerifyDouble(name) ReadParam(double, name)
-#define ReadAndVerifyFloat(name) ReadParam(float, name)
-#define ReadAndVerifyBool(name) ReadBasic(bool, name)
-#define ReadAndVerifyString(name) ReadBasic(wxString, name)
 
 #endif

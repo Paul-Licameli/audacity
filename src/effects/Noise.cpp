@@ -175,8 +175,9 @@ size_t EffectNoise::ProcessBlock(float **WXUNUSED(inbuf), float **outbuf, size_t
 
    return size;
 }
+
 bool EffectNoise::DefineParams( ShuttleParams & S ){
-   S.SHUTTLE_ENUM_PARAM( mType, Type, kTypeStrings, nTypes );
+   S.SHUTTLE_PARAM( mType, Type );
    S.SHUTTLE_PARAM( mAmp, Amp );
    return true;
 }
@@ -192,7 +193,7 @@ bool EffectNoise::GetAutomationParameters(CommandParameters & parms)
 bool EffectNoise::SetAutomationParameters(CommandParameters & parms)
 {
    ReadAndVerifyEnum(Type, kTypeStrings, nTypes);
-   ReadAndVerifyDouble(Amp);
+   ReadParam(Amp);
 
    mType = Type;
    mAmp = Amp;

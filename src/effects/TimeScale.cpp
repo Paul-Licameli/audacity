@@ -143,12 +143,12 @@ bool EffectTimeScale::GetAutomationParameters(CommandParameters & parms)
 
 bool EffectTimeScale::SetAutomationParameters(CommandParameters & parms)
 {
-   ReadAndVerifyDouble(RatePercentStart);
-   ReadAndVerifyDouble(RatePercentEnd);
-   ReadAndVerifyDouble(HalfStepsStart);
-   ReadAndVerifyDouble(HalfStepsEnd);
-   ReadAndVerifyDouble(PitchPercentStart);
-   ReadAndVerifyDouble(PitchPercentEnd);
+   ReadParam(RatePercentStart);
+   ReadParam(RatePercentEnd);
+   ReadParam(HalfStepsStart);
+   ReadParam(HalfStepsEnd);
+   ReadParam(PitchPercentStart);
+   ReadParam(PitchPercentEnd);
 
    m_RatePercentChangeStart = RatePercentStart;
    m_RatePercentChangeEnd = RatePercentEnd;

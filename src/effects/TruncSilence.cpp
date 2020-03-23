@@ -192,7 +192,7 @@ EffectType EffectTruncSilence::GetType()
 
 bool EffectTruncSilence::DefineParams( ShuttleParams & S ){
    S.SHUTTLE_PARAM( mThresholdDB, Threshold );
-   S.SHUTTLE_ENUM_PARAM( mActionIndex, ActIndex, kActionStrings, nActions );
+   S.SHUTTLE_PARAM( mActionIndex, ActIndex );
    S.SHUTTLE_PARAM( mInitialAllowedSilence, Minimum );
    S.SHUTTLE_PARAM( mTruncLongestAllowedSilence, Truncate );
    S.SHUTTLE_PARAM( mSilenceCompressPercent, Compress );
@@ -214,14 +214,14 @@ bool EffectTruncSilence::GetAutomationParameters(CommandParameters & parms)
 
 bool EffectTruncSilence::SetAutomationParameters(CommandParameters & parms)
 {
-   ReadAndVerifyDouble(Minimum);
-   ReadAndVerifyDouble(Truncate);
-   ReadAndVerifyDouble(Compress);
+   ReadParam(Minimum);
+   ReadParam(Truncate);
+   ReadParam(Compress);
 
    // This control migrated from a choice to a text box in version 2.3.0
    double myThreshold {};
    bool newParams = [&] {
-      ReadAndVerifyDouble(Threshold); // macro may return false
+      ReadParam(Threshold); // macro may return false
       myThreshold = Threshold;
       return true;
    } ();
@@ -234,7 +234,7 @@ bool EffectTruncSilence::SetAutomationParameters(CommandParameters & parms)
 
    ReadAndVerifyEnumWithObsoletes(ActIndex, kActionStrings, nActions,
                                   kObsoleteActions, nObsoleteActions);
-   ReadAndVerifyBool(Independent);
+   ReadParam(Independent);
 
    mInitialAllowedSilence = Minimum;
    mTruncLongestAllowedSilence = Truncate;

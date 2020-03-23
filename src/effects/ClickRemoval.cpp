@@ -123,8 +123,8 @@ bool EffectClickRemoval::GetAutomationParameters(CommandParameters & parms)
 
 bool EffectClickRemoval::SetAutomationParameters(CommandParameters & parms)
 {
-   ReadAndVerifyInt(Threshold);
-   ReadAndVerifyInt(Width);
+   ReadParam(Threshold);
+   ReadParam(Width);
 
    mThresholdLevel = Threshold;
    mClickWidth = Width;
