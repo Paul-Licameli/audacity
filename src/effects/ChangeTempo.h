@@ -22,6 +22,7 @@
 #endif
 
 #include "SoundTouchEffect.h"
+#include "../Shuttle.h"
 
 class wxSlider;
 class wxCheckBox;
@@ -47,12 +48,6 @@ public:
 
    EffectType GetType() override;
    bool SupportsAutomation() override;
-
-   // EffectClientInterface implementation
-
-   bool DefineParams( ShuttleParams & S ) override;
-   bool GetAutomationParameters(CommandParameters & parms) override;
-   bool SetAutomationParameters(CommandParameters & parms) override;
 
    // Effect implementation
 
@@ -103,6 +98,8 @@ private:
    wxCheckBox *   mUseSBSMSCheckBox;
 #endif
 
+   CapturedParameters mParameters;
+   CapturedParameters &Parameters() override { return mParameters; }
    DECLARE_EVENT_TABLE()
 };
 

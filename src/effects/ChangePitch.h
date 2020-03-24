@@ -26,6 +26,7 @@ the pitch without changing the tempo.
 #endif
 
 #include "SoundTouchEffect.h"
+#include "../Shuttle.h"
 
 class wxSlider;
 class wxChoice;
@@ -54,9 +55,6 @@ public:
 
    // EffectClientInterface implementation
 
-   bool DefineParams( ShuttleParams & S ) override;
-   bool GetAutomationParameters(CommandParameters & parms) override;
-   bool SetAutomationParameters(CommandParameters & parms) override;
    bool LoadFactoryDefaults() override;
 
    // Effect implementation
@@ -146,6 +144,8 @@ private:
    wxCheckBox *   mUseSBSMSCheckBox;
 #endif
 
+   CapturedParameters mParameters;
+   CapturedParameters &Parameters() override { return mParameters; }
    DECLARE_EVENT_TABLE()
 };
 

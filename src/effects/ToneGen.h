@@ -14,6 +14,7 @@
 #define __AUDACITY_EFFECT_TONEGEN__
 
 #include "Effect.h"
+#include "../Shuttle.h"
 
 class NumericTextCtrl;
 class ShuttleGui;
@@ -39,9 +40,6 @@ public:
    unsigned GetAudioOutCount() override;
    bool ProcessInitialize(sampleCount totalLen, ChannelNames chanMap = NULL) override;
    size_t ProcessBlock(float **inBlock, float **outBlock, size_t blockLen) override;
-   bool DefineParams( ShuttleParams & S ) override;
-   bool GetAutomationParameters(CommandParameters & parms) override;
-   bool SetAutomationParameters(CommandParameters & parms) override;
 
    // Effect implementation
 
@@ -55,7 +53,7 @@ private:
    void OnControlUpdate(wxCommandEvent & evt);
 
 private:
-   bool mChirp;
+   const bool mChirp;
 
    // mSample is an external placeholder to remember the last "buffer"
    // position so we use it to reinitialize from where we left
@@ -72,6 +70,9 @@ private:
 
    NumericTextCtrl *mToneDurationT;
 
+   void PostSet();
+   CapturedParameters mParameters;
+   CapturedParameters &Parameters() override { return mParameters; }
    DECLARE_EVENT_TABLE()
 };
 

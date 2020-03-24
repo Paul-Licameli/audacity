@@ -16,6 +16,7 @@
 #define __AUDACITY_EFFECT_AMPLIFY__
 
 #include "Effect.h"
+#include "../Shuttle.h"
 
 
 class wxSlider;
@@ -46,9 +47,6 @@ public:
    unsigned GetAudioInCount() override;
    unsigned GetAudioOutCount() override;
    size_t ProcessBlock(float **inBlock, float **outBlock, size_t blockLen) override;
-   bool DefineParams( ShuttleParams & S ) override;
-   bool GetAutomationParameters(CommandParameters & parms) override;
-   bool SetAutomationParameters(CommandParameters & parms) override;
    bool LoadFactoryDefaults() override;
 
    // Effect implementation
@@ -81,6 +79,14 @@ private:
    wxTextCtrl *mAmpT;
    wxTextCtrl *mNewPeakT;
    wxCheckBox *mClip;
+
+   CapturedParameters mParameters;
+   CapturedParameters mBatchParameters;
+   CapturedParameters &Parameters() override {
+      // Parameters differ depending on batch mode.  Option to disable clipping
+      // is interactive only.
+      return IsBatchProcessing() ? mBatchParameters : mParameters;
+   }
 
    DECLARE_EVENT_TABLE()
 };

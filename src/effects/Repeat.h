@@ -12,6 +12,7 @@
 #define __AUDACITY_EFFECT_REPEAT__
 
 #include "Effect.h"
+#include "../Shuttle.h"
 
 class wxTextCtrl;
 class ShuttleGui;
@@ -36,12 +37,6 @@ public:
 
    EffectType GetType() override;
 
-   // EffectClientInterface implementation
-
-   bool DefineParams( ShuttleParams & S ) override;
-   bool GetAutomationParameters(CommandParameters & parms) override;
-   bool SetAutomationParameters(CommandParameters & parms) override;
-
    // Effect implementation
 
    bool Process() override;
@@ -62,6 +57,8 @@ private:
    wxStaticText *mCurrentTime;
    wxStaticText *mTotalTime;
 
+   CapturedParameters mParameters;
+   CapturedParameters &Parameters() override { return mParameters; }
    DECLARE_EVENT_TABLE()
 };
 

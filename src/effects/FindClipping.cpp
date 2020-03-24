@@ -26,7 +26,6 @@
 #include <math.h>
 
 
-#include "../Shuttle.h"
 #include "../ShuttleGui.h"
 #include "../widgets/valnum.h"
 #include "../widgets/AudacityMessageBox.h"
@@ -48,9 +47,12 @@ const ComponentInterfaceSymbol EffectFindClipping::Symbol
 namespace{ BuiltinEffectsModule::Registration< EffectFindClipping > reg; }
 
 EffectFindClipping::EffectFindClipping()
+   : mParameters{
+      mStart, Start,
+      mStop, Stop
+   }
 {
-   mStart = Start.def;
-   mStop = Stop.def;
+   Parameters().Reset();
 }
 
 EffectFindClipping::~EffectFindClipping()
@@ -79,32 +81,6 @@ wxString EffectFindClipping::ManualPage()
 EffectType EffectFindClipping::GetType()
 {
    return EffectTypeAnalyze;
-}
-
-// EffectClientInterface implementation
-bool EffectFindClipping::DefineParams( ShuttleParams & S ){
-   S.SHUTTLE_PARAM( mStart, Start );
-   S.SHUTTLE_PARAM( mStop, Stop );
-   return true;
-}
-
-bool EffectFindClipping::GetAutomationParameters(CommandParameters & parms)
-{
-   parms.Write(Start.key, mStart);
-   parms.Write(Stop.key, mStop);
-
-   return true;
-}
-
-bool EffectFindClipping::SetAutomationParameters(CommandParameters & parms)
-{
-   ReadParam(Start);
-   ReadParam(Stop);
-
-   mStart = Start;
-   mStop = Stop;
-
-   return true;
 }
 
 // Effect implementation

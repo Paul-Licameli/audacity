@@ -55,7 +55,6 @@ a graph for EffectScienFilter.
 #include "../PlatformCompatibility.h"
 #include "../Prefs.h"
 #include "../Project.h"
-#include "../Shuttle.h"
 #include "../ShuttleGui.h"
 #include "../Theme.h"
 #include "../WaveTrack.h"
@@ -160,6 +159,19 @@ BEGIN_EVENT_TABLE(EffectScienFilter, wxEvtHandler)
 END_EVENT_TABLE()
 
 EffectScienFilter::EffectScienFilter()
+   : mParameters{
+      [this]{
+         mOrderIndex = mOrder - 1;
+         CalcFilter();
+         return true;
+      },
+      mFilterType, Type,
+      mFilterSubtype, Subtype,
+      mOrder, Order,
+      mCutoff, Cutoff,
+      mRipple, Passband,
+      mStopbandRipple, Stopband
+   }
 {
    mOrder = Order.def;
    mFilterType = Type.def;
@@ -239,50 +251,6 @@ size_t EffectScienFilter::ProcessBlock(float **inBlock, float **outBlock, size_t
    }
 
    return blockLen;
-}
-bool EffectScienFilter::DefineParams( ShuttleParams & S ){
-   S.SHUTTLE_PARAM( mFilterType, Type );
-   S.SHUTTLE_PARAM( mFilterSubtype, Subtype );
-   S.SHUTTLE_PARAM( mOrder, Order );
-   S.SHUTTLE_PARAM( mCutoff, Cutoff );
-   S.SHUTTLE_PARAM( mRipple, Passband );
-   S.SHUTTLE_PARAM( mStopbandRipple, Stopband );
-   return true;
-}
-
-bool EffectScienFilter::GetAutomationParameters(CommandParameters & parms)
-{
-   parms.Write(Type.key, kTypeStrings[mFilterType].Internal());
-   parms.Write(Subtype.key, kSubTypeStrings[mFilterSubtype].Internal());
-   parms.Write(Order.key, mOrder);
-   parms.WriteFloat(Cutoff.key, mCutoff);
-   parms.WriteFloat(Passband.key, mRipple);
-   parms.WriteFloat(Stopband.key, mStopbandRipple);
-
-   return true;
-}
-
-bool EffectScienFilter::SetAutomationParameters(CommandParameters & parms)
-{
-   ReadAndVerifyEnum(Type, kTypeStrings, nTypes);
-   ReadAndVerifyEnum(Subtype, kSubTypeStrings, nSubTypes);
-   ReadParam(Order);
-   ReadParam(Cutoff);
-   ReadParam(Passband);
-   ReadParam(Stopband);
-
-   mFilterType = Type;
-   mFilterSubtype = Subtype;
-   mOrder = Order;
-   mCutoff = Cutoff;
-   mRipple = Passband;
-   mStopbandRipple = Stopband;
-
-   mOrderIndex = mOrder - 1;
-
-   CalcFilter();
-
-   return true;
 }
 
 // Effect implementation

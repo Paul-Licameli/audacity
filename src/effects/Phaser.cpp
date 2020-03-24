@@ -27,7 +27,6 @@
 
 #include <wx/slider.h>
 
-#include "../Shuttle.h"
 #include "../ShuttleGui.h"
 #include "../widgets/valnum.h"
 
@@ -93,15 +92,19 @@ BEGIN_EVENT_TABLE(EffectPhaser, wxEvtHandler)
 END_EVENT_TABLE()
 
 EffectPhaser::EffectPhaser()
+   :mParameters {
+      [this]{ mStages &= ~1; // must be even, but don't complain about it
+         return true; },
+      mStages,    Stages,
+      mDryWet,    DryWet,
+      mFreq,      Freq,
+      mPhase,     Phase,
+      mDepth,     Depth,
+      mFeedback,  Feedback,
+      mOutGain,   OutGain
+   }
 {
-   mStages = Stages.def;
-   mDryWet = DryWet.def;
-   mFreq = Freq.def;
-   mPhase = Phase.def;
-   mDepth = Depth.def;
-   mFeedback = Feedback.def;
-   mOutGain = OutGain.def;
-
+   Parameters().Reset();
    SetLinearEffectFlag(true);
 }
 
@@ -205,56 +208,6 @@ size_t EffectPhaser::RealtimeProcess(int group,
 
    return InstanceProcess(mSlaves[group], inbuf, outbuf, numSamples);
 }
-bool EffectPhaser::DefineParams( ShuttleParams & S ){
-   S.SHUTTLE_PARAM( mStages,    Stages );
-   S.SHUTTLE_PARAM( mDryWet,    DryWet );
-   S.SHUTTLE_PARAM( mFreq,      Freq );
-   S.SHUTTLE_PARAM( mPhase,     Phase );
-   S.SHUTTLE_PARAM( mDepth,     Depth );
-   S.SHUTTLE_PARAM( mFeedback,  Feedback );
-   S.SHUTTLE_PARAM( mOutGain,   OutGain );
-   return true;
-}
-
-bool EffectPhaser::GetAutomationParameters(CommandParameters & parms)
-{
-   parms.Write(Stages.key, mStages);
-   parms.Write(DryWet.key, mDryWet);
-   parms.Write(Freq.key, mFreq);
-   parms.Write(Phase.key, mPhase);
-   parms.Write(Depth.key, mDepth);
-   parms.Write(Feedback.key, mFeedback);
-   parms.Write(OutGain.key, mOutGain);
-
-   return true;
-}
-
-bool EffectPhaser::SetAutomationParameters(CommandParameters & parms)
-{
-   ReadParam(Stages);
-   ReadParam(DryWet);
-   ReadParam(Freq);
-   ReadParam(Phase);
-   ReadParam(Depth);
-   ReadParam(Feedback);
-   ReadParam(OutGain);
-
-   if (Stages & 1)    // must be even, but don't complain about it
-   {
-      Stages.cache &= ~1;
-   }
-
-   mFreq = Freq;
-   mFeedback = Feedback;
-   mStages = Stages;
-   mDryWet = DryWet;
-   mDepth = Depth;
-   mPhase = Phase;
-   mOutGain = OutGain;
-
-   return true;
-}
-
 // Effect implementation
 
 void EffectPhaser::PopulateOrExchange(ShuttleGui & S)

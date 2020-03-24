@@ -38,7 +38,6 @@
 
 #include "../AColor.h"
 #include "../Prefs.h"
-#include "../Shuttle.h"
 #include "../ShuttleGui.h"
 #include "../Theme.h"
 #include "../float_cast.h"
@@ -88,14 +87,17 @@ BEGIN_EVENT_TABLE(EffectCompressor, wxEvtHandler)
 END_EVENT_TABLE()
 
 EffectCompressor::EffectCompressor()
+   : mParameters{
+      mThresholdDB, Threshold,
+      mNoiseFloorDB, NoiseFloor,
+      mRatio, Ratio, // positive number > 1.0
+      mAttackTime, AttackTime, // seconds
+      mDecayTime, ReleaseTime, // seconds
+      mNormalize, Normalize,
+      mUsePeak, UsePeak
+   }
 {
-   mThresholdDB = Threshold.def;
-   mNoiseFloorDB = NoiseFloor.def;
-   mAttackTime = AttackTime.def;          // seconds
-   mDecayTime = ReleaseTime.def;          // seconds
-   mRatio = Ratio.def;                    // positive number > 1.0
-   mNormalize = Normalize.def;
-   mUsePeak = UsePeak.def;
+   Parameters().Reset();
 
    mThreshold = 0.25;
    mNoiseFloor = 0.01;
@@ -131,52 +133,6 @@ wxString EffectCompressor::ManualPage()
 EffectType EffectCompressor::GetType()
 {
    return EffectTypeProcess;
-}
-
-// EffectClientInterface implementation
-bool EffectCompressor::DefineParams( ShuttleParams & S ){
-   S.SHUTTLE_PARAM( mThresholdDB, Threshold );
-   S.SHUTTLE_PARAM( mNoiseFloorDB, NoiseFloor );
-   S.SHUTTLE_PARAM( mRatio, Ratio);
-   S.SHUTTLE_PARAM( mAttackTime, AttackTime);
-   S.SHUTTLE_PARAM( mDecayTime, ReleaseTime);
-   S.SHUTTLE_PARAM( mNormalize, Normalize);
-   S.SHUTTLE_PARAM( mUsePeak, UsePeak);
-   return true;
-}
-
-bool EffectCompressor::GetAutomationParameters(CommandParameters & parms)
-{
-   parms.Write(Threshold.key, mThresholdDB);
-   parms.Write(NoiseFloor.key, mNoiseFloorDB);
-   parms.Write(Ratio.key, mRatio);
-   parms.Write(AttackTime.key, mAttackTime);
-   parms.Write(ReleaseTime.key, mDecayTime);
-   parms.Write(Normalize.key, mNormalize);
-   parms.Write(UsePeak.key, mUsePeak);
-
-   return true;
-}
-
-bool EffectCompressor::SetAutomationParameters(CommandParameters & parms)
-{
-   ReadParam(Threshold);
-   ReadParam(NoiseFloor);
-   ReadParam(Ratio);
-   ReadParam(AttackTime);
-   ReadParam(ReleaseTime);
-   ReadParam(Normalize);
-   ReadParam(UsePeak);
-
-   mThresholdDB = Threshold;
-   mNoiseFloorDB = NoiseFloor;
-   mRatio = Ratio;
-   mAttackTime = AttackTime;
-   mDecayTime = ReleaseTime;
-   mNormalize = Normalize;
-   mUsePeak = UsePeak;
-
-   return true;
 }
 
 // Effect Implementation

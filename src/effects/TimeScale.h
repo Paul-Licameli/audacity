@@ -16,6 +16,7 @@
 #if USE_SBSMS
 
 #include "SBSMSEffect.h"
+#include "../Shuttle.h"
 
 class wxSlider;
 class wxTextCtrl;
@@ -38,12 +39,6 @@ public:
    // EffectDefinitionInterface implementation
 
    EffectType GetType() override;
-
-   // EffectClientInterface implementation
-
-   bool DefineParams( ShuttleParams & S ) override;
-   bool GetAutomationParameters(CommandParameters & parms) override;
-   bool SetAutomationParameters(CommandParameters & parms) override;
 
    // Effect implementation
 
@@ -102,6 +97,8 @@ private:
    wxTextCtrl *m_pTextCtrl_PitchPercentChangeStart;
    wxTextCtrl *m_pTextCtrl_PitchPercentChangeEnd;
 
+   CapturedParameters mParameters;
+   CapturedParameters& Parameters() override { return mParameters; }
    DECLARE_EVENT_TABLE()
 };
 

@@ -24,7 +24,6 @@
 #include <wx/spinctrl.h>
 
 #include "../Prefs.h"
-#include "../Shuttle.h"
 #include "../ShuttleGui.h"
 #include "../widgets/valnum.h"
 
@@ -125,18 +124,20 @@ BEGIN_EVENT_TABLE(EffectReverb, wxEvtHandler)
 END_EVENT_TABLE()
 
 EffectReverb::EffectReverb()
+   : mParameters {
+      mParams.mRoomSize,       RoomSize,
+      mParams.mPreDelay,       PreDelay,
+      mParams.mReverberance,   Reverberance,
+      mParams.mHfDamping,      HfDamping,
+      mParams.mToneLow,        ToneLow,
+      mParams.mToneHigh,       ToneHigh,
+      mParams.mWetGain,        WetGain,
+      mParams.mDryGain,        DryGain,
+      mParams.mStereoWidth,    StereoWidth,
+      mParams.mWetOnly,        WetOnly,
+   }
 {
-   mParams.mRoomSize = RoomSize.def;
-   mParams.mPreDelay = PreDelay.def;
-   mParams.mReverberance = Reverberance.def;
-   mParams.mHfDamping = HfDamping.def;
-   mParams.mToneLow = ToneLow.def;
-   mParams.mToneHigh = ToneHigh.def;
-   mParams.mWetGain = WetGain.def;
-   mParams.mDryGain = DryGain.def;
-   mParams.mStereoWidth = StereoWidth.def;
-   mParams.mWetOnly = WetOnly.def;
-
+   Parameters().Reset();
    mProcessingEvent = false;
 
    SetLinearEffectFlag(true);
@@ -286,62 +287,6 @@ size_t EffectReverb::ProcessBlock(float **inBlock, float **outBlock, size_t bloc
    }
 
    return blockLen;
-}
-bool EffectReverb::DefineParams( ShuttleParams & S ){
-   S.SHUTTLE_PARAM( mParams.mRoomSize,       RoomSize );
-   S.SHUTTLE_PARAM( mParams.mPreDelay,       PreDelay );
-   S.SHUTTLE_PARAM( mParams.mReverberance,   Reverberance );
-   S.SHUTTLE_PARAM( mParams.mHfDamping,      HfDamping );
-   S.SHUTTLE_PARAM( mParams.mToneLow,        ToneLow );
-   S.SHUTTLE_PARAM( mParams.mToneHigh,       ToneHigh );
-   S.SHUTTLE_PARAM( mParams.mWetGain,        WetGain );
-   S.SHUTTLE_PARAM( mParams.mDryGain,        DryGain );
-   S.SHUTTLE_PARAM( mParams.mStereoWidth,    StereoWidth );
-   S.SHUTTLE_PARAM( mParams.mWetOnly,        WetOnly );
-   return true;
-}
-
-bool EffectReverb::GetAutomationParameters(CommandParameters & parms)
-{
-   parms.Write(RoomSize.key, mParams.mRoomSize);
-   parms.Write(PreDelay.key, mParams.mPreDelay);
-   parms.Write(Reverberance.key, mParams.mReverberance);
-   parms.Write(HfDamping.key, mParams.mHfDamping);
-   parms.Write(ToneLow.key, mParams.mToneLow);
-   parms.Write(ToneHigh.key, mParams.mToneHigh);
-   parms.Write(WetGain.key, mParams.mWetGain);
-   parms.Write(DryGain.key, mParams.mDryGain);
-   parms.Write(StereoWidth.key, mParams.mStereoWidth);
-   parms.Write(WetOnly.key, mParams.mWetOnly);
-
-   return true;
-}
-
-bool EffectReverb::SetAutomationParameters(CommandParameters & parms)
-{
-   ReadParam(RoomSize);
-   ReadParam(PreDelay);
-   ReadParam(Reverberance);
-   ReadParam(HfDamping);
-   ReadParam(ToneLow);
-   ReadParam(ToneHigh);
-   ReadParam(WetGain);
-   ReadParam(DryGain);
-   ReadParam(StereoWidth);
-   ReadParam(WetOnly);
-
-   mParams.mRoomSize = RoomSize;
-   mParams.mPreDelay = PreDelay;
-   mParams.mReverberance = Reverberance;
-   mParams.mHfDamping = HfDamping;
-   mParams.mToneLow = ToneLow;
-   mParams.mToneHigh = ToneHigh;
-   mParams.mWetGain = WetGain;
-   mParams.mDryGain = DryGain;
-   mParams.mStereoWidth = StereoWidth;
-   mParams.mWetOnly = WetOnly;
-
-   return true;
 }
 
 RegistryPaths EffectReverb::GetFactoryPresets()

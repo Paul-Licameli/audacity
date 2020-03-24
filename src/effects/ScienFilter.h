@@ -18,6 +18,7 @@ Vaughan Johnson (Preview)
 #include "Biquad.h"
 
 #include "Effect.h"
+#include "../Shuttle.h"
 
 class wxBitmap;
 class wxChoice;
@@ -53,9 +54,6 @@ public:
    unsigned GetAudioOutCount() override;
    bool ProcessInitialize(sampleCount totalLen, ChannelNames chanMap = NULL) override;
    size_t ProcessBlock(float **inBlock, float **outBlock, size_t blockLen) override;
-   bool DefineParams( ShuttleParams & S ) override;
-   bool GetAutomationParameters(CommandParameters & parms) override;
-   bool SetAutomationParameters(CommandParameters & parms) override;
 
    // Effect implementation
 
@@ -124,6 +122,8 @@ private:
    RulerPanel *mdBRuler;
    RulerPanel *mfreqRuler;
 
+   CapturedParameters mParameters;
+   CapturedParameters &Parameters() override { return mParameters; }
    DECLARE_EVENT_TABLE()
 
    friend class EffectScienFilterPanel;

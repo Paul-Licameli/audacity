@@ -30,7 +30,6 @@
 #include <wx/slider.h>
 #include <wx/stattext.h>
 
-#include "../Shuttle.h"
 #include "../ShuttleGui.h"
 #include "../widgets/numformatter.h"
 #include "../widgets/valnum.h"
@@ -92,20 +91,18 @@ BEGIN_EVENT_TABLE(EffectChangeTempo, wxEvtHandler)
 END_EVENT_TABLE()
 
 EffectChangeTempo::EffectChangeTempo()
+   : mParameters{
+      m_PercentChange, Percentage,
+      mUseSBSMS, UseSBSMS
+   }
 {
-   m_PercentChange = Percentage.def;
+   Parameters().Reset();
    m_FromBPM = 0.0; // indicates not yet set
    m_ToBPM = 0.0; // indicates not yet set
    m_FromLength = 0.0;
    m_ToLength = 0.0;
 
    m_bLoopDetect = false;
-
-#if USE_SBSMS
-   mUseSBSMS = UseSBSMS.def;
-#else
-   mUseSBSMS = false;
-#endif
 
    SetLinearEffectFlag(true);
 }
@@ -140,36 +137,6 @@ EffectType EffectChangeTempo::GetType()
 
 bool EffectChangeTempo::SupportsAutomation()
 {
-   return true;
-}
-
-// EffectClientInterface implementation
-bool EffectChangeTempo::DefineParams( ShuttleParams & S ){
-   S.SHUTTLE_PARAM( m_PercentChange, Percentage );
-   S.SHUTTLE_PARAM( mUseSBSMS, UseSBSMS );
-   return true;
-}
-
-bool EffectChangeTempo::GetAutomationParameters(CommandParameters & parms)
-{
-   parms.Write(Percentage.key, m_PercentChange);
-   parms.Write(UseSBSMS.key, mUseSBSMS);
-
-   return true;
-}
-
-bool EffectChangeTempo::SetAutomationParameters(CommandParameters & parms)
-{
-   ReadParam(Percentage);
-   m_PercentChange = Percentage;
-
-#if USE_SBSMS
-   ReadParam(UseSBSMS);
-   mUseSBSMS = UseSBSMS;
-#else
-   mUseSBSMS = false;
-#endif
-
    return true;
 }
 

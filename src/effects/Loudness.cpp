@@ -25,7 +25,6 @@
 #include "Internat.h"
 #include "../Prefs.h"
 #include "../ProjectFileManager.h"
-#include "../Shuttle.h"
 #include "../ShuttleGui.h"
 #include "../WaveTrack.h"
 #include "../widgets/valnum.h"
@@ -71,13 +70,15 @@ const ComponentInterfaceSymbol EffectLoudness::Symbol
 namespace{ BuiltinEffectsModule::Registration< EffectLoudness > reg; }
 
 EffectLoudness::EffectLoudness()
+   : mParameters{
+      mStereoInd, StereoInd,
+      mLUFSLevel, LUFSLevel,
+      mRMSLevel, RMSLevel,
+      mDualMono, DualMono,
+      mNormalizeTo, NormalizeTo,
+   }
 {
-   mStereoInd = StereoInd.def;
-   mLUFSLevel = LUFSLevel.def;
-   mRMSLevel = RMSLevel.def;
-   mDualMono = DualMono.def;
-   mNormalizeTo = NormalizeTo.def;
-
+   Parameters().Reset();
    SetLinearEffectFlag(false);
 }
 
@@ -107,45 +108,6 @@ wxString EffectLoudness::ManualPage()
 EffectType EffectLoudness::GetType()
 {
    return EffectTypeProcess;
-}
-
-// EffectClientInterface implementation
-bool EffectLoudness::DefineParams( ShuttleParams & S )
-{
-   S.SHUTTLE_PARAM( mStereoInd, StereoInd );
-   S.SHUTTLE_PARAM( mLUFSLevel, LUFSLevel );
-   S.SHUTTLE_PARAM( mRMSLevel, RMSLevel );
-   S.SHUTTLE_PARAM( mDualMono, DualMono );
-   S.SHUTTLE_PARAM( mNormalizeTo, NormalizeTo );
-   return true;
-}
-
-bool EffectLoudness::GetAutomationParameters(CommandParameters & parms)
-{
-   parms.Write(StereoInd.key, mStereoInd);
-   parms.Write(LUFSLevel.key, mLUFSLevel);
-   parms.Write(RMSLevel.key, mRMSLevel);
-   parms.Write(DualMono.key, mDualMono);
-   parms.Write(NormalizeTo.key, mNormalizeTo);
-
-   return true;
-}
-
-bool EffectLoudness::SetAutomationParameters(CommandParameters & parms)
-{
-   ReadParam(StereoInd);
-   ReadParam(LUFSLevel);
-   ReadParam(RMSLevel);
-   ReadParam(DualMono);
-   ReadParam(NormalizeTo);
-
-   mStereoInd = StereoInd;
-   mLUFSLevel = LUFSLevel;
-   mRMSLevel = RMSLevel;
-   mDualMono = DualMono;
-   mNormalizeTo = NormalizeTo;
-
-   return true;
 }
 
 // Effect implementation

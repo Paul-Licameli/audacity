@@ -24,7 +24,6 @@
 #include <wx/valgen.h>
 
 #include "../Prefs.h"
-#include "../Shuttle.h"
 #include "../ShuttleGui.h"
 #include "../widgets/valnum.h"
 #include "../widgets/NumericTextCtrl.h"
@@ -67,6 +66,10 @@ const ComponentInterfaceSymbol EffectNoise::Symbol
 namespace{ BuiltinEffectsModule::Registration< EffectNoise > reg; }
 
 EffectNoise::EffectNoise()
+   : mParameters{
+      mType, Type,
+      mAmp, Amp
+   }
 {
    mType = Type.def;
    mAmp = Amp.def;
@@ -174,31 +177,6 @@ size_t EffectNoise::ProcessBlock(float **WXUNUSED(inbuf), float **outbuf, size_t
    }
 
    return size;
-}
-
-bool EffectNoise::DefineParams( ShuttleParams & S ){
-   S.SHUTTLE_PARAM( mType, Type );
-   S.SHUTTLE_PARAM( mAmp, Amp );
-   return true;
-}
-
-bool EffectNoise::GetAutomationParameters(CommandParameters & parms)
-{
-   parms.Write(Type.key, kTypeStrings[mType].Internal());
-   parms.Write(Amp.key, mAmp);
-
-   return true;
-}
-
-bool EffectNoise::SetAutomationParameters(CommandParameters & parms)
-{
-   ReadAndVerifyEnum(Type, kTypeStrings, nTypes);
-   ReadParam(Amp);
-
-   mType = Type;
-   mAmp = Amp;
-
-   return true;
 }
 
 // Effect implementation

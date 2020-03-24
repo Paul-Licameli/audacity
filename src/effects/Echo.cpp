@@ -26,7 +26,6 @@
 #include <float.h>
 
 #include "../ShuttleGui.h"
-#include "../Shuttle.h"
 #include "../widgets/AudacityMessageBox.h"
 #include "../widgets/valnum.h"
 
@@ -44,10 +43,12 @@ const ComponentInterfaceSymbol EffectEcho::Symbol
 namespace{ BuiltinEffectsModule::Registration< EffectEcho > reg; }
 
 EffectEcho::EffectEcho()
+   :mParameters {
+      delay, Delay,
+      decay, Decay,
+   }
 {
-   delay = Delay.def;
-   decay = Decay.def;
-
+   Parameters().Reset();
    SetLinearEffectFlag(true);
 }
 
@@ -139,32 +140,6 @@ size_t EffectEcho::ProcessBlock(float **inBlock, float **outBlock, size_t blockL
    }
 
    return blockLen;
-}
-
-bool EffectEcho::DefineParams( ShuttleParams & S ){
-   S.SHUTTLE_PARAM( delay, Delay );
-   S.SHUTTLE_PARAM( decay, Decay );
-   return true;
-}
-
-
-bool EffectEcho::GetAutomationParameters(CommandParameters & parms)
-{
-   parms.WriteFloat(Delay.key, delay);
-   parms.WriteFloat(Decay.key, decay);
-
-   return true;
-}
-
-bool EffectEcho::SetAutomationParameters(CommandParameters & parms)
-{
-   ReadParam(Delay);
-   ReadParam(Decay);
-
-   delay = Delay;
-   decay = Decay;
-
-   return true;
 }
 
 void EffectEcho::PopulateOrExchange(ShuttleGui & S)

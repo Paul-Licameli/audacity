@@ -17,6 +17,7 @@ class wxString;
 class LabelTrack;
 
 #include "Effect.h"
+#include "../Shuttle.h"
 
 class EffectFindClipping final : public Effect
 {
@@ -36,12 +37,6 @@ public:
 
    EffectType GetType() override;
 
-   // EffectClientInterface implementation
-
-   bool DefineParams( ShuttleParams & S ) override;
-   bool GetAutomationParameters(CommandParameters & parms) override;
-   bool SetAutomationParameters(CommandParameters & parms) override;
-
    // Effect implementation
 
    bool Process() override;
@@ -58,6 +53,9 @@ private:
 private:
    int mStart;   ///< Using int rather than sampleCount because values are only ever small numbers
    int mStop;    ///< Using int rather than sampleCount because values are only ever small numbers
+
+   CapturedParameters mParameters;
+   CapturedParameters &Parameters() override { return mParameters; }
 };
 
 #endif // __AUDACITY_EFFECT_FINDCLIPPING__

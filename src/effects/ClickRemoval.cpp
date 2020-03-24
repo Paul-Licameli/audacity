@@ -34,7 +34,6 @@
 #include <wx/valgen.h>
 
 #include "../Prefs.h"
-#include "../Shuttle.h"
 #include "../ShuttleGui.h"
 #include "../widgets/AudacityMessageBox.h"
 #include "../widgets/valnum.h"
@@ -68,9 +67,12 @@ BEGIN_EVENT_TABLE(EffectClickRemoval, wxEvtHandler)
 END_EVENT_TABLE()
 
 EffectClickRemoval::EffectClickRemoval()
+   : mParameters{
+      mThresholdLevel, Threshold,
+      mClickWidth, Width
+   }
 {
-   mThresholdLevel = Threshold.def;
-   mClickWidth = Width.def;
+   Parameters().Reset();
 
    SetLinearEffectFlag(false);
 
@@ -104,32 +106,6 @@ wxString EffectClickRemoval::ManualPage()
 EffectType EffectClickRemoval::GetType()
 {
    return EffectTypeProcess;
-}
-
-// EffectClientInterface implementation
-bool EffectClickRemoval::DefineParams( ShuttleParams & S ){
-   S.SHUTTLE_PARAM( mThresholdLevel, Threshold );
-   S.SHUTTLE_PARAM( mClickWidth, Width );
-   return true;
-}
-
-bool EffectClickRemoval::GetAutomationParameters(CommandParameters & parms)
-{
-   parms.Write(Threshold.key, mThresholdLevel);
-   parms.Write(Width.key, mClickWidth);
-
-   return true;
-}
-
-bool EffectClickRemoval::SetAutomationParameters(CommandParameters & parms)
-{
-   ReadParam(Threshold);
-   ReadParam(Width);
-
-   mThresholdLevel = Threshold;
-   mClickWidth = Width;
-
-   return true;
 }
 
 // Effect implementation

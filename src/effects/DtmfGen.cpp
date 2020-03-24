@@ -23,7 +23,6 @@
 #include <wx/stattext.h>
 
 #include "../Prefs.h"
-#include "../Shuttle.h"
 #include "../ShuttleGui.h"
 #include "../widgets/NumericTextCtrl.h"
 #include "../widgets/valnum.h"
@@ -88,10 +87,24 @@ BEGIN_EVENT_TABLE(EffectDtmf, wxEvtHandler)
 END_EVENT_TABLE()
 
 EffectDtmf::EffectDtmf()
+   : mParameters {
+      [this]{
+         wxString symbols;
+         for (unsigned int i = 0; i < WXSIZEOF(kSymbols); i++)
+            symbols += kSymbols[i];
+
+         if (Sequence.cache.find_first_not_of(symbols) != wxString::npos)
+            return false;
+
+         Recalculate();
+         return true;
+      },
+      dtmfSequence, Sequence,
+      dtmfDutyCycle, DutyCycle,
+      dtmfAmplitude, Amplitude,
+   }
 {
-   dtmfDutyCycle = DutyCycle.def;
-   dtmfAmplitude = Amplitude.def;
-   dtmfSequence = Sequence.def;
+   Parameters().Reset();
    dtmfTone = 0.0;
    dtmfSilence = 0.0;
 }
@@ -246,47 +259,6 @@ size_t EffectDtmf::ProcessBlock(float **WXUNUSED(inbuf), float **outbuf, size_t 
    }
 
    return processed;
-}
-bool EffectDtmf::DefineParams( ShuttleParams & S ){
-   S.SHUTTLE_PARAM( dtmfSequence, Sequence );
-   S.SHUTTLE_PARAM( dtmfDutyCycle, DutyCycle );
-   S.SHUTTLE_PARAM( dtmfAmplitude, Amplitude );
-   return true;
-}
-
-bool EffectDtmf::GetAutomationParameters(CommandParameters & parms)
-{
-   parms.Write(Sequence.key, dtmfSequence);
-   parms.Write(DutyCycle.key, dtmfDutyCycle);
-   parms.Write(Amplitude.key, dtmfAmplitude);
-
-   return true;
-}
-
-bool EffectDtmf::SetAutomationParameters(CommandParameters & parms)
-{
-   ReadParam(DutyCycle);
-   ReadParam(Amplitude);
-   ReadParam(Sequence);
-
-   wxString symbols;
-   for (unsigned int i = 0; i < WXSIZEOF(kSymbols); i++)
-   {
-      symbols += kSymbols[i];
-   }
-
-   if (Sequence.cache.find_first_not_of(symbols) != wxString::npos)
-   {
-      return false;
-   }
-
-   dtmfDutyCycle = DutyCycle;
-   dtmfAmplitude = Amplitude;
-   dtmfSequence = Sequence;
-   
-   Recalculate();
-
-   return true;
 }
 
 // Effect implementation

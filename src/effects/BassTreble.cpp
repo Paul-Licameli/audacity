@@ -26,7 +26,6 @@
 #include <wx/slider.h>
 
 #include "../Prefs.h"
-#include "../Shuttle.h"
 #include "../ShuttleGui.h"
 #include "../WaveTrack.h"
 #include "../widgets/valnum.h"
@@ -74,11 +73,14 @@ BEGIN_EVENT_TABLE(EffectBassTreble, wxEvtHandler)
 END_EVENT_TABLE()
 
 EffectBassTreble::EffectBassTreble()
+   : mParameters{
+      mBass, Bass,
+      mTreble, Treble,
+      mGain, Gain,
+      mLink, Link
+   }
 {
-   mBass = Bass.def;
-   mTreble = Treble.def;
-   mGain = Gain.def;
-   mLink = Link.def;
+   Parameters().Reset();
 
    SetLinearEffectFlag(true);
 }
@@ -178,38 +180,6 @@ size_t EffectBassTreble::RealtimeProcess(int group,
                                               size_t numSamples)
 {
    return InstanceProcess(mSlaves[group], inbuf, outbuf, numSamples);
-}
-bool EffectBassTreble::DefineParams( ShuttleParams & S ){
-   S.SHUTTLE_PARAM( mBass, Bass );
-   S.SHUTTLE_PARAM( mTreble, Treble );
-   S.SHUTTLE_PARAM( mGain, Gain );
-   S.SHUTTLE_PARAM( mLink, Link );
-   return true;
-}
-
-bool EffectBassTreble::GetAutomationParameters(CommandParameters & parms)
-{
-   parms.Write(Bass.key, mBass);
-   parms.Write(Treble.key, mTreble);
-   parms.Write(Gain.key, mGain);
-   parms.Write(Link.key, mLink);
-
-   return true;
-}
-
-bool EffectBassTreble::SetAutomationParameters(CommandParameters & parms)
-{
-   ReadParam(Bass);
-   ReadParam(Treble);
-   ReadParam(Gain);
-   ReadParam(Link);
-
-   mBass = Bass;
-   mTreble = Treble;
-   mGain = Gain;
-   mLink = Link;
-
-   return true;
 }
 
 bool EffectBassTreble::CheckWhetherSkipEffect()

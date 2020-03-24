@@ -30,7 +30,6 @@ frequency changes smoothly during the tone.
 
 #include "../Project.h"
 #include "../ProjectSettings.h"
-#include "../Shuttle.h"
 #include "../ShuttleGui.h"
 #include "../widgets/valnum.h"
 #include "../widgets/NumericTextCtrl.h"
@@ -105,18 +104,30 @@ BEGIN_EVENT_TABLE(EffectToneGen, wxEvtHandler)
 END_EVENT_TABLE();
 
 EffectToneGen::EffectToneGen(bool isChirp)
+   : mChirp{ isChirp }
+   , mParameters{ mChirp
+      ? CapturedParameters{
+         [this]{ PostSet(); return true; },
+         mFrequency[0], StartFreq,
+         mFrequency[1], EndFreq,
+         mAmplitude[0], StartAmp,
+         mAmplitude[1], EndAmp,
+         mWaveform, Waveform,
+         mInterpolation, Interp
+      }
+      : CapturedParameters {
+         [this]{ PostSet(); return true; },
+         mFrequency[0], Frequency,
+         mAmplitude[0], Amplitude,
+         mWaveform, Waveform,
+         mInterpolation, Interp
+      }
+   }
 {
+   Parameters().Reset();
+
    wxASSERT(nWaveforms == WXSIZEOF(kWaveStrings));
    wxASSERT(nInterpolations == WXSIZEOF(kInterStrings));
-
-   mChirp = isChirp;
-
-   mWaveform = Waveform.def;
-   mFrequency[0] = StartFreq.def;
-   mFrequency[1] = EndFreq.def;
-   mAmplitude[0] = StartAmp.def;
-   mAmplitude[1] = EndAmp.def;
-   mInterpolation = Interp.def;
 
    // Chirp varies over time so must use selected duration.
    // TODO: When previewing, calculate only the first 'preview length'.
@@ -266,88 +277,18 @@ size_t EffectToneGen::ProcessBlock(float **WXUNUSED(inBlock), float **outBlock, 
    return blockLen;
 }
 
-bool EffectToneGen::DefineParams( ShuttleParams & S ){
-   if( mChirp ){
-      S.SHUTTLE_PARAM( mFrequency[0], StartFreq  );
-      S.SHUTTLE_PARAM( mFrequency[1], EndFreq  );
-      S.SHUTTLE_PARAM( mAmplitude[0], StartAmp  );
-      S.SHUTTLE_PARAM( mAmplitude[1], EndAmp  );
-   } else {
-      S.SHUTTLE_PARAM( mFrequency[0], Frequency  );
-      S.SHUTTLE_PARAM( mAmplitude[0], Amplitude );
-      // Slightly hacky way to set freq and ampl
-      // since we do this whatever query to params was made.
+void EffectToneGen::PostSet()
+{
+   if (!mChirp) {
       mFrequency[1] = mFrequency[0];
       mAmplitude[1] = mAmplitude[0];
    }
-   S.SHUTTLE_PARAM( mWaveform, Waveform );
-   S.SHUTTLE_PARAM( mInterpolation, Interp );
-
-
-//   double freqMax = (FindProject() ? FindProject()->GetRate() : 44100.0) / 2.0;
-//   mFrequency[1] = TrapDouble(mFrequency[1], EndFreq.min, freqMax);
-
-
-   return true;
-}
-
-bool EffectToneGen::GetAutomationParameters(CommandParameters & parms)
-{
-   if (mChirp)
-   {
-      parms.Write(StartFreq.key, mFrequency[0]);
-      parms.Write(EndFreq.key, mFrequency[1]);
-      parms.Write(StartAmp.key, mAmplitude[0]);
-      parms.Write(EndAmp.key, mAmplitude[1]);
-   }
-   else
-   {
-      parms.Write(Frequency.key, mFrequency[0]);
-      parms.Write(Amplitude.key, mAmplitude[0]);
-   }
-
-   parms.Write(Waveform.key, kWaveStrings[mWaveform].Internal());
-   parms.Write(Interp.key, kInterStrings[mInterpolation].Internal());
-
-   return true;
-}
-
-bool EffectToneGen::SetAutomationParameters(CommandParameters & parms)
-{
-   ReadAndVerifyEnum(Waveform,  kWaveStrings, nWaveforms);
-   ReadAndVerifyEnum(Interp, kInterStrings, nInterpolations);
-   if (mChirp)
-   {
-      ReadParam(StartFreq);
-      ReadParam(EndFreq);
-      ReadParam(StartAmp);
-      ReadParam(EndAmp);
-      mFrequency[0] = StartFreq;
-      mFrequency[1] = EndFreq;
-      mAmplitude[0] = StartAmp;
-      mAmplitude[1] = EndAmp;
-   }
-   else
-   {
-      ReadParam(Frequency);
-      ReadParam(Amplitude);
-      mFrequency[0] = Frequency;
-      mFrequency[1] = Frequency;
-      mAmplitude[0] = Amplitude;
-      mAmplitude[1] = Amplitude;
-   }
-
-   mWaveform = Waveform;
-   mInterpolation = Interp;
-
    double freqMax =
       (FindProject()
          ? ProjectSettings::Get( *FindProject() ).GetRate()
          : 44100.0)
       / 2.0;
    mFrequency[1] = TrapDouble(mFrequency[1], EndFreq.min, freqMax);
-
-   return true;
 }
 
 // Effect implementation

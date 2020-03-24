@@ -96,9 +96,12 @@ BEGIN_EVENT_TABLE(EffectPaulstretch, wxEvtHandler)
 END_EVENT_TABLE()
 
 EffectPaulstretch::EffectPaulstretch()
+   : mParameters {
+      mAmount, Amount,
+      mTime_resolution, Time,
+   }
 {
-   mAmount = Amount.def;
-   mTime_resolution = Time.def;
+   Parameters().Reset();
 
    SetLinearEffectFlag(true);
 }
@@ -129,32 +132,6 @@ wxString EffectPaulstretch::ManualPage()
 EffectType EffectPaulstretch::GetType()
 {
    return EffectTypeProcess;
-}
-
-// EffectClientInterface implementation
-bool EffectPaulstretch::DefineParams( ShuttleParams & S ){
-   S.SHUTTLE_PARAM( mAmount, Amount );
-   S.SHUTTLE_PARAM( mTime_resolution, Time );
-   return true;
-}
-
-bool EffectPaulstretch::GetAutomationParameters(CommandParameters & parms)
-{
-   parms.WriteFloat(Amount.key, mAmount);
-   parms.WriteFloat(Time.key, mTime_resolution);
-
-   return true;
-}
-
-bool EffectPaulstretch::SetAutomationParameters(CommandParameters & parms)
-{
-   ReadParam(Amount);
-   ReadParam(Time);
-
-   mAmount = Amount;
-   mTime_resolution = Time;
-
-   return true;
 }
 
 // Effect implementation

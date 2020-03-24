@@ -34,7 +34,6 @@
 #include <wx/valtext.h>
 #include <wx/log.h>
 
-#include "../Shuttle.h"
 #include "../ShuttleGui.h"
 #include "../WaveTrack.h"
 #include "../widgets/valnum.h"
@@ -74,9 +73,19 @@ BEGIN_EVENT_TABLE(EffectAmplify, wxEvtHandler)
 END_EVENT_TABLE()
 
 EffectAmplify::EffectAmplify()
+   : mParameters{
+      // Interactive case
+      mRatio, Ratio,
+      mCanClip, Clipping
+   }
+   , mBatchParameters{
+      // If invoking Amplify from a macro, mCanClip is not a parameter
+      // but is always true
+      [this]{ mCanClip = true; return true; },
+      mRatio, Ratio
+   }
 {
-   mAmp = Amp.def;
-   mRatio = DB_TO_LINEAR(mAmp);
+   Parameters().Reset();
    mRatioClip = 0.0;
    mCanClip = false;
    mPeak = 0.0;
@@ -133,36 +142,6 @@ size_t EffectAmplify::ProcessBlock(float **inBlock, float **outBlock, size_t blo
    }
 
    return blockLen;
-}
-bool EffectAmplify::DefineParams( ShuttleParams & S ){
-   S.SHUTTLE_PARAM( mRatio, Ratio );
-   if (!IsBatchProcessing())
-      S.SHUTTLE_PARAM( mCanClip, Clipping );
-   return true;
-}
-
-bool EffectAmplify::GetAutomationParameters(CommandParameters & parms)
-{
-   parms.WriteFloat(Ratio.key, mRatio);
-   if (!IsBatchProcessing())
-      parms.WriteFloat(Clipping.key, mCanClip);
-
-   return true;
-}
-
-bool EffectAmplify::SetAutomationParameters(CommandParameters & parms)
-{
-   ReadParam(Ratio);
-   mRatio = Ratio;
-
-   if (!IsBatchProcessing()){
-      ReadParam(Clipping);
-      mCanClip = Clipping;
-   } else {
-      mCanClip = true;
-   }
-
-   return true;
 }
 
 bool EffectAmplify::LoadFactoryDefaults()

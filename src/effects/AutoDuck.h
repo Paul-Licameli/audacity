@@ -12,6 +12,7 @@
 #define __AUDACITY_EFFECT_AUTODUCK__
 
 #include "Effect.h"
+#include "../Shuttle.h"
 
 class wxBitmap;
 class wxTextCtrl;
@@ -37,12 +38,6 @@ public:
    // EffectDefinitionInterface implementation
 
    EffectType GetType() override;
-
-   // EffectClientInterface implementation
-
-   bool DefineParams( ShuttleParams & S ) override;
-   bool GetAutomationParameters(CommandParameters & parms) override;
-   bool SetAutomationParameters(CommandParameters & parms) override;
 
    // Effect implementation
 
@@ -81,6 +76,8 @@ private:
    wxTextCtrl *mMaximumPauseBox;
    EffectAutoDuckPanel *mPanel;
 
+   CapturedParameters mParameters;
+   CapturedParameters &Parameters() override { return mParameters; }
    DECLARE_EVENT_TABLE()
 
    friend class EffectAutoDuckPanel;

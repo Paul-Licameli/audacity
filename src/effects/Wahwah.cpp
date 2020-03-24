@@ -26,7 +26,6 @@
 
 #include <wx/slider.h>
 
-#include "../Shuttle.h"
 #include "../ShuttleGui.h"
 #include "../widgets/valnum.h"
 
@@ -84,14 +83,16 @@ BEGIN_EVENT_TABLE(EffectWahwah, wxEvtHandler)
 END_EVENT_TABLE();
 
 EffectWahwah::EffectWahwah()
+   :mParameters{
+      mFreq, Freq,
+      mPhase, Phase,
+      mDepth, Depth,
+      mRes, Res,
+      mFreqOfs, FreqOfs,
+      mOutGain, OutGain,
+   }
 {
-   mFreq = Freq.def;
-   mPhase = Phase.def;
-   mDepth = Depth.def;
-   mRes = Res.def;
-   mFreqOfs = FreqOfs.def;
-   mOutGain = OutGain.def;
-
+   Parameters().Reset();
    SetLinearEffectFlag(true);
 }
 
@@ -195,47 +196,6 @@ size_t EffectWahwah::RealtimeProcess(int group,
 {
 
    return InstanceProcess(mSlaves[group], inbuf, outbuf, numSamples);
-}
-
-bool EffectWahwah::DefineParams( ShuttleParams & S ){
-   S.SHUTTLE_PARAM( mFreq, Freq );
-   S.SHUTTLE_PARAM( mPhase, Phase );
-   S.SHUTTLE_PARAM( mDepth, Depth );
-   S.SHUTTLE_PARAM( mRes, Res );
-   S.SHUTTLE_PARAM( mFreqOfs, FreqOfs );
-   S.SHUTTLE_PARAM( mOutGain, OutGain );
-   return true;
-}
-
-bool EffectWahwah::GetAutomationParameters(CommandParameters & parms)
-{
-   parms.Write(Freq.key, mFreq);
-   parms.Write(Phase.key, mPhase);
-   parms.Write(Depth.key, mDepth);
-   parms.Write(Res.key, mRes);
-   parms.Write(FreqOfs.key, mFreqOfs);
-   parms.Write(OutGain.key, mOutGain);
-   
-   return true;
-}
-
-bool EffectWahwah::SetAutomationParameters(CommandParameters & parms)
-{
-   ReadParam(Freq);
-   ReadParam(Phase);
-   ReadParam(Depth);
-   ReadParam(Res);
-   ReadParam(FreqOfs);
-   ReadParam(OutGain);
-
-   mFreq = Freq;
-   mPhase = Phase;
-   mDepth = Depth;
-   mRes = Res;
-   mFreqOfs = FreqOfs;
-   mOutGain = OutGain;
-
-   return true;
 }
 
 // Effect implementation

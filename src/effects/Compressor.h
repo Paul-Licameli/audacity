@@ -12,6 +12,7 @@
 #define __AUDACITY_EFFECT_COMPRESSOR__
 
 #include "TwoPassSimpleMono.h"
+#include "../Shuttle.h"
 
 class wxCheckBox;
 class wxSlider;
@@ -36,12 +37,6 @@ public:
    // EffectDefinitionInterface implementation
 
    EffectType GetType() override;
-
-   // EffectClientInterface implementation
-
-   bool DefineParams( ShuttleParams & S ) override;
-   bool GetAutomationParameters(CommandParameters & parms) override;
-   bool SetAutomationParameters(CommandParameters & parms) override;
 
    // Effect implementation
 
@@ -124,6 +119,8 @@ private:
    wxCheckBox *mGainCheckBox;
    wxCheckBox *mPeakCheckBox;
 
+   CapturedParameters mParameters;
+   CapturedParameters &Parameters() override { return mParameters; }
    DECLARE_EVENT_TABLE()
 };
 

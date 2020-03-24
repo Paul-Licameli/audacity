@@ -35,7 +35,6 @@ the pitch without changing the tempo.
 #include <wx/valtext.h>
 
 #include "../PitchName.h"
-#include "../Shuttle.h"
 #include "../ShuttleGui.h"
 #include "../Spectrum.h"
 #include "../WaveTrack.h"
@@ -104,17 +103,19 @@ BEGIN_EVENT_TABLE(EffectChangePitch, wxEvtHandler)
 END_EVENT_TABLE()
 
 EffectChangePitch::EffectChangePitch()
+   : mParameters{
+      [this]{ Calc_SemitonesChange_fromPercentChange(); return true; },
+      // Vaughan, 2013-06: Long lost to history, I don't see why m_dPercentChange was chosen to be shuttled.
+      // Only m_dSemitonesChange is used in Process().
+      m_dPercentChange, Percentage,
+      mUseSBSMS, UseSBSMS
+   }
 {
-   m_dPercentChange = Percentage.def;
+   Parameters().Reset();
+
    m_dSemitonesChange = 0.0;
    m_dStartFrequency = 0.0; // 0.0 => uninitialized
    m_bLoopDetect = false;
-
-#if USE_SBSMS
-   mUseSBSMS = UseSBSMS.def;
-#else
-   mUseSBSMS = false;
-#endif
 
    // NULL out these control members because there are some cases where the
    // event table handlers get called during this method, and those handlers that
@@ -161,40 +162,6 @@ wxString EffectChangePitch::ManualPage()
 EffectType EffectChangePitch::GetType()
 {
    return EffectTypeProcess;
-}
-
-// EffectClientInterface implementation
-bool EffectChangePitch::DefineParams( ShuttleParams & S ){
-   S.SHUTTLE_PARAM( m_dPercentChange, Percentage );
-   S.SHUTTLE_PARAM( mUseSBSMS, UseSBSMS );
-   return true;
-}
-
-bool EffectChangePitch::GetAutomationParameters(CommandParameters & parms)
-{
-   parms.Write(Percentage.key, m_dPercentChange);
-   parms.Write(UseSBSMS.key, mUseSBSMS);
-
-   return true;
-}
-
-bool EffectChangePitch::SetAutomationParameters(CommandParameters & parms)
-{
-   // Vaughan, 2013-06: Long lost to history, I don't see why m_dPercentChange was chosen to be shuttled.
-   // Only m_dSemitonesChange is used in Process().
-   ReadParam(Percentage);
-
-   m_dPercentChange = Percentage;
-   Calc_SemitonesChange_fromPercentChange();
-
-#if USE_SBSMS
-   ReadParam(UseSBSMS);
-   mUseSBSMS = UseSBSMS;
-#else
-   mUseSBSMS = false;
-#endif
-
-   return true;
 }
 
 bool EffectChangePitch::LoadFactoryDefaults()

@@ -19,6 +19,7 @@
 #include "Effect.h"
 #include "Biquad.h"
 #include "EBUR128.h"
+#include "../Shuttle.h"
 
 class wxChoice;
 class wxSimplebook;
@@ -41,12 +42,6 @@ public:
    // EffectDefinitionInterface implementation
 
    EffectType GetType() override;
-
-   // EffectClientInterface implementation
-
-   bool DefineParams( ShuttleParams & S ) override;
-   bool GetAutomationParameters(CommandParameters & parms) override;
-   bool SetAutomationParameters(CommandParameters & parms) override;
 
    // Effect implementation
 
@@ -107,6 +102,8 @@ private:
    size_t mTrackBufferCapacity;
    bool   mProcStereo;
 
+   CapturedParameters mParameters;
+   CapturedParameters& Parameters() override { return mParameters; }
    DECLARE_EVENT_TABLE()
 };
 

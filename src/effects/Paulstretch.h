@@ -11,6 +11,7 @@
 #define __AUDACITY_EFFECT_PAULSTRETCH__
 
 #include "Effect.h"
+#include "../Shuttle.h"
 
 class ShuttleGui;
 
@@ -31,12 +32,6 @@ public:
    // EffectDefinitionInterface implementation
 
    EffectType GetType() override;
-
-   // EffectClientInterface implementation
-
-   bool DefineParams( ShuttleParams & S ) override;
-   bool GetAutomationParameters(CommandParameters & parms) override;
-   bool SetAutomationParameters(CommandParameters & parms) override;
 
    // Effect implementation
 
@@ -59,6 +54,8 @@ private:
    float mTime_resolution;  //seconds
    double m_t1;
 
+   CapturedParameters mParameters;
+   CapturedParameters& Parameters() override { return mParameters; }
    DECLARE_EVENT_TABLE()
 };
 

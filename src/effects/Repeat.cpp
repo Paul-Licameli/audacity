@@ -29,7 +29,6 @@
 #include <wx/stattext.h>
 
 #include "../LabelTrack.h"
-#include "../Shuttle.h"
 #include "../ShuttleGui.h"
 #include "../WaveTrack.h"
 #include "../widgets/NumericTextCtrl.h"
@@ -53,9 +52,9 @@ BEGIN_EVENT_TABLE(EffectRepeat, wxEvtHandler)
 END_EVENT_TABLE()
 
 EffectRepeat::EffectRepeat()
+   : mParameters{ repeatCount, Count }
 {
-   repeatCount = Count.def;
-
+   Parameters().Reset();
    SetLinearEffectFlag(true);
 }
 
@@ -85,28 +84,6 @@ wxString EffectRepeat::ManualPage()
 EffectType EffectRepeat::GetType()
 {
    return EffectTypeProcess;
-}
-
-// EffectClientInterface implementation
-bool EffectRepeat::DefineParams( ShuttleParams & S ){
-   S.SHUTTLE_PARAM( repeatCount, Count );
-   return true;
-}
-
-bool EffectRepeat::GetAutomationParameters(CommandParameters & parms)
-{
-   parms.Write(Count.key, repeatCount);
-
-   return true;
-}
-
-bool EffectRepeat::SetAutomationParameters(CommandParameters & parms)
-{
-   ReadParam(Count);
-
-   repeatCount = Count;
-
-   return true;
 }
 
 // Effect implementation

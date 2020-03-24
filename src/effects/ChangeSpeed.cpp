@@ -25,7 +25,6 @@
 #include "../LabelTrack.h"
 #include "../Prefs.h"
 #include "../Resample.h"
-#include "../Shuttle.h"
 #include "../ShuttleGui.h"
 #include "../widgets/NumericTextCtrl.h"
 #include "../widgets/valnum.h"
@@ -93,9 +92,9 @@ BEGIN_EVENT_TABLE(EffectChangeSpeed, wxEvtHandler)
 END_EVENT_TABLE()
 
 EffectChangeSpeed::EffectChangeSpeed()
+: mParameters{ m_PercentChange, Percentage }
 {
-   // effect parameters
-   m_PercentChange = Percentage.def;
+   Parameters().Reset();
 
    mFromVinyl = kVinyl_33AndAThird;
    mToVinyl = kVinyl_33AndAThird;
@@ -134,28 +133,6 @@ wxString EffectChangeSpeed::ManualPage()
 EffectType EffectChangeSpeed::GetType()
 {
    return EffectTypeProcess;
-}
-
-// EffectClientInterface implementation
-bool EffectChangeSpeed::DefineParams( ShuttleParams & S ){
-   S.SHUTTLE_PARAM( m_PercentChange, Percentage );
-   return true;
-}
-
-bool EffectChangeSpeed::GetAutomationParameters(CommandParameters & parms)
-{
-   parms.Write(Percentage.key, m_PercentChange);
-
-   return true;
-}
-
-bool EffectChangeSpeed::SetAutomationParameters(CommandParameters & parms)
-{
-   ReadParam(Percentage);
-
-   m_PercentChange = Percentage;
-
-   return true;
 }
 
 bool EffectChangeSpeed::LoadFactoryDefaults()

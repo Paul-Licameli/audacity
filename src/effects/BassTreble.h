@@ -13,6 +13,7 @@
 #define __AUDACITY_EFFECT_BASS_TREBLE__
 
 #include "Effect.h"
+#include "../Shuttle.h"
 
 class wxSlider;
 class wxCheckBox;
@@ -65,10 +66,6 @@ public:
                                float **inbuf,
                                float **outbuf,
                                size_t numSamples) override;
-   bool DefineParams( ShuttleParams & S ) override;
-   bool GetAutomationParameters(CommandParameters & parms) override;
-   bool SetAutomationParameters(CommandParameters & parms) override;
-
 
    // Effect Implementation
 
@@ -118,6 +115,8 @@ private:
 
    wxCheckBox  *mLinkCheckBox;
 
+   CapturedParameters mParameters;
+   CapturedParameters &Parameters() override { return mParameters; }
    DECLARE_EVENT_TABLE()
 };
 
