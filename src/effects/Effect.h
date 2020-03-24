@@ -41,6 +41,7 @@ class AudacityCommand;
 #define BUILTIN_EFFECT_PREFIX L"Built-in Effect: "
 
 class AudacityProject;
+class CapturedParameters;
 class LabelTrack;
 class NotifyingSelectedRegion;
 class ProgressDialog;
@@ -123,6 +124,11 @@ class AUDACITY_DLL_API Effect /* not final */ : public wxEvtHandler,
    size_t SetBlockSize(size_t maxBlockSize) override;
    size_t GetBlockSize() const override;
 
+   // If this is overridden and returns nonempty,
+   // then DefineParams(), GetAutomationParameters(), and SetAutomationParameters()
+   // are defined by default by the return value.
+   virtual const CapturedParameters &Parameters();
+
    bool IsReady() override;
    bool ProcessInitialize(sampleCount totalLen, ChannelNames chanMap = NULL) override;
    bool ProcessFinalize() override;
@@ -143,6 +149,7 @@ class AUDACITY_DLL_API Effect /* not final */ : public wxEvtHandler,
    bool ShowInterface( wxWindow &parent,
       const EffectDialogFactory &factory, bool forceModal = false) override;
 
+   bool DefineParams( ShuttleParams & ) override;
    bool GetAutomationParameters(CommandParameters & parms) override;
    bool SetAutomationParameters(CommandParameters & parms) override;
 

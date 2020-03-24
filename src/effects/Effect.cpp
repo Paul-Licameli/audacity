@@ -355,6 +355,12 @@ size_t Effect::GetTailSize()
    return 0;
 }
 
+const CapturedParameters &Effect::Parameters()
+{
+   static const CapturedParameters empty;
+   return empty;
+}
+
 bool Effect::IsReady()
 {
    if (mClient)
@@ -530,6 +536,20 @@ bool Effect::ShowInterface(wxWindow &parent,
    return res;
 }
 
+bool Effect::DefineParams( ShuttleParams &S )
+{
+   if (mClient)
+      return mClient->DefineParams( S );
+   
+   auto &parameters = Parameters();
+   if ( !parameters.empty() ) {
+      parameters.Visit( S );
+      return true;
+   }
+
+   return false;
+}
+
 bool Effect::GetAutomationParameters(CommandParameters & parms)
 {
    if (mClient)
@@ -537,6 +557,10 @@ bool Effect::GetAutomationParameters(CommandParameters & parms)
       return mClient->GetAutomationParameters(parms);
    }
 
+   auto &parameters = Parameters();
+   if ( !parameters.empty() )
+      parameters.Get( parms );
+   
    return true;
 }
 
@@ -547,6 +571,10 @@ bool Effect::SetAutomationParameters(CommandParameters & parms)
       return mClient->SetAutomationParameters(parms);
    }
 
+   auto &parameters = Parameters();
+   if ( !parameters.empty() )
+      return parameters.Set( parms );
+   
    return true;
 }
 
