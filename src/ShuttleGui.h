@@ -225,7 +225,7 @@ struct Item {
    // Applies to windows, not to subsizers
    int mWindowPositionFlags{ 0 };
 
-   wxSize mWindowSize{};
+   wxSize mWindowSize = wxDefaultSize;
 
    wxSize mMinSize{ -1, -1 };
    bool mHasMinSize{ false };
@@ -258,7 +258,9 @@ public:
    void AddTitle(const TranslatableString &Title, int wrapWidth = 0);
    wxWindow * AddWindow(wxWindow * pWindow);
    wxSlider * AddSlider(
-      const TranslatableLabel &Prompt, int pos, int Max, int Min = 0);
+      const TranslatableLabel &Prompt, int pos, int Max, int Min = 0,
+      // Pass -1 to mean unspecified:
+      int lineSize = -1, int pageSize = -1 );
    wxSlider * AddVSlider(const TranslatableLabel &Prompt, int pos, int Max);
    wxSpinCtrl * AddSpinCtrl(const TranslatableLabel &Prompt,
       int Value, int Max, int Min);

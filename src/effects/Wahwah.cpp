@@ -263,8 +263,8 @@ void EffectWahwah::PopulateOrExchange(ShuttleGui & S)
          .Name(XO("LFO start phase in degrees"))
          .Style(wxSL_HORIZONTAL)
          .MinSize( { 100, -1 } )
-         .AddSlider( {}, DEF_Phase * SCL_Phase, MAX_Phase * SCL_Phase, MIN_Phase * SCL_Phase);
-      mPhaseS->SetLineSize(10);
+         .AddSlider( {}, DEF_Phase * SCL_Phase, MAX_Phase * SCL_Phase, MIN_Phase * SCL_Phase,
+            10 /* line size */ );
 
       mDepthT = S.Id(ID_Depth)
          .Validator<IntegerValidator<int>>(

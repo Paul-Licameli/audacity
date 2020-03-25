@@ -297,8 +297,9 @@ void EffectCompressor::PopulateOrExchange(ShuttleGui & S)
             .AddSlider( {},
                DEF_Ratio * SCL_Ratio,
                MAX_Ratio * SCL_Ratio,
-               MIN_Ratio * SCL_Ratio);
-         mRatioSlider->SetPageSize(5);
+               MIN_Ratio * SCL_Ratio,
+               -1, 5 /* page size */ );
+
          mRatioText = S.AddVariableText(RatioTextFormat( 1, 99.9 ), true,
             wxALIGN_LEFT | wxALIGN_CENTER_VERTICAL);
 
