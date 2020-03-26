@@ -2349,9 +2349,15 @@ void Effect::Preview(bool dryOnly)
 
    auto vr0 = valueRestorer( mT0 );
    auto vr1 = valueRestorer( mT1 );
+   auto vr2 = valueRestorer( mDuration );
    // Most effects should stop at t1.
    if (!mPreviewFullSelection)
-      mT1 = t1;
+      mT1 = t1, mDuration = mT1 - mT0;
+
+   // In case any dialog control depends on mT1 or mDuration:
+   if ( mUIDialog ) {
+      mUIDialog->TransferDataToWindow();
+   }
 
    // In case any dialog control depends on mT1 or mDuration:
    if ( mUIDialog ) {

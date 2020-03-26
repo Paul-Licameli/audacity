@@ -28,9 +28,11 @@
 
 #include <wx/checkbox.h>
 #include <wx/slider.h>
+#include <wx/stattext.h>
 
 #include "../Shuttle.h"
 #include "../ShuttleGui.h"
+#include "../widgets/numformatter.h"
 #include "../widgets/valnum.h"
 #include "TimeWarper.h"
 
@@ -55,7 +57,6 @@ enum
    ID_PercentChange = 10000,
    ID_FromBPM,
    ID_ToBPM,
-   ID_FromLength,
    ID_ToLength
 };
 
@@ -224,10 +225,16 @@ bool EffectChangeTempo::Process()
    return success;
 }
 
+enum { precision = 2 };
+
+static inline wxString FormatLength( double length )
+{
+   return NumberFormatter::ToString( length, precision,
+      NumberFormatter::Style_TwoTrailingZeroes );
+}
+
 void EffectChangeTempo::PopulateOrExchange(ShuttleGui & S)
 {
-   enum { precision = 2 };
-
    S.StartVerticalLay(0);
    {
       S.AddSpace(0, 5);
@@ -289,15 +296,19 @@ void EffectChangeTempo::PopulateOrExchange(ShuttleGui & S)
       {
          S.StartHorizontalLay(wxALIGN_CENTER);
          {
-            m_pTextCtrl_FromLength = S.Id(ID_FromLength)
-               .Disable() // Disable because the value comes from the
-                       // user selection.
-               .Validator<FloatingPointValidator<double>>(
-                  precision, &m_FromLength,
-                  NumValidatorStyle::TWO_TRAILING_ZEROES)
-               /* i18n-hint: changing tempo "from" one value "to" another */
-               .AddTextBox(XXC("from", "change tempo"), L"", 12);
-            m_pTextCtrl_ToLength = S.Id(ID_ToLength)
+            /* i18n-hint: changing tempo "from" one value "to" another */
+            S.AddPrompt(XXC("from", "change tempo"));
+
+            m_pTextCtrl_FromLength =
+            S
+               .Size( { 60, -1 } )
+               .Style( wxALIGN_RIGHT )
+               .AddVariableText( Verbatim( FormatLength( m_FromLength ) ),
+                  false, wxALL | wxALIGN_CENTRE_VERTICAL );
+
+            m_pTextCtrl_ToLength =
+            S
+               .Id(ID_ToLength)
                .Validator<FloatingPointValidator<double>>(
                   2, &m_ToLength, NumValidatorStyle::TWO_TRAILING_ZEROES,
                   // min and max need same precision as what we're validating (bug 963)
@@ -348,10 +359,11 @@ bool EffectChangeTempo::TransferDataToWindow()
 
    m_bLoopDetect = false;
 
-   // Set the accessibility name here because we need m_pTextCtrl_FromLength to have had its value set
-   m_pTextCtrl_ToLength->SetName(
-      wxString::Format( _("Length in seconds from %s, to"),
-         m_pTextCtrl_FromLength->GetValue() ) );
+   auto number = FormatLength( m_FromLength );
+   auto text = wxString::Format(  _("Length in seconds from %s, to"),
+      number );
+   m_pTextCtrl_ToLength->SetName( text );
+   m_pTextCtrl_FromLength->SetLabel( number );
 
    return true;
 }

@@ -25,6 +25,7 @@
 
 class wxSlider;
 class wxCheckBox;
+class wxStaticText;
 class wxTextCtrl;
 class ShuttleGui;
 
@@ -95,7 +96,7 @@ private:
    wxSlider *		m_pSlider_PercentChange;
    wxTextCtrl *	m_pTextCtrl_FromBPM;
    wxTextCtrl *	m_pTextCtrl_ToBPM;
-   wxTextCtrl *	m_pTextCtrl_FromLength;
+   wxStaticText * m_pTextCtrl_FromLength;
    wxTextCtrl *	m_pTextCtrl_ToLength;
 
 #if USE_SBSMS
