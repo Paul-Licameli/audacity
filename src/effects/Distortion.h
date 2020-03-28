@@ -16,8 +16,7 @@
 #include "Effect.h"
 
 class wxSlider;
-class wxStaticText;
-class wxCheckBox;
+class wxSimplebook;
 class wxTextCtrl;
 class ShuttleGui;
 
@@ -42,6 +41,22 @@ public:
    double queuetotal;
 };
 
+enum kTableType
+{
+   kHardClip = 0,
+   kSoftClip,
+   kHalfSinCurve,
+   kExpCurve,
+   kLogCurve,
+   kCubic,
+   kEvenHarmonics,
+   kSinCurve,
+   kLeveller,
+   kRectifier,
+   kHardLimiter,
+   nTableTypes
+};
+
 class EffectDistortion final : public Effect
 {
 public:
@@ -50,15 +65,30 @@ public:
    EffectDistortion();
    virtual ~EffectDistortion();
 
+   int    mTableChoiceIndx;
+
    struct Params
    {
-      int    mTableChoiceIndx;
       bool   mDCBlock;
       double mThreshold_dB;
       double mNoiseFloor;
       double mParam1;
       double mParam2;
       int    mRepeats;
+   };
+   
+   struct Controls
+   {
+      wxSlider *mThresholdS = nullptr;
+      wxSlider *mNoiseFloorS = nullptr;
+      wxSlider *mParam1S = nullptr;
+      wxSlider *mParam2S = nullptr;
+      wxSlider *mRepeatsS = nullptr;
+      wxTextCtrl *mThresholdT = nullptr;
+      wxTextCtrl *mNoiseFloorT = nullptr;
+      wxTextCtrl *mParam1T = nullptr;
+      wxTextCtrl *mParam2T = nullptr;
+      wxTextCtrl *mRepeatsT = nullptr;
    };
 
    // ComponentInterface implementation
@@ -93,7 +123,12 @@ public:
 
    // Effect implementation
 
+   struct UISpec;
+   void PopulateCheckboxPage(ShuttleGui &S, const UISpec &spec, size_t index);
+   void PopulateThresholdPage(ShuttleGui &S, const UISpec &spec, size_t index);
+   void PopulateParameterPage(ShuttleGui &S, const UISpec &spec, size_t index);
    void PopulateOrExchange(ShuttleGui & S) override;
+   bool Init() override;
    bool TransferDataToWindow() override;
    bool TransferDataFromWindow() override;
 
@@ -102,7 +137,6 @@ private:
    enum control
    {
       ID_Type = 10000,
-      ID_DCBlock,
       ID_Threshold,
       ID_NoiseFloor,
       ID_Param1,
@@ -120,7 +154,6 @@ private:
    // Control Handlers
 
    void OnTypeChoice(wxCommandEvent & evt);
-   void OnDCBlockCheckbox(wxCommandEvent & evt);
    void OnThresholdText(wxCommandEvent & evt);
    void OnThresholdSlider(wxCommandEvent & evt);
    void OnNoiseFloorText(wxCommandEvent & evt);
@@ -131,9 +164,6 @@ private:
    void OnParam2Slider(wxCommandEvent & evt);
    void OnRepeatsText(wxCommandEvent & evt);
    void OnRepeatsSlider(wxCommandEvent & evt);
-   void UpdateUI();
-   void UpdateControl(control id, bool enable, TranslatableString name);
-   void UpdateControlText(wxTextCtrl *textCtrl, wxString &string, bool enabled);
 
    void MakeTable();
    float WaveShaper(float sample);
@@ -172,8 +202,6 @@ private:
    std::vector<EffectDistortionState> mSlaves;
 
    double mTable[TABLESIZE];
-   double mThreshold;
-   bool mbSavedFilterState;
 
    // mMakeupGain is used by some distortion types to pass the
    // amount of gain required to bring overall effect gain to unity
@@ -182,33 +210,12 @@ private:
    int mTypChoiceIndex;
 
    wxChoice *mTypeChoiceCtrl;
-   wxTextCtrl *mThresholdT;
-   wxTextCtrl *mNoiseFloorT;
-   wxTextCtrl *mParam1T;
-   wxTextCtrl *mParam2T;
-   wxTextCtrl *mRepeatsT;
 
-   wxSlider *mThresholdS;
-   wxSlider *mNoiseFloorS;
-   wxSlider *mParam1S;
-   wxSlider *mParam2S;
-   wxSlider *mRepeatsS;
-
-   wxCheckBox *mDCBlockCheckBox;
-
-   wxStaticText *mThresholdTxt;
-   wxStaticText *mNoiseFloorTxt;
-   wxStaticText *mParam1Txt;
-   wxStaticText *mParam2Txt;
-   wxStaticText *mRepeatsTxt;
-   
-   wxString mOldThresholdTxt;
-   wxString mOldmNoiseFloorTxt;
-   wxString mOldParam1Txt;
-   wxString mOldParam2Txt;
-   wxString mOldRepeatsTxt;
+   wxSimplebook *mBook1, *mBook2, *mBook3;
 
    Params mParams;
+   Params mPageParams[ nTableTypes ];
+   Controls mControls[ nTableTypes ];
 
    DECLARE_EVENT_TABLE()
 };
