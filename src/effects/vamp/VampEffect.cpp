@@ -663,7 +663,7 @@ void VampEffect::PopulateOrExchange(ShuttleGui & S)
                      .Id(ID_Texts + p)
                      .Text({ Verbatim( labelText ), {}, Verbatim( tip ) })
                      .Position(wxALIGN_CENTER_VERTICAL | wxALL)
-                     .Validator<FloatingPointValidator<float>>(
+                     .Validator<FloatingPointValidator<double>>(
                         6, &mValues[p],
                         (range < 10
                            ? NumValidatorStyle::THREE_TRAILING_ZEROES

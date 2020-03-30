@@ -180,7 +180,7 @@ void EffectPaulstretch::PopulateOrExchange(ShuttleGui & S)
    S.StartMultiColumn(2, wxALIGN_CENTER);
    {
       S
-         .Validator<FloatingPointValidator<float>>(
+         .Validator<FloatingPointValidator<double>>(
             1, &mAmount, NumValidatorStyle::DEFAULT, Amount.min)
          /* i18n-hint: This is how many times longer the sound will be, e.g. applying
           * the effect to a 1-second sample, with the default Stretch Factor of 10.0
@@ -189,7 +189,7 @@ void EffectPaulstretch::PopulateOrExchange(ShuttleGui & S)
          .AddTextBox(XXO("&Stretch Factor:"), L"", 10);
 
       S
-         .Validator<FloatingPointValidator<float>>(
+         .Validator<FloatingPointValidator<double>>(
             3, &mTime_resolution, NumValidatorStyle::ONE_TRAILING_ZERO, Time.min)
          .AddTextBox(XXO("&Time Resolution (seconds):"), L"", 10);
    }

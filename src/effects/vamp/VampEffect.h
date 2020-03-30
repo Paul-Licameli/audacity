@@ -97,7 +97,7 @@ private:
 
    Vamp::Plugin::ParameterList mParameters;
 
-   Floats mValues;
+   Doubles mValues;
 
    ArrayOf<wxSlider *> mSliders;
    ArrayOf<wxTextCtrl *> mFields;

@@ -84,9 +84,9 @@ private:
    void OnSliderDBMIN( wxCommandEvent & evt );
 
 private:
-   float mCutoff;
-   float mRipple;
-   float mStopbandRipple;
+   double mCutoff;
+   double mRipple;
+   double mStopbandRipple;
    int mFilterType;		// Butterworth etc.
    int mFilterSubtype;	// lowpass, highpass
    int mOrder;
