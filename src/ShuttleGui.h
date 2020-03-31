@@ -779,6 +779,8 @@ struct BaseItem
 {
    using ActionType = std::function< void() >;
    using Test = std::function< bool() >;
+   using ControlTextFunction = std::function< ControlText() >;
+
    // This is a "curried" function!
    using ValidatorSetter =
    std::function< std::function< void(wxWindow*) >(
@@ -797,6 +799,7 @@ struct BaseItem
    Test mShowTest;
 
    ControlText mText;
+   ControlTextFunction mComputedText;
 
    std::vector<std::pair<wxEventType, wxObjectEventFunction>> mRootConnections;
 
@@ -924,9 +927,16 @@ struct TypedItem : BaseItem {
       return std::move( *this );
    }
 
-   TypedItem&& Text( const ControlText &text ) &&
+   TypedItem &&Text( const ControlText &text ) &&
    {
       mText = text;
+      return std::move( *this );
+   }
+
+   // Recompute whenever another control's contents are modified
+   TypedItem &&VariableText( const ControlTextFunction &fn ) &&
+   {
+      mComputedText = fn;
       return std::move( *this );
    }
 
@@ -1396,6 +1406,9 @@ public:
       const DialogDefinition::BaseItem &item,
       std::initializer_list<wxEventType> types );
 
+   static void ApplyText( const DialogDefinition::ControlText &text,
+      wxWindow *pWind );
+
    static void ApplyItem( int step,
       const DialogDefinition::BaseItem &item,
       const std::shared_ptr< DialogDefinition::ValidationState > &pState,
@@ -1612,9 +1625,17 @@ public:
       return *this;
    }
 
-   TypedShuttleGui & Text( const DialogDefinition::ControlText &text )
+   TypedShuttleGui &Text( const DialogDefinition::ControlText &text )
    {
       GetItem().Text( text );
+      return *this;
+   }
+
+   // Recompute whenever another control's contents are modified
+   TypedShuttleGui &VariableText(
+      const DialogDefinition::BaseItem::ControlTextFunction &fn )
+   {
+      GetItem().VariableText( fn );
       return *this;
    }
 

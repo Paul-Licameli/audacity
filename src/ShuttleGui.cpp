@@ -652,6 +652,72 @@ bool StringValidator::TransferToWindow()
 
 } // namespace DialogDefinition
 
+namespace {
+
+// A validator intended to have a no-fail side-effect on a control's
+// appearance, only when transferring to window; it can add that to the
+// behavior of some other validator.
+class ValidatorDecorator : public wxValidator
+{
+public:
+   using Updater = std::function< void( wxWindow* ) >;
+
+   ValidatorDecorator( const Updater &updater,
+      std::unique_ptr< wxValidator > pNext )
+      : mUpdater{ updater }
+      , mpNext{ std::move( pNext ) }
+   {}
+   ValidatorDecorator( const ValidatorDecorator & );
+   ~ValidatorDecorator() ;
+
+   wxObject *Clone() const override;
+   bool Validate( wxWindow *pWindow ) override;
+   bool TransferFromWindow() override;
+   bool TransferToWindow() override;
+
+private:
+   Updater mUpdater;
+   std::unique_ptr< wxValidator > mpNext;
+};
+
+ValidatorDecorator::ValidatorDecorator( const ValidatorDecorator &other )
+   : mUpdater{ other.mUpdater }
+{
+   std::unique_ptr< wxObject > pNext{ other.mpNext->Clone() };
+   // why does wxValidator::Clone() return wxObject* not wxValidator* ?
+   // Let's be defensive.
+   if ( dynamic_cast< wxValidator* >( pNext.get() ) )
+      mpNext.reset( static_cast< wxValidator *>( pNext.release() ) );
+   else if ( pNext )
+      wxASSERT( false );
+}
+
+ValidatorDecorator::~ValidatorDecorator() = default;
+
+wxObject *ValidatorDecorator::Clone() const
+{
+   return safenew ValidatorDecorator{ *this };
+}
+
+bool ValidatorDecorator::Validate( wxWindow *pWindow )
+{
+   return !mpNext || mpNext->Validate( pWindow );
+}
+
+bool ValidatorDecorator::TransferFromWindow()
+{
+   return !mpNext || mpNext->TransferFromWindow();
+}
+
+bool ValidatorDecorator::TransferToWindow()
+{
+   if ( mUpdater )
+      mUpdater( GetWindow() );
+   return !mpNext || mpNext->TransferToWindow();
+}
+
+}
+
 ShuttleGuiState::ShuttleGuiState(
    wxWindow *pDlg, teShuttleMode ShuttleMode, bool vertical, wxSize minSize,
    const std::shared_ptr< PreferenceVisitor > &pVisitor )
@@ -2709,6 +2775,32 @@ void ShuttleGuiBase::CheckEventType(
    }
 }
 
+void ShuttleGuiBase::ApplyText( const DialogDefinition::ControlText &text,
+   wxWindow *pWind )
+{
+   if ( !text.mToolTip.empty() )
+      pWind->SetToolTip( text.mToolTip.Translation() );
+
+   if ( !text.mName.empty() ) {
+      // This affects the audible screen-reader name
+      pWind->SetName( text.mName.Translation() );
+#if 1//ndef __WXMAC__
+      if (auto pButton = dynamic_cast< wxBitmapButton* >( pWind ))
+         pButton->SetLabel(  text.mName.Translation() );
+#endif
+   }
+
+   if ( !text.mLabel.empty() ) {
+      // Takes precedence over any name specification,
+      // for the (visible) label
+      pWind->SetLabel( text.mLabel.Translation() );
+   }
+
+   if ( !text.mSuffix.empty() )
+      pWind->SetName(
+         pWind->GetName() + " " + text.mSuffix.Translation() );
+}
+
 void ShuttleGuiBase::ApplyItem( int step,
    const DialogDefinition::BaseItem &item,
    const std::shared_ptr< DialogDefinition::ValidationState > &pState,
@@ -2724,10 +2816,10 @@ void ShuttleGuiBase::ApplyItem( int step,
       if ( item.mWindowSize != wxDefaultSize )
          pWind->SetSize( item.mWindowSize );
    }
-   else if ( step == 1) {
+   else if ( step == 1 ) {
       // Apply certain other optional window attributes here
 
-      if ( item.mAction || item.mValidatorSetter ) {
+      if ( item.mAction || item.mValidatorSetter || item.mComputedText ) {
          if ( !item.mAction ) {
             auto action = item.mAction;
             pDlg->Bind(
@@ -2756,27 +2848,30 @@ void ShuttleGuiBase::ApplyItem( int step,
       if ( item.mValidatorSetter )
          item.mValidatorSetter( pState )( pWind );
 
-      if ( !item.mText.mToolTip.empty() )
-         pWind->SetToolTip( item.mText.mToolTip.Translation() );
+      if ( item.mComputedText ) {
+         // Decorate the validator (if there is one) with a text updater
+         // First copy any previous validator
+         std::unique_ptr< wxObject > pObject{ pWind->GetValidator()->Clone() };
 
-      if ( !item.mText.mName.empty() ) {
-         // This affects the audible screen-reader name
-         pWind->SetName( item.mText.mName.Translation() );
-#ifndef __WXMAC__
-         if (auto pButton = dynamic_cast< wxBitmapButton* >( pWind ))
-            pButton->SetLabel(  item.mName.Translation() );
-#endif
+         // Defensive dynamic check that this wxObject really is a wxValidator
+         if ( pObject && !dynamic_cast<wxValidator*>(pObject.get()) ) {
+            wxASSERT( false );
+            pObject.reset();
+         }
+
+         // Now install the decorator
+         auto computedText = item.mComputedText;
+         ValidatorDecorator newValidator{
+            [computedText]( wxWindow *pWind ){
+               ApplyText( computedText(), pWind );
+            },
+            std::unique_ptr< wxValidator >{
+               static_cast< wxValidator* >( pObject.release() ) }
+         };
+         pWind->SetValidator( newValidator );
       }
 
-      if ( !item.mText.mLabel.empty() ) {
-         // Takes precedence over any name specification,
-         // for the (visible) label
-         pWind->SetLabel( item.mText.mLabel.Translation() );
-      }
-
-      if ( !item.mText.mSuffix.empty() )
-         pWind->SetName(
-            pWind->GetName() + " " + item.mText.mSuffix.Translation() );
+      ApplyText( item.mText, pWind );
 
       if (item.mFocused)
          pWind->SetFocus();
