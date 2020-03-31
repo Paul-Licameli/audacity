@@ -2008,7 +2008,7 @@ void MeterPanel::OnPreferences()
          {
             rate =
             S
-               .Name(XO("Meter refresh rate per second [1-100]"))
+               .Text(XO("Meter refresh rate per second [1-100]"))
                .Validator<IntegerValidator<long>>(
                   &mMeterRefreshRate, NumValidatorStyle::DEFAULT,
                   MIN_REFRESH_RATE, MAX_REFRESH_RATE)

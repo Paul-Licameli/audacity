@@ -1457,7 +1457,7 @@ struct ControlInfo {
       wxSlider *const slider =
       S
          .Id(id)
-         .Name( sliderName )
+         .Text( sliderName )
          .Style(wxSL_HORIZONTAL)
          .MinSize( { 150, -1 } )
          .AddSlider( {}, 0, sliderMax);

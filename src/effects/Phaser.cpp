@@ -269,7 +269,7 @@ void EffectPhaser::PopulateOrExchange(ShuttleGui & S)
       mStagesS =
       S
          .Id(ID_Stages)
-         .Name(XO("Stages"))
+         .Text(XO("Stages"))
          .Style(wxSL_HORIZONTAL)
          .MinSize( { 100, -1 } )
          .AddSlider( {}, DEF_Stages * SCL_Stages, MAX_Stages * SCL_Stages, MIN_Stages * SCL_Stages,
@@ -285,7 +285,7 @@ void EffectPhaser::PopulateOrExchange(ShuttleGui & S)
       mDryWetS =
       S
          .Id(ID_DryWet)
-         .Name(XO("Dry Wet"))
+         .Text(XO("Dry Wet"))
          .Style(wxSL_HORIZONTAL)
          .MinSize( { 100, -1 } )
          .AddSlider( {}, DEF_DryWet * SCL_DryWet, MAX_DryWet * SCL_DryWet, MIN_DryWet * SCL_DryWet);
@@ -300,7 +300,7 @@ void EffectPhaser::PopulateOrExchange(ShuttleGui & S)
       mFreqS =
       S
          .Id(ID_Freq)
-         .Name(XO("LFO frequency in hertz"))
+         .Text(XO("LFO frequency in hertz"))
          .Style(wxSL_HORIZONTAL)
          .MinSize( { 100, -1 } )
          .AddSlider( {}, DEF_Freq * SCL_Freq, MAX_Freq * SCL_Freq, 0.0);
@@ -315,7 +315,7 @@ void EffectPhaser::PopulateOrExchange(ShuttleGui & S)
       mPhaseS =
       S
          .Id(ID_Phase)
-         .Name(XO("LFO start phase in degrees"))
+         .Text(XO("LFO start phase in degrees"))
          .Style(wxSL_HORIZONTAL)
          .MinSize( { 100, -1 } )
          .AddSlider( {}, DEF_Phase * SCL_Phase, MAX_Phase * SCL_Phase, MIN_Phase * SCL_Phase,
@@ -331,7 +331,7 @@ void EffectPhaser::PopulateOrExchange(ShuttleGui & S)
       mDepthS =
       S
          .Id(ID_Depth)
-         .Name(XO("Depth in percent"))
+         .Text(XO("Depth in percent"))
          .Style(wxSL_HORIZONTAL)
          .MinSize( { 100, -1 } )
          .AddSlider( {}, DEF_Depth * SCL_Depth, MAX_Depth * SCL_Depth, MIN_Depth * SCL_Depth);
@@ -346,7 +346,7 @@ void EffectPhaser::PopulateOrExchange(ShuttleGui & S)
       mFeedbackS =
       S
          .Id(ID_Feedback)
-         .Name(XO("Feedback in percent"))
+         .Text(XO("Feedback in percent"))
          .Style(wxSL_HORIZONTAL)
          .MinSize( { 100, -1 } )
          .AddSlider( {}, DEF_Feedback * SCL_Feedback, MAX_Feedback * SCL_Feedback, MIN_Feedback * SCL_Feedback,
@@ -362,7 +362,7 @@ void EffectPhaser::PopulateOrExchange(ShuttleGui & S)
       mOutGainS =
       S
          .Id(ID_OutGain)
-         .Name(XO("Output gain (dB)"))
+         .Text(XO("Output gain (dB)"))
          .Style(wxSL_HORIZONTAL)
          .MinSize( { 100, -1 } )
          .AddSlider( {}, DEF_OutGain * SCL_OutGain, MAX_OutGain * SCL_OutGain, MIN_OutGain * SCL_OutGain);

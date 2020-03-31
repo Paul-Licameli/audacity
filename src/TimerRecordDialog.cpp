@@ -765,7 +765,7 @@ void TimerRecordDialog::PopulateOrExchange(ShuttleGui& S)
             m_pDatePickerCtrl_Start->SetAccessible( safenew DatePickerCtrlAx(m_pDatePickerCtrl_Start));
 #endif
             S
-               .Name(XO("Start Date"))
+               .Text(XO("Start Date"))
                .AddWindow(m_pDatePickerCtrl_Start);
 
             m_pTimeTextCtrl_Start = safenew NumericTextCtrl(
@@ -775,8 +775,9 @@ void TimerRecordDialog::PopulateOrExchange(ShuttleGui& S)
                   .MenuEnabled(false)
                   .Format(strFormat)
                   .Value(true, wxDateTime_to_AudacityTime(m_DateTime_Start)));
+
             S
-               .Name(XO("Start Time"))
+               .Text(XO("Start Time"))
                .AddWindow(m_pTimeTextCtrl_Start);
          }
          S.EndStatic();
@@ -797,7 +798,7 @@ void TimerRecordDialog::PopulateOrExchange(ShuttleGui& S)
             m_pDatePickerCtrl_End->SetAccessible( safenew DatePickerCtrlAx(m_pDatePickerCtrl_End));
 #endif
             S
-               .Name(XO("End Date"))
+               .Text(XO("End Date"))
                .AddWindow(m_pDatePickerCtrl_End);
 
             m_pTimeTextCtrl_End = safenew NumericTextCtrl(
@@ -808,7 +809,7 @@ void TimerRecordDialog::PopulateOrExchange(ShuttleGui& S)
                   .Format(strFormat)
                   .Value(true, wxDateTime_to_AudacityTime(m_DateTime_End)));
             S
-               .Name(XO("End Time"))
+               .Text(XO("End Time"))
                .AddWindow(m_pTimeTextCtrl_End);
          }
          S.EndStatic();
@@ -832,7 +833,7 @@ void TimerRecordDialog::PopulateOrExchange(ShuttleGui& S)
             * number displayed is minutes, and the 's' indicates that the fourth number displayed is
             * seconds.
             */
-               .Name(XO("Duration"))
+               .Text(XO("Duration"))
                .AddWindow(m_pTimeTextCtrl_Duration);
          }
          S.EndStatic();

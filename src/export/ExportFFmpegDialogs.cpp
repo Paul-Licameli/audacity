@@ -1926,7 +1926,7 @@ void ExportFFmpegOptions::PopulateOrExchange(ShuttleGui & S)
                {
                   S
                      .Id(FELanguageID)
-                     .ToolTip(XO("ISO 639 3-letter language code\nOptional\nempty - automatic"))
+                     .Text({ {}, {}, XO("ISO 639 3-letter language code\nOptional\nempty - automatic") })
                      .TieTextBox(XXO("Language:"), {L"/FileFormats/FFmpegLanguage", wxEmptyString}, 9);
 
                   S.AddSpace( 20,0 );
@@ -1953,32 +1953,32 @@ void ExportFFmpegOptions::PopulateOrExchange(ShuttleGui & S)
                   S
                      .Id(FETagID)
                      /* i18n-hint: "codec" is short for a "coder-decoder" algorithm */
-                     .ToolTip(XO("Codec tag (FOURCC)\nOptional\nempty - automatic"))
+                     .Text({ {}, {}, XO("Codec tag (FOURCC)\nOptional\nempty - automatic") })
                      .TieTextBox(XXO("Tag:"), {L"/FileFormats/FFmpegTag", wxEmptyString}, 4);
 
                   S
                      .Id(FEBitrateID)
-                     .ToolTip(XO("Bit Rate (bits/second) - influences the resulting file size and quality\nSome codecs may only accept specific values (128k, 192k, 256k etc)\n0 - automatic\nRecommended - 192000"))
+                     .Text({ {}, {}, XO("Bit Rate (bits/second) - influences the resulting file size and quality\nSome codecs may only accept specific values (128k, 192k, 256k etc)\n0 - automatic\nRecommended - 192000") })
                      .TieSpinCtrl(XXO("Bit Rate:"), {L"/FileFormats/FFmpegBitRate", 0}, 1000000, 0);
 
                   S
                      .Id(FEQualityID)
-                     .ToolTip(XO("Overall quality, used differently by different codecs\nRequired for vorbis\n0 - automatic\n-1 - off (use bitrate instead)"))
+                     .Text({ {}, {}, XO("Overall quality, used differently by different codecs\nRequired for vorbis\n0 - automatic\n-1 - off (use bitrate instead)") })
                      .TieSpinCtrl(XXO("Quality:"), {L"/FileFormats/FFmpegQuality", 0}, 500, -1);
 
                   S
                      .Id(FESampleRateID)
-                     .ToolTip(XO("Sample rate (Hz)\n0 - don't change sample rate"))
+                     .Text({ {}, {}, XO("Sample rate (Hz)\n0 - don't change sample rate") })
                      .TieSpinCtrl(XXO("Sample Rate:"), {L"/FileFormats/FFmpegSampleRate", 0}, 200000, 0);
 
                   S
                      .Id(FECutoffID)
-                     .ToolTip(XO("Audio cutoff bandwidth (Hz)\nOptional\n0 - automatic"))
+                     .Text({ {}, {}, XO("Audio cutoff bandwidth (Hz)\nOptional\n0 - automatic") })
                      .TieSpinCtrl(XXO("Cutoff:"), {L"/FileFormats/FFmpegCutOff", 0}, 10000000, 0);
 
                   S
                      .Id(FEProfileID)
-                     .ToolTip(XO("AAC Profile\nLow Complexity - default\nMost players won't play anything other than LC"))
+                     .Text({ {}, {}, XO("AAC Profile\nLow Complexity - default\nMost players won't play anything other than LC") })
                      .MinSize( { 100, -1 } )
                      .TieChoice(XXO("Profile:"), AACProfiles);
                }
@@ -1990,23 +1990,22 @@ void ExportFFmpegOptions::PopulateOrExchange(ShuttleGui & S)
                S.StartMultiColumn(4, wxALIGN_LEFT);
                {
                   S
-                     .Id(FECompLevelID)
-                     .ToolTip(XO("Compression level\nRequired for FLAC\n-1 - automatic\nmin - 0 (fast encoding, large output file)\nmax - 10 (slow encoding, small output file)"))
+                     .Text({ {}, {}, XO("Compression level\nRequired for FLAC\n-1 - automatic\nmin - 0 (fast encoding, large output file)\nmax - 10 (slow encoding, small output file)") })
                      .TieSpinCtrl(XXO("Compression:"), {L"/FileFormats/FFmpegCompLevel", 0}, 10, -1);
 
                   S
                      .Id(FEFrameSizeID)
-                     .ToolTip(XO("Frame size\nOptional\n0 - default\nmin - 16\nmax - 65535"))
+                     .Text({ {}, {}, XO("Frame size\nOptional\n0 - default\nmin - 16\nmax - 65535") })
                      .TieSpinCtrl(XXO("Frame:"), {L"/FileFormats/FFmpegFrameSize", 0}, 65535, 0);
 
                   S
                      .Id(FELPCCoeffsID)
-                     .ToolTip(XO("LPC coefficients precision\nOptional\n0 - default\nmin - 1\nmax - 15"))
+                     .Text({ {}, {}, XO("LPC coefficients precision\nOptional\n0 - default\nmin - 1\nmax - 15") })
                      .TieSpinCtrl(XXO("LPC"), {L"/FileFormats/FFmpegLPCCoefPrec", 0}, 15, 0);
 
                   S
                      .Id(FEPredOrderID)
-                     .ToolTip(XO("Prediction Order Method\nEstimate - fastest, lower compression\nLog search - slowest, best compression\nFull search - default"))
+                     .Text({ {}, {}, XO("Prediction Order Method\nEstimate - fastest, lower compression\nLog search - slowest, best compression\nFull search - default") })
                      .MinSize( { 100, -1 } )
                      .TieNumberAsChoice(
                         XXO("PdO Method:"),
@@ -2016,22 +2015,22 @@ void ExportFFmpegOptions::PopulateOrExchange(ShuttleGui & S)
 
                   S
                      .Id(FEMinPredID)
-                     .ToolTip(XO("Minimal prediction order\nOptional\n-1 - default\nmin - 0\nmax - 32 (with LPC) or 4 (without LPC)"))
+                     .Text({ {}, {}, XO("Minimal prediction order\nOptional\n-1 - default\nmin - 0\nmax - 32 (with LPC) or 4 (without LPC)") })
                      .TieSpinCtrl(XXO("Min. PdO"), {L"/FileFormats/FFmpegMinPredOrder", -1}, 32, -1);
 
                   S
                      .Id(FEMaxPredID)
-                     .ToolTip(XO("Maximal prediction order\nOptional\n-1 - default\nmin - 0\nmax - 32 (with LPC) or 4 (without LPC)"))
+                     .Text({ {}, {}, XO("Maximal prediction order\nOptional\n-1 - default\nmin - 0\nmax - 32 (with LPC) or 4 (without LPC)") })
                      .TieSpinCtrl(XXO("Max. PdO"), {L"/FileFormats/FFmpegMaxPredOrder", -1}, 32, -1);
 
                   S
                      .Id(FEMinPartOrderID)
-                     .ToolTip(XO("Minimal partition order\nOptional\n-1 - default\nmin - 0\nmax - 8"))
+                     .Text({ {}, {}, XO("Minimal partition order\nOptional\n-1 - default\nmin - 0\nmax - 8") })
                      .TieSpinCtrl(XXO("Min. PtO"), {L"/FileFormats/FFmpegMinPartOrder", -1}, 8, -1);
 
                   S
                      .Id(FEMaxPartOrderID)
-                     .ToolTip(XO("Maximal partition order\nOptional\n-1 - default\nmin - 0\nmax - 8"))
+                     .Text({ {}, {}, XO("Maximal partition order\nOptional\n-1 - default\nmin - 0\nmax - 8") })
                      .TieSpinCtrl(XXO("Max. PtO"), {L"/FileFormats/FFmpegMaxPartOrder", -1}, 8, -1);
 
                   S
@@ -2053,7 +2052,7 @@ void ExportFFmpegOptions::PopulateOrExchange(ShuttleGui & S)
                {
                   S
                      .Id(FEMuxRateID)
-                     .ToolTip(XO("Maximum bit rate of the multiplexed stream\nOptional\n0 - default"))
+                     .Text({ {}, {}, XO("Maximum bit rate of the multiplexed stream\nOptional\n0 - default") })
                      /* i18n-hint: 'mux' is short for multiplexor, a device that selects between several inputs
                        'Mux Rate' is a parameter that has some bearing on compression ratio for MPEG
                        it has a hard to predict effect on the degree of compression */
@@ -2063,7 +2062,7 @@ void ExportFFmpegOptions::PopulateOrExchange(ShuttleGui & S)
                      .Id(FEPacketSizeID)
                      /* i18n-hint: 'Packet Size' is a parameter that has some bearing on compression ratio for MPEG
                        compression.  It measures how big a chunk of audio is compressed in one piece. */
-                     .ToolTip(XO("Packet size\nOptional\n0 - default"))
+                     .Text({ {}, {}, XO("Packet size\nOptional\n0 - default") })
                      /* i18n-hint: 'Packet Size' is a parameter that has some bearing on compression ratio for MPEG
                        compression.  It measures how big a chunk of audio is compressed in one piece. */
                      .TieSpinCtrl(XXO("Packet Size:"), {L"/FileFormats/FFmpegPacketSize", 0}, 10000000, 0);

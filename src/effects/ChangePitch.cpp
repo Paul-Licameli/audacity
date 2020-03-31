@@ -288,7 +288,7 @@ void EffectChangePitch::PopulateOrExchange(ShuttleGui & S)
             S
                .Id(ID_FromPitch)
                /* i18n-hint: changing musical pitch "from" one value "to" another */
-               .Name(XC("from", "change pitch"))
+               .Text(XC("from", "change pitch"))
                .MinSize( { 80, -1 } )
             /* i18n-hint: changing musical pitch "from" one value "to" another */
                .AddChoice(XXC("&from", "change pitch"), pitch);
@@ -296,7 +296,7 @@ void EffectChangePitch::PopulateOrExchange(ShuttleGui & S)
             m_pSpin_FromOctave =
             S
                .Id(ID_FromOctave)
-               .Name(XO("from Octave"))
+               .Text(XO("from Octave"))
                .MinSize( { 50, -1 } )
                .AddSpinCtrl( {}, m_nFromOctave, INT_MAX, INT_MIN);
 
@@ -304,7 +304,7 @@ void EffectChangePitch::PopulateOrExchange(ShuttleGui & S)
             S
                .Id(ID_ToPitch)
                /* i18n-hint: changing musical pitch "from" one value "to" another */
-               .Name(XC("to", "change pitch"))
+               .Text(XC("to", "change pitch"))
                .MinSize( { 80, -1 } )
                /* i18n-hint: changing musical pitch "from" one value "to" another */
                .AddChoice(XXC("&to", "change pitch"), pitch);
@@ -312,7 +312,7 @@ void EffectChangePitch::PopulateOrExchange(ShuttleGui & S)
             m_pSpin_ToOctave =
             S
                .Id(ID_ToOctave)
-               .Name(XO("to Octave"))
+               .Text(XO("to Octave"))
                .MinSize( { 50, -1 } )
                .AddSpinCtrl( {}, m_nToOctave, INT_MAX, INT_MIN);
          }
@@ -323,7 +323,7 @@ void EffectChangePitch::PopulateOrExchange(ShuttleGui & S)
             m_pTextCtrl_SemitonesChange =
             S
                .Id(ID_SemitonesChange)
-               .Name(XO("Semitones (half-steps)"))
+               .Text(XO("Semitones (half-steps)"))
                .Validator<FloatingPointValidator<double>>(
                   2, &m_dSemitonesChange,
                   NumValidatorStyle::TWO_TRAILING_ZEROES )
@@ -340,7 +340,7 @@ void EffectChangePitch::PopulateOrExchange(ShuttleGui & S)
             m_pTextCtrl_FromFrequency =
             S
                .Id(ID_FromFrequency)
-               .Name(XO("from (Hz)"))
+               .Text(XO("from (Hz)"))
                .Validator<FloatingPointValidator<double>>(
                   3, &m_FromFrequency,
                   NumValidatorStyle::THREE_TRAILING_ZEROES,
@@ -350,7 +350,7 @@ void EffectChangePitch::PopulateOrExchange(ShuttleGui & S)
             m_pTextCtrl_ToFrequency =
             S
                .Id(ID_ToFrequency)
-               .Name(XO("to (Hz)"))
+               .Text(XO("to (Hz)"))
                .Validator<FloatingPointValidator<double>>(
                   3, &m_ToFrequency,
                   NumValidatorStyle::THREE_TRAILING_ZEROES,
@@ -379,7 +379,7 @@ void EffectChangePitch::PopulateOrExchange(ShuttleGui & S)
             m_pSlider_PercentChange =
             S
                .Id(ID_PercentChange)
-               .Name(XO("Percent Change"))
+               .Text(XO("Percent Change"))
                .Style(wxSL_HORIZONTAL)
                .AddSlider( {}, 0, (int)kSliderMax, (int)MIN_Percentage);
          }

@@ -544,7 +544,7 @@ void PluginRegistrationDialog::PopulateOrExchange(ShuttleGui &S)
                S
                   .Id(ID_ShowAll)
                   /* i18n-hint: Radio button to show all effects */
-                  .Name(XO("Show all"))
+                  .Text(XO("Show all"))
                   /* i18n-hint: Radio button to show all effects */
                   .AddRadioButton(XXO("&All"));
 #if wxUSE_ACCESSIBILITY
@@ -556,7 +556,7 @@ void PluginRegistrationDialog::PopulateOrExchange(ShuttleGui &S)
                S
                   .Id(ID_ShowDisabled)
                   /* i18n-hint: Radio button to show just the currently disabled effects */
-                  .Name(XO("Show disabled"))
+                  .Text(XO("Show disabled"))
                   /* i18n-hint: Radio button to show just the currently disabled effects */
                   .AddRadioButton(XXO("D&isabled"));
 #if wxUSE_ACCESSIBILITY
@@ -568,7 +568,7 @@ void PluginRegistrationDialog::PopulateOrExchange(ShuttleGui &S)
                S
                   .Id(ID_ShowEnabled)
                   /* i18n-hint: Radio button to show just the currently enabled effects */
-                  .Name(XO("Show enabled"))
+                  .Text(XO("Show enabled"))
                   /* i18n-hint: Radio button to show just the currently enabled effects */
                   .AddRadioButton(XXO("E&nabled"));
 #if wxUSE_ACCESSIBILITY
@@ -580,7 +580,7 @@ void PluginRegistrationDialog::PopulateOrExchange(ShuttleGui &S)
                S
                   .Id(ID_ShowNew)
                   /* i18n-hint: Radio button to show just the newly discovered effects */
-                  .Name(XO("Show new"))
+                  .Text(XO("Show new"))
                   /* i18n-hint: Radio button to show just the newly discovered effects */
                   .AddRadioButton(XXO("Ne&w"));
 #if wxUSE_ACCESSIBILITY

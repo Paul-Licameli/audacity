@@ -256,7 +256,7 @@ void EffectNoise::PopulateOrExchange(ShuttleGui & S)
                             .AutoPos(true));
 
       S
-         .Name(XO("Duration"))
+         .Text(XO("Duration"))
          .Position(wxALIGN_LEFT | wxALIGN_CENTER_VERTICAL | wxALL)
          .AddWindow(mNoiseDurationT);
    }

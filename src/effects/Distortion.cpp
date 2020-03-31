@@ -502,13 +502,13 @@ void EffectDistortion::PopulateThresholdPage(
       controls.mThresholdT =
       S
          .Id(ID_Threshold)
-         .Name( label )
+         .Text( label )
          .AddTextBox( {}, L"", 10);
 
       controls.mThresholdS =
       S
          .Id(ID_Threshold)
-         .Name( label )
+         .Text( label )
          .Disable( spec.thresholdName.empty() )
          .Style(wxSL_HORIZONTAL)
          .AddSlider( {}, 0,
@@ -533,13 +533,13 @@ void EffectDistortion::PopulateThresholdPage(
       controls.mNoiseFloorT =
       S
          .Id(ID_NoiseFloor)
-         .Name( label )
+         .Text( label )
          .AddTextBox( {}, L"", 10);
 
       controls.mNoiseFloorS =
       S
          .Id(ID_NoiseFloor)
-         .Name( label )
+         .Text( label )
          .Disable( spec.noiseFloorName.empty() )
          .Style(wxSL_HORIZONTAL)
          .AddSlider( {}, 0, MAX_NoiseFloor, MIN_NoiseFloor);
@@ -584,13 +584,13 @@ void EffectDistortion::PopulateParameterPage(
       controls.mParam1T =
       S
          .Id(ID_Param1)
-         .Name( label )
+         .Text( label )
          .AddTextBox( {}, L"", 10);
 
       controls.mParam1S =
       S
          .Id(ID_Param1)
-         .Name( label )
+         .Text( label )
          .Disable( spec.param1Name.empty() )
          .Style(wxSL_HORIZONTAL)
          .AddSlider( {}, 0, MAX_Param1, MIN_Param1);
@@ -613,13 +613,13 @@ void EffectDistortion::PopulateParameterPage(
       controls.mParam2T =
       S
          .Id(ID_Param2)
-         .Name( label )
+         .Text( label )
          .AddTextBox( {}, L"", 10);
 
       controls.mParam2S =
       S
          .Id(ID_Param2)
-         .Name( label )
+         .Text( label )
          .Disable( spec.param2Name.empty() )
          .Style(wxSL_HORIZONTAL)
          .AddSlider( {}, 0, MAX_Param2, MIN_Param2);
@@ -642,13 +642,13 @@ void EffectDistortion::PopulateParameterPage(
       controls.mRepeatsT =
       S
          .Id(ID_Repeats)
-         .Name( label )
+         .Text( label )
          .AddTextBox( {}, L"", 10);
 
       controls.mRepeatsS =
       S
          .Id(ID_Repeats)
-         .Name( label )
+         .Text( label )
          .Disable( spec.repeatsName.empty() )
          .Style(wxSL_HORIZONTAL)
          .AddSlider( {}, DEF_Repeats, MAX_Repeats, MIN_Repeats);

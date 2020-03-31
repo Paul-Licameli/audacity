@@ -2111,20 +2111,27 @@ void ShuttleGuiBase::ApplyItem( int step, const DialogDefinition::Item &item,
       if ( item.mValidatorSetter )
          item.mValidatorSetter( pWind );
 
-      if ( !item.mToolTip.empty() )
-         pWind->SetToolTip( item.mToolTip.Translation() );
+      if ( !item.mText.mToolTip.empty() )
+         pWind->SetToolTip( item.mText.mToolTip.Translation() );
 
-      if ( !item.mName.empty() ) {
-         pWind->SetName( item.mName.Translation() );
+      if ( !item.mText.mName.empty() ) {
+         // This affects the audible screen-reader name
+         pWind->SetName( item.mText.mName.Translation() );
 #ifndef __WXMAC__
          if (auto pButton = dynamic_cast< wxBitmapButton* >( pWind ))
             pButton->SetLabel(  item.mName.Translation() );
 #endif
       }
 
-      if ( !item.mNameSuffix.empty() )
+      if ( !item.mText.mLabel.empty() ) {
+         // Takes precedence over any name specification,
+         // for the (visible) label
+         pWind->SetLabel( item.mText.mLabel.Translation() );
+      }
+
+      if ( !item.mText.mSuffix.empty() )
          pWind->SetName(
-            pWind->GetName() + " " + item.mNameSuffix.Translation() );
+            pWind->GetName() + " " + item.mText.mSuffix.Translation() );
 
       if (item.mFocused)
          pWind->SetFocus();

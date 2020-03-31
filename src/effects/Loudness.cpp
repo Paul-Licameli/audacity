@@ -323,7 +323,7 @@ void EffectLoudness::PopulateOrExchange(ShuttleGui & S)
                      {
                         S
                            /* i18n-hint: LUFS is a particular method for measuring loudnesss */
-                           .Name( XO("Loudness LUFS") )
+                           .Text( XO("Loudness LUFS") )
                            .Validator<FloatingPointValidator<double>>(
                               2, &mLUFSLevel,
                               NumValidatorStyle::ONE_TRAILING_ZERO,
@@ -344,7 +344,7 @@ void EffectLoudness::PopulateOrExchange(ShuttleGui & S)
                      S.StartHorizontalLay(wxALIGN_LEFT, false);
                      {
                         S
-                           .Name( XO("RMS dB") )
+                           .Text( XO("RMS dB") )
                            .Validator<FloatingPointValidator<double>>(
                               2, &mRMSLevel,
                               NumValidatorStyle::ONE_TRAILING_ZERO,

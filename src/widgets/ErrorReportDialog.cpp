@@ -118,7 +118,7 @@ ErrorReportDialog::ErrorReportDialog(
 
          S.Style(wxTE_RICH | wxTE_READONLY | wxTE_MULTILINE | wxTE_DONTWRAP)
             .MinSize(wxSize(0, 152))
-            .Name(XO("Problem details"))
+            .Text(XO("Problem details"))
             .AddTextBox({}, mReport->GetReportPreview(), 0);
 
          S.AddSpace(0, 20);
@@ -129,7 +129,7 @@ ErrorReportDialog::ErrorReportDialog(
 
          mCommentsControl = S.Style(wxTE_MULTILINE)
                                .MinSize(wxSize(0, 76))
-                               .Name(XO("Comments"))
+                               .Text(XO("Comments"))
                                .AddTextBox({}, {}, 0);
 
          mCommentsControl->SetMaxLength(MaxUserCommentLength);

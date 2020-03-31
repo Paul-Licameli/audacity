@@ -562,7 +562,7 @@ void VampEffect::PopulateOrExchange(ShuttleGui & S)
                mProgram =
                S
                   .Id(ID_Program)
-                  .Name(XO("Program"))
+                  .Text(XO("Program"))
                   .MinSize( { -1, -1 } )
                   .Position(wxEXPAND | wxALIGN_CENTER_VERTICAL | wxALL)
                   .AddChoice( {},
@@ -614,8 +614,7 @@ void VampEffect::PopulateOrExchange(ShuttleGui & S)
                   mToggles[p] =
                   S
                      .Id(ID_Toggles + p)
-                     .ToolTip( Verbatim( tip ) )
-                     .Name( Verbatim( labelText ) )
+                     .Text({ Verbatim( labelText ), {}, Verbatim( tip ) })
                      .Position(wxALIGN_LEFT | wxALIGN_CENTER_VERTICAL | wxALL)
                      .AddCheckBox( {},
                                   value > 0.5 );
@@ -645,8 +644,7 @@ void VampEffect::PopulateOrExchange(ShuttleGui & S)
                   mChoices[p] =
                   S
                      .Id(ID_Choices + p)
-                     .ToolTip( Verbatim( tip ) )
-                     .Name( Verbatim( labelText ) )
+                     .Text({ Verbatim( labelText ), {}, Verbatim( tip ) })
                      .Position(wxEXPAND | wxALIGN_CENTER_VERTICAL | wxALL)
                      .MinSize( { -1, -1 } )
                      .AddChoice( {}, choices, selected );
@@ -664,8 +662,7 @@ void VampEffect::PopulateOrExchange(ShuttleGui & S)
                   mFields[p] =
                   S
                      .Id(ID_Texts + p)
-                     .ToolTip( Verbatim( tip ) )
-                     .Name( Verbatim( labelText ) )
+                     .Text({ Verbatim( labelText ), {}, Verbatim( tip ) })
                      .Position(wxALIGN_CENTER_VERTICAL | wxALL)
                      .Validator<FloatingPointValidator<float>>(
                         6, &mValues[p],
@@ -684,8 +681,7 @@ void VampEffect::PopulateOrExchange(ShuttleGui & S)
                   mSliders[p] =
                   S
                      .Id(ID_Sliders + p)
-                     .ToolTip( Verbatim( tip ) )
-                     .Name( Verbatim( labelText ) )
+                     .Text({ Verbatim( labelText ), {}, Verbatim( tip ) })
                      .Style(wxSL_HORIZONTAL)
                      .MinSize( { 150, -1 } )
                      .AddSlider( {}, 0, 1000, 0);

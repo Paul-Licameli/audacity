@@ -424,7 +424,7 @@ void EffectScienFilter::PopulateOrExchange(ShuttleGui & S)
          mdBMaxSlider =
          S
             .Id(ID_dBMax)
-            .Name(XO("Max dB"))
+            .Text(XO("Max dB"))
             .Style(wxSL_VERTICAL | wxSL_INVERSE)
             .AddSlider( {}, 10, 20, 0);
 #if wxUSE_ACCESSIBILITY
@@ -434,7 +434,7 @@ void EffectScienFilter::PopulateOrExchange(ShuttleGui & S)
          mdBMinSlider =
          S
             .Id(ID_dBMin)
-            .Name(XO("Min dB"))
+            .Text(XO("Min dB"))
             .Style(wxSL_VERTICAL | wxSL_INVERSE)
             .AddSlider( {}, -10, -10, -120);
 #if wxUSE_ACCESSIBILITY
@@ -514,7 +514,7 @@ void EffectScienFilter::PopulateOrExchange(ShuttleGui & S)
          mRippleCtl =
          S
             .Id(ID_Ripple)
-            .Name(XO("Passband Ripple (dB)"))
+            .Text(XO("Passband Ripple (dB)"))
             .Validator<FloatingPointValidator<float>>(
                1, &mRipple, NumValidatorStyle::DEFAULT,
                MIN_Passband, MAX_Passband)
@@ -536,7 +536,7 @@ void EffectScienFilter::PopulateOrExchange(ShuttleGui & S)
          mCutoffCtl =
          S
             .Id(ID_Cutoff)
-            .Name(XO("Cutoff (Hz)"))
+            .Text(XO("Cutoff (Hz)"))
             .Validator<FloatingPointValidator<float>>(
                1, &mCutoff, NumValidatorStyle::DEFAULT,
                MIN_Cutoff, mNyquist - 1)
@@ -553,7 +553,7 @@ void EffectScienFilter::PopulateOrExchange(ShuttleGui & S)
          mStopbandRippleCtl =
          S
             .Id(ID_StopbandRipple)
-            .Name(XO("Minimum S&topband Attenuation (dB)"))
+            .Text(XO("Minimum S&topband Attenuation (dB)"))
             .Validator<FloatingPointValidator<float>>(
                1, &mStopbandRipple, NumValidatorStyle::DEFAULT,
                MIN_Stopband, MAX_Stopband)

@@ -385,7 +385,7 @@ void EffectToneGen::PopulateOrExchange(ShuttleGui & S)
             {
                t =
                S
-                  .Name(XO("Frequency Hertz Start"))
+                  .Text(XO("Frequency Hertz Start"))
                   .Validator<FloatingPointValidator<double>>(
                      6, &mFrequency[0],
                      NumValidatorStyle::NO_TRAILING_ZEROES,
@@ -399,7 +399,7 @@ void EffectToneGen::PopulateOrExchange(ShuttleGui & S)
             {
                t =
                S
-                  .Name(XO("Frequency Hertz End"))
+                  .Text(XO("Frequency Hertz End"))
                   .Validator<FloatingPointValidator<double>>(
                      6, &mFrequency[1],
                      NumValidatorStyle::NO_TRAILING_ZEROES,
@@ -420,7 +420,7 @@ void EffectToneGen::PopulateOrExchange(ShuttleGui & S)
             {
                t =
                S
-                  .Name(XO("Amplitude Start"))
+                  .Text(XO("Amplitude Start"))
                   .Validator<FloatingPointValidator<double>>(
                      6, &mAmplitude[0], NumValidatorStyle::NO_TRAILING_ZEROES,
                      MIN_StartAmp, MAX_StartAmp )
@@ -432,7 +432,7 @@ void EffectToneGen::PopulateOrExchange(ShuttleGui & S)
             {
                t =
                S
-                  .Name(XO("Amplitude End"))
+                  .Text(XO("Amplitude End"))
                   .Validator<FloatingPointValidator<double>>(
                      6, &mAmplitude[1], NumValidatorStyle::NO_TRAILING_ZEROES,
                      MIN_EndAmp, MAX_EndAmp )
@@ -476,7 +476,7 @@ void EffectToneGen::PopulateOrExchange(ShuttleGui & S)
                             .AutoPos(true));
 
       S
-         .Name(XO("Duration"))
+         .Text(XO("Duration"))
          .Position(wxALIGN_LEFT | wxALL)
          .AddWindow(mToneDurationT);
    }

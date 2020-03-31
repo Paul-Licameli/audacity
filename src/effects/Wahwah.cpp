@@ -253,7 +253,7 @@ void EffectWahwah::PopulateOrExchange(ShuttleGui & S)
       mFreqS =
       S
          .Id(ID_Freq)
-         .Name(XO("LFO frequency in hertz"))
+         .Text(XO("LFO frequency in hertz"))
          .Style(wxSL_HORIZONTAL)
          .MinSize( { 100, -1 } )
          .AddSlider( {}, DEF_Freq * SCL_Freq, MAX_Freq * SCL_Freq, MIN_Freq * SCL_Freq);
@@ -268,7 +268,7 @@ void EffectWahwah::PopulateOrExchange(ShuttleGui & S)
       mPhaseS =
       S
          .Id(ID_Phase)
-         .Name(XO("LFO start phase in degrees"))
+         .Text(XO("LFO start phase in degrees"))
          .Style(wxSL_HORIZONTAL)
          .MinSize( { 100, -1 } )
          .AddSlider( {}, DEF_Phase * SCL_Phase, MAX_Phase * SCL_Phase, MIN_Phase * SCL_Phase,
@@ -284,7 +284,7 @@ void EffectWahwah::PopulateOrExchange(ShuttleGui & S)
       mDepthS =
       S
          .Id(ID_Depth)
-         .Name(XO("Depth in percent"))
+         .Text(XO("Depth in percent"))
          .Style(wxSL_HORIZONTAL)
          .MinSize( { 100, -1 } )
          .AddSlider( {}, DEF_Depth * SCL_Depth, MAX_Depth * SCL_Depth, MIN_Depth * SCL_Depth);
@@ -299,7 +299,7 @@ void EffectWahwah::PopulateOrExchange(ShuttleGui & S)
       mResS =
       S
          .Id(ID_Res)
-         .Name(XO("Resonance"))
+         .Text(XO("Resonance"))
          .Style(wxSL_HORIZONTAL)
          .MinSize( { 100, -1 } )
          .AddSlider( {}, DEF_Res * SCL_Res, MAX_Res * SCL_Res, MIN_Res * SCL_Res);
@@ -314,7 +314,7 @@ void EffectWahwah::PopulateOrExchange(ShuttleGui & S)
       mFreqOfsS =
       S
          .Id(ID_FreqOfs)
-         .Name(XO("Wah frequency offset in percent"))
+         .Text(XO("Wah frequency offset in percent"))
          .Style(wxSL_HORIZONTAL)
          .MinSize( { 100, -1 } )
          .AddSlider( {}, DEF_FreqOfs * SCL_FreqOfs, MAX_FreqOfs * SCL_FreqOfs, MIN_FreqOfs * SCL_FreqOfs);
@@ -329,7 +329,7 @@ void EffectWahwah::PopulateOrExchange(ShuttleGui & S)
       mOutGainS =
       S
          .Id(ID_OutGain)
-         .Name(XO("Output gain (dB)"))
+         .Text(XO("Output gain (dB)"))
          .Style(wxSL_HORIZONTAL)
          .MinSize( { 100, -1 } )
          .AddSlider( {}, DEF_OutGain * SCL_OutGain, MAX_OutGain * SCL_OutGain, MIN_OutGain * SCL_OutGain);

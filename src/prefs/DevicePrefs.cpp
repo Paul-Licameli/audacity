@@ -197,7 +197,7 @@ void DevicePrefs::PopulateOrExchange(ShuttleGui & S)
          // for Portaudio v18 we always use default buffer sizes
          w =
          S
-            .NameSuffix(XO("milliseconds"))
+            .Text({ {}, XO("milliseconds") })
             .TieNumericTextBox(XXO("&Buffer length:"),
                                  AudioIOLatencyDuration,
                                  9);
@@ -207,7 +207,7 @@ void DevicePrefs::PopulateOrExchange(ShuttleGui & S)
 
          w =
          S
-            .NameSuffix(XO("milliseconds"))
+            .Text({ {}, XO("milliseconds") })
             .TieNumericTextBox(XXO("&Latency compensation:"),
                AudioIOLatencyCorrection, 9);
 

@@ -442,7 +442,7 @@ void EffectAutoDuck::PopulateOrExchange(ShuttleGui & S)
             .Validator<FloatingPointValidator<double>>(
                1, &mDuckAmountDb, NumValidatorStyle::NO_TRAILING_ZEROES,
                MIN_DuckAmountDb, MAX_DuckAmountDb )
-            .NameSuffix(XO("db"))
+            .Text({ {}, XO("db") })
             .AddTextBox(XXO("Duck &amount:"), L"", 10);
 
          S.AddUnits(XO("dB"));
@@ -452,7 +452,7 @@ void EffectAutoDuck::PopulateOrExchange(ShuttleGui & S)
             .Validator<FloatingPointValidator<double>>(
                2, &mMaximumPause, NumValidatorStyle::NO_TRAILING_ZEROES,
                MIN_MaximumPause, MAX_MaximumPause )
-            .NameSuffix(XO("seconds"))
+            .Text({ {}, XO("seconds") })
             .AddTextBox(XXO("Ma&ximum pause:"), L"", 10);
 
          S.AddUnits(XO("seconds"));
@@ -462,7 +462,7 @@ void EffectAutoDuck::PopulateOrExchange(ShuttleGui & S)
             .Validator<FloatingPointValidator<double>>(
                2, &mOuterFadeDownLen, NumValidatorStyle::NO_TRAILING_ZEROES,
                MIN_OuterFadeDownLen, MAX_OuterFadeDownLen )
-            .NameSuffix(XO("seconds"))
+            .Text({ {}, XO("seconds") })
             .AddTextBox(XXO("Outer fade &down length:"), L"", 10);
 
          S.AddUnits(XO("seconds"));
@@ -471,7 +471,7 @@ void EffectAutoDuck::PopulateOrExchange(ShuttleGui & S)
          S.Validator<FloatingPointValidator<double>>(
                2, &mOuterFadeUpLen, NumValidatorStyle::NO_TRAILING_ZEROES,
                MIN_OuterFadeUpLen, MAX_OuterFadeUpLen )
-            .NameSuffix(XO("seconds"))
+            .Text({ {}, XO("seconds") })
             .AddTextBox(XXO("Outer fade &up length:"), L"", 10);
 
          S.AddUnits(XO("seconds"));
@@ -481,7 +481,7 @@ void EffectAutoDuck::PopulateOrExchange(ShuttleGui & S)
             .Validator<FloatingPointValidator<double>>(
                2, &mInnerFadeDownLen, NumValidatorStyle::NO_TRAILING_ZEROES,
                MIN_InnerFadeDownLen, MAX_InnerFadeDownLen )
-            .NameSuffix(XO("seconds"))
+            .Text({ {}, XO("seconds") })
             .AddTextBox(XXO("Inner fade d&own length:"), L"", 10);
 
          S.AddUnits(XO("seconds"));
@@ -490,7 +490,7 @@ void EffectAutoDuck::PopulateOrExchange(ShuttleGui & S)
          S.Validator<FloatingPointValidator<double>>(
                2, &mInnerFadeUpLen, NumValidatorStyle::NO_TRAILING_ZEROES,
                MIN_InnerFadeUpLen, MAX_InnerFadeUpLen )
-            .NameSuffix(XO("seconds"))
+            .Text({ {}, XO("seconds") })
             .AddTextBox(XXO("Inner &fade up length:"), L"", 10);
 
          S.AddUnits(XO("seconds"));
@@ -504,7 +504,7 @@ void EffectAutoDuck::PopulateOrExchange(ShuttleGui & S)
             .Validator<FloatingPointValidator<double>>(
                2, &mThresholdDb, NumValidatorStyle::NO_TRAILING_ZEROES,
                MIN_ThresholdDb, MAX_ThresholdDb )
-            .NameSuffix(XO("db"))
+            .Text({ {}, XO("db") })
             .AddTextBox(XXO("&Threshold:"), L"", 10);
 
          S.AddUnits(XO("dB"));

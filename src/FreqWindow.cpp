@@ -327,7 +327,7 @@ void FrequencyPlotDialog::Populate()
 #endif
             S.Prop(1);
             S
-               .Name(XO("Scroll"))
+               .Text(XO("Scroll"))
                .Position( wxALIGN_LEFT | wxTOP)
                .AddWindow(mPanScroller);
          }
@@ -346,7 +346,7 @@ void FrequencyPlotDialog::Populate()
                wxDefaultPosition, wxDefaultSize, wxSL_VERTICAL);
             S
                .Prop(1)
-               .Name(XO("Zoom"))
+               .Text(XO("Zoom"))
                .Position(wxALIGN_CENTER_HORIZONTAL)
                .AddWindow(mZoomSlider);
 #if wxUSE_ACCESSIBILITY

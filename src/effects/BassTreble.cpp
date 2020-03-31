@@ -231,7 +231,7 @@ void EffectBassTreble::PopulateOrExchange(ShuttleGui & S)
          mBassT =
          S
             .Id(ID_Bass)
-            .Name(XO("Bass (dB):"))
+            .Text(XO("Bass (dB):"))
             .Validator<FloatingPointValidator<double>>(
                1, &mBass, NumValidatorStyle::DEFAULT, MIN_Bass, MAX_Bass)
             .AddTextBox(XXO("Ba&ss (dB):"), L"", 10);
@@ -239,7 +239,7 @@ void EffectBassTreble::PopulateOrExchange(ShuttleGui & S)
          mBassS =
          S
             .Id(ID_Bass)
-            .Name(XO("Bass"))
+            .Text(XO("Bass"))
             .Style(wxSL_HORIZONTAL)
             .AddSlider( {}, 0, MAX_Bass * SCL_Bass, MIN_Bass * SCL_Bass);
 
@@ -254,7 +254,7 @@ void EffectBassTreble::PopulateOrExchange(ShuttleGui & S)
          mTrebleS =
          S
             .Id(ID_Treble)
-            .Name(XO("Treble"))
+            .Text(XO("Treble"))
             .Style(wxSL_HORIZONTAL)
             .AddSlider( {}, 0, MAX_Treble * SCL_Treble, MIN_Treble * SCL_Treble);
       }
@@ -279,7 +279,7 @@ void EffectBassTreble::PopulateOrExchange(ShuttleGui & S)
          mGainS =
          S
             .Id(ID_Gain)
-            .Name(XO("Level"))
+            .Text(XO("Level"))
             .Style(wxSL_HORIZONTAL)
             .AddSlider( {}, 0, MAX_Gain * SCL_Gain, MIN_Gain * SCL_Gain);
       }

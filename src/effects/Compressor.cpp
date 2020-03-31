@@ -277,7 +277,7 @@ void EffectCompressor::PopulateOrExchange(ShuttleGui & S)
          mThresholdSlider =
          S
             .Id(ID_Threshold)
-            .Name(XO("Threshold"))
+            .Text(XO("Threshold"))
             .Style(wxSL_HORIZONTAL)
             .AddSlider( {},
                DEF_Threshold * SCL_Threshold,
@@ -297,7 +297,7 @@ void EffectCompressor::PopulateOrExchange(ShuttleGui & S)
          mNoiseFloorSlider =
          S.
             Id(ID_NoiseFloor)
-            .Name(XO("Noise Floor"))
+            .Text(XO("Noise Floor"))
             .Style(wxSL_HORIZONTAL)
             .AddSlider( {},
                DEF_NoiseFloor * SCL_NoiseFloor,
@@ -317,7 +317,7 @@ void EffectCompressor::PopulateOrExchange(ShuttleGui & S)
          mRatioSlider =
          S
             .Id(ID_Ratio)
-            .Name(XO("Ratio"))
+            .Text(XO("Ratio"))
             .Style(wxSL_HORIZONTAL)
             .AddSlider( {},
                DEF_Ratio * SCL_Ratio,
@@ -344,7 +344,7 @@ void EffectCompressor::PopulateOrExchange(ShuttleGui & S)
          /* i18n-hint: Particularly in percussion, sounds can be regarded as having
           * an 'attack' phase where the sound builds up and a 'decay' where the
           * sound dies away.  So this means 'onset duration'.  */
-            .Name(XO("Attack Time"))
+            .Text(XO("Attack Time"))
             .Style(wxSL_HORIZONTAL)
             .AddSlider( {},
                DEF_AttackTime * SCL_AttackTime,
@@ -371,7 +371,7 @@ void EffectCompressor::PopulateOrExchange(ShuttleGui & S)
          /* i18n-hint: Particularly in percussion, sounds can be regarded as having
           * an 'attack' phase where the sound builds up and a 'decay' or 'release' where the
           * sound dies away.  */
-            .Name(XO("Release Time"))
+            .Text(XO("Release Time"))
             .Style(wxSL_HORIZONTAL)
             .AddSlider( {},
                DEF_ReleaseTime * SCL_ReleaseTime,

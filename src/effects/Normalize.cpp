@@ -311,7 +311,7 @@ void EffectNormalize::PopulateOrExchange(ShuttleGui & S)
 
                mLevelTextCtrl =
                S
-                  .Name(XO("Peak amplitude dB"))
+                  .Text(XO("Peak amplitude dB"))
                   .Validator<FloatingPointValidator<double>>(
                      2,
                      &mPeakLevel,

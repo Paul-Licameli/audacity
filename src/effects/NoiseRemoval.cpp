@@ -742,7 +742,7 @@ void NoiseRemovalDialog::PopulateOrExchange(ShuttleGui & S)
          mGainS =
          S
             .Id(ID_GAIN_SLIDER)
-            .Name(XO("Noise reduction"))
+            .Text(XO("Noise reduction"))
             .Style(wxSL_HORIZONTAL)
             .MinSize( { 150, -1 } )
             .AddSlider( {}, 0, GAIN_MAX, GAIN_MIN);
@@ -756,7 +756,7 @@ void NoiseRemovalDialog::PopulateOrExchange(ShuttleGui & S)
          mSensitivityS =
          S
             .Id(ID_SENSITIVITY_SLIDER)
-            .Name(XO("Sensitivity"))
+            .Text(XO("Sensitivity"))
             .Style(wxSL_HORIZONTAL)
             .MinSize( { 150, -1 } )
             .AddSlider( {}, 0, SENSITIVITY_MAX, SENSITIVITY_MIN);
@@ -770,7 +770,7 @@ void NoiseRemovalDialog::PopulateOrExchange(ShuttleGui & S)
          mFreqS =
          S
             .Id(ID_FREQ_SLIDER)
-            .Name(XO("Frequency smoothing"))
+            .Text(XO("Frequency smoothing"))
             .Style(wxSL_HORIZONTAL)
             .MinSize( { 150, -1 } )
             .AddSlider( {}, 0, FREQ_MAX, FREQ_MIN);
@@ -784,7 +784,7 @@ void NoiseRemovalDialog::PopulateOrExchange(ShuttleGui & S)
          mTimeS =
          S
             .Id(ID_TIME_SLIDER)
-            .Name(XO("Attack/decay time"))
+            .Text(XO("Attack/decay time"))
             .Style(wxSL_HORIZONTAL)
             .MinSize( { 150, -1 } )
             .AddSlider( {}, 0, TIME_MAX, TIME_MIN);

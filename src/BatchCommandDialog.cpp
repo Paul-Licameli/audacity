@@ -121,7 +121,7 @@ void MacroCommandDialog::PopulateOrExchange(ShuttleGui &S)
 
          mDetails =
          S
-            .Name( prompt.Stripped() )
+            .Text( prompt.Stripped() )
             .AddTextWindow( L"");
 
          mDetails->SetEditable(false);

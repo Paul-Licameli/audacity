@@ -159,7 +159,7 @@ void ApplyMacroDialog::PopulateOrExchange(ShuttleGui &S)
       wxButton* btn =
       S
          .Id(ApplyToProjectID)
-         .Name(XO("Apply macro to project"))
+         .Text(XO("Apply macro to project"))
          .AddButton(XXO("&Project"));
 #if wxUSE_ACCESSIBILITY
       // so that name can be set on a standard control
@@ -169,7 +169,7 @@ void ApplyMacroDialog::PopulateOrExchange(ShuttleGui &S)
       btn =
       S
          .Id(ApplyToFilesID)
-         .Name(XO("Apply macro to files..."))
+         .Text(XO("Apply macro to files..."))
          .AddButton(XXO("&Files..."));
 #if wxUSE_ACCESSIBILITY
       // so that name can be set on a standard control
@@ -750,15 +750,10 @@ void MacrosWindow::PopulateOrExchange(ShuttleGui & S)
          .AddButton(XXO("Shrin&k"));
 
       // Using variable text just to get the positioning options.
-      S
-         .Prop(0)
-         .AddVariableText(
-            XO("Apply Macro to:"), false, wxALL | wxALIGN_CENTRE_VERTICAL );
-
-      wxButton* btn =
-      S
-         .Id(ApplyToProjectID)
-         .Name(XO("Apply macro to project"))
+      S.Prop(0).AddVariableText(
+         XO("Apply Macro to:"), false, wxALL | wxALIGN_CENTRE_VERTICAL );
+      wxButton* btn = S.Id(ApplyToProjectID)
+         .Text(XO("Apply macro to project"))
          .AddButton(XXO("&Project"));
 #if wxUSE_ACCESSIBILITY
       // so that name can be set on a standard control
@@ -768,7 +763,7 @@ void MacrosWindow::PopulateOrExchange(ShuttleGui & S)
       btn =
       S
          .Id(ApplyToFilesID)
-         .Name(XO("Apply macro to files..."))
+         .Text(XO("Apply macro to files..."))
          .AddButton(XXO("&Files..."));
 #if wxUSE_ACCESSIBILITY
       // so that name can be set on a standard control

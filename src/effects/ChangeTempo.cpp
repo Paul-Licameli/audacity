@@ -263,7 +263,7 @@ void EffectChangeTempo::PopulateOrExchange(ShuttleGui & S)
          m_pSlider_PercentChange =
          S
             .Id(ID_PercentChange)
-            .Name(XO("Percent Change"))
+            .Text(XO("Percent Change"))
             .Style(wxSL_HORIZONTAL)
             .AddSlider( {}, 0, (int)kSliderMax, (int)MIN_Percentage);
       }
@@ -277,7 +277,7 @@ void EffectChangeTempo::PopulateOrExchange(ShuttleGui & S)
             S
                .Id(ID_FromBPM)
                /* i18n-hint: changing tempo "from" one value "to" another */
-               .Name(XO("Beats per minute, from"))
+               .Text(XO("Beats per minute, from"))
                .Validator<FloatingPointValidator<double>>(
                   3, &m_FromBPM,
                   NumValidatorStyle::THREE_TRAILING_ZEROES
@@ -289,7 +289,7 @@ void EffectChangeTempo::PopulateOrExchange(ShuttleGui & S)
             S
                .Id(ID_ToBPM)
                /* i18n-hint: changing tempo "from" one value "to" another */
-               .Name(XO("Beats per minute, to"))
+               .Text(XO("Beats per minute, to"))
                .Validator<FloatingPointValidator<double>>(
                   3, &m_ToBPM,
                   NumValidatorStyle::THREE_TRAILING_ZEROES

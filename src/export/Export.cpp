@@ -1426,7 +1426,7 @@ ExportMixerDialog::ExportMixerDialog( const TrackList *tracks, bool selectedOnly
 
       S
          .Prop(1)
-         .Name(XO("Mixer Panel"))
+         .Text(XO("Mixer Panel"))
          .Position(wxEXPAND | wxALL)
          .AddWindow(mixerPanel);
 
@@ -1440,7 +1440,7 @@ ExportMixerDialog::ExportMixerDialog( const TrackList *tracks, bool selectedOnly
 
          S
             .Id(ID_SLIDER_CHANNEL)
-            .Name(label)
+            .Text(label)
             .Size({300, -1})
             .Style(wxSL_HORIZONTAL)
             .Position(wxEXPAND | wxALL)

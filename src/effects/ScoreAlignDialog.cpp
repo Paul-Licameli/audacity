@@ -95,7 +95,7 @@ ScoreAlignDialog::ScoreAlignDialog(ScoreAlignParams &params)
    mFramePeriodSlider =
    S
       .Id(ID_FRAMEPERIOD)
-      .Name(XO("Frame Period"))
+      .Text(XO("Frame Period"))
       .Style(wxSL_HORIZONTAL)
       .MinSize( { 300, -1 } )
       .AddSlider( {},
@@ -114,7 +114,7 @@ ScoreAlignDialog::ScoreAlignDialog(ScoreAlignParams &params)
    mWindowSizeSlider =
    S
       .Id(ID_WINDOWSIZE)
-      .Name(XO("Window Size"))
+      .Text(XO("Window Size"))
       .Style(wxSL_HORIZONTAL)
       .AddSlider( {},
        /*pos*/ (int) (p.mWindowSize * 100 + 0.5), /*max*/ 100, /*min*/ 5);
@@ -127,7 +127,7 @@ ScoreAlignDialog::ScoreAlignDialog(ScoreAlignParams &params)
    mForceFinalAlignmentCheckBox =
    S
       .Id(ID_FORCEFINALALIGNMENT)
-      .Name(XO("Force Final Alignment"))
+      .Text(XO("Force Final Alignment"))
       .AddCheckBox(
                 XO("Force Final Alignment"),
                 p.mForceFinalAlignment);
@@ -135,7 +135,8 @@ ScoreAlignDialog::ScoreAlignDialog(ScoreAlignParams &params)
    mIgnoreSilenceCheckBox =
    S
       .Id(ID_IGNORESILENCE)
-      .Name(XO("Ignore Silence at Beginnings and Endings"))
+      .Text(XO("Ignore Silence at Beginnings and Endings"))
+>>>>>>> dc1768f615... Single function of ShuttleGui for name, name suffix, tooltip
       .AddCheckBox(
          XO("Ignore Silence at Beginnings and Endings"),
          p.mIgnoreSilence );
@@ -152,7 +153,7 @@ ScoreAlignDialog::ScoreAlignDialog(ScoreAlignParams &params)
    mSilenceThresholdSlider =
    S
       .Id(ID_SILENCETHRESHOLD)
-      .Name(XO("Silence Threshold"))
+      .Text(XO("Silence Threshold"))
       .Style(wxSL_HORIZONTAL)
       .AddSlider( {},
          /*pos*/ (int) (p.mSilenceThreshold * 1000 + 0.5), /*max*/ 500);
@@ -184,7 +185,7 @@ ScoreAlignDialog::ScoreAlignDialog(ScoreAlignParams &params)
       This is a NEW experimental effect, and until we have it documented in the user
       manual we don't have a clear description of what this parameter does.
       It is OK to leave it in English. */
-      .Name(XO("Presmooth Time"))
+      .Text(XO("Presmooth Time"))
       .Style(wxSL_HORIZONTAL)
       .AddSlider( {},
                /*pos*/ (int) (p.mPresmoothTime * 100 + 0.5), /*max*/ 500);
@@ -210,7 +211,7 @@ ScoreAlignDialog::ScoreAlignDialog(ScoreAlignParams &params)
       This is a NEW experimental effect, and until we have it documented in the user
       manual we don't have a clear description of what this parameter does.
       It is OK to leave it in English. */
-      .Name(XO("Line Time"))
+      .Text(XO("Line Time"))
       .Style(wxSL_HORIZONTAL)
       .AddSlider( {},
                     /*pos*/ (int) (p.mLineTime * 100 + 0.5), /*max*/ 500);
@@ -236,7 +237,7 @@ ScoreAlignDialog::ScoreAlignDialog(ScoreAlignParams &params)
       This is a NEW experimental effect, and until we have it documented in the user
       manual we don't have a clear description of what this parameter does.
       It is OK to leave it in English. */
-      .Name(XO("Smooth Time"))
+      .Text(XO("Smooth Time"))
       .Style(wxSL_HORIZONTAL)
       .AddSlider( {},
                   /*pos*/ (int) (p.mSmoothTime * 100 + 0.5), /*max*/ 500);

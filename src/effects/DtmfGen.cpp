@@ -363,7 +363,7 @@ void EffectDtmf::PopulateOrExchange(ShuttleGui & S)
                          NumericTextCtrl::Options{}
                             .AutoPos(true));
       S
-         .Name(XO("Duration"))
+         .Text(XO("Duration"))
          .AddWindow(mDtmfDurationT);
 
       S

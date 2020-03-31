@@ -356,7 +356,7 @@ void EffectClickRemoval::PopulateOrExchange(ShuttleGui & S)
       mThreshS =
       S
          .Id(ID_Thresh)
-         .Name(XO("Threshold"))
+         .Text(XO("Threshold"))
          .Style(wxSL_HORIZONTAL)
          .Validator<wxGenericValidator>(&mThresholdLevel)
          .MinSize( { 150, -1 } )
@@ -375,7 +375,7 @@ void EffectClickRemoval::PopulateOrExchange(ShuttleGui & S)
       mWidthS =
       S
          .Id(ID_Width)
-         .Name(XO("Max Spike Width"))
+         .Text(XO("Max Spike Width"))
          .Style(wxSL_HORIZONTAL)
          .Validator<wxGenericValidator>(&mClickWidth)
          .MinSize( { 150, -1 } )

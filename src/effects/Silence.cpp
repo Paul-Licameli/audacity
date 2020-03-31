@@ -80,7 +80,7 @@ void EffectSilence::PopulateOrExchange(ShuttleGui & S)
                                   .AutoPos(true));
 
          S
-            .Name(XO("Duration"))
+            .Text(XO("Duration"))
             .Position(wxALIGN_CENTER | wxALL)
             .AddWindow(mDurationT);
       }

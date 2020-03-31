@@ -204,19 +204,19 @@ void KeyConfigPrefs::PopulateOrExchange(ShuttleGui & S)
                   mViewByTree =
                   S
                      .Id(ViewByTreeID)
-                     .Name(XO("View by tree"))
+                     .Text(XO("View by tree"))
                      .TieRadioButton();
          
                   mViewByName =
                   S
                      .Id(ViewByNameID)
-                     .Name(XO("View by name"))
+                     .Text(XO("View by name"))
                      .TieRadioButton();
          
                   mViewByKey =
                   S
                      .Id(ViewByKeyID)
-                     .Name(XO("View by key"))
+                     .Text(XO("View by key"))
                      .TieRadioButton();
 
 #if !defined(__WXMAC__) && wxUSE_ACCESSIBILITY

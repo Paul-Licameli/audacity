@@ -823,7 +823,7 @@ void EffectEqualization::PopulateOrExchange(ShuttleGui & S)
             mdBMaxSlider =
             S
                .Id(ID_dBMax)
-               .Name(XO("Max dB"))
+               .Text(XO("Max dB"))
                .Style(wxSL_VERTICAL | wxSL_INVERSE)
                .AddSlider( {}, 30, 60, 0);
 #if wxUSE_ACCESSIBILITY
@@ -833,7 +833,7 @@ void EffectEqualization::PopulateOrExchange(ShuttleGui & S)
             mdBMinSlider =
             S
                .Id(ID_dBMin)
-               .Name(XO("Min dB"))
+               .Text(XO("Min dB"))
                .Style(wxSL_VERTICAL | wxSL_INVERSE)
                .AddSlider( {}, -30, -10, -120);
 #if wxUSE_ACCESSIBILITY
@@ -926,7 +926,7 @@ void EffectEqualization::PopulateOrExchange(ShuttleGui & S)
 
                S
                   .Prop(1)
-                  .Name(freq)
+                  .Text(freq)
                   .ConnectRoot(
                      wxEVT_ERASE_BACKGROUND, &EffectEqualization::OnErase)
                   .Position(wxEXPAND)
@@ -970,13 +970,13 @@ void EffectEqualization::PopulateOrExchange(ShuttleGui & S)
                      mDraw =
                      S
                         .Id(ID_Draw)
-                        .Name(XO("Draw Curves"))
+                        .Text(XO("Draw Curves"))
                         .AddRadioButton(XXO("&Draw"));
 
                      mGraphic =
                      S
                         .Id(ID_Graphic)
-                        .Name(XO("Graphic EQ"))
+                        .Text(XO("Graphic EQ"))
                         .AddRadioButton(XXO("&Graphic"));
                      }
                   S.EndRadioButtonGroup();
@@ -997,7 +997,7 @@ void EffectEqualization::PopulateOrExchange(ShuttleGui & S)
                mInterpChoice =
                S
                   .Id(ID_Interp)
-                  .Name(XO("Interpolation type"))
+                  .Text(XO("Interpolation type"))
                   .AddChoice( {},
                      Msgids(kInterpStrings, nInterpolations), 0 );
 #if wxUSE_ACCESSIBILITY
@@ -1014,7 +1014,7 @@ void EffectEqualization::PopulateOrExchange(ShuttleGui & S)
                mLinFreq =
                S
                   .Id(ID_Linear)
-                  .Name(XO("Linear Frequency Scale"))
+                  .Text(XO("Linear Frequency Scale"))
                   .AddCheckBox(XXO("Li&near Frequency Scale"), false);
             }
             S.EndHorizontalLay();
@@ -1040,7 +1040,7 @@ void EffectEqualization::PopulateOrExchange(ShuttleGui & S)
                   mMSlider =
                   S
                      .Id(ID_Length)
-                     .Name(XO("Length of Filter"))
+                     .Text(XO("Length of Filter"))
                      .Style(wxSL_HORIZONTAL)
                      .AddSlider( {}, (mM - 1) / 2, 4095, 10);
                }
@@ -1052,7 +1052,7 @@ void EffectEqualization::PopulateOrExchange(ShuttleGui & S)
                   label.Printf(L"%ld", mM);
                   mMText =
                   S
-                     .Name( Verbatim( label ) )
+                     .Text( Verbatim( label ) )
                   // fix for bug 577 (NVDA/Narrator screen readers do not
                   // read static text in dialogs)
                      .AddVariableText( Verbatim( label ) );
@@ -1082,7 +1082,7 @@ void EffectEqualization::PopulateOrExchange(ShuttleGui & S)
                   mCurve =
                   S
                      .Id(ID_Curve)
-                     .Name(XO("Select Curve"))
+                     .Text(XO("Select Curve"))
                      .AddChoice( {},
                         [this]{
                            TranslatableStrings curves;
@@ -1113,7 +1113,7 @@ void EffectEqualization::PopulateOrExchange(ShuttleGui & S)
             mGridOnOff =
             S
                .Id(ID_Grid)
-               .Name(XO("Show grid lines"))
+               .Text(XO("Show grid lines"))
                .AddCheckBox(XXO("Show g&rid lines"), false);
          }
          S.EndHorizontalLay();
