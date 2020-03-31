@@ -35,6 +35,7 @@ void ShowDiagnostics(
    const TranslatableString &description, const wxString &defaultPath,
    bool fixedWidth = false)
 {
+   using namespace DialogDefinition;
    auto &window = GetProjectFrame( project );
    wxDialogWrapper dlg( &window, wxID_ANY, description);
    dlg.SetName();
@@ -52,6 +53,7 @@ void ShowDiagnostics(
       S
          .AddStandardButtons( eCancelButton, {
                S.Item( eOkButton )
+                  .Text( Label( XO("&Save") ) )
             },
             safenew wxButton(S.GetParent(), wxID_OK, _("&Save")) );
    }

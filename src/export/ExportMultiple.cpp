@@ -248,6 +248,7 @@ void ExportMultipleDialog::PopulateOrExchange(ShuttleGui& S)
       mSubFormatIndex = 0;
    }
 
+   using namespace DialogDefinition;
    S.SetBorder(5);
    S.StartHorizontalLay(wxEXPAND, true);
    {
@@ -473,6 +474,7 @@ void ExportMultipleDialog::PopulateOrExchange(ShuttleGui& S)
    S
       .AddStandardButtons( eCancelButton | eHelpButton, {
          S.Item( eOkButton )
+            .Text( Label( XO("Export") ) )
             .Enable( [this]{ return
                !(mLabel->GetValue() && mFirst->GetValue() &&
                   mFirstFileName->GetValue().empty() &&
@@ -481,16 +483,13 @@ void ExportMultipleDialog::PopulateOrExchange(ShuttleGui& S)
                !(mByNumber->GetValue() &&
                    mPrefix->GetValue().empty()); } )
             .Action( [this]{ OnExport(); } ),
-         S
-            .Item( eCancelButton )
-            .Action( [this]{ OnCancel(); } ),
-         S
-            .Item( eHelpButton )
-         .Action( [this]{ OnHelp(); } )
-      } );
 
-   mExport = (wxButton *)wxWindow::FindWindowById(wxID_OK, this);
-   mExport->SetLabel(_("Export"));
+         S.Item( eCancelButton )
+            .Action( [this]{ OnCancel(); } ),
+
+         S.Item( eHelpButton )
+            .Action( [this]{ OnHelp(); } )
+      } );
 }
 
 void ExportMultipleDialog::OnFormat(wxCommandEvent& WXUNUSED(event))

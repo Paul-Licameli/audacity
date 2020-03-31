@@ -305,6 +305,7 @@ ImportRawDialog::ImportRawDialog(wxWindow * parent,
 
    SetName();
 
+   using namespace DialogDefinition;
    ShuttleGui S(this, eIsCreating);
    TranslatableStrings encodings;
    int num;
@@ -455,13 +456,18 @@ ImportRawDialog::ImportRawDialog(wxWindow * parent,
       //
 
       S.AddStandardButtons( 0, {
-         S.Item( eOkButton ).Action( [this]{ OnOK(); } ),
-         S.Item( eCancelButton ).Action( [this]{ OnCancel(); } )
-      });
+         S
+            .Item( eOkButton )
+            .Text( Label( XO("&Import") ) )
+            .Action( [this]{ OnOK(); } ),
+
+         S
+            .Item( eCancelButton )
+            .Action( [this]{ OnCancel(); } )
+      } );
       // Find the OK button, and change its text to 'Import'.
       // We MUST set mOK because it is used later.
       mOK = (wxButton *)wxWindow::FindWindowById(wxID_OK, this);
-      mOK->SetLabel(_("&Import"));
    }
    S.EndVerticalLay();
 
