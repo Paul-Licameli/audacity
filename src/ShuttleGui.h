@@ -21,6 +21,7 @@
 #include <wx/slider.h> // to inherit
 #include "MemoryX.h"
 #include <wx/listbase.h> // for wxLIST_FORMAT_LEFT
+#include <wx/weakref.h>
 
 #include "Prefs.h"
 #include "WrappedType.h"
@@ -266,15 +267,9 @@ public:
       int Value, int Max, int Min);
    wxTreeCtrl * AddTree();
 
-   // Pass the same initValue to the sequence of calls to AddRadioButton and
-   // AddRadioButtonToGroup.
-   // The radio button is filled if selector == initValue
    // Spoken name of the button defaults to the same as the prompt
    // (after stripping menu codes):
-   wxRadioButton * AddRadioButton(
-      const TranslatableLabel & Prompt, int selector = 0, int initValue = 0 );
-   wxRadioButton * AddRadioButtonToGroup(
-      const TranslatableLabel & Prompt, int selector = 1, int initValue = 0 );
+   wxRadioButton * AddRadioButton( const TranslatableLabel & Prompt );
 
    // Only the last button specified as default (if more than one) will be
    // Always ORs the flags with wxALL (which affects borders):
@@ -384,8 +379,12 @@ public:
    wxPanel * StartInvisiblePanel();
    void EndInvisiblePanel();
 
+   // Introduce a sequence of calls to AddRadioButton.
+   void StartRadioButtonGroup();
    // SettingName is a key in Preferences.
    void StartRadioButtonGroup( const LabelSetting &Setting );
+
+   // End a sequence of calls to AddRadioButton.
    void EndRadioButtonGroup();
 
    bool DoStep( int iStep );
@@ -574,11 +573,14 @@ private:
    Optional<WrappedType> mRadioValue;  /// The wrapped value associated with the active radio button.
    int mRadioCount;       /// The index of this radio item.  -1 for none.
    wxString mRadioValueString; /// Unwrapped string value.
-   wxRadioButton * DoAddRadioButton(
-      const TranslatableLabel &Prompt, int style, int selector, int initValue);
+   wxRadioButton *DoAddRadioButton(
+      const TranslatableLabel &Prompt, int style );
 
 protected:
    DialogDefinition::Item mItem;
+
+   using RadioButtonList = std::vector< wxWindowRef >;
+   std::shared_ptr< RadioButtonList > mRadioButtons;
 };
 
 // A rarely used helper function that sets a pointer

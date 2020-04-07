@@ -944,13 +944,22 @@ void EffectEqualization::PopulateOrExchange(ShuttleGui & S)
             {
                S.StartHorizontalLay(wxALIGN_LEFT | wxALIGN_CENTER_VERTICAL, 1);
                {
-                  mDraw = S.Id(ID_Draw)
-                     .Name(XO("Draw Curves"))
-                     .AddRadioButton(XXO("&Draw"));
+                  S
+                     .StartRadioButtonGroup();
+                  {
+                     mDraw =
+                     S
+                        .Id(ID_Draw)
+                        .Name(XO("Draw Curves"))
+                        .AddRadioButton(XXO("&Draw"));
 
-                  mGraphic = S.Id(ID_Graphic)
-                     .Name(XO("Graphic EQ"))
-                     .AddRadioButtonToGroup(XXO("&Graphic"));
+                     mGraphic =
+                     S
+                        .Id(ID_Graphic)
+                        .Name(XO("Graphic EQ"))
+                        .AddRadioButton(XXO("&Graphic"));
+                     }
+                  S.EndRadioButtonGroup();
                }
                S.EndHorizontalLay();
             }
@@ -1102,28 +1111,47 @@ void EffectEqualization::PopulateOrExchange(ShuttleGui & S)
                   : 3
                : 0;
 
-         mMathProcessingType[0] = S.Id(ID_DefaultMath)
-            .AddRadioButton(XXO("D&efault"),
-                            0, value);
-         mMathProcessingType[1] = S.Id(ID_SSE)
-            .Disable(!EffectEqualization48x::GetMathCaps()->SSE)
-            .AddRadioButtonToGroup(XXO("&SSE"),
-                                   1, value);
-         mMathProcessingType[2] = S.Id(ID_SSEThreaded)
-            .Disable(!EffectEqualization48x::GetMathCaps()->SSE)
-            .AddRadioButtonToGroup(XXO("SSE &Threaded"),
-                                   2, value);
-         mMathProcessingType[3] = S.Id(ID_AVX)
-            // not implemented
-            .Disable(true /* !EffectEqualization48x::GetMathCaps()->AVX */)
-            .AddRadioButtonToGroup(XXO("A&VX"),
-                                   3, value);
-         mMathProcessingType[4] = S.Id(ID_AVXThreaded)
-            // not implemented
-            .Disable(true /* !EffectEqualization48x::GetMathCaps()->AVX */)
-            .AddRadioButtonToGroup(XXO("AV&X Threaded"),
-                                   4, value);
-         S.Id(ID_Bench).AddButton(XXO("&Bench"));
+         S
+            .StartRadioButtonGroup();
+         {
+            mMathProcessingType[0] =
+            S
+               .Id(ID_DefaultMath)
+               .AddRadioButton(XXO("D&efault"));
+
+            mMathProcessingType[1] =
+            S
+               .Id(ID_SSE)
+               .Disable(!EffectEqualization48x::GetMathCaps()->SSE)
+               .AddRadioButton(XXO("&SSE"));
+
+            mMathProcessingType[2] =
+            S
+               .Id(ID_SSEThreaded)
+               .Disable(!EffectEqualization48x::GetMathCaps()->SSE)
+               .AddRadioButton(XXO("SSE &Threaded"));
+
+            mMathProcessingType[3] =
+            S
+               .Id(ID_AVX)
+               // not implemented
+               .Disable(true /* !EffectEqualization48x::GetMathCaps()->AVX */)
+               .AddRadioButton(XXO("A&VX"));
+
+            mMathProcessingType[4] =
+            S
+               .Id(ID_AVXThreaded)
+               // not implemented
+               .Disable(true /* !EffectEqualization48x::GetMathCaps()->AVX */)
+               .AddRadioButton(XXO("AV&X Threaded"));
+            if (S.GetMode() == eIsCreating)
+               mMathProcessingType[value]->SetValue(true);
+         }
+         S.EndRadioButtonGroup();
+
+         S
+            .Id(ID_Bench)
+            .AddButton(XXO("&Bench"));
       }
       S.EndHorizontalLay();
 

@@ -765,10 +765,21 @@ void NoiseRemovalDialog::PopulateOrExchange(ShuttleGui & S)
             .AddSlider( {}, 0, TIME_MAX, TIME_MIN);
 
          S.AddPrompt(XXO("Noise:"));
-         mKeepSignal = S.Id(ID_RADIOBUTTON_KEEPSIGNAL)
+   
+         S
+            .StartRadioButtonGroup();
+         {
+            mKeepSignal =
+            S
+               .Id(ID_RADIOBUTTON_KEEPSIGNAL)
                .AddRadioButton(XXO("Re&move"));
-         mKeepNoise = S.Id(ID_RADIOBUTTON_KEEPNOISE)
-               .AddRadioButtonToGroup(XXO("&Isolate"));
+
+            mKeepNoise =
+            S
+               .Id(ID_RADIOBUTTON_KEEPNOISE)
+               .AddRadioButton(XXO("&Isolate"));
+         }
+         S.EndRadioButtonGroup();
       }
       S.EndMultiColumn();
    }

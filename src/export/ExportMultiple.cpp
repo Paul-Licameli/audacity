@@ -334,10 +334,8 @@ void ExportMultipleDialog::PopulateOrExchange(ShuttleGui& S)
             mTrack = S.Id(TrackID)
                .AddRadioButton(XXO("Tracks"));
 
-            // Row 2
-            S.SetBorder(1);
             mLabel = S.Id(LabelID)
-               .AddRadioButtonToGroup(XXO("Labels"));
+               .AddRadioButton(XXO("Labels"));
          }
          S.EndPanel();
 

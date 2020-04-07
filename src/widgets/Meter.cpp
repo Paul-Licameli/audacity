@@ -2017,14 +2017,26 @@ void MeterPanel::OnPreferences()
 
       S.StartHorizontalLay();
       {
-        S.StartStatic(XO("Meter Style"), 0);
-        {
-           S.StartVerticalLay();
-           {
-              gradient = S.AddRadioButton(XXO("Gradient"), true, mGradient);
-              rms = S.AddRadioButtonToGroup(XXO("RMS"), false, mGradient);
-           }
-           S.EndVerticalLay();
+         S
+            .StartStatic(XO("Meter Style"), 0);
+         {
+            S.StartVerticalLay();
+            {
+               S
+                  .StartRadioButtonGroup();
+               {
+                  gradient =
+                  S
+                     .AddRadioButton(XXO("Gradient"));
+
+                  rms =
+                  S
+                     .AddRadioButton(XXO("RMS"));
+               }
+               if (!mGradient)
+                  rms->SetValue(true);
+            }
+            S.EndVerticalLay();
         }
         S.EndStatic();
 
@@ -2032,8 +2044,19 @@ void MeterPanel::OnPreferences()
         {
            S.StartVerticalLay();
            {
-              db = S.AddRadioButton(XXO("dB"), true, mDB);
-              linear = S.AddRadioButtonToGroup(XXO("Linear"), false, mDB);
+              S
+                 .StartRadioButtonGroup();
+              {
+                 db =
+                 S
+                    .AddRadioButton(XXO("dB"));
+
+                 linear =
+                 S
+                    .AddRadioButton(XXO("Linear"));
+              }
+              if (!mDB)
+                 linear->SetValue(true);
            }
            S.EndVerticalLay();
         }
@@ -2043,12 +2066,25 @@ void MeterPanel::OnPreferences()
         {
            S.StartVerticalLay();
            {
-              automatic = S.AddRadioButton(
-                  XXO("Automatic"), AutomaticStereo, mDesiredStyle);
-              horizontal = S.AddRadioButtonToGroup(
-                  XXO("Horizontal"), HorizontalStereo, mDesiredStyle);
-              vertical = S.AddRadioButtonToGroup(
-                  XXO("Vertical"), VerticalStereo, mDesiredStyle);
+              S
+                 .StartRadioButtonGroup();
+              {
+                 automatic =
+                 S
+                    .AddRadioButton( XXO("Automatic") );
+
+                 horizontal =
+                 S
+                    .AddRadioButton( XXO("Horizontal") );
+
+                 vertical =
+                 S
+                    .AddRadioButton( XXO("Vertical") );
+              }
+              if (mDesiredStyle == HorizontalStereo)
+                 horizontal->SetValue(true);
+              else if (mDesiredStyle == VerticalStereo)
+                 vertical->SetValue(true);
            }
            S.EndVerticalLay();
         }

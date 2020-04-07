@@ -532,9 +532,16 @@ void PluginRegistrationDialog::PopulateOrExchange(ShuttleGui &S)
             {
                wxRadioButton *rb;
 
-               /* i18n-hint: This is before radio buttons selecting which effects to show */
-               S.AddPrompt(XXO("Show:"));
-               rb = S.Id(ID_ShowAll)
+               S
+                  /* i18n-hint: This is before radio buttons selecting which effects to show */
+                  .AddPrompt(XXO("Show:"));
+
+            S
+               .StartRadioButtonGroup();
+            {
+               rb =
+               S
+                  .Id(ID_ShowAll)
                   /* i18n-hint: Radio button to show all effects */
                   .Name(XO("Show all"))
                   /* i18n-hint: Radio button to show all effects */
@@ -548,7 +555,7 @@ void PluginRegistrationDialog::PopulateOrExchange(ShuttleGui &S)
                   /* i18n-hint: Radio button to show just the currently disabled effects */
                   .Name(XO("Show disabled"))
                   /* i18n-hint: Radio button to show just the currently disabled effects */
-                  .AddRadioButtonToGroup(XXO("D&isabled"));
+                  .AddRadioButton(XXO("D&isabled"));
 #if wxUSE_ACCESSIBILITY
                // so that name can be set on a standard control
                rb->SetAccessible(safenew WindowAccessible(rb));
@@ -558,7 +565,7 @@ void PluginRegistrationDialog::PopulateOrExchange(ShuttleGui &S)
                   /* i18n-hint: Radio button to show just the currently enabled effects */
                   .Name(XO("Show enabled"))
                   /* i18n-hint: Radio button to show just the currently enabled effects */
-                  .AddRadioButtonToGroup(XXO("E&nabled"));
+                  .AddRadioButton(XXO("E&nabled"));
 #if wxUSE_ACCESSIBILITY
                // so that name can be set on a standard control
                rb->SetAccessible(safenew WindowAccessible(rb));
@@ -568,11 +575,13 @@ void PluginRegistrationDialog::PopulateOrExchange(ShuttleGui &S)
                   /* i18n-hint: Radio button to show just the newly discovered effects */
                   .Name(XO("Show new"))
                   /* i18n-hint: Radio button to show just the newly discovered effects */
-                  .AddRadioButtonToGroup(XXO("Ne&w"));
+                  .AddRadioButton(XXO("Ne&w"));
 #if wxUSE_ACCESSIBILITY
                // so that name can be set on a standard control
                rb->SetAccessible(safenew WindowAccessible(rb));
 #endif
+               }
+               S.EndRadioButtonGroup();
             }
             S.EndHorizontalLay();
          }

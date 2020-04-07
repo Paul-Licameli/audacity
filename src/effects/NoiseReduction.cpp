@@ -1752,19 +1752,34 @@ void EffectNoiseReduction::Dialog::PopulateOrExchange(ShuttleGui & S)
          ,
          wxALIGN_CENTER_HORIZONTAL);
       {
-         S.AddPrompt(XXO("Noise:"));
-         mKeepSignal = S.Id(ID_RADIOBUTTON_KEEPSIGNAL)
-               /* i18n-hint: Translate differently from "Residue" ! */
-               .AddRadioButton(XXO("Re&duce"));
-#ifdef ISOLATE_CHOICE
-         mKeepNoise = S.Id(ID_RADIOBUTTON_KEEPNOISE)
-               .AddRadioButtonToGroup(XXO("&Isolate"));
-#endif
-#ifdef RESIDUE_CHOICE
-         mResidue = S.Id(ID_RADIOBUTTON_RESIDUE)
-               /* i18n-hint: Means the difference between effect and original sound.  Translate differently from "Reduce" ! */
-               .AddRadioButtonToGroup(XXO("Resid&ue"));
-#endif
+         S
+            .AddPrompt(XXO("Noise:"));
+
+         S
+            .StartRadioButtonGroup();
+         {
+            mKeepSignal =
+            S
+               .Id(ID_RADIOBUTTON_KEEPSIGNAL)
+            /* i18n-hint: Translate differently from "Residue" ! */
+                  .AddRadioButton(XXO("Re&duce"));
+
+   #ifdef ISOLATE_CHOICE
+            mKeepNoise =
+            S
+               .Id(ID_RADIOBUTTON_KEEPNOISE)
+               .AddRadioButton(XXO("&Isolate"));
+   #endif
+
+   #ifdef RESIDUE_CHOICE
+            mResidue =
+            S
+               .Id(ID_RADIOBUTTON_RESIDUE)
+                  /* i18n-hint: Means the difference between effect and original sound.  Translate differently from "Reduce" ! */
+               .AddRadioButton(XXO("Resid&ue"));
+   #endif
+         }
+         S.EndRadioButtonGroup();
       }
       S.EndMultiColumn();
    }
