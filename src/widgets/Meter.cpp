@@ -50,7 +50,6 @@
 #include <wx/settings.h>
 #include <wx/textdlg.h>
 #include <wx/numdlg.h>
-#include <wx/radiobut.h>
 #include <wx/tooltip.h>
 
 #include <math.h>
@@ -1977,14 +1976,10 @@ void MeterPanel::ShowMenu(const wxPoint & pos)
 
 void MeterPanel::OnPreferences()
 {
+   int rms = !mGradient;
+   int linear = !mDB;
+   int desiredStyle = mDesiredStyle;
    wxTextCtrl *rate;
-   wxRadioButton *gradient;
-   wxRadioButton *rms;
-   wxRadioButton *db;
-   wxRadioButton *linear;
-   wxRadioButton *automatic;
-   wxRadioButton *horizontal;
-   wxRadioButton *vertical;
    int meterRefreshRate = mMeterRefreshRate;
 
    auto title = mIsInput ? XO("Recording Meter Options") : XO("Playback Meter Options");
@@ -2028,18 +2023,15 @@ void MeterPanel::OnPreferences()
             S.StartVerticalLay();
             {
                S
+                  .Target( rms )
                   .StartRadioButtonGroup();
                {
-                  gradient =
                   S
                      .AddRadioButton(XXO("Gradient"));
 
-                  rms =
                   S
                      .AddRadioButton(XXO("RMS"));
                }
-               if (!mGradient)
-                  rms->SetValue(true);
             }
             S.EndVerticalLay();
         }
@@ -2050,18 +2042,15 @@ void MeterPanel::OnPreferences()
            S.StartVerticalLay();
            {
               S
+                 .Target( linear )
                  .StartRadioButtonGroup();
               {
-                 db =
                  S
                     .AddRadioButton(XXO("dB"));
 
-                 linear =
                  S
                     .AddRadioButton(XXO("Linear"));
               }
-              if (!mDB)
-                 linear->SetValue(true);
            }
            S.EndVerticalLay();
         }
@@ -2073,24 +2062,18 @@ void MeterPanel::OnPreferences()
            S.StartVerticalLay();
            {
               S
+                 .Target( desiredStyle )
                  .StartRadioButtonGroup();
               {
-                 automatic =
                  S
                     .AddRadioButton( XXO("Automatic") );
 
-                 horizontal =
                  S
                     .AddRadioButton( XXO("Horizontal") );
 
-                 vertical =
                  S
                     .AddRadioButton( XXO("Vertical") );
               }
-              if (mDesiredStyle == HorizontalStereo)
-                 horizontal->SetValue(true);
-              else if (mDesiredStyle == VerticalStereo)
-                 vertical->SetValue(true);
            }
            S.EndVerticalLay();
         }
@@ -2115,14 +2098,9 @@ void MeterPanel::OnPreferences()
          L"VerticalStereo" ,
       };
 
-      int s = 0;
-      s = automatic->GetValue() ? 0 : s;
-      s = horizontal->GetValue() ? 1 : s;
-      s = vertical->GetValue() ? 2 : s;
-
-      gPrefs->Write(Key(L"Style"), style[s]);
-      gPrefs->Write(Key(L"Bars"), gradient->GetValue() ? L"Gradient" : L"RMS");
-      gPrefs->Write(Key(L"Type"), db->GetValue() ? L"dB" : L"Linear");
+      gPrefs->Write(Key(L"Style"), style[desiredStyle]);
+      gPrefs->Write(Key(L"Bars"), !rms ? L"Gradient" : L"RMS");
+      gPrefs->Write(Key(L"Type"), !linear ? L"dB" : L"Linear");
       gPrefs->Write(Key(L"RefreshRate"), rate->GetValue());
 
       gPrefs->Flush();

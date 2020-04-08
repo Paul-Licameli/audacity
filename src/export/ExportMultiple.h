@@ -125,14 +125,12 @@ private:
    wxButton      *mCreate;
    wxButton      *mChoose;
 
-   wxRadioButton *mLabel;  /**< button to choose export based on Labels */
    wxStaticText  *mLabelLabel;   /**< description text for mLabel */
 
    wxCheckBox    *mFirst;  /**< Check box to export audio before first label */
    wxTextCtrl    *mFirstFileName;   /**< Name to use for exporting audio before
                                       the first label in the file */
 
-   wxRadioButton *mTrack;  /**< button to choose export based on tracks */
    wxStaticText  *mTrackLabel;
 
    wxRadioButton *mByNumberAndName; /**< button to choose number AND name for exported files */
@@ -146,6 +144,8 @@ private:
    SelectionState &mSelectionState;
 
    std::shared_ptr< DialogDefinition::Adaptor< int > > mpTarget;
+
+   int mPreferByLabels;
 };
 
 class SuccessDialog final : public wxDialogWrapper

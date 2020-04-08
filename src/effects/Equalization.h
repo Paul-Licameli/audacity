@@ -32,7 +32,6 @@ class wxButton;
 class wxChoice;
 class wxListCtrl;
 class wxListEvent;
-class wxRadioButton;
 class wxSizer;
 class wxSizerItem;
 class wxSlider;
@@ -175,6 +174,7 @@ private:
    void WriteXML(XMLWriter &xmlFile) const;
 
    void UpdateCurves();
+   void UpdateDrawOrGraphic();
    void UpdateDraw();
 
    //void LayoutEQSliders();
@@ -193,15 +193,13 @@ private:
    void OnSliderM( wxCommandEvent & event );
    void OnSliderDBMAX( wxCommandEvent & event );
    void OnSliderDBMIN( wxCommandEvent & event );
-   void OnDrawMode( wxCommandEvent &event );
-   void OnGraphicMode( wxCommandEvent &event );
    void OnCurve( wxCommandEvent & event );
    void OnManage();
    void OnInvert();
    void OnGridOnOff();
    void OnLinFreq();
 #ifdef EXPERIMENTAL_EQ_SSE_THREADED
-   void OnProcessingRadio( wxCommandEvent & event );
+   void OnProcessingRadio();
    void OnBench();
 #endif
 
@@ -259,8 +257,7 @@ private:
 
    EqualizationPanel *mPanel;
    //wxPanel *mGraphicPanel;
-   wxRadioButton *mDraw;
-   wxRadioButton *mGraphic;
+
    wxChoice *mCurve;
    wxButton *mManage;
    wxStaticText *mMText;
@@ -270,7 +267,7 @@ private:
    wxSlider *mSliders[NUMBER_OF_BANDS];
 
 #ifdef EXPERIMENTAL_EQ_SSE_THREADED
-   wxRadioButton *mMathProcessingType[5]; // default, sse, sse threaded, AVX, AVX threaded (note AVX is not implemented yet
+   int mMathProcessing = 0;
    wxBoxSizer *szrM;
 #endif
 

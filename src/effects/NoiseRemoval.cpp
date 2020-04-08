@@ -64,7 +64,6 @@
 #include <wx/brush.h>
 #include <wx/button.h>
 #include <wx/choice.h>
-#include <wx/radiobut.h>
 #include <wx/statbox.h>
 #include <wx/stattext.h>
 #include <wx/textctrl.h>
@@ -161,8 +160,6 @@ bool EffectNoiseRemoval::ShowInterface(
    dlog.mFreq = mFreqSmoothingHz;
    dlog.mTime = mAttackDecayTime;
    dlog.mbLeaveNoise = mbLeaveNoise;
-   dlog.mKeepSignal->SetValue(!mbLeaveNoise);
-   dlog.mKeepNoise->SetValue(mbLeaveNoise);
    dlog.mbHasProfile = mHasProfile;
 
    // We may want to twiddle the levels if we are setting
@@ -170,7 +167,6 @@ bool EffectNoiseRemoval::ShowInterface(
    dlog.mbAllowTwiddleSettings = forceModal;
 
    dlog.TransferDataToWindow();
-   dlog.mKeepNoise->SetValue(dlog.mbLeaveNoise);
    dlog.CentreOnParent();
    dlog.ShowModal();
 
@@ -581,10 +577,7 @@ bool EffectNoiseRemoval::ProcessOne(int count, WaveTrack * track,
 // WDR: event table for NoiseRemovalDialog
 
 enum {
-   ID_BUTTON_LEAVENOISE = 10001,
-   ID_RADIOBUTTON_KEEPSIGNAL,
-   ID_RADIOBUTTON_KEEPNOISE,
-   ID_SENSITIVITY_SLIDER,
+   ID_SENSITIVITY_SLIDER = 10001,
    ID_GAIN_SLIDER,
    ID_FREQ_SLIDER,
    ID_TIME_SLIDER,
@@ -612,8 +605,6 @@ enum {
 
 
 BEGIN_EVENT_TABLE(NoiseRemovalDialog,wxDialogWrapper)
-   EVT_RADIOBUTTON(ID_RADIOBUTTON_KEEPNOISE, NoiseRemovalDialog::OnKeepNoise)
-   EVT_RADIOBUTTON(ID_RADIOBUTTON_KEEPSIGNAL, NoiseRemovalDialog::OnKeepNoise)
    EVT_SLIDER(ID_SENSITIVITY_SLIDER, NoiseRemovalDialog::OnSensitivitySlider)
    EVT_SLIDER(ID_GAIN_SLIDER, NoiseRemovalDialog::OnGainSlider)
    EVT_SLIDER(ID_FREQ_SLIDER, NoiseRemovalDialog::OnFreqSlider)
@@ -639,11 +630,6 @@ NoiseRemovalDialog::NoiseRemovalDialog(EffectNoiseRemoval * effect,
 void NoiseRemovalDialog::OnGetProfile()
 {
    EndModal(1);
-}
-
-void NoiseRemovalDialog::OnKeepNoise( wxCommandEvent & WXUNUSED(event))
-{
-   mbLeaveNoise = mKeepNoise->GetValue();
 }
 
 void NoiseRemovalDialog::OnPreview()
@@ -687,7 +673,6 @@ void NoiseRemovalDialog::OnRemoveNoise()
    if (!(FindWindow(wxID_OK)->IsEnabled() && Validate() && TransferDataFromWindow()))
       return;
 
-   mbLeaveNoise = mKeepNoise->GetValue();
    EndModal(2);
 }
 
@@ -792,16 +777,13 @@ void NoiseRemovalDialog::PopulateOrExchange(ShuttleGui & S)
          S.AddPrompt(XXO("Noise:"));
    
          S
+            .Target( mbLeaveNoise )
             .StartRadioButtonGroup();
          {
-            mKeepSignal =
             S
-               .Id(ID_RADIOBUTTON_KEEPSIGNAL)
                .AddRadioButton(XXO("Re&move"));
 
-            mKeepNoise =
             S
-               .Id(ID_RADIOBUTTON_KEEPNOISE)
                .AddRadioButton(XXO("&Isolate"));
          }
          S.EndRadioButtonGroup();
@@ -825,9 +807,6 @@ void NoiseRemovalDialog::PopulateOrExchange(ShuttleGui & S)
 
 bool NoiseRemovalDialog::TransferDataToWindow()
 {
-   mKeepNoise->SetValue(mbLeaveNoise);
-   mKeepSignal->SetValue(!mbLeaveNoise);
-
    mSensitivityS->SetValue(TrapLong(mSensitivity*100.0 + (SENSITIVITY_MAX-SENSITIVITY_MIN+1)/2.0, SENSITIVITY_MIN, SENSITIVITY_MAX));
    mGainS->SetValue(TrapLong(mGain, GAIN_MIN, GAIN_MAX));
    mFreqS->SetValue(TrapLong(mFreq / 10, FREQ_MIN, FREQ_MAX));

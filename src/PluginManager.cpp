@@ -392,11 +392,7 @@ using ItemDataMap = std::unordered_map<PluginPath, ItemData>;
 
 enum
 {
-   ID_ShowAll = 10000,
-   ID_ShowEnabled,
-   ID_ShowDisabled,
-   ID_ShowNew,
-   ID_List,
+   ID_List = 10000,
 };
 
 enum
@@ -417,7 +413,7 @@ public:
 private:
    void Populate();
    void PopulateOrExchange(ShuttleGui & S);
-   void RegenerateEffectsList(int iShowWhat);
+   void RegenerateEffectsList();
    void SetState(int i, bool toggle, bool state = true);
 
    static int wxCALLBACK SortCompare(wxIntPtr item1, wxIntPtr item2, wxIntPtr sortData);
@@ -436,7 +432,10 @@ private:
 
 private:
    EffectType mType;
-   int mFilter;
+
+   // in correspondence with the sequence of radio buttons
+   enum { ID_ShowAll, ID_ShowEnabled, ID_ShowDisabled, ID_ShowNew, };
+   int mFilter = ID_ShowAll;
 
    wxArrayString mStates;
    ItemDataMap mItems;
@@ -456,10 +455,6 @@ private:
 
 BEGIN_EVENT_TABLE(PluginRegistrationDialog, wxDialogWrapper)
    EVT_LIST_COL_CLICK(ID_List, PluginRegistrationDialog::OnSort)
-   EVT_RADIOBUTTON(ID_ShowAll, PluginRegistrationDialog::OnChangedVisibility)
-   EVT_RADIOBUTTON(ID_ShowEnabled, PluginRegistrationDialog::OnChangedVisibility)
-   EVT_RADIOBUTTON(ID_ShowDisabled, PluginRegistrationDialog::OnChangedVisibility)
-   EVT_RADIOBUTTON(ID_ShowNew, PluginRegistrationDialog::OnChangedVisibility)
 END_EVENT_TABLE()
 
 PluginRegistrationDialog::PluginRegistrationDialog(wxWindow *parent, EffectType type)
@@ -528,11 +523,12 @@ void PluginRegistrationDialog::PopulateOrExchange(ShuttleGui &S)
                   .AddPrompt(XXO("Show:"));
 
             S
+               .Target( mFilter )
+               .Action( [this]{ RegenerateEffectsList(); } )
                .StartRadioButtonGroup();
             {
                rb =
                S
-                  .Id(ID_ShowAll)
                   /* i18n-hint: Radio button to show all effects */
                   .Text(XO("Show all"))
                   /* i18n-hint: Radio button to show all effects */
@@ -544,7 +540,6 @@ void PluginRegistrationDialog::PopulateOrExchange(ShuttleGui &S)
 
                rb =
                S
-                  .Id(ID_ShowDisabled)
                   /* i18n-hint: Radio button to show just the currently disabled effects */
                   .Text(XO("Show disabled"))
                   /* i18n-hint: Radio button to show just the currently disabled effects */
@@ -556,7 +551,6 @@ void PluginRegistrationDialog::PopulateOrExchange(ShuttleGui &S)
 
                rb =
                S
-                  .Id(ID_ShowEnabled)
                   /* i18n-hint: Radio button to show just the currently enabled effects */
                   .Text(XO("Show enabled"))
                   /* i18n-hint: Radio button to show just the currently enabled effects */
@@ -568,7 +562,6 @@ void PluginRegistrationDialog::PopulateOrExchange(ShuttleGui &S)
 
                rb =
                S
-                  .Id(ID_ShowNew)
                   /* i18n-hint: Radio button to show just the newly discovered effects */
                   .Text(XO("Show new"))
                   /* i18n-hint: Radio button to show just the newly discovered effects */
@@ -707,7 +700,7 @@ void PluginRegistrationDialog::PopulateOrExchange(ShuttleGui &S)
    mEffects->SetMinSize({ std::min(maxW, w), 200 });
    mEffects->SetMaxSize({ w, -1 });
 
-   RegenerateEffectsList(ID_ShowAll);
+   RegenerateEffectsList();
 
    Layout();
    Fit();
@@ -732,10 +725,8 @@ void PluginRegistrationDialog::PopulateOrExchange(ShuttleGui &S)
 
 }
 
-void PluginRegistrationDialog::RegenerateEffectsList(int filter)
+void PluginRegistrationDialog::RegenerateEffectsList()
 {
-   mFilter = filter;
-
    mEffects->DeleteAllItems();
 
    int i = 0;
@@ -876,12 +867,6 @@ int PluginRegistrationDialog::SortCompare(ItemData *item1, ItemData *item2)
    }
 
    return str2->CmpNoCase(*str1) * mSortDirection;
-}
-
-void PluginRegistrationDialog::OnChangedVisibility(wxCommandEvent & evt)
-{
-   // Go and show the relevant items.
-   RegenerateEffectsList(evt.GetId());
 }
 
 void PluginRegistrationDialog::OnSort(wxListEvent & evt)

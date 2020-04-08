@@ -62,7 +62,6 @@
 
 #include <wx/button.h>
 #include <wx/choice.h>
-#include <wx/radiobut.h>
 #include <wx/slider.h>
 #include <wx/textctrl.h>
 
@@ -150,7 +149,11 @@ enum {
 
 enum  NoiseReductionChoice {
    NRC_REDUCE_NOISE,
+
+#ifdef ISOLATE_CHOICE
    NRC_ISOLATE_NOISE,
+#endif
+
    NRC_LEAVE_RESIDUE,
 };
 
@@ -376,7 +379,6 @@ public:
 private:
    // handlers
    void OnGetProfile();
-   void OnNoiseReductionChoice( wxCommandEvent &event );
    void OnPreview();
    void OnReduceNoise();
    void OnCancel();
@@ -393,16 +395,6 @@ private:
 
    bool mbHasProfile;
    bool mbAllowTwiddleSettings;
-
-
-public:
-   wxRadioButton *mKeepSignal;
-#ifdef ISOLATE_CHOICE
-   wxRadioButton *mKeepNoise;
-#endif
-#ifdef RESIDUE_CHOICE
-   wxRadioButton *mResidue;
-#endif
 
 private:
     DECLARE_EVENT_TABLE()
@@ -987,7 +979,9 @@ void EffectNoiseReduction::Worker::FillFirstHistoryWindow()
       record.mSpectrums[last] = nyquist * nyquist;
    }
 
+#ifdef ISOLATE_CHOICE
    if (mNoiseReductionChoice != NRC_ISOLATE_NOISE)
+#endif
    {
       // Default all gains to the reduction factor,
       // until we decide to raise some of them later
@@ -1152,6 +1146,7 @@ void EffectNoiseReduction::Worker::ReduceNoise
    // or, if isolating noise, zero out the non-noise
    {
       float *pGain = &mQueue[mCenter]->mGains[0];
+#ifdef ISOLATE_CHOICE
       if (mNoiseReductionChoice == NRC_ISOLATE_NOISE) {
          // All above or below the selected frequency range is non-noise
          std::fill(pGain, pGain + mBinLow, 0.0f);
@@ -1162,7 +1157,9 @@ void EffectNoiseReduction::Worker::ReduceNoise
             *pGain++ = isNoise ? 1.0 : 0.0;
          }
       }
-      else {
+      else
+#endif
+      {
          // All above or below the selected frequency range is non-noise
          std::fill(pGain, pGain + mBinLow, 1.0f);
          std::fill(pGain + mBinHigh, pGain + mSpectrumSize, 1.0f);
@@ -1176,7 +1173,9 @@ void EffectNoiseReduction::Worker::ReduceNoise
       }
    }
 
+#ifdef ISOLATE_CHOICE
    if (mNoiseReductionChoice != NRC_ISOLATE_NOISE)
+#endif
    {
       // In each direction, define an exponential decay of gain from the
       // center; make actual gains the maximum of mNoiseAttenFactor, and
@@ -1220,7 +1219,9 @@ void EffectNoiseReduction::Worker::ReduceNoise
       Record &record = *mQueue[mHistoryLen - 1];  // end of the queue
       const auto last = mSpectrumSize - 1;
 
+#ifdef ISOLATE_CHOICE
       if (mNoiseReductionChoice != NRC_ISOLATE_NOISE)
+#endif
          // Apply frequency smoothing to output gain
          // Gains are not less than mNoiseAttenFactor
          ApplyFreqSmoothing(record.mGains);
@@ -1359,16 +1360,8 @@ bool EffectNoiseReduction::Worker::ProcessOne
 //----------------------------------------------------------------------------
 
 enum {
-   ID_RADIOBUTTON_KEEPSIGNAL = 10001,
-#ifdef ISOLATE_CHOICE
-   ID_RADIOBUTTON_KEEPNOISE,
-#endif
-#ifdef RESIDUE_CHOICE
-   ID_RADIOBUTTON_RESIDUE,
-#endif
-
    // Slider/text pairs
-   ID_GAIN_SLIDER,
+   ID_GAIN_SLIDER = 10001,
    ID_GAIN_TEXT,
 
    ID_NEW_SENSITIVITY_SLIDER,
@@ -1479,10 +1472,11 @@ bool NoiseReductionEnabler( EffectNoiseReduction::Dialog &dialog )
 
    bool bIsolating =
 #ifdef ISOLATE_CHOICE
-      dialog.mKeepNoise->GetValue();
+      dialog.GetTempSettings().mNoiseReductionChoice == NRC_ISOLATE_NOISE
 #else
-      false;
+      false
 #endif
+   ;
 
    return !bIsolating;
 };
@@ -1537,14 +1531,6 @@ return table;
 
 BEGIN_EVENT_TABLE(EffectNoiseReduction::Dialog, wxDialogWrapper)
 
-   EVT_RADIOBUTTON(ID_RADIOBUTTON_KEEPSIGNAL, EffectNoiseReduction::Dialog::OnNoiseReductionChoice)
-#ifdef ISOLATE_CHOICE
-   EVT_RADIOBUTTON(ID_RADIOBUTTON_KEEPNOISE, EffectNoiseReduction::Dialog::OnNoiseReductionChoice)
-#endif
-#ifdef RESIDUE_CHOICE
-   EVT_RADIOBUTTON(ID_RADIOBUTTON_RESIDUE, EffectNoiseReduction::Dialog::OnNoiseReductionChoice)
-#endif
-
    EVT_SLIDER(ID_GAIN_SLIDER, EffectNoiseReduction::Dialog::OnSlider)
    EVT_TEXT(ID_GAIN_TEXT, EffectNoiseReduction::Dialog::OnText)
 
@@ -1580,13 +1566,6 @@ EffectNoiseReduction::Dialog::Dialog
    , mbHasProfile(bHasProfile)
    , mbAllowTwiddleSettings(bAllowTwiddleSettings)
    // NULL out the control members until the controls are created.
-   , mKeepSignal(NULL)
-#ifdef ISOLATE_CHOICE
-   , mKeepNoise(NULL)
-#endif
-#ifdef RESIDUE_CHOICE
-   , mResidue(NULL)
-#endif
 {
    EffectDialog::Init();
 }
@@ -1601,21 +1580,6 @@ void EffectNoiseReduction::Dialog::OnGetProfile()
 
    // Return code distinguishes this first step from the actual effect
    EndModal(1);
-}
-
-// This handles the whole radio group
-void EffectNoiseReduction::Dialog::OnNoiseReductionChoice( wxCommandEvent & WXUNUSED(event))
-{
-   if (mKeepSignal->GetValue())
-      mTempSettings.mNoiseReductionChoice = NRC_REDUCE_NOISE;
-#ifdef ISOLATE_CHOICE
-   else if (mKeepNoise->GetValue())
-      mTempSettings.mNoiseReductionChoice = NRC_ISOLATE_NOISE;
-#endif
-#ifdef RESIDUE_CHOICE
-   else
-      mTempSettings.mNoiseReductionChoice = NRC_LEAVE_RESIDUE;
-#endif
 }
 
 void EffectNoiseReduction::Dialog::OnPreview()
@@ -1700,25 +1664,20 @@ void EffectNoiseReduction::Dialog::PopulateOrExchange(ShuttleGui & S)
             .AddPrompt(XXO("Noise:"));
 
          S
+            .Target( mTempSettings.mNoiseReductionChoice )
             .StartRadioButtonGroup();
          {
-            mKeepSignal =
             S
-               .Id(ID_RADIOBUTTON_KEEPSIGNAL)
             /* i18n-hint: Translate differently from "Residue" ! */
-                  .AddRadioButton(XXO("Re&duce"));
+               .AddRadioButton(XXO("Re&duce"));
 
    #ifdef ISOLATE_CHOICE
-            mKeepNoise =
             S
-               .Id(ID_RADIOBUTTON_KEEPNOISE)
                .AddRadioButton(XXO("&Isolate"));
    #endif
 
    #ifdef RESIDUE_CHOICE
-            mResidue =
             S
-               .Id(ID_RADIOBUTTON_RESIDUE)
                   /* i18n-hint: Means the difference between effect and original sound.  Translate differently from "Reduce" ! */
                .AddRadioButton(XXO("Resid&ue"));
    #endif
@@ -1837,14 +1796,6 @@ bool EffectNoiseReduction::Dialog::TransferDataToWindow()
       slider->SetValue(info.SliderSetting(field));
    }
 
-   mKeepSignal->SetValue(mTempSettings.mNoiseReductionChoice == NRC_REDUCE_NOISE);
-#ifdef ISOLATE_CHOICE
-   mKeepNoise->SetValue(mTempSettings.mNoiseReductionChoice == NRC_ISOLATE_NOISE);
-#endif
-#ifdef RESIDUE_CHOICE
-   mResidue->SetValue(mTempSettings.mNoiseReductionChoice == NRC_LEAVE_RESIDUE);
-#endif
-
    return true;
 }
 
@@ -1855,9 +1806,6 @@ bool EffectNoiseReduction::Dialog::TransferDataFromWindow()
    // Do the choice controls:
    if (!EffectDialog::TransferDataFromWindow())
       return false;
-
-   wxCommandEvent dummy;
-   OnNoiseReductionChoice(dummy);
 
    return mTempSettings.Validate(m_pEffect);
 }

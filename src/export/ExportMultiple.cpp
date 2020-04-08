@@ -77,10 +77,8 @@ namespace {
 
 enum {
    DirID = 10001,
-   LabelID,
    FirstID,
    FirstFileNameID,
-   TrackID,
    ByNameAndNumberID,
    ByNameID,
    ByNumberID,
@@ -125,6 +123,12 @@ ExportMultipleDialog::ExportMultipleDialog(AudacityProject *project)
       mPlugins.push_back(plugin.get());
 
    this->CountTracksAndLabels();
+
+   // If you have 2 or more tracks, then it is export by tracks.
+   // If you have no labels, then it is export by tracks.
+   // Otherwise it is export by labels, by default.
+   bool bHasLabels = (mNumLabels > 0);
+   mPreferByLabels = bHasLabels && (mNumWaveTracks < 2);
 
    ShuttleGui S(this, eIsCreatingFromPrefs);
 
@@ -177,16 +181,7 @@ int ExportMultipleDialog::ShowModal()
          this);
       return wxID_CANCEL;
    }
-
-   bool bHasLabels = (mNumLabels > 0);
    
-   // If you have 2 or more tracks, then it is export by tracks.
-   // If you have no labels, then it is export by tracks.
-   // Otherwise it is export by labels, by default.
-   bool bPreferByLabels = bHasLabels && (mNumWaveTracks < 2);
-   mLabel->SetValue(bPreferByLabels);
-   mTrack->SetValue(!bPreferByLabels);
-
    return wxDialogWrapper::ShowModal();
 }
 
@@ -200,8 +195,7 @@ static StringSetting ExportMultipleFormat{ "/Export/MultipleFormat", L"" };
 void ExportMultipleDialog::PopulateOrExchange(ShuttleGui& S)
 {
    const auto firstFileEnabler = [this]{
-      return mLabel && mByName && mByNumberAndName && mFirst &&
-         mLabel->GetValue() &&
+      return mPreferByLabels && mByName && mByNumberAndName && mFirst &&
          (mByName->GetValue() || mByNumberAndName->GetValue()) &&
           mFirst->GetValue();
    };
@@ -336,15 +330,18 @@ void ExportMultipleDialog::PopulateOrExchange(ShuttleGui& S)
          // on the Mac, VoiceOver will announce as radio buttons.
          S.StartPanel();
          {
-            mTrack = S.Id(TrackID)
-               .Enable( [this]{ return mNumWaveTracks > 0; } )
-               .AddRadioButton(XXO("Tracks"));
-
-            mLabel =
             S
-               .Id(LabelID)
+               .Target( mPreferByLabels )
+               .StartRadioButtonGroup();
+            {
+               S
+                  .Enable( [this]{ return mNumWaveTracks > 0; } )
+                  .AddRadioButton(XXO("Tracks"));
+
+               S
                .Enable( [this]{ return mNumLabels > 0 && mNumWaveTracks > 0; } )
                .AddRadioButton(XXO("Labels"));
+            }
          }
          S.EndPanel();
 
@@ -359,7 +356,7 @@ void ExportMultipleDialog::PopulateOrExchange(ShuttleGui& S)
             mFirst =
             S
                .Id(FirstID)
-               .Enable( [this]{ return mLabel && mLabel->GetValue(); } )
+               .Enable( [this]{ return mPreferByLabels; } )
                .AddCheckBox(XXO("Include audio before first label"), false);
 
             // Row 4
@@ -463,7 +460,7 @@ void ExportMultipleDialog::PopulateOrExchange(ShuttleGui& S)
          S.Item( eOkButton )
             .Text( Label( XO("Export") ) )
             .Enable( [this]{ return
-               !(mLabel->GetValue() && mFirst->GetValue() &&
+               !(mPreferByLabels && mFirst->GetValue() &&
                   mFirstFileName->GetValue().empty() &&
                   mPrefix->GetValue().empty())
                &&
@@ -614,7 +611,7 @@ void ExportMultipleDialog::OnExport()
       } );
    } );
 
-   if (mLabel->GetValue()) {
+   if ( mPreferByLabels ) {
       ok = ExportMultipleByLabel(mByName->GetValue() || mByNumberAndName->GetValue(),
                                  mPrefix->GetValue(),
                                  mByNumberAndName->GetValue());
