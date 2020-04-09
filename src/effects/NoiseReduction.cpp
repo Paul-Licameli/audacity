@@ -1434,22 +1434,14 @@ struct ControlInfo {
          0, sliderMax);
    }
 
-   wxString Text(double value) const
-   {
-      if (formatAsInt)
-         return wxString::Format(format, (int)(value));
-      else
-         return wxString::Format(format, value);
-   }
-
-   void CreateControls(int id, ShuttleGui &S) const
+   void CreateControls(int id, double &target, ShuttleGui &S) const
    {
       wxTextCtrl *const text =
       S
          .Id(id + 1)
          .Validator<FloatingPointValidator<double>>(
             formatAsInt ? 0 : 2,
-            nullptr,
+            &target,
             NumValidatorStyle::DEFAULT,
             valueMin, valueMax )
          .AddTextBox(textBoxCaption, L"", 0);
@@ -1743,7 +1735,7 @@ void EffectNoiseReduction::Dialog::PopulateOrExchange(ShuttleGui & S)
       {
          for (int id = FIRST_SLIDER; id < END_OF_BASIC_SLIDERS; id += 2) {
             const ControlInfo &info = controlInfo()[(id - FIRST_SLIDER) / 2];
-            info.CreateControls(id, S);
+            info.CreateControls(id, mTempSettings.*(info.field), S);
          }
       }
       S.EndMultiColumn();
@@ -1860,7 +1852,7 @@ void EffectNoiseReduction::Dialog::PopulateOrExchange(ShuttleGui & S)
       {
          for (int id = END_OF_BASIC_SLIDERS; id < END_OF_ADVANCED_SLIDERS; id += 2) {
             const ControlInfo &info = controlInfo()[(id - FIRST_SLIDER) / 2];
-            info.CreateControls(id, S);
+            info.CreateControls(id, mTempSettings.*(info.field), S);
          }
       }
       S.EndMultiColumn();
@@ -1875,7 +1867,6 @@ void EffectNoiseReduction::Dialog::PopulateOrExchange(ShuttleGui & S)
 
 bool EffectNoiseReduction::Dialog::TransferDataToWindow()
 {
-   // Do the choice controls:
    if (!EffectDialog::TransferDataToWindow())
       return false;
 
@@ -1886,7 +1877,6 @@ bool EffectNoiseReduction::Dialog::TransferDataToWindow()
          static_cast<wxTextCtrl*>(wxWindow::FindWindowById(id + 1, this));
       const ControlInfo &info = controlInfo()[(id - FIRST_SLIDER) / 2];
       const double field = mTempSettings.*(info.field);
-      text->SetValue(info.Text(field));
       slider->SetValue(info.SliderSetting(field));
    }
 
@@ -1928,11 +1918,11 @@ void EffectNoiseReduction::Dialog::OnText(wxCommandEvent &event)
    const ControlInfo &info = controlInfo()[idx];
    wxTextCtrl* text =
       static_cast<wxTextCtrl*>(wxWindow::FindWindowById(id, this));
+   text->GetValidator()->TransferFromWindow();
+
    wxSlider* slider =
       static_cast<wxSlider*>(wxWindow::FindWindowById(id - 1, this));
    double &field = mTempSettings.*(info.field);
-
-   text->GetValue().ToDouble(&field);
    slider->SetValue(info.SliderSetting(field));
 }
 
@@ -1948,6 +1938,7 @@ void EffectNoiseReduction::Dialog::OnSlider(wxCommandEvent &event)
    double &field = mTempSettings.*(info.field);
 
    field = info.Value(slider->GetValue());
-   text->SetValue(info.Text(field));
+
+   text->GetValidator()->TransferToWindow();
 }
 
