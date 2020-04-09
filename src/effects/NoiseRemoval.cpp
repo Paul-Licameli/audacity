@@ -49,6 +49,7 @@
 #include "../Prefs.h"
 #include "../FileNames.h"
 #include "../ShuttleGui.h"
+#include "../widgets/valnum.h"
 
 #include <math.h>
 
@@ -602,15 +603,19 @@ enum {
 
 #define SENSITIVITY_MIN 0      // Corresponds to -20 dB
 #define SENSITIVITY_MAX 4000    // Corresponds to 20 dB
+#define SENSITIVITY_SCALE 100
+#define SENSITIVITY_ORIGIN -20
 
 #define GAIN_MIN 0
 #define GAIN_MAX 48     // Corresponds to -48 dB
 
 #define FREQ_MIN 0
 #define FREQ_MAX 100    // Corresponds to 1000 Hz
+#define FREQ_SCALE 0.1
 
 #define TIME_MIN 0
 #define TIME_MAX 100    // Corresponds to 1.000 seconds
+#define TIME_SCALE TIME_MAX
 
 
 BEGIN_EVENT_TABLE(NoiseRemovalDialog,wxDialogWrapper)
@@ -736,7 +741,11 @@ void NoiseRemovalDialog::PopulateOrExchange(ShuttleGui & S)
          mGainT =
          S
             .Id(ID_GAIN_TEXT)
-            .Validator<wxTextValidator>(wxFILTER_NUMERIC)
+            .Validator<FloatingPointValidator<double>>(
+               0,
+               &mGain,
+               NumValidatorStyle::DEFAULT,
+               GAIN_MIN, GAIN_MAX )
             .AddTextBox(XXO("Noise re&duction (dB):"), L"", 0);
 
          mGainS =
@@ -750,7 +759,12 @@ void NoiseRemovalDialog::PopulateOrExchange(ShuttleGui & S)
          mSensitivityT =
          S
             .Id(ID_SENSITIVITY_TEXT)
-            .Validator<wxTextValidator>(wxFILTER_NUMERIC)
+            .Validator<FloatingPointValidator<double>>(
+               2,
+               &mSensitivity,
+               NumValidatorStyle::DEFAULT,
+               SENSITIVITY_MIN / SENSITIVITY_SCALE + SENSITIVITY_ORIGIN,
+               SENSITIVITY_MAX / SENSITIVITY_SCALE + SENSITIVITY_ORIGIN )
             .AddTextBox(XXO("&Sensitivity (dB):"), L"", 0);
 
          mSensitivityS =
@@ -764,7 +778,11 @@ void NoiseRemovalDialog::PopulateOrExchange(ShuttleGui & S)
          mFreqT =
          S
             .Id(ID_FREQ_TEXT)
-            .Validator<wxTextValidator>(wxFILTER_NUMERIC)
+            .Validator<FloatingPointValidator<double>>(
+               0,
+               &mFreq,
+               NumValidatorStyle::DEFAULT,
+               FREQ_MIN / FREQ_SCALE, FREQ_MAX / FREQ_SCALE )
             .AddTextBox(XXO("Fr&equency smoothing (Hz):"), L"", 0);
    
          mFreqS =
@@ -778,7 +796,11 @@ void NoiseRemovalDialog::PopulateOrExchange(ShuttleGui & S)
          mTimeT =
          S
             .Id(ID_TIME_TEXT)
-            .Validator<wxTextValidator>(wxFILTER_NUMERIC)
+            .Validator<FloatingPointValidator<double>>(
+               2,
+               &mTime,
+               NumValidatorStyle::DEFAULT,
+               TIME_MIN / TIME_SCALE, TIME_MAX / TIME_SCALE )
             .AddTextBox(XXO("Attac&k/decay time (secs):"), L"", 0);
 
          mTimeS =
@@ -816,10 +838,6 @@ void NoiseRemovalDialog::PopulateOrExchange(ShuttleGui & S)
 
 bool NoiseRemovalDialog::TransferDataToWindow()
 {
-   mSensitivityT->SetValue(wxString::Format(L"%.2f", mSensitivity));
-   mGainT->SetValue(wxString::Format(L"%d", (int)mGain));
-   mFreqT->SetValue(wxString::Format(L"%d", (int)mFreq));
-   mTimeT->SetValue(wxString::Format(L"%.2f", mTime));
    mKeepNoise->SetValue(mbLeaveNoise);
    mKeepSignal->SetValue(!mbLeaveNoise);
 
@@ -828,7 +846,7 @@ bool NoiseRemovalDialog::TransferDataToWindow()
    mFreqS->SetValue(TrapLong(mFreq / 10, FREQ_MIN, FREQ_MAX));
    mTimeS->SetValue(TrapLong(mTime * TIME_MAX + 0.5, TIME_MIN, TIME_MAX));
 
-   return true;
+   return EffectDialog::TransferDataToWindow();
 }
 
 bool NoiseRemovalDialog::TransferDataFromWindow()
@@ -839,50 +857,50 @@ bool NoiseRemovalDialog::TransferDataFromWindow()
 
 void NoiseRemovalDialog::OnSensitivityText(wxCommandEvent & WXUNUSED(event))
 {
-   mSensitivityT->GetValue().ToDouble(&mSensitivity);
+   mSensitivityT->GetValidator()->TransferFromWindow();
    mSensitivityS->SetValue(TrapLong(mSensitivity*100.0 + (SENSITIVITY_MAX-SENSITIVITY_MIN+1)/2.0, SENSITIVITY_MIN, SENSITIVITY_MAX));
 }
 
 void NoiseRemovalDialog::OnGainText(wxCommandEvent & WXUNUSED(event))
 {
-   mGainT->GetValue().ToDouble(&mGain);
+   mGainT->GetValidator()->TransferFromWindow();
    mGainS->SetValue(TrapLong(mGain, GAIN_MIN, GAIN_MAX));
 }
 
 void NoiseRemovalDialog::OnFreqText(wxCommandEvent & WXUNUSED(event))
 {
-   mFreqT->GetValue().ToDouble(&mFreq);
+   mFreqT->GetValidator()->TransferFromWindow();
    mFreqS->SetValue(TrapLong(mFreq / 10, FREQ_MIN, FREQ_MAX));
 }
 
 void NoiseRemovalDialog::OnTimeText(wxCommandEvent & WXUNUSED(event))
 {
-   mTimeT->GetValue().ToDouble(&mTime);
+   mTimeT->GetValidator()->TransferFromWindow();
    mTimeS->SetValue(TrapLong(mTime * TIME_MAX + 0.5, TIME_MIN, TIME_MAX));
 }
 
 void NoiseRemovalDialog::OnSensitivitySlider(wxCommandEvent & WXUNUSED(event))
 {
    mSensitivity = mSensitivityS->GetValue()/100.0 - 20.0;
-   mSensitivityT->SetValue(wxString::Format(L"%.2f", mSensitivity));
+   mSensitivityT->GetValidator()->TransferToWindow();
 }
 
 void NoiseRemovalDialog::OnGainSlider(wxCommandEvent & WXUNUSED(event))
 {
    mGain = mGainS->GetValue();
-   mGainT->SetValue(wxString::Format(L"%d", (int)mGain));
+   mGainT->GetValidator()->TransferToWindow();
 }
 
 void NoiseRemovalDialog::OnFreqSlider(wxCommandEvent & WXUNUSED(event))
 {
    mFreq = mFreqS->GetValue() * 10;
-   mFreqT->SetValue(wxString::Format(L"%d", (int)mFreq));
+   mFreqT->GetValidator()->TransferToWindow();
 }
 
 void NoiseRemovalDialog::OnTimeSlider(wxCommandEvent & WXUNUSED(event))
 {
    mTime = mTimeS->GetValue() / (TIME_MAX*1.0);
-   mTimeT->SetValue(wxString::Format(L"%.2f", mTime));
+   mTimeT->GetValidator()->TransferToWindow();
 }
 
 #endif
