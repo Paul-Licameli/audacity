@@ -12,6 +12,7 @@
 
 #include <functional>
 #include <limits>
+#include <optional>
 
 /*
  * ArrayOf<X>
@@ -203,6 +204,20 @@ public:
    ~Optional()
    {
       reset();
+   }
+
+   void swap( Optional &other )
+   {
+      if ( *this && other )
+         std::swap( **this, *other );
+      else if ( *this ) {
+         other.emplace( std::move( **this ) );
+         this->reset();
+      }
+      else if ( other ) {
+         this->emplace( std::move( *other ) );
+         other.reset();
+      }
    }
 
    // Pointer-like operators
@@ -618,5 +633,126 @@ template< typename T > struct NonInterfering
 #define LINEAR_TO_DB(x) (20.0 * log10(x))
 
 #define MAX_AUDIO (1. - 1./(1<<15))
+
+#include <tuple>
+#include <type_traits>
+
+// Type of a function that recomputes a result only if necessary, but otherwise
+// returns a null optional
+template< typename Result >
+struct Recomputer : std::function< std::optional<Result>() >
+{
+   // Allow construction as for std::function
+   using std::function< std::optional<Result>() >::function;
+   Recomputer() = default;
+
+   // Also allow implicit construction from a result value that never needs
+   // to change
+   Recomputer( const Result &result )
+      : Recomputer{
+         // copies result at ctor time
+         [ answer = std::optional<Result>{result} ]
+         () mutable {
+            // Return copied result once only.
+            // Swap into temporary, to be sure answer is empty the second time,
+            // not just moved-from
+            std::optional< Result > temp;
+            temp.swap( answer );
+            return temp;
+         }
+      }
+   {}
+};
+
+template< typename Value > struct Recomputable_dep
+{
+   std::function< Value() > fn;
+   Value operator () () const { return fn(); }
+};
+
+template< typename Value > inline bool operator == (
+   const Recomputable_dep<Value> &dep, const Value &value )
+{ return dep.fn() == value; }
+
+// Special case for dependencies that are callables
+template< typename Dependency >
+auto Recompute_capture( const Dependency &dep, decltype( dep() ) * )
+   -> Recomputable_dep< decltype( dep() ) >
+{ return { dep }; }
+
+template< typename Dependency >
+auto Recompute_value( const Dependency &dep, decltype( dep() ) * )
+   -> decltype( dep() )
+{ return dep(); }
+
+// General case
+template< typename Dependency >
+auto Recompute_capture( const Dependency &dep, ... )
+   -> decltype( std::cref( dep ) )
+{ return std::cref( dep ); }
+
+template< typename Dependency >
+auto Recompute_value( const Dependency &dep, ... )
+   -> Dependency
+{ return dep; }
+
+template< typename Result,
+   typename Function, size_t... Indices, typename... Dependencies >
+auto Recompute_helper(
+   const Function &fn,
+   std::index_sequence< Indices... >,
+   const Dependencies &...deps )
+      -> Recomputer< Result >
+{
+   using Values =
+      decltype( std::make_tuple( Recompute_value( deps, nullptr )... ) );
+   Optional< Values > lastValues;
+   // Construct a tuple of references to deps
+   auto refs = std::make_tuple( Recompute_capture( deps, nullptr )... );
+   return [fn, lastValues, refs] () mutable {
+      std::optional< Result > answer;
+      if ( lastValues && refs == *lastValues )
+         // do no work
+         ;
+      else {
+         lastValues.emplace( std::make_tuple( Recompute_value(
+            std::get<Indices>( refs ), nullptr )... ) );
+         answer.emplace( fn( std::get<Indices>( *lastValues )... ) );
+      }
+      return answer;
+   };
+}
+
+// This function-factory takes a function, and references to dependencies, which
+// the function can apply to.  It returns a Recomputer that returns a value only
+// in case the function is called for the first time, or else a change in the
+// dependencies since the previous call is detected.
+template<
+   // This template parameter can be given at the call, or else the return type
+   // will be deduced from the function arguments
+   typename ExplicitResult = void,
+
+   // Deduced from function arguments
+   // requires that each of Dependencies is copy constructible and equality
+   // comparable,
+   // and that Function is callable on const references to Dependencies...,
+   // and that ExplicitResult is void or else the return type of Function is
+   // convertible to it
+   typename Function, typename... Dependencies,
+
+   // Type computed from the previous
+   typename Result = typename std::conditional<
+      std::is_void< ExplicitResult >::value,
+      decltype( std::declval< Function >()(
+         Recompute_value( std::declval< const Dependencies & >(), nullptr )... ) ),
+      ExplicitResult
+   >::type
+>
+auto Recompute( const Function &fn, const Dependencies &...deps )
+   -> Recomputer< Result >
+{
+   auto indices = std::index_sequence_for< Dependencies... >{};
+   return Recompute_helper< Result >( fn, indices, deps... );
+}
 
 #endif // __AUDACITY_MEMORY_X_H__
