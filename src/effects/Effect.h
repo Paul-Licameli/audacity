@@ -329,9 +329,21 @@ protected:
 
    virtual bool TransferDataToWindow() /* not override */;
    virtual bool TransferDataFromWindow() /* not override */;
-   virtual bool EnableApply(bool enable = true);
-   virtual bool EnablePreview(bool enable = true);
-   virtual void EnableDebug(bool enable = true);
+
+   bool EnabledApply();
+   bool EnabledPreview();
+
+   // This has effect only if called while populating the dialog
+   void EnableDebug(bool enable = true);
+   // Apply button is enabled only if CanApply() returns true and this function
+   // was not last called with false
+   bool EnableApply(bool enable = true);
+   // Preview button may be disabled though Apply remains enabled
+   bool EnablePreview(bool enable = true);
+
+   // Whether the apply button should be enabled for the present state of
+   // the dialog controls.  Default is always true
+   virtual bool CanApply();
 
    // No more virtuals!
 
@@ -540,6 +552,9 @@ private:
    size_t mBufferSize;
    size_t mBlockSize;
    unsigned mNumChannels;
+
+   bool mEnabledApply = false;
+   bool mEnabledPreview = false;
 
 public:
    const static wxString kUserPresetIdent;

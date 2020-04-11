@@ -843,5 +843,12 @@ void EffectChangePitch::Update_Slider_PercentChange()
    m_pSlider_PercentChange->SetValue((int)(unwarped + 0.5));
 }
 
+bool EffectChangePitch::CanApply()
+{
+   return
+      (m_dSemitonesChange > -80.0) && (m_dSemitonesChange <= 60.0) &&
+      (m_dPercentChange > Percentage.min) && (m_dPercentChange <= Percentage.max);
+}
+
 #endif // USE_SOUNDTOUCH
 

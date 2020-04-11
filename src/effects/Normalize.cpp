@@ -533,5 +533,10 @@ void EffectNormalize::UpdateUI()
    mWarning->SetLabel(L"");
 
    // Disallow OK/Preview if doing nothing
-   EnableApply(mGain || mDC);
+   EnableApply(CanApply());
+}
+
+bool EffectNormalize::CanApply()
+{
+   return mGain || mDC;
 }

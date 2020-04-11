@@ -63,6 +63,8 @@ private:
    void OnUpdateUI(wxCommandEvent & evt);
    void UpdateUI();
 
+   bool CanApply() override;
+
 private:
    double mPeakLevel;
    bool   mGain;

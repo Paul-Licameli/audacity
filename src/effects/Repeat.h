@@ -50,6 +50,8 @@ private:
    void OnRepeatTextChange(wxCommandEvent & evt);
    void DisplayNewTime();
 
+   bool CanApply() override;
+
 private:
    int repeatCount;
 

@@ -808,7 +808,13 @@ void EffectChangeSpeed::Update_TimeCtrl_ToLength()
 }
 
 void EffectChangeSpeed::UpdateUI()
+{
+   EnableApply(CanApply());
+}
+
+bool EffectChangeSpeed::CanApply()
 // Disable OK and Preview if not in sensible range.
 {
-   EnableApply(m_PercentChange >= Percentage.min && m_PercentChange <= Percentage.max);
+   return m_PercentChange >= Percentage.min && m_PercentChange <= Percentage.max;
 }
+

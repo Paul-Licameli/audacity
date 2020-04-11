@@ -65,6 +65,7 @@ private:
    void OnAmpSlider(wxCommandEvent & evt);
    void OnClipCheckBox(wxCommandEvent & evt);
    void CheckClip();
+   bool CanApply() override;
 
 private:
    double mPeak;

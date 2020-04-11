@@ -324,7 +324,12 @@ bool EffectAmplify::TransferDataFromWindow()
 
 void EffectAmplify::CheckClip()
 {
-   EnableApply(mClip->GetValue() || (mPeak > 0.0 && mRatio <= mRatioClip));
+   EnableApply(CanApply());
+}
+
+bool EffectAmplify::CanApply()
+{
+   return mClip->GetValue() || (mPeak > 0.0 && mRatio <= mRatioClip);
 }
 
 void EffectAmplify::OnAmpText(wxCommandEvent & WXUNUSED(evt))

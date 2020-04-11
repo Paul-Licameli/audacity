@@ -880,6 +880,11 @@ wxPanel *EffectUIHost::BuildButtonBar(wxWindow *parent)
 
       if (!mIsBatch)
       {
+         auto playEnabler = [this]{ return mEffect &&
+            mEffect->EnabledPreview(); };
+         auto FFRWEnabler = [this]{ return mEffect &&
+            mEffect->SupportsRealtime() && mEffect->EnabledPreview(); };
+
          if (!mIsGUI)
          {
             if (mSupportsRealtime)
@@ -888,6 +893,7 @@ wxPanel *EffectUIHost::BuildButtonBar(wxWindow *parent)
                S
                   .Id( kPlayID )
                   .Text({ {}, {}, XO("Start and stop playback") })
+                  .Enable( playEnabler )
                   .Action( [this]{ OnPlay(); } )
                   .AddButton( XXO("Start &Playback"),
                               wxALIGN_CENTER | wxTOP | wxBOTTOM );
@@ -900,6 +906,7 @@ wxPanel *EffectUIHost::BuildButtonBar(wxWindow *parent)
                S
                   .Id( kPlayID )
                   .Text({ {}, {}, XO("Preview effect") })
+                  .Enable( playEnabler )
                   .Action( [this]{ OnPlay(); } )
                   .AddButton( XXO("&Preview"),
                               wxALIGN_CENTER | wxTOP | wxBOTTOM );
@@ -915,6 +922,7 @@ wxPanel *EffectUIHost::BuildButtonBar(wxWindow *parent)
             mPlayBtn =
             S
                .Id( kPlayID )
+               .Enable( playEnabler )
                .Action( [this]{ OnPlay(); } )
                .AddBitmapButton( mPlayBM );
 
@@ -939,6 +947,7 @@ wxPanel *EffectUIHost::BuildButtonBar(wxWindow *parent)
                S
                   .Id( kRewindID )
                   .Text({ {}, {}, XO("Skip backward") })
+                  .Enable( FFRWEnabler )
                   .Action( [this]{ OnRewind(); } )
                   .AddButton( XXO("Skip &Backward"),
                               wxALIGN_CENTER | wxTOP | wxBOTTOM );
@@ -949,6 +958,7 @@ wxPanel *EffectUIHost::BuildButtonBar(wxWindow *parent)
                S
                   .Id( kRewindID )
                   .Text({ XO("Skip &Backward"), {}, XO("Skip backward") })
+                  .Enable( FFRWEnabler )
                   .Action( [this]{ OnRewind(); } )
                   .AddBitmapButton( CreateBitmap(
                      effect_rewind_xpm, true, true) );
@@ -964,6 +974,7 @@ wxPanel *EffectUIHost::BuildButtonBar(wxWindow *parent)
                S
                   .Id( kFFwdID )
                   .Text({ {}, {}, XO("Skip forward") })
+                  .Enable( FFRWEnabler )
                   .Action( [this]{ OnFFwd(); } )
                   .AddButton( XXO("Skip &Forward"),
                      wxALIGN_CENTER | wxTOP | wxBOTTOM );
@@ -974,6 +985,7 @@ wxPanel *EffectUIHost::BuildButtonBar(wxWindow *parent)
                S
                   .Id( kFFwdID )
                   .Text({ XO("Skip &Forward"), {}, XO("Skip forward") })
+                  .Enable( FFRWEnabler )
                   .Action( [this]{ OnFFwd(); } )
                   .AddBitmapButton( CreateBitmap(
                      effect_ffwd_xpm, true, true) );
@@ -1057,11 +1069,19 @@ bool EffectUIHost::Initialize()
 
          S
             .AddStandardButtons(0, {
-               S.Item( eApplyButton ).Action( [this]{ OnApply(); } ),
-               S.Item( eCloseButton ).Action( [this]{ OnCancel(); } ),
+               S.Item( eApplyButton )
+                  .Enable( [this]{ return
+                     mEffect && mEffect->EnabledApply(); } )
+                  .Action( [this]{ OnApply(); } ),
+
+               S
+                  .Item( eCloseButton )
+                  .Action( [this]{ OnCancel(); } ),
+
                (help
                 ? S.Item( eHelpButton ).Action( [this]{ OnHelp(); } )
                 : S.Item()),
+
                (mEffect && mEffect->mUIDebug
                 ? S.Item( eDebugButton ).Action( [this]{ OnDebug(); } )
                 : S.Item())

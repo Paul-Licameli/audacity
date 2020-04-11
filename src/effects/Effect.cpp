@@ -1322,6 +1322,9 @@ bool Effect::DoEffect(double projectRate,
 #endif
    CountWaveTracks();
 
+   auto vrEnabled = valueRestorer( mEnabledApply, true );
+   auto vrPreview = valueRestorer( mEnabledPreview, true );
+
    // Note: Init may read parameters from preferences
    if (!Init())
    {
@@ -1950,79 +1953,37 @@ bool Effect::TransferDataFromWindow()
    return true;
 }
 
+bool Effect::EnabledApply()
+{
+   return mEnabledApply && CanApply();
+}
+
+bool Effect::EnabledPreview()
+{
+   return mEnabledPreview && EnabledApply();
+}
+
 bool Effect::EnableApply(bool enable)
 {
-   // May be called during initialization, so try to find the dialog
-   wxWindow *dlg = mUIDialog;
-   if (!dlg && mUIParent)
-   {
-      dlg = wxGetTopLevelParent(mUIParent);
-   }
-
-   if (dlg)
-   {
-      wxWindow *apply = dlg->FindWindow(wxID_APPLY);
-
-      // Don't allow focus to get trapped
-      if (!enable)
-      {
-         wxWindow *focus = dlg->FindFocus();
-         if (focus == apply)
-         {
-            dlg->FindWindow(wxID_CLOSE)->SetFocus();
-         }
-      }
-
-      apply->Enable(enable);
-   }
-
+   mEnabledApply = enable;
    EnablePreview(enable);
-
    return enable;
 }
 
 bool Effect::EnablePreview(bool enable)
 {
-   // May be called during initialization, so try to find the dialog
-   wxWindow *dlg = mUIDialog;
-   if (!dlg && mUIParent)
-   {
-      dlg = wxGetTopLevelParent(mUIParent);
-   }
-
-   if (dlg)
-   {
-      wxWindow *play = dlg->FindWindow(kPlayID);
-      if (play)
-      {
-         wxWindow *rewind = dlg->FindWindow(kRewindID);
-         wxWindow *ffwd = dlg->FindWindow(kFFwdID);
-
-         // Don't allow focus to get trapped
-         if (!enable)
-         {
-            wxWindow *focus = dlg->FindFocus();
-            if (focus && (focus == play || focus == rewind || focus == ffwd))
-            {
-               dlg->FindWindow(wxID_CLOSE)->SetFocus();
-            }
-         }
-
-         play->Enable(enable);
-         if (SupportsRealtime())
-         {
-            rewind->Enable(enable);
-            ffwd->Enable(enable);
-         }
-      }
-   }
-
+   mEnabledPreview = enable;
    return enable;
 }
 
 void Effect::EnableDebug(bool enable)
 {
    mUIDebug = enable;
+}
+
+bool Effect::CanApply()
+{
+   return true;
 }
 
 void Effect::SetLinearEffectFlag(bool linearEffectFlag)

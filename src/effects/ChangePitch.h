@@ -110,6 +110,8 @@ private:
    void Update_Text_PercentChange(); // Update control per current m_dPercentChange.
    void Update_Slider_PercentChange(); // Update control per current m_dPercentChange.
 
+   bool CanApply() override;
+
 private:
    bool mUseSBSMS;
    // effect parameters

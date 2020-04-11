@@ -77,6 +77,8 @@ private:
    void Update_TimeCtrl_ToLength();    // Update target length controls for NEW percent change.
    void UpdateUI();                    // Enable / disable OK / preview.
 
+   bool CanApply() override;
+
 private:
    // track related
    int    mCurTrackNum;
