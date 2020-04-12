@@ -335,7 +335,8 @@ protected:
    // This has effect only if called while populating the dialog
    void EnableDebug(bool enable = true);
    // Apply button is enabled only if CanApply() returns true and this function
-   // was not last called with false
+   // was not last called with false, and all dialog controls validate their
+   // contents as ok
    bool EnableApply(bool enable = true);
    // Preview button may be disabled though Apply remains enabled
    bool EnablePreview(bool enable = true);

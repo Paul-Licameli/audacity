@@ -853,6 +853,7 @@ wxPanel *EffectUIHost::BuildButtonBar(wxWindow *parent)
       false /* horizontal */,
       { -1, -1 } /* minimum size */
    };
+   auto pState = S.GetValidationState();
    {
       S.SetBorder( margin );
 
@@ -880,9 +881,11 @@ wxPanel *EffectUIHost::BuildButtonBar(wxWindow *parent)
 
       if (!mIsBatch)
       {
-         auto playEnabler = [this]{ return mEffect &&
+         auto playEnabler = [this, pState]{ return
+            pState->Ok() && mEffect &&
             mEffect->EnabledPreview(); };
-         auto FFRWEnabler = [this]{ return mEffect &&
+         auto FFRWEnabler = [this, pState]{ return
+            pState->Ok() && mEffect &&
             mEffect->SupportsRealtime() && mEffect->EnabledPreview(); };
 
          if (!mIsGUI)
@@ -1023,7 +1026,8 @@ bool EffectUIHost::Initialize()
    }
 
    EffectPanel *w {};
-   ShuttleGui S(this, eIsCreating);
+   ShuttleGui S{ this, eIsCreating };
+   auto pState = S.GetValidationState();
    {
       S.StartHorizontalLay( wxEXPAND );
       {
@@ -1070,7 +1074,8 @@ bool EffectUIHost::Initialize()
          S
             .AddStandardButtons(0, {
                S.Item( eApplyButton )
-                  .Enable( [this]{ return
+                  .Enable( [this, pState]{ return
+                     pState->Ok() &&
                      mEffect && mEffect->EnabledApply(); } )
                   .Action( [this]{ OnApply(); } ),
 
