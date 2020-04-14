@@ -21,7 +21,6 @@
 #include "../Registry.h"
 
 class wxArrayString;
-class wxListBox;
 class AudacityProject;
 class BoolSetting;
 class Tags;
@@ -201,7 +200,7 @@ public:
 private:
    ImportFileHandle *mFile;
    wxInt32 scount;
-   wxListBox *StreamList;
+   std::vector< int > mSelections;
 
 private:
    void OnOk();

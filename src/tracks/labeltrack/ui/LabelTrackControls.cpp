@@ -20,7 +20,6 @@ Paul Licameli split from TrackPanel.cpp
 #include "../../../ShuttleGui.h"
 #include "../../../widgets/wxPanelWrapper.h"
 #include <wx/fontenum.h>
-#include <wx/listbox.h>
 #include <wx/spinctrl.h>
 
 LabelTrackControls::~LabelTrackControls()
@@ -97,16 +96,14 @@ void LabelTrackMenuTable::OnSetFont(wxCommandEvent &)
       wxArrayString* mFontNames;
    };
 
-   wxArrayString facenames;
-   FontEnumerator fontEnumerator(&facenames);
-   fontEnumerator.EnumerateFacenames(wxFONTENCODING_SYSTEM, false);
-
-   auto facename = LabelTrackView::FaceName.Read();
+   SettingTransaction transaction;
 
    // Correct for empty facename, or bad preference file:
    // get the name of a really existing font, to highlight by default
    // in the list box
-   facename = LabelTrackView::GetFont(facename).GetFaceName();
+   LabelTrackView::FaceName.Write(
+      LabelTrackView::GetFont( LabelTrackView::FaceName.Read() )
+         .GetFaceName() );
 
    long fontsize = LabelTrackView::FontSize.Read();
 
@@ -114,9 +111,9 @@ void LabelTrackMenuTable::OnSetFont(wxCommandEvent &)
    wxDialogWrapper dlg(mpData->pParent, wxID_ANY, XO("Label Track Font"));
    dlg.SetName();
    ShuttleGui S(&dlg, eIsCreating);
-   wxListBox *lb;
    wxSpinCtrl *sc;
 
+   using namespace DialogDefinition;
    S.StartVerticalLay(true);
    {
       S.StartMultiColumn(2, wxEXPAND);
@@ -128,17 +125,18 @@ void LabelTrackMenuTable::OnSetFont(wxCommandEvent &)
             /* i18n-hint: (noun) The name of the typeface*/
             .AddPrompt(XXO("Face name"));
 
-         lb = safenew wxListBox(S.GetParent(), wxID_ANY,
-            wxDefaultPosition,
-            wxDefaultSize,
-            facenames,
-            wxLB_SINGLE);
-
-         lb->SetSelection( make_iterator_range( facenames ).index( facename ));
          S
             .Text(XO("Face name"))
             .Position(  wxALIGN_LEFT | wxEXPAND | wxALL )
-            .AddWindow(lb);
+            .Target( Choice( LabelTrackView::FaceName,
+               Verbatim( []{
+                  wxArrayStringEx facenames;
+                  FontEnumerator fontEnumerator(&facenames);
+                  fontEnumerator.EnumerateFacenames(wxFONTENCODING_SYSTEM, false);
+                  return Identifiers{ facenames.begin(), facenames.end() };
+               }() )
+            ) )
+            .AddListBox( {} );
 
          S
             /* i18n-hint: (noun) The size of the typeface*/
@@ -168,9 +166,9 @@ void LabelTrackMenuTable::OnSetFont(wxCommandEvent &)
    if (dlg.ShowModal() == wxID_CANCEL)
       return;
 
-   LabelTrackView::FaceName.Write( lb->GetStringSelection() );
    LabelTrackView::FontSize.Write( sc->GetValue() );
-   gPrefs->Flush();
+   dlg.TransferDataFromWindow();
+   transaction.Commit();
 
    LabelTrackView::ResetFont();
 

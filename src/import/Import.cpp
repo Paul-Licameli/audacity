@@ -44,7 +44,6 @@ ImportLOF.cpp, and ImportAUP.cpp.
 #include <unordered_set>
 
 #include <wx/textctrl.h>
-#include <wx/listbox.h>
 #include <wx/log.h>
 #include <wx/sizer.h>         //for wxBoxSizer
 #include <wx/tokenzr.h>
@@ -841,6 +840,8 @@ ImportStreamDialog::ImportStreamDialog( ImportFileHandle *_mFile, wxWindow *pare
                                        const wxPoint &position, const wxSize& size, long style ):
 wxDialogWrapper( parent, id, title, position, size, style | wxRESIZE_BORDER )
 {
+   using namespace DialogDefinition;
+
    SetName();
 
    mFile = _mFile;
@@ -852,15 +853,12 @@ wxDialogWrapper( parent, id, title, position, size, style | wxRESIZE_BORDER )
    {
       S.SetBorder( 5 );
 
-      StreamList =
       S
          .Prop(1)
          .Position(wxEXPAND | wxALIGN_LEFT | wxALL)
          .Style(wxLB_EXTENDED | wxLB_ALWAYS_SB)
-         .AddListBox(
-            transform_container<wxArrayStringEx>(
-               mFile->GetStreamInfo(),
-               std::mem_fn( &TranslatableString::Translation ) ) );
+         .Target( MultipleChoice( mSelections, mFile->GetStreamInfo() ) )
+         .AddListBox( {} );
 
       S
          .AddStandardButtons( 0, {
@@ -882,10 +880,8 @@ ImportStreamDialog::~ImportStreamDialog()
 
 void ImportStreamDialog::OnOk()
 {
-   wxArrayInt selitems;
-   int sels = StreamList->GetSelections(selitems);
-   for (wxInt32 i = 0; i < sels; i++)
-      mFile->SetStreamUsage(selitems[i],TRUE);
+   for ( auto selection : mSelections )
+      mFile->SetStreamUsage(selection, TRUE);
    EndModal( wxID_OK );
 }
 
