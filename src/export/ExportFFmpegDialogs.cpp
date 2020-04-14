@@ -97,10 +97,6 @@
    FFMPEG_EXPORT_CTRL_ID_ENTRY(FEVariableBlockLenID), \
    FFMPEG_EXPORT_CTRL_ID_ENTRY(FELastID), \
  \
-   FFMPEG_EXPORT_CTRL_ID_ENTRY(FEFormatLabelID), \
-   FFMPEG_EXPORT_CTRL_ID_ENTRY(FECodecLabelID), \
-   FFMPEG_EXPORT_CTRL_ID_ENTRY(FEFormatNameID), \
-   FFMPEG_EXPORT_CTRL_ID_ENTRY(FECodecNameID), \
    FFMPEG_EXPORT_CTRL_ID_ENTRY(FEPresetID), \
    FFMPEG_EXPORT_CTRL_ID_ENTRY(FESavePresetID), \
    FFMPEG_EXPORT_CTRL_ID_ENTRY(FELoadPresetID), \
@@ -1828,11 +1824,21 @@ void ExportFFmpegOptions::PopulateOrExchange(ShuttleGui & S)
       {
          S.SetStretchyCol(1);
          S.SetStretchyCol(3);
-         S.Id(FEFormatLabelID).AddFixedText(XO("Format:"));
-         mFormatName = S.Id(FEFormatNameID).AddVariableText( {} );
-         /* i18n-hint: "codec" is short for a "coder-decoder" algorithm */
-         S.Id(FECodecLabelID).AddFixedText(XO("Codec:"));
-         mCodecName = S.Id(FECodecNameID).AddVariableText( {} );
+
+         S
+            .AddFixedText(XO("Format:"));
+
+         mFormatName =
+         S
+            .AddVariableText( {} );
+
+         S
+            /* i18n-hint: "codec" is short for a "coder-decoder" algorithm */
+            .AddFixedText(XO("Codec:"));
+
+         mCodecName =
+         S
+            .AddVariableText( {} );
       }
       S.EndMultiColumn();
       S.AddVariableText(XO(
