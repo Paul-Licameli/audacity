@@ -12,6 +12,7 @@ Paul Licameli split from class LabelTrack
 #define __AUDACITY_LABEL_TRACK_VIEW__
 
 #include "../../ui/CommonTrackView.h"
+#include "../../../Prefs.h"
 
 class LabelGlyphHandle;
 class LabelTextHandle;
@@ -45,7 +46,9 @@ class AUDACITY_DLL_API LabelTrackView final : public CommonTrackView
 
 public:
    enum : int { DefaultFontSize = 12 };
-   
+   static IntSetting FontSize;
+   static StringSetting FaceName;
+
    explicit
    LabelTrackView( const std::shared_ptr<Track> &pTrack );
    ~LabelTrackView() override;

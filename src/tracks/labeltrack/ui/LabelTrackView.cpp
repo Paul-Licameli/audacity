@@ -240,11 +240,17 @@ wxFont LabelTrackView::GetFont(const wxString &faceName, int size)
                  wxFONTWEIGHT_NORMAL, false, faceName, encoding);
 }
 
+IntSetting LabelTrackView::FontSize{
+   L"/GUI/LabelFontSize", DefaultFontSize };
+
+StringSetting LabelTrackView::FaceName{
+   L"/GUI/LabelFontFaceName", L"" };
+
 void LabelTrackView::ResetFont()
 {
    mFontHeight = -1;
    wxString facename = gPrefs->Read(L"/GUI/LabelFontFacename", L"");
-   int size = gPrefs->Read(L"/GUI/LabelFontSize", DefaultFontSize);
+   auto size = FontSize.Read();
    msFont = GetFont(facename, size);
 }
 
