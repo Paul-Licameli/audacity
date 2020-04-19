@@ -19,7 +19,6 @@
 #include "QualityPrefs.h"
 #include "QualitySettings.h"
 
-#include <wx/choice.h>
 #include <wx/defs.h>
 #include <wx/textctrl.h>
 
@@ -63,6 +62,8 @@ void QualityPrefs::Populate()
    mOtherSampleRateValue = QualitySettings::DefaultSampleRate.Read();
 }
 
+enum { BogusRate = -1 };
+
 /// Gets the lists of names and lists of labels which are
 /// used in the choice controls.
 /// The names are what the user sees in the wxChoice.
@@ -92,11 +93,12 @@ void QualityPrefs::GetNamesAndLabels()
    mSampleRateNames.push_back(XO("Other..."));
 
    // The label for the 'Other...' case can be any value at all.
-   mSampleRateLabels.push_back(44100); // If chosen, this value will be overwritten
+   mSampleRateLabels.push_back(BogusRate); // If chosen, this value will be overwritten
 }
 
 void QualityPrefs::PopulateOrExchange(ShuttleGui & S)
 {
+   using namespace DialogDefinition;
    S.SetBorder(2);
    S.StartScroller();
 
@@ -111,15 +113,10 @@ void QualityPrefs::PopulateOrExchange(ShuttleGui & S)
          {
             // First the choice...
             // We make sure we have a pointer to it, so that we can drive it.
-            mSampleRates =
             S
-               .TieNumberAsChoice( {},
-                  QualitySettings::DefaultSampleRate,
-                  mSampleRateNames,
-                  &mSampleRateLabels,
-                  // If the value in Prefs isn't in the list, then we want
-                  // the last item, 'Other...' to be shown.
-                  mSampleRateNames.size() - 1 );
+               .Target( NumberChoice( QualitySettings::DefaultSampleRate,
+                  mSampleRateNames, mSampleRateLabels ) )
+               .AddChoice( {} );
 
             // Now do the edit box...
             S
@@ -177,8 +174,7 @@ void QualityPrefs::PopulateOrExchange(ShuttleGui & S)
 
 bool QualityPrefs::UseOtherRate() const
 {
-   return mSampleRates &&
-      mSampleRates->GetSelection() == (int)mSampleRates->GetCount() - 1;
+   return QualitySettings::DefaultSampleRate.Read() == BogusRate;
 }
 
 bool QualityPrefs::Commit()

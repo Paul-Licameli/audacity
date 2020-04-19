@@ -17,7 +17,6 @@
 
 #include "PrefsPanel.h"
 
-class wxChoice;
 class wxTextCtrl;
 class ShuttleGui;
 enum sampleFormat : unsigned;
@@ -45,7 +44,6 @@ class AUDACITY_DLL_API QualityPrefs final : public PrefsPanel
    TranslatableStrings mSampleRateNames;
    std::vector<int> mSampleRateLabels;
 
-   wxChoice *mSampleRates;
    int mOtherSampleRateValue;
 };
 

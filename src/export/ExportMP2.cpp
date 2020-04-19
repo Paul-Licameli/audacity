@@ -158,6 +158,7 @@ IntSetting BitRate{ L"/FileFormats/MP2Bitrate", 160};
 ///
 void ExportMP2Options::PopulateOrExchange(ShuttleGui & S)
 {
+   using namespace DialogDefinition;
    S.StartVerticalLay();
    {
       S.StartHorizontalLay(wxCENTER);
@@ -165,11 +166,9 @@ void ExportMP2Options::PopulateOrExchange(ShuttleGui & S)
          S.StartMultiColumn(2, wxCENTER);
          {
             S
-               .TieNumberAsChoice(
-                  XXO("Bit Rate:"),
-                  BitRate,
-                  BitRateNames,
-                  &BitRateValues );
+               .Target( NumberChoice(
+                  BitRate, BitRateNames, BitRateValues ) )
+               .AddChoice( XXO("Bit Rate:") );
          }
          S.EndMultiColumn();
       }
