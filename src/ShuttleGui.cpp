@@ -1035,6 +1035,7 @@ void ShuttleGuiBase::AddChoice( const TranslatableLabel &Prompt,
       pChoice->SetSelection( Selected );
 
    UpdateSizers();
+   SetMinSize(pChoice, choices);
 }
 
 void ShuttleGuiBase::AddChoice( const TranslatableLabel &Prompt,
