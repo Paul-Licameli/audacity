@@ -30,8 +30,6 @@
 
 #include "Prefs.h"
 #include "widgets/NumericTextCtrl.h"
-#include "ShuttlePrefs.h"
-#include "WrappedType.h"
 
 #ifndef __AUDACITY_NUM_VALIDATOR_STYLE__
 #define __AUDACITY_NUM_VALIDATOR_STYLE__
@@ -102,10 +100,7 @@ class wxStaticBox;
 class wxSpinCtrl;
 class wxListBox;
 class wxGrid;
-class Shuttle;
 class ReadOnlyText;
-
-class WrappedType;
 
 #ifdef __WXMAC__
 
@@ -883,48 +878,6 @@ struct TypedItem : BaseItem {
       return std::move( *this );
    }
 
-   // Factory is a class that returns a value of some subclass of wxValidator
-   // We must wrap it in another lambda to allow the return type of f to
-   // vary, and avoid the "slicing" problem.
-   // (That is, std::function<wxValidator()> would not work.)
-   template<typename Factory>
-   TypedItem&& Validator( const Factory &f ) &&
-   {
-      mValidatorSetter =
-      [f]( const std::shared_ptr<ValidationState> & ){
-         return [f](wxWindow *p){ p->SetValidator(f()); };
-      };
-      return std::move(*this);
-   }
-
-   // This overload cooperates with Target to make appropriate
-   // Adaptors:
-   template<typename V, typename... Args>
-   TypedItem&& Validator( Args&&... args ) &&
-   {
-      mValidatorSetter =
-      [args...]( const std::shared_ptr<ValidationState> & pState ){
-         return [pState, args...](wxWindow *p){
-            p->SetValidator( V( pState, args... ) ); };
-      };
-      return std::move(*this);
-   }
-
-   // This overload cooperates with Target to make appropriate
-   // Adaptors:
-   template<typename V, typename Referent, typename... Args>
-   TypedItem&& Validator(
-      std::reference_wrapper<Referent> target, Args&&... args ) &&
-   {
-      mValidatorSetter =
-      [target, args...]( const std::shared_ptr<ValidationState> & pState ){
-         return [pState, target, args...](wxWindow *p){
-            p->SetValidator(
-               V( pState, MakeAdaptor( target.get() ), args... ) ); };
-      };
-      return std::move(*this);
-   }
-
    // This overload takes a reference directly to the targeted variable and
    // causes the appropriate adaptor and validator to be built
    template< typename Arg, typename... Args >
@@ -1136,9 +1089,6 @@ struct ShuttleGuiState final
    wxWindow *const mpDlg;
    const teShuttleMode mShuttleMode;
 
-   std::unique_ptr<Shuttle> mpShuttle; /*! Controls source/destination of shuttled data.  You can
-   leave this NULL if you are shuttling to variables */
-
    std::shared_ptr< PreferenceVisitor > mpVisitor;
 
    wxSizer * mpSizer = nullptr;
@@ -1322,103 +1272,10 @@ public:
    // End a sequence of calls to AddRadioButton.
    void EndRadioButtonGroup();
 
-   bool DoStep( int iStep );
-   int TranslateToIndex( const wxString &Value, const Identifiers &Choices );
-   Identifier TranslateFromIndex( const int nIn, const Identifiers &Choices );
-
-//-- Tie functions both add controls and also read/write to them.
-
-   wxTextCtrl * TieTextBox(
-      const TranslatableLabel &Prompt, wxString & Value, const int nChars=0);
-   wxTextCtrl * TieTextBox(
-      const TranslatableLabel &Prompt, int &Selected, const int nChars=0);
-   wxTextCtrl * TieTextBox(
-      const TranslatableLabel &Prompt, double &Value, const int nChars=0);
-
-   wxTextCtrl * TieNumericTextBox( const TranslatableLabel &Prompt, int &Value, const int nChars=0);
-   wxTextCtrl * TieNumericTextBox( const TranslatableLabel &Prompt, double &Value, const int nChars=0);
-
-   wxCheckBox * TieCheckBox( const TranslatableLabel &Prompt, bool & Var );
-   wxCheckBox * TieCheckBoxOnRight( const TranslatableLabel & Prompt, bool & Var );
-
-   wxChoice * TieChoice(
-      const TranslatableLabel &Prompt,
-      TranslatableString &Selected, const TranslatableStrings &choices );
-   wxChoice * TieChoice(
-      const TranslatableLabel &Prompt, int &Selected, const TranslatableStrings &choices );
-
-   wxSlider * TieSlider(
-      const TranslatableLabel &Prompt,
-      int &pos, const int max, const int min = 0);
-   wxSlider * TieSlider(
-      const TranslatableLabel &Prompt,
-      double &pos, const double max, const double min = 0.0);
-   wxSlider * TieSlider(
-      const TranslatableLabel &Prompt,
-      float &pos, const float fMin, const float fMax);
-   wxSlider * TieVSlider(
-      const TranslatableLabel &Prompt,
-      float &pos, const float fMin, const float fMax);
-
    // Must be called between a StartRadioButtonGroup / EndRadioButtonGroup pair,
    // and as many times as there are values in the enumeration.
    void AddRadioButton();
-   void TieRadioButton() { AddRadioButton(); }
 
-
-   wxSpinCtrl * TieSpinCtrl( const TranslatableLabel &Prompt,
-      int &Value, const int max, const int min = 0 );
-
-//-- Variants of the standard Tie functions which do two step exchange in one go
-// Note that unlike the other Tie functions, ALL the arguments are const.
-// That's because the data is being exchanged between the dialog and mpShuttle
-// so it doesn't need an argument that is writeable.
-   wxCheckBox * TieCheckBox(
-      const TranslatableLabel &Prompt,
-      const BoolSetting &Setting);
-   wxCheckBox * TieCheckBoxOnRight(
-      const TranslatableLabel &Prompt,
-      const BoolSetting &Setting);
-
-   wxChoice *TieChoice(
-      const TranslatableLabel &Prompt,
-      const ChoiceSetting &choiceSetting );
-
-   // This overload presents what is really a numerical setting as a choice among
-   // commonly used values, but the choice is not necessarily exhaustive.
-   // This behaves just like the previous for building dialogs, but the
-   // behavior is different when the call is intercepted for purposes of
-   // emitting scripting information about Preferences.
-  wxChoice * TieNumberAsChoice(
-      const TranslatableLabel &Prompt,
-      const IntSetting &Setting,
-      const TranslatableStrings & Choices,
-      const std::vector<int> * pInternalChoices = nullptr,
-      int iNoMatchSelector = 0 );
-
-   wxTextCtrl * TieTextBox(
-      const TranslatableLabel &Prompt,
-      const StringSetting &Setting,
-      const int nChars);
-   wxTextCtrl * TieIntegerTextBox(
-      const TranslatableLabel & Prompt,
-      const IntSetting &Setting,
-      const int nChars);
-   wxTextCtrl * TieNumericTextBox(
-      const TranslatableLabel & Prompt,
-      const DoubleSetting &Setting,
-      const int nChars);
-   wxSlider * TieSlider(
-      const TranslatableLabel & Prompt,
-      const IntSetting &Setting,
-      const int max,
-      const int min = 0);
-   wxSpinCtrl * TieSpinCtrl(
-      const TranslatableLabel &Prompt,
-      const IntSetting &Setting,
-      const int max,
-      const int min);
-//-- End of variants.
    void SetBorder( int Border ) {mpState -> miBorder = Border;};
    void SetSizerProportion( int iProp ) {miSizerProp = iProp;};
    void SetStretchyCol( int i );
@@ -1491,8 +1348,6 @@ private:
 protected:
    std::shared_ptr< ShuttleGuiState > mpState;
 
-   int miNoMatchSelector = 0; //! Used in choices to determine which item to use on no match.
-
    int miSizerProp = 0;
    int miProp = 0;
 
@@ -1507,30 +1362,10 @@ protected:
    wxWindow * mpWind = nullptr;
 
 private:
-   void DoDataShuttle( const wxString &Name, WrappedType & WrappedRef );
-   wxChoice *DoTieChoice(
-      const TranslatableLabel &Prompt,
-      const ChoiceSetting &choiceSetting );
-   wxCheckBox * DoTieCheckBoxOnRight( const TranslatableLabel & Prompt, WrappedType & WrappedRef );
-   wxTextCtrl * DoTieTextBox(
-      const TranslatableLabel &Prompt,
-      WrappedType &  WrappedRef, const int nChars);
-   wxTextCtrl * DoTieNumericTextBox(
-      const TranslatableLabel &Prompt, WrappedType &  WrappedRef, const int nChars);
-   wxCheckBox * DoTieCheckBox(
-      const TranslatableLabel &Prompt, WrappedType & WrappedRef );
-   wxSlider * DoTieSlider(
-      const TranslatableLabel &Prompt,
-      WrappedType & WrappedRef, const int max, const int min = 0 );
-   wxSpinCtrl * DoTieSpinCtrl( const TranslatableLabel &Prompt,
-      WrappedType & WrappedRef, const int max, const int min = 0 );
-
    TranslatableLabels mRadioLabels;
    Identifiers mRadioValues;
    LabelSetting *mpRadioSetting = nullptr; /// The setting controlled by a group.
-   Optional<WrappedType> mRadioValue;  /// The wrapped value associated with the active radio button.
    int mRadioCount = -1;       /// The index of this radio item.  -1 for none.
-   wxString mRadioValueString; /// Unwrapped string value.
    DialogDefinition::BaseItem mRadioItem;
    void DoAddRadioButton(
       const TranslatableLabel &Prompt, int style );
@@ -1593,13 +1428,6 @@ public:
       : ShuttleGuiBase( pParent, EffectiveMode( ShuttleMode ),
          vertical, minSize, pVisitor )
    {
-      if (!(ShuttleMode == eIsCreatingFromPrefs || ShuttleMode == eIsSavingToPrefs))
-         return;
-      
-      mpState -> mpShuttle = std::make_unique<ShuttlePrefs>();
-      // In this case the client is the GUI, so if creating we do want to
-      // store in the client.
-      mpState -> mpShuttle->mbStoreInClient = (ShuttleMode == eIsCreatingFromPrefs );
    };
 
    TypedShuttleGui( TypedShuttleGui&& ) = default;
@@ -1671,23 +1499,6 @@ public:
       const DialogDefinition::BaseItem::ControlTextFunction &fn )
    {
       GetItem().VariableText( fn );
-      return *this;
-   }
-
-   template<typename Factory>
-   TypedShuttleGui& Validator( const Factory &f )
-   {
-      if ( GetMode() == eIsCreating )
-         GetItem().Validator( f );
-      return *this;
-   }
-
-   // This allows further abbreviation of the previous:
-   template<typename V, typename...Args>
-   TypedShuttleGui& Validator( Args&& ...args )
-   {
-      if ( GetMode() == eIsCreating )
-         GetItem().Validator( [args...]{ return V( args... ); } );
       return *this;
    }
 
@@ -1815,20 +1626,6 @@ public:
    AddRadioButton( const TranslatableLabel & Prompt )
    {
       ShuttleGuiBase::AddRadioButton( Prompt );
-      return Rebind<Sink, wxRadioButton>();
-   }
-
-   TypedShuttleGui<Sink, wxRadioButton>
-   TieRadioButton(
-      const TranslatableString & Prompt )
-   {
-      return AddRadioButton( Prompt );
-   }
-
-   TypedShuttleGui<Sink, wxRadioButton>
-   TieRadioButton()
-   {
-      ShuttleGuiBase::AddRadioButton();
       return Rebind<Sink, wxRadioButton>();
    }
 

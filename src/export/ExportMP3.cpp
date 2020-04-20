@@ -320,7 +320,7 @@ void ExportMP3Options::PopulateOrExchange(ShuttleGui & S)
                            .AddRadioButton();
 
                         S
-                           .TieRadioButton();
+                           .AddRadioButton();
                      }
                      S
                         .AddRadioButton();

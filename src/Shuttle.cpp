@@ -60,7 +60,6 @@ preferences.
 #include <wx/textctrl.h>
 #include <wx/listctrl.h>
 
-#include "WrappedType.h"
 //#include "effects/Effect.h"
 
 
@@ -229,24 +228,6 @@ bool Shuttle::TransferString( const wxString & Name, wxString & strValue, const 
    }
    return true;
 }
-
-bool Shuttle::TransferWrappedType( const wxString & Name, WrappedType & W )
-{
-   if( mbStoreInClient )
-   {
-      if( ExchangeWithMaster( Name ))
-      {
-         W.WriteToAsString( mValueString );
-      }
-   }
-   else
-   {
-      mValueString = W.ReadAsString();
-      return ExchangeWithMaster( Name );
-   }
-   return true;
-}
-
 
 bool Shuttle::ExchangeWithMaster(const wxString & WXUNUSED(Name))
 {

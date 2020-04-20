@@ -15,7 +15,6 @@
 #include "../include/audacity/EffectAutomationParameters.h" // for CommandParameters
 
 class ComponentInterfaceSymbol;
-class WrappedType;
 
 template<typename Type> struct EffectParameter {
    const wxChar *const key;
@@ -69,9 +68,6 @@ class Shuttle /* not final */ {
    virtual bool TransferString( const wxString & Name, wxString & strValue, const wxString &strDefault );
    virtual bool TransferEnum( const wxString & Name, int & iValue,
       const int nChoices, const wxString * pFirstStr);
-   virtual bool TransferWrappedType( const wxString & Name, WrappedType & W );
-   // We expect the ExchangeWithMaster function to change from one type of
-   // archive to another.
    virtual bool ExchangeWithMaster(const wxString & Name);
 };
 
