@@ -317,6 +317,11 @@ private:
    bool mAbortImport; // tells importer to ignore the rest of the import
 };
 
+extern StringSetting
+     FFmpegCodec
+   , FFmpegFormat
+;
+
 #endif
 
 #endif //__EXPORT_FFMPEG_DIALOGS_H__

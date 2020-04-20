@@ -831,8 +831,8 @@ bool ExportFFmpegCustomOptions::TransferDataToWindow()
 {
    if (mFormat)
    {
-      mFormat->SetValue(gPrefs->Read(L"/FileFormats/FFmpegFormat", L""));
-      mCodec->SetValue(gPrefs->Read(L"/FileFormats/FFmpegCodec", L""));
+      mFormat->SetValue( FFmpegFormat.Read() );
+      mCodec->SetValue( FFmpegCodec.Read() );
    }
    return true;
 }
@@ -1768,13 +1768,13 @@ ExportFFmpegOptions::ExportFFmpegOptions(wxWindow *parent)
       PopulateOrExchange(S);
 
       //Select the format that was selected last time this dialog was closed
-      mFormatList->Select(mFormatList->FindString(gPrefs->Read(L"/FileFormats/FFmpegFormat")));
+      mFormatList->Select( mFormatList->FindString( FFmpegFormat.Read() ) );
       DoOnFormatList();
 
       //Select the codec that was selected last time this dialog was closed
       if ( const auto codec =
           avcodec_find_encoder_by_name(
-             gPrefs->Read( L"/FileFormats/FFmpegCodec" ).ToUTF8() ) )
+             gPrefs->Read( FFmpegCodec.Read() ).ToUTF8() ) )
          mCodecList->Select(mCodecList->FindString(wxString::FromUTF8(codec->name)));
       DoOnCodecList();
    }
@@ -2620,8 +2620,10 @@ void ExportFFmpegOptions::OnOK(wxCommandEvent& WXUNUSED(event))
 
    int selcdc = mCodecList->GetSelection();
    int selfmt = mFormatList->GetSelection();
-   if (selcdc > -1) gPrefs->Write(L"/FileFormats/FFmpegCodec",mCodecList->GetString(selcdc));
-   if (selfmt > -1) gPrefs->Write(L"/FileFormats/FFmpegFormat",mFormatList->GetString(selfmt));
+   if (selcdc > -1)
+      FFmpegCodec.Write( mCodecList->GetString( selcdc ) );
+   if (selfmt > -1)
+       FFmpegFormat.Write( mFormatList->GetString( selfmt ) );
    gPrefs->Flush();
 
    ShuttleGui S(this, eIsSavingToPrefs);
@@ -2638,6 +2640,9 @@ void ExportFFmpegOptions::OnGetURL(wxCommandEvent & WXUNUSED(event))
 {
    HelpSystem::ShowHelp(this, L"Custom_FFmpeg_Export_Options");
 }
+
+StringSetting FFmpegCodec{ "/FileFormats/FFmpegCodec", L"" };
+StringSetting FFmpegFormat{ "/FileFormats/FFmpegFormat", L"" };
 
 
 #endif

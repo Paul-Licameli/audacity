@@ -494,7 +494,7 @@ bool ExportFFmpeg::InitCodecs(AudacityProject *project)
       set_dict_int(&options, "prediction_order_method", gPrefs->Read(L"/FileFormats/FFmpegPredOrderMethod",(long)0));
       set_dict_int(&options, "muxrate",                 gPrefs->Read(L"/FileFormats/FFmpegMuxRate",(long)0));
       mEncFormatCtx->packet_size = gPrefs->Read(L"/FileFormats/FFmpegPacketSize",(long)0);
-      codec = avcodec_find_encoder_by_name(gPrefs->Read(L"/FileFormats/FFmpegCodec").ToUTF8());
+      codec = avcodec_find_encoder_by_name( FFmpegCodec.Read().ToUTF8() );
       if (!codec)
          mEncAudioCodecCtx->codec_id = mEncFormatDesc->audio_codec;
       break;
@@ -997,7 +997,7 @@ ProgressResult ExportFFmpeg::Export(AudacityProject *project,
 
    wxString shortname(ExportFFmpegOptions::fmts[mSubFormat].shortname);
    if (mSubFormat == FMT_OTHER)
-      shortname = gPrefs->Read(L"/FileFormats/FFmpegFormat",L"matroska");
+      shortname = FFmpegFormat.ReadWithDefault( L"matroska" );
    ret = Init(shortname.mb_str(),project, metadata, subformat);
    auto cleanup = finally ( [&] { FreeResources(); } );
 
