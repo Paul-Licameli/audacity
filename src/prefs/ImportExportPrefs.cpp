@@ -108,9 +108,9 @@ void ImportExportPrefs::PopulateOrExchange(ShuttleGui & S)
             .StartRadioButtonGroup(ImportExportPrefs::ExportDownMixSetting);
          {
             S
-               .TieRadioButton();
+               .AddRadioButton();
             S
-               .TieRadioButton();
+               .AddRadioButton();
          }
          S
             .EndRadioButtonGroup();
@@ -139,9 +139,9 @@ void ImportExportPrefs::PopulateOrExchange(ShuttleGui & S)
             .StartRadioButtonGroup(ImportExportPrefs::LabelStyleSetting);
          {
             S
-               .TieRadioButton();
+               .AddRadioButton();
             S
-               .TieRadioButton();
+               .AddRadioButton();
          }
          S
             .EndRadioButtonGroup();
@@ -162,9 +162,9 @@ void ImportExportPrefs::PopulateOrExchange(ShuttleGui & S)
             .StartRadioButtonGroup(ImportExportPrefs::AllegroStyleSetting);
          {
             S
-               .TieRadioButton();
+               .AddRadioButton();
             S
-               .TieRadioButton();
+               .AddRadioButton();
          }
          S
             .EndRadioButtonGroup();

@@ -403,10 +403,10 @@ void ExportMultipleDialog::PopulateOrExchange(ShuttleGui& S)
                .StartRadioButtonGroup( radioSetting );
             {
                S
-                  .TieRadioButton();
+                  .AddRadioButton();
 
                S
-                  .TieRadioButton();
+                  .AddRadioButton();
 
                S
                   .TieRadioButton();

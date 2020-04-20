@@ -194,17 +194,17 @@ void KeyConfigPrefs::PopulateOrExchange(ShuttleGui & S)
                   wxRadioButton *pButton1 =
                   S
                      .Text(XO("View by tree"))
-                     .TieRadioButton();
+                     .AddRadioButton();
          
                   wxRadioButton *pButton2 =
                   S
                      .Text(XO("View by name"))
-                     .TieRadioButton();
+                     .AddRadioButton();
          
                   wxRadioButton *pButton3 =
                   S
                      .Text(XO("View by key"))
-                     .TieRadioButton();
+                     .AddRadioButton();
 
 #if !defined(__WXMAC__) && wxUSE_ACCESSIBILITY
                   // so that name can be set on a standard control
