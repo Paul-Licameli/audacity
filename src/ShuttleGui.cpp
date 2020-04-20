@@ -1157,8 +1157,6 @@ void ShuttleGuiBase::DoAddRadioButton(
    const TranslatableLabel &Prompt, int style)
 {
    const auto translated = Prompt.Translation();
-   /// \todo This function and the next two, suitably adapted, could be
-   /// used by TieRadioButton.
    UseUpId();
    if( mpState -> mShuttleMode != eIsCreating ) {
       mpWind = wxWindow::FindWindowById( miId, mpState -> mpDlg);
@@ -2130,63 +2128,22 @@ wxChoice * ShuttleGuiBase::TieChoice(
 }
 
 /// This function must be within a StartRadioButtonGroup - EndRadioButtonGroup pair.
-void ShuttleGuiBase::TieRadioButton()
+void ShuttleGuiBase::AddRadioButton()
 {
    wxASSERT( mRadioCount >= 0); // Did you remember to use StartRadioButtonGroup() ?
 
    TranslatableLabel label;
    wxString Temp;
-   if (mRadioCount >= 0 && mRadioCount < (int)mRadioLabels.size() ) {
+   if (mRadioCount >= 0 && mRadioCount < (int)mRadioLabels.size() )
       label = mRadioLabels[ mRadioCount ];
-      Temp = mRadioValues[ mRadioCount ].GET();
-   }
 
    // In what follows, WrappedRef is used in read only mode, but we
    // don't have a 'read-only' version, so we copy to deal with the constness.
-   wxASSERT( !Temp.empty() ); // More buttons than values?
-
-   WrappedType WrappedRef( Temp );
+   wxASSERT( !label.empty() ); // More buttons than values?
 
    mRadioCount++;
 
-   UseUpId();
-   wxRadioButton * pRadioButton = NULL;
-
-   switch( mpState -> mShuttleMode )
-   {
-   case eIsCreating:
-      {
-         const auto &Prompt = label.Translation();
-
-         mpWind = pRadioButton = safenew wxRadioButton(GetParent(), miId, Prompt,
-            wxDefaultPosition, mItem.mWindowSize,
-            (mRadioCount==1)?wxRB_GROUP:0);
-
-         wxASSERT( WrappedRef.IsString() );
-         wxASSERT( mRadioValue->IsString() );
-         const bool value =
-            (WrappedRef.ReadAsString() == mRadioValue->ReadAsString() );
-         pRadioButton->SetValue( value );
-
-         pRadioButton->SetName(wxStripMenuCodes(Prompt));
-         UpdateSizers();
-      }
-      break;
-   case eIsGettingFromDialog:
-      {
-         wxWindow * pWnd  = wxWindow::FindWindowById( miId, mpState -> mpDlg);
-         pRadioButton = wxDynamicCast(pWnd, wxRadioButton);
-         wxASSERT( pRadioButton );
-         if( pRadioButton->GetValue() )
-            mRadioValue->WriteToAsString( WrappedRef.ReadAsString() );
-      }
-      break;
-   default:
-      wxASSERT( false );
-      break;
-   }
-
-   mItem = mRadioItem;
+   DoAddRadioButton( label, (mRadioCount==1) ? wxRB_GROUP : 0 );
 }
 
 /// Call this before AddRadioButton calls.
@@ -2198,7 +2155,7 @@ void ShuttleGuiBase::StartRadioButtonGroup()
    mRadioItem = mItem;
 }
 
-/// Call this before any TieRadioButton calls.
+/// Call this before any AddRadioButton calls.
 void ShuttleGuiBase::StartRadioButtonGroup( LabelSetting &Setting )
 {
    mRadioLabels = Setting.GetLabels();
@@ -2220,7 +2177,7 @@ void ShuttleGuiBase::StartRadioButtonGroup( LabelSetting &Setting )
    mRadioItem = mItem;
 }
 
-/// Call this after any TieRadioButton calls.
+/// Call this after any AddRadioButton calls.
 /// It's generic too.  We don't need type-specific ones.
 void ShuttleGuiBase::EndRadioButtonGroup()
 {
