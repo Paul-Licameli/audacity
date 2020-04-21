@@ -367,7 +367,7 @@ void ExportMP3Options::PopulateOrExchange(ShuttleGui & S)
                S.EndPanel();
 
                S
-                  .Target( MP3RateModeSetting )
+//?                  .Target( MP3RateModeSetting )
                   .StartSimplebook();
                {
                   S

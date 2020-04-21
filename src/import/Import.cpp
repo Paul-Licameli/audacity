@@ -853,11 +853,13 @@ wxDialogWrapper( parent, id, title, position, size, style | wxRESIZE_BORDER )
    {
       S.SetBorder( 5 );
 
+      auto info = mFile->GetStreamInfo();
+      TranslatableLabels labels{ info.begin(), info.end() };
       S
          .Prop(1)
          .Position(wxEXPAND | wxALIGN_LEFT | wxALL)
          .Style(wxLB_EXTENDED | wxLB_ALWAYS_SB)
-         .Target( MultipleChoice( mSelections, mFile->GetStreamInfo() ) )
+         .Target( MultipleChoice( mSelections, labels ) )
          .AddListBox( {} );
 
       S

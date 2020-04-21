@@ -47,10 +47,6 @@ enum {
    ChannelsID
 };
 
-BEGIN_EVENT_TABLE(DevicePrefs, PrefsPanel)
-   EVT_CHOICE(HostID, DevicePrefs::OnHost)
-END_EVENT_TABLE()
-
 DevicePrefs::DevicePrefs(wxWindow * parent, wxWindowID winid)
 :  PrefsPanel(parent, winid, XO("Devices"))
 {
@@ -79,9 +75,6 @@ wxString DevicePrefs::HelpPageName()
 
 void DevicePrefs::Populate()
 {
-   // First any pre-processing for constructing the GUI.
-   GetNamesAndLabels();
-
    // Get current setting for devices
    mPlayDevice = AudioIOPlaybackDevice.Read();
    mRecordDevice = AudioIORecordingDevice.Read();
@@ -91,36 +84,29 @@ void DevicePrefs::Populate()
 
 bool DevicePrefs::TransferDataToWindow()
 {
-   wxCommandEvent e;
-   OnHost(e);
+   OnHost();
    return true;
 }
 
 
-/*
- * Get names of device hosts.
- */
-void DevicePrefs::GetNamesAndLabels()
+void DevicePrefs::PopulateOrExchange(ShuttleGui & S)
 {
+   Identifiers hostLabels;
+
    // Gather list of hosts.  Only added hosts that have devices attached.
-   // FIXME: TRAP_ERR PaErrorCode not handled in DevicePrefs GetNamesAndLabels()
+   // FIXME: TRAP_ERR PaErrorCode not handled
    // With an error code won't add hosts, but won't report a problem either.
    int nDevices = Pa_GetDeviceCount();
    for (int i = 0; i < nDevices; i++) {
       const PaDeviceInfo *info = Pa_GetDeviceInfo(i);
       if ((info!=NULL)&&(info->maxOutputChannels > 0 || info->maxInputChannels > 0)) {
          wxString name = wxSafeConvertMB2WX(Pa_GetHostApiInfo(info->hostApi)->name);
-         if (!make_iterator_range(mHostNames)
-            .contains( Verbatim( name ) )) {
-            mHostNames.push_back( Verbatim( name ) );
-            mHostLabels.push_back(name);
-         }
+         if ( !make_iterator_range(hostLabels).contains( name ) )
+            hostLabels.push_back( name );
       }
    }
-}
 
-void DevicePrefs::PopulateOrExchange(ShuttleGui & S)
-{
+   using namespace DialogDefinition;
    S.SetBorder(2);
    S.StartScroller();
 
@@ -132,11 +118,9 @@ void DevicePrefs::PopulateOrExchange(ShuttleGui & S)
          mHost =
          S
             .Id(HostID)
-            .TieChoice( XXO("&Host:"),
-               {
-                  AudioIOHost,
-                  { ByColumns, mHostNames, mHostLabels }
-               } );
+            .Target( Choice( AudioIOHost, Verbatim( hostLabels ) ) )
+            .Action( [this]{ OnHost(); } )
+            .AddChoice( XXO("&Host:") );
 
          S
             .AddPrompt(XXO("Using:"));
@@ -210,15 +194,15 @@ void DevicePrefs::PopulateOrExchange(ShuttleGui & S)
 
 }
 
-void DevicePrefs::OnHost(wxCommandEvent & e)
+void DevicePrefs::OnHost()
 {
-   // Bail if we have no hosts
-   if (mHostNames.size() < 1)
+   auto apiName = AudioIOHost.Read();
+   // Bail if we have no host
+   if ( apiName.empty() )
       return;
 
    // Find the index for the host API selected
    int index = -1;
-   auto apiName = mHostLabels[mHost->GetCurrentSelection()];
    int nHosts = Pa_GetHostApiCount();
    for (int i = 0; i < nHosts; ++i) {
       wxString name = wxSafeConvertMB2WX(Pa_GetHostApiInfo(i)->name);

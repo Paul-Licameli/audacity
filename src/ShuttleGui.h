@@ -354,6 +354,8 @@ private:
 
 struct ComputedChoices
 {
+   using TranslatableStrings = ::TranslatableLabels;
+
    using StringsFunction = Recomputer< Identifiers >;
    using TranslatableStringsFunction = Recomputer< TranslatableStrings >;
    StringsFunction GetChoices;
@@ -365,13 +367,18 @@ struct ComputedChoices
       : ComputedChoices{ TranslatableStringsFunction{ strings } }
    {}
 
+   ComputedChoices( const ::TranslatableStrings &strings )
+      : ComputedChoices{ TranslatableStringsFunction{
+         TranslatableLabels{ strings.begin(), strings.end() } } }
+   {}
+
    ComputedChoices( TranslatableStringsFunction fn )
    {
       GetChoices = [fn]{
          std::optional< Identifiers > result;
          if ( auto strings = fn() )
             result.emplace( transform_container< Identifiers >( *strings,
-               std::mem_fn( &TranslatableString::Translation ) ) );
+               std::mem_fn( &TranslatableLabel::Translation ) ) );
          return result;
       };
    }

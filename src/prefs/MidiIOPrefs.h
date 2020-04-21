@@ -40,13 +40,8 @@ class MidiIOPrefs final : public PrefsPanel
 
  private:
    void Populate();
-   void GetNamesAndLabels();
 
-   void OnHost(wxCommandEvent & e);
-//   void OnDevice(wxCommandEvent & e);
-
-   TranslatableStrings mHostNames;
-   Identifiers mHostLabels;
+   void OnHost();
 
    wxString mPlayDevice;
 #ifdef EXPERIMENTAL_MIDI_IN
@@ -60,8 +55,6 @@ class MidiIOPrefs final : public PrefsPanel
    wxChoice *mRecord;
 #endif
 //   wxChoice *mChannels;
-
-   DECLARE_EVENT_TABLE()
 };
 
 #endif

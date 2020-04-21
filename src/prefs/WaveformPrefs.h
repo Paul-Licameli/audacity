@@ -38,8 +38,6 @@ public:
    void PopulateOrExchange(ShuttleGui & S) override;
 
 private:
-   void Populate();
-
    void OnControl();
    void OnDefaults(wxCommandEvent&);
    DECLARE_EVENT_TABLE()
@@ -51,7 +49,6 @@ private:
 
    wxCheckBox *mDefaultsCheckbox;
 
-   Identifiers mRangeCodes;
    TranslatableStrings mRangeChoices;
 
    WaveformSettings mTempSettings;

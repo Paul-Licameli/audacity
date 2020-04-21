@@ -274,16 +274,8 @@ void ExportMultipleDialog::PopulateOrExchange(ShuttleGui& S)
             mFormat =
             S
                .Id(FormatID)
-               .TieChoice( XXO("Format:"),
-               {
-                  ExportMultipleFormat,
-                  {
-                     ByColumns,
-                     visibleFormats,
-                     formats
-                  },
-                  mFilterIndex
-               } );
+               .Target( Choice( ExportMultipleFormat, visibleFormats, formats ) )
+               .AddChoice( XXO("Format:") );
 
             S
                .AddVariableText( {}, false);
