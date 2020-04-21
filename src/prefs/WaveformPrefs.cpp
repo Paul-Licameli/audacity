@@ -17,7 +17,6 @@ Paul Licameli
 #include "WaveformPrefs.h"
 
 #include "GUIPrefs.h"
-#include "GUISettings.h"
 
 #include <wx/checkbox.h>
 #include <wx/choice.h>

@@ -51,7 +51,6 @@ audio tracks.
 #include "TrackPanelDrawingContext.h"
 #include "ViewInfo.h"
 
-#include "prefs/GUISettings.h"
 #include "prefs/TracksPrefs.h"
 
 #include <wx/dc.h>
@@ -59,7 +58,7 @@ audio tracks.
 TrackArtist::TrackArtist( TrackPanel *parent_ )
    : parent( parent_ )
 {
-   mdBrange = ENV_DB_RANGE;
+   mdBrange = GUIdBRange.Read();
    mShowClipping = false;
    mSampleDisplay = 1;// Stem plots by default.
 
@@ -251,7 +250,7 @@ void TrackArtist::UpdateSelectedPrefs( int id )
 
 void TrackArtist::UpdatePrefs()
 {
-   mdBrange = gPrefs->Read(ENV_DB_KEY, mdBrange);
+   mdBrange = GUIdBRange.Read();
    mSampleDisplay = TracksPrefs::SampleViewChoice();
 
    UpdateSelectedPrefs( ShowClippingPrefsID() );

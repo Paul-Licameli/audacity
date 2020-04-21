@@ -128,6 +128,8 @@ void MidiIOPrefs::GetNamesAndLabels() {
    }
 }
 
+static StringSetting MidiIOHost{ "/MidiIO/Host", L"" };
+
 void MidiIOPrefs::PopulateOrExchange( ShuttleGui & S ) {
 
    S.SetBorder(2);
@@ -144,7 +146,7 @@ void MidiIOPrefs::PopulateOrExchange( ShuttleGui & S ) {
             /* i18n-hint: (noun) */
             .TieChoice( XXO("&Host:"),
                {
-                  L"/MidiIO/Host",
+                  MidiIOHost,
                   { ByColumns, mHostNames, mHostLabels }
                } );
 

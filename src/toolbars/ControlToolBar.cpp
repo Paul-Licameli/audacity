@@ -105,7 +105,7 @@ ControlToolBar::ControlToolBar( AudacityProject &project )
 : ToolBar(project, TransportBarID, XO("Transport"), L"Control")
 {
    mErgonomicTransportButtons =  GUIErgonomicTransportButtons.Read();
-   mStrLocale = gPrefs->Read(L"/Locale/Language", L"");
+   mStrLocale = LocaleLanguage.Read();
 
    mSizer = NULL;
 }
@@ -318,7 +318,7 @@ void ControlToolBar::UpdatePrefs()
       mErgonomicTransportButtons = active;
       updated = true;
    }
-   wxString strLocale = gPrefs->Read(L"/Locale/Language", L"");
+   wxString strLocale = LocaleLanguage.Read();
    if (mStrLocale != strLocale)
    {
       mStrLocale = strLocale;

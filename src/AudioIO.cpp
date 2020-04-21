@@ -456,7 +456,6 @@ time warp info and AudioIOListener and whether the playback is looped.
 #include "Mix.h"
 #include "Resample.h"
 #include "RingBuffer.h"
-#include "prefs/GUISettings.h"
 #include "prefs/WarningsPrefs.h"
 #include "Prefs.h"
 #include "Project.h"
@@ -465,6 +464,7 @@ time warp info and AudioIOListener and whether the playback is looped.
 #include "WaveTrack.h"
 
 #include "effects/RealtimeEffectManager.h"
+#include "prefs/GUIPrefs.h"
 #include "prefs/QualitySettings.h"
 #include "prefs/RecordingPrefs.h"
 #include "widgets/MeterPanelBase.h"
@@ -1530,7 +1530,7 @@ int AudioIO::StartStream(const TransportTracks &tracks,
    mbMicroFades = AudioIOMicrofades.Read();
    auto silenceLevelDB = AudioIOSilenceLevel.Read();
    int dBRange;
-   dBRange = gPrefs->Read(ENV_DB_KEY, ENV_DB_RANGE);
+   dBRange = GUIdBRange.Read();
    if(silenceLevelDB < -dBRange)
    {
       silenceLevelDB = -dBRange + 3;

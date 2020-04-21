@@ -58,7 +58,6 @@
 #include "../AudioIO.h"
 #include "../AColor.h"
 #include "../ImageManipulation.h"
-#include "../prefs/GUISettings.h"
 #include "../Project.h"
 #include "../ProjectAudioManager.h"
 #include "../ProjectStatus.h"
@@ -66,6 +65,8 @@
 #include "../ShuttleGui.h"
 #include "../Theme.h"
 #include "../widgets/MenuHandle.h"
+
+#include "../prefs/GUIPrefs.h"
 
 #include "../AllThemeResources.h"
 #include "../widgets/valnum.h"
@@ -292,7 +293,7 @@ MeterPanel::MeterPanel(AudacityProject *project,
    mDesiredStyle(style),
    mGradient(true),
    mDB(true),
-   mDBRange(ENV_DB_RANGE),
+   mDBRange( GUIdBRange.Read() ),
    mDecay(true),
    mDecayRate(fDecayRate),
    mClip(true),
@@ -402,7 +403,7 @@ void MeterPanel::Clear()
 
 void MeterPanel::UpdatePrefs()
 {
-   mDBRange = gPrefs->Read(ENV_DB_KEY, ENV_DB_RANGE);
+   mDBRange = GUIdBRange.Read();
 
    mMeterRefreshRate =
       std::max(MIN_REFRESH_RATE, std::min(MAX_REFRESH_RATE,

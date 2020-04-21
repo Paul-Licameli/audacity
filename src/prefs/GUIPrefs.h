@@ -75,6 +75,14 @@ extern AUDACITY_DLL_API ChoiceSetting
      GUIManualLocation
 ;
 
+extern AUDACITY_DLL_API IntSetting
+     GUIdBRange
+;
+
+extern AUDACITY_DLL_API StringSetting
+     LocaleLanguage
+;
+
 extern AUDACITY_DLL_API BoolSetting
      QuickPlayScrubbingEnabled
    , QuickPlayToolTips

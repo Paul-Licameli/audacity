@@ -27,9 +27,10 @@
 #include <wx/textctrl.h>
 #include <algorithm>
 
-#include "../prefs/GUISettings.h"
 #include "../Prefs.h"
 #include "../ShuttleGui.h"
+
+#include "GUIPrefs.h"
 
 using std::min;
 
@@ -120,7 +121,7 @@ void RecordingPrefs::PopulateOrExchange(ShuttleGui & S)
          S
             .TieSlider(XXO("Le&vel (dB):"),
                AudioIOSilenceLevel,
-               0, -gPrefs->Read(ENV_DB_KEY, ENV_DB_RANGE));
+               0, -GUIdBRange.Read());
       }
       S.EndMultiColumn();
    }

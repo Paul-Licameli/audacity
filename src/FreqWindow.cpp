@@ -66,7 +66,6 @@ the mouse around.
 #include "CommonCommandFlags.h"
 #include "FFT.h"
 #include "PitchName.h"
-#include "prefs/GUISettings.h"
 #include "Prefs.h"
 #include "Project.h"
 #include "ProjectWindow.h"
@@ -77,6 +76,8 @@ the mouse around.
 #include "FileNames.h"
 
 #include "WaveTrack.h"
+
+#include "prefs/GUIPrefs.h"
 
 #include "./widgets/HelpSystem.h"
 #include "widgets/AudacityMessageBox.h"
@@ -265,6 +266,7 @@ void FrequencyPlotDialog::Populate()
    sizeChoices[mSize].MSGID().GET().ToLong(&size);
    mWindowSize = size;
 
+   dBRange = GUIdBRange.Read();
    if(dBRange < 90.)
       dBRange = 90.;
 
@@ -593,7 +595,7 @@ bool FrequencyPlotDialog::Show(bool show)
 
    if (show && !shown)
    {
-      gPrefs->Read(ENV_DB_KEY, &dBRange, ENV_DB_RANGE);
+      dBRange = GUIdBRange.Read();
       if(dBRange < 90.)
          dBRange = 90.;
       GetAudio();
@@ -1126,7 +1128,7 @@ void FrequencyPlotDialog::OnExport(wxCommandEvent & WXUNUSED(event))
 
 void FrequencyPlotDialog::OnReplot(wxCommandEvent & WXUNUSED(event))
 {
-   gPrefs->Read(ENV_DB_KEY, &dBRange, ENV_DB_RANGE);
+   dBRange = GUIdBRange.Read();
    if(dBRange < 90.)
       dBRange = 90.;
    GetAudio();

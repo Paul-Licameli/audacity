@@ -23,7 +23,7 @@
 
 #include "ShuttleGui.h"
 #include "Prefs.h"
-#include "prefs/GUISettings.h"
+#include "prefs/GUIPrefs.h"
 #include "prefs/RecordingPrefs.h"
 
 BEGIN_EVENT_TABLE(SoundActivatedRecordDialog, wxDialogWrapper)
@@ -59,7 +59,7 @@ void SoundActivatedRecordDialog::PopulateOrExchange(ShuttleGui & S)
          .TieSlider(
             XXO("Activation level (dB):"),
             AudioIOSilenceLevel,
-            0, -gPrefs->Read(ENV_DB_KEY, ENV_DB_RANGE) )
+            0, -GUIdBRange.Read() )
             ->SetMinSize(wxSize(300, wxDefaultCoord));
 
       S.EndMultiColumn();

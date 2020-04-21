@@ -29,8 +29,6 @@
 #include "../Prefs.h"
 #include "../ShuttleGui.h"
 
-#include "GUISettings.h"
-
 #include "ThemePrefs.h"
 #include "../AColor.h"
 #include "../widgets/AudacityMessageBox.h"
@@ -146,7 +144,7 @@ void GUIPrefs::PopulateOrExchange(ShuttleGui & S)
          S
             .TieChoice( XXO("&Language:"),
                {
-                  L"/Locale/Language",
+                  LocaleLanguage,
                   { ByColumns, mLangNames, mLangCodes }
                } );
 
@@ -159,7 +157,7 @@ void GUIPrefs::PopulateOrExchange(ShuttleGui & S)
          S
             .TieChoice( XXO("Meter dB &range:"),
                {
-                  ENV_DB_KEY,
+                  GUIdBRange,
                   { ByColumns, mRangeChoices, mRangeCodes },
                   mDefaultRangeIndex
                } );
@@ -241,12 +239,12 @@ bool GUIPrefs::Commit()
    PopulateOrExchange(S);
 
    // If language has changed, we want to change it now, not on the next reboot.
-   Identifier lang = gPrefs->Read(L"/Locale/Language", L"");
+   Identifier lang = LocaleLanguage.Read();
    auto usedLang = SetLang(lang);
    // Bug 1523: Previously didn't check no-language (=System Language)
    if (!(lang.empty() || lang == L"System") && (lang != usedLang)) {
       // lang was not usable and is not system language.  We got overridden.
-      gPrefs->Write(L"/Locale/Language", usedLang);
+      LocaleLanguage.Write( usedLang.GET() );
       gPrefs->Flush();
    }
 
@@ -327,6 +325,13 @@ BoolSetting GUIShowMac{
    L"/GUI/ShowMac",          false };
 BoolSetting GUIShowSplashScreen{
    L"/GUI/ShowSplashScreen", true  };
+
+// A dB value as a positivie number
+IntSetting GUIdBRange{
+   L"/GUI/EnvdBRange",       60 };
+
+StringSetting LocaleLanguage{
+   L"/Locale/Language",      L"" };
 
 BoolSetting QuickPlayScrubbingEnabled{
    L"/QuickPlay/ScrubbingEnabled",   false};

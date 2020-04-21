@@ -700,7 +700,7 @@ bool NyquistEffect::Process()
       mProps = wxEmptyString;
 
       mProps += wxString::Format(L"(putprop '*AUDACITY* (list %d %d %d) 'VERSION)\n", AUDACITY_VERSION, AUDACITY_RELEASE, AUDACITY_REVISION);
-      Identifier lang = gPrefs->Read(L"/Locale/Language", L"");
+      Identifier lang = LocaleLanguage.Read();
       lang = (lang.empty())
          ? Languages::GetSystemLanguageCode(FileNames::AudacityPathList())
          : lang;

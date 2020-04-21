@@ -13,7 +13,7 @@
 
 
 
-#include "prefs/GUISettings.h"
+#include "prefs/GUIPrefs.h"
 
 namespace {
 static const double gMaxZoom = 6000000;
@@ -34,7 +34,7 @@ ZoomInfo::~ZoomInfo()
 
 void ZoomInfo::UpdatePrefs()
 {
-   dBr = gPrefs->Read(ENV_DB_KEY, ENV_DB_RANGE);
+   dBr = GUIdBRange.Read();
 }
 
 /// Converts a position (mouse X coordinate) to
