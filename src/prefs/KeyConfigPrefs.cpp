@@ -84,6 +84,15 @@ KeyConfigPrefs::KeyConfigPrefs(
    mFilterTimer(this, FilterTimerID),
    mFilterPending(false)
    , mProject{ pProject }
+   , mRadioSetting{
+      L"/Prefs/KeyConfig/ViewBy",
+      {
+         { L"tree", XXO("&Tree") },
+         { L"name", XXO("&Name") },
+         { L"key", XXO("&Key") },
+      },
+      0 // tree
+   }
 {
    Populate();
    if (!name.empty()) {
@@ -185,14 +194,7 @@ void KeyConfigPrefs::PopulateOrExchange(ShuttleGui & S)
             S.StartHorizontalLay();
             {
                S
-                  .StartRadioButtonGroup({
-                     L"/Prefs/KeyConfig/ViewBy",
-                     {
-                        { L"tree", XXO("&Tree") },
-                        { L"name", XXO("&Name") },
-                        { L"key", XXO("&Key") },
-                     },
-                     0 /* tree */ });
+                  .StartRadioButtonGroup( mRadioSetting );
                {
                   mViewByTree =
                   S

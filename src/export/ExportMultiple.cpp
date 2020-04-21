@@ -109,6 +109,15 @@ ExportMultipleDialog::ExportMultipleDialog(AudacityProject *project)
 : wxDialogWrapper( &GetProjectFrame( *project ),
    wxID_ANY, XO("Export Multiple") )
 , mExporter{ *project }
+, mRadioSetting{
+   L"/Export/TrackNameWithOrWithoutNumbers",
+   {
+      { L"labelTrack", XXO("Using Label/Track Name") },
+      { L"numberBefore", XXO("Numbering before Label/Track Name") },
+      { L"numberAfter", XXO("Numbering after File name prefix") },
+   },
+   0 // labelTrack
+}
 , mSelectionState{ SelectionState::Get( *project ) }
 {
    SetName();
@@ -396,15 +405,7 @@ void ExportMultipleDialog::PopulateOrExchange(ShuttleGui& S)
          S.StartPanel();
          {
             S
-               .StartRadioButtonGroup({
-                  L"/Export/TrackNameWithOrWithoutNumbers",
-                  {
-                     { L"labelTrack", XXO("Using Label/Track Name") },
-                     { L"numberBefore", XXO("Numbering before Label/Track Name") },
-                     { L"numberAfter", XXO("Numbering after File name prefix") },
-                  },
-                  0 // labelTrack
-               });
+               .StartRadioButtonGroup( mRadioSetting );
             {
                mByName =
                S

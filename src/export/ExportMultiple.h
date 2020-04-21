@@ -14,6 +14,8 @@
 #include "Export.h"
 #include "../wxFileNameWrapper.h" // member variable
 
+#include "../Prefs.h"
+
 class wxButton;
 class wxCheckBox;
 class wxChoice;
@@ -116,6 +118,8 @@ private:
 
    // List of file actually exported
    FilePaths mExported;
+
+   LabelSetting mRadioSetting;
 
    wxChoice      *mFormat;    /**< Drop-down list of export formats
                                 (combinations of plug-in and subformat) */
