@@ -112,12 +112,7 @@
 
 enum
 {
-   ID_Length = 10000,
-   ID_dBMax,
-   ID_dBMin,
-   ID_Mode,
-   ID_Delete,
-   ID_Slider,   // needs to come last
+   ID_Slider = 10000,   // needs to come last
 };
 
 enum kInterpolations
@@ -194,9 +189,6 @@ namespace{ BuiltinEffectsModule::Registration< EffectEqualizationGraphic > reg3;
 BEGIN_EVENT_TABLE(EffectEqualization, wxEvtHandler)
    EVT_SIZE( EffectEqualization::OnSize )
 
-   EVT_SLIDER( ID_Length, EffectEqualization::OnSliderM )
-   EVT_SLIDER( ID_dBMax, EffectEqualization::OnSliderDBMAX )
-   EVT_SLIDER( ID_dBMin, EffectEqualization::OnSliderDBMIN )
    EVT_COMMAND_RANGE(ID_Slider,
                      ID_Slider + NUMBER_OF_BANDS - 1,
                      wxEVT_COMMAND_SLIDER_UPDATED,
@@ -210,7 +202,6 @@ EffectEqualization::EffectEqualization(int Options)
 {
    mOptions = Options;
    mPanel = NULL;
-   mMSlider = NULL;
 
    hFFT = GetFFT(windowSize);
 
@@ -664,6 +655,11 @@ bool EffectEqualization::Init()
    CalcFilter();
 
    return(true);
+
+   // force refresh in TransferDataToWindow()
+   mdBMax = mdBMin = 0;
+   mPrevdBMin = mPrevdBMax = 1;
+   mPrevM = mM + 1;
 }
 
 bool EffectEqualization::Process()
@@ -791,24 +787,30 @@ void EffectEqualization::PopulateOrExchange(ShuttleGui & S)
             S
                .AddVariableText(XO("+ dB"), false, wxCENTER);
 
-            mdBMaxSlider =
+            wxSlider *slider =
             S
-               .Id(ID_dBMax)
-               .Text(XO("Max dB"))
+               .VariableText( [this]{ return ControlText{ XO("Max dB"), {},
+                  // tooltip
+                  XO("%d dB").Format( (int)mdBMax )
+               }; } )
                .Style(wxSL_VERTICAL | wxSL_INVERSE)
+               .Target( mdBMax )
                .AddSlider( {}, 30, 60, 0);
 #if wxUSE_ACCESSIBILITY
-            mdBMaxSlider->SetAccessible(safenew SliderAx(mdBMaxSlider, XO("%d dB")));
+            slider->SetAccessible(safenew SliderAx(slider, XO("%d dB")));
 #endif
 
-            mdBMinSlider =
+            slider =
             S
-               .Id(ID_dBMin)
-               .Text(XO("Min dB"))
+               .VariableText( [this]{ return ControlText{ XO("Min dB"), {},
+                  // tooltip
+                  XO("%d dB").Format( (int)mdBMin )
+               }; } )
                .Style(wxSL_VERTICAL | wxSL_INVERSE)
+               .Target( mdBMin )
                .AddSlider( {}, -30, -10, -120);
 #if wxUSE_ACCESSIBILITY
-            mdBMinSlider->SetAccessible(safenew SliderAx(mdBMinSlider, XO("%d dB")));
+            slider->SetAccessible(safenew SliderAx(slider, XO("%d dB")));
 #endif
 
             S
@@ -1008,25 +1010,29 @@ void EffectEqualization::PopulateOrExchange(ShuttleGui & S)
 
                S.StartHorizontalLay(wxEXPAND, 1);
                {
-                  mMSlider =
                   S
-                     .Id(ID_Length)
-                     .Text(XO("Length of Filter"))
+                     .VariableText( [this]{ return ControlText{
+                        // tooltip
+                        {}, {}, XO("%d").Format( (int)mM ), {} }; } )
                      .Style(wxSL_HORIZONTAL)
+                     .Target( Transform<size_t, int>( mM,
+                        []( size_t output ){ return (output - 1) / 2; },
+                        []( int input ){ return 2 * input + 1; } ) )
+                     .Action( [this]{ ForceRecalc(); } )
                      .AddSlider( {}, (mM - 1) / 2, 4095, 10);
                }
                S.EndHorizontalLay();
 
                S.StartHorizontalLay(wxALIGN_LEFT | wxALIGN_CENTER_VERTICAL, 0);
                {
-                  wxString label;
-                  label.Printf(L"%ld", mM);
-                  mMText =
                   S
-                     .Text( Verbatim( label ) )
-                  // fix for bug 577 (NVDA/Narrator screen readers do not
-                  // read static text in dialogs)
-                     .AddVariableText( Verbatim( label ) );
+                     .VariableText( [this]{
+                        auto str = XO("%d").Format( (int)mM );
+                        return ControlText{
+                           // fix for bug 577 (NVDA/Narrator screen readers do not
+                           // read static text in dialogs)
+                           str, {}, {}, str }; } )
+                     .AddVariableText( {} );
                }
                S.EndHorizontalLay();
             }
@@ -1208,16 +1214,6 @@ bool EffectEqualization::TransferDataToWindow()
 {
    OnLinFreq();  // causes a CalcFilter
 
-   if( mMSlider )
-      mMSlider->SetValue((mM - 1) / 2);
-   mM = 0;                        // force refresh in TransferDataFromWindow()
-
-   mdBMinSlider->SetValue((int)mdBMin);
-   mdBMin = 0;                     // force refresh in TransferDataFromWindow()
-
-   mdBMaxSlider->SetValue((int)mdBMax);
-   mdBMax = 0;                    // force refresh in TransferDataFromWindow()
-
    // Reload the curve names
    // UpdateCurves();
 
@@ -1249,27 +1245,10 @@ bool EffectEqualization::TransferDataToWindow()
 //
 bool EffectEqualization::TransferDataFromWindow()
 {
-   wxString tip;
-
-   bool rr = false;
-   float dB = (float) mdBMinSlider->GetValue();
-   if (dB != mdBMin) {
-      rr = true;
-      mdBMin = dB;
-      tip.Printf(_("%d dB"), (int)mdBMin);
-      mdBMinSlider->SetToolTip(tip);
-   }
-
-   dB = (float) mdBMaxSlider->GetValue();
-   if (dB != mdBMax) {
-      rr = true;
-      mdBMax = dB;
-      tip.Printf(_("%d dB"), (int)mdBMax);
-      mdBMaxSlider->SetToolTip(tip);
-   }
-
    // Refresh ruler if values have changed
-   if (rr) {
+   if ( mPrevdBMin != mdBMin || mPrevdBMax != mdBMax ) {
+      mPrevdBMin = mdBMin;
+      mPrevdBMax = mdBMax;
       int w1, w2, h;
       mdBRuler->ruler.GetMaxSize(&w1, &h);
       mdBRuler->ruler.SetRange(mdBMax, mdBMin);
@@ -1284,21 +1263,12 @@ bool EffectEqualization::TransferDataFromWindow()
       mPanel->Refresh(false);
    }
 
-   size_t m = FilterLength.def; // m must be odd.
-   if (mMSlider )
-      m = 2* mMSlider->GetValue()+1;
-   wxASSERT( (m & 1) ==1 );
-   if (m != mM) {
-      mM = m;
-      ForceRecalc();
+   if ( mPrevM != mM ) {
+      // m must be odd.
+      wxASSERT( (mM & 1) == 1 );
+      mPrevM = mM;
 
-      if( mMSlider)
-      {
-         tip.Printf(L"%d", (int)mM);
-         mMText->SetLabel(tip);
-         mMText->SetName(mMText->GetLabel()); // fix for bug 577 (NVDA/Narrator screen readers do not read static text in dialogs)
-         mMSlider->SetToolTip(tip);
-      }
+      ForceRecalc();
    }
 
    return true;
@@ -2871,25 +2841,6 @@ void EffectEqualization::OnInterp()
       GraphicEQ(mLogEnvelope.get());
       EnvelopeUpdated();
    }
-}
-
-void EffectEqualization::OnSliderM(wxCommandEvent & WXUNUSED(event))
-{
-   if ( mUIParent )
-      mUIParent->TransferDataFromWindow();
-   ForceRecalc();
-}
-
-void EffectEqualization::OnSliderDBMIN(wxCommandEvent & WXUNUSED(event))
-{
-   if ( mUIParent )
-      mUIParent->TransferDataFromWindow();
-}
-
-void EffectEqualization::OnSliderDBMAX(wxCommandEvent & WXUNUSED(event))
-{
-   if ( mUIParent )
-      mUIParent->TransferDataFromWindow();
 }
 
 //
