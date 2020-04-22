@@ -2039,13 +2039,17 @@ void EffectEqualization::setCurve(int currentCurve)
    ForceRecalc();
 }
 
+size_t EffectEqualization::findCurve(const wxString &curveName)
+{
+   const auto begin = mCurves.begin(), end = mCurves.end(),
+      iter = std::find( begin, end, curveName );
+   return iter - begin;
+}
+
 void EffectEqualization::setCurve(const wxString &curveName)
 {
-   unsigned i = 0;
-   for( i = 0; i < mCurves.size(); i++ )
-      if( curveName == mCurves[ i ].Name )
-         break;
-   if( i == mCurves.size())
+   auto ii = findCurve( curveName );
+   if( ii == mCurves.size())
    {
       Effect::MessageBox(
          XO("Requested curve not found, using 'unnamed'"),
@@ -2054,7 +2058,7 @@ void EffectEqualization::setCurve(const wxString &curveName)
       setCurve((int) mCurves.size() - 1);
    }
    else
-      setCurve( i );
+      setCurve( ii );
 }
 
 //
@@ -2355,19 +2359,13 @@ void EffectEqualization::UpdateCurves()
    // Reload the curve names
    if( mCurve ) 
       mCurve->Clear();
-   bool selectedCurveExists = false;
    for (size_t i = 0, cnt = mCurves.size(); i < cnt; i++)
-   {
-      if (mCurveName == mCurves[ i ].Name)
-         selectedCurveExists = true;
-      if( mCurve ) 
+      if( mCurve )
          mCurve->Append(mCurves[ i ].Name);
-   }
+
    // In rare circumstances, mCurveName may not exist (bug 1891)
-   if (!selectedCurveExists)
-      mCurveName = mCurves[ (int)mCurves.size() - 1 ].Name;
-   if( mCurve ) 
-      mCurve->SetStringSelection(mCurveName);
+   if (findCurve( mCurveName ) == mCurves.size())
+      mCurveName = mCurves.back();
    
    // Allow the control to resize
    if( mCurve ) 
@@ -2918,7 +2916,7 @@ void EffectEqualization::OnCurve(wxCommandEvent & WXUNUSED(event))
 //
 void EffectEqualization::OnManage(wxCommandEvent & WXUNUSED(event))
 {
-   EditCurvesDialog d(mUIParent, this, mCurve->GetSelection());
+   EditCurvesDialog d(mUIParent, this);
    d.ShowModal();
 
    // Reload the curve names
@@ -3357,8 +3355,9 @@ BEGIN_EVENT_TABLE(EditCurvesDialog, wxDialogWrapper)
                           EditCurvesDialog::OnListSelectionChange)
 END_EVENT_TABLE()
 
-EditCurvesDialog::EditCurvesDialog(wxWindow * parent, EffectEqualization * effect, int position):
-wxDialogWrapper(parent, wxID_ANY, XO("Manage Curves List"),
+EditCurvesDialog::EditCurvesDialog(
+   wxWindow * parent, EffectEqualization * effect)
+   : wxDialogWrapper(parent, wxID_ANY, XO("Manage Curves List"),
          wxDefaultPosition, wxDefaultSize,
          wxDEFAULT_DIALOG_STYLE | wxRESIZE_BORDER)
 {
@@ -3366,7 +3365,6 @@ wxDialogWrapper(parent, wxID_ANY, XO("Manage Curves List"),
    SetName(XO("Manage Curves List"));     // Provide audible label
    mParent = parent;
    mEffect = effect;
-   mPosition = position;
    // make a copy of mEffect->mCurves here to muck about with.
    mEditCurves = mEffect->mCurves;
 
@@ -3419,7 +3417,9 @@ void EditCurvesDialog::PopulateOrExchange(ShuttleGui & S)
    S.StartStatic(XO("Help"));
    S.AddConstTextBox( {}, XO("Rename 'unnamed' to save a new entry.\n'OK' saves all changes, 'Cancel' doesn't."));
    S.EndStatic();
-   PopulateList(mPosition);
+
+   PopulateList( mEffect->findCurve( mEffect->mCurveName ) );
+
    Fit();
 
    return;

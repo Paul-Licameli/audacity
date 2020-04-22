@@ -165,6 +165,7 @@ private:
    // Merge NEW curves only or update all factory presets.
    void UpdateDefaultCurves( bool updateAll = false);
    void Select(int sel);
+   size_t findCurve(const wxString &curveName);
    void setCurve(int currentCurve);
    void setCurve(const wxString &curveName);
    bool GetDefaultFileName(wxFileName &fileName);
@@ -355,7 +356,7 @@ private:
 class EditCurvesDialog final : public wxDialogWrapper
 {
 public:
-   EditCurvesDialog(wxWindow * parent, EffectEqualization * effect, int position);
+   EditCurvesDialog(wxWindow * parent, EffectEqualization * effect);
    ~EditCurvesDialog();
 
 private:
@@ -377,7 +378,6 @@ private:
    EQCurveArray mEditCurves;   // Copy of curves to muck about with
    wxWindow *mParent; // the parent EQ Dialog
    EffectEqualization *mEffect;   // the parent EQ effect
-   int mPosition; // position of current curve in list
    void Populate();
    void PopulateOrExchange(ShuttleGui &S);
    void PopulateList(int position);
