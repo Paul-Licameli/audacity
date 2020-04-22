@@ -71,13 +71,17 @@ public:
 class EQCurve
 {
 public:
-   EQCurve( const wxString & name = {} ) { Name = name; }
-   EQCurve( const wxChar * name ) { Name = name; }
+   explicit EQCurve( const wxString & name = {} ) { Name = name; }
+   explicit EQCurve( const wxChar * name ) { Name = name; }
 
    bool operator < (const EQCurve &that) const
    {
       return Name.CmpNoCase(that.Name) < 0;
    }
+
+   operator const wxString& () const { return Name; }
+   bool operator == ( const EQCurve &other ) const
+      { return Name == other.Name; }
 
    wxString Name;
    std::vector<EQPoint> points;
@@ -163,7 +167,6 @@ private:
    void Select(int sel);
    void setCurve(int currentCurve);
    void setCurve(const wxString &curveName);
-   void setCurve(void);
    bool GetDefaultFileName(wxFileName &fileName);
    
    // XMLTagHandler callback methods for loading and saving
