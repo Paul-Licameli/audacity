@@ -59,15 +59,6 @@ struct ExposedFormat
    bool compiledIn;           //!< support for this codec/format is compiled in (checked at runtime)
 };
 
-
-/// Describes format-codec compatibility
-struct CompatibilityEntry
-{
-   const wxChar *fmt; //!< format, recognizable by guess_format()
-   AVCodecID codec;   //!< codec ID
-};
-
-
 /// AC3 export options dialog
 class ExportFFmpegAC3Options final : public wxPanelWrapper
 {
@@ -192,15 +183,6 @@ private:
    DECLARE_EVENT_TABLE()
 };
 
-/// Entry for the Applicability table
-struct ApplicableFor
-{
-   bool                 enable;  //!< true if this control should be enabled, false otherwise
-   int                  control; //!< control ID
-   AVCodecID            codec;   //!< Codec ID
-   const char          *format;  //!< Format short name
-};
-
 class FFmpegPresets;
 
 /// Custom FFmpeg export dialog
@@ -228,17 +210,13 @@ public:
 
 
    // Static tables
-   static CompatibilityEntry CompatibilityList[];
    static ExposedFormat fmts[];
    static const int iAACSampleRates[];
-   static ApplicableFor apptable[];
 
 private:
 
    wxArrayString mShownFormatNames;
-   wxArrayString mShownFormatLongNames;
    wxArrayString mShownCodecNames;
-   wxArrayString mShownCodecLongNames;
    wxArrayStringEx mFormatNames;
    wxArrayString mFormatLongNames;
    wxArrayStringEx mCodecNames;
@@ -259,11 +237,8 @@ private:
 
    wxArrayStringEx mPresetNames;
 
-   /// Finds the format currently selected and returns its name and description
-   void FindSelectedFormat(wxString **name, wxString **longname);
-
-   /// Finds the codec currently selected and returns its name and description
-   void FindSelectedCodec(wxString **name, wxString **longname);
+   int FindSelectedFormat();
+   int FindSelectedCodec();
 
    /// Retrieves format list from libavformat
    void FetchFormatList();

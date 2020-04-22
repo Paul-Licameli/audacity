@@ -27,6 +27,7 @@
 #include <wx/wx.h>
 #include <wx/ffile.h>
 #include <wx/checkbox.h>
+#include <wx/radiobut.h>
 #include <wx/stattext.h>
 
 #include "sndfile.h"
