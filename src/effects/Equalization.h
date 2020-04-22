@@ -162,7 +162,6 @@ private:
    void SaveCurves(const wxString &fileName = {});
    // Merge NEW curves only or update all factory presets.
    void UpdateDefaultCurves( bool updateAll = false);
-   void Select(int sel);
    size_t findCurve(const wxString &curveName);
    void setCurve(int currentCurve);
    void setCurve(const wxString &curveName);
@@ -193,7 +192,7 @@ private:
    void OnSliderM( wxCommandEvent & event );
    void OnSliderDBMAX( wxCommandEvent & event );
    void OnSliderDBMIN( wxCommandEvent & event );
-   void OnCurve( wxCommandEvent & event );
+   void OnCurve();
    void OnManage();
    void OnInvert();
    void OnGridOnOff();
@@ -258,7 +257,7 @@ private:
    EqualizationPanel *mPanel;
    //wxPanel *mGraphicPanel;
 
-   wxChoice *mCurve;
+   int mUpdatedCurves;
    wxButton *mManage;
    wxStaticText *mMText;
    wxSlider *mMSlider;

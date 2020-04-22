@@ -116,7 +116,6 @@ enum
    ID_dBMax,
    ID_dBMin,
    ID_Mode,
-   ID_Curve,
    ID_Delete,
    ID_Slider,   // needs to come last
 };
@@ -202,7 +201,6 @@ BEGIN_EVENT_TABLE(EffectEqualization, wxEvtHandler)
                      ID_Slider + NUMBER_OF_BANDS - 1,
                      wxEVT_COMMAND_SLIDER_UPDATED,
                      EffectEqualization::OnSlider)
-   EVT_CHOICE( ID_Curve, EffectEqualization::OnCurve )
 END_EVENT_TABLE()
 
 EffectEqualization::EffectEqualization(int Options)
@@ -211,7 +209,6 @@ EffectEqualization::EffectEqualization(int Options)
    , mFilterFuncI{ windowSize }
 {
    mOptions = Options;
-   mCurve = NULL;
    mPanel = NULL;
    mMSlider = NULL;
 
@@ -365,6 +362,8 @@ bool EffectEqualization::DefineParams( ShuttleParams & S ){
          mCurves[0].points.push_back( EQPoint( f,d ));
       }
       setCurve( 0 );
+      if ( mUIParent )
+         mUIParent->TransferDataToWindow();
    }
 
    return true;
@@ -530,7 +529,9 @@ bool EffectEqualization::ValidateUI()
             j--;
          }
       }
-      Select((int) mCurves.size() - 1);
+      mCurveName = mCurves.back();
+      if( mUIParent )
+         mUIParent->TransferDataToWindow();
    }
    SaveCurves();
 
@@ -616,6 +617,7 @@ bool EffectEqualization::Startup()
 
 bool EffectEqualization::Init()
 {
+   mUpdatedCurves = 0;
    int selcount = 0;
    double rate = 0.0;
 
@@ -708,7 +710,6 @@ bool EffectEqualization::Process()
 
 bool EffectEqualization::CloseUI()
 {
-   mCurve = NULL;
    mPanel = NULL;
 
    return Effect::CloseUI();
@@ -1049,17 +1050,16 @@ void EffectEqualization::PopulateOrExchange(ShuttleGui & S)
             {
                S.StartHorizontalLay(wxALIGN_LEFT | wxALIGN_CENTER_VERTICAL, 1);
                {
-                  mCurve =
                   S
-                     .Id(ID_Curve)
                      .Text(XO("Select Curve"))
-                     .AddChoice( {},
-                        [this]{
-                           TranslatableStrings curves;
-                           for (const auto &curve : mCurves)
-                              curves.push_back( Verbatim( curve.Name ) );
-                           return curves;
-                        }() );
+                     .MinSize({-1, -1})
+                     .Target( Choice( mCurveName, Verbatim( Recompute(
+                        // Recompute choices whenever mUpdatedCurves is bumped
+                        [this](int) { return
+                           Identifiers( mCurves.begin(), mCurves.end() ); },
+                        mUpdatedCurves ) ) ) )
+                     .Action( [this]{ OnCurve(); } )
+                     .AddChoice( {} );
                }
                S.EndHorizontalLay();
             }
@@ -1219,7 +1219,7 @@ bool EffectEqualization::TransferDataToWindow()
    mdBMax = 0;                    // force refresh in TransferDataFromWindow()
 
    // Reload the curve names
-   UpdateCurves();
+   // UpdateCurves();
 
    // Override draw mode, if we're not displaying the radio buttons.
    if( mOptions == kEqOptionCurve)
@@ -1900,7 +1900,7 @@ void EffectEqualization::setCurve(int currentCurve)
 {
    // Set current choice
    wxASSERT( currentCurve < (int) mCurves.size() );
-   Select(currentCurve);
+   mCurveName = mCurves[ currentCurve ];
 
    Envelope *env;
    int numPoints = (int) mCurves[currentCurve].points.size();
@@ -2080,19 +2080,6 @@ void EffectEqualization::setCurve(const wxString &curveName)
 }
 
 //
-// Set NEW curve selection (safe to call outside of the UI)
-//
-void EffectEqualization::Select( int curve )
-{
-   // Set current choice
-   if (mCurve)
-   {
-      mCurve->SetSelection( curve );
-      mCurveName = mCurves[ curve ].Name;
-   }
-}
-
-//
 // Tell panel to recalc (safe to call outside of UI)
 //
 void EffectEqualization::ForceRecalc()
@@ -2162,7 +2149,7 @@ void EffectEqualization::EnvelopeUpdated(Envelope *env, bool lin)
    mDirty = true;
 
    // set 'unnamed' as the selected curve
-   Select( (int) mCurves.size() - 1 );
+   mCurveName = mCurves.back();
 }
 
 //
@@ -2373,22 +2360,12 @@ void EffectEqualization::WriteXML(XMLWriter &xmlFile) const
 
 void EffectEqualization::UpdateCurves()
 {
-
-   // Reload the curve names
-   if( mCurve ) 
-      mCurve->Clear();
-   for (size_t i = 0, cnt = mCurves.size(); i < cnt; i++)
-      if( mCurve )
-         mCurve->Append(mCurves[ i ].Name);
+   ++mUpdatedCurves;
 
    // In rare circumstances, mCurveName may not exist (bug 1891)
    if (findCurve( mCurveName ) == mCurves.size())
       mCurveName = mCurves.back();
    
-   // Allow the control to resize
-   if( mCurve ) 
-      mCurve->SetMinSize({-1, -1});
-
    // Set initial curve
    setCurve( mCurveName );
 }
@@ -2652,7 +2629,7 @@ void EffectEqualization::ErrMin(void)
    }
    if( error > .0025 * mBandsInUse ) // not within 0.05dB on each slider, on average
    {
-      Select( (int) mCurves.size() - 1 );
+      mCurveName = mCurves.back();
       EnvelopeUpdated(&testEnvelope, false);
    }
 }
@@ -2918,11 +2895,9 @@ void EffectEqualization::OnSliderDBMAX(wxCommandEvent & WXUNUSED(event))
 //
 // New curve was selected
 //
-void EffectEqualization::OnCurve(wxCommandEvent & WXUNUSED(event))
+void EffectEqualization::OnCurve()
 {
-   // Select NEW curve
-   wxASSERT( mCurve != NULL );
-   setCurve( mCurve->GetCurrentSelection() );
+   setCurve( mCurveName );
    if( !mDrawMode )
       UpdateGraphic();
 }
@@ -3326,6 +3301,7 @@ void EqualizationPanel::OnMouseEvent(wxMouseEvent & event)
       mEffect->mdBMin, mEffect->mdBMax))
    {
       mEffect->EnvelopeUpdated();
+      mEffect->mUIParent->TransferDataToWindow();
       ForceRecalc();
    }
 
