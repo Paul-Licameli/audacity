@@ -113,6 +113,7 @@ for registering for changes.
 #include <wx/bmpbuttn.h>
 #include "../include/audacity/ComponentInterface.h"
 #include "widgets/ReadOnlyText.h"
+#include "widgets/valnum.h"
 #include "widgets/wxPanelWrapper.h"
 #include "widgets/wxTextCtrlWrapper.h"
 #include "AllThemeResources.h"
@@ -339,17 +340,22 @@ IntValidator::IntValidator(
    const std::shared_ptr< ValidationState > &pValidationState,
    const std::shared_ptr< AdaptorType > &pAdaptor,
    NumValidatorStyle style, int min, int max)
-   : IntegerValidator< int >{ &mTemp, style, min, max }
-   , AdaptingValidatorBase< int >{ pValidationState, pAdaptor }
+   : AdaptingValidatorBase< int >{ pValidationState, pAdaptor }
+   , mDelegate{ std::make_unique< IntegerValidator< int > >(
+      &mTemp, style, min, max ) }
 {}
 
 IntValidator::IntValidator( const IntValidator &other )
+   : AdaptingValidatorBase< int >{ other }
+{
    // Make a "deep copy" so that the base class refers to its own temporary
    // in mTemp, not to other.mTemp
-   : IntegerValidator< int >(
-      &mTemp, other.GetStyle(), other.GetMin(), other.GetMax() )
-   , AdaptingValidatorBase< int >{ other }
-{}
+   auto otherDelegate =
+      static_cast< IntegerValidator< int >* >( other.mDelegate.get() );
+   mDelegate = std::make_unique< IntegerValidator< int > >(
+      &mTemp, otherDelegate->GetStyle(),
+      otherDelegate->GetMin(), otherDelegate->GetMax() );
+}
 
 IntValidator::~IntValidator() = default;
 
@@ -358,12 +364,17 @@ wxObject *IntValidator::Clone() const
    return safenew IntValidator{ *this };
 }
 
+bool IntValidator::TryBefore(wxEvent& event)
+{
+   return mDelegate->ProcessEventLocally( event );
+}
+
 bool IntValidator::Validate( wxWindow *pWindow )
 {
    if ( dynamic_cast<wxTextCtrl*>( pWindow ) ||
         dynamic_cast<wxComboBox*>( pWindow ) ) {
       return mpAdaptor->Get( mTemp ) &&
-         IntegerValidator< int >::Validate( pWindow );
+         mDelegate->Validate( pWindow );
    }
    return true;
 }
@@ -373,7 +384,7 @@ bool IntValidator::TransferFromWindow()
    auto pWindow = GetWindow();
    if ( dynamic_cast<wxTextCtrl*>( pWindow ) ||
         dynamic_cast<wxComboBox*>( pWindow ) )
-      return mSlot = IntegerValidator< int >::TransferFromWindow() &&
+      return mSlot = mDelegate->TransferFromWindow() &&
          mpAdaptor->Set( mTemp );
    else if ( auto pCtrl = dynamic_cast<wxItemContainer*>( pWindow ) )
       // This case covers wxListBox and wxChoice
@@ -408,14 +419,14 @@ bool IntValidator::TransferToWindow()
       if ( !mpAdaptor->Get( mTemp ) )
          return false;
       if ( dynamic_cast<wxComboBox*>( pWindow ) )
-         return IntegerValidator< int >::TransferToWindow();
+         return mDelegate->TransferToWindow();
       else
          return ( pCtrl->SetSelection( mTemp ), true );
    }
    else if ( dynamic_cast<wxTextCtrl*>( pWindow ) ||
         dynamic_cast<wxComboBox*>( pWindow ) )
       return mpAdaptor->Get( mTemp ) &&
-         IntegerValidator< int >::TransferToWindow();
+         mDelegate->TransferToWindow();
    else if ( auto pCtrl = dynamic_cast<wxSlider*>( GetWindow() ) )
       return mpAdaptor->Get( mTemp ) &&
          ( pCtrl->SetValue( mTemp ), true );
@@ -486,19 +497,23 @@ DoubleValidator::DoubleValidator(
    const std::shared_ptr< ValidationState > &pValidationState,
    const std::shared_ptr< AdaptorType > &pAdaptor,
    NumValidatorStyle style, int precision, double min, double max )
-   : FloatingPointValidator< double >{ precision, &mTemp, style, min, max }
-   , AdaptingValidatorBase<double>{ pValidationState, pAdaptor }
+   : AdaptingValidatorBase<double>{ pValidationState, pAdaptor }
+   , mDelegate{ std::make_unique< FloatingPointValidator< double > >(
+      precision, &mTemp, style, min, max ) }
 {}
 
 DoubleValidator::DoubleValidator( const DoubleValidator &other )
+   : AdaptingValidatorBase<double>{ other }
+   , mExactValue{ other.mExactValue }
+{
    // Make a "deep copy" so that the base class refers to its own temporary
    // in mTemp, not to other.mTemp
-   : FloatingPointValidator< double >(
-      other.GetPrecision(), &mTemp,
-      other.GetStyle(), other.GetMin(), other.GetMax() )
-   , AdaptingValidatorBase<double>{ other }
-   , mExactValue{ other.mExactValue }
-{}
+   auto otherDelegate =
+      static_cast< FloatingPointValidator< double >* >( other.mDelegate.get() );
+   mDelegate = std::make_unique< FloatingPointValidator< double > >(
+      otherDelegate->GetPrecision(), &mTemp, otherDelegate->GetStyle(),
+      otherDelegate->GetMin(), otherDelegate->GetMax() );
+}
 
 DoubleValidator::~DoubleValidator() = default;
 
@@ -507,12 +522,17 @@ wxObject *DoubleValidator::Clone() const
    return safenew DoubleValidator{ *this };
 }
 
+bool DoubleValidator::TryBefore(wxEvent& event)
+{
+   return mDelegate->ProcessEventLocally( event );
+}
+
 bool DoubleValidator::Validate( wxWindow *pWindow )
 {
    if ( ( dynamic_cast<wxTextCtrl*>( pWindow ) ||
           dynamic_cast<wxComboBox*>( pWindow ) ) )
       return mpAdaptor->Get( mTemp ) &&
-         FloatingPointValidator< double >::Validate( pWindow );
+         mDelegate->Validate( pWindow );
    return true;
 }
 
@@ -521,9 +541,12 @@ bool DoubleValidator::TransferFromWindow()
    auto pWindow = GetWindow();
    if ( ( dynamic_cast<wxTextCtrl*>( pWindow ) ||
           dynamic_cast<wxComboBox*>( pWindow ) ) ) {
-      if ( !FloatingPointValidator<double>::TransferFromWindow() )
+      auto pDelegate =
+         static_cast< FloatingPointValidator< double >* >( mDelegate.get() );
+      if ( !pDelegate->TransferFromWindow() )
          return mSlot = false;
-      if ( NormalizeValue( mExactValue ) == GetTextEntry()->GetValue() )
+      if ( pDelegate->NormalizeValue( mExactValue ) ==
+             pDelegate->GetTextEntry()->GetValue() )
          // Window hasn't changed since we transferred to it
          // Use the last stored value rather than suffer precision loss
          // converting back from text
@@ -545,7 +568,7 @@ bool DoubleValidator::TransferToWindow()
       if ( !mpAdaptor->Get( mTemp ) )
          return false;
       mExactValue = mTemp;
-      return FloatingPointValidator<double>::TransferToWindow();
+      return mDelegate->TransferToWindow();
    }
    else if ( auto pCtrl = dynamic_cast<wxSlider*>( GetWindow() ) ) {
       if ( !mpAdaptor->Get( mTemp ) )

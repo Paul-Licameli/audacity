@@ -23,6 +23,8 @@
 
 #include <limits>
 
+#ifndef __AUDACITY_NUM_VALIDATOR_STYLE__
+#define __AUDACITY_NUM_VALIDATOR_STYLE__
 // Bit masks used for numeric validator styles.
 enum class NumValidatorStyle : int
 {
@@ -41,6 +43,11 @@ inline NumValidatorStyle operator | (NumValidatorStyle x, NumValidatorStyle y)
 inline int operator & (NumValidatorStyle x, NumValidatorStyle y)
 { return int(x) & int(y); }
 
+// Sometimes useful for specifying max and min values for validators, when they
+// must have the same precision as the validated value
+double RoundValue(int precision, double value);
+#endif
+
 // ----------------------------------------------------------------------------
 // Base class for all numeric validators.
 // ----------------------------------------------------------------------------
@@ -56,6 +63,11 @@ public:
     bool Validate(wxWindow * parent) override;
 
    NumValidatorStyle GetStyle() const { return m_style; }
+
+    // Get the text entry of the associated control. Normally shouldn't ever
+    // return NULL (and will assert if it does return it) but the caller should
+    // still test the return value for safety.
+    wxTextEntry *GetTextEntry() const;
 
 protected:
     NumValidatorBase(NumValidatorStyle style)
@@ -76,11 +88,6 @@ protected:
     {
         return (m_style & style) != 0;
     }
-
-    // Get the text entry of the associated control. Normally shouldn't ever
-    // return NULL (and will assert if it does return it) but the caller should
-    // still test the return value for safety.
-    wxTextEntry *GetTextEntry() const;
 
     // Convert NumValidatorStyle::THOUSANDS_SEPARATOR and NumValidatorStyle::NO_TRAILING_ZEROES
     // bits of our style to the corresponding NumberFormatter::Style values.
@@ -249,7 +256,7 @@ protected:
                                                     : wxString();
     }
 
-protected:
+public:
     // Just a helper which is a common part of TransferToWindow() and
     // NormalizeString(): returns string representation of a number honouring
     // NumValidatorStyle::ZERO_AS_BLANK flag.
@@ -263,6 +270,7 @@ protected:
     }
 
 
+protected:
     ValueType * const m_value;
 
     DECLARE_NO_ASSIGN_CLASS(NumValidator)
@@ -520,10 +528,6 @@ MakeFloatingPointValidator(int precision, T *value, NumValidatorStyle style = Nu
 {
     return FloatingPointValidator<T>(precision, value, style);
 }
-
-// Sometimes useful for specifying max and min values for validators, when they
-// must have the same precision as the validated value
-AUDACITY_DLL_API double RoundValue(int precision, double value);
 
 #endif // wxUSE_VALIDATORS
 
