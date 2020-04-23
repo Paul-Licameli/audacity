@@ -98,6 +98,7 @@
 #include "ImageRoll.h"
 
 #include <wx/bitmap.h>
+#include <wx/dcclient.h>
 #include <wx/dcmemory.h>
 #include <wx/dcclient.h>
 

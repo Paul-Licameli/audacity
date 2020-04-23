@@ -188,6 +188,7 @@ different formats.
 #include <wx/stattext.h>
 #include <wx/tooltip.h>
 #include <wx/toplevel.h>
+#include <wx/wxcrtvararg.h>
 
 #if wxUSE_ACCESSIBILITY
 #include "WindowAccessible.h"

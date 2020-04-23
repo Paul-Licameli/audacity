@@ -119,6 +119,19 @@ for registering for changes.
 #include "widgets/wxTextCtrlWrapper.h"
 #include "AllThemeResources.h"
 
+#include <wx/checkbox.h>
+#include <wx/choice.h>
+#include <wx/combobox.h>
+#include <wx/dcclient.h>
+#include <wx/frame.h>
+#include <wx/listbox.h>
+#include <wx/menu.h>
+#include <wx/radiobut.h>
+#include <wx/settings.h>
+#include <wx/sizer.h>
+#include <wx/statbox.h>
+#include <wx/valtext.h>
+
 #if wxUSE_ACCESSIBILITY
 #include "widgets/WindowAccessible.h"
 #endif
