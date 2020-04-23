@@ -28,8 +28,6 @@
 #include <wx/wxcrtvararg.h>
 #include <wx/button.h>
 #include <wx/calctrl.h>
-#include <wx/checkbox.h>
-#include <wx/choice.h>
 #include <wx/defs.h>
 #include <wx/dir.h>
 #include <wx/datectrl.h>
@@ -64,8 +62,6 @@ enum { // control IDs
    ID_TIMETEXT_DURATION,
    ID_AUTOSAVEPATH_TEXT,
    ID_AUTOEXPORTPATH_TEXT,
-   ID_AUTOSAVE_CHECKBOX,
-   ID_AUTOEXPORT_CHECKBOX
 };
 
 // The slow timer interval is used to update the start and end times, which only show
@@ -127,9 +123,6 @@ BEGIN_EVENT_TABLE(TimerRecordDialog, wxDialogWrapper)
    EVT_TEXT(ID_TIMETEXT_DURATION, TimerRecordDialog::OnTimeText_Duration)
 
    EVT_TIMER(TIMER_ID, TimerRecordDialog::OnTimer)
-
-   EVT_CHECKBOX(ID_AUTOSAVE_CHECKBOX, TimerRecordDialog::OnAutoSaveCheckBox_Change)
-   EVT_CHECKBOX(ID_AUTOEXPORT_CHECKBOX, TimerRecordDialog::OnAutoExportCheckBox_Change)
 
 END_EVENT_TABLE()
 
@@ -342,14 +335,6 @@ void TimerRecordDialog::OnAutoExportPathButton_Click()
    }
 }
 
-void TimerRecordDialog::OnAutoSaveCheckBox_Change(wxCommandEvent& WXUNUSED(event)) {
-   EnableDisableAutoControls();
-}
-
-void TimerRecordDialog::OnAutoExportCheckBox_Change(wxCommandEvent& WXUNUSED(event)) {
-   EnableDisableAutoControls();
-}
-
 void TimerRecordDialog::OnHelpButtonClick()
 {
    HelpSystem::ShowHelp(this, L"Timer_Record", true);
@@ -369,7 +354,7 @@ void TimerRecordDialog::OnOK()
 
    // Validate that we have a Save and/or Export path setup if the appropriate check box is ticked
    wxString sTemp = m_fnAutoSaveFile.GetFullPath();
-   if (m_pTimerAutoSaveCheckBoxCtrl->IsChecked()) {
+   if ( AutoSave.Read() ) {
       if (!m_fnAutoSaveFile.IsOk() || m_fnAutoSaveFile.IsDir()) {
          AudacityMessageBox(
             XO("Automatic Save path is invalid."),
@@ -378,7 +363,7 @@ void TimerRecordDialog::OnOK()
          return;
       }
    }
-   if (m_pTimerAutoExportCheckBoxCtrl->IsChecked()) {
+   if ( AutoExport.Read() ) {
       if (!m_fnAutoExportFile.IsOk() || m_fnAutoExportFile.IsDir()) {
          AudacityMessageBox(
             XO("Automatic Export path is invalid."),
@@ -435,10 +420,10 @@ void TimerRecordDialog::OnOK()
 }
 
 void TimerRecordDialog::EnableDisableAutoControls() {
-   if (m_pTimerAutoSaveCheckBoxCtrl->GetValue() || m_pTimerAutoExportCheckBoxCtrl->GetValue()) {
-   } else {
-      m_pTimerAfterCompleteChoiceCtrl->SetSelection(POST_TIMER_RECORD_NOTHING);
-   }
+   if ( AutoSave.Read() || AutoExport.Read() )
+      ;
+   else
+      PostAction.Write( POST_TIMER_RECORD_NOTHING );
 }
 
 void TimerRecordDialog::UpdateTextBoxControls() {
@@ -451,6 +436,16 @@ void TimerRecordDialog::UpdateTextBoxControls() {
       m_pTimerSavePathTextCtrl->SetValue(_("Current Project"));
    }
 }
+
+// In correspondence with nonnegative values of PostTimerRecordAction
+static const TranslatableStrings sChoices{
+   XO("Do nothing") ,
+   XO("Exit Audacity") ,
+#ifdef __WINDOWS__
+   XO("Restart system") ,
+   XO("Shutdown system") ,
+#endif
+};
 
 /// Runs the wait for start dialog.  Returns -1 if the user clicks stop while we are recording
 /// or if the post recording actions fail.
@@ -469,8 +464,7 @@ int TimerRecordDialog::RunWaitDialog()
       ProjectAudioManager::Get( mProject ).OnRecord(false);
       bool bIsRecording = true;
 
-      auto sPostAction = Verbatim(
-         m_pTimerAfterCompleteChoiceCtrl->GetStringSelection() );
+      auto sPostAction = sChoices[ PostAction.Read() ];
 
       // Two column layout.
       TimerProgressDialog::MessageTable columns{
@@ -537,7 +531,7 @@ int TimerRecordDialog::ExecutePostRecordActions(bool bWasStopped) {
 
    bool bSaveOK = false;
    bool bExportOK = false;
-   int iPostRecordAction = m_pTimerAfterCompleteChoiceCtrl->GetSelection();
+   int iPostRecordAction = PostAction.Read();
    int iOverriddenAction = iPostRecordAction;
    bool bErrorOverride = false;
 
@@ -598,7 +592,7 @@ int TimerRecordDialog::ExecutePostRecordActions(bool bWasStopped) {
             // Inform the user that we have overridden the selected action
             sMessage = XO("%s\n\n'%s' has been canceled due to the error(s) noted above.").Format(
                             sMessage,
-                            m_pTimerAfterCompleteChoiceCtrl->GetString(iOverriddenAction));
+                            sChoices[ iOverriddenAction ]);
          }
 
          // Show Error Message Box
@@ -611,7 +605,7 @@ int TimerRecordDialog::ExecutePostRecordActions(bool bWasStopped) {
          if (bWasStopped && (iOverriddenAction != POST_TIMER_RECORD_NOTHING)) {
             sMessage = XO("%s\n\n'%s' has been canceled as the recording was stopped.").Format(
                             sMessage,
-                            m_pTimerAfterCompleteChoiceCtrl->GetString(iOverriddenAction));
+                            sChoices[ iOverriddenAction ]);
          }
 
          AudacityMessageBox(
@@ -712,16 +706,10 @@ wxTextCtrlWrapper * TimerRecordDialog::NewPathControl(
 
 void TimerRecordDialog::PopulateOrExchange(ShuttleGui& S)
 {
-   const auto saveEnabler = [this]{ return m_pTimerAutoSaveCheckBoxCtrl &&
-      m_pTimerAutoSaveCheckBoxCtrl->GetValue(); };
-   const auto exportEnabler = [this]{ return m_pTimerAutoExportCheckBoxCtrl &&
-      m_pTimerAutoExportCheckBoxCtrl->GetValue(); };
+   const auto saveEnabler = [this]{ return AutoSave.Read(); };
+   const auto exportEnabler = [this]{ return AutoExport.Read(); };
    const auto eitherEnabler = [saveEnabler, exportEnabler]{ return
       saveEnabler() || exportEnabler(); };
-
-   bool bAutoSave = AutoSave.Read();
-   bool bAutoExport = AutoExport.Read();
-   int iPostTimerRecordAction = PostAction.Read();
 
    S.SetBorder(5);
    using Options = NumericTextCtrl::Options;
@@ -730,6 +718,7 @@ void TimerRecordDialog::PopulateOrExchange(ShuttleGui& S)
    /* i18n-hint a format string for days, hours, minutes, and seconds */
    auto strFormat1 = XO("099 days 024 h 060 m 060 s");
 
+   using namespace DialogDefinition;
    S.StartMultiColumn(2, wxCENTER);
    {
       S.StartVerticalLay(true);
@@ -833,10 +822,9 @@ void TimerRecordDialog::PopulateOrExchange(ShuttleGui& S)
             .StartStatic(XO("Automatic Save"), true);
          {
             // If checked, the project will be saved when the recording is completed
-            m_pTimerAutoSaveCheckBoxCtrl =
             S
-               .Id(ID_AUTOSAVE_CHECKBOX)
-               .AddCheckBox(XXO("Enable &Automatic Save?"), bAutoSave);
+               .Action( [this]{ EnableDisableAutoControls(); } )
+               .AddCheckBox(XXO("Enable &Automatic Save?") );
             S.StartMultiColumn(3, wxEXPAND);
             {
                TranslatableString sInitialValue;
@@ -871,10 +859,9 @@ void TimerRecordDialog::PopulateOrExchange(ShuttleGui& S)
          S
             .StartStatic(XO("Automatic Export"), true);
          {
-            m_pTimerAutoExportCheckBoxCtrl =
             S
-               .Id(ID_AUTOEXPORT_CHECKBOX)
-               .AddCheckBox(XXO("Enable Automatic &Export?"), bAutoExport);
+               .Action( [this]{ EnableDisableAutoControls(); } )
+               .AddCheckBox(XXO("Enable Automatic &Export?") );
 
             S.StartMultiColumn(3, wxEXPAND);
             {
@@ -908,19 +895,10 @@ void TimerRecordDialog::PopulateOrExchange(ShuttleGui& S)
             {
                S.SetStretchyCol( 0 );
 
-               m_pTimerAfterCompleteChoiceCtrl =
                S
                   .Enable( eitherEnabler )
-                  .AddChoice(XXO("After Recording completes:"),
-                     {
-                        XO("Do nothing") ,
-                        XO("Exit Audacity") ,
-#ifdef __WINDOWS__
-                        XO("Restart system") ,
-                        XO("Shutdown system") ,
-#endif
-                     },
-                     iPostTimerRecordAction );
+                  .Target( NumberChoice( PostAction, sChoices ) )
+                  .AddChoice(XXO("After Recording completes:") );
             }
             S.EndMultiColumn();
          }
@@ -975,18 +953,6 @@ bool TimerRecordDialog::TransferDataFromWindow()
 
    m_TimeSpan_Duration = m_DateTime_End - m_DateTime_Start;
 
-   // Pull the settings from the auto save/export controls and write to the pref file
-   m_bAutoSaveEnabled = m_pTimerAutoSaveCheckBoxCtrl->GetValue();
-   m_bAutoExportEnabled = m_pTimerAutoExportCheckBoxCtrl->GetValue();
-
-   // MY: Obtain the index from the choice control so we can save to the prefs file
-   int iPostRecordAction = m_pTimerAfterCompleteChoiceCtrl->GetSelection();
-
-   // Save the options back to the prefs file
-   AutoSave.Write( m_bAutoSaveEnabled );
-   AutoExport.Write( m_bAutoExportEnabled );
-   PostAction.Write( iPostRecordAction );
-
    return result;
 }
 
@@ -1019,8 +985,7 @@ void TimerRecordDialog::UpdateEnd()
 ProgressResult TimerRecordDialog::WaitForStart()
 {
    // MY: The Waiting For Start dialog now shows what actions will occur after recording has completed
-   auto sPostAction = Verbatim(
-         m_pTimerAfterCompleteChoiceCtrl->GetStringSelection() );
+   auto sPostAction = sChoices[ PostAction.Read() ];
 
    // Two column layout.
    TimerProgressDialog::MessageTable columns{
@@ -1067,8 +1032,7 @@ ProgressResult TimerRecordDialog::WaitForStart()
 
 ProgressResult TimerRecordDialog::PreActionDelay(int iActionIndex, TimerRecordCompletedActions eCompletedActions)
 {
-   auto sAction = Verbatim( m_pTimerAfterCompleteChoiceCtrl
-      ->GetString(iActionIndex) );
+   auto sAction = sChoices[ iActionIndex ];
 
    /* i18n-hint: %s is one of "Do nothing", "Exit Audacity", "Restart system",
       or "Shutdown system", and

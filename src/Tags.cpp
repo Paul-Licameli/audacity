@@ -50,7 +50,6 @@
 #include "widgets/HelpSystem.h"
 #include "xml/XMLFileReader.h"
 
-#include <wx/choice.h>
 #include <wx/filename.h>
 #include <wx/listctrl.h>
 #include <wx/notebook.h>

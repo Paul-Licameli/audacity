@@ -343,7 +343,6 @@ bool EffectManager::HasPresets(const PluginID & ID)
           effect->HasFactoryDefaults();
 }
 
-#include <wx/choice.h>
 #include "../ShuttleGui.h"
 
 namespace {

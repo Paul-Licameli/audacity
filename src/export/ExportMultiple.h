@@ -18,7 +18,6 @@
 
 class wxButton;
 class wxCheckBox;
-class wxChoice;
 class wxListEvent;
 class wxSimplebook;
 class wxStaticText;

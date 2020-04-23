@@ -21,7 +21,6 @@
 
 class wxButton;
 class wxCheckBox;
-class wxChoice;
 class wxWindow;
 
 #include "audacity/ConfigInterface.h"

@@ -19,7 +19,6 @@ of languages for Audacity.
 #include "LangChoice.h"
 
 #include <wx/defs.h>
-#include <wx/choice.h>
 #include <wx/stattext.h>
 
 #include "Languages.h"
@@ -33,13 +32,12 @@ public:
                     wxWindowID id,
                     const TranslatableString & title);
 
-   Identifier GetLang() { return mLang; }
+   Identifier GetLang() { return mLangCodes[ mLang ]; }
 
 private:
    void OnOk();
 
-   wxChoice *mChoice;
-   Identifier mLang;
+   int mLang = 0;
 
    int mNumLangs;
    Identifiers mLangCodes;
@@ -65,10 +63,12 @@ LangChoiceDialog::LangChoiceDialog(wxWindow * parent,
                                    const TranslatableString & title):
    wxDialogWrapper(parent, id, title)
 {
+   using namespace DialogDefinition;
+
    SetName();
    const auto &paths = FileNames::AudacityPathList();
    Languages::GetLanguages(paths, mLangCodes, mLangNames);
-   int lang = make_iterator_range( mLangCodes )
+   mLang = make_iterator_range( mLangCodes )
       .index( Languages::GetSystemLanguageCode(paths) );
 
    ShuttleGui S(this, eIsCreating);
@@ -79,11 +79,9 @@ LangChoiceDialog::LangChoiceDialog(wxWindow * parent,
       {
          S.SetBorder(15);
 
-         mChoice =
          S
-            .AddChoice(XXO("Choose Language for Audacity to use:"),
-               mLangNames,
-               lang);
+            .Target( NumberChoice( mLang, mLangNames ) )
+            .AddChoice(XXO("Choose Language for Audacity to use:") );
       }
       S.EndVerticalLay();
 
@@ -101,10 +99,7 @@ LangChoiceDialog::LangChoiceDialog(wxWindow * parent,
 
 void LangChoiceDialog::OnOk()
 {
-   int ndx = mChoice->GetSelection();
-   mLang = mLangCodes[ndx];
-
-   Identifier slang =
+   auto slang =
       Languages::GetSystemLanguageCode(FileNames::AudacityPathList());
    int sndx = make_iterator_range( mLangCodes ).index( slang );
    wxString sname;
@@ -119,12 +114,13 @@ void LangChoiceDialog::OnOk()
       sname = mLangNames[sndx].Translation();
    }
 
-   if (mLang.GET().Left(2) != slang.GET().Left(2)) {
+   auto lang = GetLang();
+   if (lang.GET().Left(2) != slang.GET().Left(2)) {
       /* i18n-hint: The %s's are replaced by translated and untranslated
        * versions of language names. */
       auto msg = XO("The language you have chosen, %s (%s), is not the same as the system language, %s (%s).")
-         .Format(mLangNames[ndx],
-                 mLang.GET(),
+         .Format(mLangNames[ mLang ],
+                 lang.GET(),
                  sname,
                  slang.GET());
       if ( wxNO == AudacityMessageBox( msg, XO("Confirm"), wxYES_NO ) ) {

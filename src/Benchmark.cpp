@@ -21,7 +21,6 @@ of sample block storage.
 //#include <wx/log.h>
 #include <wx/textctrl.h>
 //#include <wx/checkbox.h>
-//#include <wx/choice.h>
 //#include <wx/stattext.h>
 #include <wx/stopwatch.h>
 #include <wx/valtext.h>

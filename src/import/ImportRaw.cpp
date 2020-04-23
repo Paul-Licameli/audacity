@@ -42,7 +42,6 @@ and sample size to help you importing data of an unknown format.
 #include <wx/crt.h>
 #include <wx/defs.h>
 #include <wx/button.h>
-#include <wx/choice.h>
 #include <wx/combobox.h>
 #include <wx/panel.h>
 #include <wx/stattext.h>

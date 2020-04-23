@@ -269,12 +269,12 @@ public:
    FFmpegPreset();
    ~FFmpegPreset();
 
-   wxString mPresetName;
+   Identifier mPresetName;
    wxArrayString mControlState;
 
 };
 
-using FFmpegPresetMap = std::unordered_map<wxString, FFmpegPreset>;
+using FFmpegPresetMap = std::unordered_map<Identifier, FFmpegPreset>;
 
 class FFmpegPresets : XMLTagHandler
 {
@@ -283,11 +283,11 @@ public:
    ~FFmpegPresets();
 
    void GetPresetList(Identifiers &list);
-   void LoadPreset(ExportFFmpegOptions *parent, wxString &name);
-   bool SavePreset(ExportFFmpegOptions *parent, wxString &name);
+   void LoadPreset(ExportFFmpegOptions *parent, const Identifier &name);
+   bool SavePreset(ExportFFmpegOptions *parent, const Identifier &name);
    void DeletePreset(wxString &name);
-   bool OverwriteIsOk( wxString &name );
-   FFmpegPreset *FindPreset(wxString &name);
+   bool OverwriteIsOk( const Identifier &name );
+   FFmpegPreset *FindPreset(const Identifier &name);
 
    void ImportPresets(wxString &filename);
    void ExportPresets(wxString &filename);

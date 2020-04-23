@@ -20,7 +20,6 @@
 #include "Effect.h"
 
 class ShuttleGui;
-class wxChoice;
 
 class RegionList;
 

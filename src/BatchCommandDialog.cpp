@@ -28,7 +28,6 @@ selected command.
 //
 #include <wx/defs.h>
 #include <wx/checkbox.h>
-#include <wx/choice.h>
 #include <wx/statbox.h>
 #include <wx/stattext.h>
 #include <wx/textctrl.h>

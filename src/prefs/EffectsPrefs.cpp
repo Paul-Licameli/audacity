@@ -20,7 +20,6 @@
 
 #include "EffectsPrefs.h"
 
-#include <wx/choice.h>
 #include <wx/defs.h>
 
 #include "Languages.h"

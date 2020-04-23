@@ -66,7 +66,7 @@ enum { BogusRate = -1 };
 
 /// Gets the lists of names and lists of labels which are
 /// used in the choice controls.
-/// The names are what the user sees in the wxChoice.
+/// The names are what the user sees in the choice control.
 /// The corresponding labels are what gets stored.
 void QualityPrefs::GetNamesAndLabels()
 {

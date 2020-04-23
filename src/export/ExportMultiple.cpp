@@ -21,8 +21,6 @@
 #include <wx/defs.h>
 #include <wx/button.h>
 #include <wx/checkbox.h>
-#include <wx/choice.h>
-#include <wx/dialog.h>
 #include <wx/dirdlg.h>
 #include <wx/listbase.h>
 #include <wx/filefn.h>

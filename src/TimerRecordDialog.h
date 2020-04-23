@@ -21,7 +21,6 @@
 #include "export/Export.h"
 
 class wxCheckBox;
-class wxChoice;
 class wxDateEvent;
 class wxDatePickerCtrl;
 class wxTimerEvent;
@@ -36,7 +35,7 @@ enum TimerRecordCompletedActions {
    TR_ACTION_EXPORTED = 0x00000002
 };
 
-enum {
+enum PostTimerRecordAction {
    POST_TIMER_RECORD_STOPPED = -3,
    POST_TIMER_RECORD_CANCEL_WAIT,
    POST_TIMER_RECORD_CANCEL,
@@ -88,8 +87,6 @@ private:
    // Timer Recording Automation Control Events
    void OnAutoSavePathButton_Click();
    void OnAutoExportPathButton_Click();
-   void OnAutoSaveCheckBox_Change(wxCommandEvent& event);
-   void OnAutoExportCheckBox_Change(wxCommandEvent& event);
    // Timer Recording Automation Routines
    void EnableDisableAutoControls();
    void UpdateTextBoxControls();
@@ -121,13 +118,8 @@ private:
    wxTimer m_timer;
 
    // Controls for Auto Save/Export
-   wxCheckBox *m_pTimerAutoSaveCheckBoxCtrl;
    wxTextCtrlWrapper *m_pTimerSavePathTextCtrl;
-   wxCheckBox *m_pTimerAutoExportCheckBoxCtrl;
    wxTextCtrlWrapper *m_pTimerExportPathTextCtrl;
-
-   // After Timer Record Options Choice
-   wxChoice *m_pTimerAfterCompleteChoiceCtrl;
 
    // After Timer Record do we need to clean up?
    bool m_bProjectCleanupRequired;

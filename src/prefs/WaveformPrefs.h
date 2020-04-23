@@ -18,7 +18,6 @@ Paul Licameli
 class ShuttleGui;
 class WaveTrack;
 class wxCheckBox;
-class wxChoice;
 
 #define WAVEFORM_PREFS_PLUGIN_SYMBOL ComponentInterfaceSymbol{ XO("Waveform") }
 

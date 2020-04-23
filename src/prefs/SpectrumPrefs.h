@@ -27,7 +27,6 @@
 #include "PrefsPanel.h"
 #include "SpectrogramSettings.h"
 
-class wxChoice;
 class wxCheckBox;
 class wxTextCtrl;
 struct FFTParam;

@@ -62,7 +62,6 @@
 #include <wx/bitmap.h>
 #include <wx/brush.h>
 #include <wx/button.h>
-#include <wx/choice.h>
 #include <wx/statbox.h>
 #include <wx/stattext.h>
 

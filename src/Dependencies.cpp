@@ -40,7 +40,6 @@ AliasedFile s.
 #include <wx/defs.h>
 #include <wx/filename.h>
 #include <wx/listctrl.h>
-#include <wx/choice.h>
 #include <wx/clipbrd.h>
 #include <wx/dataobj.h>
 #include <wx/frame.h>
@@ -268,13 +267,13 @@ private:
 
    AudacityProject  *mProject;
    AliasedFileArray &mAliasedFiles;
-   bool              mIsSaving;
+   const bool        mIsSaving;
    bool              mHasMissingFiles;
    bool              mHasNonMissingFiles;
+   int               mChoice = 0;
 
    wxStaticText     *mMessageStaticText;
    wxListCtrl       *mFileListCtrl = nullptr;
-   wxChoice         *mFutureActionChoice;
 
 public:
    DECLARE_EVENT_TABLE()
@@ -282,7 +281,6 @@ public:
 
 enum {
    FileListID = 6000,
-   FutureActionChoiceID
 };
 
 BEGIN_EVENT_TABLE(DependencyDialog, wxDialogWrapper)
@@ -308,8 +306,7 @@ DependencyDialog::DependencyDialog(wxWindow *parent,
    mIsSaving(isSaving),
    mHasMissingFiles(false),
    mHasNonMissingFiles(false),
-   mMessageStaticText(NULL),
-   mFutureActionChoice(NULL)
+   mMessageStaticText(NULL)
 {
    SetName();
    ShuttleGui S(this, eIsCreating);
@@ -332,6 +329,7 @@ XO("\n\nFiles shown as MISSING have been moved or deleted and cannot be copied.\
 
 void DependencyDialog::PopulateOrExchange(ShuttleGui& S)
 {
+   using namespace DialogDefinition;
    S.SetBorder(5);
    S.StartVerticalLay();
    {
@@ -393,12 +391,9 @@ void DependencyDialog::PopulateOrExchange(ShuttleGui& S)
       {
          S.StartHorizontalLay(wxALIGN_LEFT,0);
          {
-            mFutureActionChoice =
             S
-               .Id(FutureActionChoiceID)
-               .AddChoice(
-                  XXO("Whenever a project depends on other files:"),
-                  {
+               .Target( NumberChoice( mChoice,
+                  TranslatableStrings{
                      /*i18n-hint: One of the choices of what you want Audacity to do when
                      * Audacity finds a project depends on another file.*/
                      XO("Ask me") ,
@@ -408,14 +403,11 @@ void DependencyDialog::PopulateOrExchange(ShuttleGui& S)
                      /*i18n-hint: One of the choices of what you want Audacity to do when
                      * Audacity finds a project depends on another file.*/
                      XO("Never copy any files") ,
-                  },
-                  0 /* "Ask me" */ );
+                  }
+               ) )
+               .AddChoice(XXO("Whenever a project depends on other files:") );
          }
          S.EndHorizontalLay();
-      }
-      else
-      {
-         mFutureActionChoice = NULL;
       }
    }
    S.EndVerticalLay();
@@ -576,11 +568,10 @@ void DependencyDialog::OnCancel()
 
 void DependencyDialog::SaveFutureActionChoice()
 {
-   if (mFutureActionChoice)
+   if (mIsSaving)
    {
       wxString savePref;
-      int sel = mFutureActionChoice->GetSelection();
-      switch (sel)
+      switch ( mChoice )
       {
       case 1: savePref = L"copy"; break;
       case 2: savePref = L"never"; break;

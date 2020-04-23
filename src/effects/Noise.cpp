@@ -19,7 +19,6 @@
 
 #include <math.h>
 
-#include <wx/choice.h>
 #include <wx/textctrl.h>
 
 #include "../Prefs.h"

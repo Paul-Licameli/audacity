@@ -23,7 +23,6 @@ function.
 
 #include "../FFmpeg.h"
 
-#include <wx/choice.h>
 #include <wx/textctrl.h>
 #include <wx/listbox.h>
 #include <wx/window.h>
@@ -1145,7 +1144,6 @@ int ExportFFmpeg::AskResample(int bitrate, int rate, int lowrate, int highrate, 
 #else
    wxDialogWrapper d(nullptr, wxID_ANY, XO("Invalid sample rate"));
    d.SetName();
-   wxChoice *choice;
    ShuttleGui S(&d, eIsCreating);
 
    int selected = -1;

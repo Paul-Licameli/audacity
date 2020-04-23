@@ -25,7 +25,6 @@ class wxSlider;
 class wxTextCtrl;
 class wxButton;
 class wxCheckBox;
-class wxChoice;
 
 class AudacityProject;
 class FrequencyPlotDialog;

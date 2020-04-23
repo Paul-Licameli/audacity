@@ -29,7 +29,6 @@ const int kEqLegacy = kEqOptionGraphic + kEqOptionCurve;
 class wxBitmap;
 class wxBoxSizer;
 class wxButton;
-class wxChoice;
 class wxListCtrl;
 class wxListEvent;
 class wxSizer;
@@ -58,14 +57,6 @@ public:
    double dB;
 };
 
-//
-// One curve in a list
-//
-// LLL:  This "really" isn't needed as the array of points could be
-//       attached as wxClientData to the wxChoice entries.  I
-//       didn't realize this until after the fact and am too
-//       lazy to change it.  (But, hollar if you want me to.)
-//
 class EQCurve
 {
 public:

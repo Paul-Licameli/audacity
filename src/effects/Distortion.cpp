@@ -32,7 +32,6 @@
 #define M_PI_2 1.57079632679489661923132169163975 
 #endif
 
-#include <wx/choice.h>
 #include <wx/log.h>
 
 #include "../Prefs.h"
