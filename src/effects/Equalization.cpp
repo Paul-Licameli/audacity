@@ -875,31 +875,51 @@ void EffectEqualization::PopulateOrExchange(ShuttleGui & S)
          // May show more sliders than needed.  Fixes Bug 2269
          for (int i = 0; i < NUMBER_OF_BANDS; ++i)
          {
-            TranslatableString freq = kThirdOct[i] < 1000.
-               ? XO("%d Hz").Format((int)kThirdOct[i])
-               : XO("%g kHz").Format(kThirdOct[i] / 1000.);
-            TranslatableString fNum = kThirdOct[i] < 1000.
-               ? Verbatim("%d").Format((int)kThirdOct[i])
-               /* i18n-hint k is SI abbreviation for x1,000.  Usually unchanged in translation. */
-               : XO("%gk").Format(kThirdOct[i] / 1000.);
             S.StartVerticalLay();
             {
-               S
-                  .AddFixedText( fNum  );
-
-               mSliders[i] = safenew wxSliderWrapper(pParent, ID_Slider + i, 0, -20, +20,
-                  wxDefaultPosition, wxSize(-1,50), wxSL_VERTICAL | wxSL_INVERSE);
-
-#if wxUSE_ACCESSIBILITY
-               mSliders[i]->SetAccessible(safenew SliderAx(mSliders[i], XO("%d dB")));
-#endif
+               //?
+//               S
+  //                .AddFixedText( fNum  );
 
                mSlidersOld[i] = 0;
                mEQVals[i] = 0.;
 
+               //S.SetSizerProportion(1);
+
+               TranslatableString freq = kThirdOct[i] < 1000.
+                  ? XO("%d Hz").Format((int)kThirdOct[i])
+                  : XO("%g kHz").Format(kThirdOct[i] / 1000.);
+               TranslatableString fNum = kThirdOct[i] < 1000.
+                  ? Verbatim("%d").Format((int)kThirdOct[i])
+                  /* i18n-hint k is SI abbreviation for x1,000.  Usually unchanged in translation. */
+                  : XO("%gk").Format(kThirdOct[i] / 1000.);
+
+               S
+                  .AddFixedText( kThirdOct[i] < 1000.
+                     ? XO("%d").Format((int)kThirdOct[i])
+                     : XO("%gk").Format(kThirdOct[i] / 1000.) );
+
+               mSliders[i] =
+               S
+                  .Id(ID_Slider + i)
+                  .Prop(1)
+                  .Text(
+                     kThirdOct[i] < 1000.
+                        ? XO("%d Hz").Format( (int)kThirdOct[i] )
+                        : XO("%g kHz").Format( kThirdOct[i]/1000. ) )
+                  .ConnectRoot(
+                     wxEVT_ERASE_BACKGROUND, &EffectEqualization::OnErase)
+                  .Position(wxEXPAND)
+                  .Size( { -1, 150 } )
+                  .Style( wxSL_VERTICAL | wxSL_INVERSE )
+                  .AddSlider( {}, 0, -20, +20 );
+   #if wxUSE_ACCESSIBILITY
+               mSliders[i]->SetAccessible(safenew SliderAx(mSliders[i], XO("%d dB")));
+   #endif
+
                S
                   .Prop(1)
-                  .Text(freq)
+                  .Text( freq )
                   .ConnectRoot(
                      wxEVT_ERASE_BACKGROUND, &EffectEqualization::OnErase)
                   .Position(wxEXPAND)
