@@ -21,7 +21,6 @@
 #include <vamp-hostsdk/PluginInputDomainAdapter.h>
 
 #include <wx/checkbox.h>
-#include <wx/combobox.h>
 #include <wx/slider.h>
 #include <wx/statbox.h>
 #include <wx/textctrl.h>

@@ -28,7 +28,6 @@ function.
 #include <wx/listbox.h>
 #include <wx/window.h>
 #include <wx/spinctrl.h>
-#include <wx/combobox.h>
 
 #include "../Mix.h"
 #include "../ProjectSettings.h"

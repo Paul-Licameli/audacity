@@ -43,7 +43,6 @@
 #include "Identifier.h"
 
 class wxArrayString;
-class wxComboBox;
 class wxGridCellChoiceEditor;
 class wxGridCellStringRenderer;
 class wxGridEvent;

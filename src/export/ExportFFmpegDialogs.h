@@ -222,14 +222,13 @@ private:
    wxStaticText *mFormatName;
    wxStaticText *mCodecName;
 
-   wxComboBox *mPresetCombo;
-
    int mBitRateFromChoice;
    int mSampleRateFromChoice;
 
    std::unique_ptr<FFmpegPresets> mPresets;
 
-   wxArrayStringEx mPresetNames;
+   Identifiers mPresetNames;
+   int mPresetNamesUpdated = 0;
 
    int FindSelectedFormat();
    int FindSelectedCodec();
@@ -283,7 +282,7 @@ public:
    FFmpegPresets();
    ~FFmpegPresets();
 
-   void GetPresetList(wxArrayString &list);
+   void GetPresetList(Identifiers &list);
    void LoadPreset(ExportFFmpegOptions *parent, wxString &name);
    bool SavePreset(ExportFFmpegOptions *parent, wxString &name);
    void DeletePreset(wxString &name);

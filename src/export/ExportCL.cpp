@@ -16,7 +16,6 @@
 #include "../ProjectSettings.h"
 
 #include <wx/cmdline.h>
-#include <wx/combobox.h>
 #include <wx/log.h>
 #include <wx/process.h>
 #include <wx/sizer.h>
@@ -63,7 +62,7 @@ public:
    void OnBrowse();
 
 private:
-   wxComboBox *mCmd;
+   wxString mCmd;
    FileHistory mHistory;
 };
 
@@ -106,7 +105,9 @@ BoolSetting ExternalProgramShowOutput{
 ///
 void ExportCLOptions::PopulateOrExchange(ShuttleGui & S)
 {
-   wxArrayStringEx cmds( mHistory.begin(), mHistory.end() );
+   using namespace DialogDefinition;
+
+   Identifiers cmds( mHistory.begin(), mHistory.end() );
    auto cmd = cmds[0];
 
    S.StartVerticalLay();
@@ -118,11 +119,9 @@ void ExportCLOptions::PopulateOrExchange(ShuttleGui & S)
          {
             S.SetStretchyCol(1);
 
-            mCmd =
             S
-               .AddCombo(XXO("Command:"),
-                              cmd,
-                              cmds);
+               .Target( Choice( mCmd, Verbatim( cmds ) ) )
+               .AddCombo( XXO("Command:"), mCmd, {} );
 
             S
                .Action( [this]{ OnBrowse(); } )
@@ -159,12 +158,10 @@ bool ExportCLOptions::TransferDataFromWindow()
    ShuttleGui S(this, eIsSavingToPrefs);
    PopulateOrExchange(S);
 
-   wxString cmd = mCmd->GetValue();
-
-   mHistory.Append(cmd);
+   mHistory.Append(mCmd);
    mHistory.Save(*gPrefs);
 
-   gPrefs->Write(L"/FileFormats/ExternalProgramExportCommand", cmd);
+   gPrefs->Write(L"/FileFormats/ExternalProgramExportCommand", mCmd);
    gPrefs->Flush();
 
    return true;
@@ -197,13 +194,12 @@ void ExportCLOptions::OnBrowse()
    }
 
    if (path.Find(L' ') == wxNOT_FOUND) {
-      mCmd->SetValue(path);
+      mCmd = path;
    }
-   else {
-      mCmd->SetValue(L'"' + path + L'"');
-   }
+   else
+      mCmd = (L'"' + path + L'"');
 
-   mCmd->SetInsertionPointEnd();
+//   mCmd->SetInsertionPointEnd();
 
    return;
 }
