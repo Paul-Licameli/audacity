@@ -146,6 +146,12 @@ BEGIN_EVENT_TABLE(TimerRecordDialog, wxDialogWrapper)
 
 END_EVENT_TABLE()
 
+namespace {
+BoolSetting AutoSave{ L"/TimerRecord/AutoSave", false };
+BoolSetting AutoExport{ L"/TimerRecord/AutoExport", false };
+IntSetting PostAction{ L"/TimerRecord/PostAction", 0 };
+}
+
 TimerRecordDialog::TimerRecordDialog(
    wxWindow* parent, AudacityProject &project, bool bAlreadySaved)
 : wxDialogWrapper(parent, -1, XO("Audacity Timer Record"), wxDefaultPosition,
@@ -731,9 +737,9 @@ wxTextCtrlWrapper * TimerRecordDialog::NewPathControl(
 
 void TimerRecordDialog::PopulateOrExchange(ShuttleGui& S)
 {
-   bool bAutoSave = gPrefs->ReadBool("/TimerRecord/AutoSave", false);
-   bool bAutoExport = gPrefs->ReadBool("/TimerRecord/AutoExport", false);
-   int iPostTimerRecordAction = gPrefs->ReadLong("/TimerRecord/PostAction", 0);
+   bool bAutoSave = AutoSave.Read();
+   bool bAutoExport = AutoExport.Read();
+   int iPostTimerRecordAction = PostAction.Read();
 
    S.SetBorder(5);
    using Options = NumericTextCtrl::Options;
@@ -980,9 +986,9 @@ bool TimerRecordDialog::TransferDataFromWindow()
    int iPostRecordAction = m_pTimerAfterCompleteChoiceCtrl->GetSelection();
 
    // Save the options back to the prefs file
-   gPrefs->Write("/TimerRecord/AutoSave", m_bAutoSaveEnabled);
-   gPrefs->Write("/TimerRecord/AutoExport", m_bAutoExportEnabled);
-   gPrefs->Write("/TimerRecord/PostAction", iPostRecordAction);
+   AutoSave.Write( m_bAutoSaveEnabled );
+   AutoExport.Write( m_bAutoExportEnabled );
+   PostAction.Write( iPostRecordAction );
 
    return true;
 }
