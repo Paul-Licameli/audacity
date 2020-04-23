@@ -70,7 +70,6 @@
 #include <wx/ffile.h>
 #include <wx/log.h>
 #include <wx/mimetype.h>
-#include <wx/radiobut.h>
 #include <wx/simplebook.h>
 #include <wx/stattext.h>
 #include <wx/textctrl.h>
