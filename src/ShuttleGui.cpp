@@ -103,8 +103,6 @@ for registering for changes.
 #include "Theme.h"
 
 #include <wx/setup.h> // for wxUSE_* macros
-#include <wx/wx.h>
-#include <wx/wxprec.h>
 #include <wx/grid.h>
 #include <wx/listctrl.h>
 #include <wx/notebook.h>

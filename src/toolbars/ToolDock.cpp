@@ -26,9 +26,6 @@
 
 #include <wx/tokenzr.h>
 
-// For compilers that support precompilation, includes "wx/wx.h".
-#include <wx/wxprec.h>
-
 #ifndef WX_PRECOMP
 #include <wx/dcclient.h>
 #include <wx/defs.h>

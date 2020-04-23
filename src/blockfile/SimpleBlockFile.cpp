@@ -38,7 +38,6 @@ to get its definition, rather than rolling our own.
 #include "../Audacity.h"
 #include "SimpleBlockFile.h"
 
-#include <wx/wx.h>
 #include <wx/filefn.h>
 #include <wx/ffile.h>
 #include <wx/log.h>

@@ -65,14 +65,10 @@ ExpandingToolBar.
 
 #include "ExpandingToolBar.h"
 
-// For compilers that support precompilation, includes "wx/wx.h".
-#include <wx/wxprec.h>
-
 #ifndef WX_PRECOMP
 #include <wx/window.h>
 #endif
 
-#include <wx/wx.h>
 #include <wx/dcclient.h>
 #include <wx/dcmemory.h>
 #include <wx/log.h>

@@ -33,13 +33,9 @@
 
 #include "Tags.h"
 
-// For compilers that support precompilation, includes "wx/wx.h".
-#include <wx/wxprec.h>
-
 #include <wx/setup.h> // for wxUSE_* macros
 
 #ifndef WX_PRECOMP
-// Include your minimal set of headers here, or wx.h
 #include <wx/window.h>
 #endif
 

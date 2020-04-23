@@ -9,11 +9,6 @@
 
 #include "DeviceManager.h"
 
-// For compilers that support precompilation, includes "wx/wx.h".
-#include <wx/wxprec.h>
-
-
-
 #include "portaudio.h"
 #ifdef __WXMSW__
 #include "pa_win_wasapi.h"

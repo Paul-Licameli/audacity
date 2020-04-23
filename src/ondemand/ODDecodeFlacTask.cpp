@@ -13,7 +13,6 @@
 #include "../Prefs.h"
 #include <wx/file.h>
 #include <wx/ffile.h>
-#include <wx/wx.h>
 #include <wx/wxcrtvararg.h>
 
 #ifdef USE_LIBID3TAG

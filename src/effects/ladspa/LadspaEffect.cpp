@@ -36,7 +36,6 @@ effects from this one class.
 #endif
 
 #include <wx/setup.h> // for wxUSE_* macros
-#include <wx/wxprec.h>
 #include <wx/checkbox.h>
 #include <wx/dcclient.h>
 #include <wx/filename.h>

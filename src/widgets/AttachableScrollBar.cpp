@@ -30,7 +30,6 @@ internally, not ints, allowing for (external) control of zooming.
 
 #include "AttachableScrollBar.h"
 
-#include <wx/wxprec.h>
 #include "../ViewInfo.h"
 
 

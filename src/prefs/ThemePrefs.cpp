@@ -32,7 +32,6 @@ Provides:
 #include "ThemePrefs.h"
 
 #include <wx/app.h>
-#include <wx/wxprec.h>
 #include "../Prefs.h"
 #include "../Theme.h"
 #include "../ShuttleGui.h"

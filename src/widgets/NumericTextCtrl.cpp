@@ -182,8 +182,8 @@ different formats.
 
 #include <wx/setup.h> // for wxUSE_* macros
 
-#include <wx/wx.h>
 #include <wx/dcbuffer.h>
+#include <wx/dcscreen.h>
 #include <wx/font.h>
 #include <wx/stattext.h>
 #include <wx/tooltip.h>

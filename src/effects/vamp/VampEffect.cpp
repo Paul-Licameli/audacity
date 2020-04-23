@@ -20,7 +20,6 @@
 #include <vamp-hostsdk/PluginChannelAdapter.h>
 #include <vamp-hostsdk/PluginInputDomainAdapter.h>
 
-#include <wx/wxprec.h>
 #include <wx/checkbox.h>
 #include <wx/choice.h>
 #include <wx/combobox.h>

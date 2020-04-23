@@ -427,9 +427,6 @@ void HelpSystem::ShowHelp(wxWindow *parent,
       );
 }
 
-// For compilers that support precompilation, includes "wx/wx.h".
-#include <wx/wxprec.h>
-
 #include <wx/mimetype.h>
 #include <wx/filename.h>
 #include <wx/uri.h>

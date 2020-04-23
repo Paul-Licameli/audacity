@@ -34,9 +34,6 @@
 #include "ToolsToolBar.h"
 #include "ToolManager.h"
 
-// For compilers that support precompilation, includes "wx/wx.h".
-#include <wx/wxprec.h>
-
 #include <wx/setup.h> // for wxUSE_* macros
 
 #ifndef WX_PRECOMP

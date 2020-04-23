@@ -28,7 +28,6 @@
 
 
 
-#include <wx/wx.h>
 #include <wx/bitmap.h>
 #include <wx/filefn.h>
 #include <wx/ffile.h>
