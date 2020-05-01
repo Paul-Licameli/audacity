@@ -268,6 +268,12 @@ BEGIN_EVENT_TABLE(ExportMP3Options, wxPanelWrapper)
    EVT_CHECKBOX(ID_MONO,      ExportMP3Options::OnMono)
 END_EVENT_TABLE()
 
+namespace {
+
+BoolSetting MP3ForceMono{ L"/FileFormats/MP3ForceMono", false };
+
+}
+
 ///
 ///
 ExportMP3Options::ExportMP3Options(wxWindow *parent, int WXUNUSED(format))
@@ -325,9 +331,6 @@ static EnumLabelSetting< MP3ChannelMode > MP3ChannelModeSetting{
 ///
 void ExportMP3Options::PopulateOrExchange(ShuttleGui & S)
 {
-   bool mono = false;
-   gPrefs->Read(L"/FileFormats/MP3ForceMono", &mono, 0);
-
    S.StartVerticalLay();
    {
       S.StartHorizontalLay(wxCENTER);
@@ -474,12 +477,12 @@ void ExportMP3Options::PopulateOrExchange(ShuttleGui & S)
                         {
                            mJoint =
                            S
-                              .Disable(mono)
+                              .Disable(MP3ForceMono.Read())
                               .TieRadioButton();
 
                            mStereo =
                            S
-                              .Disable(mono)
+                              .Disable(MP3ForceMono.Read())
                               .TieRadioButton();
                         }
                         S.EndRadioButtonGroup();
@@ -491,7 +494,8 @@ void ExportMP3Options::PopulateOrExchange(ShuttleGui & S)
                   mMono =
                   S
                      .Id(ID_MONO)
-                     .AddCheckBox(XXO("Force export to mono"), mono);
+                     .AddCheckBox(XXO("Force export to mono"),
+                        MP3ForceMono.Read());
                }
                S.EndMultiColumn();
             }
@@ -596,7 +600,7 @@ void ExportMP3Options::OnMono(wxCommandEvent& /*evt*/)
    mJoint->Enable(!mono);
    mStereo->Enable(!mono);
 
-   gPrefs->Write(L"/FileFormats/MP3ForceMono", mono);
+   MP3ForceMono.Write( mono );
    gPrefs->Flush();
 }
 
@@ -1791,8 +1795,7 @@ bool ExportMP3::CheckFileName(wxFileName & WXUNUSED(filename), int WXUNUSED(form
 
 int ExportMP3::SetNumExportChannels()
 {
-   bool mono;
-   gPrefs->Read(L"/FileFormats/MP3ForceMono", &mono, 0);
+   bool mono = MP3ForceMono.Read();
 
    return (mono)? 1 : -1;
 }
@@ -1848,12 +1851,11 @@ ProgressResult ExportMP3::Export(AudacityProject *project,
    int bitrate = 0;
    int brate;
    //int vmode;
-   bool forceMono;
 
    auto rmode = MP3RateModeSetting.ReadEnumWithDefault( MODE_CBR );
    // gPrefs->Read(L"/FileFormats/MP3VarMode", &vmode, ROUTINE_FAST);
    auto cmode = MP3ChannelModeSetting.ReadEnumWithDefault( CHANNEL_STEREO );
-   gPrefs->Read(L"/FileFormats/MP3ForceMono", &forceMono, 0);
+   bool forceMono = MP3ForceMono.Read();
 
    // Set the bitrate/quality and mode
    if (rmode == MODE_SET) {
