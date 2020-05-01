@@ -1869,6 +1869,9 @@ IntSetting FFmpegSampleRate{
 StringSetting FFmpegLanguage{ L"/FileFormats/FFmpegLanguage" };
 StringSetting FFmpegTag{ L"/FileFormats/FFmpegTag" };
 
+// Used only as memory for this dialog
+static StringSetting FFmpegPreset{ L"/FileFormats/FFmpegPreset", L"" };
+
 ///
 ///
 void ExportFFmpegOptions::PopulateOrExchange(ShuttleGui & S)
@@ -1884,7 +1887,7 @@ void ExportFFmpegOptions::PopulateOrExchange(ShuttleGui & S)
          mPresetCombo =
          S
             .Id(FEPresetID)
-            .AddCombo(XXO("Preset:"), gPrefs->Read(L"/FileFormats/FFmpegPreset",wxEmptyString), mPresetNames);
+            .AddCombo(XXO("Preset:"), FFmpegPreset.Read(), mPresetNames);
 
          S
             .Id(FELoadPresetID)
