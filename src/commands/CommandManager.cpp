@@ -86,11 +86,11 @@ CommandManager.  It holds the callback for one command.
 #include <wx/defs.h>
 #include <wx/hash.h>
 #include <wx/log.h>
-#include <wx/menu.h>
-#include <wx/weakref.h>
 
 #include "BasicUI.h"
 #include "../Menus.h"
+
+#include "../widgets/MenuHandle.h"
 
 // On wxGTK, there may be many many many plugins, but the menus don't automatically
 // allow for scrolling, so we build sub-menus.  If the menu gets longer than
@@ -109,11 +109,13 @@ CommandManager.  It holds the callback for one command.
 
 struct MenuBarListEntry
 {
-   MenuBarListEntry(const wxString &name_, wxMenuBar *menubar_);
+   MenuBarListEntry(const wxString &name_);
+   MenuBarListEntry( MenuBarListEntry&& ) = default;
+   MenuBarListEntry &operator =( MenuBarListEntry&& ) = default;
    ~MenuBarListEntry();
 
    wxString name;
-   wxWeakRef<wxMenuBar> menubar; // This structure does not assume memory ownership!
+   Widgets::MenuBarHandle menubar;
 };
 
 struct SubMenuListEntry
@@ -123,11 +125,11 @@ struct SubMenuListEntry
    ~SubMenuListEntry();
 
    Widgets::MenuItemText name;
-   std::unique_ptr<wxMenu> menu;
+   Widgets::MenuHandle menu;
 };
 
-MenuBarListEntry::MenuBarListEntry(const wxString &name_, wxMenuBar *menubar_)
-   : name(name_), menubar(menubar_)
+MenuBarListEntry::MenuBarListEntry( const wxString &name_ )
+   : name{ name_ }
 {
 }
 
@@ -136,7 +138,7 @@ MenuBarListEntry::~MenuBarListEntry()
 }
 
 SubMenuListEntry::SubMenuListEntry( const Widgets::MenuItemText &name_ )
-   : name(name_), menu( std::make_unique< wxMenu >() )
+   : name(name_)
 {
 }
 
@@ -165,6 +167,7 @@ CommandManager::CommandManager():
    mCurrentID(17000),
    mCurrentMenuName(COMMAND),
    bMakingOccultCommands( false )
+   , uCurrentMenu{ std::make_unique<Widgets::MenuHandle>( nullptr ) }
 {
    mbSeparatorAllowed = false;
    SetMaxList();
@@ -292,43 +295,48 @@ void CommandManager::PurgeData()
 /// Names it according to the passed-in string argument.
 ///
 /// If the menubar already exists, that's unexpected.
-std::unique_ptr<wxMenuBar> CommandManager::AddMenuBar(const wxString & sMenu)
+/// Returns an owning handle and keeps only a weak reference
+Widgets::MenuBarHandle CommandManager::AddMenuBar(const wxString & sMenu)
 {
-   wxMenuBar *menuBar = GetMenuBar(sMenu);
+   auto menuBar = GetMenuBar(sMenu);
    if (menuBar) {
       wxASSERT(false);
-      return {};
+      return menuBar;
    }
 
-   auto result = std::make_unique<wxMenuBar>();
-   mMenuBarList.emplace_back(sMenu, result.get());
+   PushMenuBar( sMenu );
+   // Return an owning handle!
+   return std::move( mMenuBarList.back().menubar );
+}
 
-   return result;
+void CommandManager::PushMenuBar(const wxString & sMenu)
+{
+   mMenuBarList.emplace_back(sMenu);
 }
 
 
 ///
-/// Retrieves the menubar based on the name given in AddMenuBar(name)
+/// Retrieves the menubar based on the name given in PushMenuBar(name)
 ///
-wxMenuBar * CommandManager::GetMenuBar(const wxString & sMenu) const
+Widgets::MenuBarHandle CommandManager::GetMenuBar(const wxString & sMenu)
 {
-   for (const auto &entry : mMenuBarList)
+   for (auto &entry : mMenuBarList)
    {
       if(entry.name == sMenu)
          return entry.menubar;
    }
 
-   return NULL;
+   return nullptr;
 }
 
 
 ///
 /// Retrieve the 'current' menubar; either NULL or the
 /// last on in the mMenuBarList.
-wxMenuBar * CommandManager::CurrentMenuBar() const
+Widgets::MenuBarHandle CommandManager::CurrentMenuBar() const
 {
    if(mMenuBarList.empty())
-      return NULL;
+      return nullptr;
 
    return mMenuBarList.back().menubar;
 }
@@ -351,9 +359,9 @@ void CommandManager::PopMenuBar()
 ///
 /// This starts a NEW menu
 ///
-wxMenu *CommandManager::BeginMenu(const Widgets::MenuItemText & tName)
+Widgets::MenuHandle CommandManager::BeginMenu(const Widgets::MenuItemText & tName)
 {
-   if ( mCurrentMenu )
+   if ( *uCurrentMenu )
       return BeginSubMenu( tName );
    else
       return BeginMainMenu( tName );
@@ -376,12 +384,11 @@ void CommandManager::EndMenu()
 ///
 /// This starts a NEW menu
 ///
-wxMenu *CommandManager::BeginMainMenu(const Widgets::MenuItemText & tName)
+Widgets::MenuHandle CommandManager::BeginMainMenu(const Widgets::MenuItemText & tName)
 {
-   uCurrentMenu = std::make_unique<wxMenu>();
-   mCurrentMenu = uCurrentMenu.get();
+   *uCurrentMenu = {};
    mCurrentMenuName = tName;
-   return mCurrentMenu;
+   return *uCurrentMenu;
 }
 
 
@@ -393,13 +400,11 @@ void CommandManager::EndMainMenu()
    // Add the menu to the menubar after all menu items have been
    // added to the menu to allow OSX to rearrange special menu
    // items like Preferences, About, and Quit.
-   wxASSERT(uCurrentMenu);
-   if (uCurrentMenu->GetMenuItemCount() > 0)
-      CurrentMenuBar()->Append(
-         uCurrentMenu.release(), mCurrentMenuName.label.main.Translation());
-   else
-      uCurrentMenu.reset();
-   mCurrentMenu = nullptr;
+   wxASSERT(*uCurrentMenu);
+   if (!uCurrentMenu->empty())
+      CurrentMenuBar().Append(
+         std::move( *uCurrentMenu ), mCurrentMenuName.label.main );
+   *uCurrentMenu = {};
    mCurrentMenuName = COMMAND;
 }
 
@@ -407,11 +412,11 @@ void CommandManager::EndMainMenu()
 ///
 /// This starts a NEW submenu, and names it according to
 /// the function's argument.
-wxMenu* CommandManager::BeginSubMenu(const Widgets::MenuItemText & tName)
+Widgets::MenuHandle CommandManager::BeginSubMenu(const Widgets::MenuItemText & tName)
 {
    mSubMenuList.emplace_back( tName );
    mbSeparatorAllowed = false;
-   return mSubMenuList.back().menu.get();
+   return mSubMenuList.back().menu;
 }
 
 
@@ -429,54 +434,53 @@ void CommandManager::EndSubMenu()
 
    //Add the submenu to the current menu
    auto &pMenu = tmpSubMenu.menu;
-   if (pMenu->GetMenuItemCount() > 0) {
-      auto name = tmpSubMenu.name.label.main.Translation();
+   if (!pMenu.empty()) {
       // PRL:  Use help for commands as well as submenus?
-      auto help = tmpSubMenu.name.help.Translation();
-      CurrentMenu()->Append(0, name, tmpSubMenu.menu.release(), help );
+      CurrentMenu().AppendSubMenu(std::move( tmpSubMenu.menu ),
+         tmpSubMenu.name );
       mbSeparatorAllowed = true;
    }
    else
-      pMenu.reset();
+      pMenu = {};
 }
 
 
 ///
 /// This returns the 'Current' Submenu, which is the one at the
 ///  end of the mSubMenuList (or NULL, if it doesn't exist).
-wxMenu * CommandManager::CurrentSubMenu() const
+Widgets::MenuHandle CommandManager::CurrentSubMenu() const
 {
    if(mSubMenuList.empty())
-      return NULL;
+      return nullptr;
 
-   return mSubMenuList.back().menu.get();
+   return mSubMenuList.back().menu;
 }
 
-void CommandManager::SetCurrentMenu(wxMenu *menu)
+void CommandManager::SetCurrentMenu( Widgets::MenuHandle menu )
 {
-   wxASSERT(!mCurrentMenu);
-   mCurrentMenu = menu;
+   wxASSERT(!*uCurrentMenu);
+   *uCurrentMenu = std::move(menu);
 }
 
 void CommandManager::ResetCurrentMenu()
 {
-   mCurrentMenu = nullptr;
+   *uCurrentMenu = {};
 }
 
 ///
 /// This returns the current menu that we're appending to - note that
 /// it could be a submenu if BeginSubMenu was called and we haven't
 /// reached EndSubMenu yet.
-wxMenu * CommandManager::CurrentMenu() const
+Widgets::MenuHandle CommandManager::CurrentMenu() const
 {
-   if(!mCurrentMenu)
-      return NULL;
+   if( ! *uCurrentMenu )
+      return nullptr;
 
-   wxMenu * tmpCurrentSubMenu = CurrentSubMenu();
+   auto tmpCurrentSubMenu = CurrentSubMenu();
 
    if(!tmpCurrentSubMenu)
    {
-      return mCurrentMenu;
+      return *uCurrentMenu;
    }
 
    return tmpCurrentSubMenu;
@@ -486,7 +490,9 @@ void CommandManager::UpdateCheckmarks( AudacityProject &project )
 {
    for ( const auto &entry : mCommandList ) {
       if ( entry->menu && entry->checkmarkFn && !entry->isOccult) {
-         entry->menu->Check( entry->id, entry->checkmarkFn( project ) );
+         entry->menu.SetState( entry->id,
+            { true, entry->checkmarkFn( project ) },
+            Widgets::MenuItemState::Check );
       }
    }
 }
@@ -516,20 +522,18 @@ void CommandManager::AddItem(AudacityProject &project,
          options);
    entry->useStrictFlags = options.useStrictFlags;
    int ID = entry->id;
-   wxString label = FormatLabelWithDisabledAccel(entry);
+   auto label = FormatLabelWithDisabledAccel(entry);
 
    SetCommandFlags(name, flags);
 
 
    auto &checker = options.checker;
    // PRL:  store a help string?
-   if (checker) {
-      CurrentMenu()->AppendCheckItem(ID, label);
-      CurrentMenu()->Check(ID, checker( project ));
-   }
-   else {
-      CurrentMenu()->Append(ID, label);
-   }
+   if (checker)
+      CurrentMenu().AppendCheckItem( label, {},
+         { true, checker( project ) }, ID);
+   else
+      CurrentMenu().Append(label, {}, {}, ID);
 
    mbSeparatorAllowed = true;
 }
@@ -573,7 +577,7 @@ void CommandManager::AddItemList(const CommandID & name,
             Options{}
                .IsEffect(bIsEffect));
       entry->flags = flags;
-      CurrentMenu()->Append(entry->id, FormatLabelForMenu(entry));
+      CurrentMenu().Append(FormatLabelForMenu(entry), {}, {}, entry->id);
       mbSeparatorAllowed = true;
    }
 }
@@ -585,7 +589,7 @@ void CommandManager::AddGlobalCommand(const CommandID &name,
                                       const Options &options)
 {
    CommandListEntry *entry =
-      NewIdentifier(name, label_in, NULL, finder, callback,
+      NewIdentifier(name, label_in, nullptr, finder, callback,
                     {}, 0, 0, options);
 
    entry->enabled = false;
@@ -596,7 +600,7 @@ void CommandManager::AddGlobalCommand(const CommandID &name,
 void CommandManager::AddSeparator()
 {
    if( mbSeparatorAllowed )
-      CurrentMenu()->AppendSeparator();
+      CurrentMenu().AppendSeparator();
    mbSeparatorAllowed = false; // boolean to prevent too many separators.
 }
 
@@ -618,7 +622,7 @@ int CommandManager::NextIdentifier(int ID)
 ///and keep menus above wxID_HIGHEST
 CommandListEntry *CommandManager::NewIdentifier(const CommandID & nameIn,
    const Widgets::MenuItemText & text,
-   wxMenu *menu,
+   Widgets::MenuHandle menu,
    CommandHandlerFinder finder,
    CommandFunctorPointer callback,
    const CommandID &nameSuffix,
@@ -651,7 +655,7 @@ CommandListEntry *CommandManager::NewIdentifier(const CommandID & nameIn,
       return prev;
 
    {
-      auto entry = std::make_unique<CommandListEntry>();
+      auto entry = std::make_unique<CommandListEntry>( menu );
 
       TranslatableString labelPrefix;
       if (!mSubMenuList.empty())
@@ -698,7 +702,6 @@ CommandListEntry *CommandManager::NewIdentifier(const CommandID & nameIn,
       entry->defaultKey = entry->key;
       entry->labelPrefix = labelPrefix;
       entry->labelTop = mCurrentMenuName.label.main.Stripped();
-      entry->menu = menu;
       entry->finder = finder;
       entry->callback = callback;
       entry->isEffect = bIsEffect;
@@ -771,16 +774,10 @@ CommandListEntry *CommandManager::NewIdentifier(const CommandID & nameIn,
    return entry;
 }
 
-wxString CommandManager::FormatLabelForMenu(const CommandListEntry *entry) const
+Widgets::MenuItemLabel
+CommandManager::FormatLabelForMenu(const CommandListEntry *entry) const
 {
-   auto label = entry->label.Translation();
-   if (!entry->key.empty())
-   {
-      // using GET to compose menu item name for wxWidgets
-      label += wxT("\t") + entry->key.GET();
-   }
-
-   return label;
+   return { entry->label, entry->key };
 }
 
 // A label that may have its accelerator disabled.
@@ -788,54 +785,45 @@ wxString CommandManager::FormatLabelForMenu(const CommandListEntry *entry) const
 // catch them in normal wxWidgets processing, rather than passing the key presses on
 // to the controls that had the focus.  We would like all the menu accelerators to be
 // disabled, in fact.
-wxString CommandManager::FormatLabelWithDisabledAccel(const CommandListEntry *entry) const
+Widgets::MenuItemLabel
+CommandManager::FormatLabelWithDisabledAccel(const CommandListEntry *entry) const
 {
-   auto label = entry->label.Translation();
-#if 1
-   wxString Accel;
-   do{
-      if (!entry->key.empty())
-      {
-         // Dummy accelerator that looks Ok in menus but is non functional.
-         // Note the space before the key.
+   const auto &key = entry->key;
 #ifdef __WXMSW__
-         // using GET to compose menu item name for wxWidgets
-         auto key = entry->key.GET();
-         Accel = wxString("\t ") + key;
-         if( key.StartsWith("Left" )) break;
-         if( key.StartsWith("Right")) break;
-         if( key.StartsWith("Up" )) break;
-         if( key.StartsWith("Down")) break;
-         if( key.StartsWith("Return")) break;
-         if( key.StartsWith("Tab")) break;
-         if( key.StartsWith("Shift+Tab")) break;
-         if( key.StartsWith("0")) break;
-         if( key.StartsWith("1")) break;
-         if( key.StartsWith("2")) break;
-         if( key.StartsWith("3")) break;
-         if( key.StartsWith("4")) break;
-         if( key.StartsWith("5")) break;
-         if( key.StartsWith("6")) break;
-         if( key.StartsWith("7")) break;
-         if( key.StartsWith("8")) break;
-         if( key.StartsWith("9")) break;
-         // Uncomment the below so as not to add the illegal accelerators.
-         // Accel = "";
-         //if( entry->key.StartsWith("Space" )) break;
+   if (!key.empty()) {
+      for (const auto prefix: {
+         "Left",
+         "Right",
+         "Up",
+         "Down",
+         "Return",
+         "Tab",
+         "Shift+Tab",
+         "0",
+         "1",
+         "2",
+         "3",
+         "4",
+         "5",
+         "6",
+         "7",
+         "8",
+         "9",
+
+         // "Space",
+
          // These ones appear to be illegal already and mess up accelerator processing.
-         if( key.StartsWith("NUMPAD_ENTER" )) break;
-         if( key.StartsWith("Backspace" )) break;
-         if( key.StartsWith("Delete" )) break;
+         "NUMPAD_ENTER",
+         "Backspace",
+         "Delete",
+      })
+         if ( key.GET().StartsWith( prefix ) )
+            // Dummy accelerator that looks Ok in menus but is non functional.
+            // Note the space before the key.
+            return { entry->label, " " + key.GET() };
+   }
 #endif
-         //wxLogDebug("Added Accel:[%s][%s]", entry->label, entry->key );
-         // Normal accelerator.
-         // using GET to compose menu item name for wxWidgets
-         Accel = wxString("\t") + entry->key.GET();
-      }
-   } while (false );
-   label += Accel;
-#endif
-   return label;
+   return { entry->label, key };
 }
 ///Enables or disables a menu item based on its name (not the
 ///label in the menu bar, but the name of the command.)
@@ -852,12 +840,13 @@ void CommandManager::Enable(CommandListEntry *entry, bool enabled)
    // LL:  Refresh from real state as we can get out of sync on the
    //      Mac due to its reluctance to enable menus when in a modal
    //      state.
-   entry->enabled = entry->menu->IsEnabled(entry->id);
+   auto state = entry->menu.GetState( entry->id );
+   entry->enabled = state.enabled;
 
    // Only enabled if needed
    if (entry->enabled != enabled) {
-      entry->menu->Enable(entry->id, enabled);
-      entry->enabled = entry->menu->IsEnabled(entry->id);
+      entry->menu.SetState(entry->id, enabled, Widgets::MenuItemState::Enable );
+      entry->enabled = entry->menu.GetState(entry->id).enabled;
    }
 
    if (entry->multi) {
@@ -871,18 +860,13 @@ void CommandManager::Enable(CommandListEntry *entry, bool enabled)
          // multi-items can be spread across multiple sub menus
          CommandListEntry *multiEntry = mCommandNumericIDHash[ID];
          if (multiEntry) {
-            wxMenuItem *item = multiEntry->menu->FindItem(ID);
-
-         if (item) {
-            item->Enable(enabled);
-         } else {
-            // using GET in a log message for devs' eyes only
-            wxLogDebug(wxT("Warning: Menu entry with id %i in %s not found"),
-                ID, entry->name.GET());
+            if ( !multiEntry->menu.SetState(ID, enabled, Widgets::MenuItemState::Enable ) )
+               // using GET in a log message for devs' eyes only
+               wxLogDebug(L"Warning: Menu entry with id %i in %s not found",
+                   ID, entry->name.GET());
          }
-         } else {
-            wxLogDebug(wxT("Warning: Menu entry with id %i not in hash"), ID);
-         }
+         else
+            wxLogDebug(L"Warning: Menu entry with id %i not in hash", ID);
       }
    }
 }
@@ -946,7 +930,8 @@ void CommandManager::Check(const CommandID &name, bool checked)
    if (!entry || !entry->menu || entry->isOccult) {
       return;
    }
-   entry->menu->Check(entry->id, checked);
+   entry->menu.SetState(entry->id, { true, checked },
+      Widgets::MenuItemState::Check );
 }
 
 ///Changes the label text of a menu item
@@ -955,7 +940,7 @@ void CommandManager::Modify(const wxString &name, const TranslatableString &newL
    CommandListEntry *entry = mCommandNameHash[name];
    if (entry && entry->menu) {
       entry->label = newLabel;
-      entry->menu->SetLabel(entry->id, FormatLabelForMenu(entry));
+      entry->menu.SetLabel(entry->id, FormatLabelForMenu(entry));
    }
 }
 
@@ -1187,11 +1172,10 @@ TranslatableStrings CommandManager::GetCategories( AudacityProject& )
       return;
    }
 
-   wxMenuBar *bar = p->GetMenuBar();
-   size_t cnt = bar->GetMenuCount();
-   for (size_t i = 0; i < cnt; i++) {
-      cats.push_back(bar->GetMenuLabelText(i));
-   }
+   auto bar = Widgets::MenuBarHandle( GetProjectFrame( *p ) );
+   if ( bar )
+      for( const auto &item : bar )
+         cats.push_back( item.title.Stripped() );
 
    cats.push_back(COMMAND);
 #endif
@@ -1398,7 +1382,7 @@ void CommandManager::BeginOccultCommands()
    // Make a temporary menu bar collecting items added after.
    // This bar will be discarded but other side effects on the command
    // manager persist.
-   mTempMenuBar = AddMenuBar(wxT("ext-menu"));
+   PushMenuBar( L"ext-menu" );
    bMakingOccultCommands = true;
 }
 
@@ -1406,7 +1390,6 @@ void CommandManager::EndOccultCommands()
 {
    PopMenuBar();
    bMakingOccultCommands = false;
-   mTempMenuBar.reset();
 }
 
 void CommandManager::SetCommandFlags(const CommandID &name,

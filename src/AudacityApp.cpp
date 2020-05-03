@@ -34,7 +34,6 @@ It handles initialization and termination by subclassing wxApp.
 #include <wx/docview.h>
 #include <wx/ipc.h>
 #include <wx/window.h>
-#include <wx/menu.h>
 #include <wx/snglinst.h>
 #include <wx/splash.h>
 #include <wx/stdpaths.h>
@@ -107,6 +106,7 @@ It handles initialization and termination by subclassing wxApp.
 #include "tracks/ui/Scrubbing.h"
 #include "FileConfig.h"
 #include "widgets/FileHistory.h"
+#include "widgets/MenuHandle.h"
 #include "update/UpdateManager.h"
 #include "widgets/wxWidgetsBasicUI.h"
 
@@ -1463,22 +1463,21 @@ bool AudacityApp::InitPart2()
       // On the Mac, users don't expect a program to quit when you close the last window.
       // Create a menubar that will show when all project windows are closed.
 
-      auto fileMenu = std::make_unique<wxMenu>();
-      auto urecentMenu = std::make_unique<wxMenu>();
-      auto recentMenu = urecentMenu.get();
-      fileMenu->Append(wxID_NEW, wxString(_("&New")) + wxT("\tCtrl+N"));
-      fileMenu->Append(wxID_OPEN, wxString(_("&Open...")) + wxT("\tCtrl+O"));
-      fileMenu->AppendSubMenu(urecentMenu.release(), _("Open &Recent..."));
-      fileMenu->Append(wxID_ABOUT, _("&About Audacity..."));
-      fileMenu->Append(wxID_PREFERENCES, wxString(_("&Preferences...")) + wxT("\tCtrl+,"));
+      Widgets::MenuHandle fileMenu;
+      Widgets::MenuHandle recentMenu;
+      fileMenu.Append({{ XXO("&New"), "Ctrl+N" }}, {}, {}, wxID_NEW );
+      fileMenu.Append({{ XXO("&Open..."), "Ctrl+O" }}, {}, {}, wxID_OPEN );
+      fileMenu.AppendSubMenu(std::move( recentMenu ), XXO("Open &Recent..."));
+      fileMenu.Append(XXO("&About Audacity..."), {}, {}, wxID_ABOUT);
+      fileMenu.Append({{ XXO("&Preferences..."), "Ctrl+," }}, {}, {}, wxID_PREFERENCES );
 
       {
-         auto menuBar = std::make_unique<wxMenuBar>();
-         menuBar->Append(fileMenu.release(), _("&File"));
+         Widgets::MenuBarHandle menuBar;
+         menuBar.Append( std::move( fileMenu ), XXO("&File"));
 
          // PRL:  Are we sure wxWindows will not leak this menuBar?
          // The online documentation is not explicit.
-         wxMenuBar::MacSetCommonMenuBar(menuBar.release());
+         Widgets::MenuBarHandle::MacSetCommonMenuBar( std::move( menuBar ) );
       }
 
       auto &recentFiles = FileHistory::Global();

@@ -36,6 +36,7 @@ Paul Licameli split from WaveTrackView.cpp
 #include "WaveTrack.h"
 #include "WaveTrackLocation.h"
 #include "WaveformSettings.h"
+#include "widgets/MenuHandle.h"
 
 #include <wx/graphics.h>
 #include <wx/dc.h>

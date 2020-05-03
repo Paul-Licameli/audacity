@@ -21,9 +21,11 @@ Paul Licameli split from TrackPanel.cpp
 #include "RefreshCode.h"
 #include "TrackArtist.h"
 #include "TrackPanelMouseEvent.h"
+#include "widgets/MenuHandle.h"
 #include "widgets/PopupMenuTable.h"
 #include "../../images/Cursors.h"
 #include "Prefs.h"
+#include <wx/window.h>
 
 namespace
 {
@@ -312,7 +314,7 @@ UIHandle::Result NoteTrackVZoomHandle::Release
           (PopupMenuTable *) &NoteTrackVRulerMenuTable::Instance();
       auto pMenu = PopupMenuTable::BuildMenu(pParent, pTable, &data);
 
-      pParent->PopupMenu(pMenu.get(), event.m_x, event.m_y);
+      pMenu->Popup( *pParent, { event.m_x, event.m_y } );
 
       return data.result;
    }

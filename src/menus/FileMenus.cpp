@@ -1,5 +1,3 @@
-
-
 #include "../CommonCommandFlags.h"
 #include "FileNames.h"
 #include "Prefs.h"
@@ -20,9 +18,8 @@
 #include "../widgets/AudacityMessageBox.h"
 #include "../widgets/FileHistory.h"
 #include "wxPanelWrapper.h"
-
+#include "../widgets/MenuHandle.h"
 #include <wx/app.h>
-#include <wx/menu.h>
 
 // Menu handler functions
 
@@ -158,11 +155,11 @@ BaseItemSharedPtr FileMenu()
                , Verbatim("")
             }
             ,
-            Special( wxT("PopulateRecentFilesStep"),
-            [](AudacityProject &, wxMenu &theMenu){
+            Special( L"PopulateRecentFilesStep",
+            [](AudacityProject &, Widgets::MenuHandle theMenu){
                // Recent Files and Recent Projects menus
                auto &history = FileHistory::Global();
-               history.UseMenu( &theMenu );
+               history.UseMenu( theMenu );
             } )
          ),
 

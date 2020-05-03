@@ -36,10 +36,10 @@
 #include "ProjectWindows.h"
 #include "commands/CommandManager.h"
 #include "BasicUI.h"
+#include "widgets/MenuHandle.h"
 
 #include <unordered_set>
 
-#include <wx/menu.h>
 #include <wx/windowptr.h>
 
 wxDEFINE_EVENT(EVT_MENU_UPDATE, wxCommandEvent);
@@ -362,7 +362,7 @@ struct MenuItemVisitor : ToolbarMenuVisitor
           dynamic_cast<SpecialItem*>( pItem )) {
          const auto pCurrentMenu = manager.CurrentMenu();
          wxASSERT( pCurrentMenu );
-         pSpecial->fn( project, *pCurrentMenu );
+         pSpecial->fn( project, pCurrentMenu );
       }
       else
          wxASSERT( false );
@@ -432,11 +432,11 @@ void MenuCreator::CreateMenusAndCommands(
 
    // Post step:  place orphan menu items under Extra
    if (!visitor.mOrphanItems.empty())
-   {
-      auto index = menubar->FindMenu(_("Extra"));
-      auto pExtraMenu = (index < 0) ? nullptr : menubar->GetMenu(index);
-      if (pExtraMenu) {
-         commandManager.SetCurrentMenu(pExtraMenu);
+      if (auto end = menubar.end(), iter = std::find_if(menubar.begin(), end,
+            [](auto &&item){ return item.title == XO("Extra");} );
+         iter != end
+      ) {
+         commandManager.SetCurrentMenu((*iter).pSubMenu);
          auto cleanup = finally([&]{
             commandManager.ResetCurrentMenu();
          });
@@ -444,9 +444,8 @@ void MenuCreator::CreateMenusAndCommands(
             if (pItem)
                visitor.DoItem(*pItem);
       }
-   }
 
-   GetProjectFrame( project ).SetMenuBar(menubar.release());
+   std::move( menubar ).AttachTo( GetProjectFrame( project ) );
 
    mLastFlags = AlwaysEnabledFlag;
 
@@ -462,13 +461,6 @@ void MenuManager::Visit( ToolbarMenuVisitor &visitor )
       &MenuTable::ItemRegistry::Registry() );
 }
 
-// Get hackcess to a protected method
-class wxFrameEx : public wxFrame
-{
-public:
-   using wxFrame::DetachMenuBar;
-};
-
 void MenuCreator::RebuildMenuBar(
    AudacityProject &project, CommandManager &cm)
 {
@@ -483,16 +475,7 @@ void MenuCreator::RebuildMenuBar(
    }
 #endif
 
-   // Delete the menus, since we will soon recreate them.
-   // Rather oddly, the menus don't vanish as a result of doing this.
-   {
-      auto &window = static_cast<wxFrameEx&>( GetProjectFrame( project ) );
-      wxWindowPtr<wxMenuBar> menuBar{ window.GetMenuBar() };
-      window.DetachMenuBar();
-      // menuBar gets deleted here
-   }
-
-    cm.PurgeData();
+   cm.PurgeData();
 
    CreateMenusAndCommands(project, cm);
 }

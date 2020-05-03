@@ -25,6 +25,7 @@ Paul Licameli split from TrackPanel.cpp
 #include "Track.h"
 #include "ViewInfo.h"
 #include "../../WaveTrack.h"
+#include "../../widgets/MenuHandle.h"
 
 #undef USE_TRANSCRIPTION_TOOLBAR
 
@@ -32,7 +33,6 @@ Paul Licameli split from TrackPanel.cpp
 #include <algorithm>
 
 #include <wx/app.h>
-#include <wx/menu.h>
 #include <wx/timer.h>
 
 // Yet another experimental scrub would drag the track under a
@@ -1271,17 +1271,18 @@ AttachedItem sAttachment2{
 
 }
 
-void Scrubber::PopulatePopupMenu(wxMenu &menu)
+void Scrubber::PopulatePopupMenu(Widgets::MenuHandle &menu)
 {
    int id = CMD_ID;
    auto &cm = ProjectCommandManager::Get( *mProject );
    for (const auto &item : menuItems()) {
       if (cm.GetEnabled(item.name)) {
          auto test = item.StatusTest;
-         menu.Append(id, item.label.Translation(), wxString{},
-                     test ? wxITEM_CHECK : wxITEM_NORMAL);
-         if(test && (this->*test)())
-            menu.FindItem(id)->Check();
+         if ( test )
+            menu.AppendCheckItem(
+               item.label, {}, { true, (this->*test)() }, id );
+         else
+            menu.Append( item.label, {}, {}, id  );
       }
       ++id;
    }

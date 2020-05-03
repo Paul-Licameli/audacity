@@ -50,9 +50,9 @@
 #include "widgets/AButton.h"
 #include "widgets/AudacityMessageBox.h"
 #include "Grabber.h"
+#include "widgets/MenuHandle.h"
 
 #include <wx/dcclient.h>
-#include <wx/menu.h>
 
 using std::min;
 using std::max;
@@ -1857,28 +1857,33 @@ void AdornedRulerPanel::ShowMenu(const wxPoint & pos)
 {
    const auto &viewInfo = ViewInfo::Get( *GetProject() );
    const auto &playRegion = viewInfo.playRegion;
-   wxMenu rulerMenu;
+   Widgets::MenuHandle rulerMenu;
 
-   rulerMenu.AppendCheckItem(OnToggleQuickPlayID, _("Enable Quick-Play"))->
-      Check(mQuickPlayEnabled);
+   rulerMenu.AppendCheckItem(
+      XXO("Enable Quick-Play"), {},
+      { true, mQuickPlayEnabled }, OnToggleQuickPlayID );
 
-   auto pDrag = rulerMenu.AppendCheckItem(OnSyncQuickPlaySelID, _("Enable dragging selection"));
-   pDrag->Check(mPlayRegionDragsSelection && !playRegion.Locked());
-   pDrag->Enable(mQuickPlayEnabled && !playRegion.Locked());
+   rulerMenu.AppendCheckItem(
+      XXO("Enable dragging selection"), {},
+      { mQuickPlayEnabled && !playRegion.Locked(),
+        mPlayRegionDragsSelection && !playRegion.Locked() }, OnSyncQuickPlaySelID );
 
-   rulerMenu.AppendCheckItem(OnAutoScrollID, _("Update display while playing"))->
-      Check(mViewInfo->bUpdateTrackIndicator);
+   rulerMenu.AppendCheckItem(
+      XXO("Update display while playing"), {},
+      { true, mViewInfo->bUpdateTrackIndicator }, OnAutoScrollID );
 
-   auto pLock = rulerMenu.AppendCheckItem(OnLockPlayRegionID, _("Lock Play Region"));
-   pLock->Check(playRegion.Locked());
-   pLock->Enable( playRegion.Locked() || !playRegion.Empty() );
-
+   rulerMenu.AppendCheckItem(
+      XXO("Lock Play Region"), {},
+      { playRegion.Locked() || !playRegion.Empty(),
+        playRegion.Locked() }, OnLockPlayRegionID );
 
    rulerMenu.AppendSeparator();
-   rulerMenu.AppendCheckItem(OnTogglePinnedStateID, _("Pinned Play Head"))->
-      Check(PinnedHeadPreference.Read());
 
-   PopupMenu(&rulerMenu, pos);
+   rulerMenu.AppendCheckItem(
+      XXO("Pinned Play Head"), {},
+      { true, PinnedHeadPreference.Read() }, OnTogglePinnedStateID );
+
+   rulerMenu.Popup( *this, pos );
 }
 
 void AdornedRulerPanel::ShowScrubMenu(const wxPoint & pos)
@@ -1887,9 +1892,9 @@ void AdornedRulerPanel::ShowScrubMenu(const wxPoint & pos)
    PushEventHandler(&scrubber);
    auto cleanup = finally([this]{ PopEventHandler(); });
 
-   wxMenu rulerMenu;
+   Widgets::MenuHandle rulerMenu;
    scrubber.PopulatePopupMenu(rulerMenu);
-   PopupMenu(&rulerMenu, pos);
+   rulerMenu.Popup( *this, pos );
 }
 
 void AdornedRulerPanel::OnToggleQuickPlay(wxCommandEvent&)

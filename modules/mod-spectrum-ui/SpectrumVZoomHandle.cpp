@@ -20,6 +20,7 @@ Paul Licameli split from WaveTrackVZoomHandle.cpp
 #include "TrackPanelMouseEvent.h"
 #include "WaveTrack.h"
 #include "SpectrogramSettings.h"
+#include "widgets/MenuHandle.h"
 
 SpectrumVZoomHandle::SpectrumVZoomHandle
 (const std::shared_ptr<WaveTrack> &pTrack, const wxRect &rect, int y)

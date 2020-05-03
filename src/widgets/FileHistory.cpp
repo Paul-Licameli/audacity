@@ -17,10 +17,10 @@
 #include "FileHistory.h"
 
 #include <wx/defs.h>
-#include <wx/menu.h>
 
 #include "Internat.h"
 #include "Prefs.h"
+#include "MenuHandle.h"
 
 #include <mutex>
 
@@ -45,6 +45,26 @@ FileHistory &FileHistory::Global()
    });
 
    return history;
+}
+
+auto FileHistory::begin() const -> const_iterator
+{
+   return mHistory.begin();
+}
+
+auto FileHistory::end() const -> const_iterator
+{
+   return mHistory.end();
+}
+
+const FilePath &FileHistory::operator[] ( size_t ii ) const
+{
+   return mHistory[ ii ];
+}
+
+bool FileHistory::empty() const
+{
+   return mHistory.empty();
 }
 
 // File history management
@@ -94,7 +114,7 @@ void FileHistory::Clear()
    NotifyMenus();
 }
 
-void FileHistory::UseMenu(wxMenu *menu)
+void FileHistory::UseMenu(Widgets::MenuHandle menu)
 {
    Compress();
 
@@ -153,29 +173,28 @@ void FileHistory::Save(wxConfigBase & config)
 void FileHistory::NotifyMenus()
 {
    Compress();
-   for (auto pMenu : mMenus)
+   for (auto &pMenu : mMenus)
       if (pMenu)
          NotifyMenu(pMenu);
    Save(*gPrefs);
 }
 
-void FileHistory::NotifyMenu(wxMenu *menu)
+void FileHistory::NotifyMenu(Widgets::MenuHandle menu)
 {
-   wxMenuItemList items = menu->GetMenuItems();
-   for (auto end = items.end(), iter = items.begin(); iter != end;)
-      menu->Destroy(*iter++);
+   menu.Clear();
 
    for (size_t i = 0; i < mHistory.size(); i++) {
       wxString item =  mHistory[i];
       item.Replace( "&", "&&" );
-      menu->Append(mIDBase + 1 + i,item);
+      menu.Append( Verbatim( item ), {}, {}, mIDBase + 1 + i );
    }
 
-   if (mHistory.size() > 0) {
-      menu->AppendSeparator();
-   }
-   menu->Append(mIDBase, _("&Clear"));
-   menu->Enable(mIDBase, mHistory.size() > 0);
+   if (mHistory.size() > 0)
+      menu.AppendSeparator();
+
+   menu.Append( XXO("&Clear"),
+      {},
+      { mHistory.size() > 0 }, mIDBase );
 }
 
 void FileHistory::Compress()
@@ -184,7 +203,7 @@ void FileHistory::Compress()
    auto end = mMenus.end();
    mMenus.erase(
      std::remove_if( mMenus.begin(), end,
-        [](wxWeakRef<wxMenu> &pMenu){ return !pMenu; } ),
+        [](Widgets::MenuHandle &pMenu){ return !pMenu; } ),
      end
    );
 }
