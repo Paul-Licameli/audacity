@@ -21,6 +21,7 @@ Paul Licameli split from WaveTrackVZoomHandle.cpp
 #include "../../../../TrackPanelMouseEvent.h"
 #include "../../../../WaveTrack.h"
 #include "../../../../prefs/WaveformSettings.h"
+#include "../../../../widgets/MenuHandle.h"
 
 WaveformVZoomHandle::WaveformVZoomHandle(
    const std::shared_ptr<WaveTrack> &pTrack, const wxRect &rect, int y)

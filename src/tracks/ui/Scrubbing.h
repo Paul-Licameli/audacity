@@ -117,7 +117,7 @@ public:
    bool CanScrub() const;
 
    // For popup
-   void PopulatePopupMenu(wxMenu &menu);
+   void PopulatePopupMenu(Widgets::MenuHandle &menu);
 
    void OnScrubOrSeek(bool seek);
    void OnScrub(const CommandContext&);

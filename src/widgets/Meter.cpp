@@ -47,7 +47,6 @@
 #include <wx/defs.h>
 #include <wx/dcbuffer.h>
 #include <wx/frame.h>
-#include <wx/menu.h>
 #include <wx/settings.h>
 #include <wx/textdlg.h>
 #include <wx/numdlg.h>
@@ -66,6 +65,7 @@
 #include "../Prefs.h"
 #include "../ShuttleGui.h"
 #include "../Theme.h"
+#include "../widgets/MenuHandle.h"
 
 #include "../AllThemeResources.h"
 #include "../widgets/valnum.h"
@@ -784,18 +784,15 @@ void MeterPanel::OnMouse(wxMouseEvent &evt)
    if (evt.RightDown() ||
        (evt.ButtonDown() && InIcon(&evt)))
    {
-      wxMenu menu;
+      Widgets::MenuHandle menu;
       // Note: these should be kept in the same order as the enum
       if (mIsInput) {
-         wxMenuItem *mi;
-         if (mMonitoring)
-            mi = menu.Append(OnMonitorID, _("Stop Monitoring"));
-         else
-            mi = menu.Append(OnMonitorID, _("Start Monitoring"));
-         mi->Enable(!mActive || mMonitoring);
+         menu.Append(
+            mMonitoring ? XXO("Stop Monitoring") : XXO("Start Monitoring"),  {},
+            { !mActive || mMonitoring }, OnMonitorID );
       }
 
-      menu.Append(OnPreferencesID, _("Options..."));
+      menu.Append(XXO("Options..."), {}, {}, OnPreferencesID);
 
       if (evt.RightDown()) {
          ShowMenu(evt.GetPosition());
@@ -1953,22 +1950,19 @@ void MeterPanel::RestoreState(const State &state)
 
 void MeterPanel::ShowMenu(const wxPoint & pos)
 {
-   wxMenu menu;
+   Widgets::MenuHandle menu;
    // Note: these should be kept in the same order as the enum
    if (mIsInput) {
-      wxMenuItem *mi;
-      if (mMonitoring)
-         mi = menu.Append(OnMonitorID, _("Stop Monitoring"));
-      else
-         mi = menu.Append(OnMonitorID, _("Start Monitoring"));
-      mi->Enable(!mActive || mMonitoring);
+      menu.Append(
+         mMonitoring ? XXO("Stop Monitoring") : XXO("Start Monitoring"), {},
+         { !mActive || mMonitoring }, OnMonitorID );
    }
 
-   menu.Append(OnPreferencesID, _("Options..."));
+   menu.Append(XXO("Options..."), {}, {}, OnPreferencesID);
 
    mAccSilent = true;      // temporarily make screen readers say (close to) nothing on focus events
 
-   PopupMenu(&menu, pos);
+   menu.Popup( *this, pos );
 
    /* if stop/start monitoring was chosen in the menu, then by this point
    OnMonitoring has been called and variables which affect the accessibility

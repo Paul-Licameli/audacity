@@ -40,7 +40,6 @@ AliasedFile s.
 #include <wx/defs.h>
 #include <wx/filename.h>
 #include <wx/listctrl.h>
-#include <wx/menu.h>
 #include <wx/choice.h>
 #include <wx/clipbrd.h>
 #include <wx/dataobj.h>
@@ -59,6 +58,7 @@ AliasedFile s.
 #include "prefs/QualityPrefs.h"
 #include "widgets/AudacityMessageBox.h"
 #include "widgets/ProgressDialog.h"
+#include "widgets/MenuHandle.h"
 
 #include <unordered_map>
 
@@ -534,9 +534,9 @@ void DependencyDialog::OnCopySelectedFiles(wxCommandEvent & WXUNUSED(event))
 void DependencyDialog::OnRightClick( wxListEvent& event)
 {
    static_cast<void>(event);
-   wxMenu menu;
-   menu.Append(CopyNamesToClipboardID, _("&Copy Names to Clipboard"));
-   PopupMenu(&menu);
+   Widgets::MenuHandle menu;
+   menu.Append(XXO("&Copy Names to Clipboard"), {}, {}, CopyNamesToClipboardID);
+   menu.Popup(*this);
 }
 
 void DependencyDialog::OnCopyToClipboard( wxCommandEvent& )
