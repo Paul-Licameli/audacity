@@ -283,6 +283,8 @@ list( APPEND SOURCES
       widgets/Grid.h
       widgets/ImageRoll.cpp
       widgets/ImageRoll.h
+      widgets/MenuHandle.cpp
+      widgets/MenuHandle.h
       widgets/Meter.cpp
       widgets/Meter.h
       widgets/MeterPanelBase.cpp
