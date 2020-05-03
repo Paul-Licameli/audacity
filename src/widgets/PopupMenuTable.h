@@ -20,9 +20,11 @@ tables, and automatically attaches and detaches the event handlers.
 
 class wxCommandEvent;
 
+class wxPoint;
+class wxWindow;
+
 #include <functional>
 #include <vector>
-#include <wx/menu.h> // to inherit wxMenu
 #include <memory>
 
 #include "Internat.h"
@@ -40,13 +42,13 @@ struct AUDACITY_DLL_API PopupMenuTableEntry : Registry::SingleItem
 
    Type type;
    int id;
-   TranslatableString caption;
+   Widgets::MenuItemLabel caption;
    wxCommandEventFunction func;
    PopupMenuHandler &handler;
    StateFunction stateFn;
 
    PopupMenuTableEntry( const Identifier &stringId,
-      Type type_, int id_, const TranslatableString &caption_,
+      Type type_, int id_, const Widgets::MenuItemLabel &caption_,
       wxCommandEventFunction func_, PopupMenuHandler &handler_,
       StateFunction stateFn = {} )
       : SingleItem{ stringId }
@@ -101,6 +103,14 @@ struct PopupMenuVisitor : public MenuVisitor {
    PopupMenuTable &mTable;
 };
 
+// Opaque structure built by PopupMenuTable::BuildMenu
+class AUDACITY_DLL_API PopupMenu
+{
+public:
+   virtual ~PopupMenu();
+   virtual void Popup( wxWindow &window, const wxPoint &pos ) = 0;
+};
+
 class AUDACITY_DLL_API PopupMenuTable : public PopupMenuHandler
 {
 public:
@@ -115,8 +125,8 @@ public:
 
    // Optional pUserData gets passed to the InitUserData routines of tables.
    // No memory management responsibility is assumed by this function.
-   static std::unique_ptr<wxMenu> BuildMenu
-      (wxEvtHandler *pParent, PopupMenuTable *pTable, void *pUserData = NULL);
+   static std::unique_ptr<PopupMenu> BuildMenu(
+      wxEvtHandler *pParent, PopupMenuTable *pTable, void *pUserData = NULL);
 
    const Identifier &Id() const { return mId; }
    const TranslatableString &Caption() const { return mCaption; }
@@ -131,7 +141,7 @@ public:
 
    // menu must have been built by BuildMenu
    // More items get added to the end of it
-   static void ExtendMenu( wxMenu &menu, PopupMenuTable &otherTable );
+   static void ExtendMenu( PopupMenu &menu, PopupMenuTable &otherTable );
    
    const std::shared_ptr< Registry::GroupItem > &Get( void *pUserData )
    {
@@ -185,24 +195,24 @@ protected:
    
    void Append(
       const Identifier &stringId, PopupMenuTableEntry::Type type, int id,
-      const TranslatableString &string, wxCommandEventFunction memFn,
+      const Widgets::MenuItemLabel &string, wxCommandEventFunction memFn,
       // This callback might check or disable a menu item:
       const PopupMenuTableEntry::StateFunction &stateFn );
 
    void AppendItem( const Identifier &stringId, int id,
-      const TranslatableString &string, wxCommandEventFunction memFn,
+      const Widgets::MenuItemLabel &string, wxCommandEventFunction memFn,
       // This callback might check or disable a menu item:
       const PopupMenuTableEntry::StateFunction &stateFn = {} )
    { Append( stringId, PopupMenuTableEntry::Item, id, string, memFn, stateFn ); }
 
    void AppendRadioItem( const Identifier &stringId, int id,
-      const TranslatableString &string, wxCommandEventFunction memFn,
+      const Widgets::MenuItemLabel &string, wxCommandEventFunction memFn,
       // This callback might check or disable a menu item:
       const PopupMenuTableEntry::StateFunction &stateFn = {} )
    { Append( stringId, PopupMenuTableEntry::RadioItem, id, string, memFn, stateFn ); }
 
    void AppendCheckItem( const Identifier &stringId, int id,
-      const TranslatableString &string, wxCommandEventFunction memFn,
+      const Widgets::MenuItemLabel &string, wxCommandEventFunction memFn,
       const PopupMenuTableEntry::StateFunction &stateFn = {} )
    { Append( stringId, PopupMenuTableEntry::CheckItem, id, string, memFn, stateFn ); }
 
@@ -272,7 +282,7 @@ BEGIN_POPUP_MENU(MyTable)
    AppendItem("Cut",
       OnCutSelectedTextID, XO("Cu&t"), POPUP_MENU_FN( OnCutSelectedText ),
       // optional argument:
-      [](PopupMenuHandler &handler, wxMenu &menu, int id)
+      [](PopupMenuHandler &handler, Widgets::MenuHandle &menu, int id)
       {
          auto data = static_cast<MyTable&>( handler ).pData;
          // maybe enable or disable the menu item
@@ -294,7 +304,7 @@ auto pMenu = PopupMenuTable::BuildMenu(pParent, &myTable, &data);
 OtherTable otherTable;
 PopupMenuTable::ExtendMenu( *pMenu, otherTable );
 
-pParent->PopupMenu(pMenu.get(), event.m_x, event.m_y);
+penu.Popup( *pParent, { event.m_x, event.m_y } );
 
 That's all!
 */

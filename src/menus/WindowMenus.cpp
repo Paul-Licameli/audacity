@@ -12,9 +12,9 @@
 #include "../Menus.h"
 #include "../Project.h"
 #include "../commands/CommandContext.h"
+#include "../widgets/MenuHandle.h"
 
 #include <wx/frame.h>
-#include <wx/menu.h>
 
 #undef USE_COCOA
 
@@ -205,8 +205,8 @@ BaseItemSharedPtr WindowMenu()
       ),
 
       Section( "",
-         Special( wxT("PopulateWindowsStep"),
-         [](AudacityProject &, wxMenu &theMenu)
+         Special( L"PopulateWindowsStep",
+         [](AudacityProject &, Widgets::MenuHandle theMenu)
          {
             // Undo previous bindings
             for ( auto id : sReservedIds )
@@ -217,19 +217,16 @@ BaseItemSharedPtr WindowMenu()
             for (auto project : AllProjects{})
             {
                int itemId = ReservedID( ii++, project );
-               wxString itemName = project->GetFrame()->GetTitle();
+               auto itemName = Verbatim( project->GetFrame()->GetTitle() );
                bool isActive = (GetActiveProject() == project.get());
 
                // This should never really happen, but a menu item must have a name
                if (itemName.empty())
-               {
-                  itemName = _("<untitled>");
-               }
+                  itemName = XXO("<untitled>");
 
                // Add it to the menu and check it if it's the active project
-               wxMenuItem *item = theMenu.Append(itemId, itemName);
-               item->SetCheckable(true);
-               item->Check(isActive);
+               theMenu.AppendCheckItem(
+                  itemName, {}, { true, isActive }, itemId );
 
                // Bind the callback
                wxTheApp->Bind( wxEVT_MENU, OnWindow, itemId );

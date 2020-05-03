@@ -27,13 +27,12 @@ Paul Licameli split from TrackPanel.cpp
 #include "../../prefs/PlaybackPrefs.h"
 #include "../../prefs/TracksPrefs.h"
 #include "../../toolbars/ToolManager.h"
+#include "../../widgets/MenuHandle.h"
 
 #undef USE_TRANSCRIPTION_TOOLBAR
 
 
 #include <algorithm>
-
-#include <wx/menu.h>
 
 // Yet another experimental scrub would drag the track under a
 // stationary play head
@@ -1271,17 +1270,18 @@ AttachedItem sAttachment2{
 
 }
 
-void Scrubber::PopulatePopupMenu(wxMenu &menu)
+void Scrubber::PopulatePopupMenu(Widgets::MenuHandle &menu)
 {
    int id = CMD_ID;
    auto &cm = CommandManager::Get( *mProject );
    for (const auto &item : menuItems()) {
       if (cm.GetEnabled(item.name)) {
          auto test = item.StatusTest;
-         menu.Append(id, item.label.Translation(), wxString{},
-                     test ? wxITEM_CHECK : wxITEM_NORMAL);
-         if(test && (this->*test)())
-            menu.FindItem(id)->Check();
+         if ( test )
+            menu.AppendCheckItem(
+               item.label, {}, { true, (this->*test)() }, id );
+         else
+            menu.Append( item.label, {}, {}, id  );
       }
       ++id;
    }

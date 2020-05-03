@@ -21,6 +21,8 @@ Paul Licameli split from TimeTrackVZoomHandle.cpp
 #include "../../../TrackPanelMouseEvent.h"
 #include "../../../TimeTrack.h"
 
+#include <wx/window.h>
+
 TimeTrackVZoomHandle::TimeTrackVZoomHandle(
    const std::shared_ptr<TimeTrack> &pTrack, const wxRect &rect, int y)
       : mpTrack{ pTrack }
@@ -87,7 +89,7 @@ UIHandle::Result TimeTrackVZoomHandle::Release
       };
 
       auto pMenu = PopupMenuTable::BuildMenu(pParent, &TimeTrackMenuTable::Instance(), &data);
-      pParent->PopupMenu(pMenu.get(), event.m_x, event.m_y);
+      pMenu->Popup(*pParent, {event.m_x, event.m_y}   );
    }
 
    return UpdateVRuler | RefreshAll;
