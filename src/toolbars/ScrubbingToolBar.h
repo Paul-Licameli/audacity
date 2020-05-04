@@ -19,6 +19,7 @@
 #include "ToolBar.h"
 
 class AudacityProject;
+class CommandContext;
 
 class wxCommandEvent;
 class wxDC;
@@ -33,8 +34,9 @@ enum {
    STBRulerID,
 
    STBNumButtons,
-   STBFirstButton = STBScrubID
 };
+
+class Scrubber;
 
 class ScrubbingToolBar final : public ToolBar {
 
@@ -48,7 +50,8 @@ public:
 
    void Create(wxWindow *parent) override;
 
-   void OnButton(wxCommandEvent & event);
+   using ScrubberMemFn = void ( Scrubber::* )( const CommandContext& );
+   void OnButton( ScrubberMemFn fn );
 
    void Populate() override;
    void Repaint(wxDC * WXUNUSED(dc)) override {};
@@ -59,10 +62,10 @@ public:
 
 private:
 
-   static AButton *AddButton(
-      ScrubbingToolBar *pBar,
+   static AButton *AddButton( ScrubbingToolBar *pBar,
       teBmps eEnabledUp, teBmps eEnabledDown, teBmps eDisabled,
-      int id, const TranslatableString &label, bool toggle = false);
+      int id, const TranslatableString &label, bool toggle,
+      std::function< void() > action );
 
    void MakeButtons();
 

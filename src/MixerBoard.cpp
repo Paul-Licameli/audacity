@@ -148,8 +148,6 @@ enum {
 #ifdef EXPERIMENTAL_MIDI_OUT
    ID_SLIDER_VELOCITY,
 #endif
-   ID_TOGGLEBUTTON_MUTE,
-   ID_TOGGLEBUTTON_SOLO,
 };
 
 BEGIN_EVENT_TABLE(MixerTrackCluster, wxPanelWrapper)
@@ -163,8 +161,6 @@ BEGIN_EVENT_TABLE(MixerTrackCluster, wxPanelWrapper)
    EVT_SLIDER(ID_SLIDER_VELOCITY, MixerTrackCluster::OnSlider_Velocity)
 #endif
    //v EVT_COMMAND_SCROLL(ID_SLIDER_GAIN, MixerTrackCluster::OnSliderScroll_Gain)
-   EVT_COMMAND(ID_TOGGLEBUTTON_MUTE, wxEVT_COMMAND_BUTTON_CLICKED, MixerTrackCluster::OnButton_Mute)
-   EVT_COMMAND(ID_TOGGLEBUTTON_SOLO, wxEVT_COMMAND_BUTTON_CLICKED, MixerTrackCluster::OnButton_Solo)
 END_EVENT_TABLE()
 
 MixerTrackCluster::MixerTrackCluster(wxWindow* parent,
@@ -269,12 +265,12 @@ MixerTrackCluster::MixerTrackCluster(wxWindow* parent,
    ctrlPos.y += PAN_HEIGHT + kDoubleInset;
    ctrlSize.Set(mMixerBoard->mMuteSoloWidth, MUTE_SOLO_HEIGHT);
    mToggleButton_Mute =
-      safenew AButton(this, ID_TOGGLEBUTTON_MUTE,
+      safenew AButton(this, wxID_ANY,
                   ctrlPos, ctrlSize,
                   *(mMixerBoard->mImageMuteUp), *(mMixerBoard->mImageMuteOver),
                   *(mMixerBoard->mImageMuteDown), *(mMixerBoard->mImageMuteDown),
                   *(mMixerBoard->mImageMuteDisabled),
-                  true); // toggle button
+                  true, [this]{ OnButton_Mute(); }); // toggle button
    mToggleButton_Mute->SetName(_("Mute"));
    mToggleButton_Mute->SetAlternateImages(
       1,
@@ -284,12 +280,12 @@ MixerTrackCluster::MixerTrackCluster(wxWindow* parent,
 
    ctrlPos.y += MUTE_SOLO_HEIGHT;
    mToggleButton_Solo =
-      safenew AButton(this, ID_TOGGLEBUTTON_SOLO,
+      safenew AButton(this, wxID_ANY,
                   ctrlPos, ctrlSize,
                   *(mMixerBoard->mImageSoloUp), *(mMixerBoard->mImageSoloOver),
                   *(mMixerBoard->mImageSoloDown), *(mMixerBoard->mImageSoloDown), 
                   *(mMixerBoard->mImageSoloDisabled),
-                  true); // toggle button
+                  true, [this]{ OnButton_Solo(); }); // toggle button
    mToggleButton_Solo->SetName(_("Solo"));
    bool bSoloNone = ProjectSettings::Get( *mProject ).IsSoloNone();
    mToggleButton_Solo->Show(!bSoloNone);
@@ -751,7 +747,7 @@ void MixerTrackCluster::OnSlider_Pan(wxCommandEvent& WXUNUSED(event))
    this->HandleSliderPan();
 }
 
-void MixerTrackCluster::OnButton_Mute(wxCommandEvent& WXUNUSED(event))
+void MixerTrackCluster::OnButton_Mute()
 {
    TrackUtilities::DoTrackMute(
       *mProject, mTrack.get(), mToggleButton_Mute->WasShiftDown());
@@ -765,7 +761,7 @@ void MixerTrackCluster::OnButton_Mute(wxCommandEvent& WXUNUSED(event))
       TrackPanel::Get( *mProject ).RefreshTrack(mTrack.get());
 }
 
-void MixerTrackCluster::OnButton_Solo(wxCommandEvent& WXUNUSED(event))
+void MixerTrackCluster::OnButton_Solo()
 {
    TrackUtilities::DoTrackSolo(
       *mProject, mTrack.get(), mToggleButton_Solo->WasShiftDown());

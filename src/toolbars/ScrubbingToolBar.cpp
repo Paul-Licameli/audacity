@@ -44,10 +44,6 @@ IMPLEMENT_CLASS(ScrubbingToolBar, ToolBar);
 ////////////////////////////////////////////////////////////
 
 BEGIN_EVENT_TABLE( ScrubbingToolBar, ToolBar )
-EVT_COMMAND_RANGE( STBFirstButton,
-                  STBFirstButton + STBNumButtons - 1,
-                  wxEVT_COMMAND_BUTTON_CLICKED,
-                  ScrubbingToolBar::OnButton )
 EVT_IDLE( ScrubbingToolBar::OnIdle )
 END_EVENT_TABLE()
 
@@ -81,12 +77,11 @@ void ScrubbingToolBar::Create(wxWindow * parent)
 /// This is a convenience function that allows for button creation in
 /// MakeButtons() with fewer arguments
 /// Very similar to code in ControlToolBar...
-AButton *ScrubbingToolBar::AddButton
-(ScrubbingToolBar *pBar,
+AButton *ScrubbingToolBar::AddButton( ScrubbingToolBar *pBar,
  teBmps eEnabledUp, teBmps eEnabledDown, teBmps eDisabled,
  int id,
  const TranslatableString &label,
- bool toggle)
+ bool toggle, std::function< void() > action)
 {
    AButton *&r = pBar->mButtons[id];
 
@@ -97,7 +92,7 @@ AButton *ScrubbingToolBar::AddButton
     wxWindowID(id),
     wxDefaultPosition,
     toggle,
-    theTheme.ImageSize( bmpRecoloredUpSmall ));
+    theTheme.ImageSize( bmpRecoloredUpSmall ), std::move( action ) );
 
    r->SetLabel(label);
    // JKC: Unlike ControlToolBar, does not have a focus rect.  Shouldn't it?
@@ -115,12 +110,13 @@ void ScrubbingToolBar::Populate()
 
    /* Buttons */
    AddButton(this, bmpScrub, bmpScrub, bmpScrubDisabled, STBScrubID,
-             XO("Scrub"), true);
+             XO("Scrub"), true, [this]{ OnButton( &Scrubber::OnScrub ); } );
    AddButton(this, bmpSeek, bmpSeek, bmpSeekDisabled, STBSeekID,
-             XO("Seek"), true);
+             XO("Seek"), true, [this]{ OnButton( &Scrubber::OnSeek ); } );
    AddButton(this, bmpToggleScrubRuler, bmpToggleScrubRuler, bmpToggleScrubRuler,
              STBRulerID,
-             XO("Scrub Ruler"), true);
+             XO("Scrub Ruler"), true,
+                [this]{ OnButton( &Scrubber::OnToggleScrubRuler ); } );
 
 
    RegenerateTooltips();
@@ -212,27 +208,14 @@ void ScrubbingToolBar::DoRegenerateTooltips( bool force )
 #endif
 }
 
-void ScrubbingToolBar::OnButton(wxCommandEvent &event)
+void ScrubbingToolBar::OnButton( ScrubberMemFn fn )
 {
    AudacityProject *p = &mProject;
-   if (!p) return;
+   if (!p)
+      return;
    auto &scrubber = Scrubber::Get( *p );
 
-   int id = event.GetId();
-
-   switch (id) {
-      case STBScrubID:
-         scrubber.OnScrub(*p);
-         break;
-      case STBSeekID:
-         scrubber.OnSeek(*p);
-         break;
-      case STBRulerID:
-         scrubber.OnToggleScrubRuler(*p);
-         break;
-      default:
-         wxASSERT(false);
-   }
+   (scrubber.*fn)( *p );
 
    EnableDisableButtons();
 }

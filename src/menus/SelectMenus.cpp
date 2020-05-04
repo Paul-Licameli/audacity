@@ -911,20 +911,18 @@ void OnCursorTrackEnd(const CommandContext &context)
 void OnSkipStart(const CommandContext &context)
 {
    auto &project = context.project;
-   wxCommandEvent evt;
 
    auto &controlToolBar = ControlToolBar::Get( project );
-   controlToolBar.OnRewind(evt);
+   controlToolBar.OnRewind();
    ProjectHistory::Get( project ).ModifyState(false);
 }
 
 void OnSkipEnd(const CommandContext &context)
 {
    auto &project = context.project;
-   wxCommandEvent evt;
 
    auto &controlToolBar = ControlToolBar::Get( project );
-   controlToolBar.OnFF(evt);
+   controlToolBar.OnFF();
    ProjectHistory::Get( project ).ModifyState(false);
 }
 

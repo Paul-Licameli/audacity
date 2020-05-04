@@ -63,13 +63,6 @@ const int SEPARATOR_WIDTH = 14;
 /// Methods for EditToolBar
 ////////////////////////////////////////////////////////////
 
-BEGIN_EVENT_TABLE( EditToolBar, ToolBar )
-   EVT_COMMAND_RANGE( ETBCutID+first_ETB_ID,
-                      ETBCutID+first_ETB_ID + ETBNumButtons - 1,
-                      wxEVT_COMMAND_BUTTON_CLICKED,
-                      EditToolBar::OnButton )
-END_EVENT_TABLE()
-
 //Standard constructor
 EditToolBar::EditToolBar( AudacityProject &project )
 : ToolBar(project, EditBarID, XO("Edit"), L"Edit")
@@ -99,7 +92,8 @@ AButton *EditToolBar::AddButton(
    teBmps eEnabledUp, teBmps eEnabledDown, teBmps eDisabled,
    int id,
    const TranslatableString &label,
-   bool toggle)
+   bool toggle,
+   std::function< void() > action )
 {
    AButton *&r = pBar->mButtons[id];
 
@@ -109,7 +103,7 @@ AButton *EditToolBar::AddButton(
       wxWindowID(id+first_ETB_ID),
       wxDefaultPosition,
       toggle,
-      theTheme.ImageSize( bmpRecoloredUpSmall ));
+      theTheme.ImageSize( bmpRecoloredUpSmall ), std::move( action ) );
 
    r->SetLabel(label);
 // JKC: Unlike ControlToolBar, does not have a focus rect.  Shouldn't it?
@@ -127,69 +121,79 @@ void EditToolBar::Populate()
 
    /* Buttons */
    // Tooltips slightly more verbose than the menu entries are.
-   AddButton(this, bmpCut, bmpCut, bmpCutDisabled, ETBCutID,
-      XO("Cut selection"));
-   AddButton(this, bmpCopy, bmpCopy, bmpCopyDisabled, ETBCopyID,
-      XO("Copy selection"));
-   AddButton(this, bmpPaste, bmpPaste, bmpPasteDisabled, ETBPasteID,
-      XO("Paste"));
-   AddButton(this, bmpTrim, bmpTrim, bmpTrimDisabled, ETBTrimID,
-      XO("Trim audio outside selection"));
-   AddButton(this, bmpSilence, bmpSilence, bmpSilenceDisabled, ETBSilenceID,
-      XO("Silence audio selection"));
 
-   AddSeparator();
+   struct Entry {
+      TranslatableString label;
 
-   AddButton(this, bmpUndo, bmpUndo, bmpUndoDisabled, ETBUndoID,
-      XO("Undo"));
-   AddButton(this, bmpRedo, bmpRedo, bmpRedoDisabled, ETBRedoID,
-      XO("Redo"));
+      teBmps enabledUp, disabled;
+      teBmps enabledDown;
 
-   AddSeparator();
+      bool enable;
+
+      Entry( const TranslatableString &label, teBmps enabledUp, teBmps disabled,
+         bool enable = true, teBmps enabledDown = -1 )
+      : label{label}, enabledUp{enabledUp}, disabled{disabled}, enable{enable}
+      , enabledDown{enabledDown}
+      {
+         if (enabledDown == -1)
+            enabledDown = enabledUp;
+      }
+
+      bool isToggle() const { return enabledDown != enabledUp; }
+   };
+   using Section = std::vector< Entry >;
+   static const Section table[] = {
+      {
+{ XO("Cut selection"),                bmpCut,         bmpCutDisabled },
+{ XO("Copy selection"),               bmpCopy,        bmpCopyDisabled },
+{ XO("Paste"),                        bmpPaste,       bmpPasteDisabled,      false },
+{ XO("Trim audio outside selection"), bmpTrim,        bmpTrimDisabled },
+{ XO("Silence audio selection"),      bmpSilence,     bmpSilenceDisabled },
+      },
+
+      {
+{ XO("Undo"),                         bmpUndo,        bmpUndoDisabled },
+{ XO("Redo"),                         bmpRedo,        bmpRedoDisabled },
+      },
 
 #ifdef OPTION_SYNC_LOCK_BUTTON
-   AddButton(this, bmpSyncLockTracksUp, bmpSyncLockTracksDown, bmpSyncLockTracksUp, ETBSyncLockID,
-               XO("Sync-Lock Tracks"), true);
-
-   AddSeparator();
+      {
+         // Toggle button
+{ XO("Sync-Lock Tracks"), bmpSyncLockTracksUp, bmpSyncLockTracksUp, true, bmpSyncLockTracksDown },
+      },
 #endif
 
-   // Tooltips match menu entries.
-   // We previously had longer tooltips which were not more clear.
-   AddButton(this, bmpZoomIn, bmpZoomIn, bmpZoomInDisabled, ETBZoomInID,
-      XO("Zoom In"));
-   AddButton(this, bmpZoomOut, bmpZoomOut, bmpZoomOutDisabled, ETBZoomOutID,
-      XO("Zoom Out"));
-   AddButton(this, bmpZoomSel, bmpZoomSel, bmpZoomSelDisabled, ETBZoomSelID,
-      XO("Zoom to Selection"));
-   AddButton(this, bmpZoomFit, bmpZoomFit, bmpZoomFitDisabled, ETBZoomFitID,
-      XO("Fit to Width"));
-
+      {
+{ XO("Zoom In"),                      bmpZoomIn,      bmpZoomInDisabled,     false },
+{ XO("ZoomOut"),                      bmpZoomOut,     bmpZoomOutDisabled,    false },
+{ XO("Zoom to Selection"),            bmpZoomSel,     bmpZoomSelDisabled,    false },
+{ XO("Fit to Width"),                 bmpZoomFit,     bmpZoomFitDisabled,    false },
 #ifdef EXPERIMENTAL_ZOOM_TOGGLE_BUTTON
-   AddButton(this, bmpZoomToggle, bmpZoomToggle, bmpZoomToggleDisabled, ETBZoomToggleID,
-      XO("Zoom Toggle"));
+{ XO("Zoom Toggle"),                  bmpZoomToggle,  bmpZoomToggleDisabled, false },
 #endif
+      },
 
-
-
-   mButtons[ETBZoomInID]->SetEnabled(false);
-   mButtons[ETBZoomOutID]->SetEnabled(false);
-#ifdef EXPERIMENTAL_ZOOM_TOGGLE_BUTTON
-   mButtons[ETBZoomToggleID]->SetEnabled(false);
+#if defined(EXPERIMENTAL_EFFECTS_RACK)
+      {
+{ XO("Show Effects Rack"),            bmpEditEffects, bmpEditEffects },
+      },
 #endif
+   };
 
-   mButtons[ETBZoomSelID]->SetEnabled(false);
-   mButtons[ETBZoomFitID]->SetEnabled(false);
-   mButtons[ETBPasteID]->SetEnabled(false);
+   int ii = 0;
+   for ( const auto &section : table ) {
+      if ( ii > 0 )
+         AddSeparator();
+      for ( const auto &entry : section ) {
+         AddButton( this, entry.enabledUp, entry.enabledDown, entry.disabled,
+            ii, entry.label, entry.isToggle(), [this, ii]{ OnButton( ii ); } )
+               ->SetEnabled( entry.enable );
+         ++ii;
+      }
+   }
 
 #ifdef OPTION_SYNC_LOCK_BUTTON
    mButtons[ETBSyncLockID]->PushDown();
-#endif
-
-#if defined(EXPERIMENTAL_EFFECTS_RACK)
-   AddSeparator();
-   AddButton(this, bmpEditEffects, bmpEditEffects, bmpEditEffects, ETBEffectsID,
-      XO("Show Effects Rack"), true);
 #endif
 
    RegenerateTooltips();
@@ -283,9 +287,8 @@ void EditToolBar::ForAllButtons(int Action)
    }
 }
 
-void EditToolBar::OnButton(wxCommandEvent &event)
+void EditToolBar::OnButton( size_t id )
 {
-   int id = event.GetId()-first_ETB_ID;
    // Be sure the pop-up happens even if there are exceptions, except for buttons which toggle.
    auto cleanup = finally( [&] { mButtons[id]->InteractionOver();});
 

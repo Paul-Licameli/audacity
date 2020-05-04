@@ -846,7 +846,8 @@ AButton * ToolBar::MakeButton(wxWindow *parent,
                               wxWindowID id,
                               wxPoint placement,
                               bool processdownevents,
-                              wxSize size)
+                              wxSize size,
+                              std::function< void() > action)
 {
    // std::max to cater for case of image being bigger than the button.
    int xoff = std::max( 0, (size.GetWidth() - theTheme.Image(eStandardUp).GetWidth())/2);
@@ -862,7 +863,7 @@ AButton * ToolBar::MakeButton(wxWindow *parent,
    wxASSERT(parent); // to justify safenew
    AButton * button =
       safenew AButton(parent, id, placement, size, *up2, *hilite2, *down2, *downHi2,
-            *disable2, processdownevents);
+            *disable2, processdownevents, std::move( action ) );
 
    return button;
 }

@@ -72,7 +72,7 @@ class TranscriptionToolBar final : public ToolBar {
    void Create(wxWindow *parent) override;
 
    void OnKeyEvent(wxKeyEvent & event);
-   void OnPlaySpeed(wxCommandEvent & event);
+   void OnPlaySpeed();
    void OnSpeedSlider(wxCommandEvent & event);
 
    void Populate() override;
@@ -86,15 +86,15 @@ class TranscriptionToolBar final : public ToolBar {
    void OnCaptureKey(wxCommandEvent &event);
 
 #ifdef EXPERIMENTAL_VOICE_DETECTION
-   void OnStartOn(wxCommandEvent & event);
-   void OnStartOff(wxCommandEvent & event);
-   void OnEndOn(wxCommandEvent & event);
-   void OnEndOff(wxCommandEvent & event);
-   void OnSelectSound(wxCommandEvent & event);
-   void OnSelectSilence(wxCommandEvent & event);
-   void OnCalibrate(wxCommandEvent & event);
-   void OnMakeLabel(wxCommandEvent & event);
-   void OnAutomateSelection(wxCommandEvent & event);
+   void OnStartOn();
+   void OnStartOff();
+   void OnEndOn();
+   void OnEndOff();
+   void OnSelectSound();
+   void OnSelectSilence();
+   void OnCalibrate();
+   void OnMakeLabel();
+   void OnAutomateSelection();
    void OnSensitivitySlider(wxCommandEvent & event);
 
    //void Populate() override;
@@ -124,7 +124,8 @@ class TranscriptionToolBar final : public ToolBar {
       TranscriptionToolBar *pBar,
       teBmps eFore, teBmps eDisabled,
       int id,
-      const TranslatableString &label);
+      const TranslatableString &label,
+      std::function< void() > action );
    void MakeAlternateImages(
       teBmps eFore, teBmps eDisabled,
       int id, unsigned altIdx);

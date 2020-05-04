@@ -30,8 +30,6 @@ class AudacityProject;
 // Code duplication warning: these apparently need to be in the
 // same order as the enum in ToolsToolBar.cpp
 
-const int FirstToolID = 11200;
-
 class ToolsToolBar final : public ToolBar {
 
  public:
@@ -44,7 +42,7 @@ class ToolsToolBar final : public ToolBar {
 
    void UpdatePrefs() override;
 
-   void OnTool(wxCommandEvent & evt);
+   void OnTool( int tool );
 
    void SetCurrentTool(int tool);
 
@@ -63,7 +61,8 @@ class ToolsToolBar final : public ToolBar {
    void RegenerateTooltips() override;
    wxImage *MakeToolImage(wxImage *tool, wxImage *mask, int style);
    static AButton *MakeTool(
-      ToolsToolBar *pBar, teBmps eTool, int id, const TranslatableString &label);
+      ToolsToolBar *pBar, teBmps eTool, int id, const TranslatableString &label,
+      std::function< void() > action );
 
    enum { numTools = 6 };
    AButton *mTool[numTools];
@@ -73,7 +72,6 @@ class ToolsToolBar final : public ToolBar {
  public:
 
    DECLARE_CLASS(ToolsToolBar)
-   DECLARE_EVENT_TABLE()
 };
 
 #endif

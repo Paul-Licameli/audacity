@@ -62,13 +62,6 @@ IMPLEMENT_CLASS(ToolsToolBar, ToolBar);
 /// Methods for ToolsToolBar
 ////////////////////////////////////////////////////////////
 
-BEGIN_EVENT_TABLE(ToolsToolBar, ToolBar)
-   EVT_COMMAND_RANGE(ToolCodes::firstTool + FirstToolID,
-                     ToolCodes::lastTool + FirstToolID,
-                     wxEVT_COMMAND_BUTTON_CLICKED,
-                     ToolsToolBar::OnTool)
-END_EVENT_TABLE()
-
 //Standard constructor
 ToolsToolBar::ToolsToolBar( AudacityProject &project )
 : ToolBar(project, ToolsBarID, XO("Tools"), L"Tools")
@@ -171,7 +164,8 @@ void ToolsToolBar::UpdatePrefs()
 
 AButton * ToolsToolBar::MakeTool(
    ToolsToolBar *pBar, teBmps eTool,
-   int id, const TranslatableString &label)
+   int id, const TranslatableString &label,
+   std::function< void() > action )
 {
    AButton *button = ToolBar::MakeButton(pBar,
       bmpRecoloredUpSmall, 
@@ -179,9 +173,9 @@ AButton * ToolsToolBar::MakeTool(
       bmpRecoloredUpHiliteSmall, 
       bmpRecoloredDownSmall, // Not bmpRecoloredHiliteSmall as down is inactive.
       eTool, eTool, eTool,
-      wxWindowID(id + FirstToolID),
+      wxID_ANY,
       wxDefaultPosition, true,
-      theTheme.ImageSize( bmpRecoloredUpSmall ));
+      theTheme.ImageSize( bmpRecoloredUpSmall ), std::move( action ) );
    button->SetLabel( label );
    pBar->mToolSizer->Add( button );
    return button;
@@ -196,12 +190,25 @@ void ToolsToolBar::Populate()
 
    /* Tools */
    using namespace ToolCodes;
-   mTool[ selectTool   ] = MakeTool( this, bmpIBeam, selectTool, XO("Selection Tool") );
-   mTool[ envelopeTool ] = MakeTool( this, bmpEnvelope, envelopeTool, XO("Envelope Tool") );
-   mTool[ drawTool     ] = MakeTool( this, bmpDraw, drawTool, XO("Draw Tool") );
-   mTool[ zoomTool     ] = MakeTool( this, bmpZoom, zoomTool, XO("Zoom Tool") );
-   mTool[ slideTool    ] = MakeTool( this, bmpTimeShift, slideTool, XO("Slide Tool") );
-   mTool[ multiTool    ] = MakeTool( this, bmpMulti, multiTool, XO("Multi-Tool") );
+
+   const struct Entry{
+      decltype(bmpIBeam) bitmap;
+      TranslatableString name;
+   } table[] = {
+      { bmpIBeam,     XO("Selection Tool") },
+      { bmpEnvelope,  XO("Envelope Tool") },
+      { bmpDraw,      XO("Draw Tool") },
+      { bmpZoom,      XO("Zoom Tool") },
+      { bmpTimeShift, XO("Slide Tool") },
+      { bmpMulti,     XO("Multi-Tool") },
+   };
+
+   int ii = 0;
+   for ( const auto &entry : table ) {
+      mTool[ii] = MakeTool( this,
+         entry.bitmap, ii, entry.name, [this, ii]{ OnTool(ii); } );
+      ++ii;
+   }
 
    // It's OK to reset the tool when regenerating this, e.g after visiting preferences.
    SetCurrentTool( selectTool );
@@ -267,10 +274,10 @@ int ToolsToolBar::GetDownTool()
    return firstTool;  // Should never happen
 }
 
-void ToolsToolBar::OnTool(wxCommandEvent & evt)
+void ToolsToolBar::OnTool( int tool )
 {
    using namespace ToolCodes;
-   mCurrentTool = evt.GetId() - firstTool - FirstToolID;
+   mCurrentTool = tool;
    for (int i = 0; i < numTools; i++)
       if (i == mCurrentTool)
          mTool[i]->PushDown();

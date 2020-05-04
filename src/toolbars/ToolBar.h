@@ -161,7 +161,8 @@ public:
                        wxWindowID id,
                        wxPoint placement,
                        bool processdownevents,
-                       wxSize size);
+                       wxSize size,
+                       std::function< void() > action = {});
 
    static
    void MakeAlternateImages(AButton &button, int idx,

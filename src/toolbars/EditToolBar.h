@@ -46,12 +46,13 @@ enum {
 
    ETBZoomInID,
    ETBZoomOutID,
-#ifdef EXPERIMENTAL_ZOOM_TOGGLE_BUTTON
-   ETBZoomToggleID,
-#endif
 
    ETBZoomSelID,
    ETBZoomFitID,
+
+#ifdef EXPERIMENTAL_ZOOM_TOGGLE_BUTTON
+   ETBZoomToggleID,
+#endif
 
 #if defined(EXPERIMENTAL_EFFECTS_RACK)
    ETBEffectsID,
@@ -77,7 +78,7 @@ class EditToolBar final : public ToolBar {
 
    void Create(wxWindow *parent) override;
 
-   void OnButton(wxCommandEvent & event);
+   void OnButton( size_t id );
 
    void Populate() override;
    void Repaint(wxDC * WXUNUSED(dc)) override {};
@@ -89,7 +90,9 @@ class EditToolBar final : public ToolBar {
    static AButton *AddButton(
       EditToolBar *pBar,
       teBmps eEnabledUp, teBmps eEnabledDown, teBmps eDisabled,
-      int id, const TranslatableString &label, bool toggle = false);
+      int id, const TranslatableString &label,
+      bool toggle,
+      std::function< void() > action );
 
    void AddSeparator();
 
@@ -107,7 +110,6 @@ class EditToolBar final : public ToolBar {
  public:
 
    DECLARE_CLASS(EditToolBar)
-   DECLARE_EVENT_TABLE()
 };
 
 #endif

@@ -47,12 +47,12 @@ class AUDACITY_DLL_API ControlToolBar final : public ToolBar {
 
    // msmeyer: These are public, but it's far better to
    // call the "real" interface functions below.
-   void OnRewind(wxCommandEvent & evt);
-   void OnPlay(wxCommandEvent & evt);
-   void OnStop(wxCommandEvent & evt);
-   void OnRecord(wxCommandEvent & evt);
-   void OnFF(wxCommandEvent & evt);
-   void OnPause(wxCommandEvent & evt);
+   void OnRewind();
+   void OnPlay();
+   void OnStop();
+   void OnRecord();
+   void OnFF();
+   void OnPause();
    void OnIdle(wxIdleEvent & event);
 
    // Choice among the appearances of the play button:
@@ -88,7 +88,7 @@ class AUDACITY_DLL_API ControlToolBar final : public ToolBar {
       teBmps eEnabledUp, teBmps eEnabledDown, teBmps eDisabled,
       int id,
       bool processdownevents,
-      const TranslatableString &label);
+      const TranslatableString &label, std::function< void() > action );
 
    static
    void MakeAlternateImages(AButton &button, int idx,

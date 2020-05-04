@@ -119,8 +119,8 @@ private:
    void OnSlider_Velocity(wxCommandEvent& event);
 #endif
    void OnSlider_Pan(wxCommandEvent& event);
-   void OnButton_Mute(wxCommandEvent& event);
-   void OnButton_Solo(wxCommandEvent& event);
+   void OnButton_Mute();
+   void OnButton_Solo();
    //v void OnSliderScroll_Gain(wxScrollEvent& event);
 
 

@@ -377,13 +377,6 @@ BEGIN_EVENT_TABLE(AdornedRulerPanel, CellularPanel)
    EVT_IDLE( AdornedRulerPanel::OnIdle )
    EVT_PAINT(AdornedRulerPanel::OnPaint)
    EVT_SIZE(AdornedRulerPanel::OnSize)
-
-   // Context menu commands
-
-   EVT_COMMAND( OnTogglePinnedStateID,
-               wxEVT_COMMAND_BUTTON_CLICKED,
-               AdornedRulerPanel::OnPinnedButton )
-
 END_EVENT_TABLE()
 
 class AdornedRulerPanel::CommonCell : public TrackPanelCell
@@ -1018,8 +1011,9 @@ void AdornedRulerPanel::ReCreateButtons()
    auto size = theTheme.ImageSize( bmpRecoloredUpSmall );
    size.y = std::min(size.y, GetRulerHeight(false));
 
-   auto buttonMaker = [&]
-   (wxWindowID id, teBmps bitmap, bool toggle)
+   auto buttonMaker = [&](
+      wxWindowID id, teBmps bitmap, bool toggle,
+      std::function< void() > action)
    {
       const auto button =
       ToolBar::MakeButton(
@@ -1027,14 +1021,16 @@ void AdornedRulerPanel::ReCreateButtons()
          bmpRecoloredUpSmall, bmpRecoloredDownSmall, 
          bmpRecoloredUpHiliteSmall, bmpRecoloredHiliteSmall, 
          bitmap, bitmap, bitmap,
-         id, position, toggle, size
+         id, position, toggle, size, std::move( action )
       );
 
       position.x += size.GetWidth();
       mButtons[iButton++] = button;
       return button;
    };
-   auto button = buttonMaker(OnTogglePinnedStateID, bmpPlayPointerPinned, true);
+   auto button = buttonMaker(
+      OnTogglePinnedStateID, bmpPlayPointerPinned, true,
+      [this]{ OnPinnedButton(); });
    ToolBar::MakeAlternateImages(
 	   *button, 3,
 	   bmpRecoloredUpSmall, bmpRecoloredDownSmall,
@@ -1797,7 +1793,7 @@ void AdornedRulerPanel::UpdateButtonStates()
    }
 }
 
-void AdornedRulerPanel::OnPinnedButton(wxCommandEvent & /*event*/)
+void AdornedRulerPanel::OnPinnedButton()
 {
    ShowContextMenu(MenuChoice::QuickPlay, NULL);
 }

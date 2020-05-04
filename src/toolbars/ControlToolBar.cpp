@@ -76,12 +76,6 @@ IMPLEMENT_CLASS(ControlToolBar, ToolBar);
 
 BEGIN_EVENT_TABLE(ControlToolBar, ToolBar)
    EVT_CHAR(ControlToolBar::OnKeyEvent)
-   EVT_BUTTON(ID_PLAY_BUTTON,   ControlToolBar::OnPlay)
-   EVT_BUTTON(ID_STOP_BUTTON,   ControlToolBar::OnStop)
-   EVT_BUTTON(ID_RECORD_BUTTON, ControlToolBar::OnRecord)
-   EVT_BUTTON(ID_REW_BUTTON,    ControlToolBar::OnRewind)
-   EVT_BUTTON(ID_FF_BUTTON,     ControlToolBar::OnFF)
-   EVT_BUTTON(ID_PAUSE_BUTTON,  ControlToolBar::OnPause)
    EVT_IDLE(ControlToolBar::OnIdle)
 END_EVENT_TABLE()
 
@@ -150,14 +144,16 @@ AButton *ControlToolBar::MakeButton(ControlToolBar *pBar,
                                     teBmps eEnabledUp, teBmps eEnabledDown, teBmps eDisabled,
                                     int id,
                                     bool processdownevents,
-                                    const TranslatableString &label)
+                                    const TranslatableString &label,
+                                    std::function< void() > action )
 {
    AButton *r = ToolBar::MakeButton(pBar,
       bmpRecoloredUpLarge, bmpRecoloredDownLarge, bmpRecoloredUpHiliteLarge, bmpRecoloredHiliteLarge,
       eEnabledUp, eEnabledDown, eDisabled,
       wxWindowID(id),
       wxDefaultPosition, processdownevents,
-      theTheme.ImageSize( bmpRecoloredUpLarge ));
+      theTheme.ImageSize( bmpRecoloredUpLarge ),
+      std::move( action ) );
    r->SetLabel(label);
    enum { deflation =
 #ifdef __WXMAC__
@@ -189,10 +185,10 @@ void ControlToolBar::Populate()
    MakeButtonBackgroundsLarge();
 
    mPause = MakeButton(this, bmpPause, bmpPause, bmpPauseDisabled,
-      ID_PAUSE_BUTTON,  true,  XO("Pause"));
+      ID_PAUSE_BUTTON,  true,  XO("Pause"), [this]{ OnPause(); } );
 
    mPlay = MakeButton(this, bmpPlay, bmpPlay, bmpPlayDisabled,
-      ID_PLAY_BUTTON, true, XO("Play"));
+      ID_PLAY_BUTTON, true, XO("Play"), [this]{ OnPlay(); } );
    MakeAlternateImages(*mPlay, 1, bmpLoop, bmpLoop, bmpLoopDisabled);
    MakeAlternateImages(*mPlay, 2,
       bmpCutPreview, bmpCutPreview, bmpCutPreviewDisabled);
@@ -203,16 +199,16 @@ void ControlToolBar::Populate()
    mPlay->FollowModifierKeys();
 
    mStop = MakeButton(this, bmpStop, bmpStop, bmpStopDisabled ,
-      ID_STOP_BUTTON, false, XO("Stop"));
+      ID_STOP_BUTTON, false, XO("Stop"), [this]{ OnStop(); } );
 
    mRewind = MakeButton(this, bmpRewind, bmpRewind, bmpRewindDisabled,
-      ID_REW_BUTTON, false, XO("Skip to Start"));
+      ID_REW_BUTTON, false, XO("Skip to Start"), [this]{ OnRewind(); } );
 
    mFF = MakeButton(this, bmpFFwd, bmpFFwd, bmpFFwdDisabled,
-      ID_FF_BUTTON, false, XO("Skip to End"));
+      ID_FF_BUTTON, false, XO("Skip to End"), [this]{ OnFF(); }) ;
 
    mRecord = MakeButton(this, bmpRecord, bmpRecord, bmpRecordDisabled,
-      ID_RECORD_BUTTON, false, XO("Record"));
+      ID_RECORD_BUTTON, false, XO("Record"), [this]{ OnRecord(); }) ;
 
    bool bPreferNewTrack;
    gPrefs->Read("/GUI/PreferNewTrackRecord",&bPreferNewTrack, false);
@@ -546,7 +542,7 @@ void ControlToolBar::OnKeyEvent(wxKeyEvent & event)
    event.Skip();
 }
 
-void ControlToolBar::OnPlay(wxCommandEvent & WXUNUSED(evt))
+void ControlToolBar::OnPlay()
 {
    auto p = &mProject;
    auto &projectAudioManager = ProjectAudioManager::Get( mProject );
@@ -560,7 +556,7 @@ void ControlToolBar::OnPlay(wxCommandEvent & WXUNUSED(evt))
    PlayDefault();
 }
 
-void ControlToolBar::OnStop(wxCommandEvent & WXUNUSED(evt))
+void ControlToolBar::OnStop()
 {
    auto &projectAudioManager = ProjectAudioManager::Get( mProject );
    bool canStop = projectAudioManager.CanStopAudioStream();
@@ -580,7 +576,7 @@ void ControlToolBar::PlayDefault()
 }
 
 /*! @excsafety{Strong} -- For state of current project's tracks */
-void ControlToolBar::OnRecord(wxCommandEvent &evt)
+void ControlToolBar::OnRecord()
 {
    // TODO: It would be neater if Menu items and Toolbar buttons used the same code for
    // enabling/disabling, and all fell into the same action routines.
@@ -591,7 +587,7 @@ void ControlToolBar::OnRecord(wxCommandEvent &evt)
    ProjectAudioManager::Get( mProject ).OnRecord( altAppearance );
 }
 
-void ControlToolBar::OnPause(wxCommandEvent & WXUNUSED(evt))
+void ControlToolBar::OnPause()
 {
    ProjectAudioManager::Get( mProject ).OnPause();
 }
@@ -656,7 +652,7 @@ void ControlToolBar::OnIdle(wxIdleEvent & event)
    EnableDisableButtons();
 }
 
-void ControlToolBar::OnRewind(wxCommandEvent & WXUNUSED(evt))
+void ControlToolBar::OnRewind()
 {
    mRewind->PushDown();
    mRewind->PopUp();
@@ -668,7 +664,7 @@ void ControlToolBar::OnRewind(wxCommandEvent & WXUNUSED(evt))
    }
 }
 
-void ControlToolBar::OnFF(wxCommandEvent & WXUNUSED(evt))
+void ControlToolBar::OnFF()
 {
    mFF->PushDown();
    mFF->PopUp();

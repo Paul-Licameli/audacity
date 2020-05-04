@@ -160,7 +160,7 @@ private:
    void OnAutoScroll();
    void OnLockPlayRegion();
 
-   void OnPinnedButton(wxCommandEvent & event);
+   void OnPinnedButton();
    void OnTogglePinnedState();
 
    bool mPlayRegionDragsSelection;
