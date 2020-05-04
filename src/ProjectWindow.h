@@ -153,7 +153,6 @@ public:
  public:
    // Message Handlers
 
-   void OnMenu(wxCommandEvent & event);
    void OnUpdateUI(wxUpdateUIEvent & event);
 
    void MacShowUndockedToolbars(bool show);
