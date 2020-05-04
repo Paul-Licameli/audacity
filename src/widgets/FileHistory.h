@@ -11,6 +11,7 @@
 #ifndef __AUDACITY_WIDGETS_FILEHISTORY__
 #define __AUDACITY_WIDGETS_FILEHISTORY__
 
+#include <functional>
 #include <vector>
 #include <algorithm>
 #include <wx/defs.h>
@@ -28,17 +29,10 @@ namespace Widgets {
 class AUDACITY_DLL_API FileHistory
 {
  public:
-   FileHistory(size_t maxfiles = 12, wxWindowID idbase = wxID_FILE);
+   FileHistory(size_t maxfiles = 12);
    virtual ~FileHistory();
    FileHistory( const FileHistory& ) = delete;
    FileHistory &operator =( const FileHistory & ) = delete;
-
-   // These constants define the range of IDs reserved by the global file history
-   enum {
-      ID_RECENT_CLEAR = 6100,
-      ID_RECENT_FIRST = 6101,
-      ID_RECENT_LAST  = 6112
-   };
 
    static FileHistory &Global();
 
@@ -51,6 +45,14 @@ class AUDACITY_DLL_API FileHistory
    // also whenever the history changes.
    void UseMenu(Widgets::MenuHandle menu);
 
+   // Type of function that receives notification of selection from the list
+   // Return value is true if the item should remain in the list
+   using Callback = std::function< bool( const FilePath& ) >;
+
+   // Set the callback (returning the previous)
+   Callback SetCallback( Callback callback );
+
+   // Load and save history contents to configuration file
    void Load(wxConfigBase& config, const wxString & group = wxEmptyString);
    void Save(wxConfigBase& config);
 
@@ -69,12 +71,12 @@ class AUDACITY_DLL_API FileHistory
    void Compress();
 
    size_t mMaxFiles;
-   wxWindowID mIDBase;
 
    std::vector< Widgets::MenuHandle > mMenus;
    FilePaths mHistory;
 
    wxString mGroup;
+   Callback mCallback;
 };
 
 #endif

@@ -56,9 +56,7 @@ class AudacityApp final : public wxApp {
    void OnQueryEndSession(wxCloseEvent & event);
    void OnEndSession(wxCloseEvent & event);
 
-   // Most Recently Used File support (for all platforms).
-   void OnMRUClear(wxCommandEvent &event);
-   void OnMRUFile(wxCommandEvent &event);
+   bool OnMRUFile( const FilePath &path );
    // Backend for above - returns true for success, false for failure
    bool MRUOpen(const FilePath &fileName);
    // A wrapper of the above that does not throw

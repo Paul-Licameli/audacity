@@ -806,11 +806,6 @@ BEGIN_EVENT_TABLE(AudacityApp, wxApp)
    EVT_SOCKET(ID_IPC_SOCKET, AudacityApp::OnSocketEvent)
 #endif
 
-   // Recent file event handlers.
-   EVT_MENU(FileHistory::ID_RECENT_CLEAR, AudacityApp::OnMRUClear)
-   EVT_MENU_RANGE(FileHistory::ID_RECENT_FIRST, FileHistory::ID_RECENT_LAST,
-      AudacityApp::OnMRUFile)
-
    // Handle AppCommandEvents (usually from a script)
    EVT_APP_COMMAND(wxID_ANY, AudacityApp::OnReceiveCommand)
 
@@ -862,18 +857,11 @@ bool AudacityApp::SafeMRUOpen(const wxString &fullPathStr)
    return GuardedCall< bool >( [&]{ return MRUOpen( fullPathStr ); } );
 }
 
-void AudacityApp::OnMRUClear(wxCommandEvent& WXUNUSED(event))
-{
-   FileHistory::Global().Clear();
-}
-
-//vvv Basically, anything from Recent Files is treated as a .aup3, until proven otherwise,
+//vvv Basically, anything from Recent Files is treated as a .aup, until proven otherwise,
 // then it tries to Import(). Very questionable handling, imo.
 // Better, for example, to check the file type early on.
-void AudacityApp::OnMRUFile(wxCommandEvent& event) {
-   int n = event.GetId() - FileHistory::ID_RECENT_FIRST;
+bool AudacityApp::OnMRUFile( const FilePath &fullPathStr ) {
    auto &history = FileHistory::Global();
-   const auto &fullPathStr = history[ n ];
 
    // Try to open only if not already open.
    // Test IsAlreadyOpen() here even though AudacityProject::MRUOpen() also now checks,
@@ -883,8 +871,8 @@ void AudacityApp::OnMRUFile(wxCommandEvent& event) {
    // PRL: Don't call SafeMRUOpen
    // -- if open fails for some exceptional reason of resource exhaustion that
    // the user can correct, leave the file in history.
-   if (!ProjectFileManager::IsAlreadyOpen(fullPathStr) && !MRUOpen(fullPathStr))
-      history.Remove(n);
+   return ProjectFileManager::IsAlreadyOpen(fullPathStr) ||
+      MRUOpen(fullPathStr);
 }
 
 void AudacityApp::OnTimer(wxTimerEvent& WXUNUSED(event))
@@ -1457,6 +1445,8 @@ bool AudacityApp::InitPart2()
 
       auto &recentFiles = FileHistory::Global();
       recentFiles.UseMenu(recentMenu);
+      recentFiles.SetCallback( [this]( const FilePath &path ){
+         return OnMRUFile( path ); } );
 
 #endif //__WXMAC__
       temporarywindow.Show(false);

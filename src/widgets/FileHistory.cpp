@@ -24,10 +24,9 @@
 
 #include <mutex>
 
-FileHistory::FileHistory(size_t maxfiles, wxWindowID base)
+FileHistory::FileHistory(size_t maxfiles)
 {
    mMaxFiles = maxfiles;
-   mIDBase = base;
 }
 
 FileHistory::~FileHistory()
@@ -37,8 +36,7 @@ FileHistory::~FileHistory()
 FileHistory &FileHistory::Global()
 {
    // TODO - read the number of files to store in history from preferences
-   static FileHistory history{
-      ID_RECENT_LAST - ID_RECENT_FIRST + 1, ID_RECENT_CLEAR };
+   static FileHistory history;
    static std::once_flag flag;
    std::call_once( flag, [&]{
       history.Load(*gPrefs, L"RecentFiles");
@@ -131,6 +129,13 @@ void FileHistory::UseMenu(Widgets::MenuHandle menu)
    NotifyMenu( menu );
 }
 
+auto FileHistory::SetCallback( Callback callback ) -> Callback
+{
+   auto result = std::move( mCallback );
+   mCallback = std::move( callback );
+   return result;
+}
+
 void FileHistory::Load(wxConfigBase & config, const wxString & group)
 {
    mHistory.clear();
@@ -186,15 +191,17 @@ void FileHistory::NotifyMenu(Widgets::MenuHandle menu)
    for (size_t i = 0; i < mHistory.size(); i++) {
       wxString item =  mHistory[i];
       item.Replace( "&", "&&" );
-      menu.Append( VerbatimLabel( item ), {}, {}, mIDBase + 1 + i );
+      menu.Append( VerbatimLabel( item ), [this, i]{
+         if ( mCallback )
+            if( !mCallback( ( *this )[ i ] ) )
+               Remove( i );
+      } );
    }
 
    if (mHistory.size() > 0)
       menu.AppendSeparator();
 
-   menu.Append( XXO("&Clear"),
-      {},
-      { mHistory.size() > 0 }, mIDBase );
+   menu.Append( XXO("&Clear"), [this]{ Clear(); }, { mHistory.size() > 0 } );
 }
 
 void FileHistory::Compress()
@@ -204,7 +211,6 @@ void FileHistory::Compress()
    mMenus.erase(
      std::remove_if( mMenus.begin(), end,
         [](Widgets::MenuHandle &pMenu){ return !pMenu; } ),
-     end
-   );
+     end );
 }
 
