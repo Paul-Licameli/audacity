@@ -672,11 +672,6 @@ private:
 #endif
 
 static const int kDummyID = 20000;
-static const int kSaveAsID = 20001;
-static const int kImportID = 20002;
-static const int kExportID = 20003;
-static const int kDefaultsID = 20004;
-static const int kOptionsID = 20005;
 static const int kUserPresetsDummyID = 20006;
 static const int kDeletePresetDummyID = 20007;
 static const int kMenuID = 20100;
@@ -686,9 +681,6 @@ static const int kRewindID = 20103;
 static const int kFFwdID = 20104;
 static const int kPlaybackID = 20105;
 static const int kCaptureID = 20106;
-static const int kUserPresetsID = 21000;
-static const int kDeletePresetID = 22000;
-static const int kFactoryPresetsID = 23000;
 
 BEGIN_EVENT_TABLE(EffectUIHost, wxDialogWrapper)
 EVT_INIT_DIALOG(EffectUIHost::OnInitDialog)
@@ -704,14 +696,6 @@ EVT_CHECKBOX(kEnableID, EffectUIHost::OnEnable)
 EVT_BUTTON(kPlayID, EffectUIHost::OnPlay)
 EVT_BUTTON(kRewindID, EffectUIHost::OnRewind)
 EVT_BUTTON(kFFwdID, EffectUIHost::OnFFwd)
-EVT_MENU(kSaveAsID, EffectUIHost::OnSaveAs)
-EVT_MENU(kImportID, EffectUIHost::OnImport)
-EVT_MENU(kExportID, EffectUIHost::OnExport)
-EVT_MENU(kOptionsID, EffectUIHost::OnOptions)
-EVT_MENU(kDefaultsID, EffectUIHost::OnDefaults)
-EVT_MENU_RANGE(kUserPresetsID, kUserPresetsID + 999, EffectUIHost::OnUserPreset)
-EVT_MENU_RANGE(kDeletePresetID, kDeletePresetID + 999, EffectUIHost::OnDeletePreset)
-EVT_MENU_RANGE(kFactoryPresetsID, kFactoryPresetsID + 999, EffectUIHost::OnFactoryPreset)
 END_EVENT_TABLE()
 
 EffectUIHost::EffectUIHost(wxWindow *parent,
@@ -1267,14 +1251,13 @@ void EffectUIHost::OnMenu(wxCommandEvent & WXUNUSED(evt))
    {
       Widgets::MenuHandle sub;
       for (size_t i = 0, cnt = mUserPresets.size(); i < cnt; i++)
-      {
-         sub.Append( VerbatimLabel( mUserPresets[i] ), {}, {}, kUserPresetsID + i );
-      }
+         sub.Append(
+            VerbatimLabel( mUserPresets[i] ), [this, i]{ OnUserPreset( i ); } );
       menu.AppendSubMenu(std::move( sub ), XXO("User Presets") );
    }
    
-   menu.Append(XXO("Save Preset..."), {}, {}, kSaveAsID);
-   
+   menu.Append(XXO("Save Preset..."), [this]{ OnSaveAs(); } );
+
    if (mUserPresets.size() == 0)
    {
       menu.Append(
@@ -1284,9 +1267,8 @@ void EffectUIHost::OnMenu(wxCommandEvent & WXUNUSED(evt))
    {
       Widgets::MenuHandle sub;
       for (size_t i = 0, cnt = mUserPresets.size(); i < cnt; i++)
-      {
-         sub.Append( VerbatimLabel( mUserPresets[i] ), {}, {}, kDeletePresetID + i );
-      }
+         sub.Append(
+            VerbatimLabel( mUserPresets[i] ), [this, i]{ OnDeletePreset( i ); } );
       menu.AppendSubMenu( std::move( sub ), XXO("Delete Preset") );
    }
    
@@ -1296,7 +1278,7 @@ void EffectUIHost::OnMenu(wxCommandEvent & WXUNUSED(evt))
    
    {
       Widgets::MenuHandle sub;
-      sub.Append( XXO("Defaults"), {}, {}, kDefaultsID );
+      sub.Append( XXO("Defaults"), [this]{ OnDefaults(); } );
       if (factory.size() > 0)
       {
          sub.AppendSeparator();
@@ -1304,11 +1286,9 @@ void EffectUIHost::OnMenu(wxCommandEvent & WXUNUSED(evt))
          {
             auto label = VerbatimLabel( factory[i] );
             if (label.empty())
-            {
                label = XXO("None");
-            }
             
-            sub.Append( label, {}, {}, kFactoryPresetsID + i );
+            sub.Append( label, [this, i]{ OnFactoryPreset( i ); } );
          }
       }
       menu.AppendSubMenu( std::move( sub ), XXO("Factory Presets") );
@@ -1316,12 +1296,12 @@ void EffectUIHost::OnMenu(wxCommandEvent & WXUNUSED(evt))
    
    menu.AppendSeparator();
    menu.Append(
-      XXO("Import..."), {}, { mClient->CanExportPresets() }, kImportID );
+      XXO("Import..."), [this]{ OnImport(); }, { mClient->CanExportPresets() } );
    menu.Append(
-      XXO("Export..."), {}, { mClient->CanExportPresets() }, kExportID );
+      XXO("Export..."), [this]{ OnExport(); }, { mClient->CanExportPresets() } );
    menu.AppendSeparator();
    menu.Append(
-      XXO("Options..."), {}, { mClient->HasOptions() }, kOptionsID );
+      XXO("Options..."), [this]{ OnOptions(); }, { mClient->HasOptions() } );
    menu.AppendSeparator();
    
    {
@@ -1528,26 +1508,24 @@ void EffectUIHost::OnCapture(wxCommandEvent & evt)
    UpdateControls();
 }
 
-void EffectUIHost::OnUserPreset(wxCommandEvent & evt)
+void EffectUIHost::OnUserPreset( size_t index )
 {
-   int preset = evt.GetId() - kUserPresetsID;
-   
-   mEffect->LoadUserPreset(mEffect->GetUserPresetsGroup(mUserPresets[preset]));
+   mEffect->LoadUserPreset(mEffect->GetUserPresetsGroup(mUserPresets[index]));
    
    return;
 }
 
-void EffectUIHost::OnFactoryPreset(wxCommandEvent & evt)
+void EffectUIHost::OnFactoryPreset( size_t index )
 {
-   mEffect->LoadFactoryPreset(evt.GetId() - kFactoryPresetsID);
+   mEffect->LoadFactoryPreset( index );
    
    return;
 }
 
-void EffectUIHost::OnDeletePreset(wxCommandEvent & evt)
+void EffectUIHost::OnDeletePreset( size_t index )
 {
-   auto preset = mUserPresets[evt.GetId() - kDeletePresetID];
-   
+   auto preset = mUserPresets[ index ];
+
    int res = AudacityMessageBox(
                                 XO("Are you sure you want to delete \"%s\"?").Format( preset ),
                                 XO("Delete Preset"),
@@ -1562,7 +1540,7 @@ void EffectUIHost::OnDeletePreset(wxCommandEvent & evt)
    return;
 }
 
-void EffectUIHost::OnSaveAs(wxCommandEvent & WXUNUSED(evt))
+void EffectUIHost::OnSaveAs()
 {
    wxTextCtrl *text;
    wxString name;
@@ -1636,40 +1614,30 @@ void EffectUIHost::OnSaveAs(wxCommandEvent & WXUNUSED(evt))
       
       break;
    }
-   
-   return;
 }
 
-void EffectUIHost::OnImport(wxCommandEvent & WXUNUSED(evt))
+void EffectUIHost::OnImport()
 {
    mClient->ImportPresets();
    
    LoadUserPresets();
-   
-   return;
 }
 
-void EffectUIHost::OnExport(wxCommandEvent & WXUNUSED(evt))
+void EffectUIHost::OnExport()
 {
    // may throw
    // exceptions are handled in AudacityApp::OnExceptionInMainLoop
    mClient->ExportPresets();
-   
-   return;
 }
 
-void EffectUIHost::OnOptions(wxCommandEvent & WXUNUSED(evt))
+void EffectUIHost::OnOptions()
 {
    mClient->ShowOptions();
-   
-   return;
 }
 
-void EffectUIHost::OnDefaults(wxCommandEvent & WXUNUSED(evt))
+void EffectUIHost::OnDefaults()
 {
    mEffect->LoadFactoryDefaults();
-   
-   return;
 }
 
 wxBitmap EffectUIHost::CreateBitmap(const char * const xpm[], bool up, bool pusher)

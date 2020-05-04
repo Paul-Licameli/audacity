@@ -1052,16 +1052,6 @@ void Scrubber::OnToggleScrubRuler(const CommandContext&)
    CheckMenuItems();
 }
 
-enum { CMD_ID = 8000 };
-
-#define THUNK(Name) Scrubber::Thunk<&Scrubber::Name>
-
-BEGIN_EVENT_TABLE(Scrubber, wxEvtHandler)
-   EVT_MENU(CMD_ID,     THUNK(OnScrub))
-   EVT_MENU(CMD_ID + 1, THUNK(OnSeek))
-   EVT_MENU(CMD_ID + 2, THUNK(OnToggleScrubRuler))
-END_EVENT_TABLE()
-
 //static_assert(menuItems().size() == 3, "wrong number of items");
 
 static auto sPlayAtSpeedStatus = XO("Playing at Speed");
@@ -1272,18 +1262,17 @@ AttachedItem sAttachment2{
 
 void Scrubber::PopulatePopupMenu(Widgets::MenuHandle &menu)
 {
-   int id = CMD_ID;
    auto &cm = CommandManager::Get( *mProject );
    for (const auto &item : menuItems()) {
       if (cm.GetEnabled(item.name)) {
          auto test = item.StatusTest;
+         auto action = [this, item]{ (this->*item.memFn)( *mProject ); };
          if ( test )
             menu.AppendCheckItem(
-               item.label, {}, { true, (this->*test)() }, id );
+               item.label, action, { true, (this->*test)() } );
          else
-            menu.Append( item.label, {}, {}, id  );
+            menu.Append( item.label, action  );
       }
-      ++id;
    }
 }
 

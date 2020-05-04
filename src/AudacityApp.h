@@ -47,10 +47,10 @@ class AudacityApp final : public wxApp {
    // These are currently only used on Mac OS, where it's
    // possible to have a menu bar but no windows open.  It doesn't
    // hurt any other platforms, though.
-   void OnMenuAbout(wxCommandEvent & event);
-   void OnMenuNew(wxCommandEvent & event);
-   void OnMenuOpen(wxCommandEvent & event);
-   void OnMenuPreferences(wxCommandEvent & event);
+   void OnMenuAbout();
+   void OnMenuNew();
+   void OnMenuOpen();
+   void OnMenuPreferences();
    void OnMenuExit(wxCommandEvent & event);
 
    void OnQueryEndSession(wxCloseEvent & event);

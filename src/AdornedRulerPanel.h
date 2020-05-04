@@ -154,14 +154,14 @@ private:
    void ShowScrubMenu(const wxPoint & pos);
    void DragSelection();
    void HandleSnapping();
-   void OnToggleQuickPlay(wxCommandEvent &evt);
-   void OnSyncSelToQuickPlay(wxCommandEvent &evt);
-   //void OnTimelineToolTips(wxCommandEvent &evt);
-   void OnAutoScroll(wxCommandEvent &evt);
-   void OnLockPlayRegion(wxCommandEvent &evt);
+   void OnToggleQuickPlay();
+   void OnSyncSelToQuickPlay();
+   //void OnTimelineToolTips();
+   void OnAutoScroll();
+   void OnLockPlayRegion();
 
    void OnPinnedButton(wxCommandEvent & event);
-   void OnTogglePinnedState(wxCommandEvent & event);
+   void OnTogglePinnedState();
 
    bool mPlayRegionDragsSelection;
    bool mTimelineToolTip;

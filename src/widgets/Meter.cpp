@@ -259,8 +259,6 @@ const static wxChar *PrefStyles[] =
 
 enum {
    OnMeterUpdateID = 6000,
-   OnMonitorID,
-   OnPreferencesID
 };
 
 BEGIN_EVENT_TABLE(MeterPanel, MeterPanelBase)
@@ -274,8 +272,6 @@ BEGIN_EVENT_TABLE(MeterPanel, MeterPanelBase)
    EVT_ERASE_BACKGROUND(MeterPanel::OnErase)
    EVT_PAINT(MeterPanel::OnPaint)
    EVT_SIZE(MeterPanel::OnSize)
-   EVT_MENU(OnMonitorID, MeterPanel::OnMonitor)
-   EVT_MENU(OnPreferencesID, MeterPanel::OnPreferences)
 END_EVENT_TABLE()
 
 IMPLEMENT_CLASS(MeterPanel, wxPanelWrapper)
@@ -788,11 +784,12 @@ void MeterPanel::OnMouse(wxMouseEvent &evt)
       // Note: these should be kept in the same order as the enum
       if (mIsInput) {
          menu.Append(
-            mMonitoring ? XXO("Stop Monitoring") : XXO("Start Monitoring"),  {},
-            { !mActive || mMonitoring }, OnMonitorID );
+            mMonitoring ? XXO("Stop Monitoring") : XXO("Start Monitoring"),
+            { [this]{ StartMonitoring(); } },
+            { !mActive || mMonitoring } );
       }
 
-      menu.Append(XXO("Options..."), {}, {}, OnPreferencesID);
+      menu.Append(XXO("Options..."), { [this]{ OnPreferences(); } } );
 
       if (evt.RightDown()) {
          ShowMenu(evt.GetPosition());
@@ -1954,11 +1951,12 @@ void MeterPanel::ShowMenu(const wxPoint & pos)
    // Note: these should be kept in the same order as the enum
    if (mIsInput) {
       menu.Append(
-         mMonitoring ? XXO("Stop Monitoring") : XXO("Start Monitoring"), {},
-         { !mActive || mMonitoring }, OnMonitorID );
+         mMonitoring ? XXO("Stop Monitoring") : XXO("Start Monitoring"),
+         { [this]{ StartMonitoring(); } },
+         { !mActive || mMonitoring } );
    }
 
-   menu.Append(XXO("Options..."), {}, {}, OnPreferencesID);
+   menu.Append(XXO("Options..."), [this]{ OnPreferences(); } );
 
    mAccSilent = true;      // temporarily make screen readers say (close to) nothing on focus events
 
@@ -1977,12 +1975,7 @@ void MeterPanel::ShowMenu(const wxPoint & pos)
 #endif
 }
 
-void MeterPanel::OnMonitor(wxCommandEvent & WXUNUSED(event))
-{
-   StartMonitoring();
-}
-
-void MeterPanel::OnPreferences(wxCommandEvent & WXUNUSED(event))
+void MeterPanel::OnPreferences()
 {
    wxTextCtrl *rate;
    wxRadioButton *gradient;

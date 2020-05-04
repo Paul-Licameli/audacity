@@ -370,11 +370,7 @@ void AdornedRulerPanel::QuickPlayIndicatorOverlay::Draw(
 **********************************************************************/
 
 enum {
-   OnToggleQuickPlayID = 7000,
-   OnSyncQuickPlaySelID,
-   OnAutoScrollID,
-   OnLockPlayRegionID,
-   OnTogglePinnedStateID,
+   OnTogglePinnedStateID = 7000,
 };
 
 BEGIN_EVENT_TABLE(AdornedRulerPanel, CellularPanel)
@@ -383,11 +379,6 @@ BEGIN_EVENT_TABLE(AdornedRulerPanel, CellularPanel)
    EVT_SIZE(AdornedRulerPanel::OnSize)
 
    // Context menu commands
-   EVT_MENU(OnToggleQuickPlayID, AdornedRulerPanel::OnToggleQuickPlay)
-   EVT_MENU(OnSyncQuickPlaySelID, AdornedRulerPanel::OnSyncSelToQuickPlay)
-   EVT_MENU(OnAutoScrollID, AdornedRulerPanel::OnAutoScroll)
-   EVT_MENU(OnLockPlayRegionID, AdornedRulerPanel::OnLockPlayRegion)
-   EVT_MENU( OnTogglePinnedStateID, AdornedRulerPanel::OnTogglePinnedState )
 
    EVT_COMMAND( OnTogglePinnedStateID,
                wxEVT_COMMAND_BUTTON_CLICKED,
@@ -1811,7 +1802,7 @@ void AdornedRulerPanel::OnPinnedButton(wxCommandEvent & /*event*/)
    ShowContextMenu(MenuChoice::QuickPlay, NULL);
 }
 
-void AdornedRulerPanel::OnTogglePinnedState(wxCommandEvent & /*event*/)
+void AdornedRulerPanel::OnTogglePinnedState()
 {
    TogglePinnedHead();
    UpdateButtonStates();
@@ -1845,28 +1836,28 @@ void AdornedRulerPanel::ShowMenu(const wxPoint & pos)
    Widgets::MenuHandle rulerMenu;
 
    rulerMenu.AppendCheckItem(
-      XXO("Enable Quick-Play"), {},
-      { true, mQuickPlayEnabled }, OnToggleQuickPlayID );
+      XXO("Enable Quick-Play"), [this]{ OnToggleQuickPlay(); },
+      { true, mQuickPlayEnabled } );
 
    rulerMenu.AppendCheckItem(
-      XXO("Enable dragging selection"), {},
+      XXO("Enable dragging selection"), [this]{ OnSyncSelToQuickPlay(); },
       { mQuickPlayEnabled && !playRegion.Locked(),
-        mPlayRegionDragsSelection && !playRegion.Locked() }, OnSyncQuickPlaySelID );
+        mPlayRegionDragsSelection && !playRegion.Locked() } );
 
    rulerMenu.AppendCheckItem(
-      XXO("Update display while playing"), {},
-      { true, mViewInfo->bUpdateTrackIndicator }, OnAutoScrollID );
+      XXO("Update display while playing"), [this]{ OnAutoScroll(); },
+      { true, mViewInfo->bUpdateTrackIndicator } );
 
    rulerMenu.AppendCheckItem(
-      XXO("Lock Play Region"), {},
+      XXO("Lock Play Region"), [this]{ OnLockPlayRegion(); },
       { playRegion.Locked() || !playRegion.Empty(),
-        playRegion.Locked() }, OnLockPlayRegionID );
+        playRegion.Locked() } );
 
    rulerMenu.AppendSeparator();
 
    rulerMenu.AppendCheckItem(
-      XXO("Pinned Play Head"), {},
-      { true, TracksPrefs::GetPinnedHeadPreference() }, OnTogglePinnedStateID );
+      XXO("Pinned Play Head"), { [this]{ OnTogglePinnedState(); } },
+      { true, TracksPrefs::GetPinnedHeadPreference() } );
 
    rulerMenu.Popup( *this, pos );
 }
@@ -1882,14 +1873,14 @@ void AdornedRulerPanel::ShowScrubMenu(const wxPoint & pos)
    rulerMenu.Popup( *this, pos );
 }
 
-void AdornedRulerPanel::OnToggleQuickPlay(wxCommandEvent&)
+void AdornedRulerPanel::OnToggleQuickPlay()
 {
    mQuickPlayEnabled = (mQuickPlayEnabled)? false : true;
    gPrefs->Write(L"/QuickPlay/QuickPlayEnabled", mQuickPlayEnabled);
    gPrefs->Flush();
 }
 
-void AdornedRulerPanel::OnSyncSelToQuickPlay(wxCommandEvent&)
+void AdornedRulerPanel::OnSyncSelToQuickPlay()
 {
    mPlayRegionDragsSelection = (mPlayRegionDragsSelection)? false : true;
    gPrefs->Write(L"/QuickPlay/DragSelection", mPlayRegionDragsSelection);
@@ -1921,7 +1912,7 @@ void AdornedRulerPanel::HandleSnapping()
 }
 
 #if 0
-void AdornedRulerPanel::OnTimelineToolTips(wxCommandEvent&)
+void AdornedRulerPanel::OnTimelineToolTips()
 {
    mTimelineToolTip = (mTimelineToolTip)? false : true;
    gPrefs->Write(L"/QuickPlay/ToolTips", mTimelineToolTip);
@@ -1929,7 +1920,7 @@ void AdornedRulerPanel::OnTimelineToolTips(wxCommandEvent&)
 }
 #endif
 
-void AdornedRulerPanel::OnAutoScroll(wxCommandEvent&)
+void AdornedRulerPanel::OnAutoScroll()
 {
    if (mViewInfo->bUpdateTrackIndicator)
       gPrefs->Write(L"/GUI/AutoScroll", false);
@@ -1943,7 +1934,7 @@ void AdornedRulerPanel::OnAutoScroll(wxCommandEvent&)
 }
 
 
-void AdornedRulerPanel::OnLockPlayRegion(wxCommandEvent&)
+void AdornedRulerPanel::OnLockPlayRegion()
 {
    const auto &viewInfo = ViewInfo::Get( *GetProject() );
    const auto &playRegion = viewInfo.playRegion;

@@ -260,7 +260,7 @@ private:
    void OnNo(wxCommandEvent &evt);
    void OnYes(wxCommandEvent &evt);
    void OnRightClick(wxListEvent& evt);
-   void OnCopyToClipboard( wxCommandEvent& evt );
+   void OnCopyToClipboard();
 
 
    void SaveFutureActionChoice();
@@ -285,7 +285,6 @@ public:
 enum {
    FileListID = 6000,
    CopySelectedFilesButtonID,
-   CopyNamesToClipboardID,
    FutureActionChoiceID
 };
 
@@ -298,7 +297,6 @@ BEGIN_EVENT_TABLE(DependencyDialog, wxDialogWrapper)
    EVT_BUTTON(wxID_NO, DependencyDialog::OnNo) // mIsSaving ? "Cancel Save" : "Save Without Copying"
    EVT_BUTTON(wxID_YES, DependencyDialog::OnYes) // "Copy All Files (Safer)"
    EVT_BUTTON(wxID_CANCEL, DependencyDialog::OnCancel)  // "Cancel Save"
-   EVT_MENU(CopyNamesToClipboardID,DependencyDialog::OnCopyToClipboard)
 END_EVENT_TABLE()
 
 DependencyDialog::DependencyDialog(wxWindow *parent,
@@ -535,11 +533,11 @@ void DependencyDialog::OnRightClick( wxListEvent& event)
 {
    static_cast<void>(event);
    Widgets::MenuHandle menu;
-   menu.Append(XXO("&Copy Names to Clipboard"), {}, {}, CopyNamesToClipboardID);
+   menu.Append(XXO("&Copy Names to Clipboard"), [this]{ OnCopyToClipboard(); } );
    menu.Popup(*this);
 }
 
-void DependencyDialog::OnCopyToClipboard( wxCommandEvent& )
+void DependencyDialog::OnCopyToClipboard()
 {
    TranslatableString Files;
    for (const auto &aliasedFile : mAliasedFiles) {
