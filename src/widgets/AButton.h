@@ -12,6 +12,7 @@
 #ifndef __AUDACITY_BUTTON__
 #define __AUDACITY_BUTTON__
 
+#include <functional>
 #include <vector>
 
 #include <wx/setup.h> // for wxUSE_* macros
@@ -27,6 +28,10 @@ class AUDACITY_DLL_API AButton final : public wxWindow {
 
  public:
 
+   // Type of a callback function to invoke directly, instead of using
+   // events, when it is supplied to the constructor
+   using Action = std::function< void() > ;
+
     // Construct button, specifying images (button up, highlight, button down,
     // and disabled) for the default state
    AButton(wxWindow * parent,
@@ -38,7 +43,8 @@ class AUDACITY_DLL_API AButton final : public wxWindow {
            ImageRoll down,
            ImageRoll overDown,
            ImageRoll dis,
-           bool toggle);
+           bool toggle,
+           Action action = {});
 
    virtual ~ AButton();
 
@@ -184,6 +190,7 @@ class AUDACITY_DLL_API AButton final : public wxWindow {
    bool mForceFocusRect;
 
    std::unique_ptr<Listener> mListener;
+   Action mAction;
 
 public:
 

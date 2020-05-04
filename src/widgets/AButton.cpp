@@ -197,8 +197,10 @@ AButton::AButton(wxWindow * parent,
                  ImageRoll down,
                  ImageRoll overDown,
                  ImageRoll dis,
-                 bool toggle):
+                 bool toggle,
+                 Action action):
    wxWindow()
+   , mAction{ std::move( action ) }
 {
    Init(parent, id, pos, size,
         up, over, down, overDown, dis,
@@ -613,11 +615,15 @@ void AButton::PopUp()
 
 void AButton::Click()
 {
-   wxCommandEvent event(wxEVT_COMMAND_BUTTON_CLICKED, GetId());
-   event.SetEventObject(this);
-   // Be sure to use SafelyProcessEvent so that exceptions do not propagate
-   // out of DoDefaultAction
-   GetEventHandler()->SafelyProcessEvent(event);
+   if ( mAction )
+      mAction();
+   else {
+      wxCommandEvent event(wxEVT_COMMAND_BUTTON_CLICKED, GetId());
+      event.SetEventObject(this);
+      // Be sure to use SafelyProcessEvent so that exceptions do not propagate
+      // out of DoDefaultAction
+      GetEventHandler()->SafelyProcessEvent(event);
+   }
 }
 
 void AButton::SetShift(bool shift)
