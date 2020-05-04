@@ -489,7 +489,9 @@ void CommandManager::EndSubMenu()
 
    //Add the submenu to the current menu
    auto name = tmpSubMenu.name.label.main.Translation();
-   CurrentMenu()->Append(0, name, tmpSubMenu.menu.release() );
+   // PRL:  Use help for commands as well as submenus?
+   auto help = tmpSubMenu.name.help.Translation();
+   CurrentMenu()->Append(0, name, tmpSubMenu.menu.release(), help );
    mbSeparatorAllowed = true;
 }
 
@@ -566,6 +568,7 @@ void CommandManager::AddItem(AudacityProject &project,
 
 
    auto &checker = options.checker;
+   // PRL:  store a help string?
    if (checker) {
       CurrentMenu()->AppendCheckItem(ID, label);
       CurrentMenu()->Check(ID, checker( project ));
