@@ -1072,7 +1072,6 @@ struct WaveColorMenuTable : PopupMenuTable
 
    PlayableTrackControls::InitMenuData *mpData{};
 
-   int IdOfWaveColor(int WaveColor);
    void OnWaveColorChange(wxCommandEvent & event);
 
    int OnInstrument1ID, OnInstrument2ID, OnInstrument3ID, OnInstrument4ID;
@@ -1099,16 +1098,14 @@ const TranslatableString GetWaveColorStr(int colorIndex)
 }
 
 BEGIN_POPUP_MENU(WaveColorMenuTable)
-   static const auto fn = []( PopupMenuHandler &handler, wxMenu &menu, int id ){
-      auto &me = static_cast<WaveColorMenuTable&>( handler );
-      auto pData = me.mpData;
-      const auto &track = *static_cast<WaveTrack*>(pData->pTrack);
-      auto &project = pData->project;
+   static const auto fn = [this]( int value ){ return
+   [this, value]() -> Widgets::MenuItemState {
+      const auto &track = *static_cast<WaveTrack*>(mpData->pTrack);
+      auto &project = mpData->project;
       bool unsafe = ProjectAudioIO::Get( project ).IsAudioActive();
       
-      menu.Check( id, id == me.IdOfWaveColor( track.GetWaveColorIndex() ) );
-      menu.Enable( id, !unsafe );
-   };
+      return { !unsafe, value == track.GetWaveColorIndex() };
+   }; };
 
    static std::once_flag flag;
    std::call_once( flag, [this]{
@@ -1120,19 +1117,15 @@ BEGIN_POPUP_MENU(WaveColorMenuTable)
    } );
 
    AppendRadioItem( "Instrument1", OnInstrument1ID,
-      GetWaveColorStr(0), POPUP_MENU_FN( OnWaveColorChange ), fn );
+      GetWaveColorStr(0), POPUP_MENU_FN( OnWaveColorChange ), fn(0) );
    AppendRadioItem( "Instrument2", OnInstrument2ID,
-      GetWaveColorStr(1), POPUP_MENU_FN( OnWaveColorChange ), fn );
+      GetWaveColorStr(1), POPUP_MENU_FN( OnWaveColorChange ), fn(1) );
    AppendRadioItem( "Instrument3", OnInstrument3ID,
-      GetWaveColorStr(2), POPUP_MENU_FN( OnWaveColorChange ), fn );
+      GetWaveColorStr(2), POPUP_MENU_FN( OnWaveColorChange ), fn(2) );
    AppendRadioItem( "Instrument4", OnInstrument4ID,
-      GetWaveColorStr(3), POPUP_MENU_FN( OnWaveColorChange ), fn );
+      GetWaveColorStr(3), POPUP_MENU_FN( OnWaveColorChange ), fn(3) );
 
 END_POPUP_MENU()
-
-/// Converts a WaveColor enumeration to a wxWidgets menu item Id.
-int WaveColorMenuTable::IdOfWaveColor(int WaveColor)
-{  return OnInstrument1ID + WaveColor;}
 
 /// Handles the selection from the WaveColor submenu of the
 /// track menu.
