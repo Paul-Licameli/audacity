@@ -26,6 +26,7 @@
 #include <memory>
 #include <vector>
 
+#include "../widgets/MenuHandle.h"
 #include "XMLTagHandler.h"
 
 #include <unordered_map>
@@ -121,7 +122,7 @@ class AUDACITY_DLL_API CommandManager
 
    std::unique_ptr<wxMenuBar> AddMenuBar(const wxString & sMenu);
 
-   wxMenu *BeginMenu(const TranslatableString & tName);
+   wxMenu *BeginMenu(const Widgets::MenuItemText & tName);
    void EndMenu();
 
    // type of a function that determines checkmark state
@@ -208,7 +209,7 @@ class AUDACITY_DLL_API CommandManager
 
    void AddItem(AudacityProject &project,
                 const CommandID & name,
-                const TranslatableString &label_in,
+                const Widgets::MenuItemText &label_in,
                 CommandHandlerFinder finder,
                 CommandFunctorPointer callback,
                 CommandFlag flags,
@@ -322,7 +323,7 @@ private:
 
    int NextIdentifier(int ID);
    CommandListEntry *NewIdentifier(const CommandID & name,
-                                   const TranslatableString & label,
+                                   const Widgets::MenuItemText & label,
                                    wxMenu *menu,
                                    CommandHandlerFinder finder,
                                    CommandFunctorPointer callback,
@@ -332,7 +333,7 @@ private:
                                    const Options &options);
    
    void AddGlobalCommand(const CommandID &name,
-                         const TranslatableString &label,
+                         const Widgets::MenuItemText &label,
                          CommandHandlerFinder finder,
                          CommandFunctorPointer callback,
                          const Options &options = {});
@@ -354,9 +355,9 @@ public:
 
 private:
    void Enable(CommandListEntry *entry, bool enabled);
-   wxMenu *BeginMainMenu(const TranslatableString & tName);
+   wxMenu *BeginMainMenu(const Widgets::MenuItemText & tName);
    void EndMainMenu();
-   wxMenu* BeginSubMenu(const TranslatableString & tName);
+   wxMenu* BeginSubMenu(const Widgets::MenuItemText & tName);
    void EndSubMenu();
 
    //
@@ -401,9 +402,9 @@ private:
 
    bool mbSeparatorAllowed; // false at the start of a menu and immediately after a separator.
 
-   TranslatableString mCurrentMenuName;
    TranslatableString mNiceName;
    int mLastProcessId;
+   Widgets::MenuItemText mCurrentMenuName;
    std::unique_ptr<wxMenu> uCurrentMenu;
    wxMenu *mCurrentMenu {};
 
@@ -458,18 +459,18 @@ namespace MenuTable {
       // Construction from an internal name and a previously built-up
       // vector of pointers
       MenuItem( const Identifier &internalName,
-         const TranslatableString &title_, BaseItemPtrs &&items_ );
+         const Widgets::MenuItemText &title_, BaseItemPtrs &&items_ );
       // In-line, variadic constructor that doesn't require building a vector
       template< typename... Args >
          MenuItem( const Identifier &internalName,
-            const TranslatableString &title_, Args&&... args )
+            const Widgets::MenuItemText &title_, Args&&... args )
             : ConcreteGroupItem< false, ToolbarMenuVisitor >{
                internalName, std::forward<Args>(args)... }
             , title{ title_ }
          {}
       ~MenuItem() override;
 
-      TranslatableString title;
+      Widgets::MenuItemText title;
    };
 
    // Collects other items that are conditionally shown or hidden, but are
@@ -522,7 +523,7 @@ namespace MenuTable {
    // Describes one command in a menu
    struct AUDACITY_DLL_API CommandItem final : SingleItem {
       CommandItem(const CommandID &name_,
-               const TranslatableString &label_in_,
+               const Widgets::MenuItemText &label_in_,
                CommandFunctorPointer callback_,
                CommandFlag flags_,
                const CommandManager::Options &options_,
@@ -532,7 +533,7 @@ namespace MenuTable {
       // previous constructor; useful within the lifetime of a FinderScope
       template< typename Handler >
       CommandItem(const CommandID &name_,
-               const TranslatableString &label_in_,
+               const Widgets::MenuItemText &label_in_,
                void (Handler::*pmf)(const CommandContext&),
                CommandFlag flags_,
                const CommandManager::Options &options_,
@@ -544,7 +545,7 @@ namespace MenuTable {
 
       ~CommandItem() override;
 
-      const TranslatableString label_in;
+      const Widgets::MenuItemText label_in;
       CommandHandlerFinder finder;
       CommandFunctorPointer callback;
       CommandFlag flags;
@@ -646,11 +647,13 @@ namespace MenuTable {
    // by path.
    template< typename... Args >
    inline std::unique_ptr<MenuItem> Menu(
-      const Identifier &internalName, const TranslatableString &title, Args&&... args )
+      const Identifier &internalName,
+      const Widgets::MenuItemText &title, Args&&... args )
          { return std::make_unique<MenuItem>(
             internalName, title, std::forward<Args>(args)... ); }
    inline std::unique_ptr<MenuItem> Menu(
-      const Identifier &internalName, const TranslatableString &title, BaseItemPtrs &&items )
+      const Identifier &internalName,
+      const Widgets::MenuItemText &title, BaseItemPtrs &&items )
          { return std::make_unique<MenuItem>(
             internalName, title, std::move( items ) ); }
 
@@ -699,7 +702,7 @@ namespace MenuTable {
    template< typename Handler >
    inline std::unique_ptr<CommandItem> Command(
       const CommandID &name,
-      const TranslatableString &label_in,
+      const Widgets::MenuItemText &label_in,
       void (Handler::*pmf)(const CommandContext&),
       CommandFlag flags, const CommandManager::Options &options = {},
       CommandHandlerFinder finder = FinderScope::DefaultFinder())

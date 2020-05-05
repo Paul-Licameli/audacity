@@ -1533,11 +1533,11 @@ PopupMenuTable::AttachedItem sAttachment{
                   (wxCommandEventFunction)
                      (&SpectrogramSettingsHandler::OnSpectrogramSettings),
                   SpectrogramSettingsHandler::Instance(),
-                  []( PopupMenuHandler &handler, wxMenu &menu, int id ){
+                  []() -> Widgets::MenuItemState {
                      // Bug 1253.  Shouldn't open preferences if audio is busy.
                      // We can't change them on the fly yet anyway.
                      auto gAudioIO = AudioIOBase::Get();
-                     menu.Enable(id, !gAudioIO->IsBusy());
+                     return { !gAudioIO->IsBusy(), false };
                   } );
             else
                return nullptr;

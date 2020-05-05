@@ -118,11 +118,11 @@ struct MenuBarListEntry
 
 struct SubMenuListEntry
 {
-   SubMenuListEntry( const TranslatableString &name_ );
+   SubMenuListEntry( const Widgets::MenuItemText &name_ );
    SubMenuListEntry( SubMenuListEntry&& ) = default;
    ~SubMenuListEntry();
 
-   TranslatableString name;
+   Widgets::MenuItemText name;
    std::unique_ptr<wxMenu> menu;
 };
 
@@ -135,7 +135,7 @@ MenuBarListEntry::~MenuBarListEntry()
 {
 }
 
-SubMenuListEntry::SubMenuListEntry( const TranslatableString &name_ )
+SubMenuListEntry::SubMenuListEntry( const Widgets::MenuItemText &name_ )
    : name(name_), menu( std::make_unique< wxMenu >() )
 {
 }
@@ -351,7 +351,7 @@ void CommandManager::PopMenuBar()
 ///
 /// This starts a NEW menu
 ///
-wxMenu *CommandManager::BeginMenu(const TranslatableString & tName)
+wxMenu *CommandManager::BeginMenu(const Widgets::MenuItemText & tName)
 {
    if ( mCurrentMenu )
       return BeginSubMenu( tName );
@@ -376,7 +376,7 @@ void CommandManager::EndMenu()
 ///
 /// This starts a NEW menu
 ///
-wxMenu *CommandManager::BeginMainMenu(const TranslatableString & tName)
+wxMenu *CommandManager::BeginMainMenu(const Widgets::MenuItemText & tName)
 {
    uCurrentMenu = std::make_unique<wxMenu>();
    mCurrentMenu = uCurrentMenu.get();
@@ -396,7 +396,7 @@ void CommandManager::EndMainMenu()
    wxASSERT(uCurrentMenu);
    if (uCurrentMenu->GetMenuItemCount() > 0)
       CurrentMenuBar()->Append(
-         uCurrentMenu.release(), mCurrentMenuName.Translation());
+         uCurrentMenu.release(), mCurrentMenuName.label.main.Translation());
    else
       uCurrentMenu.reset();
    mCurrentMenu = nullptr;
@@ -407,7 +407,7 @@ void CommandManager::EndMainMenu()
 ///
 /// This starts a NEW submenu, and names it according to
 /// the function's argument.
-wxMenu* CommandManager::BeginSubMenu(const TranslatableString & tName)
+wxMenu* CommandManager::BeginSubMenu(const Widgets::MenuItemText & tName)
 {
    mSubMenuList.emplace_back( tName );
    mbSeparatorAllowed = false;
@@ -428,11 +428,10 @@ void CommandManager::EndSubMenu()
    mSubMenuList.pop_back();
 
    //Add the submenu to the current menu
-   auto name = tmpSubMenu.name.Translation();
    auto &pMenu = tmpSubMenu.menu;
    if (pMenu->GetMenuItemCount() > 0) {
-      CurrentMenu()->Append(0, name, pMenu.release(),
-         name /* help string */ );
+      auto name = tmpSubMenu.name.label.main.Translation();
+      CurrentMenu()->Append(0, name, tmpSubMenu.menu.release() );
       mbSeparatorAllowed = true;
    }
    else
@@ -492,7 +491,7 @@ void CommandManager::UpdateCheckmarks( AudacityProject &project )
 
 void CommandManager::AddItem(AudacityProject &project,
                              const CommandID &name,
-                             const TranslatableString &label_in,
+                             const Widgets::MenuItemText &label_in,
                              CommandHandlerFinder finder,
                              CommandFunctorPointer callback,
                              CommandFlag flags,
@@ -577,7 +576,7 @@ void CommandManager::AddItemList(const CommandID & name,
 }
 
 void CommandManager::AddGlobalCommand(const CommandID &name,
-                                      const TranslatableString &label_in,
+                                      const Widgets::MenuItemText &label_in,
                                       CommandHandlerFinder finder,
                                       CommandFunctorPointer callback,
                                       const Options &options)
@@ -615,7 +614,7 @@ int CommandManager::NextIdentifier(int ID)
 ///If it does, a workaround may be to keep controls below wxID_LOWEST
 ///and keep menus above wxID_HIGHEST
 CommandListEntry *CommandManager::NewIdentifier(const CommandID & nameIn,
-   const TranslatableString & label,
+   const Widgets::MenuItemText & text,
    wxMenu *menu,
    CommandHandlerFinder finder,
    CommandFunctorPointer callback,
@@ -624,6 +623,8 @@ CommandListEntry *CommandManager::NewIdentifier(const CommandID & nameIn,
    int count,
    const Options &options)
 {
+   const auto &label = text.label.main;
+
    bool excludeFromMacros =
       (options.allowInMacros == 0) ||
       ((options.allowInMacros == -1) && label.MSGID().GET().Contains("..."));
@@ -651,7 +652,7 @@ CommandListEntry *CommandManager::NewIdentifier(const CommandID & nameIn,
 
       TranslatableString labelPrefix;
       if (!mSubMenuList.empty())
-         labelPrefix = mSubMenuList.back().name.Stripped();
+         labelPrefix = mSubMenuList.back().name.label.main.Stripped();
 
       // For key bindings for commands with a list, such as align,
       // the name in prefs is the category name plus the effect name.
@@ -693,7 +694,7 @@ CommandListEntry *CommandManager::NewIdentifier(const CommandID & nameIn,
       entry->key = NormalizedKeyString{ accel.BeforeFirst(wxT('\t')) };
       entry->defaultKey = entry->key;
       entry->labelPrefix = labelPrefix;
-      entry->labelTop = mCurrentMenuName.Stripped();
+      entry->labelTop = mCurrentMenuName.label.main.Stripped();
       entry->menu = menu;
       entry->finder = finder;
       entry->callback = callback;
