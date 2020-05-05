@@ -272,14 +272,10 @@ BeginSection( "Scales" );
          AppendRadioItem( names[ii].Internal(),
             OnFirstSpectrumScaleID + ii, names[ii].Msgid(),
             POPUP_MENU_FN( OnSpectrumScaleType ),
-            []( PopupMenuHandler &handler, wxMenu &menu, int id ){
-               WaveTrack *const wt =
-                  static_cast<SpectrumVRulerMenuTable&>( handler )
-                     .mpData->pTrack;
-               if ( id ==
-                  OnFirstSpectrumScaleID +
-                      (int)(wt->GetSpectrogramSettings().scaleType ) )
-                  menu.Check(id, true);
+            [this, ii]() -> Widgets::MenuItemState {
+               WaveTrack *const wt = mpData->pTrack;
+               return { true,
+                  ii == (int)(wt->GetSpectrogramSettings().scaleType ) };
             }
          );
       }
