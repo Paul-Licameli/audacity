@@ -378,7 +378,7 @@ enum
 struct ItemData
 {
    std::vector<PluginDescriptor*> plugs;
-   wxString name;
+   TranslatableString name;
    PluginPath path;
    int state;
    bool valid;
@@ -637,7 +637,7 @@ void PluginRegistrationDialog::PopulateOrExchange(ShuttleGui &S)
 
       if (plugType == PluginTypeEffect)
       {
-         item.name = plug.GetSymbol().Translation();
+         item.name = plug.GetSymbol().Msgid();
       }
       // This is not right and will not work when other plugin types are added.
       // But it's presumed that the plugin manager dialog will be fully developed
@@ -645,7 +645,7 @@ void PluginRegistrationDialog::PopulateOrExchange(ShuttleGui &S)
       else if (plugType == PluginTypeStub)
       {
          wxFileName fname { path };
-         item.name = fname.GetName().Trim(false).Trim(true);
+         item.name = Verbatim( fname.GetName().Trim(false).Trim(true) );
          if (!item.valid)
          {
             item.state = STATE_New;
@@ -653,7 +653,7 @@ void PluginRegistrationDialog::PopulateOrExchange(ShuttleGui &S)
       }
 
       int x;
-      mEffects->GetTextExtent(item.name, &x, NULL);
+      mEffects->GetTextExtent(item.name.Translation(), &x, NULL);
       colWidths[COL_Name] = std::max(colWidths[COL_Name], x);
 
       mEffects->GetTextExtent(item.path, &x, NULL);
@@ -741,7 +741,7 @@ void PluginRegistrationDialog::RegenerateEffectsList()
 
       if (add)
       {
-         mEffects->InsertItem(i, item.name);
+         mEffects->InsertItem(i, item.name.Translation());
          mEffects->SetItem(i, COL_State, mStates[item.state]);
          mEffects->SetItem(i, COL_Path, item.path);
          mEffects->SetItemPtrData(i, (wxUIntPtr) &item);
@@ -830,8 +830,6 @@ int PluginRegistrationDialog::SortCompare(ItemData *item1, ItemData *item2)
    switch (mSortColumn)
    {
    case COL_Name:
-      str1 = &item1->name;
-      str2 = &item2->name;
       break;
    case COL_State:
       str1 = &mStates[item1->state];
@@ -1882,7 +1880,7 @@ bool PluginManager::DropFile(const wxString &fileName)
 
             // Register for real
             std::vector<PluginID> ids;
-            std::vector<wxString> names;
+            TranslatableStrings names;
             nPlugIns = module->DiscoverPluginsAtPath(dstPath, errMsg,
                [&](ModuleInterface *provider, ComponentInterface *ident)
                                                      -> const PluginID& {
@@ -1891,7 +1889,7 @@ bool PluginManager::DropFile(const wxString &fileName)
                   auto &id = PluginManagerInterface::DefaultRegistrationCallback(
                         provider, ident);
                   ids.push_back(id);
-                  names.push_back( ident->GetSymbol().Translation() );
+                  names.push_back( ident->GetSymbol().Msgid() );
                   return id;
                });
             if ( ! nPlugIns ) {
@@ -1912,7 +1910,7 @@ bool PluginManager::DropFile(const wxString &fileName)
                   "plug-ins"
                )( nIds );
                for (const auto &name : names)
-                  message.Join( Verbatim( name ), L"\n" );
+                  message.Join( name, L"\n" );
                bool enable = (wxYES == ::AudacityMessageBox(
                   message,
                   XO("Enable new plug-ins"),

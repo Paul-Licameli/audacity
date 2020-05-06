@@ -37,6 +37,7 @@
 #include <wx/log.h>
 #include <wx/sizer.h>
 #include <wx/settings.h>
+#include <wx/sizer.h>
 #include <wx/stattext.h>
 #include <wx/textctrl.h>
 #include <wx/tokenzr.h>
