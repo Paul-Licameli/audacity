@@ -103,7 +103,7 @@ public:
 
    void SetView(ViewByType type);
 
-   void SetFilter(const wxString & filter);
+   void SetFilter(const DisplayKeyString & filter);
 
    void ExpandAll();
    void CollapseAll();
@@ -146,7 +146,7 @@ private:
    std::vector<KeyNode*> mLines;
 
    ViewByType mViewType;
-   wxString mFilter;
+   DisplayKeyString mFilter;
 
    wxCoord mScrollX;
    wxCoord mWidth;

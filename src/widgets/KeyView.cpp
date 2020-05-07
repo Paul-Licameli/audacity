@@ -375,7 +375,7 @@ KeyView::SetKey(int index, const NormalizedKeyString & key)
 
    // Check to see if the key column needs to be expanded
    int x, y;
-   GetTextExtent(node.key.Display(), &x, &y);
+   GetTextExtent(node.key.Display().GET(), &x, &y);
    if (x > mKeyWidth || y > mLineHeight)
    {
       // New key is wider than column so recalc extents (will refresh view)
@@ -469,7 +469,7 @@ KeyView::SetView(ViewByType type)
 // Sets the filter
 //
 void
-KeyView::SetFilter(const wxString & filter)
+KeyView::SetFilter(const DisplayKeyString & filter)
 {
    int index = LineToIndex(GetSelection());
 
@@ -477,7 +477,7 @@ KeyView::SetFilter(const wxString & filter)
    SelectNode(-1);
 
    // Save the filter
-   mFilter = filter.Lower();
+   mFilter = filter;
 
    // Refresh the view lines
    RefreshLines();
@@ -571,7 +571,7 @@ KeyView::RecalcExtents()
       else
       {
          // Measure the key
-         GetTextExtent(node.key.Display(), &x, &y);
+         GetTextExtent(node.key.Display().GET(), &x, &y);
          mLineHeight = std::max(mLineHeight, y);
          mKeyWidth = std::max(mKeyWidth, x);
 
@@ -793,9 +793,9 @@ KeyView::RefreshBindings(const CommandIDs & names,
       mNodes.push_back(node);
 
       // Measure key
-      GetTextExtent(node.key.Display(), &x, &y);
-      mLineHeight = std::max(mLineHeight, y);
-      mKeyWidth = std::max(mKeyWidth, x);
+      GetTextExtent(node.key.Display().GET(), &x, &y);
+      mLineHeight = wxMax(mLineHeight, y);
+      mKeyWidth = wxMax(mKeyWidth, x);
 
       // Prepend prefix for all view types to determine maximum
       // column widths
@@ -882,7 +882,7 @@ KeyView::RefreshLines(bool bSort)
             case ViewByTree:
                searchit = node.label.Lower() +
                           L"\01x" +
-                          node.key.Display().Lower();
+                          node.key.Display().GET().Lower();
             break;
 
             case ViewByName:
@@ -890,10 +890,10 @@ KeyView::RefreshLines(bool bSort)
             break;
 
             case ViewByKey:
-               searchit = node.key.Display().Lower();
+               searchit = node.key.Display().GET().Lower();
             break;
          }
-         if (searchit.Find(mFilter) == wxNOT_FOUND)
+         if (searchit.Find(mFilter.GET().Lower()) == wxNOT_FOUND)
          {
             // Not found so continue to next node
             continue;
@@ -904,7 +904,7 @@ KeyView::RefreshLines(bool bSort)
          // and be preceded by nothing or +.
          if ((mViewType == ViewByKey) &&
                (mFilter.length() == 1) &&
-               (mFilter != searchit.Last() ||
+               (mFilter.GET().Lower() != searchit.Last() ||
                   ((searchit.length() > 1) &&
                      ((wxString)(searchit.GetChar(searchit.length() - 2)) != L"+"))))
          {
@@ -1290,7 +1290,7 @@ KeyView::OnDrawItem(wxDC & dc, const wxRect & rect, size_t line) const
       x += KV_LEFT_MARGIN;
 
       // Draw the key and command columns
-      dc.DrawText(node->key.Display(), x , rect.y);
+      dc.DrawText(node->key.Display().GET(), x , rect.y);
       dc.DrawText(label, x + mKeyWidth  + KV_COLUMN_SPACER + node->depth * KV_BITMAP_SIZE, rect.y);
    }
    else
@@ -1308,7 +1308,7 @@ KeyView::OnDrawItem(wxDC & dc, const wxRect & rect, size_t line) const
       if((mViewType == ViewByName) || (mViewType == ViewByKey))
       {
          // Draw key columnd and then command column
-         dc.DrawText(node->key.Display(), x, rect.y);
+         dc.DrawText(node->key.Display().GET(), x, rect.y);
          dc.DrawText(label, x + mKeyWidth + KV_COLUMN_SPACER, rect.y);
       }
    }
@@ -1561,7 +1561,7 @@ KeyView::OnKeyDown(wxKeyEvent & event)
                }
                else if (mViewType == ViewByKey)
                {
-                  label = GetKey(LineToIndex(i)).Display();
+                  label = GetKey(LineToIndex(i)).Display().GET();
                }
 
                // Move selection if they match
@@ -1595,7 +1595,7 @@ KeyView::OnKeyDown(wxKeyEvent & event)
                }
                else if (mViewType == ViewByKey)
                {
-                  label = GetKey(LineToIndex(i)).Display();
+                  label = GetKey(LineToIndex(i)).Display().GET();
                }
 
                // Move selection if they match
@@ -1747,7 +1747,7 @@ bool CmpKeyNodeByKey(KeyNode *t1, KeyNode *t2)
    []( const KeyNode &node )
       -> std::pair< int, std::pair< wxString, wxString > >
    {
-      return { !node.key.Display().empty(), PrefixedLabel( node ) };
+      return { node.key.Display().empty(), PrefixedLabel( node ) };
    };
 
    return projection( *t1 ) < projection( *t2 );
@@ -1831,7 +1831,7 @@ KeyView::GetValue(int line)
    {
       value = GetFullLabel(index);
    }
-   wxString key = GetKey(index).Display();
+   wxString key = GetKey(index).Display().GET();
 
    // Add the key if it isn't empty
    if (!key.empty())
