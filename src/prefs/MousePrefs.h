@@ -15,7 +15,6 @@
 
 class wxListCtrl;
 class ShuttleGui;
-class TranslatableString;
 
 #define MOUSE_PREFS_PLUGIN_SYMBOL ComponentInterfaceSymbol{ XO("Mouse") }
 

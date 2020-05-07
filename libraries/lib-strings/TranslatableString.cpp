@@ -12,16 +12,16 @@
 #include "Identifier.h"
 #include <wx/translation.h>
 
-const wxChar *const TranslatableString::NullContextName = wxT("*");
+const wxChar *const FormattedStringBase::NullContextName = L"*";
 
-Identifier TranslatableString::MSGID() const
+Identifier FormattedStringBase::MSGID() const
 {
    return Identifier{ mMsgid };
 }
 
-const TranslatableString::Formatter
-TranslatableString::NullContextFormatter {
-   [](const wxString & str, TranslatableString::Request request) -> wxString {
+const FormattedStringBase::Formatter
+FormattedStringBase::NullContextFormatter {
+   [](const wxString & str, Request request) -> wxString {
       switch ( request ) {
          case Request::Context:
             return NullContextName;
@@ -33,27 +33,27 @@ TranslatableString::NullContextFormatter {
    }
 };
 
-bool TranslatableString::IsVerbatim() const
+bool FormattedStringBase::IsVerbatim() const
 {
    return DoGetContext( mFormatter ) == NullContextName;
 }
 
-TranslatableString &TranslatableString::Strip( unsigned codes ) &
+void TranslatableString::DoStrip( unsigned codes )
 {
    auto prevFormatter = mFormatter;
    mFormatter = [prevFormatter, codes]
    ( const wxString & str, TranslatableString::Request request ) -> wxString {
       switch ( request ) {
          case Request::Context:
-            return TranslatableString::DoGetContext( prevFormatter );
+            return DoGetContext( prevFormatter );
          case Request::Format:
          case Request::DebugFormat:
          default: {
             bool debug = request == Request::DebugFormat;
             auto result =
-               TranslatableString::DoSubstitute(
+               DoSubstitute(
                   prevFormatter,
-                  str, TranslatableString::DoGetContext( prevFormatter ),
+                  str, DoGetContext( prevFormatter ),
                   debug );
             if ( codes & MenuCodes ) {
                // Don't use this, it's in wxCore
@@ -82,16 +82,14 @@ TranslatableString &TranslatableString::Strip( unsigned codes ) &
          }
       }
    };
-   
-   return *this;
 }
 
-wxString TranslatableString::DoGetContext( const Formatter &formatter )
+wxString FormattedStringBase::DoGetContext( const Formatter &formatter )
 {
    return formatter ? formatter( {}, Request::Context ) : wxString{};
 }
 
-wxString TranslatableString::DoSubstitute( const Formatter &formatter,
+wxString FormattedStringBase::DoSubstitute( const Formatter &formatter,
    const wxString &format, const wxString &context, bool debug )
 {
    return formatter
@@ -100,7 +98,7 @@ wxString TranslatableString::DoSubstitute( const Formatter &formatter,
          ( debug ? format : wxGetTranslation( format, wxString{}, context ) );
 }
 
-wxString TranslatableString::DoChooseFormat(
+wxString FormattedStringBase::DoChooseFormat(
    const Formatter &formatter,
    const wxString &singular, const wxString &plural, unsigned nn, bool debug )
 {
@@ -121,8 +119,8 @@ wxString TranslatableString::DoChooseFormat(
          );
 }
 
-TranslatableString &TranslatableString::Join(
-   const TranslatableString arg, const wxString &separator ) &
+void FormattedStringBase::Join(
+   const FormattedStringBase arg, const wxString &separator )
 {
    auto prevFormatter = mFormatter;
    mFormatter =
@@ -132,21 +130,20 @@ TranslatableString &TranslatableString::Join(
       -> wxString {
       switch ( request ) {
          case Request::Context:
-            return TranslatableString::DoGetContext( prevFormatter );
+            return DoGetContext( prevFormatter );
          case Request::Format:
          case Request::DebugFormat:
          default: {
             bool debug = request == Request::DebugFormat;
             return
-               TranslatableString::DoSubstitute( prevFormatter,
-                  str, TranslatableString::DoGetContext( prevFormatter ),
+               DoSubstitute( prevFormatter,
+                  str, DoGetContext( prevFormatter ),
                   debug )
                   + separator
                   + arg.DoFormat( debug );
          }
       }
    };
-   return *this;
-}
+   }
 
-const TranslatableString TranslatableString::Inaudible{ wxT("\a") };
+const TranslatableString InaudibleString = Verbatim( L"\a" );

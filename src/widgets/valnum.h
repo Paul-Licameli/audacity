@@ -12,6 +12,7 @@
 #define _WIDGETS_VALNUM_H_
 
 #include <memory>
+#include "Internat.h"
 #include <wx/setup.h> // for wxUSE_* macros
 #include <wx/defs.h>
 
@@ -21,8 +22,6 @@
 #include <wx/validate.h> // to inherit
 
 #include <limits>
-
-class TranslatableString;
 
 // Bit masks used for numeric validator styles.
 enum class NumValidatorStyle : int

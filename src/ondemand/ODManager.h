@@ -19,6 +19,8 @@ number of threads.
 #ifndef __AUDACITY_ODMANAGER__
 #define __AUDACITY_ODMANAGER__
 
+#include "audacity/Types.h"
+
 #include <vector>
 #include "ODTaskThread.h"
 #include <wx/event.h> // for DECLARE_EXPORTED_EVENT_TYPE
@@ -38,7 +40,6 @@ wxDECLARE_EXPORTED_EVENT(AUDACITY_DLL_API,
 int CompareNoCaseFileName(const wxString& first, const wxString& second);
 /// A singleton that manages currently running Tasks on an arbitrary
 /// number of threads.
-class TranslatableString;
 class Track;
 class WaveTrack;
 class ODWaveTrackTaskQueue;

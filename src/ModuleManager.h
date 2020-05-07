@@ -19,6 +19,8 @@
 #include "audacity/Types.h"
 #include "Identifier.h"
 
+class wxWindow;
+
 class wxArrayString;
 class wxDynamicLibrary;
 class ComponentInterface;

@@ -32,9 +32,8 @@
 #ifndef __AUDACITY_FFT_H__
 #define __AUDACITY_FFT_H__
 
+#include "audacity/Types.h"
 #include <wx/defs.h>
-
-class TranslatableString;
 
 /*
   Salvo Ventura - November 2006

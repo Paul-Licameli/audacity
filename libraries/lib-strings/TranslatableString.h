@@ -20,22 +20,13 @@ class Identifier;
 #include <vector>
 
 //! Holds a msgid for the translation catalog; may also bind format arguments
-/*!
- Different string-valued accessors for the msgid itself, and for the
- user-visible translation with substitution of captured format arguments.
- Also an accessor for format substitution into the English msgid, for debug-
- only outputs.
- The msgid should be used only in unusual cases and the translation more often
-
- Implicit conversions to and from wxString are intentionally disabled
-*/
-class STRINGS_API TranslatableString {
-   enum class Request;
-   template< size_t N > struct PluralTemp;
-
+class STRINGS_API FormattedStringBase {
 public:
-   //! A special string value that will have no screen reader pronunciation
-   static const TranslatableString Inaudible;
+   enum class Request {
+      Context,     // return a disambiguating context string
+      Format,      // Given the msgid, format the string for end users
+      DebugFormat, // Given the msgid, format the string for developers
+   };
 
    //! A multi-purpose function, depending on the enum argument
    /*! the string
@@ -44,37 +35,97 @@ public:
       and no substitutions */
    using Formatter = std::function< wxString(const wxString &, Request) >;
 
-   TranslatableString() {}
+   //! Returns true if context is NullContextFormatter
+   bool IsVerbatim() const;
+
+   //! MSGID is the English lookup key in the catalog, not necessarily for user's eyes if locale is some other.
+   /*! The MSGID might not be all the information FormattedString holds.
+      This is a deliberately ugly-looking function name.  Use with caution. */
+   Identifier MSGID() const;
+
+private:
+   static const wxChar *const NullContextName;
+
+protected:
+   static const Formatter NullContextFormatter;
+
+   FormattedStringBase( Formatter formatter = {} )
+      : mFormatter{ std::move( formatter ) } {}
+
+   static wxString DoGetContext( const Formatter &formatter );
+   static wxString DoSubstitute(
+      const Formatter &formatter,
+      const wxString &format, const wxString &context, bool debug );
+   wxString DoFormat( bool debug ) const
+   {  return DoSubstitute(
+      mFormatter, mMsgid, DoGetContext(mFormatter), debug ); }
+   static wxString DoChooseFormat(
+      const Formatter &formatter,
+      const wxString &singular, const wxString &plural, unsigned nn, bool debug );
+
+   void Join( FormattedStringBase arg, const wxString &separator = {} );
+
+   wxString mMsgid;
+   Formatter mFormatter;
+};
+
+// Forward declaration, see below
+template< typename String > String Verbatim( wxString );
+
+//! A template that generates subclasses of FormattedStringBase, which do not implicitly inter-convert.
+/*!
+Implicit conversions to and from wxString are also intentionally disabled.
+
+Different string-valued accessors for the msgid itself, and for the user-visible translation with substitution of
+captured format arguments.
+
+Also an accessor for format substitution into the English msgid, for debug-only outputs.
+
+The msgid should be used only in unusual cases and the translation more often
+*/
+template< typename Derived > class FormattedString
+   : public FormattedStringBase {
+public:
+   FormattedString() {}
 
    /*! Supply {} for the second argument to cause lookup of the msgid with
-      empty context string (default context) rather than the null context */
-   explicit TranslatableString( wxString str, Formatter formatter )
-      : mFormatter{ std::move(formatter) }
+      empty context string (default context) rather than the null context (which is for verbatim strings) */
+   explicit FormattedString( wxString str, Formatter formatter )
+      : FormattedStringBase{ std::move(formatter) }
    {
       mMsgid.swap( str );
    }
 
    // copy and move
-   TranslatableString( const TranslatableString & ) = default;
-   TranslatableString &operator=( const TranslatableString & ) = default;
-   TranslatableString( TranslatableString && str )
-      : mFormatter( std::move( str.mFormatter ) )
+   FormattedString( const FormattedString & ) = default;
+   FormattedString &operator=( const FormattedString & ) = default;
+   FormattedString( FormattedString && str )
+      : FormattedStringBase{ std::move( str.mFormatter ) }
    {
       mMsgid.swap( str.mMsgid );
    }
-   TranslatableString &operator=( TranslatableString &&str )
+   FormattedString &operator=( FormattedString &&str )
    {
       mFormatter = std::move( str.mFormatter );
       mMsgid.swap( str.mMsgid );
       return *this;
    }
 
-   bool empty() const { return mMsgid.empty(); }
+   //! conversion from other kinds of FormattedString must be explicit
+   template< typename Derived2 >
+   explicit FormattedString( const FormattedString< Derived2 > &other )
+      : FormattedStringBase{ other }
+   {
+      mMsgid = other.MSGID().GET();
+   }
+   template< typename Derived2 >
+   explicit FormattedString( FormattedString< Derived2 > &&other )
+      : FormattedStringBase{ std::move( other ) }
+   {
+      mMsgid = other.MSGID().GET();
+   }
 
-   //! MSGID is the English lookup key in the catalog, not necessarily for user's eyes if locale is some other.
-   /*! The MSGID might not be all the information TranslatableString holds.
-      This is a deliberately ugly-looking function name.  Use with caution. */
-   Identifier MSGID() const;
+   bool empty() const { return mMsgid.empty(); }
 
    wxString Translation() const { return DoFormat( false ); }
 
@@ -82,13 +133,13 @@ public:
    wxString Debug() const { return DoFormat( true ); }
 
    //! Warning: comparison of msgids only, which is not all of the information!
-   /*! This operator makes it easier to define a std::unordered_map on TranslatableStrings */
+   /*! This operator makes it easier to define a std::unordered_map on FormattedStrings */
    friend bool operator == (
-      const TranslatableString &x, const TranslatableString &y)
+      const FormattedString &x, const FormattedString &y)
    { return x.mMsgid == y.mMsgid; }
 
    friend bool operator != (
-      const TranslatableString &x, const TranslatableString &y)
+      const FormattedString &x, const FormattedString &y)
    { return !(x == y); }
 
    //! Returns true if context is NullContextFormatter
@@ -97,44 +148,44 @@ public:
    //! Capture variadic format arguments (by copy) when there is no plural.
    /*! The substitution is computed later in a call to Translate() after msgid is
       looked up in the translation catalog.
-      Any format arguments that are also of type TranslatableString will be
+      Any format arguments that are also of type FormattedString<Tag> will be
       translated too at substitution time, for non-debug formatting */
    template< typename... Args >
-   TranslatableString &Format( Args &&...args ) &
+   Derived &Format( Args &&...args ) &
    {
       auto prevFormatter = mFormatter;
       this->mFormatter = [prevFormatter, args...]
       (const wxString &str, Request request) -> wxString {
          switch ( request ) {
             case Request::Context:
-               return TranslatableString::DoGetContext( prevFormatter );
+               return FormattedStringBase::DoGetContext( prevFormatter );
             case Request::Format:
             case Request::DebugFormat:
             default: {
                bool debug = request == Request::DebugFormat;
                return wxString::Format(
-                  TranslatableString::DoSubstitute(
+                  FormattedStringBase::DoSubstitute(
                      prevFormatter,
-                     str, TranslatableString::DoGetContext( prevFormatter ),
+                     str, FormattedStringBase::DoGetContext( prevFormatter ),
                      debug ),
-                  TranslatableString::TranslateArgument( args, debug )...
+                  TranslateArgument( args, debug )...
                );
             }
          }
       };
-      return *this;
+      return static_cast<Derived&>(*this);
    }
    template< typename... Args >
-   TranslatableString &&Format( Args &&...args ) &&
+   Derived &&Format( Args &&...args ) &&
    {
       return std::move( Format( std::forward<Args>(args)... ) );
    }
 
    //! Choose a non-default and non-null disambiguating context for lookups
    /*! This is meant to be the first of chain-call modifications of the
-      TranslatableString object; it will destroy any previously captured
+      FormattedString object; it will destroy any previously captured
       information */
-   TranslatableString &Context( const wxString &context ) &
+   Derived &Context( const wxString &context ) &
    {
       this->mFormatter = [context]
       (const wxString &str, Request request) -> wxString {
@@ -148,90 +199,45 @@ public:
                return DoSubstitute( {}, str, context, false );
          }
       };
-      return *this;
+      return static_cast<Derived&>(*this);
    }
-   TranslatableString &&Context( const wxString &context ) &&
+   Derived &&Context( const wxString &context ) &&
    {
       return std::move( Context( context ) );
    }
 
-   //! Append another translatable string
+   //! Append another formatted string
    /*! lookup of msgids for
       this and for the argument are both delayed until Translate() is invoked
       on this, and then the formatter concatenates the translations */
-   TranslatableString &Join(
-      TranslatableString arg, const wxString &separator = {} ) &;
-   TranslatableString &&Join(
-      TranslatableString arg, const wxString &separator = {} ) &&
-   { return std::move( Join( std::move(arg), separator ) ); }
+   Derived &Join(
+      FormattedString arg, const wxString &separator = {} ) &
+   {
+      FormattedStringBase::Join( std::move( arg ), separator );
+      return static_cast<Derived&>(*this);
+   }
+   Derived &&Join(
+      FormattedString arg, const wxString &separator = {} ) &&
+   {
+      return std::move( Join( std::move(arg), separator ) );
+   }
 
-   TranslatableString &operator +=( TranslatableString arg )
+   Derived &operator +=( FormattedString arg )
    {
       Join( std::move( arg ) );
-      return *this;
+      return static_cast<Derived&>(*this);
    }
-
-   //! Implements the XP macro
-   /*! That macro specifies a second msgid, a list
-      of format arguments, and which of those format arguments selects among
-      messages; the translated strings to select among, depending on language,
-      might actually be more or fewer than two.  See Internat.h. */
-   template< size_t N >
-   PluralTemp< N > Plural( const wxString &pluralStr ) &&
-   {
-     return PluralTemp< N >{ *this, pluralStr };
-   }
-
-   /*! Translated strings may still contain menu hot-key codes (indicated by &)
-      that wxWidgets interprets, and also trailing ellipses, that should be
-      removed for other uses. */
-   enum StripOptions : unsigned {
-      // Values to be combined with bitwise OR
-      MenuCodes = 0x1,
-      Ellipses = 0x2,
-   };
-   TranslatableString &Strip( unsigned options = MenuCodes ) &;
-   TranslatableString &&Strip( unsigned options = MenuCodes ) &&
-   { return std::move( Strip( options ) ); }
-
-   //! non-mutating, constructs another TranslatableString object
-   TranslatableString Stripped( unsigned options = MenuCodes ) const
-   { return TranslatableString{ *this }.Strip( options ); }
-
-   wxString StrippedTranslation() const { return Stripped().Translation(); }
-
 private:
-   static const Formatter NullContextFormatter;
-
-   //! Construct a TranslatableString that does no translation but passes str verbatim
-   explicit TranslatableString( wxString str )
-      : mFormatter{ NullContextFormatter }
+   //! Construct a FormattedString that does no translation but passes str verbatim.
+   /*! This constructor should not be invoked directly, but instead by the function Verbatim */
+   explicit FormattedString( wxString str )
+      : FormattedStringBase{ NullContextFormatter }
    {
       mMsgid.swap( str );
    }
+   template< typename String > friend String Verbatim( wxString );
 
-   friend TranslatableString Verbatim( wxString str );
-
-   enum class Request {
-      Context,     //!< return a disambiguating context string
-      Format,      //!< Given the msgid, format the string for end users
-      DebugFormat, //!< Given the msgid, format the string for developers
-   };
-
-   static const wxChar *const NullContextName;
-   friend std::hash< TranslatableString >;
-
-   static wxString DoGetContext( const Formatter &formatter );
-   static wxString DoSubstitute(
-      const Formatter &formatter,
-      const wxString &format, const wxString &context, bool debug );
-   wxString DoFormat( bool debug ) const
-   {  return DoSubstitute(
-      mFormatter, mMsgid, DoGetContext(mFormatter), debug ); }
-
-   static wxString DoChooseFormat(
-      const Formatter &formatter,
-      const wxString &singular, const wxString &plural, unsigned nn, bool debug );
+   friend std::hash< FormattedString >;
 
    template< typename T > static const T &TranslateArgument( const T &arg, bool )
    { return arg; }
@@ -240,40 +246,47 @@ private:
    template< typename T > static auto TranslateArgument(
       const std::reference_wrapper<T> &arg, bool debug )
          -> decltype(
-            TranslatableString::TranslateArgument( arg.get(), debug ) )
-   { return TranslatableString::TranslateArgument( arg.get(), debug ); }
-   static wxString TranslateArgument( const TranslatableString &arg, bool debug )
+            FormattedString::TranslateArgument( arg.get(), debug ) )
+   { return FormattedString::TranslateArgument( arg.get(), debug ); }
+   static wxString TranslateArgument( const Derived &arg, bool debug )
    { return arg.DoFormat( debug ); }
 
+   //! Implements the XP macro
+   /*! That macro specifies a second msgid, a list
+      of format arguments, and which of those format arguments selects among
+      messages; the translated strings to select among, depending on language,
+      might actually be more or fewer than two.  See Internat.h. */
    template< size_t N > struct PluralTemp{
-      TranslatableString &ts;
+      Derived &ts;
       const wxString &pluralStr;
       template< typename... Args >
-         TranslatableString &&operator()( Args&&... args )
+         Derived &&operator()( Args&&... args )
       {
          // Pick from the pack the argument that specifies number
          auto selector =
             std::template get< N >( std::forward_as_tuple( args... ) );
          // We need an unsigned value.  Guard against negative values.
          auto nn = static_cast<unsigned>(
-            std::max<unsigned long long>( 0, selector )
+            std::max<decltype(selector)>( 0, selector )
          );
-         auto plural = this->pluralStr;
-         auto prevFormatter = this->ts.mFormatter;
+         // Name these before we capture them by value in the lambda:
+         auto &prevFormatter = this->ts.mFormatter;
+         auto &plural = this->pluralStr;
+
          this->ts.mFormatter = [prevFormatter, plural, nn, args...]
          (const wxString &str, Request request) -> wxString {
             switch ( request ) {
                case Request::Context:
-                  return TranslatableString::DoGetContext( prevFormatter );
+                  return FormattedStringBase::DoGetContext( prevFormatter );
                case Request::Format:
                case Request::DebugFormat:
                default:
                {
                   bool debug = request == Request::DebugFormat;
                   return wxString::Format(
-                     TranslatableString::DoChooseFormat(
+                     FormattedStringBase::DoChooseFormat(
                         prevFormatter, str, plural, nn, debug ),
-                     TranslatableString::TranslateArgument( args, debug )...
+                     FormattedString::TranslateArgument( args, debug )...
                   );
                }
             }
@@ -282,24 +295,27 @@ private:
       }
    };
 
-   wxString mMsgid;
-   Formatter mFormatter;
+public:
+   template< size_t N >
+   PluralTemp< N > Plural( const wxString &pluralStr ) &&
+   {
+     return PluralTemp< N >{ static_cast<Derived&>(*this), pluralStr };
+   }
 };
 
-inline TranslatableString operator +(
-   TranslatableString x, TranslatableString y  )
+template< typename Derived > inline Derived operator +(
+   const FormattedString< Derived > &x, const FormattedString< Derived > &y  )
 {
-   return std::move(x += std::move(y));
+   Derived temp{ static_cast<const Derived&>( x ) };
+   return std::move(temp += std::move(y));
 }
 
-using TranslatableStrings = std::vector<TranslatableString>;
-
-//! For using std::unordered_map on TranslatableString
+//! For using std::unordered_map on FormattedString<Derived>
 /*! Note:  hashing on msgids only, which is not all of the information */
 namespace std
 {
-   template<> struct hash< TranslatableString > {
-      size_t operator () (const TranslatableString &str) const // noexcept
+   template<typename Derived> struct hash< FormattedString<Derived> > {
+      size_t operator () (const FormattedString<Derived> &str) const // noexcept
       {
          const wxString &stdstr = str.mMsgid.ToStdWstring(); // no allocations, a cheap fetch
          using Hasher = hash< wxString >;
@@ -308,6 +324,35 @@ namespace std
    };
 }
 
+//! Generate TranslatableString from the class template
+struct TranslatableString : FormattedString< TranslatableString > {
+public:
+   /*! Translated strings may still contain menu hot-key codes (indicated by &)
+      that wxWidgets interprets, and also trailing ellipses, that should be
+      removed for other uses. */
+   enum StripOptions : unsigned {
+      // Values to be combined with bitwise OR
+      MenuCodes = 0x1,
+      Ellipses = 0x2,
+   };
+
+   using FormattedString< TranslatableString >::FormattedString;
+
+   TranslatableString &Strip( unsigned options = MenuCodes ) &
+   { DoStrip(options); return *this; }
+   TranslatableString &&Strip( unsigned options = MenuCodes ) &&
+   { return std::move( Strip( options ) ); }
+
+   //! non-mutating, constructs another FormattedString object
+   TranslatableString Stripped( unsigned options = MenuCodes ) const
+   { return TranslatableString{ *this }.Strip( options ); }
+
+   wxString StrippedTranslation() const { return Stripped().Translation(); }
+
+private:
+   void DoStrip( unsigned options = MenuCodes );
+};
+
 //! Allow TranslatableString to work with shift output operators
 template< typename Sink >
 inline Sink &operator <<( Sink &sink, const TranslatableString &str )
@@ -315,10 +360,22 @@ inline Sink &operator <<( Sink &sink, const TranslatableString &str )
    return sink << str.Translation();
 }
 
+namespace std
+{
+   template<> struct hash< TranslatableString >
+      : hash< FormattedString< TranslatableString > > {};
+}
+
+using TranslatableStrings = std::vector<TranslatableString>;
+
+//! A special string value that will have no screen reader pronunciation
+extern const TranslatableString InaudibleString;
+
 //! Require calls to the one-argument constructor to go through this distinct global function name.
 /*! This makes it easier to locate and
    review the uses of this function, separately from the uses of the type. */
-inline TranslatableString Verbatim( wxString str )
-{ return TranslatableString( std::move( str ) ); }
+template< typename String = TranslatableString >
+inline String Verbatim( wxString str )
+{ return String( std::move( str ) ); }
 
 #endif

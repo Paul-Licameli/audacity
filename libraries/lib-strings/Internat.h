@@ -94,7 +94,7 @@ extern STRINGS_API const wxString& GetCustomSubstitution(const wxString& str1 );
 // parentheses.  The third argument of the macro call is the zero-based index
 // of the format argument that selects singular or plural
 #define XP(sing, plur, n) \
-   TranslatableString{ (L"" sing), {} }.Plural<(n)>( (L"" plur) )
+   ( TranslatableString{ (L"" sing), {} }.Plural<(n)>( (L"" plur) ) )
 
 // Like XP but with an additional context argument, as for XC
 #define XPC(sing, plur, n, c) \

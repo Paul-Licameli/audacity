@@ -20,7 +20,6 @@
 #include "ImageRoll.h" // member variable
 
 class wxImage;
-class TranslatableString;
 
 class AUDACITY_DLL_API AButton final : public wxWindow {
    friend class AButtonAx;

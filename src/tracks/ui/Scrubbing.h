@@ -25,7 +25,6 @@ Paul Licameli split from TrackPanel.cpp
 #include "Identifier.h"
 
 class AudacityProject;
-class TranslatableString;
 
 // Conditionally compile either a separate thead, or else use a timer in the main
 // thread, to poll the mouse and update scrubbing speed and direction.  The advantage of

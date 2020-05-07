@@ -22,7 +22,6 @@ class TrackPanelGroup;
 class TrackPanelNode;
 struct TrackPanelMouseEvent;
 struct TrackPanelMouseState;
-class TranslatableString;
 
 class UIHandle;
 using UIHandlePtr = std::shared_ptr<UIHandle>;

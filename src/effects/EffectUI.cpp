@@ -601,8 +601,8 @@ public:
    :  wxPanelWrapper(parent)
    {
       // This fools NVDA into not saying "Panel" when the dialog gets focus
-      SetName(TranslatableString::Inaudible);
-      SetLabel(TranslatableString::Inaudible);
+      SetName(InaudibleString);
+      SetLabel(InaudibleString);
 
       mAcceptsFocus = true;
    }
@@ -869,8 +869,8 @@ wxPanel *EffectUIHost::BuildButtonBar(wxWindow *parent)
    const auto bar = safenew wxPanelWrapper(parent, wxID_ANY);
 
    // This fools NVDA into not saying "Panel" when the dialog gets focus
-   bar->SetName(TranslatableString::Inaudible);
-   bar->SetLabel(TranslatableString::Inaudible);
+   bar->SetName(InaudibleString);
+   bar->SetLabel(InaudibleString);
 
    ShuttleGui S{ bar, eIsCreating,
       false /* horizontal */,
