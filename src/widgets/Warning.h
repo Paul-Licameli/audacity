@@ -15,7 +15,6 @@
 
 #include <wx/defs.h>
 class BoolSetting;
-class wxString;
 class wxWindow;
 
 // "Don't show this warning again"
