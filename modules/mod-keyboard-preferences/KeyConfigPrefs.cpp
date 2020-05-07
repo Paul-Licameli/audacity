@@ -74,9 +74,9 @@ KeyConfigPrefs and MousePrefs use.
 #define FilterTimerID           17012
 
 // EMPTY_SHORTCUT means "user chose to have no shortcut"
-#define EMPTY_SHORTCUT          ("")
+static NormalizedKeyString EMPTY_SHORTCUT;
 // NO_SHORTCUT means "user made no choice"
-#define NO_SHORTCUT             (wxString)((wxChar)7)
+static NormalizedKeyString NO_SHORTCUT{ wxString{ (wxChar)7 } };
 
 BEGIN_EVENT_TABLE(KeyConfigPrefs, PrefsPanel)
    EVT_BUTTON(AssignDefaultsButtonID, KeyConfigPrefs::OnDefaults)
@@ -653,7 +653,7 @@ void KeyConfigPrefs::OnHotkeyKeyDown(wxKeyEvent & e)
       return;
    }
 
-   t->SetValue(KeyEventToKeyString(e).Display());
+   t->SetValue(KeyEventToKeyString(e).Display().GET());
 }
 
 void KeyConfigPrefs::OnHotkeyChar(wxEvent & WXUNUSED(e))
@@ -664,7 +664,7 @@ void KeyConfigPrefs::OnHotkeyChar(wxEvent & WXUNUSED(e))
 void KeyConfigPrefs::OnHotkeyKillFocus(wxEvent & e)
 {
    if (mKey->GetValue().empty() && mCommandSelected != wxNOT_FOUND) {
-      mKey->AppendText(mView->GetKey(mCommandSelected).Display());
+      mKey->AppendText(mView->GetKey(mCommandSelected).Display().GET());
    }
 
    e.Skip();
@@ -705,8 +705,8 @@ void KeyConfigPrefs::OnFilterKeyDown(wxKeyEvent & e)
    }
 
    if (mViewType == ViewByKey) {
-      wxString key = KeyEventToKeyString(e).Display();
-      t->SetValue(key);
+      auto key = KeyEventToKeyString(e).Display();
+      t->SetValue(key.GET());
 
       if (!key.empty()) {
          mView->SetFilter(t->GetValue());
@@ -776,7 +776,7 @@ void KeyConfigPrefs::OnSet(wxCommandEvent & WXUNUSED(event))
    }
 
    CommandID newCommand{ mView->GetName(mCommandSelected) };
-   NormalizedKeyString enteredKey{ mKey->GetValue() };
+   NormalizedKeyString enteredKey{ DisplayKeyString{ mKey->GetValue() } };
    NormalizedKeyString newComDefaultKey{ 
       mManager->GetDefaultKeyFromName(newCommand) };
    CommandIDs oldCommands;
@@ -858,7 +858,7 @@ void KeyConfigPrefs::OnSelected(wxCommandEvent & WXUNUSED(e))
    if (mCommandSelected != wxNOT_FOUND) {
       bool canset = mView->CanSetKey(mCommandSelected);
       if (canset) {
-         mKey->AppendText(mView->GetKey(mCommandSelected).Display());
+         mKey->AppendText(mView->GetKey(mCommandSelected).Display().GET());
       }
 
       mKey->Enable(canset);

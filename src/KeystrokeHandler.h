@@ -18,6 +18,7 @@ class wxKeyEvent;
 AUDACITY_DLL_API bool FilterKeyEvent(
    AudacityProject *project, const wxKeyEvent & evt, bool permit);
 
+// Construct NormalizedKeyString from a key event
 AUDACITY_DLL_API
 NormalizedKeyString KeyEventToKeyString(const wxKeyEvent & keyEvent);
 

@@ -53,7 +53,7 @@ NormalizedKeyString::NormalizedKeyString( const wxString & key )
 #endif
 }
 
-wxString NormalizedKeyString::Display(bool usesSpecialChars) const
+DisplayKeyString NormalizedKeyString::Display(bool usesSpecialChars) const
 {
    (void)usesSpecialChars;//compiler food
    // using GET to manipulate key string as needed for macOS differences
@@ -78,4 +78,30 @@ wxString NormalizedKeyString::Display(bool usesSpecialChars) const
 #endif
 
    return newkey;
+}
+
+NormalizedKeyString::NormalizedKeyString(
+   const DisplayKeyString &str, bool usesSpecialChars)
+{
+   // Computes the inverse of the previous function
+
+   (void)usesSpecialChars;//compiler food
+   auto newkey = str.GET();
+#if defined(__WXMAC__)
+
+   if (!usesSpecialChars) {
+      newkey.Replace(L"Control+", L"RawCtrl+");
+      newkey.Replace(L"Option+", L"Alt+");
+      newkey.Replace(L"Command+", L"Ctrl+");
+   }
+   else {
+      newkey.Replace(L"\u21e7", L"Shift+");
+      newkey.Replace('^', L"RawCtrl+");
+      newkey.Replace(L"\u2325", L"Alt+");
+      newkey.Replace(L"\u2318", L"Ctrl+");
+   }
+
+#endif
+
+   Identifier::operator=( newkey );
 }
