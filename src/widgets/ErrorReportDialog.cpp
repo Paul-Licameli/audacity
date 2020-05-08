@@ -149,11 +149,11 @@ ErrorReportDialog::ErrorReportDialog(
             
             S.AddSpace(0, 0, 1);
 
-            S.Id(wxID_NO).AddButton(XC("&Don't send", "crash reporter button"));
+            S.Id(wxID_NO).AddButton(XXC("&Don't send", "crash reporter button"));
 
             S.AddSpace(13, 0);
 
-            S.Id(wxID_YES).AddButton(XC("&Send", "crash reporter button"));
+            S.Id(wxID_YES).AddButton(XXC("&Send", "crash reporter button"));
          }
          S.EndHorizontalLay();
 

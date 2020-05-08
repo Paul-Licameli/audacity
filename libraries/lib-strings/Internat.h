@@ -38,13 +38,10 @@ extern STRINGS_API const wxString& GetCustomSubstitution(const wxString& str1 );
 
 // Marks strings for extraction only, where '&', preceding menu accelerators, MAY
 // occur.
-// For now, expands exactly as macro XO does, but in future there will be a
-// type distinction - for example XXO should be used for menu item names that
-// might use the & character for shortcuts.
-#define XXO(s)  XO(s)
+#define XXO(s) (TranslatableLabel{ (L"" s), {} })
 
 // Corresponds to XC as XXO does to XO
-#define XXC(s, c) XC(s, c)
+#define XXC(s, c) (TranslatableLabel{ (L"" s), {} }.Context(c))
 
 #ifdef _
    #undef _

@@ -1222,7 +1222,7 @@ void CommandManager::RegisterLastAnalyzer(const CommandContext& context) {
       auto& menuManager = MenuManager::Get(context.project);
       menuManager.mLastAnalyzerRegistration = MenuCreator::repeattypeunique;
       menuManager.mLastAnalyzerRegisteredId = mLastProcessId;
-      auto lastEffectDesc = XO("Repeat %s").Format(mNiceName);
+      auto lastEffectDesc = XXO("Repeat %s").Format(mNiceName.Translation());
       Modify(L"RepeatLastAnalyzer", lastEffectDesc);
    }
    return;
@@ -1235,7 +1235,7 @@ void CommandManager::RegisterLastTool(const CommandContext& context) {
       auto& menuManager = MenuManager::Get(context.project);
       menuManager.mLastToolRegistration = MenuCreator::repeattypeunique;
       menuManager.mLastToolRegisteredId = mLastProcessId;
-      auto lastEffectDesc = XO("Repeat %s").Format(mNiceName);
+      auto lastEffectDesc = XXO("Repeat %s").Format(mNiceName.Translation());
       Modify(L"RepeatLastTool", lastEffectDesc);
    }
    return;

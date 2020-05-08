@@ -103,5 +103,5 @@ auto WaveTrackSubViewType::Default() -> Display
 }
 
 const EnumValueSymbol WaveTrackViewConstants::MultiViewSymbol{
-   L"Multiview", XXO("&Multi-view")
+   L"Multiview", XO("Multi-view")
 };

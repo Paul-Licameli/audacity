@@ -487,7 +487,7 @@ wxStaticText * ShuttleGuiBase::AddVariableText(
 }
 
 ReadOnlyText * ShuttleGuiBase::AddReadOnlyText(
-   const TranslatableString &Caption, const wxString &Value)
+   const TranslatableLabel &Caption, const wxString &Value)
 {
    const auto translated = Caption.Translation();
    auto style = GetStyle( wxBORDER_NONE );

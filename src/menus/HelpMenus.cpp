@@ -553,17 +553,17 @@ BaseItemSharedPtr HelpMenu()
             // alpha-only items don't need to internationalize, so use
             // Verbatim for labels
 
-            Command( L"RaiseSegfault", Verbatim("Test segfault report"),
+            Command( L"RaiseSegfault", VerbatimLabel("Test segfault report"),
                FN(OnSegfault), AlwaysEnabledFlag ),
 
-            Command( L"ThrowException", Verbatim("Test exception report"),
+            Command( L"ThrowException", VerbatimLabel("Test exception report"),
                FN(OnException), AlwaysEnabledFlag ),
 
-            Command( L"ViolateAssertion", Verbatim("Test assertion report"),
+            Command( L"ViolateAssertion", VerbatimLabel("Test assertion report"),
                FN(OnAssertion), AlwaysEnabledFlag ),
 
             // Menu explorer.  Perhaps this should become a macro command
-            Command( L"MenuTree", Verbatim("Menu Tree..."),
+            Command( L"MenuTree", VerbatimLabel("Menu Tree..."),
                FN(OnMenuTree),
                AlwaysEnabledFlag )
       #endif

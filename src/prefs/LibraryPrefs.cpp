@@ -102,7 +102,7 @@ void LibraryPrefs::PopulateOrExchange(ShuttleGui & S)
       {
          mMP3Version = S
             .Position(wxALIGN_CENTRE_VERTICAL)
-            .AddReadOnlyText(XO("MP3 Library Version:"), "");
+            .AddReadOnlyText(XXO("MP3 Library Version:"), "");
       }
       S.EndTwoColumn();
    }
@@ -121,7 +121,7 @@ void LibraryPrefs::PopulateOrExchange(ShuttleGui & S)
 
          mFFmpegVersion = S
             .Position(wxALIGN_CENTRE_VERTICAL)
-            .AddReadOnlyText(XO("FFmpeg Library Version:"), version.Translation());
+            .AddReadOnlyText(XXO("FFmpeg Library Version:"), version.Translation());
 
          S.AddVariableText(XO("FFmpeg Library:"),
             true, wxALL | wxALIGN_RIGHT | wxALIGN_CENTRE_VERTICAL);

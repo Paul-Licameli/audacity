@@ -15,7 +15,7 @@
 #include <functional>
 #include <wx/string.h>
 
-class Identifier;
+#include "Identifier.h"
 
 #include <vector>
 
@@ -68,9 +68,6 @@ protected:
    wxString mMsgid;
    Formatter mFormatter;
 };
-
-// Forward declaration, see below
-template< typename String > String Verbatim( wxString );
 
 //! A template that generates subclasses of FormattedStringBase, which do not implicitly inter-convert.
 /*!
@@ -227,7 +224,7 @@ public:
       Join( std::move( arg ) );
       return static_cast<Derived&>(*this);
    }
-private:
+protected:
    //! Construct a FormattedString that does no translation but passes str verbatim.
    /*! This constructor should not be invoked directly, but instead by the function Verbatim */
    explicit FormattedString( wxString str )
@@ -235,8 +232,8 @@ private:
    {
       mMsgid.swap( str );
    }
-   template< typename String > friend String Verbatim( wxString );
 
+private:
    friend std::hash< FormattedString >;
 
    template< typename T > static const T &TranslateArgument( const T &arg, bool )
@@ -327,30 +324,8 @@ namespace std
 //! Generate TranslatableString from the class template
 struct TranslatableString : FormattedString< TranslatableString > {
 public:
-   /*! Translated strings may still contain menu hot-key codes (indicated by &)
-      that wxWidgets interprets, and also trailing ellipses, that should be
-      removed for other uses. */
-   enum StripOptions : unsigned {
-      // Values to be combined with bitwise OR
-      MenuCodes = 0x1,
-      Ellipses = 0x2,
-   };
-
    using FormattedString< TranslatableString >::FormattedString;
-
-   TranslatableString &Strip( unsigned options = MenuCodes ) &
-   { DoStrip(options); return *this; }
-   TranslatableString &&Strip( unsigned options = MenuCodes ) &&
-   { return std::move( Strip( options ) ); }
-
-   //! non-mutating, constructs another FormattedString object
-   TranslatableString Stripped( unsigned options = MenuCodes ) const
-   { return TranslatableString{ *this }.Strip( options ); }
-
-   wxString StrippedTranslation() const { return Stripped().Translation(); }
-
-private:
-   void DoStrip( unsigned options = MenuCodes );
+   friend TranslatableString Verbatim( wxString );
 };
 
 //! Allow TranslatableString to work with shift output operators
@@ -374,11 +349,39 @@ extern const TranslatableString InaudibleString;
 //! Require calls to the one-argument constructor to go through this distinct global function name.
 /*! This makes it easier to locate and
    review the uses of this function, separately from the uses of the type. */
-template< typename String = TranslatableString >
-inline String Verbatim( wxString str )
-{ return String( std::move( str ) ); }
+inline TranslatableString Verbatim( wxString str )
+{ return TranslatableString{ std::move( str ) }; }
 
-using TranslatableLabel = TranslatableString;
+// Distinct type to hold strings that may contain special escape characters,
+// which are interpreted by the GUI toolkit as accelarator keys, and hidden from
+// view; if these strings need to be reused elsewhere as visible strings, then
+// a conversion must be applied to strip the escapes
+struct TranslatableLabel : FormattedString< TranslatableLabel > {
+public:
+   using FormattedString< TranslatableLabel >::FormattedString;
+   friend TranslatableLabel VerbatimLabel( wxString );
+
+   // Translated strings may still contain menu hot-key codes (indicated by &)
+   // that wxWidgets interprets, and also trailing ellipses, that should be
+   // removed for other uses.
+   enum StripOptions : unsigned {
+      // Values to be combined with bitwise OR
+      MenuCodes = 0x1,
+      Ellipses = 0x2,
+   };
+
+   // non-mutating, constructs another object
+   TranslatableString Stripped( unsigned options = MenuCodes ) const
+   {
+      return TranslatableString{
+         TranslatableLabel{ *this }.DoStrip( options ) };
+   }
+
+   wxString StrippedTranslation() const { return Stripped().Translation(); }
+
+private:
+   TranslatableLabel &&DoStrip( unsigned options = MenuCodes ) &&;
+};
 
 using TranslatableLabels = std::vector< TranslatableLabel >;
 
@@ -386,6 +389,6 @@ using TranslatableLabels = std::vector< TranslatableLabel >;
 // distinct global function name.  This makes it easier to locate and
 // review the uses of this function, separately from the uses of the type.
 inline TranslatableLabel VerbatimLabel( wxString str )
-{ return Verbatim( std::move( str ) ); }
+{ return TranslatableLabel( std::move( str ) ); }
 
 #endif

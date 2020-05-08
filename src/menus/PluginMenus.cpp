@@ -625,7 +625,7 @@ void OnApplyMacroDirectlyByName(const CommandContext& context, const MacroID& Na
    if (undoManager.UndoAvailable()) {
        undoManager.GetShortDescription(cur, &desc);
        commandManager.Modify(L"RepeatLastTool", XXO("&Repeat %s")
-          .Format(desc));
+          .Format(desc.Translation()));
        auto& menuManager = MenuManager::Get(project);
        menuManager.mLastTool = Name;
        menuManager.mLastToolRegistration = MenuCreator::repeattypeapplymacro;
@@ -850,12 +850,11 @@ BaseItemSharedPtr GenerateMenu()
          [](AudacityProject &project)
          {
             const auto &lastGenerator = MenuManager::Get(project).mLastGenerator;
-            TranslatableString buildMenuLabel;
-            if (!lastGenerator.empty())
-               buildMenuLabel = XO("Repeat %s")
-                  .Format(EffectManager::Get().GetCommandName(lastGenerator));
-            else
-               buildMenuLabel = XO("Repeat Last Generator");
+            auto buildMenuLabel = (!lastGenerator.empty())
+               ? XXO("Repeat %s").Format(
+                  EffectManager::Get().GetCommandName(lastGenerator)
+                     .Translation())
+               : XXO("Repeat Last Generator");
 
             return Command(L"RepeatLastGenerator", buildMenuLabel,
                FN(OnRepeatLastGenerator),
@@ -983,12 +982,11 @@ BaseItemSharedPtr AnalyzeMenu()
          [](AudacityProject &project)
          {
             const auto &lastAnalyzer = MenuManager::Get(project).mLastAnalyzer;
-            TranslatableString buildMenuLabel;
-            if (!lastAnalyzer.empty())
-               buildMenuLabel = XO("Repeat %s")
-                  .Format(EffectManager::Get().GetCommandName(lastAnalyzer));
-            else
-               buildMenuLabel = XO("Repeat Last Analyzer");
+            auto buildMenuLabel =(!lastAnalyzer.empty())
+               ? XXO("Repeat %s").Format(
+                  EffectManager::Get().GetCommandName(lastAnalyzer)
+                     .Translation())
+               : XXO("Repeat Last Analyzer");
 
             return Command(L"RepeatLastAnalyzer", buildMenuLabel,
                FN(OnRepeatLastAnalyzer),
@@ -1049,12 +1047,10 @@ BaseItemSharedPtr ToolsMenu()
          [](AudacityProject &project)
          {
             const auto &lastTool = MenuManager::Get(project).mLastTool;
-            TranslatableString buildMenuLabel;
-            if (!lastTool.empty())
-               buildMenuLabel = XO("Repeat %s")
-                  .Format( EffectManager::Get().GetCommandName(lastTool) );
-            else
-               buildMenuLabel = XO("Repeat Last Tool");
+            auto buildMenuLabel = (!lastTool.empty())
+               ? XXO("Repeat %s").Format(
+                  EffectManager::Get().GetCommandName(lastTool).Translation() )
+               : XXO("Repeat Last Tool");
 
             return Command( L"RepeatLastTool", buildMenuLabel,
                FN(OnRepeatLastTool),

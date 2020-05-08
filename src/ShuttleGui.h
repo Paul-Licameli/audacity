@@ -290,7 +290,7 @@ public:
       const TranslatableString &Str, bool bCenter = false,
       int PositionFlags = 0, int wrapWidth = 0);
    ReadOnlyText * AddReadOnlyText(
-      const TranslatableString &Caption,
+      const TranslatableLabel &Caption,
       const wxString &Value);
    wxTextCtrl * AddTextBox(
       const TranslatableLabel &Prompt,

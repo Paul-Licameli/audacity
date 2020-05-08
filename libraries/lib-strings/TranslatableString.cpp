@@ -9,7 +9,6 @@
  **********************************************************************/
 
 #include "TranslatableString.h"
-#include "Identifier.h"
 #include <wx/translation.h>
 
 const wxChar *const FormattedStringBase::NullContextName = L"*";
@@ -38,7 +37,7 @@ bool FormattedStringBase::IsVerbatim() const
    return DoGetContext( mFormatter ) == NullContextName;
 }
 
-void TranslatableString::DoStrip( unsigned codes )
+TranslatableLabel &&TranslatableLabel::DoStrip( unsigned codes ) &&
 {
    auto prevFormatter = mFormatter;
    mFormatter = [prevFormatter, codes]
@@ -82,6 +81,7 @@ void TranslatableString::DoStrip( unsigned codes )
          }
       }
    };
+   return std::move(*this);
 }
 
 wxString FormattedStringBase::DoGetContext( const Formatter &formatter )
