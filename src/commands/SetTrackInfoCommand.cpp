@@ -341,7 +341,7 @@ void SetTrackVisualsCommand::PopulateOrExchange(ShuttleGui & S)
       {
          auto symbols = DiscoverSubViewTypes();
          auto typeNames = transform_container<TranslatableStrings>(
-             symbols, std::mem_fn( &EnumValueSymbol::Stripped ) );
+             symbols, std::mem_fn( &EnumValueSymbol::Msgid ) );
          S.Optional( bHasDisplayType ).TieChoice(          XXO("Display:"),       mDisplayType,
             typeNames );
       }

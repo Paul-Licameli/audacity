@@ -139,7 +139,7 @@ void MacroCommandDialog::PopulateCommandList()
    long ii = 0;
    for ( const auto &entry : mCatalog )
       // insert the user-facing string
-      mChoices->InsertItem( ii++, entry.name.StrippedTranslation() );
+      mChoices->InsertItem( ii++, entry.name.Translation() );
 }
 
 void MacroCommandDialog::ValidateChoices()
@@ -184,7 +184,7 @@ void MacroCommandDialog::OnItemSelected(wxListEvent &event)
    mEditParams->Enable(!ID.empty());
    mUsePreset->Enable(em.HasPresets(ID));
 
-   auto value = command.name.StrippedTranslation();
+   auto value = command.name.Translation();
    if ( value == mCommand->GetValue() )
       // This uses the assumption of uniqueness of translated names!
       return;
@@ -242,7 +242,7 @@ void MacroCommandDialog::SetCommandAndParams(const CommandID &Command, const wxS
       // in default of any better friendly name
       mCommand->SetValue( Command.GET() );
    else {
-      mCommand->SetValue( iter->name.StrippedTranslation() );
+      mCommand->SetValue( iter->name.Translation() );
       // using GET to expose a CommandID to the user!
       // Macro command details are one place that we do expose Identifier
       // to (more sophisticated) users

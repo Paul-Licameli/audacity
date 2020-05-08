@@ -88,10 +88,7 @@ public:
 
    const wxString &Internal() const { return mInternal; }
    const TranslatableString &Msgid() const { return mMsgid; }
-   const TranslatableString Stripped() const { return mMsgid.Stripped(); }
    const wxString Translation() const { return mMsgid.Translation(); }
-   const wxString StrippedTranslation() const
-      { return Stripped().Translation(); }
 
    bool empty() const { return mInternal.empty(); }
 

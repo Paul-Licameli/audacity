@@ -390,15 +390,15 @@ MacroCommandsCatalog::MacroCommandsCatalog( const AudacityProject *project )
    // I'm not sure, but at least I can sort stably for a better defined result.
    auto less =
       [](const Entry &a, const Entry &b)
-         { return a.name.StrippedTranslation() <
-            b.name.StrippedTranslation(); };
+         { return a.name.Translation() <
+            b.name.Translation(); };
    std::stable_sort(commands.begin(), commands.end(), less);
 
    // Now uniquify by friendly name
    auto equal =
       [](const Entry &a, const Entry &b)
-         { return a.name.StrippedTranslation() ==
-            b.name.StrippedTranslation(); };
+         { return a.name.Translation() ==
+            b.name.Translation(); };
    std::unique_copy(
       commands.begin(), commands.end(), std::back_inserter(mCommands), equal);
 }
@@ -408,8 +408,8 @@ auto MacroCommandsCatalog::ByFriendlyName( const TranslatableString &friendlyNam
    -> Entries::const_iterator
 {
    const auto less = [](const Entry &entryA, const Entry &entryB)
-      { return entryA.name.StrippedTranslation() <
-         entryB.name.StrippedTranslation(); };
+      { return entryA.name.Translation() <
+         entryB.name.Translation(); };
    auto range = std::equal_range(
       begin(), end(), Entry{ { {}, friendlyName }, {} }, less
    );
