@@ -294,11 +294,12 @@ static const EnumValueSymbol kZoomTypeStrings[nZoomTypes] =
    { XO("HalfWave") },
 };
 
-static EnumValueSymbols DiscoverSubViewTypes()
+static std::vector<EnumValueSymbol> DiscoverSubViewTypes()
 {
+   std::vector<EnumValueSymbol> result;
    const auto &types = WaveTrackSubViewType::All();
-   auto result = transform_container< EnumValueSymbols >(
-      types, std::mem_fn( &WaveTrackSubView::Type::name ) );
+   for ( const auto &type : types )
+      result.emplace_back( type.name.Internal(), type.name.Stripped() );
    result.push_back( WaveTrackViewConstants::MultiViewSymbol );
    return result;
 }

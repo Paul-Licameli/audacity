@@ -60,11 +60,11 @@ void ImportExportPrefs::Populate()
    // ----------------------- End of main section --------------
 }
 
-EnumSetting< bool > ImportExportPrefs::ExportDownMixSetting{
+EnumLabelSetting< bool > ImportExportPrefs::ExportDownMixSetting{
    L"/FileFormats/ExportDownMixChoice",
    {
-      EnumValueSymbol{ L"MixDown", XXO("&Mix down to Stereo or Mono") },
-      EnumValueSymbol{ L"Custom", XXO("&Use Advanced Mixing Options") },
+      EnumLabelSymbol{ L"MixDown", XXO("&Mix down to Stereo or Mono") },
+      EnumLabelSymbol{ L"Custom", XXO("&Use Advanced Mixing Options") },
    },
    0, // true
 
@@ -75,11 +75,11 @@ EnumSetting< bool > ImportExportPrefs::ExportDownMixSetting{
    L"/FileFormats/ExportDownMix",
 };
 
-EnumSetting< bool > ImportExportPrefs::LabelStyleSetting{
+EnumLabelSetting< bool > ImportExportPrefs::LabelStyleSetting{
    L"/FileFormats/LabelStyleChoice",
    {
-      EnumValueSymbol{ L"Standard", XXO("S&tandard") },
-      EnumValueSymbol{ L"Extended", XXO("E&xtended (with frequency ranges)") },
+      EnumLabelSymbol{ L"Standard", XXO("S&tandard") },
+      EnumLabelSymbol{ L"Extended", XXO("E&xtended (with frequency ranges)") },
    },
    0, // true
 
@@ -88,11 +88,11 @@ EnumSetting< bool > ImportExportPrefs::LabelStyleSetting{
    },
 };
 
-EnumSetting< bool > ImportExportPrefs::AllegroStyleSetting{
+EnumLabelSetting< bool > ImportExportPrefs::AllegroStyleSetting{
    L"/FileFormats/AllegroStyleChoice",
    {
-      EnumValueSymbol{ L"Seconds", XXO("&Seconds") },
-      EnumValueSymbol{ L"Beats", XXO("&Beats") },
+      EnumLabelSymbol{ L"Seconds", XXO("&Seconds") },
+      EnumLabelSymbol{ L"Beats", XXO("&Beats") },
    },
    0, // true
 

@@ -21,7 +21,7 @@
 
 #include "sndfile.h"
 
-class ChoiceSetting;
+class LabelSetting;
 class wxString;
 
 //
@@ -155,7 +155,7 @@ struct SFFile : public std::unique_ptr<SNDFILE, ::SFFileCloser>
    }
 };
 
-extern ChoiceSetting FileFormatsCopyOrEditSetting;
-extern ChoiceSetting FileFormatsSaveWithDependenciesSetting;
+extern LabelSetting FileFormatsCopyOrEditSetting;
+extern LabelSetting FileFormatsSaveWithDependenciesSetting;
 
 #endif

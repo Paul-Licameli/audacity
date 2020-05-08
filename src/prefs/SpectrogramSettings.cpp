@@ -137,9 +137,9 @@ SpectrogramSettings& SpectrogramSettings::defaults()
 }
 
 //static
-const EnumValueSymbols &SpectrogramSettings::GetScaleNames()
+const std::vector< EnumValueSymbol > &SpectrogramSettings::GetScaleNames()
 {
-   static const EnumValueSymbols result{
+   static const std::vector< EnumValueSymbol > result{
       // Keep in correspondence with enum SpectrogramSettings::ScaleType:
       XO("Linear") ,
       XO("Logarithmic") ,

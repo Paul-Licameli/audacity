@@ -26,6 +26,7 @@
 #include "WrappedType.h"
 
 class ChoiceSetting;
+class LabelSetting;
 
 class wxArrayStringEx;
 
@@ -382,7 +383,7 @@ public:
    void EndInvisiblePanel();
 
    // SettingName is a key in Preferences.
-   void StartRadioButtonGroup( const ChoiceSetting &Setting );
+   void StartRadioButtonGroup( const LabelSetting &Setting );
    void EndRadioButtonGroup();
 
    bool DoStep( int iStep );

@@ -1568,7 +1568,7 @@ wxRadioButton * ShuttleGuiBase::TieRadioButton()
 }
 
 /// Call this before any TieRadioButton calls.
-void ShuttleGuiBase::StartRadioButtonGroup( const ChoiceSetting &Setting )
+void ShuttleGuiBase::StartRadioButtonGroup( const LabelSetting &Setting )
 {
    mRadioLabels = Setting.GetLabels();
    mRadioValues = Setting.GetValues();

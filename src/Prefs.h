@@ -57,8 +57,44 @@ extern int gMenusDirty;
 struct ByColumns_t{};
 extern ByColumns_t ByColumns;
 
+// Holds an internal string, used as an identifier that is saved in config
+// files, and a user-visible string, which may include a hot key
+class EnumLabelSymbol {
+public:
+   EnumLabelSymbol() = default;
+
+   // Allows implicit construction from a msgid re-used as an internal string
+   EnumLabelSymbol( const TranslatableString &msgid )
+      : mInternal{ msgid.MSGID().GET(), }, mMsgid{ msgid }
+   {}
+
+   EnumLabelSymbol( const Identifier &internal,
+      const TranslatableString &msgid )
+      : mInternal{ internal }
+      // Do not permit non-empty msgid with empty internal
+      , mMsgid{ internal.empty() ? TranslatableString{} : msgid }
+   {}
+
+   wxString Internal() const { return mInternal.GET(); }
+   const TranslatableString &Msgid() const { return mMsgid; }
+   wxString Translation() const { return mMsgid.Translation(); }
+   TranslatableString Stripped() const { return mMsgid.Stripped(); }
+
+   friend inline bool operator == (
+      const EnumLabelSymbol &a, const EnumLabelSymbol &b )
+   { return a.mInternal == b.mInternal; }
+
+   friend inline bool operator != (
+      const EnumLabelSymbol &a, const EnumLabelSymbol &b )
+   { return !( a == b ); }
+
+private:
+   Identifier mInternal;
+   TranslatableString mMsgid;
+};
+
 //! Base class for settings objects.  It holds a configuration key path.
-/* The constructors are non-explicit for convenience */
+/*! The constructors are non-explicit for convenience */
 class AUDACITY_DLL_API SettingBase
 {
 public:
@@ -254,6 +290,34 @@ private:
    mutable Identifiers mInternals;
 };
 
+/// A table of EnumLabelSymbol that you can access by "row" with
+/// operator [] but also allowing access to the "columns" of internal or
+/// translated strings, and also allowing convenient column-wise construction
+class EnumLabelSymbols : public std::vector< EnumLabelSymbol >
+{
+public:
+   EnumLabelSymbols() = default;
+   EnumLabelSymbols( std::initializer_list<EnumLabelSymbol> symbols )
+     : vector( symbols )
+   {}
+
+   // columnwise constructor; arguments must have same size
+   // (Implicit constructor takes initial tag argument to avoid unintended
+   // overload resolution to the inherited constructor taking
+   // initializer_list, in the case that each column has exactly two strings)
+   EnumLabelSymbols(
+      ByColumns_t,
+      const TranslatableStrings &msgids,
+      Identifiers internals );
+
+   const TranslatableStrings &GetMsgids() const;
+   const Identifiers &GetInternals() const;
+
+private:
+   mutable TranslatableStrings mMsgids;
+   mutable Identifiers mInternals;
+};
+
 /// Packages a table of user-visible choices each with an internal code string,
 /// a preference key path, and a default choice
 class AUDACITY_DLL_API ChoiceSetting
@@ -309,6 +373,61 @@ protected:
    long mDefaultSymbol;
 };
 
+/// Packages a table of user-visible choices each with an internal code string,
+/// a preference key path, and a default choice
+class LabelSetting
+{
+public:
+   LabelSetting(
+      const wxString &key,
+      EnumLabelSymbols symbols,
+      long defaultSymbol = -1
+   )
+      : mKey{ key }
+
+      , mSymbols{ std::move( symbols ) }
+
+      , mDefaultSymbol{ defaultSymbol }
+   {
+      wxASSERT( defaultSymbol < (long)mSymbols.size() );
+   }
+
+   const wxString &Key() const { return mKey; }
+   const Identifier GetDefault() const;
+
+   const TranslatableStrings &GetLabels() const
+   { return GetSymbols().GetMsgids(); }
+
+   const Identifiers &GetValues() const
+   { return GetSymbols().GetInternals(); }
+
+   Identifier Read() const;
+
+   // new direct use is discouraged but it may be needed in legacy code:
+   // use a default in case the preference is not defined, which may not be
+   // the default-default stored in this object.
+   Identifier ReadWithDefault( const Identifier & ) const;
+
+   bool Write( const Identifier &value ); // you flush gPrefs afterward
+
+   void SetDefault( long value );
+
+protected:
+   const EnumLabelSymbols &GetSymbols() const { return mSymbols; }
+
+   size_t Find( const Identifier &value ) const;
+   virtual void Migrate( wxString& );
+
+   const wxString mKey;
+
+   const EnumLabelSymbols mSymbols;
+
+   // stores an internal value
+   mutable bool mMigrated { false };
+
+   long mDefaultSymbol;
+};
+
 /// Extends ChoiceSetting with a corresponding table of integer codes
 /// (generally not equal to their table positions),
 /// and optionally an old preference key path that stored integer codes, to be
@@ -319,6 +438,42 @@ public:
    EnumSettingBase(
       const SettingBase &key,
       EnumValueSymbols symbols,
+      long defaultSymbol,
+
+      std::vector<int> intValues, // must have same size as symbols
+      const wxString &oldKey = {}
+   );
+
+protected:
+
+   // Read and write the encoded values
+   int ReadInt() const;
+
+   // new direct use is discouraged but it may be needed in legacy code:
+   // use a default in case the preference is not defined, which may not be
+   // the default-default stored in this object.
+   int ReadIntWithDefault( int defaultValue ) const;
+
+   bool WriteInt( int code ); // you flush gPrefs afterward
+
+   size_t FindInt( int code ) const;
+   void Migrate( wxString& ) override;
+
+private:
+   std::vector<int> mIntValues;
+   const wxString mOldKey;
+};
+
+/// Extends ChoiceSetting with a corresponding table of integer codes
+/// (generally not equal to their table positions),
+/// and optionally an old preference key path that stored integer codes, to be
+/// migrated into one that stores internal string values instead
+class EnumLabelSettingBase : public LabelSetting
+{
+public:
+   EnumLabelSettingBase(
+      const wxString &key,
+      EnumLabelSymbols symbols,
       long defaultSymbol,
 
       std::vector<int> intValues, // must have same size as symbols
@@ -360,6 +515,45 @@ public:
       const wxString &oldKey = {}
    )
       : EnumSettingBase{
+         key, symbols, defaultSymbol,
+         { values.begin(), values.end() },
+         oldKey
+      }
+   {}
+
+   // Wrap ReadInt() and ReadIntWithDefault() and WriteInt()
+   Enum ReadEnum() const
+   { return static_cast<Enum>( ReadInt() ); }
+
+   // new direct use is discouraged but it may be needed in legacy code:
+   // use a default in case the preference is not defined, which may not be
+   // the default-default stored in this object.
+   Enum ReadEnumWithDefault( Enum defaultValue ) const
+   {
+      auto integer = static_cast<int>(defaultValue);
+      return static_cast<Enum>( ReadIntWithDefault( integer ) );
+   }
+
+   bool WriteEnum( Enum value )
+   { return WriteInt( static_cast<int>( value ) ); }
+
+};
+
+/// Adapts EnumSettingBase to a particular enumeration type
+template< typename Enum >
+class EnumLabelSetting : public EnumLabelSettingBase
+{
+public:
+
+   EnumLabelSetting(
+      const wxString &key,
+      EnumLabelSymbols symbols,
+      long defaultSymbol,
+
+      std::vector< Enum > values, // must have same size as symbols
+      const wxString &oldKey = {}
+   )
+      : EnumLabelSettingBase{
          key, symbols, defaultSymbol,
          { values.begin(), values.end() },
          oldKey

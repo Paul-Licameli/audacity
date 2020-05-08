@@ -12,6 +12,7 @@ Paul Licameli split from class WaveTrack
 #define __AUDACITY_WAVE_TRACK_VIEW_CONSTANTS__
 
 #include "audacity/ComponentInterface.h" // for EnumValueSymbol
+#include "Prefs.h" // for EnumLabelSymbol
 
 namespace WaveTrackViewConstants
 {
@@ -96,7 +97,7 @@ struct AUDACITY_DLL_API WaveTrackSubViewType {
    Display id;
    // The translation is suitable for the track control panel drop-down,
    // and it may contain a menu accelerator
-   EnumValueSymbol name;
+   EnumLabelSymbol name;
 
    bool operator < ( const WaveTrackSubViewType &other ) const
    { return id < other.id; }

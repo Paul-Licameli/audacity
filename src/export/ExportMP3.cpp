@@ -287,7 +287,7 @@ ExportMP3Options::~ExportMP3Options()
    TransferDataFromWindow();
 }
 
-EnumSetting< MP3RateMode > MP3RateModeSetting{
+EnumLabelSetting< MP3RateMode > MP3RateModeSetting{
    L"/FileFormats/MP3RateModeChoice",
    {
       { L"SET", XXO("Preset") },
@@ -304,11 +304,11 @@ EnumSetting< MP3RateMode > MP3RateModeSetting{
    L"/FileFormats/MP3RateMode",
 };
 
-static EnumSetting< MP3ChannelMode > MP3ChannelModeSetting{
+static EnumLabelSetting< MP3ChannelMode > MP3ChannelModeSetting{
    L"/FileFormats/MP3ChannelModeChoice",
    {
-      EnumValueSymbol{ L"JOINT", XXO("Joint Stereo") },
-      EnumValueSymbol{ L"STEREO", XXO("Stereo") },
+      EnumLabelSymbol{ L"JOINT", XXO("Joint Stereo") },
+      EnumLabelSymbol{ L"STEREO", XXO("Stereo") },
    },
    0, // CHANNEL_JOINT
 

@@ -158,9 +158,9 @@ void WaveformSettings::NextHigherDBRange()
 }
 
 //static
-const EnumValueSymbols &WaveformSettings::GetScaleNames()
+const std::vector< EnumValueSymbol > &WaveformSettings::GetScaleNames()
 {
-   static const EnumValueSymbols result{
+   static const std::vector< EnumValueSymbol > result{
       // Keep in correspondence with ScaleTypeValues:
       XO("Linear"),
       XO("dB"),

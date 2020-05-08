@@ -21,14 +21,14 @@ class ShuttleGui;
 
 #define IMPORT_EXPORT_PREFS_PLUGIN_SYMBOL ComponentInterfaceSymbol{ XO("IMPORT EXPORT") }
 
-template< typename Enum > class EnumSetting;
+template< typename Enum > class EnumLabelSetting;
 
 class AUDACITY_DLL_API ImportExportPrefs final : public PrefsPanel
 {
  public:
-   static EnumSetting< bool > ExportDownMixSetting;
-   static EnumSetting< bool > LabelStyleSetting;
-   static EnumSetting< bool > AllegroStyleSetting;
+   static EnumLabelSetting< bool > ExportDownMixSetting;
+   static EnumLabelSetting< bool > LabelStyleSetting;
+   static EnumLabelSetting< bool > AllegroStyleSetting;
 
    ImportExportPrefs(wxWindow * parent, wxWindowID winid);
    ~ImportExportPrefs();

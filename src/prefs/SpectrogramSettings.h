@@ -17,7 +17,6 @@ Paul Licameli
 
 #undef SPECTRAL_SELECTION_GLOBAL_SWITCH
 
-class EnumValueSymbols;
 struct FFTParam;
 class NumberScale;
 class SpectrumPrefs;
@@ -66,7 +65,7 @@ public:
       stNumScaleTypes,
    };
 
-   static const EnumValueSymbols &GetScaleNames();
+   static const std::vector< EnumValueSymbol > &GetScaleNames();
    static const EnumValueSymbols &GetColorSchemeNames();
    static const TranslatableStrings &GetAlgorithmNames();
 

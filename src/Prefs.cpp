@@ -224,6 +224,42 @@ const Identifiers &EnumValueSymbols::GetInternals() const
 }
 
 //////////
+EnumLabelSymbols::EnumLabelSymbols(
+   ByColumns_t,
+   const TranslatableStrings &msgids,
+   Identifiers internals
+)
+   : mInternals( std::move( internals ) )
+{
+   auto size = mInternals.size(), size2 = msgids.size();
+   if ( size != size2 ) {
+      wxASSERT( false );
+      size = std::min( size, size2 );
+   }
+   reserve( size );
+   auto iter1 = mInternals.begin();
+   auto iter2 = msgids.begin();
+   while( size-- )
+      emplace_back( *iter1++, *iter2++ );
+}
+
+const TranslatableStrings &EnumLabelSymbols::GetMsgids() const
+{
+   if ( mMsgids.empty() )
+      mMsgids = transform_container<TranslatableStrings>( *this,
+         std::mem_fn( &EnumLabelSymbol::Msgid ) );
+   return mMsgids;
+}
+
+const Identifiers &EnumLabelSymbols::GetInternals() const
+{
+   if ( mInternals.empty() )
+      mInternals = transform_container<Identifiers>( *this,
+         std::mem_fn( &EnumLabelSymbol::Internal ) );
+   return mInternals;
+}
+
+//////////
 const Identifier ChoiceSetting::GetDefault() const
 {
    if ( mDefaultSymbol >= 0 && mDefaultSymbol < (long)mSymbols.size() )
@@ -278,6 +314,60 @@ bool ChoiceSetting::Write( const Identifier &value )
    return result;
 }
 
+const Identifier LabelSetting::GetDefault() const
+{
+   if ( mDefaultSymbol >= 0 && mDefaultSymbol < (long)mSymbols.size() )
+      return mSymbols[ mDefaultSymbol ].Internal();
+   return {};
+}
+
+Identifier LabelSetting::Read() const
+{
+   const auto &defaultValue = GetDefault();
+   return ReadWithDefault( defaultValue );
+}
+
+Identifier LabelSetting::ReadWithDefault( const Identifier &defaultValue ) const
+{
+   wxString value;
+   if ( !gPrefs->Read(mKey, &value, defaultValue.GET()) )
+      if (!mMigrated) {
+         const_cast<LabelSetting*>(this)->Migrate( value );
+         mMigrated = true;
+      }
+
+   // Remap to default if the string is not known -- this avoids surprises
+   // in case we try to interpret config files from future versions
+   auto index = Find( value );
+   if ( index >= mSymbols.size() )
+      return defaultValue;
+   return value;
+}
+
+size_t LabelSetting::Find( const Identifier &value ) const
+{
+   auto start = GetSymbols().begin();
+   return size_t(
+      std::find( start, GetSymbols().end(), EnumLabelSymbol{ value, {} } )
+         - start );
+}
+
+void LabelSetting::Migrate( wxString &value )
+{
+   (void)value;// Compiler food
+}
+
+bool LabelSetting::Write( const Identifier &value )
+{
+   auto index = Find( value );
+   if (index >= mSymbols.size())
+      return false;
+
+   auto result = gPrefs->Write( mKey, value );
+   mMigrated = true;
+   return result;
+}
+
 EnumSettingBase::EnumSettingBase(
    const SettingBase &key,
    EnumValueSymbols symbols,
@@ -287,6 +377,25 @@ EnumSettingBase::EnumSettingBase(
    const wxString &oldKey
 )
    : ChoiceSetting{ key, std::move( symbols ), defaultSymbol }
+   , mIntValues{ std::move( intValues ) }
+   , mOldKey{ oldKey }
+{
+   auto size = mSymbols.size();
+   if( mIntValues.size() != size ) {
+      wxASSERT( false );
+      mIntValues.resize( size );
+   }
+}
+
+EnumLabelSettingBase::EnumLabelSettingBase(
+   const wxString &key,
+   EnumLabelSymbols symbols,
+   long defaultSymbol,
+
+   std::vector<int> intValues, // must have same size as symbols
+   const wxString &oldKey
+)
+   : LabelSetting{ key, std::move( symbols ), defaultSymbol }
    , mIntValues{ std::move( intValues ) }
    , mOldKey{ oldKey }
 {
@@ -357,6 +466,65 @@ void EnumSettingBase::Migrate( wxString &value )
 }
 
 bool EnumSettingBase::WriteInt( int code ) // you flush gPrefs afterward
+{
+   auto index = FindInt( code );
+   if ( index >= mSymbols.size() )
+      return false;
+   return Write( mSymbols[index].Internal() );
+}
+
+int EnumLabelSettingBase::ReadInt() const
+{
+   auto index = Find( Read() );
+
+   wxASSERT( index < mIntValues.size() );
+   return mIntValues[ index ];
+}
+
+int EnumLabelSettingBase::ReadIntWithDefault( int defaultValue ) const
+{
+   wxString defaultString;
+   auto index0 = FindInt( defaultValue );
+   if ( index0 < mSymbols.size() )
+      defaultString = mSymbols[ index0 ].Internal();
+   else
+      wxASSERT( false );
+
+   auto index = Find( ReadWithDefault( defaultString ) );
+
+   wxASSERT( index < mSymbols.size() );
+   return mIntValues[ index ];
+}
+
+size_t EnumLabelSettingBase::FindInt( int code ) const
+{
+   const auto start = mIntValues.begin();
+   return size_t(
+      std::find( start, mIntValues.end(), code )
+         - start );
+}
+
+void EnumLabelSettingBase::Migrate( wxString &value )
+{
+   int intValue = 0;
+   if ( !mOldKey.empty() &&
+        gPrefs->Read(mOldKey, &intValue, 0) ) {
+      // Make the migration, only once and persistently.
+      // Do not DELETE the old key -- let that be read if user downgrades
+      // Audacity.  But further changes will be stored only to the NEW key
+      // and won't be seen then.
+      auto index = (long) FindInt( intValue );
+      if ( index >= (long)mSymbols.size() )
+         index = mDefaultSymbol;
+      if ( index >= 0 && index < (long)mSymbols.size() ) {
+         value = mSymbols[index].Internal();
+         Write(value);
+         gPrefs->Flush();
+      }
+   }
+}
+
+bool EnumLabelSettingBase::WriteInt( int code ) // you flush gPrefs afterward
 {
    auto index = FindInt( code );
    if ( index >= mSymbols.size() )

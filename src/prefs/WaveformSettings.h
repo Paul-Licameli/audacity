@@ -62,7 +62,7 @@ public:
       stNumScaleTypes,
    };
 
-   static const EnumValueSymbols &GetScaleNames();
+   static const std::vector< EnumValueSymbol > &GetScaleNames();
 
    ScaleType scaleType;
    int dBRange;
