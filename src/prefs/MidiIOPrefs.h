@@ -45,7 +45,7 @@ class MidiIOPrefs final : public PrefsPanel
 //   void OnDevice(wxCommandEvent & e);
 
    TranslatableStrings mHostNames;
-   wxArrayStringEx mHostLabels;
+   Identifiers mHostLabels;
 
    wxString mPlayDevice;
 #ifdef EXPERIMENTAL_MIDI_IN

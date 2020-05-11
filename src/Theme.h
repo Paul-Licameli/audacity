@@ -20,6 +20,7 @@
 #include <wx/defs.h>
 #include <wx/window.h> // to inherit
 
+class Identifier;
 class wxArrayString;
 class wxBitmap;
 class wxColour;
@@ -112,7 +113,7 @@ public:
    void RegisterColour( int &iIndex, const wxColour &Clr, const wxString & Name );
 
    teThemeType GetFallbackThemeType();
-   teThemeType ThemeTypeOfTypeName( const wxString & Name );
+   teThemeType ThemeTypeOfTypeName( const Identifier & Name );
    void CreateImageCache(bool bBinarySave = true);
    bool ReadImageCache( teThemeType type = themeFromFile, bool bOkIfNotFound=false);
    void LoadComponents( bool bOkIfNotFound =false);

@@ -105,6 +105,8 @@ inline bool wxFromString(const wxString& str, Identifier *id)
 //! This lets you pass Identifier into wxFileConfig::Write
 inline wxString wxToString( const Identifier& str ) { return str.GET(); }
 
+using Identifiers = std::vector< Identifier >;
+
 //! Template generates different TaggedIdentifier classes that don't interconvert implicitly
 /*! The second template parameter determines whether comparisons are case
 sensitive; default is case sensitive */

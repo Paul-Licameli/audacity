@@ -386,8 +386,8 @@ public:
    void EndRadioButtonGroup();
 
    bool DoStep( int iStep );
-   int TranslateToIndex( const wxString &Value, const wxArrayStringEx &Choices );
-   wxString TranslateFromIndex( const int nIn, const wxArrayStringEx &Choices );
+   int TranslateToIndex( const wxString &Value, const Identifiers &Choices );
+   Identifier TranslateFromIndex( const int nIn, const Identifiers &Choices );
 
 //-- Tie functions both add controls and also read/write to them.
 

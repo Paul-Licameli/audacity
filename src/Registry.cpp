@@ -160,7 +160,7 @@ void CollectItem( Registry::Visitor &visitor,
    }
 }
 
-using Path = std::vector< Identifier >;
+using Path = Identifiers;
 
    std::unordered_set< wxString > sBadPaths;
    void BadPath(

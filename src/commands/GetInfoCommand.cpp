@@ -294,7 +294,7 @@ wxChoice * ShuttleGuiGetDefinition::TieChoice(
    StartField( "enum" );
    StartArray();
    for ( const auto &choice : choiceSetting.GetSymbols().GetInternals() )
-      AddItem( choice );
+      AddItem( choice.GET() );
    EndArray();
    EndField();
    EndStruct();

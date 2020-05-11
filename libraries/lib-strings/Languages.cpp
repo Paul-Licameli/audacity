@@ -41,7 +41,7 @@
 #include <wx/defs.h>
 #include <wx/dir.h>
 #include <wx/filename.h>
-#include <wx/intl.h>
+//#include <wx/intl.h>
 #include <wx/textfile.h>
 #include <wx/utils.h> // for wxSetEnv
 
@@ -79,9 +79,9 @@ static bool TranslationExists(const FilePaths &pathList, wxString code)
 
 namespace Languages {
 
-wxString GetSystemLanguageCode(const FilePaths &pathList)
+Identifier GetSystemLanguageCode(const FilePaths &pathList)
 {
-   wxArrayString langCodes;
+   Identifiers langCodes;
    TranslatableStrings langNames;
 
    GetLanguages(pathList, langCodes, langNames);
@@ -134,7 +134,7 @@ wxString GetSystemLanguageCode(const FilePaths &pathList)
 }
 
 void GetLanguages( FilePaths pathList,
-   wxArrayString &langCodes, TranslatableStrings &langNames)
+   Identifiers &langCodes, TranslatableStrings &langNames)
 {
    static const char *const utf8Names[] = {
 "af Afrikaans",
@@ -320,9 +320,9 @@ void GetLanguages( FilePaths pathList,
 static std::unique_ptr<wxLocale> sLocale;
 static wxString sLocaleName;
 
-wxString SetLang( const FilePaths &pathList, const wxString & lang )
+Identifier SetLang( const FilePaths &pathList, const Identifier & lang )
 {
-   wxString result = lang;
+   Identifier result = lang;
 
    sLocale.reset();
 
@@ -340,13 +340,13 @@ wxString SetLang( const FilePaths &pathList, const wxString & lang )
    const wxLanguageInfo *info = NULL;
    if (!lang.empty() && lang != wxT("System")) {
       // Try to find the given language
-      info = wxLocale::FindLanguageInfo(lang);
+      info = wxLocale::FindLanguageInfo(lang.GET());
    }
    if (!info)
    {
       // Not given a language or can't find it; substitute the system language
       result = Languages::GetSystemLanguageCode(pathList);
-      info = wxLocale::FindLanguageInfo(result);
+      info = wxLocale::FindLanguageInfo(result.GET());
       if (!info)
          // Return the substituted system language, but we can't complete setup
          // Should we try to do something better?

@@ -56,7 +56,7 @@ private:
    wxChoice *mScaleChoice;
    wxChoice *mRangeChoice;
 
-   wxArrayStringEx mRangeCodes;
+   Identifiers mRangeCodes;
    TranslatableStrings mRangeChoices;
 
    WaveformSettings mTempSettings;

@@ -41,7 +41,7 @@ class DevicePrefs final : public PrefsPanel
    void OnDevice(wxCommandEvent & e);
 
    TranslatableStrings mHostNames;
-   wxArrayStringEx mHostLabels;
+   Identifiers mHostLabels;
 
    wxString mPlayDevice;
    wxString mRecordDevice;

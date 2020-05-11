@@ -242,7 +242,7 @@ namespace Registry {
    {
    public:
       virtual ~Visitor();
-      using Path = std::vector< Identifier >;
+      using Path = Identifiers;
       virtual void BeginGroup( GroupItem &item, const Path &path );
       virtual void EndGroup( GroupItem &item, const Path &path );
       virtual void Visit( SingleItem &item, const Path &path );

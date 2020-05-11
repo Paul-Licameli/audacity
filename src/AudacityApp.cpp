@@ -180,7 +180,7 @@ namespace {
 void PopulatePreferences()
 {
    bool resetPrefs = false;
-   wxString langCode = gPrefs->Read(L"/Locale/Language", wxEmptyString);
+   Identifier langCode = gPrefs->Read(L"/Locale/Language", wxEmptyString);
    bool writeLang = false;
 
    const wxFileName fn(
@@ -204,7 +204,9 @@ void PopulatePreferences()
 
          // Inno Setup doesn't allow special characters in the Name values, so "0" is used
          // to represent the "@" character.
-         langCode.Replace(L"0", L"@");
+         auto langString = langCode.GET();
+         langString.Replace(L"0", L"@");
+         langCode = langString;
       }
 
       ini.Read(L"/FromInno/ResetPrefs", &resetPrefs, false);

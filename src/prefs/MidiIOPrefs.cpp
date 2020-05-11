@@ -195,7 +195,7 @@ void MidiIOPrefs::PopulateOrExchange( ShuttleGui & S ) {
 
 void MidiIOPrefs::OnHost(wxCommandEvent & WXUNUSED(e))
 {
-   wxString itemAtIndex;
+   Identifier itemAtIndex;
    int index = mHost->GetCurrentSelection();
    if (index >= 0 && index < (int)mHostNames.size())
       itemAtIndex = mHostLabels[index];

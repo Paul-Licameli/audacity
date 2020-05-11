@@ -1720,7 +1720,8 @@ wxChoice * ShuttleGuiBase::TieChoice(
 //-----------------------------------------------------------------------//
 
 /// String-to-Index
-int ShuttleGuiBase::TranslateToIndex( const wxString &Value, const wxArrayStringEx &Choices )
+int ShuttleGuiBase::TranslateToIndex(
+   const wxString &Value, const Identifiers &Choices )
 {
    int n = make_iterator_range( Choices ).index( Value );
    if( n == wxNOT_FOUND  )
@@ -1730,7 +1731,8 @@ int ShuttleGuiBase::TranslateToIndex( const wxString &Value, const wxArrayString
 }
 
 /// Index-to-String
-wxString ShuttleGuiBase::TranslateFromIndex( const int nIn, const wxArrayStringEx &Choices )
+Identifier ShuttleGuiBase::TranslateFromIndex(
+   const int nIn, const Identifiers &Choices )
 {
    int n = nIn;
    if( n== wxNOT_FOUND )
@@ -1966,7 +1968,7 @@ wxChoice *ShuttleGuiBase::TieChoice(
    if( DoStep(1) ) DoDataShuttle( SettingName, WrappedRef ); // Get Index from Prefs.
    if( DoStep(1) ) TempIndex = TranslateToIndex( TempStr, InternalChoices ); // To an index
    if( DoStep(2) ) pChoice = TieChoice( Prompt, TempIndex, Choices );
-   if( DoStep(3) ) TempStr = TranslateFromIndex( TempIndex, InternalChoices ); // To a string
+   if( DoStep(3) ) TempStr = TranslateFromIndex( TempIndex, InternalChoices ).GET(); // To a string
    if( DoStep(3) ) DoDataShuttle( SettingName, WrappedRef ); // Put into Prefs.
    return pChoice;
 }
@@ -1991,13 +1993,13 @@ wxChoice * ShuttleGuiBase::TieNumberAsChoice(
 {
    auto fn = [](int arg){ return wxString::Format( "%d", arg ); };
 
-   wxArrayStringEx InternalChoices;
+   Identifiers InternalChoices;
    if ( pInternalChoices )
       InternalChoices =
-         transform_container<wxArrayStringEx>(*pInternalChoices, fn);
+         transform_container<Identifiers>(*pInternalChoices, fn);
    else
       for ( int ii = 0; ii < (int)Choices.size(); ++ii )
-         InternalChoices.push_back( fn( ii ) );
+         InternalChoices.emplace_back( fn( ii ) );
 
 
    const auto Default = Setting.GetDefault();

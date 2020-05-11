@@ -46,7 +46,7 @@ Paul Licameli split from TrackPanel.cpp
 
 // Subscribe to preference changes to update static variables
 struct Settings : PrefsListener {
-   wxString gSoloPref;
+   Identifier gSoloPref;
    wxFont gFont;
 
    bool mInitialized{ false };

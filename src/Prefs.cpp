@@ -191,7 +191,7 @@ void FinishPreferences()
 EnumValueSymbols::EnumValueSymbols(
    ByColumns_t,
    const TranslatableStrings &msgids,
-   wxArrayStringEx internals
+   Identifiers internals
 )
    : mInternals( std::move( internals ) )
 {
@@ -215,10 +215,10 @@ const TranslatableStrings &EnumValueSymbols::GetMsgids() const
    return mMsgids;
 }
 
-const wxArrayStringEx &EnumValueSymbols::GetInternals() const
+const Identifiers &EnumValueSymbols::GetInternals() const
 {
    if ( mInternals.empty() )
-      mInternals = transform_container<wxArrayStringEx>( *this,
+      mInternals = transform_container<Identifiers>( *this,
          std::mem_fn( &EnumValueSymbol::Internal ) );
    return mInternals;
 }

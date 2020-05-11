@@ -25,7 +25,7 @@ Identifier::Identifier(
       value += separator + (*iter++).value;
 }
 
-std::vector< Identifier > Identifier::split( wxChar separator ) const
+Identifiers Identifier::split( wxChar separator ) const
 {
    auto strings = ::wxSplit( value, separator );
    return { strings.begin(), strings.end() };

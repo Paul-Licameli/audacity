@@ -33,24 +33,24 @@ public:
                     wxWindowID id,
                     const TranslatableString & title);
 
-   wxString GetLang() { return mLang; }
+   Identifier GetLang() { return mLang; }
 
 private:
    void OnOk(wxCommandEvent & event);
 
    wxChoice *mChoice;
-   wxString mLang;
+   Identifier mLang;
 
    int mNumLangs;
-   wxArrayString mLangCodes;
+   Identifiers mLangCodes;
    TranslatableStrings mLangNames;
 
    DECLARE_EVENT_TABLE()
 };
 
-wxString ChooseLanguage(wxWindow *parent)
+Identifier ChooseLanguage(wxWindow *parent)
 {
-   wxString returnVal;
+   Identifier returnVal;
 
    /* i18n-hint: Title on a dialog indicating that this is the first
     * time Audacity has been run. */
@@ -103,13 +103,13 @@ void LangChoiceDialog::OnOk(wxCommandEvent & WXUNUSED(event))
    int ndx = mChoice->GetSelection();
    mLang = mLangCodes[ndx];
 
-   auto slang =
+   Identifier slang =
       Languages::GetSystemLanguageCode(FileNames::AudacityPathList());
    int sndx = make_iterator_range( mLangCodes ).index( slang );
    wxString sname;
 
    if (sndx == wxNOT_FOUND) {
-      const wxLanguageInfo *sinfo = wxLocale::FindLanguageInfo(slang);
+      const wxLanguageInfo *sinfo = wxLocale::FindLanguageInfo(slang.GET());
       if (sinfo) {
          sname = sinfo->Description;
       }
@@ -118,14 +118,14 @@ void LangChoiceDialog::OnOk(wxCommandEvent & WXUNUSED(event))
       sname = mLangNames[sndx].Translation();
    }
 
-   if (mLang.Left(2) != slang.Left(2)) {
+   if (mLang.GET().Left(2) != slang.GET().Left(2)) {
       /* i18n-hint: The %s's are replaced by translated and untranslated
        * versions of language names. */
       auto msg = XO("The language you have chosen, %s (%s), is not the same as the system language, %s (%s).")
          .Format(mLangNames[ndx],
-                 mLang,
+                 mLang.GET(),
                  sname,
-                 slang);
+                 slang.GET());
       if ( wxNO == AudacityMessageBox( msg, XO("Confirm"), wxYES_NO ) ) {
          return;
       }

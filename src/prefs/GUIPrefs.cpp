@@ -63,11 +63,10 @@ wxString GUIPrefs::HelpPageName()
 
 void GUIPrefs::GetRangeChoices(
    TranslatableStrings *pChoices,
-   wxArrayStringEx *pCodes,
-   int *pDefaultRangeIndex
-)
+   Identifiers *pCodes,
+   int *pDefaultRangeIndex )
 {
-   static const auto sCodes = {
+   static const Identifiers sCodes = {
       L"36" ,
       L"48" ,
       L"60" ,
@@ -237,8 +236,8 @@ bool GUIPrefs::Commit()
    PopulateOrExchange(S);
 
    // If language has changed, we want to change it now, not on the next reboot.
-   wxString lang = gPrefs->Read(L"/Locale/Language", L"");
-   wxString usedLang = SetLang(lang);
+   Identifier lang = gPrefs->Read(L"/Locale/Language", L"");
+   auto usedLang = SetLang(lang);
    // Bug 1523: Previously didn't check no-language (=System Language)
    if (!(lang.empty() || lang == L"System") && (lang != usedLang)) {
       // lang was not usable and is not system language.  We got overridden.
@@ -253,12 +252,12 @@ bool GUIPrefs::Commit()
    return true;
 }
 
-wxString GUIPrefs::SetLang( const wxString & lang )
+Identifier GUIPrefs::SetLang( const Identifier & lang )
 {
    auto result = Languages::SetLang(FileNames::AudacityPathList(), lang);
    if (!(lang.empty() || lang == L"System") && result != lang)
       ::AudacityMessageBox(
-         XO("Language \"%s\" is unknown").Format( lang ) );
+         XO("Language \"%s\" is unknown").Format( lang.GET() ) );
 
 #ifdef EXPERIMENTAL_CEE_NUMBERS_OPTION
    bool forceCeeNumbers;
