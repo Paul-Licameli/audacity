@@ -324,11 +324,11 @@ class AUDACITY_DLL_API ChoiceSetting
 {
 public:
    ChoiceSetting(
-      const SettingBase &key,
+      const SettingBase &path,
       EnumValueSymbols symbols,
       long defaultSymbol = -1
    )
-      : mKey{ key.GetPath() }
+      : mPath{ path.GetPath() }
 
       , mSymbols{ std::move( symbols ) }
 
@@ -337,7 +337,7 @@ public:
       wxASSERT( defaultSymbol < (long)mSymbols.size() );
    }
 
-   const wxString &Key() const { return mKey; }
+   const wxString &GetPath() const { return mPath; }
    const Identifier GetDefault() const;
 
    const TranslatableStrings &GetLabels() const
@@ -363,7 +363,7 @@ protected:
    size_t Find( const Identifier &value ) const;
    virtual void Migrate( wxString& );
 
-   const wxString mKey;
+   const wxString mPath;
 
    const EnumValueSymbols mSymbols;
 
@@ -379,11 +379,11 @@ class LabelSetting
 {
 public:
    LabelSetting(
-      const wxString &key,
+      const wxString &path,
       EnumLabelSymbols symbols,
       long defaultSymbol = -1
    )
-      : mKey{ key }
+      : mPath{ path }
 
       , mSymbols{ std::move( symbols ) }
 
@@ -392,7 +392,7 @@ public:
       wxASSERT( defaultSymbol < (long)mSymbols.size() );
    }
 
-   const wxString &Key() const { return mKey; }
+   const wxString &GetPath() const { return mPath; }
    const Identifier GetDefault() const;
 
    const TranslatableLabels &GetLabels() const
@@ -418,7 +418,7 @@ protected:
    size_t Find( const Identifier &value ) const;
    virtual void Migrate( wxString& );
 
-   const wxString mKey;
+   const wxString mPath;
 
    const EnumLabelSymbols mSymbols;
 
