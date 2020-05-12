@@ -14,7 +14,6 @@
 #include "ImportForwards.h"
 #include "Identifier.h"
 #include <vector>
-#include <wx/tokenzr.h> // for enum wxStringTokenizerMode
 
 #include "../widgets/wxPanelWrapper.h" // to inherit
 #include "../FileNames.h" // for FileType
@@ -153,7 +152,7 @@ public:
     * @str string and appends string-tokens to a list @list.
     * @mod defines tokenizer's behaviour.
     */
-   void StringToList(wxString &str, wxString &delims, wxArrayString &list, wxStringTokenizerMode mod = wxTOKEN_RET_EMPTY_ALL);
+   void StringToList(wxString &str, wxString &delims, wxArrayString &list);
 
    /**
     * Returns a pointer to internal items array.

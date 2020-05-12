@@ -47,6 +47,7 @@ ImportLOF.cpp, and ImportAUP.cpp.
 #include <wx/listbox.h>
 #include <wx/log.h>
 #include <wx/sizer.h>         //for wxBoxSizer
+#include <wx/tokenzr.h>
 #include "../FFmpeg.h"
 #include "../FileNames.h"
 #include "../ShuttleGui.h"
@@ -256,8 +257,9 @@ size_t Importer::SelectDefaultOpenType( const FileNames::FileTypes &fileTypes )
    return (index == fileTypes.size()) ? 0 : index;
 }
 
-void Importer::StringToList(wxString &str, wxString &delims, wxArrayString &list, wxStringTokenizerMode mod)
+void Importer::StringToList(wxString &str, wxString &delims, wxArrayString &list)
 {
+   wxStringTokenizerMode mod = wxTOKEN_RET_EMPTY_ALL;
    wxStringTokenizer toker;
 
    for (toker.SetString(str, delims, mod);
