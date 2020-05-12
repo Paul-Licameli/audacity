@@ -433,7 +433,7 @@ ComponentInterfaceSymbol LV2Effect::GetSymbol()
 
 VendorSymbol LV2Effect::GetVendor()
 {
-   wxString vendor = LilvString(lilv_plugin_get_author_name(mPlug), true);
+   auto vendor = LilvString(lilv_plugin_get_author_name(mPlug), true);
 
    if (vendor.empty())
    {
@@ -652,8 +652,8 @@ bool LV2Effect::SetHost(EffectHostInterface *host)
       }
 
       // Get the port name and symbol
-      wxString symbol = LilvString(lilv_port_get_symbol(mPlug, port));
-      wxString name = LilvString(lilv_port_get_name(mPlug, port), true);
+      auto symbol = LilvString(lilv_port_get_symbol(mPlug, port));
+      auto name = LilvString(lilv_port_get_name(mPlug, port), true);
 
       // Get the group to which this port belongs or default to the main group
       wxString groupName = wxEmptyString;
@@ -2178,7 +2178,7 @@ bool LV2Effect::BuildFancy(ShuttleGui &S)
    // Plugins may have dependencies that need to be loaded from the same path
    // as the main DLL, so add this plugin's path to the DLL search order.
    char *libPath = lilv_file_uri_parse(lilv_node_as_uri(lilv_ui_get_binary_uri(ui)), NULL);
-   wxString path = wxPathOnly(libPath);
+   auto path = wxPathOnly(libPath);
    SetDllDirectory(path.c_str());
    lilv_free(libPath);
 #endif
@@ -2339,7 +2339,7 @@ bool LV2Effect::BuildPlain(ShuttleGui &S)
 
          for (size_t i = 0, groupCount = mGroups.size(); i < groupCount; i++)
          {
-            wxString label = mGroups[i];
+            auto label = mGroups[i];
             auto groupSizer = std::make_unique<wxStaticBoxSizer>(wxVERTICAL, w, label);
 
             auto gridSizer = std::make_unique<wxFlexGridSizer>(numCols, 5, 5);
@@ -2354,7 +2354,7 @@ bool LV2Effect::BuildPlain(ShuttleGui &S)
                   continue;
                }
 
-               wxString labelText = port->mName;
+               auto labelText = port->mName;
                if (!port->mUnits.empty())
                {
                   labelText += L" (" + port->mUnits + L")";
@@ -3148,7 +3148,7 @@ const void *LV2Effect::GetPortValue(const char *port_symbol,
                                     uint32_t *size,
                                     uint32_t *type)
 {
-   wxString symbol = wxString::FromUTF8(port_symbol);
+   auto symbol = wxString::FromUTF8(port_symbol);
 
    for (auto & port : mControlPorts)
    {
@@ -3181,7 +3181,7 @@ void LV2Effect::SetPortValue(const char *port_symbol,
                              uint32_t size,
                              uint32_t type)
 {
-   wxString symbol = wxString::FromUTF8(port_symbol);
+   auto symbol = wxString::FromUTF8(port_symbol);
 
    for (auto & port : mControlPorts)
    {
@@ -3311,7 +3311,7 @@ LilvInstance *LV2Wrapper::Instantiate(const LilvPlugin *plugin,
    const LilvNode *const libNode = lilv_plugin_get_library_uri(plugin);
    const char *const libUri = lilv_node_as_uri(libNode);
    char *libPath = lilv_file_uri_parse(libUri, NULL);
-   wxString path = wxPathOnly(libPath);
+   auto path = wxPathOnly(libPath);
    SetDllDirectory(path.c_str());
    lilv_free(libPath);
 #endif

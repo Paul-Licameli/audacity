@@ -383,7 +383,7 @@ GStreamerImportPlugin::GetSupportedExtensions()
             // Add each extension to the list
             for (guint i = 0; extensions[i] != NULL; i++)
             {
-               wxString extension = wxString::FromUTF8(extensions[i]);
+               auto extension = wxString::FromUTF8(extensions[i]);
                if (mExtensions.Index(extension, false) == wxNOT_FOUND)
                {
                   mExtensions.push_back(extension);

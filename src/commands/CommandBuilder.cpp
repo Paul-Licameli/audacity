@@ -232,7 +232,7 @@ void CommandBuilder::BuildCommand(AudacityProject *project,
          Failure(L"Parameter string is missing '='");
          return;
       }
-      wxString paramName = cmdParams.Left(splitAt);
+      auto paramName = cmdParams.Left(splitAt);
       if (params.find(paramName) == params.end())
       {
          Failure(L"Unrecognized parameter: '" + paramName + L"'");
@@ -279,8 +279,8 @@ void CommandBuilder::BuildCommand(
       return;
    }
 
-   wxString cmdName = cmdString.Left(splitAt);
-   wxString cmdParams = cmdString.Mid(splitAt+1);
+   auto cmdName = cmdString.Left(splitAt);
+   auto cmdParams = cmdString.Mid(splitAt+1);
    if( splitAt < 0 )
       cmdParams = "";
 

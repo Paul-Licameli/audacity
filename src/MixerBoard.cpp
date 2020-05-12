@@ -461,7 +461,7 @@ void MixerTrackCluster::ResetMeter(const bool bResetClipping)
 // Update appearance to match the state of the track
 void MixerTrackCluster::UpdateForStateChange()
 {
-   const wxString newName = mTrack->GetName();
+   const auto newName = mTrack->GetName();
    if (newName != GetName()) {
       SetName( Verbatim( newName ) );
       mStaticText_TrackName->SetLabel(newName);
@@ -735,7 +735,7 @@ void MixerTrackCluster::OnSlider_Velocity(wxCommandEvent& WXUNUSED(event))
    //   // mSlider_Gain->GetValue() is in [-6,36]. wxSlider has min at top, so this is [-36dB,6dB].
    //   sliderValue = -sliderValue;
    //#endif
-   //wxString str = _("Gain: ");
+   //auto str = _("Gain: ");
    //if (sliderValue > 0)
    //   str += "+";
    //str += wxString::Format("%d dB", sliderValue);
@@ -781,7 +781,7 @@ MusicalInstrument::MusicalInstrument(std::unique_ptr<wxBitmap> &&pBitmap, const 
    mBitmap = std::move(pBitmap);
 
    int nUnderscoreIndex;
-   wxString strFilename = strXPMfilename;
+   auto strFilename = strXPMfilename;
    strFilename.MakeLower(); // Make sure, so we don't have to do case insensitive comparison.
    wxString strKeyword;
    while ((nUnderscoreIndex = strFilename.Find(L'_')) != -1)

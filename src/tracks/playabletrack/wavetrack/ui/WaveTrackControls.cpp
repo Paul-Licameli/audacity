@@ -364,7 +364,7 @@ void RateMenuTable::SetRate(WaveTrack * pTrack, double rate)
       channel->SetRate(rate);
 
    // Separate conversion of "rate" enables changing the decimals without affecting i18n
-   wxString rateString = wxString::Format(L"%.3f", rate);
+   auto rateString = wxString::Format(L"%.3f", rate);
    ProjectHistory::Get( *project )
    /* i18n-hint: The string names a track */
       .PushState(XO("Changed '%s' to %s Hz")

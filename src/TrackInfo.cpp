@@ -317,7 +317,7 @@ void TrackInfo::CloseTitleDrawFunction
       bool hit = target && target->GetTrack().get() == pTrack;
       bool captured = hit && target->IsClicked();
       bool down = captured && bev.Contains( context.lastState.GetPosition());
-      wxString titleStr =
+      auto titleStr =
          pTrack ? pTrack->GetName() : _("Name");
 
       //bev.Inflate(-1, -1);
@@ -427,7 +427,7 @@ void TrackInfo::MinimizeSyncLockDrawFunction
       AColor::Dark(dc, selected);
 #endif
 
-      wxString str = _("Select");
+      auto str = _("Select");
       wxCoord textWidth;
       wxCoord textHeight;
       SetTrackInfoFont(dc);

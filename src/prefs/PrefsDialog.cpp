@@ -393,7 +393,7 @@ public:
 
 int wxTreebookExt::ChangeSelection(size_t n) {
    int i = wxTreebook::ChangeSelection(n);
-   wxString Temp = GetPageText( n );
+   auto Temp = GetPageText( n );
    static_cast<wxDialog*>(GetParent())->SetTitle( Temp );
    static_cast<wxDialog*>(GetParent())->SetName( Temp );
    return i;
@@ -668,7 +668,7 @@ void PrefsDialog::OnPreview()
 
 void PrefsDialog::OnHelp()
 {
-   wxString page = GetCurrentPanel()->HelpPageName();
+   auto page = GetCurrentPanel()->HelpPageName();
    HelpSystem::ShowHelp(this, page, true);
 }
 

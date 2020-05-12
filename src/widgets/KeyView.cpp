@@ -1825,7 +1825,7 @@ KeyView::GetValue(int line)
    {
       value = GetFullLabel(index).Stripped().Translation();
    }
-   wxString key = GetKey(index).Display().GET();
+   auto key = GetKey(index).Display().GET();
 
    // Add the key if it isn't empty
    if (!key.empty())

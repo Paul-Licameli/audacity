@@ -519,7 +519,7 @@ LinkingHtmlWindow::LinkingHtmlWindow(wxWindow *parent, wxWindowID id /*= -1*/,
 
 void LinkingHtmlWindow::OnLinkClicked(const wxHtmlLinkInfo& link)
 {
-   wxString href = link.GetHref();
+   auto href = link.GetHref();
 
    if( href.StartsWith( L"innerlink:help:"))
    {
@@ -528,7 +528,7 @@ void LinkingHtmlWindow::OnLinkClicked(const wxHtmlLinkInfo& link)
    }
    else if( href.StartsWith(L"innerlink:") )
    {
-      wxString FileName =
+      auto FileName =
          wxFileName( FileNames::HtmlHelpDir(), href.Mid( 10 ) + L".htm" ).GetFullPath();
       if( wxFileExists( FileName ) )
       {

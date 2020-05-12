@@ -284,7 +284,7 @@ void TimerRecordDialog::OnAutoSavePathButton_Click()
 {
    auto &projectFileIO = ProjectFileIO::Get(mProject);
 
-   wxString fName = FileNames::SelectFile(FileNames::Operation::Export,
+   auto fName = FileNames::SelectFile(FileNames::Operation::Export,
       XO("Save Timer Recording As"),
       m_fnAutoSaveFile.GetPath(),
       m_fnAutoSaveFile.GetFullName(),
@@ -353,7 +353,7 @@ void TimerRecordDialog::OnOK()
    }
 
    // Validate that we have a Save and/or Export path setup if the appropriate check box is ticked
-   wxString sTemp = m_fnAutoSaveFile.GetFullPath();
+   auto sTemp = m_fnAutoSaveFile.GetFullPath();
    if ( AutoSave.Read() ) {
       if (!m_fnAutoSaveFile.IsOk() || m_fnAutoSaveFile.IsDir()) {
          AudacityMessageBox(

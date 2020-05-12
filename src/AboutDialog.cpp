@@ -850,7 +850,7 @@ S
 // better proportionally spaced.
 //
 // The GPL is not to be translated....
-   wxString PageText= FormatHtmlText(
+   auto PageText= FormatHtmlText(
 L"		    <center>GNU GENERAL PUBLIC LICENSE\n</center>"
 L"		       <center>Version 2, June 1991\n</center>"
 L"<p><p>"

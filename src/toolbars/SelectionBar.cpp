@@ -753,7 +753,7 @@ void SelectionBar::OnRate(wxCommandEvent & WXUNUSED(event))
 
 void SelectionBar::UpdateRates()
 {
-   wxString oldValue = mRateBox->GetValue();
+   auto oldValue = mRateBox->GetValue();
    mRateBox->Clear();
    for (int i = 0; i < AudioIOBase::NumStandardRates; i++) {
       mRateBox->Append(

@@ -178,14 +178,14 @@ PluginPaths VampEffectsModule::FindPluginPaths(PluginManagerInterface & WXUNUSED
             continue;
          }
 
-         wxString name = wxString::FromUTF8(vp->getName().c_str());
+         auto name = wxString::FromUTF8(vp->getName().c_str());
 
          if (outputs.size() > 1)
          {
             // This is not the plugin's only output.
             // Use "plugin name: output name" as the effect name,
             // unless the output name is the same as the plugin name
-            wxString outputName = wxString::FromUTF8(j->name.c_str());
+            auto outputName = wxString::FromUTF8(j->name.c_str());
             if (outputName != name)
             {
                name = wxString::Format(L"%s: %s",
@@ -193,7 +193,7 @@ PluginPaths VampEffectsModule::FindPluginPaths(PluginManagerInterface & WXUNUSED
             }
          }
 
-         wxString path = wxString::FromUTF8(i->c_str()) + L"/" + name;
+         auto path = wxString::FromUTF8(i->c_str()) + L"/" + name;
          names.push_back(path);
 
          ++output;
@@ -311,14 +311,14 @@ std::unique_ptr<Vamp::Plugin> VampEffectsModule::FindPlugin(const PluginPath & p
          continue;
       }
 
-      wxString name = wxString::FromUTF8(vp->getName().c_str());
+      auto name = wxString::FromUTF8(vp->getName().c_str());
 
       if (outputs.size() > 1)
       {
          // This is not the plugin's only output.
          // Use "plugin name: output name" as the effect name,
          // unless the output name is the same as the plugin name
-         wxString outputName = wxString::FromUTF8(j->name.c_str());
+         auto outputName = wxString::FromUTF8(j->name.c_str());
          if (outputName != name)
          {
             name = wxString::Format(L"%s: %s",

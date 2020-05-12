@@ -120,7 +120,7 @@ TranslatableString EffectManager::GetVendorName(const PluginID & ID)
 
 CommandID EffectManager::GetCommandIdentifier(const PluginID & ID)
 {
-   wxString name = PluginManager::Get().GetSymbol(ID).Internal();
+   auto name = PluginManager::Get().GetSymbol(ID).Internal();
    return Effect::GetSquashedName(name);
 }
 
@@ -484,7 +484,7 @@ wxString EffectPresetsDialog::GetSelected() const
 
 void EffectPresetsDialog::SetSelected(const wxString & parms)
 {
-   wxString preset = parms;
+   auto preset = parms;
    if (preset.StartsWith(Effect::kUserPresetIdent))
    {
       preset.Replace(Effect::kUserPresetIdent, wxEmptyString, false);

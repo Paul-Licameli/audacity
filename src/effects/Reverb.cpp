@@ -313,7 +313,7 @@ bool EffectReverb::Startup()
    // Load the previous user presets
    for (int i = 0; i < 10; i++)
    {
-      wxString path = base + wxString::Format(L"%d/", i);
+      auto path = base + wxString::Format(L"%d/", i);
       if (gPrefs->Exists(path))
       {
          Params save = mParams;

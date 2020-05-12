@@ -348,7 +348,7 @@ bool GetInfoCommand::SendBoxes(const CommandContext &context)
 
    //R.SetPosition( wxPoint(0,0) );
    
-   //wxString Name = pWin->GetName();
+   //auto Name = pWin->GetName();
    context.StartStruct();
    context.AddItem( 0, "depth" );
    context.AddItem( "Audacity Window", "name" ); 
@@ -709,7 +709,7 @@ void GetInfoCommand::ExploreWindows( const CommandContext &context,
          continue;
       wxRect R = item->GetScreenRect();
       R.SetPosition( R.GetPosition() - P );
-      wxString Name = item->GetName();
+      auto Name = item->GetName();
       // Ignore staticLine and StaticBitmap.
       if( Name.StartsWith( "static" ) )
          continue;

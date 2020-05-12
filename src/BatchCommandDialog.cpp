@@ -189,7 +189,7 @@ void MacroCommandDialog::OnCancel()
 
 void MacroCommandDialog::OnHelp()
 {
-   wxString page = GetHelpPageName();
+   auto page = GetHelpPageName();
    HelpSystem::ShowHelp(this, page, true);
 }
 
@@ -210,7 +210,7 @@ void MacroCommandDialog::OnItemSelected(wxListEvent &event)
    mCommand->SetValue(value);
    mInternalCommandName = command.name.Internal();
 
-   wxString params = MacroCommands::GetCurrentParamsFor(mInternalCommandName);
+   auto params = MacroCommands::GetCurrentParamsFor(mInternalCommandName);
    if (params.empty())
    {
       params = em.GetDefaultPreset(ID);
@@ -229,7 +229,7 @@ void MacroCommandDialog::OnItemSelected(wxListEvent &event)
 void MacroCommandDialog::OnEditParams()
 {
    auto command = mInternalCommandName;
-   wxString params  = mParameters->GetValue();
+   auto params  = mParameters->GetValue();
 
    params = MacroCommands::PromptForParamsFor(command, params, *this).Trim();
 
@@ -240,9 +240,9 @@ void MacroCommandDialog::OnEditParams()
 void MacroCommandDialog::OnUsePreset()
 {
    auto command = mInternalCommandName;
-   wxString params  = mParameters->GetValue();
+   auto params  = mParameters->GetValue();
 
-   wxString preset = MacroCommands::PromptForPresetFor(command, params, this).Trim();
+   auto preset = MacroCommands::PromptForPresetFor(command, params, this).Trim();
 
    mParameters->SetValue(preset);
    mParameters->Refresh();

@@ -412,7 +412,7 @@ void MeterPanel::UpdatePrefs()
 
    if (mDesiredStyle != MixerTrackCluster)
    {
-      wxString style = gPrefs->Read(Key(L"Style"));
+      auto style = gPrefs->Read(Key(L"Style"));
       if (style == L"AutomaticStereo")
       {
          mDesiredStyle = AutomaticStereo;
@@ -681,7 +681,7 @@ void MeterPanel::OnPaint(wxPaintEvent & WXUNUSED(event))
 
       for( size_t i = 0, cnt = texts.size(); i < cnt; i++ )
       {
-         wxString Text = L" " + texts[i] + L" ";
+         auto Text = L" " + texts[i] + L" ";
          wxSize Siz = destDC.GetTextExtent( Text );
          Siz.SetWidth( Siz.GetWidth() + gap );
          Siz.SetHeight( Siz.GetHeight() + gap );

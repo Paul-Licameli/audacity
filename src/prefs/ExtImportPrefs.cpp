@@ -514,7 +514,7 @@ void ExtImportPrefs::OnRuleTableEdit (wxGridEvent& event)
    ExtImportItem *item = items[row].get();
    RuleTable->SaveEditControlValue();
 
-   wxString val = RuleTable->GetCellValue (row, col);
+   auto val = RuleTable->GetCellValue (row, col);
    int fixSpaces = wxNO;
    bool askedAboutSpaces = false;
    wxArrayString vals;
@@ -533,7 +533,7 @@ void ExtImportPrefs::OnRuleTableEdit (wxGridEvent& event)
    for (size_t i = 0; i < vals.size(); i++)
    {
 
-      wxString trimmed = vals[i];
+      auto trimmed = vals[i];
       trimmed.Trim().Trim(false);
       if (trimmed != vals[i])
       {

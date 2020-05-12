@@ -177,7 +177,7 @@ bool EffectNormalize::Process()
 
       // Process only if the right marker is to the right of the left marker
       if (mCurT1 > mCurT0) {
-         wxString trackName = track->GetName();
+         auto trackName = track->GetName();
 
          float extent;
          // Will compute a maximum

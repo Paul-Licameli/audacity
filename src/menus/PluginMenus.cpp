@@ -724,7 +724,7 @@ void AddEffectMenuItemGroup(
          {
             const PluginDescriptor *plug =
                PluginManager::Get().GetPlugin(plugs[i]);
-            wxString item = plug->GetPath();
+            auto item = plug->GetPath();
             if( plug->GetPluginType() == PluginTypeEffect )
                temp2.push_back( Command( item,
                   VerbatimLabel( item ),

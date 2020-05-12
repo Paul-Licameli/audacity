@@ -146,7 +146,7 @@ EffectRack::EffectRack( AudacityProject &project )
       mPanel->SetSizer(bs.release());
    }
 
-   wxString oldPath = gPrefs->GetPath();
+   auto oldPath = gPrefs->GetPath();
    gPrefs->SetPath(L"/EffectsRack");
    size_t cnt = gPrefs->GetNumberOfEntries();
    gPrefs->SetPath(oldPath);

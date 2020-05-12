@@ -54,7 +54,7 @@ wxChar NumberFormatter::GetDecimalSeparator()
 {
 #if wxUSE_INTL
    struct lconv *info = localeconv();
-   wxString s = info ? wxString::FromUTF8(info->decimal_point) : wxString(".");
+   auto s = info ? wxString::FromUTF8(info->decimal_point) : wxString(".");
    if (s.empty())
    {
       // We really must have something for decimal separator, so fall
@@ -72,7 +72,7 @@ bool NumberFormatter::GetThousandsSeparatorIfUsed(wxChar *sep)
 {
 #if wxUSE_INTL
    struct lconv *info = localeconv();
-   wxString s = info ? wxString::FromUTF8(info->thousands_sep) : wxString{};
+   auto s = info ? wxString::FromUTF8(info->thousands_sep) : wxString{};
 
    if (s.empty())
    {
@@ -152,7 +152,7 @@ wxString NumberFormatter::ToString(double val, int precision, int style)
           return _("-Infinity");
        }
     }
-    wxString s = wxString::Format(format, val);
+    auto s = wxString::Format(format, val);
 
     if ( style & Style_WithThousandsSep )
         AddThousandsSeparators(s);

@@ -277,7 +277,7 @@ std::unique_ptr<ImportFileHandle> FFmpegImportPlugin::Open(
    auto handle = std::make_unique<FFmpegImportFileHandle>(filename);
 
    //Check if we're loading explicitly supported format
-   wxString extension = filename.AfterLast(L'.');
+   auto extension = filename.AfterLast(L'.');
    if (SupportsExtension(extension))
    {
       //Audacity is trying to load something that is declared as

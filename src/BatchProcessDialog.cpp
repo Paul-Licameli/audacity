@@ -228,7 +228,7 @@ void ApplyMacroDialog::OnExpand()
 
 void ApplyMacroDialog::OnHelp()
 {
-   wxString page = GetHelpPageName();
+   auto page = GetHelpPageName();
    HelpSystem::ShowHelp(this, page, true);
 }
 
@@ -247,7 +247,7 @@ void ApplyMacroDialog::OnApplyToProject()
 
 CommandID ApplyMacroDialog::MacroIdOfName( const wxString & MacroName )
 {
-   wxString Temp = MacroName;
+   auto Temp = MacroName;
    Temp.Replace(" ","");
    Temp = wxString( "Macro_" ) + Temp;
    return Temp;
@@ -258,7 +258,7 @@ CommandID ApplyMacroDialog::MacroIdOfName( const wxString & MacroName )
 void ApplyMacroDialog::ApplyMacroToProject( const CommandID & MacroID, bool bHasGui )
 {
    for( int i=0;i<mMacros->GetItemCount();i++){
-      wxString name = mMacros->GetItemText(i);
+      auto name = mMacros->GetItemText(i);
       if( MacroIdOfName( name ) == MacroID ){
          ApplyMacroToProject( i, bHasGui );
          return;
@@ -269,7 +269,7 @@ void ApplyMacroDialog::ApplyMacroToProject( const CommandID & MacroID, bool bHas
 // Apply macro, given its number in the list.
 void ApplyMacroDialog::ApplyMacroToProject( int iMacro, bool bHasGui )
 {
-   wxString name = mMacros->GetItemText(iMacro);
+   auto name = mMacros->GetItemText(iMacro);
    if( name.empty() )
       return;
 
@@ -341,7 +341,7 @@ void ApplyMacroDialog::OnApplyToFiles()
       return;
    }
 
-   wxString name = mMacros->GetItemText(item);
+   auto name = mMacros->GetItemText(item);
    gPrefs->Write(L"/Batch/ActiveMacro", name);
    gPrefs->Flush();
 
@@ -971,7 +971,7 @@ void MacrosWindow::OnMacrosBeginEdit(wxListEvent &event)
 {
    int itemNo = event.GetIndex();
 
-   wxString macro = mMacros->GetItemText(itemNo);
+   auto macro = mMacros->GetItemText(itemNo);
 
    if (mMacroCommands.IsFixed(macro)) {
       wxBell();
@@ -992,7 +992,7 @@ void MacrosWindow::OnMacrosEndEdit(wxListEvent &event)
    if( mMacroBeingRenamed.IsEmpty())
       return;
 
-   wxString newname = event.GetLabel();
+   auto newname = event.GetLabel();
 
    mMacroCommands.RenameMacro(mMacroBeingRenamed, newname);
    if( mMacroBeingRenamed == mActiveMacro )
@@ -1068,7 +1068,7 @@ void MacrosWindow::OnRemove()
       return;
    }
 
-   wxString name = mMacros->GetItemText(item);
+   auto name = mMacros->GetItemText(item);
    AudacityMessageDialog m(
       this,
       /*i18n-hint: %s will be replaced by the name of a file.*/
@@ -1232,8 +1232,8 @@ void MacrosWindow::OnEditCommandParams()
 
    // Just edit the parameters, and not the command.
    auto command = mMacroCommands.GetCommand(item);
-   wxString params  = mMacroCommands.GetParams(item);
-   wxString oldParams = params;
+   auto params  = mMacroCommands.GetParams(item);
+   auto oldParams = params;
 
    params = MacroCommands::PromptForParamsFor(command, params, *this).Trim();
    Raise();

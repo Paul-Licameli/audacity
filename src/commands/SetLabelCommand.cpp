@@ -89,7 +89,7 @@ bool SetLabelCommand::Apply(const CommandContext & context)
    // \todo we have similar code for finding the nth Label, Clip, Track etc.
    // this code could be put in subroutines/reduced.
 
-   //wxString mode = GetString(L"Type");
+   //auto mode = GetString(L"Type");
    AudacityProject * p = &context.project;
    auto &tracks = TrackList::Get( *p );
    auto &selectedRegion = ViewInfo::Get( *p ).selectedRegion;

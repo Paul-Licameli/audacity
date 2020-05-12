@@ -373,13 +373,13 @@ void ScreenshotCommand::CaptureWindowOnIdle(
 
    wxPoint Pos = pDlg->GetScreenPosition();
    wxSize Siz = pDlg->GetSize();
-   wxString Title = pDlg->GetTitle();
+   auto Title = pDlg->GetTitle();
 
    // Remove '/' from "Sliding Time Scale/Pitch Shift..."
    // and any other effects that have illegal filename characters.
    Title.Replace( "/", "" );
    Title.Replace( ":", "" );
-   wxString Name = mDirToWriteTo + Title + ".png";
+   auto Name = mDirToWriteTo + Title + ".png";
 
    wxLogDebug("Taking screenshot of window %s (%i,%i,%i,%i)", Name, 
          Pos.x, Pos.y, Siz.x, Siz.y );
@@ -599,7 +599,7 @@ wxString ScreenshotCommand::MakeFileName(const wxString &path, const wxString &b
    // Otherwise make up a file name that has not been used already.
    wxFileName prefixPath;
    prefixPath.AssignDir(path);
-   wxString prefix = prefixPath.GetPath
+   auto prefix = prefixPath.GetPath
       (wxPATH_GET_VOLUME|wxPATH_GET_SEPARATOR);
 
    wxString filename;

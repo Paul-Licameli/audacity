@@ -131,7 +131,7 @@ bool VampEffect::GetAutomationParameters(CommandParameters & parms)
 {
    for (size_t p = 0, paramCount = mParameters.size(); p < paramCount; p++)
    {
-      wxString key = wxString::FromUTF8(mParameters[p].identifier.c_str());
+      auto key = wxString::FromUTF8(mParameters[p].identifier.c_str());
       float value = mPlugin->getParameter(mParameters[p].identifier);
       float lower = mParameters[p].minValue;
       float upper = mParameters[p].maxValue;
@@ -154,7 +154,7 @@ bool VampEffect::GetAutomationParameters(CommandParameters & parms)
 
          for (size_t i = 0, choiceCount = mParameters[p].valueNames.size(); i < choiceCount; i++)
          {
-            wxString choice = wxString::FromUTF8(mParameters[p].valueNames[i].c_str());
+            auto choice = wxString::FromUTF8(mParameters[p].valueNames[i].c_str());
             if (size_t(value - mParameters[p].minValue + 0.5) == i)
             {
                val = i;
@@ -178,7 +178,7 @@ bool VampEffect::SetAutomationParameters(CommandParameters & parms)
    // First pass verifies values
    for (size_t p = 0, paramCount = mParameters.size(); p < paramCount; p++)
    {
-      wxString key = wxString::FromUTF8(mParameters[p].identifier.c_str());
+      auto key = wxString::FromUTF8(mParameters[p].identifier.c_str());
       float lower = mParameters[p].minValue;
       float upper = mParameters[p].maxValue;
       bool good = false;
@@ -201,7 +201,7 @@ bool VampEffect::SetAutomationParameters(CommandParameters & parms)
 
          for (size_t i = 0, choiceCount = mParameters[p].valueNames.size(); i < choiceCount; i++)
          {
-            wxString choice = wxString::FromUTF8(mParameters[p].valueNames[i].c_str());
+            auto choice = wxString::FromUTF8(mParameters[p].valueNames[i].c_str());
             choices.push_back(choice);
          }
 
@@ -223,7 +223,7 @@ bool VampEffect::SetAutomationParameters(CommandParameters & parms)
    // Second pass sets the variables
    for (size_t p = 0, paramCount = mParameters.size(); p < paramCount; p++)
    {
-      wxString key = wxString::FromUTF8(mParameters[p].identifier.c_str());
+      auto key = wxString::FromUTF8(mParameters[p].identifier.c_str());
       float lower = mParameters[p].minValue;
       float upper = mParameters[p].maxValue;
 
@@ -247,7 +247,7 @@ bool VampEffect::SetAutomationParameters(CommandParameters & parms)
 
          for (size_t i = 0, choiceCount = mParameters[p].valueNames.size(); i < choiceCount; i++)
          {
-            wxString choice = wxString::FromUTF8(mParameters[p].valueNames[i].c_str());
+            auto choice = wxString::FromUTF8(mParameters[p].valueNames[i].c_str());
             choices.push_back(choice);
          }
 
@@ -531,12 +531,12 @@ void VampEffect::PopulateOrExchange(ShuttleGui & S)
             }
 
             for (size_t p = 0; p < count; p++) [&](size_t p) {
-               wxString tip = wxString::FromUTF8(mParameters[p].description.c_str());
-               wxString unit = wxString::FromUTF8(mParameters[p].unit.c_str());
+               auto tip = wxString::FromUTF8(mParameters[p].description.c_str());
+               auto unit = wxString::FromUTF8(mParameters[p].unit.c_str());
 
                float value = mPlugin->getParameter(mParameters[p].identifier);
 
-               wxString labelText = wxString::FromUTF8(mParameters[p].name.c_str());
+               auto labelText = wxString::FromUTF8(mParameters[p].name.c_str());
                if (!unit.empty())
                {
                   labelText += L" (" + unit + L")";
@@ -579,7 +579,7 @@ void VampEffect::PopulateOrExchange(ShuttleGui & S)
 
                   for (size_t i = 0, cnt = mParameters[p].valueNames.size(); i < cnt; i++)
                   {
-                     wxString choice = wxString::FromUTF8(mParameters[p].valueNames[i].c_str());
+                     auto choice = wxString::FromUTF8(mParameters[p].valueNames[i].c_str());
                      if (size_t(value - mParameters[p].minValue + 0.5) == i)
                      {
                         selected = i;
@@ -623,7 +623,7 @@ void VampEffect::PopulateOrExchange(ShuttleGui & S)
                      .Action( [this, p]{ OnTextCtrl( p ); } )
                      .AddTextBox( {}, L"", 12);
 
-                  wxString str = Internat::ToDisplayString(mParameters[p].minValue);
+                  auto str = Internat::ToDisplayString(mParameters[p].minValue);
                   S
                      .AddPrompt( VerbatimLabel( str ) );
 
@@ -676,7 +676,7 @@ void VampEffect::AddFeatures(LabelTrack *ltrack,
       if (fli->hasDuration) ftime1 = ftime0 + fli->duration;
       double ltime1 = ftime1.sec + (double(ftime1.nsec) / 1000000000.0);
 
-      wxString label = LAT1CTOWX(fli->label.c_str());
+      auto label = LAT1CTOWX(fli->label.c_str());
       if (label == wxString())
       {
          if (fli->values.empty())

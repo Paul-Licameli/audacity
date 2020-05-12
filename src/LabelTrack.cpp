@@ -374,7 +374,7 @@ LabelStruct LabelStruct::Import(wxTextFile &file, int &index)
    wxString title;
    static const wxString continuation{ L"\\" };
 
-   wxString firstLine = file.GetLine(index++);
+   auto firstLine = file.GetLine(index++);
 
    {
       // Assume tab is an impossible character within the exported text
@@ -579,7 +579,7 @@ bool LabelTrack::HandleXMLTag(const wxChar *tag, const wxChar **attrs)
          if (!value)
             break;
 
-         const wxString strValue = value;
+         const auto strValue = value;
          // Bug 1905 was about long label strings.
          if (!XMLValueChecker::IsGoodLongString(strValue))
          {

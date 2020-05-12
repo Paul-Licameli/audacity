@@ -87,15 +87,15 @@ static wxString TypedLink( const wxString &Key, const wxString& Text )
 
 static wxString LinkExpand( const wxString & Text )
 {
-   wxString Temp = Text;
+   auto Temp = Text;
    int i,j,k;
    while( (i=Temp.First( L"[[" ))!= wxNOT_FOUND )
    {
-      wxString Key = Temp.Mid(i+2);
+      auto Key = Temp.Mid(i+2);
       j = Key.First( L"|" );
       if( j==wxNOT_FOUND )
          return Temp;
-      wxString LinkText = Key.Mid( j+1);
+      auto LinkText = Key.Mid( j+1);
       k = LinkText.First( L"]]" );
       if( k==wxNOT_FOUND )
          return Temp;
@@ -363,7 +363,7 @@ wxString HelpText( const wxString & Key )
 
 wxString FormatHtmlText( const wxString & Text ){
 
-   wxString localeStr = wxLocale::GetSystemEncodingName();
+   auto localeStr = wxLocale::GetSystemEncodingName();
 
    return 
       L"<html><head><META http-equiv=\"Content-Type\" content=\"text/html; charset=" +
@@ -375,7 +375,7 @@ wxString FormatHtmlText( const wxString & Text ){
 
 // Function to give the extra arguments to put on the version check string.
 const wxString VerCheckArgs(){
-   wxString result = wxString("from_ver=") + AUDACITY_VERSION_STRING;
+   auto result = wxString("from_ver=") + AUDACITY_VERSION_STRING;
 #ifdef REV_LONG
    result += wxString("&CommitId=")+wxString(REV_LONG).Left(6);
 #endif

@@ -646,7 +646,7 @@ void ContrastDialog::OnExport()
    wxDateTime now = wxDateTime::Now();
    int year = now.GetYear();
    wxDateTime::Month month = now.GetMonth();
-   wxString monthName = now.GetMonthName(month);
+   auto monthName = now.GetMonthName(month);
    int dom = now.GetDay();
    int hour = now.GetHour();
    int minute = now.GetMinute();

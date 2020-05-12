@@ -308,7 +308,7 @@ private:
       // So, only generate the char events for key down events.
       if (keyDown)
       {
-         wxString chars = GetUnicodeString(temp);
+         auto chars = GetUnicodeString(temp);
          for (size_t i = 0, cnt = chars.length(); i < cnt; i++)
          {
             temp = event;

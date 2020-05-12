@@ -388,7 +388,7 @@ PluginPaths VSTEffectsModule::FindPluginPaths(PluginManagerInterface & pm)
    FilePaths files;
 
    // Check for the VST_PATH environment variable
-   wxString vstpath = wxString::FromUTF8(getenv("VST_PATH"));
+   auto vstpath = wxString::FromUTF8(getenv("VST_PATH"));
    if (!vstpath.empty())
    {
       wxStringTokenizer tok(vstpath, wxPATH_SEP);
@@ -512,7 +512,7 @@ unsigned VSTEffectsModule::DiscoverPluginsAtPath(
 
    while (effectTzr.HasMoreTokens() && cont)
    {
-      wxString effectID = effectTzr.GetNextToken();
+      auto effectID = effectTzr.GetNextToken();
 
       wxString cmd;
       cmd.Printf(L"\"%s\" %s \"%s;%s\"", cmdpath, VSTCMDKEY, path, effectID);
@@ -541,7 +541,7 @@ unsigned VSTEffectsModule::DiscoverPluginsAtPath(
       wxStringTokenizer tzr(output, L"\n");
       while (tzr.HasMoreTokens())
       {
-         wxString line = tzr.GetNextToken();
+         auto line = tzr.GetNextToken();
 
          // Our output may follow any output the plugin may have written.
          if (!line.StartsWith(OUTPUTKEY))
@@ -554,7 +554,7 @@ unsigned VSTEffectsModule::DiscoverPluginsAtPath(
          {
             continue;
          }
-         wxString val = line.AfterFirst(L'=').BeforeFirst(L'\r');
+         auto val = line.AfterFirst(L'=').BeforeFirst(L'\r');
 
          switch (key)
          {
@@ -673,7 +673,7 @@ bool VSTEffectsModule::IsPluginValid(const PluginPath & path, bool bFast)
 {
    if( bFast )
       return true;
-   wxString realPath = path.BeforeFirst(L';');
+   auto realPath = path.BeforeFirst(L';');
    return wxFileName::FileExists(realPath) || wxFileName::DirExists(realPath);
 }
 
@@ -1639,7 +1639,7 @@ bool VSTEffect::GetAutomationParameters(CommandParameters & parms)
 {
    for (int i = 0; i < mAEffect->numParams; i++)
    {
-      wxString name = GetString(effGetParamName, i);
+      auto name = GetString(effGetParamName, i);
       if (name.empty())
       {
          name.Printf(L"parm_%d", i);
@@ -1660,7 +1660,7 @@ bool VSTEffect::SetAutomationParameters(CommandParameters & parms)
    callDispatcher(effBeginSetProgram, 0, 0, NULL, 0.0);
    for (int i = 0; i < mAEffect->numParams; i++)
    {
-      wxString name = GetString(effGetParamName, i);
+      auto name = GetString(effGetParamName, i);
       if (name.empty())
       {
          name.Printf(L"parm_%d", i);
@@ -1872,7 +1872,7 @@ void VSTEffect::ExportPresets()
    }
 
    wxFileName fn(path);
-   wxString ext = fn.GetExt();
+   auto ext = fn.GetExt();
    if (ext.CmpNoCase(L"fxb") == 0)
    {
       SaveFXB(fn);
@@ -1929,7 +1929,7 @@ void VSTEffect::ImportPresets()
    }
 
    wxFileName fn(path);
-   wxString ext = fn.GetExt();
+   auto ext = fn.GetExt();
    bool success = false;
    if (ext.CmpNoCase(L"fxb") == 0)
    {
@@ -1999,7 +1999,7 @@ bool VSTEffect::Load()
    bool success = false;
 
    long effectID = 0;
-   wxString realPath = mPath.BeforeFirst(L';');
+   auto realPath = mPath.BeforeFirst(L';');
    mPath.AfterFirst(L';').ToLong(&effectID);
    mCurrentEffectID = (intptr_t) effectID;
 
@@ -2877,7 +2877,7 @@ void VSTEffect::BuildPlain(ShuttleGui &S)
             int h;
             for (int i = 0; i < mAEffect->numParams; i++)
             {
-               wxString text = GetString(effGetParamName, i);
+               auto text = GetString(effGetParamName, i);
 
                if (text.Right(1) != L':')
                {
@@ -2960,11 +2960,11 @@ void VSTEffect::RefreshParameters(int skip)
 
    for (int i = 0; i < mAEffect->numParams; i++)
    {
-      wxString text = GetString(effGetParamName, i);
+      auto text = GetString(effGetParamName, i);
 
       text = text.Trim(true).Trim(false);
 
-      wxString name = text;
+      auto name = text;
 
       if (text.Right(1) != L':')
       {

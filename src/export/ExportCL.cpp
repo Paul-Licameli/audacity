@@ -762,7 +762,7 @@ bool ExportCL::CheckFileName(wxFileName &filename, int WXUNUSED(format))
    // Search for the command in the PATH list
    wxPathList pathlist;
    pathlist.AddEnvList(L"PATH");
-   wxString path = pathlist.FindAbsoluteValidPath(argv[0]);
+   auto path = pathlist.FindAbsoluteValidPath(argv[0]);
 
 #if defined(__WXMSW__)
    if (path.empty()) {

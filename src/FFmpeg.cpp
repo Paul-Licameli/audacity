@@ -537,7 +537,7 @@ public:
       "Where would I find the file '%s'?" instead if you want. */
       auto question = XO("Where is '%s'?").Format( mName );
 
-      wxString path = FileNames::SelectFile(FileNames::Operation::_None,
+      auto path = FileNames::SelectFile(FileNames::Operation::_None,
          question,
          mLibPath.GetPath(),
          mLibPath.GetFullName(),
@@ -716,7 +716,7 @@ bool FFmpegLibs::LoadLibs(wxWindow * WXUNUSED(parent), bool showerr)
    // If not successful, try loading it from default path
    if (!mLibsLoaded && !GetLibAVFormatPath().empty()) {
       const wxFileName fn{ GetLibAVFormatPath(), GetLibAVFormatName() };
-      wxString path = fn.GetFullPath();
+      auto path = fn.GetFullPath();
       wxLogMessage(L"Trying to load FFmpeg libraries from default path, '%s'.", path);
       mLibsLoaded = InitLibs(path,showerr);
       if (mLibsLoaded) {
@@ -728,7 +728,7 @@ bool FFmpegLibs::LoadLibs(wxWindow * WXUNUSED(parent), bool showerr)
    // If not successful, try loading it from legacy path
    if (!mLibsLoaded && !GetLibAVFormatPath().empty()) {
       const wxFileName fn{L"/usr/local/lib/audacity", GetLibAVFormatName()};
-      wxString path = fn.GetFullPath();
+      auto path = fn.GetFullPath();
       wxLogMessage(L"Trying to load FFmpeg libraries from legacy path, '%s'.", path);
       mLibsLoaded = InitLibs(path,showerr);
       if (mLibsLoaded) {
@@ -739,7 +739,7 @@ bool FFmpegLibs::LoadLibs(wxWindow * WXUNUSED(parent), bool showerr)
 
    // If not successful, try loading using system search paths
    if (!ValidLibsLoaded()) {
-      wxString path = GetLibAVFormatName();
+      auto path = GetLibAVFormatName();
       wxLogMessage(L"Trying to load FFmpeg libraries from system paths. File name is '%s'.", path);
       mLibsLoaded = InitLibs(path,showerr);
       if (mLibsLoaded) {

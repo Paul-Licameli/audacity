@@ -706,7 +706,7 @@ void Effect::ExportPresets()
 {
    wxString params;
    GetAutomationParameters(params);
-   wxString commandId = GetSquashedName(GetSymbol().Internal()).GET();
+   auto commandId = GetSquashedName(GetSymbol().Internal()).GET();
    params =  commandId + ":" + params;
 
    auto path = FileNames::SelectFile(FileNames::Operation::Presets,
@@ -769,10 +769,10 @@ void Effect::ImportPresets()
    wxFFile f(path);
    if (f.IsOpened()) {
       if (f.ReadAll(&params)) {
-         wxString ident = params.BeforeFirst(':');
+         auto ident = params.BeforeFirst(':');
          params = params.AfterFirst(':');
 
-         wxString commandId = GetSquashedName(GetSymbol().Internal()).GET();
+         auto commandId = GetSquashedName(GetSymbol().Internal()).GET();
 
          if (ident != commandId) {
             // effect identifiers are a sensible length!
@@ -817,7 +817,7 @@ CommandID Effect::GetSquashedName(wxString name)
    // CamelCase the name
    while (st.HasMoreTokens())
    {
-      wxString tok = st.GetNextToken();
+      auto tok = st.GetNextToken();
 
       id += tok.Left(1).MakeUpper() + tok.Mid(1).MakeLower();
    }
@@ -1137,7 +1137,7 @@ bool Effect::GetAutomationParameters(wxString & parms)
 
 bool Effect::SetAutomationParameters(const wxString & parms)
 {
-   wxString preset = parms;
+   auto preset = parms;
    bool success = false;
    if (preset.StartsWith(kUserPresetIdent))
    {

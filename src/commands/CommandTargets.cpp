@@ -114,7 +114,7 @@ void CommandMessageTarget::Flush(){
 }
 
 wxString CommandMessageTarget::Escaped( const wxString & str){
-   wxString Temp = str;
+   auto Temp = str;
    Temp.Replace( "\"", "\\\"");
    return Temp;
 }

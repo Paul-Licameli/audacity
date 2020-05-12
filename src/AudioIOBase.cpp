@@ -748,7 +748,7 @@ wxString AudioIOBase::GetDeviceInfo()
          continue;
       }
 
-      wxString name = DeviceName(info);
+      auto name = DeviceName(info);
       s << XO("Device ID: %d\n").Format( j );
       s << XO("Device name: %s\n").Format( name );
       s << XO("Host name: %s\n").Format( HostName(info) );

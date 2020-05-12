@@ -117,7 +117,7 @@ static void CopyEntry(wxString path, wxConfigBase *src, wxConfigBase *dst, wxStr
    switch(src->GetEntryType(entry)) {
    case wxConfigBase::Type_Unknown:
    case wxConfigBase::Type_String: {
-      wxString value = src->Read(entry, L"");
+      auto value = src->Read(entry, L"");
       dst->Write(path + entry, value);
       break;
    }
@@ -162,7 +162,7 @@ static void CopyEntriesRecursive(wxString path, wxConfigBase *src, wxConfigBase 
 
    groupKeepGoing = src->GetFirstGroup(groupName, groupIndex);
    while (groupKeepGoing) {
-      wxString subPath = path+groupName+L"/";
+      auto subPath = path+groupName+L"/";
       src->SetPath(subPath);
       CopyEntriesRecursive(subPath, src, dst);
       src->SetPath(path);

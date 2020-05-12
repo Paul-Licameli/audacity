@@ -61,7 +61,7 @@ MacroCommands::MacroCommands( AudacityProject &project )
    auto defaults = GetNamesOfDefaultMacros();
 
    for( size_t i = 0;i<defaults.size();i++){
-      wxString name = defaults[i];
+      auto name = defaults[i];
       if ( ! make_iterator_range( names ).contains(name) ) {
          AddMacro(name);
          RestoreMacro(name);
@@ -183,8 +183,8 @@ wxString MacroCommands::ReadMacro(const wxString & macro, wxWindow *parent)
          }
 
          // Parse and clean
-         wxString cmd = tf[i].Left(splitAt).Strip(wxString::both);
-         wxString parm = tf[i].Mid(splitAt + 1).Strip(wxString::trailing);
+         auto cmd = tf[i].Left(splitAt).Strip(wxString::both);
+         auto parm = tf[i].Mid(splitAt + 1).Strip(wxString::trailing);
 
          // Add to lists
          mCommandMacro.push_back(cmd);
@@ -349,7 +349,7 @@ MacroCommandsCatalog::MacroCommandsCatalog( const AudacityProject *project )
             // Disambiguation is no longer essential as the details box will show it.
             // PRL:  I think this reasoning applies only when locale is English.
             // For other locales, show the (CamelCaseCodeName) always.  Or, never?
-            wxString squashed = label.Translation();
+            auto squashed = label.Translation();
             squashed.Replace( " ", "" );
 
             // uh oh, using GET for dubious comparison of (lengths of)
@@ -455,7 +455,7 @@ wxString MacroCommands::PromptForParamsFor(
       return wxEmptyString;   // effect not found
    }
 
-   wxString res = params;
+   auto res = params;
 
    auto cleanup = EffectManager::Get().SetBatchProcessing(ID);
 
@@ -479,7 +479,7 @@ wxString MacroCommands::PromptForPresetFor(const CommandID & command, const wxSt
       return wxEmptyString;   // effect not found.
    }
 
-   wxString preset = EffectManager::Get().GetPreset(ID, params, parent);
+   auto preset = EffectManager::Get().GetPreset(ID, params, parent);
 
    // Preset will be empty if the user cancelled the dialog, so return the original
    // parameter value.
@@ -525,8 +525,8 @@ bool MacroCommands::DoAudacityCommand(
 
    if (!(flags & OnEffectFlags::kSkipState))
    {
-      wxString shortDesc = em.GetCommandName(ID);
-      wxString longDesc = em.GetCommandDescription(ID);
+      auto shortDesc = em.GetCommandName(ID);
+      auto longDesc = em.GetCommandDescription(ID);
       PushState(longDesc, shortDesc);
    }
 */
@@ -718,7 +718,7 @@ bool MacroCommands::ApplyMacro(
       mFileName = filename;
 
       TranslatableString longDesc, shortDesc;
-      wxString name = gPrefs->Read(L"/Batch/ActiveMacro", wxEmptyString);
+      auto name = gPrefs->Read(L"/Batch/ActiveMacro", wxEmptyString);
       if (name.empty()) {
          /* i18n-hint: active verb in past tense */
          longDesc = XO("Applied Macro");

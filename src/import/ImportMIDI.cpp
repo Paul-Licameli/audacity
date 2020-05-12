@@ -116,7 +116,7 @@ bool ImportMIDI(const FilePath &fName, NoteTrack * dest)
 
    dest->SetSequence(std::move(new_seq));
    dest->SetOffset(offset);
-   wxString trackNameBase = fName.AfterLast(wxFILE_SEP_PATH).BeforeLast('.');
+   auto trackNameBase = fName.AfterLast(wxFILE_SEP_PATH).BeforeLast('.');
    dest->SetName(trackNameBase);
    mf.Close();
 

@@ -103,7 +103,7 @@ bool Module::Load(wxString &deferredErrorMessage)
       return false;
    }
 
-   wxString moduleVersion = versionFn();
+   auto moduleVersion = versionFn();
    if( moduleVersion != AUDACITY_VERSION_STRING) {
       AudacityMessageBox(
          XO("The module \"%s\" is matched with Audacity version \"%s\".\n\nIt will not be loaded.")
@@ -226,7 +226,7 @@ void ModuleManager::FindModules(FilePaths &files)
       FileNames::AddMultiPathsToPathList(pathVar, pathList);
 
    for (const auto &path : audacityPathList) {
-      wxString prefix = path + wxFILE_SEP_PATH;
+      auto prefix = path + wxFILE_SEP_PATH;
       FileNames::AddUniquePathToPathList(prefix + L"modules",
                                          pathList);
       if (files.size()) {
@@ -245,7 +245,7 @@ void ModuleManager::TryLoadModules(
    const FilePaths &files, FilePaths &decided, DelayedErrors &errors)
 {
    FilePaths checked;
-   wxString saveOldCWD = ::wxGetCwd();
+   auto saveOldCWD = ::wxGetCwd();
    auto cleanup = finally([&]{ ::wxSetWorkingDirectory(saveOldCWD); });
    for (const auto &file : files) {
       // As a courtesy to some modules that might be bridges to
@@ -256,7 +256,7 @@ void ModuleManager::TryLoadModules(
 
       // Only process the first module encountered in the
       // defined search sequence.
-      wxString ShortName = wxFileName( file ).GetName();
+      auto ShortName = wxFileName( file ).GetName();
       if( checked.Index( ShortName, false ) != wxNOT_FOUND )
          continue;
       checked.Add( ShortName );
@@ -413,7 +413,7 @@ bool ModuleManager::DiscoverProviders()
    FilePaths pathList;
 
    // Code from LoadLadspa that might be useful in load modules.
-   wxString pathVar = wxString::FromUTF8(getenv("AUDACITY_MODULES_PATH"));
+   auto pathVar = wxString::FromUTF8(getenv("AUDACITY_MODULES_PATH"));
 
    if (!pathVar.empty())
    {

@@ -688,7 +688,7 @@ void ScreenshotBigDialog::OnGetURL()
 
 void ScreenshotBigDialog::OnDirChoose()
 {
-   wxString current = mDirectoryTextBox->GetValue();
+   auto current = mDirectoryTextBox->GetValue();
 
    wxDirDialogWrapper dlog(this,
       XO("Choose a location to save screenshot images"),
@@ -698,7 +698,7 @@ void ScreenshotBigDialog::OnDirChoose()
    if (!dlog.GetPath().empty()) {
       wxFileName tmpDirPath;
       tmpDirPath.AssignDir(dlog.GetPath());
-      wxString path = tmpDirPath.GetPath(wxPATH_GET_VOLUME|wxPATH_GET_SEPARATOR);
+      auto path = tmpDirPath.GetPath(wxPATH_GET_VOLUME|wxPATH_GET_SEPARATOR);
       mDirectoryTextBox->SetValue(path);
       gPrefs->Write(L"/ScreenshotPath", path);
       gPrefs->Flush();

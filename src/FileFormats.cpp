@@ -273,7 +273,7 @@ FileExtensions sf_get_all_extensions()
 
 wxString sf_normalize_name(const char *name)
 {
-   wxString n = LAT1CTOWX(name);
+   auto n = LAT1CTOWX(name);
 
    n.Replace(L"8 bit", L"8-bit");
    n.Replace(L"16 bit", L"16-bit");

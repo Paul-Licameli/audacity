@@ -557,7 +557,7 @@ public:
        * "Where would I find the file %s" instead if you want. */
       auto question = XO("Where is %s?").Format( mName );
 
-      wxString path = FileNames::SelectFile(FileNames::Operation::_None,
+      auto path = FileNames::SelectFile(FileNames::Operation::_None,
          question,
             mLibPath.GetPath(),
             mLibPath.GetName(),

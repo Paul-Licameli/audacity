@@ -245,7 +245,7 @@ size_t Importer::SelectDefaultOpenType( const FileNames::FileTypes &fileTypes )
    if ( !fileTypes.empty() )
       defaultValue = fileTypes[0].description.Translation();
 
-   wxString type = gPrefs->Read(L"/DefaultOpenType", defaultValue);
+   auto type = gPrefs->Read(L"/DefaultOpenType", defaultValue);
    // Convert the type to the filter index
    auto begin = fileTypes.begin();
    auto index = std::distance(
@@ -504,7 +504,7 @@ bool Importer::Import( AudacityProject &project,
    {
       // If user explicitly selected a filter,
       // then we should try importing via corresponding plugin first
-      wxString type = gPrefs->Read(L"/LastOpenType",L"");
+      auto type = gPrefs->Read(L"/LastOpenType",L"");
 
       wxLogDebug(L"LastOpenType is %s",type);
       wxLogDebug(L"OverrideExtendedImportByOpenFileDialogChoice is %i",usersSelectionOverrides);

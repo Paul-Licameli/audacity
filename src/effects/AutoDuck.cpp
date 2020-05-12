@@ -620,7 +620,7 @@ void EffectAutoDuckPanel::OnPaint(wxPaintEvent & WXUNUSED(evt))
        duckAmountDb < DuckAmountDb.min         || duckAmountDb > DuckAmountDb.max)
    {
       // values are out of range, no preview available
-      wxString message = _("Preview not available");
+      auto message = _("Preview not available");
       int textWidth = 0, textHeight = 0;
       dc.GetTextExtent(message, &textWidth, &textHeight);
       dc.DrawText(message, (clientWidth - textWidth) / 2,
@@ -703,7 +703,7 @@ void EffectAutoDuckPanel::OnPaint(wxPaintEvent & WXUNUSED(evt))
             digits = 1;
          }
 
-         wxString valueStr = Internat::ToDisplayString(value, digits);
+         auto valueStr = Internat::ToDisplayString(value, digits);
          valueStr += L" ";
 
          if (cp == duckAmount)

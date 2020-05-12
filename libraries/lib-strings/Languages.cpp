@@ -114,11 +114,11 @@ Identifier GetSystemLanguageCode(const FilePaths &pathList)
    }
 
    if (info) {
-      wxString fullCode = info->CanonicalName;
+      auto fullCode = info->CanonicalName;
       if (fullCode.length() < 2)
          return L"en";
 
-      wxString code = fullCode.Left(2);
+      auto code = fullCode.Left(2);
       unsigned int i;
 
       for(i=0; i<langCodes.size(); i++) {
@@ -237,8 +237,8 @@ void GetLanguages( FilePaths pathList,
          continue;
       }
 
-      wxString fullCode = info->CanonicalName;
-      wxString code = fullCode.Left(2);
+      auto fullCode = info->CanonicalName;
+      auto code = fullCode.Left(2);
       auto name = Verbatim( info->Description );
 
       // Logic: Languages codes are sometimes hierarchical, with a

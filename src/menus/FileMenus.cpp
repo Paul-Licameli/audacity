@@ -45,7 +45,7 @@ void DoExport(AudacityProject &project, const FileExtension &format)
 
    double t0 = 0.0;
    double t1 = tracks.GetEndTime();
-   wxString projectName = project.GetProjectName();
+   auto projectName = project.GetProjectName();
 
    // Prompt for file name and/or extension?
    bool bPromptingRequired = !project.mBatchMode ||
@@ -79,8 +79,8 @@ void DoExport(AudacityProject &project, const FileExtension &format)
          fileName.AppendDir(macroDir);
       }
 
-      wxString justName = fileName.GetName();
-      wxString extension = fileName.GetExt();
+      auto justName = fileName.GetName();
+      auto extension = fileName.GetExt();
       FilePath fullPath = fileName.GetFullPath();
 
       if (wxFileName::FileExists(fileName.GetPath())) {
@@ -138,7 +138,7 @@ void DoImport(const CommandContext &context, bool isRaw)
    } );
 
    for (size_t ff = 0; ff < selectedFiles.size(); ff++) {
-      wxString fileName = selectedFiles[ff];
+      auto fileName = selectedFiles[ff];
 
       FileNames::UpdateDefaultPath(FileNames::Operation::Import, ::wxPathOnly(fileName));
 
@@ -264,7 +264,7 @@ void OnExportLabels(const CommandContext &context)
    auto &window = GetProjectFrame( project );
 
    /* i18n-hint: filename containing exported text from label tracks */
-   wxString fName = _("labels.txt");
+   auto fName = _("labels.txt");
    auto trackRange = tracks.Any<const LabelTrack>();
    auto numLabelTracks = trackRange.size();
 
@@ -292,9 +292,9 @@ void OnExportLabels(const CommandContext &context)
 
    if (wxFileExists(fName)) {
 #ifdef __WXGTK__
-      wxString safetyFileName = fName + L"~";
+      auto safetyFileName = fName + L"~";
 #else
-      wxString safetyFileName = fName + L".bak";
+      auto safetyFileName = fName + L".bak";
 #endif
 
       if (wxFileExists(safetyFileName))
@@ -384,9 +384,9 @@ void OnExportMIDI(const CommandContext &context)
 
       if (wxFileExists(fName)) {
 #ifdef __WXGTK__
-         wxString safetyFileName = fName + L"~";
+         auto safetyFileName = fName + L"~";
 #else
-         wxString safetyFileName = fName + L".bak";
+         auto safetyFileName = fName + L".bak";
 #endif
 
          if (wxFileExists(safetyFileName))
@@ -427,7 +427,7 @@ void OnImportLabels(const CommandContext &context)
    auto &tracks = TrackList::Get( project );
    auto &window = ProjectWindow::Get( project );
 
-   wxString fileName =
+   auto fileName =
        FileNames::SelectFile(FileNames::Operation::Open,
          XO("Select a text file containing labels"),
          wxEmptyString,     // Path
@@ -472,7 +472,7 @@ void OnImportMIDI(const CommandContext &context)
    auto &project = context.project;
    auto &window = GetProjectFrame( project );
 
-   wxString fileName = FileNames::SelectFile(FileNames::Operation::Open,
+   auto fileName = FileNames::SelectFile(FileNames::Operation::Open,
       XO("Select a MIDI file"),
       wxEmptyString,     // Path
       L"",       // Name

@@ -204,8 +204,8 @@ void ExportMultipleDialog::PopulateOrExchange(ShuttleGui& S)
    const auto byNumberEnabler =
       [this]{ return radioSetting.ReadIndex() == ByNumber; };
 
-   wxString name = mProject->GetProjectName();
-   wxString defaultFormat = gPrefs->Read(L"/Export/Format", L"WAV");
+   auto name = mProject->GetProjectName();
+   auto defaultFormat = gPrefs->Read(L"/Export/Format", L"WAV");
 
    TranslatableStrings visibleFormats;
    Identifiers formats;
@@ -1092,7 +1092,7 @@ ProgressResult ExportMultipleDialog::DoExport(std::unique_ptr<ProgressDialog> &p
 
 wxString ExportMultipleDialog::MakeFileName(const wxString &input)
 {
-   wxString newname = input; // name we are generating
+   auto newname = input; // name we are generating
 
    // strip out anything that isn't allowed in file names on this platform
    auto changed = Internat::SanitiseFilename(newname, L"_");
@@ -1101,7 +1101,7 @@ wxString ExportMultipleDialog::MakeFileName(const wxString &input)
    {  // need to get user to fix file name
       // build the dialog
       TranslatableString msg;
-      wxString excluded = ::wxJoin( Internat::GetExcludedCharacters(), L' ', L'\0' );
+      auto excluded = ::wxJoin( Internat::GetExcludedCharacters(), L' ', L'\0' );
       // TODO: For Russian language we should have separate cases for 2 and more than 2 letters.
       if( excluded.length() > 1 ){
          msg = XO(

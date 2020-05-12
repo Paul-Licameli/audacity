@@ -111,7 +111,7 @@ bool ExportCommand::Apply(const CommandContext & context)
       context.Error(L"Export filename must have an extension!");
       return false;
    }
-   wxString extension = mFileName.Mid(splitAt+1).MakeUpper();
+   auto extension = mFileName.Mid(splitAt+1).MakeUpper();
 
    Exporter exporter{ context.project };
 

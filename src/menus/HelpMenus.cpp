@@ -72,7 +72,7 @@ void ShowDiagnostics(
    if (dlg.ShowModal() == wxID_OK)
    {
       const auto fileDialogTitle = XO("Save %s").Format( description );
-      wxString fName = FileNames::SelectFile(FileNames::Operation::Export,
+      auto fName = FileNames::SelectFile(FileNames::Operation::Export,
          fileDialogTitle,
          wxEmptyString,
          defaultPath,
@@ -325,7 +325,7 @@ void OnAudioDeviceInfo(const CommandContext &context)
 {
    auto &project = context.project;
    auto gAudioIO = AudioIOBase::Get();
-   wxString info = gAudioIO->GetDeviceInfo();
+   auto info = gAudioIO->GetDeviceInfo();
    ShowDiagnostics( project, info,
       XO("Audio Device Info"), L"deviceinfo.txt" );
 }
@@ -335,7 +335,7 @@ void OnMidiDeviceInfo(const CommandContext &context)
 {
    auto &project = context.project;
    auto gAudioIO = AudioIOBase::Get();
-   wxString info = gAudioIO->GetMidiDeviceInfo();
+   auto info = gAudioIO->GetMidiDeviceInfo();
    ShowDiagnostics( project, info,
       XO("MIDI Device Info"), L"midideviceinfo.txt" );
 }

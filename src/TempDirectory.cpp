@@ -76,7 +76,7 @@ bool TempDirectory::IsTempDirectoryNameOK( const FilePath & Name )
    wxFileName tmpFile;
    tmpFile.AssignTempFileName(L"nn");
    // use Long Path to expand out any abbreviated long substrings.
-   wxString BadPath = tmpFile.GetLongPath();
+   auto BadPath = tmpFile.GetLongPath();
    ::wxRemoveFile(tmpFile.GetFullPath());
 
 #ifdef __WXMAC__
@@ -88,11 +88,11 @@ bool TempDirectory::IsTempDirectoryNameOK( const FilePath & Name )
       return false;
    BadPath = BadPath.BeforeLast( '/' ) + "/";
    wxFileName cmpFile( Name );
-   wxString NameCanonical = cmpFile.GetLongPath( ) + "/";
+   auto NameCanonical = cmpFile.GetLongPath( ) + "/";
 #else
    BadPath = BadPath.BeforeLast( '\\' ) + "\\";
    wxFileName cmpFile( Name );
-   wxString NameCanonical = cmpFile.GetLongPath( ) + "\\";
+   auto NameCanonical = cmpFile.GetLongPath( ) + "\\";
 #endif
 
    if (FATFilesystemDenied(NameCanonical,

@@ -55,7 +55,7 @@ bool BatchEvalCommand::Apply(const CommandContext & context)
    // be refreshed after macros are added/deleted.
    MacroCommandsCatalog catalog(&context.project);
 
-   wxString macroName = GetString(L"MacroName");
+   auto macroName = GetString(L"MacroName");
    if (!macroName.empty())
    {
       MacroCommands batch{ context.project };
@@ -64,7 +64,7 @@ bool BatchEvalCommand::Apply(const CommandContext & context)
    }
 
    auto cmdName = GetString(L"CommandName");
-   wxString cmdParams = GetString(L"ParamString");
+   auto cmdParams = GetString(L"ParamString");
    auto iter = catalog.ByCommandId(cmdName);
    const auto friendly = (iter == catalog.end())
       ? Verbatim( cmdName ) // Expose internal name to user, in default of a better one!
@@ -74,7 +74,7 @@ bool BatchEvalCommand::Apply(const CommandContext & context)
    MacroCommands Batch{ context.project };
    bool bResult = Batch.ApplyCommandInBatchMode(friendly, cmdName, cmdParams, &context);
    // Relay messages, if any.
-   wxString Message = Batch.GetMessage();
+   auto Message = Batch.GetMessage();
    if( !Message.empty() )
       context.Status( Message );
    return bResult;

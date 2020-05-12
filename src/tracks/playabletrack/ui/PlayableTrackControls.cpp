@@ -80,7 +80,7 @@ void MuteOrSoloDrawFunction
 #endif
 
    wxCoord textWidth, textHeight;
-   wxString str = (solo) ?
+   auto str = (solo) ?
       /* i18n-hint: This is on a button that will silence all the other tracks.*/
       _("Solo") :
       /* i18n-hint: This is on a button that will silence this track.*/

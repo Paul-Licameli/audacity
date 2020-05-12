@@ -316,7 +316,7 @@ void ControlToolBar::UpdatePrefs()
       mErgonomicTransportButtons = active;
       updated = true;
    }
-   wxString strLocale = LocaleLanguage.Read();
+   auto strLocale = LocaleLanguage.Read();
    if (mStrLocale != strLocale)
    {
       mStrLocale = strLocale;

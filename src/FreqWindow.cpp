@@ -707,7 +707,7 @@ void FrequencyPlotDialog::DrawPlot()
       DrawBackground(memDC);
 
       if (mDataLen < mWindowSize) {
-         wxString msg = _("Not enough data selected.");
+         auto msg = _("Not enough data selected.");
          wxSize sz = memDC.GetTextExtent(msg);
          memDC.DrawText(msg,
                         (mPlotRect.GetWidth() - sz.GetWidth()) / 2,
@@ -1075,7 +1075,7 @@ void FrequencyPlotDialog::Recalc()
 
 void FrequencyPlotDialog::OnExport()
 {
-   wxString fName = _("spectrum.txt");
+   auto fName = _("spectrum.txt");
 
    fName = FileNames::SelectFile(FileNames::Operation::Export,
       XO("Export Spectral Data As:"),

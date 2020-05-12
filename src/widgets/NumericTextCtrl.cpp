@@ -773,7 +773,7 @@ void NumericConverter::ParseFormatString(
       bool handleNum = false;
 
       if (format[i] == '|') {
-         wxString remainder = format.Right(format.length() - i - 1);
+         auto remainder = format.Right(format.length() - i - 1);
          // For languages which use , as a separator.
          remainder.Replace(L",", L".");
 
@@ -1737,7 +1737,7 @@ void NumericTextCtrl::OnPaint(wxPaintEvent & WXUNUSED(event))
          dc.SetTextBackground(theTheme.Colour( clrTimeBackFocus ));
       }
       int pos = mDigits[i].pos;
-      wxString digit = mValueString.Mid(pos, 1);
+      auto digit = mValueString.Mid(pos, 1);
       int x = box.x + (mDigitBoxW - mDigitW)/2;
       int y = box.y + (mDigitBoxH - mDigitH)/2;
       dc.DrawText(digit, x, y);
@@ -2094,7 +2094,7 @@ void NumericTextCtrl::Updated(bool keyup /* = false */)
 
 void NumericTextCtrl::ValueToControls()
 {
-   const wxString previousValueString = mValueString;
+   const auto previousValueString = mValueString;
    NumericConverter::ValueToControls(mValue);
    if (mValueString != previousValueString) {
       // Doing this only when needed is an optimization.
@@ -2265,7 +2265,7 @@ wxAccStatus NumericTextCtrlAx::GetName(int childId, wxString *name)
    // Slightly messy trick to save us some prefixing.
    std::vector<NumericField> & mFields = mCtrl->mFields;
 
-   wxString ctrlString = mCtrl->GetString();
+   auto ctrlString = mCtrl->GetString();
    int field = mCtrl->GetFocusedField();
 
    // Return the entire string including the control label
@@ -2298,9 +2298,9 @@ wxAccStatus NumericTextCtrlAx::GetName(int childId, wxString *name)
       // The user has moved from one field of the time to another so
       // report the value of the field and the field's label.
       if (mLastField != field) {
-         wxString label = mFields[field - 1].label;
+         auto label = mFields[field - 1].label;
          int cnt = mFields.size();
-         wxString decimal = wxLocale::GetInfo(wxLOCALE_DECIMAL_POINT, wxLOCALE_CAT_NUMBER);
+         auto decimal = wxLocale::GetInfo(wxLOCALE_DECIMAL_POINT, wxLOCALE_CAT_NUMBER);
 
          // If the NEW field is the last field, then check it to see if
          // it represents fractions of a second.

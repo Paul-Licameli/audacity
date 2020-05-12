@@ -19,7 +19,7 @@ NormalizedKeyString::NormalizedKeyString( const wxString & key )
 {
 #if defined(__WXMAC__)
    wxString newkey;
-   wxString temp = key;
+   auto temp = key;
 
    // PRL:  This is needed to parse older preference files.
    temp.Replace(L"XCtrl+", L"Control+");

@@ -52,7 +52,7 @@ static bool ConvertLegacyTrack(wxTextFile *f, XMLFileWriter &xmlFile)
       xmlFile.StartTag(L"wavetrack");
       xmlFile.WriteAttr(L"name", f->GetNextLine());
 
-      wxString channel = f->GetNextLine();
+      auto channel = f->GetNextLine();
       if (channel == L"left") {
          xmlFile.WriteAttr(L"channel", 0);
          line = f->GetNextLine();
@@ -98,7 +98,7 @@ static bool ConvertLegacyTrack(wxTextFile *f, XMLFileWriter &xmlFile)
       if (f->GetNextLine() != L"numSamples")
          return false;
 
-      wxString numSamples = f->GetNextLine();
+      auto numSamples = f->GetNextLine();
 
       if (f->GetNextLine() != L"rate")
          return false;
@@ -155,12 +155,12 @@ static bool ConvertLegacyTrack(wxTextFile *f, XMLFileWriter &xmlFile)
 
          xmlFile.StartTag(L"legacyblockfile");
          if (name == L"Alias") {
-            wxString aliasPath = f->GetNextLine();
-            wxString localLen = f->GetNextLine();
-            wxString aliasStart = f->GetNextLine();
-            wxString aliasLen = f->GetNextLine();
-            wxString aliasChannel = f->GetNextLine();
-            wxString localName = f->GetNextLine();
+            auto aliasPath = f->GetNextLine();
+            auto localLen = f->GetNextLine();
+            auto aliasStart = f->GetNextLine();
+            auto aliasLen = f->GetNextLine();
+            auto aliasChannel = f->GetNextLine();
+            auto localName = f->GetNextLine();
 
             xmlFile.WriteAttr(L"name", localName);
             xmlFile.WriteAttr(L"alias", 1);
@@ -250,7 +250,7 @@ bool ConvertLegacyProjectFile(const wxFileName &filename)
 {
    wxTextFile f;
 
-   const wxString name = filename.GetFullPath();
+   const auto name = filename.GetFullPath();
    f.Open( name );
    if (!f.IsOpened())
       return false;

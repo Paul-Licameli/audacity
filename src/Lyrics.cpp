@@ -640,7 +640,7 @@ void LyricsPanel::HandlePaint_BouncingBall(wxDC &dc)
          changedColor = true;
       }
 
-      wxString text = mSyllables[i].text;
+      auto text = mSyllables[i].text;
       if (text.length() > 0 && text.Right(1) == L"_") {
          text = text.Left(text.length() - 1);
       }

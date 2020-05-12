@@ -892,7 +892,7 @@ bool NyquistEffect::Process()
          //     if available, or fix libnyquist to be locale-independent.
          // See also http://bugzilla.audacityteam.org/show_bug.cgi?id=642#c9
          // for further info about this thread safety question.
-         wxString prevlocale = wxSetlocale(LC_NUMERIC, NULL);
+         auto prevlocale = wxSetlocale(LC_NUMERIC, NULL);
          wxSetlocale(LC_NUMERIC, wxString(L"C"));
 
          nyx_init();
@@ -1337,7 +1337,7 @@ bool NyquistEffect::ProcessOne()
    }
 
    if (mIsSal) {
-      wxString str = EscapeString(mCmd);
+      auto str = EscapeString(mCmd);
       // this is tricky: we need SAL to call main so that we can get a
       // SAL traceback in the event of an error (sal-compile catches the
       // error and calls sal-error-output), but SAL does not return values.
@@ -1637,7 +1637,7 @@ wxString NyquistEffect::NyquistToWxString(const char *nyqString)
 
 wxString NyquistEffect::EscapeString(const wxString & inStr)
 {
-   wxString str = inStr;
+   auto str = inStr;
 
    str.Replace(L"\\", L"\\\\");
    str.Replace(L"\"", L"\\\"");
@@ -1957,7 +1957,7 @@ bool NyquistEffect::Parse(
    }
 
    if (len >= 2 && tokens[0] == L"type") {
-      wxString tok = tokens[1];
+      auto tok = tokens[1];
       mIsTool = false;
       if (tok == L"tool") {
          mIsTool = true;
@@ -2323,7 +2323,7 @@ bool NyquistEffect::ParseProgram(wxInputStream & stream)
    mFoundType = false;
    while (!stream.Eof() && stream.IsOk())
    {
-      wxString line = pgm.ReadLine();
+      auto line = pgm.ReadLine();
       if (line.length() > 1 &&
           // New in 2.3.0:  allow magic comment lines to start with $
           // The trick is that xgettext will not consider such lines comments
@@ -2556,7 +2556,7 @@ FilePaths NyquistEffect::GetNyquistSearchPath()
 
    for (size_t i = 0; i < audacityPathList.size(); i++)
    {
-      wxString prefix = audacityPathList[i] + wxFILE_SEP_PATH;
+      auto prefix = audacityPathList[i] + wxFILE_SEP_PATH;
       FileNames::AddUniquePathToPathList(prefix + L"nyquist", pathList);
       FileNames::AddUniquePathToPathList(prefix + L"plugins", pathList);
       FileNames::AddUniquePathToPathList(prefix + L"plug-ins", pathList);
@@ -2668,7 +2668,7 @@ bool NyquistEffect::TransferDataFromEffectWindow()
                wxStringTokenizer tokenizer(path, "\"");
                while (tokenizer.HasMoreTokens())
                {
-                  wxString token = tokenizer.GetNextToken();
+                  auto token = tokenizer.GetNextToken();
                   if(!validatePath(token))
                   {
                      const auto message =
@@ -3140,7 +3140,7 @@ void NyquistEffect::OnFileButton(wxCommandEvent& evt)
       wxStringTokenizer tokenizer(ctrl.highStr, ",");
       while ( tokenizer.HasMoreTokens() )
       {
-         wxString token = tokenizer.GetNextToken().Trim(true).Trim(false);
+         auto token = tokenizer.GetNextToken().Trim(true).Trim(false);
          if (token.IsSameAs("open", false))
          {
             flags |= wxFD_OPEN;
@@ -3172,8 +3172,8 @@ void NyquistEffect::OnFileButton(wxCommandEvent& evt)
    resolveFilePath(ctrl.valStr);
 
    wxFileName fname = ctrl.valStr;
-   wxString defaultDir = fname.GetPath();
-   wxString defaultFile = fname.GetName();
+   auto defaultDir = fname.GetPath();
+   auto defaultFile = fname.GetName();
    auto message = XO("Select a file");
 
    if (flags & wxFD_MULTIPLE)
@@ -3251,8 +3251,8 @@ void NyquistEffect::resolveFilePath(wxString& path, FileExtension extension /* e
    }
    else  // path + file name
    {
-      wxString firstDir = path.Left(characters);
-      wxString rest = path.Mid(characters);
+      auto firstDir = path.Left(characters);
+      auto rest = path.Mid(characters);
 
       if (pathKeys.find(firstDir) != pathKeys.end())
       {
@@ -3276,7 +3276,7 @@ void NyquistEffect::resolveFilePath(wxString& path, FileExtension extension /* e
 bool NyquistEffect::validatePath(wxString path)
 {
    wxFileName fname = path;
-   wxString dir = fname.GetPath();
+   auto dir = fname.GetPath();
 
    return (fname.wxFileName::IsOk() &&
            wxFileName::DirExists(dir) &&
@@ -3448,7 +3448,7 @@ void * nyq_reformat_aud_do_response(const wxString & Str) {
    LVAL dst;
    LVAL message;
    LVAL success;
-   wxString Left = Str.BeforeLast('\n').BeforeLast('\n').ToAscii();
+   auto Left = Str.BeforeLast('\n').BeforeLast('\n').ToAscii();
    wxString Right = Str.BeforeLast('\n').AfterLast('\n').ToAscii();
    message = cvstring(Left);
    success = Right.EndsWith("OK") ? s_true : nullptr;

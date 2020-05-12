@@ -112,7 +112,7 @@ wxString FileNames::FormatWildcard( const FileTypes &fileTypes )
 
    const auto defaultDescription = []( const FileExtensions &extensions ){
       // Assume extensions is not empty
-      wxString exts = extensions[0];
+      auto exts = extensions[0];
       for (size_t ii = 1, size = extensions.size(); ii < size; ++ii ) {
          exts += XO(", ").Translation();
          exts += extensions[ii];
@@ -207,7 +207,7 @@ void FileNames::MakeNameUnique(FilePaths &otherNames,
 {
    if (otherNames.Index(newName.GetFullName(), false) >= 0) {
       int i=2;
-      wxString orig = newName.GetName();
+      auto orig = newName.GetName();
       do {
          newName.SetName(wxString::Format(L"%s-%d", orig, i));
          i++;
@@ -221,7 +221,7 @@ void FileNames::MakeNameUnique(FilePaths &otherNames,
 // This function does that substitution, IF the last component of
 // the path is 'Audacity'.
 wxString FileNames::LowerCaseAppNameInPath( const wxString & dirIn){
-   wxString dir = dirIn;
+   auto dir = dirIn;
    // BUG 1577 Capitalisation of Audacity in path...
    if( dir.EndsWith( "Audacity" ) )
    {
@@ -289,7 +289,7 @@ FilePath FileNames::HtmlHelpDir()
 #else
    //linux goes into /*prefix*/share/audacity/
    //windows (probably) goes into the dir containing the .exe
-   wxString dataDir = FileNames::LowerCaseAppNameInPath( wxStandardPaths::Get().GetDataDir());
+   auto dataDir = FileNames::LowerCaseAppNameInPath( wxStandardPaths::Get().GetDataDir());
    return wxFileName( dataDir+L"/help/manual", wxEmptyString ).GetFullPath();
 #endif
 }
@@ -650,7 +650,7 @@ void FileNames::AddMultiPathsToPathList(const wxString &multiPathStringArg,
 {
    wxString multiPathString(multiPathStringArg);
    while (!multiPathString.empty()) {
-      wxString onePath = multiPathString.BeforeFirst(wxPATH_SEP[0]);
+      auto onePath = multiPathString.BeforeFirst(wxPATH_SEP[0]);
       multiPathString = multiPathString.AfterFirst(wxPATH_SEP[0]);
       AddUniquePathToPathList(onePath, pathList);
    }
@@ -689,7 +689,7 @@ static wxCharBuffer mFilename;
 char *FileNames::VerifyFilename(const wxString &s, bool input)
 {
    static wxCharBuffer buf;
-   wxString name = s;
+   auto name = s;
 
    if (input) {
       if ((char *) (const char *)name.mb_str() == NULL) {

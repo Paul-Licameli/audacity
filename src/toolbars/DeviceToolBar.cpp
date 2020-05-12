@@ -238,7 +238,7 @@ void DeviceToolBar::UpdatePrefs()
 
 
    int hostSelectionIndex = mHost->GetSelection();
-   wxString oldHost = hostSelectionIndex >= 0 ? mHost->GetString(hostSelectionIndex) :
+   auto oldHost = hostSelectionIndex >= 0 ? mHost->GetString(hostSelectionIndex) :
                                                 wxString{};
    auto hostName = AudioIOHost.Read();
 
@@ -614,7 +614,7 @@ void DeviceToolBar::ChangeDevice(bool isInput)
 
    // Find device indices for input and output
    if (selectionIndex >= 0 ) {
-      wxString newDevice = combo->GetStringSelection();
+      auto newDevice = combo->GetStringSelection();
       for (i = 0; i < maps.size(); ++i) {
          wxString name;
          name = MakeDeviceSourceString(&maps[i]);

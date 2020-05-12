@@ -632,7 +632,7 @@ bool Exporter::GetFilename()
       mFilterIndex = 0;
       mSubFormat = 0;
    }
-   wxString defext = mPlugins[mFormat]->GetExtension(mSubFormat).Lower();
+   auto defext = mPlugins[mFormat]->GetExtension(mSubFormat).Lower();
 
    //Bug 1304: Set a default path if none was given.  For Export.
    mFilename.SetPath(FileNames::FindDefaultPath(FileNames::Operation::Export));
@@ -850,7 +850,7 @@ bool Exporter::CheckMix(bool prompt /*= true*/ )
       auto numRight = mNumRight + mNumMono;
 
       if (numLeft > 1 || numRight > 1 || mNumLeft + mNumRight + mNumMono > mChannels) {
-         wxString exportFormat = mPlugins[mFormat]->GetFormat(mSubFormat);
+         auto exportFormat = mPlugins[mFormat]->GetFormat(mSubFormat);
          if (exportFormat != L"CL" && exportFormat != L"FFMPEG" && exportedChannels == -1)
             exportedChannels = mChannels;
 
@@ -1381,7 +1381,7 @@ ExportMixerDialog::ExportMixerDialog( const TrackList *tracks, bool selectedOnly
             - ( anySolo ? &WaveTrack::GetNotSolo :  &WaveTrack::GetMute)
    ) {
       numTracks++;
-      const wxString sTrackName = (t->GetName()).Left(20);
+      const auto sTrackName = (t->GetName()).Left(20);
       if( t->GetChannel() == Track::LeftChannel )
       /* i18n-hint: track name and L abbreviating Left channel */
          mTrackNames.push_back( wxString::Format( _( "%s - L" ), sTrackName ) );

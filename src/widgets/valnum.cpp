@@ -238,7 +238,7 @@ void NumValidatorBase::OnPaste(wxClipboardTextEvent& event)
       return;
    }
 
-   wxString toPaste = data.GetText();
+   auto toPaste = data.GetText();
    wxString val;
    int pos;
    GetCurrentValueAndInsertionPoint(val, pos);
@@ -514,8 +514,8 @@ bool FloatingPointValidatorBase::DoValidateNumber(TranslatableString * errMsg) c
          res = IsInRange(value);
          if ( !res )
          {
-            wxString strMin = wxString::Format(L"%f", m_min);
-            wxString strMax = wxString::Format(L"%f", m_max);
+            auto strMin = wxString::Format(L"%f", m_min);
+            auto strMax = wxString::Format(L"%f", m_max);
             NumberFormatter::RemoveTrailingZeroes(strMin);
             NumberFormatter::RemoveTrailingZeroes(strMax);
 

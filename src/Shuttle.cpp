@@ -247,7 +247,7 @@ void ShuttleSetAutomation::Define( wxString &var, const wxChar * key, const wxSt
    CouldGet( key );
    if( !bOK )
       return;
-   wxString temp = var;
+   auto temp = var;
    bOK = mpEap->ReadAndVerify(key, &temp, vdefault);
    if( bWrite && bOK )
       var = temp;

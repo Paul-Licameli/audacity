@@ -50,7 +50,7 @@ STRINGS_API const wxString& GetCustomSubstitution(const wxString& str2)
    // If does not contain 'Audacity', nothing to do.
    if( !str2.Contains( "Audacity" ))
       return str2;
-   wxString str3 = str2;
+   auto str3 = str2;
    str3.Replace( "Audacity", "DarkAudacity" );
    str3.Replace( " an DarkAudacity", " a DarkAudacity" );
    // DA also renames sync-lock(ed) as time-lock(ed).
@@ -134,7 +134,7 @@ wxChar Internat::GetDecimalSeparator()
 bool Internat::CompatibleToDouble(const wxString& stringToConvert, double* result)
 {
    // Regardless of the locale, always respect comma _and_ point
-   wxString s = stringToConvert;
+   auto s = stringToConvert;
    s.Replace(L",", wxString(GetDecimalSeparator()));
    s.Replace(L".", wxString(GetDecimalSeparator()));
    return s.ToDouble(result);
@@ -150,7 +150,7 @@ double Internat::CompatibleToDouble(const wxString& stringToConvert)
 wxString Internat::ToString(double numberToConvert,
                      int digitsAfterDecimalPoint /* = -1 */)
 {
-   wxString result = ToDisplayString(
+   auto result = ToDisplayString(
       numberToConvert, digitsAfterDecimalPoint);
 
    result.Replace(wxString(GetDecimalSeparator()), L".");
@@ -161,7 +161,7 @@ wxString Internat::ToString(double numberToConvert,
 wxString Internat::ToDisplayString(double numberToConvert,
                                     int digitsAfterDecimalPoint /* = -1 */)
 {
-   wxString decSep = wxString(GetDecimalSeparator());
+   auto decSep = wxString(GetDecimalSeparator());
    wxString result;
 
    if (digitsAfterDecimalPoint == -1)

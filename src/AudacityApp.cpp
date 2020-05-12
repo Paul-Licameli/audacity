@@ -188,7 +188,7 @@ void PopulatePreferences()
       L"FirstTime.ini");
    if (fn.FileExists())   // it will exist if the (win) installer put it there
    {
-      const wxString fullPath{fn.GetFullPath()};
+      const auto fullPath = fn.GetFullPath();
 
       auto pIni =
          AudacityFileConfig::Create({}, {}, fullPath, {},
@@ -313,7 +313,7 @@ void PopulatePreferences()
 
       // "Order" must be adjusted since we're inserting two NEW toolbars
       if (dock > 0) {
-         wxString oldPath = gPrefs->GetPath();
+         auto oldPath = gPrefs->GetPath();
          gPrefs->SetPath(L"/GUI/ToolBars");
 
          wxString bar;
@@ -1123,7 +1123,7 @@ bool AudacityApp::OnInit()
       * The user's "~/.audacity-data" or "Portable Settings" directory
       * The user's "~/.audacity-files" directory
       * The "share" and "share/doc" directories in their install path */
-   wxString home = wxGetHomeDir();
+   auto home = wxGetHomeDir();
 
    wxString envTempDir = wxGetenv(L"TMPDIR");
    if (!envTempDir.empty()) {
@@ -1192,11 +1192,11 @@ bool AudacityApp::OnInit()
 #ifdef __WXMAC__
    wxFileName tmpFile;
    tmpFile.AssignHomeDir();
-   wxString tmpDirLoc = tmpFile.GetPath(wxPATH_GET_VOLUME);
+   auto tmpDirLoc = tmpFile.GetPath(wxPATH_GET_VOLUME);
 #else
    wxFileName tmpFile;
    tmpFile.AssignTempFileName(L"nn");
-   wxString tmpDirLoc = tmpFile.GetPath(wxPATH_GET_VOLUME);
+   auto tmpDirLoc = tmpFile.GetPath(wxPATH_GET_VOLUME);
    ::wxRemoveFile(tmpFile.GetFullPath());
 #endif
 
@@ -1205,7 +1205,7 @@ bool AudacityApp::OnInit()
    // On Mac and Windows systems, use the directory which contains Audacity.
 #ifdef __WXMSW__
    // On Windows, the path to the Audacity program is in argv[0]
-   wxString progPath = wxPathOnly(argv[0]);
+   auto progPath = wxPathOnly(argv[0]);
    FileNames::AddUniquePathToPathList(progPath, audacityPathList);
    FileNames::AddUniquePathToPathList(progPath + L"\\Languages", audacityPathList);
 
@@ -1217,7 +1217,7 @@ bool AudacityApp::OnInit()
 
 #ifdef __WXMAC__
    // On Mac OS X, the path to the Audacity program is in argv[0]
-   wxString progPath = wxPathOnly(argv[0]);
+   auto progPath = wxPathOnly(argv[0]);
 
    FileNames::AddUniquePathToPathList(progPath, audacityPathList);
    // If Audacity is a "bundle" package, then the root directory is
@@ -1712,7 +1712,7 @@ bool AudacityApp::InitTempDir()
 
 bool AudacityApp::CreateSingleInstanceChecker(const wxString &dir)
 {
-   wxString name = wxString::Format(L"audacity-lock-%s", wxGetUserId());
+   auto name = wxString::Format(L"audacity-lock-%s", wxGetUserId());
    mChecker.reset();
    auto checker = std::make_unique<wxSingleInstanceChecker>();
 

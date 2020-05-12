@@ -197,7 +197,7 @@ void MidiIOPrefs::OnHost()
       wxString interf = wxSafeConvertMB2WX(info->interf);
       if (itemAtIndex == interf) {
          wxString name = wxSafeConvertMB2WX(info->name);
-         wxString device = wxString::Format(L"%s: %s",
+         auto device = wxString::Format(L"%s: %s",
                                             interf,
                                             name);
          if (info->output) {

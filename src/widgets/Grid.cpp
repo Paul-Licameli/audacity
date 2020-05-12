@@ -428,7 +428,7 @@ bool ChoiceEditor::EndEdit(int WXUNUSED(row), int WXUNUSED(col),
       return false;
    }
 
-   wxString val = mChoices[sel];
+   auto val = mChoices[sel];
    bool changed = val != mOld;
 
    if (changed)
@@ -951,8 +951,8 @@ wxAccStatus GridAx::GetName(int childId, wxString *name)
    int col;
 
    if (GetRowCol(childId, row, col)) {
-      wxString n = mGrid->GetColLabelValue(col);
-      wxString v = mGrid->GetCellValue(row, col);
+      auto n = mGrid->GetColLabelValue(col);
+      auto v = mGrid->GetCellValue(row, col);
       if (v.empty()) {
          v = _("Empty");
       }

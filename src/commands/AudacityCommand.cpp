@@ -152,7 +152,7 @@ bool AudacityCommand::GetAutomationParameters(wxString & parms)
 
 bool AudacityCommand::SetAutomationParameters(const wxString & parms)
 {
-   wxString preset = parms;
+   auto preset = parms;
 
    CommandParameters eap(parms);
    ShuttleSetAutomation S;
