@@ -57,7 +57,6 @@
 #include <wx/module.h>
 #include <wx/process.h>
 #include <wx/recguard.h>
-#include <wx/sizer.h>
 #include <wx/scrolwin.h>
 #include <wx/sstream.h>
 #include <wx/statbox.h>
