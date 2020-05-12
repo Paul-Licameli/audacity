@@ -79,20 +79,19 @@ void LabelTrackMenuTable::OnSetFont(wxCommandEvent &)
    // Small helper class to enumerate all fonts in the system
    // We use this because the default implementation of
    // wxFontEnumerator::GetFacenames() has changed between wx2.6 and 2.8
-   class FontEnumerator : public wxFontEnumerator
+   class FontEnumerator : public wxFontEnumerator, public Identifiers
    {
    public:
-      explicit FontEnumerator(wxArrayString* fontNames) :
-         mFontNames(fontNames) {}
+      FontEnumerator()
+      {
+         EnumerateFacenames( wxFONTENCODING_SYSTEM, false );
+      }
 
       bool OnFacename(const wxString& font) override
       {
-         mFontNames->push_back(font);
+         this->emplace_back(font);
          return true;
       }
-
-   private:
-      wxArrayString* mFontNames;
    };
 
    SettingTransaction transaction;
@@ -125,11 +124,8 @@ void LabelTrackMenuTable::OnSetFont(wxCommandEvent &)
             .Text(XO("Face name"))
             .Position(  wxALIGN_LEFT | wxEXPAND | wxALL )
             .Target( Choice( LabelTrackView::FaceName,
-               Verbatim( []{
-                  wxArrayStringEx facenames;
-                  FontEnumerator fontEnumerator(&facenames);
-                  fontEnumerator.EnumerateFacenames(wxFONTENCODING_SYSTEM, false);
-                  return Identifiers{ facenames.begin(), facenames.end() };
+               Verbatim( []() -> Identifiers {
+                  return FontEnumerator{};
                }() )
             ) )
             .AddListBox( {} );
