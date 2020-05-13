@@ -28,7 +28,6 @@ Licensed under the GNU General Public License v2 or later
 #if defined(USE_GSTREAMER)
 #include "ImportGStreamer.h"
 
-#include <wx/window.h>
 #include <wx/log.h>
 
 #define DESC XO("GStreamer-compatible files")

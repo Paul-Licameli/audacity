@@ -24,10 +24,6 @@
 
 
 
-#ifndef WX_PRECOMP
-#include <wx/window.h>
-#endif
-
 #include <wx/defs.h>
 
 #include "Import.h"

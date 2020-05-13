@@ -30,10 +30,6 @@
 
 
 
-#ifndef WX_PRECOMP
-#include <wx/window.h>
-#endif
-
 #include "Import.h"
 #include "../Prefs.h"
 #include "../Tags.h"

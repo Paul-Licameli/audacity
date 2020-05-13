@@ -14,9 +14,6 @@
 #include "ODDecodeFFmpegTask.h"
 
 #include <wx/crt.h>
-#ifndef WX_PRECOMP
-#include <wx/window.h>
-#endif
 
 #ifdef USE_FFMPEG
 #ifdef EXPERIMENTAL_OD_FFMPEG

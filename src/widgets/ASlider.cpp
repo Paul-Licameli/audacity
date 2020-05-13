@@ -47,7 +47,6 @@ or ASlider.
 #include <wx/statline.h>
 #include <wx/settings.h>
 #include <wx/popupwin.h>
-#include <wx/window.h>
 
 #include "../AColor.h"
 #include "../ImageManipulation.h"

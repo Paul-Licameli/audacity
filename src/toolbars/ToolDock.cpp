@@ -32,7 +32,6 @@
 #include <wx/gdicmn.h>
 #include <wx/panel.h>
 #include <wx/settings.h>
-#include <wx/window.h>
 #endif  /*  */
 
 #include <algorithm>

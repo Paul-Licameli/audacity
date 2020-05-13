@@ -16,7 +16,6 @@
 #include <wx/dynlib.h>
 #include <wx/filename.h>
 #include <wx/textctrl.h>
-#include <wx/window.h>
 
 #include "sndfile.h"
 

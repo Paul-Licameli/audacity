@@ -23,9 +23,6 @@ Licensed under the GNU General Public License v2 or later
 
 
 #include "../FFmpeg.h"      // which brings in avcodec.h, avformat.h
-#ifndef WX_PRECOMP
-#include <wx/window.h>
-#endif
 
 #include "../widgets/ProgressDialog.h"
 

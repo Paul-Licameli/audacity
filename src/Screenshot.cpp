@@ -32,7 +32,6 @@ It forwards the actual work of doing the commands to the ScreenshotCommand.
 #include <wx/textctrl.h>
 #include <wx/timer.h>
 #include <wx/tglbtn.h>
-#include <wx/window.h>
 
 #include "prefs/GUISettings.h" // for RTL_WORKAROUND
 #include "Project.h"

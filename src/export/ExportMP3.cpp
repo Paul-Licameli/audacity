@@ -73,7 +73,6 @@
 #include <wx/simplebook.h>
 #include <wx/stattext.h>
 #include <wx/textctrl.h>
-#include <wx/window.h>
 
 #include "../FileNames.h"
 #include "../float_cast.h"

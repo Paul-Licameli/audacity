@@ -33,7 +33,6 @@ It handles initialization and termination by subclassing wxApp.
 #include <wx/bitmap.h>
 #include <wx/docview.h>
 #include <wx/ipc.h>
-#include <wx/window.h>
 #include <wx/snglinst.h>
 #include <wx/splash.h>
 #include <wx/stdpaths.h>

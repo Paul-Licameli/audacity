@@ -22,7 +22,6 @@ It is also a place to document colour usage policy in Audacity
 #include "AColorResources.h"
 
 
-#include <wx/window.h>
 #include <wx/colour.h>
 #include <wx/dc.h>
 #include <wx/dcmemory.h>

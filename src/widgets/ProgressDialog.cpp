@@ -43,7 +43,6 @@
 #include <wx/sizer.h>
 #include <wx/sound.h>
 #include <wx/stopwatch.h>
-#include <wx/window.h>
 #include <wx/stattext.h>
 
 #include "../Prefs.h"

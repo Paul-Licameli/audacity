@@ -65,10 +65,6 @@ ExpandingToolBar.
 
 #include "ExpandingToolBar.h"
 
-#ifndef WX_PRECOMP
-#include <wx/window.h>
-#endif
-
 #include <wx/dcclient.h>
 #include <wx/dcmemory.h>
 #include <wx/log.h>

@@ -35,10 +35,6 @@
 
 #include <wx/setup.h> // for wxUSE_* macros
 
-#ifndef WX_PRECOMP
-#include <wx/window.h>
-#endif
-
 #include "FileNames.h"
 #include "Prefs.h"
 #include "Project.h"

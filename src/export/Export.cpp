@@ -43,7 +43,6 @@
 #include <wx/stattext.h>
 #include <wx/textctrl.h>
 #include <wx/dcmemory.h>
-#include <wx/window.h>
 
 #include "sndfile.h"
 

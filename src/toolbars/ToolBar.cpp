@@ -36,7 +36,6 @@ in which buttons can be placed.
 #include <wx/settings.h>
 #include <wx/sizer.h>
 #include <wx/sysopt.h>
-#include <wx/window.h>
 #endif  /*  */
 
 #include "ToolDock.h"
