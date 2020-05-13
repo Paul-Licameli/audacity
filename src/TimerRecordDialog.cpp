@@ -26,7 +26,6 @@
 #include <wx/setup.h> // for wxUSE_* macros
 
 #include <wx/wxcrtvararg.h>
-#include <wx/button.h>
 #include <wx/calctrl.h>
 #include <wx/defs.h>
 #include <wx/dir.h>

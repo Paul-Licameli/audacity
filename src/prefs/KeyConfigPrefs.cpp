@@ -26,7 +26,6 @@ KeyConfigPrefs and MousePrefs use.
 #include <wx/setup.h> // for wxUSE_* macros
 #include <wx/defs.h>
 #include <wx/ffile.h>
-#include <wx/button.h>
 #include <wx/stattext.h>
 #include <wx/statbox.h>
 #include <wx/textctrl.h>

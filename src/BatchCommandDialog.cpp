@@ -32,7 +32,6 @@ selected command.
 #include <wx/stattext.h>
 #include <wx/textctrl.h>
 #include <wx/listctrl.h>
-#include <wx/button.h>
 
 
 #include "Project.h"
