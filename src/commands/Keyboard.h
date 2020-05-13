@@ -58,15 +58,15 @@ using NormalizedKeyStringBase = TaggedIdentifier<NormalizedKeyStringTag, false>;
 struct AUDACITY_DLL_API NormalizedKeyString : NormalizedKeyStringBase
 {
    NormalizedKeyString() = default;
-   explicit NormalizedKeyString( const wxString &key );
-   explicit NormalizedKeyString( const char *const key )
+   NormalizedKeyString( const wxString &key );
+   NormalizedKeyString( const char *const key )
       : NormalizedKeyString{ wxString{key} } {}
-   explicit NormalizedKeyString( const wxChar *const key )
+   NormalizedKeyString( const wxChar *const key )
       : NormalizedKeyString{ wxString{key} } {}
 
    // Convert to and from display form
    DisplayKeyString Display(bool usesSpecialChars = false) const;
-   explicit NormalizedKeyString(
+   NormalizedKeyString(
       const DisplayKeyString &str, bool usesSpecialChars = false );
 };
 
