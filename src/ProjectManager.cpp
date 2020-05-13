@@ -49,6 +49,7 @@ Paul Licameli split from AudacityProject.cpp
 #include <wx/dataobj.h>
 #include <wx/dnd.h>
 #include <wx/scrolbar.h>
+#include <wx/setup.h> // for wxUSE_* macros
 #include <wx/sizer.h>
 
 #ifdef __WXGTK__

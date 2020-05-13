@@ -13,8 +13,6 @@
 
 
 
-#include <wx/setup.h> // for wxUSE_* macros
-
 #ifndef WX_PRECOMP
 #include <wx/sizer.h>
 #endif

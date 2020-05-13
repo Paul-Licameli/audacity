@@ -35,6 +35,7 @@ Paul Licameli split from AudacityProject.cpp
 
 #include <wx/display.h>
 #include <wx/scrolbar.h>
+#include <wx/setup.h> // for wxUSE_* macros
 #include <wx/sizer.h>
 
 // Returns the screen containing a rectangle, or -1 if none does.

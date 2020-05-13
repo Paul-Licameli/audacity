@@ -15,8 +15,6 @@
 #include <functional>
 #include <vector>
 
-#include <wx/setup.h> // for wxUSE_* macros
-
 #include "ImageRoll.h" // member variable
 
 class wxImage;

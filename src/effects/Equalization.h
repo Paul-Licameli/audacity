@@ -15,8 +15,6 @@
 #define NUM_PTS 180
 #define PANELBORDER 1   // only increase from '1' for testing purposes - MJS
 
-#include <wx/setup.h> // for wxUSE_* macros
-
 #include "Effect.h"
 #include "../RealFFTf.h"
 

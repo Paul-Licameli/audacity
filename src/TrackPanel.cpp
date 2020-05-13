@@ -48,8 +48,6 @@ is time to refresh some aspect of the screen.
 
 
 
-#include <wx/setup.h> // for wxUSE_* macros
-
 #include "AdornedRulerPanel.h"
 #include "KeyboardCapture.h"
 #include "Project.h"
