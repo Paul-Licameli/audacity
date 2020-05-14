@@ -53,7 +53,6 @@ static Importer::RegisteredUnusableImportPlugin registered{
 
 #else /* USE_LIBVORBIS */
 
-#include <wx/log.h>
 #include <wx/setup.h>
 /* ffile.h must be included AFTER at least one other wx header that includes
  * wx/setup.h, otherwise #ifdefs erroneously collapse it to nothing. This is

@@ -25,7 +25,6 @@ Provides thread-safe logging based on the wxWidgets log facility.
 
 #include <mutex>
 #include <wx/filedlg.h>
-#include <wx/log.h>
 #include <wx/ffile.h>
 #include <wx/frame.h>
 #include <wx/icon.h>

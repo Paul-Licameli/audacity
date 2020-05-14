@@ -24,7 +24,6 @@
 
 #include <math.h>
 #include <float.h>
-#include <wx/log.h>
 
 #include "../ShuttleGui.h"
 #include "../WaveTrack.h"

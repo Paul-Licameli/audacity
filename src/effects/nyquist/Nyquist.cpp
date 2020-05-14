@@ -36,7 +36,6 @@ effects from this one class.
 #include <wx/checkbox.h>
 #include <wx/choice.h>
 #include <wx/datetime.h>
-#include <wx/log.h>
 #include <wx/scrolwin.h>
 #include <wx/sizer.h>
 #include <wx/slider.h>

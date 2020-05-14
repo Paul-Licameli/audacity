@@ -12,8 +12,6 @@
 
 #include "ProjectFSCK.h"
 
-#include <wx/log.h>
-
 #include "BlockFile.h"
 #include "DirManager.h"
 #include "widgets/AudacityMessageBox.h"

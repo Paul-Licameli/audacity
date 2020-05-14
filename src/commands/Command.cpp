@@ -79,7 +79,6 @@ classes derived from it.
 #include "Command.h"
 
 #include <map>
-#include <wx/log.h>
 #include <wx/variant.h>
 #include <wx/arrstr.h>
 

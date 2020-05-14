@@ -38,7 +38,6 @@
 
 #include <wx/defs.h>
 #include <wx/dynlib.h>
-#include <wx/log.h>
 #include <wx/stream.h>
 
 #include "Export.h"

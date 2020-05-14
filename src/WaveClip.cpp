@@ -25,7 +25,6 @@
 
 #include <math.h>
 #include <vector>
-#include <wx/log.h>
 
 #include "Sequence.h"
 #include "Spectrum.h"

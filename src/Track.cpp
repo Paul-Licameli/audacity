@@ -33,7 +33,6 @@ and TimeTrack.
 #include <float.h>
 #include <wx/file.h>
 #include <wx/textfile.h>
-#include <wx/log.h>
 
 #include "tracks/ui/CommonTrackPanelCell.h"
 #include "Project.h"

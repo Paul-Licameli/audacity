@@ -36,7 +36,6 @@
 #endif
 
 #include <wx/button.h>
-#include <wx/log.h>
 #include <wx/wfstream.h>
 #include <wx/txtstrm.h>
 

@@ -86,7 +86,6 @@ CommandManager.  It holds the callback for one command.
 #include <wx/evtloop.h>
 #include <wx/frame.h>
 #include <wx/hash.h>
-#include <wx/log.h>
 
 #include "../Menus.h"
 

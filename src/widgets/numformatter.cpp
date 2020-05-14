@@ -36,7 +36,6 @@
 #include <locale.h> // for setlocale and LC_ALL
 #include <cmath>
 #include <limits>
-#include <wx/log.h>
 
 // ----------------------------------------------------------------------------
 // local helpers

@@ -37,7 +37,6 @@
 
 #include <wx/filefn.h>
 #include <wx/ffile.h>
-#include <wx/log.h>
 
 #include "SampleBlock.h"
 #include "InconsistencyException.h"

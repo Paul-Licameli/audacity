@@ -13,7 +13,6 @@
 
 #include <wx/file.h>
 #include <wx/wxcrtvararg.h>
-#include <wx/log.h>
 
 #include <sndfile.h>
 

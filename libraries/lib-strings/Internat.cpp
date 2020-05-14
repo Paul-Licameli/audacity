@@ -22,7 +22,6 @@ and on Mac OS X for the filesystem.
 
 #include "Internat.h"
 
-#include <wx/log.h>
 #include <wx/filename.h>
 #include <wx/utils.h>
 

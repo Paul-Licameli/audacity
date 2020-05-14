@@ -25,7 +25,6 @@ and libvorbis examples, Monty <monty@xiph.org>
 #include "Export.h"
 
 #include <wx/ffile.h>
-#include <wx/log.h>
 
 #include "FLAC++/encoder.h"
 

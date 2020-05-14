@@ -12,8 +12,6 @@
 
 #include "LoadNyquist.h"
 
-#include <wx/log.h>
-
 #include "Nyquist.h"
 
 #include "../../FileNames.h"
