@@ -19,7 +19,6 @@ Paul Licameli split from AudioIO.h
 #include <cfloat>
 #include <functional>
 #include <vector>
-#include <wx/string.h>
 #include <wx/weakref.h> // member variable
 #include "MemoryX.h"
 
