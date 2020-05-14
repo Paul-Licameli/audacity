@@ -25,8 +25,6 @@ frequency changes smoothly during the tone.
 #include <math.h>
 #include <float.h>
 
-#include <wx/textctrl.h>
-
 #include "../Project.h"
 #include "../ProjectSettings.h"
 #include "../ShuttleGui.h"

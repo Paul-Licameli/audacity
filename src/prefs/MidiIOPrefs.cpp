@@ -33,7 +33,6 @@ other settings.
 #include <wx/defs.h>
 
 #include <wx/choice.h>
-#include <wx/textctrl.h>
 
 #include "../../lib-src/portmidi/pm_common/portmidi.h"
 

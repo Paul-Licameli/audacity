@@ -22,7 +22,6 @@
 #include "PlaybackPrefs.h"
 
 #include <wx/defs.h>
-#include <wx/textctrl.h>
 
 #include "../AudioIOBase.h"
 #include "../ShuttleGui.h"

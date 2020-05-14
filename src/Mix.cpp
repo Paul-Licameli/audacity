@@ -26,8 +26,6 @@
 
 #include <math.h>
 
-#include <wx/textctrl.h>
-
 #include "Envelope.h"
 #include "WaveTrack.h"
 #include "Prefs.h"

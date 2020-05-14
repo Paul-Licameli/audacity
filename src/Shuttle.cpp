@@ -48,7 +48,6 @@ preferences.
 #include <wx/checkbox.h>
 #include <wx/statbox.h>
 #include <wx/stattext.h>
-#include <wx/textctrl.h>
 #include <wx/listctrl.h>
 
 //#include "effects/Effect.h"

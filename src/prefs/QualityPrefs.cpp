@@ -20,7 +20,6 @@
 #include "QualitySettings.h"
 
 #include <wx/defs.h>
-#include <wx/textctrl.h>
 
 #include "../AudioIOBase.h"
 #include "../Dither.h"

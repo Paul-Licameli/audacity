@@ -43,7 +43,6 @@ ImportLOF.cpp, and ImportAUP.cpp.
 #include <algorithm>
 #include <unordered_set>
 
-#include <wx/textctrl.h>
 #include <wx/log.h>
 #include <wx/sizer.h>         //for wxBoxSizer
 #include <wx/tokenzr.h>

@@ -27,7 +27,6 @@ undo memory so as to free up space.
 #include <wx/settings.h>
 #include <wx/spinctrl.h>
 #include <wx/stattext.h>
-#include <wx/textctrl.h>
 
 #include "AudioIO.h"
 #include "Clipboard.h"

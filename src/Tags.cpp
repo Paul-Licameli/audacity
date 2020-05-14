@@ -51,7 +51,6 @@
 #include <wx/notebook.h>
 #include <wx/scrolbar.h>
 #include <wx/stattext.h>
-#include <wx/textctrl.h>
 #include <wx/textfile.h>
 #include <wx/combobox.h>
 #include <wx/display.h>

@@ -42,6 +42,7 @@
 #include <wx/statbox.h>
 #include <wx/stattext.h>
 #include <wx/scrolwin.h>
+#include <wx/textctrl.h>
 
 #include "../../ShuttleGui.h"
 #include "../../widgets/AudacityMessageBox.h"

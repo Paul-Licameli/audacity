@@ -43,7 +43,6 @@ with changes in the SelectionBar.
 #include <wx/stattext.h>
 #endif
 #include <wx/statline.h>
-#include <wx/textctrl.h>
 
 
 #include "../AudioIO.h"

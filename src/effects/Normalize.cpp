@@ -23,7 +23,6 @@
 
 #include <wx/checkbox.h>
 #include <wx/stattext.h>
-#include <wx/textctrl.h>
 
 #include "../Prefs.h"
 #include "../ProjectFileManager.h"

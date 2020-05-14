@@ -15,7 +15,6 @@
 #include <wx/choice.h>
 #include <wx/dynlib.h>
 #include <wx/filename.h>
-#include <wx/textctrl.h>
 
 #include "sndfile.h"
 

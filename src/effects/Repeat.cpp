@@ -27,7 +27,6 @@
 #include <math.h>
 
 #include <wx/stattext.h>
-#include <wx/textctrl.h>
 
 #include "../LabelTrack.h"
 #include "../ShuttleGui.h"

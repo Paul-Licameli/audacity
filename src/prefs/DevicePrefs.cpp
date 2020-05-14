@@ -33,7 +33,6 @@ other settings.
 
 #include <wx/choice.h>
 #include <wx/log.h>
-#include <wx/textctrl.h>
 
 #include "portaudio.h"
 

@@ -23,8 +23,6 @@
 #include <math.h>
 #include <float.h>
 
-#include <wx/textctrl.h>
-
 #include "../AudioIOBase.h"
 #include "../Shuttle.h"
 #include "../ShuttleGui.h"

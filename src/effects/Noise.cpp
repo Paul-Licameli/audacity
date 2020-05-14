@@ -19,8 +19,6 @@
 
 #include <math.h>
 
-#include <wx/textctrl.h>
-
 #include "../Prefs.h"
 #include "../ShuttleGui.h"
 #include "../widgets/NumericTextCtrl.h"

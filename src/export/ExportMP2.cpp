@@ -37,7 +37,6 @@
 #ifdef USE_LIBTWOLAME
 
 #include <wx/defs.h>
-#include <wx/textctrl.h>
 #include <wx/dynlib.h>
 #include <wx/log.h>
 #include <wx/stream.h>

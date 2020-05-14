@@ -25,7 +25,6 @@
 
 #include <wx/dcclient.h>
 #include <wx/dcmemory.h>
-#include <wx/textctrl.h>
 
 #include "../AColor.h"
 #include "../AllThemeResources.h"

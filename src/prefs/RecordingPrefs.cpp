@@ -24,7 +24,6 @@
 #include "AudioIOBase.h"
 
 #include <wx/defs.h>
-#include <wx/textctrl.h>
 #include <algorithm>
 
 #include "../Prefs.h"

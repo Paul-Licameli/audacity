@@ -23,7 +23,6 @@ function.
 
 #include "../FFmpeg.h"
 
-#include <wx/textctrl.h>
 #include <wx/listbox.h>
 #include <wx/spinctrl.h>
 

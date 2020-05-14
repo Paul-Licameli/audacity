@@ -27,7 +27,6 @@
 #include <wx/simplebook.h>
 #include <wx/statbox.h>
 #include <wx/stattext.h>
-#include <wx/textctrl.h>
 #include <wx/textdlg.h>
 
 #include "../FileNames.h"

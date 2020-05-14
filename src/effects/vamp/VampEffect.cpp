@@ -23,7 +23,6 @@
 #include <wx/checkbox.h>
 #include <wx/slider.h>
 #include <wx/statbox.h>
-#include <wx/textctrl.h>
 #include <wx/scrolwin.h>
 #include <wx/version.h>
 
