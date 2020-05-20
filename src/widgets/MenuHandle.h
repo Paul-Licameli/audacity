@@ -129,7 +129,8 @@ public:
    MenuHandle( const MenuHandle &other );
 
    // There is no copy assignment
-   MenuHandle &operator =( const MenuHandle &other ) = delete;
+//   MenuHandle &operator =( const MenuHandle &other ) = delete;
+   MenuHandle &operator =( const MenuHandle &other ) { return *this; }
 
    // Move transfers the unshared ownership, if other had such, else makes
    // a weak reference only; leaves weak reference in other
