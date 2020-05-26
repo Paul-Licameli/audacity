@@ -844,6 +844,12 @@ KeyView::RefreshBindings(const CommandIDs & names,
    }
 }
 
+namespace {
+bool CmpKeyNodeByTree(KeyNode *t1, KeyNode *t2);
+bool CmpKeyNodeByName(KeyNode *t1, KeyNode *t2);
+bool CmpKeyNodeByKey(KeyNode *t1, KeyNode *t2);
+}
+
 //
 // Refresh the list of lines within the current view
 //
@@ -1674,6 +1680,8 @@ KeyView::OnLeftDown(wxMouseEvent & event)
    event.Skip();
 }
 
+namespace {
+
 //
 // Sort compare function for tree view
 //
@@ -1688,29 +1696,30 @@ KeyView::OnLeftDown(wxMouseEvent & event)
 // We prefix all "command" nodes with "ffffffff" (highest hex value)
 // to allow the sort to reorder them as needed.
 //
-bool
-KeyView::CmpKeyNodeByTree(KeyNode *t1, KeyNode *t2)
+bool CmpKeyNodeByTree(KeyNode *t1, KeyNode *t2)
 {
-   unsigned int k1UInt= 0xffffffff;
-   unsigned int k2UInt= 0xffffffff;
+   auto projection =
+   []( const KeyNode &node ) -> std::pair< unsigned, wxString > {
+      unsigned int k1UInt= 0xffffffff;
+      // This is a "command" node if its category is "Command"
+      // and it is a child of the "Command" category.  This latter
+      // test ensures that the "Command" parent will be handled
+      // as a "menu" node and remain at the bottom of the list.
+      if (node.category != CommandTranslated || node.isparent)
+         k1UInt = (unsigned int) node.line;
+      return { k1UInt, node.label };
+   };
+   
+   return projection( *t1 ) < projection( *t2 );
+}
 
-   // This is a "command" node if its category is "Command"
-   // and it is a child of the "Command" category.  This latter
-   // test ensures that the "Command" parent will be handled
-   // as a "menu" node and remain at the bottom of the list.
-   if (t1->category != CommandTranslated || t1->isparent)
-      k1UInt = (unsigned int) t1->line;
-
-   // See above for explanation
-   if (t2->category != CommandTranslated || t2->isparent)
-      k2UInt = (unsigned int) t2->line;
-
-   if( k1UInt < k2UInt ) 
-      return true;
-   if( k1UInt > k2UInt )
-      return false;
-
-   return ( t1->label < t2->label );
+auto PrefixedLabel( const KeyNode &node ) -> std::pair< wxString, wxString >
+{
+   if (node.prefix.empty())
+      return { node.label, {} };
+   else
+      // Prepend prefix if available
+      return { node.prefix, node.label };
 }
 
 //
@@ -1718,25 +1727,9 @@ KeyView::CmpKeyNodeByTree(KeyNode *t1, KeyNode *t2)
 //
 // Nothing special here, just a standard ascending sort.
 //
-bool
-KeyView::CmpKeyNodeByName(KeyNode *t1, KeyNode *t2)
+bool CmpKeyNodeByName(KeyNode *t1, KeyNode *t2)
 {
-   wxString k1 = t1->label;
-   wxString k2 = t2->label;
-
-   // Prepend prefix if available
-   if (!t1->prefix.empty())
-   {
-      k1 = t1->prefix + wxT(" - ") + k1;
-   }
-
-   // Prepend prefix if available
-   if (!t2->prefix.empty())
-   {
-      k2 = t2->prefix + wxT(" - ") + k2;
-   }
-
-   return (k1 < k2);
+   return PrefixedLabel( *t1 ) < PrefixedLabel( *t2 );
 }
 
 //
@@ -1746,47 +1739,20 @@ KeyView::CmpKeyNodeByName(KeyNode *t1, KeyNode *t2)
 // at the top of the list and all nodes without assignment to appear in
 // ascending order at the bottom of the list.
 //
-// We accomplish this by prefixing all non-assigned entries with 0xff.
-// This will force them to the end, but still allow them to be sorted in
-// ascending order.
-//
 // The assigned entries simply get sorted as normal.
 //
-bool
-KeyView::CmpKeyNodeByKey(KeyNode *t1, KeyNode *t2)
+bool CmpKeyNodeByKey(KeyNode *t1, KeyNode *t2)
 {
-   wxString k1 = t1->key.Display();
-   wxString k2 = t2->key.Display();
-
-   // Left node is unassigned, so prefix it
-   if(k1.empty())
+   auto projection =
+   []( const KeyNode &node )
+      -> std::pair< int, std::pair< wxString, wxString > >
    {
-      k1 = wxT("\xff");
-   }
+      return { !node.key.Display().empty(), PrefixedLabel( node ) };
+   };
 
-   // Right node is unassigned, so prefix it
-   if(k2.empty())
-   {
-      k2 = wxT("\xff");
-   }
+   return projection( *t1 ) < projection( *t2 );
+}
 
-   // Add prefix if available
-   if (!t1->prefix.empty())
-   {
-      k1 += t1->prefix + wxT(" - ");
-   }
-
-   // Add prefix if available
-   if (!t2->prefix.empty())
-   {
-      k2 += t2->prefix + wxT(" - ");
-   }
-
-   // Add labels
-   k1 += t1->label;
-   k2 += t2->label;
-
-   return (k1 < k2);
 }
 
 #if wxUSE_ACCESSIBILITY
