@@ -720,7 +720,7 @@ void DeviceToolBar::ShowComboDialog(wxChoice *combo, const TranslatableString &t
       {
          c = S.AddChoice( VerbatimLabel( combo->GetName() ),
             transform_container<TranslatableStrings>(
-               inputSources, Verbatim<TranslatableString> ),
+               inputSources, Verbatim<TranslatableLabel> ),
             combo->GetSelection());
          c->SetMinSize(c->GetBestSize());
       }

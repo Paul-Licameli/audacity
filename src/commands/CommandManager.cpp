@@ -606,7 +606,7 @@ auto CommandManager::Options::MakeCheckFn(
 /// When you call Enable on this command name, it will enable or disable
 /// all of the items at once.
 void CommandManager::AddItemList(const CommandID & name,
-                                 const ComponentInterfaceSymbol items[],
+                                 const EnumLabelSymbol items[],
                                  size_t nItems,
                                  CommandHandlerFinder finder,
                                  CommandFunctorPointer callback,
@@ -708,7 +708,7 @@ CommandListEntry *CommandManager::NewIdentifier(const CommandID & nameIn,
 
       TranslatableLabel labelPrefix;
       if (!mSubMenuList.empty())
-         labelPrefix = mSubMenuList.back().name.label.main.Stripped();
+         labelPrefix = mSubMenuList.back().name.label.main;
 
       // For key bindings for commands with a list, such as align,
       // the name in prefs is the category name plus the effect name.
@@ -752,7 +752,7 @@ CommandListEntry *CommandManager::NewIdentifier(const CommandID & nameIn,
       entry->key = NormalizedKeyString{ accel.BeforeFirst(L'\t') };
       entry->defaultKey = entry->key;
       entry->labelPrefix = labelPrefix;
-      entry->labelTop = mCurrentMenuName.label.main.Stripped();
+      entry->labelTop = mCurrentMenuName.label.main;
       entry->finder = finder;
       entry->callback = callback;
       entry->isEffect = bIsEffect;
@@ -1033,7 +1033,7 @@ TranslatableString CommandManager::DescribeCommandsAndShortcuts(
       // Note: not putting this and other short format strings in the
       // translation catalogs
       auto piece = Verbatim( L"%s%s" )
-         .Format( mark, pair.Msgid().Stripped() );
+         .Format( mark, pair.Msgid() );
 
       auto name = pair.Internal();
       if (!name.empty()) {
@@ -1428,7 +1428,7 @@ TranslatableLabel CommandManager::GetPrefixedLabelFromName(const CommandID &name
       return VerbatimLabel( L"%s - %s" )
          .Format(entry->labelPrefix, entry->label);
    else
-      return entry->label.Stripped();
+      return entry->label;
 }
 
 TranslatableLabel CommandManager::GetCategoryFromName(const CommandID &name)
@@ -1615,7 +1615,8 @@ void CommandManager::RemoveDuplicateShortcuts()
 
                   disabledShortcuts +=
                      XO("\n* %s, because you have assigned the shortcut %s to %s")
-                     .Format(entry2->label.Strip(), entry->key.GET(), entry->label.Strip());
+                     .Format( entry2->label.Stripped(),
+                        entry->key.GET(), entry->label.Stripped() );
                }
             }
          }

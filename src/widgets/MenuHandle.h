@@ -60,17 +60,17 @@ struct MenuItem;
 
 // Determines user-visible text on the menu button
 struct MenuItemLabel {
-   TranslatableString main;
+   TranslatableLabel main;
    NormalizedKeyString accel;
 
    MenuItemLabel() = default;
    MenuItemLabel(
-      const TranslatableString &main, const NormalizedKeyString &accel = {} )
+      const TranslatableLabel &main, const NormalizedKeyString &accel = {} )
       : main{ main }, accel{ accel }
    {}
 
    // Computes the full label text
-   TranslatableString FullLabel() const;
+   TranslatableLabel FullLabel() const;
 };
 
 // Full menu texts including optional help
@@ -80,12 +80,12 @@ struct MenuItemText {
 
    MenuItemText() = default;
 
-   MenuItemText( const TranslatableString &label)
+   MenuItemText( const TranslatableLabel &label)
       // Unspecified help defaults to the same as the label
       : MenuItemText{ label, label.Stripped() }
    {}
 
-   MenuItemText( const TranslatableString &label,
+   MenuItemText( const TranslatableLabel &label,
       const TranslatableString &help )
       : label{ label }, help{ help }
    {}
@@ -244,7 +244,7 @@ private:
 struct MenuItem {
    MenuItemID id;
    MenuItemType type;
-   TranslatableString label;
+   TranslatableLabel label;
    wxString accel;
    MenuItemState state;
    MenuHandle pSubMenu;
@@ -252,7 +252,7 @@ struct MenuItem {
 
 // Information accessed by iterator over menu bar items
 struct MenuBarItem {
-   TranslatableString title;
+   TranslatableLabel title;
    MenuHandle pSubMenu;
 };
 
@@ -295,7 +295,7 @@ public:
    explicit operator bool() const { return mwMenuBar; }
 
    // menu gives up ownership but retains a weak reference
-   void Append( MenuHandle &&menu, const TranslatableString &title );
+   void Append( MenuHandle &&menu, const TranslatableLabel &title );
 
    // macOS only
    static void MacSetCommonMenuBar( MenuBarHandle &&pMenuBar );

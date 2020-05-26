@@ -191,8 +191,7 @@ void FinishPreferences()
 EnumValueSymbols::EnumValueSymbols(
    ByColumns_t,
    const TranslatableStrings &msgids,
-   Identifiers internals
-)
+   Identifiers internals )
    : mInternals( std::move( internals ) )
 {
    auto size = mInternals.size(), size2 = msgids.size();

@@ -1145,7 +1145,7 @@ void WaveColorMenuTable::OnWaveColorChange(wxCommandEvent & event)
 
    ProjectHistory::Get( *project )
       .PushState(XO("Changed '%s' to %s")
-         .Format( pTrack->GetName(), GetWaveColorStr(newWaveColor) ),
+         .Format( pTrack->GetName(), GetWaveColorStr(newWaveColor).Stripped() ),
       XO("WaveColor Change"));
 
    using namespace RefreshCode;

@@ -456,9 +456,9 @@ TranslatableString KeyConfigPrefs::MergeWithExistingKeys(
                XO(
 "\n   *   \"%s\"  (because the shortcut \'%s\' is used by \"%s\")\n")
                   .Format(
-                     mManager->GetPrefixedLabelFromName(mNames[i]),
+                     mManager->GetPrefixedLabelFromName(mNames[i]).Stripped(),
                      name,
-                     mManager->GetPrefixedLabelFromName(mNames[sRes]) );
+                     mManager->GetPrefixedLabelFromName(mNames[sRes]).Stripped() );
             
             mManager->SetKeyFromIndex(i, noKey);
          }
@@ -791,18 +791,18 @@ void KeyConfigPrefs::OnSet(wxCommandEvent & WXUNUSED(event))
    if (!oldCommands.empty()) {
       auto newlabel = Verbatim( L"'%s - %s'" )
          .Format(
-            mManager->GetCategoryFromName(newCommand),
-            mManager->GetPrefixedLabelFromName(newCommand) );
+            mManager->GetCategoryFromName(newCommand).Stripped(),
+            mManager->GetPrefixedLabelFromName(newCommand).Stripped() );
       auto oldlabel = Verbatim(L"'%s - %s'")
          .Format(
-            mManager->GetCategoryFromName(oldCommands[0]),
-            mManager->GetPrefixedLabelFromName(oldCommands[0]));
+            mManager->GetCategoryFromName(oldCommands[0]).Stripped(),
+            mManager->GetPrefixedLabelFromName(oldCommands[0]).Stripped());
 
       for (size_t i{ 1 }; i < oldCommands.size(); i++)
          oldlabel += XO("\n\n\t and\n\n\t") +
          Verbatim(L"'%s - %s'").Format(
-            mManager->GetCategoryFromName(oldCommands[i]),
-            mManager->GetPrefixedLabelFromName(oldCommands[i]));
+            mManager->GetCategoryFromName(oldCommands[i]).Stripped(),
+            mManager->GetPrefixedLabelFromName(oldCommands[i]).Stripped());
       
       if (wxCANCEL == AudacityMessageBox(
             XO(

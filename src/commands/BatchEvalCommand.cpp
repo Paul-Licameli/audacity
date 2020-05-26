@@ -68,7 +68,7 @@ bool BatchEvalCommand::Apply(const CommandContext & context)
    auto iter = catalog.ByCommandId(cmdName);
    const auto friendly = (iter == catalog.end())
       ? Verbatim( cmdName ) // Expose internal name to user, in default of a better one!
-      : iter->name.Msgid().Stripped();
+      : iter->name.Msgid();
 
    // Create a Batch that will have just one command in it...
    MacroCommands Batch{ context.project };

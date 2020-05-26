@@ -31,6 +31,7 @@
 #include <unordered_map>
 
 using CommandParameter = CommandID;
+class EnumLabelSymbol;
 
 namespace Widgets {
    class MenuHandle;
@@ -169,7 +170,7 @@ class AUDACITY_DLL_API CommandManager final
    };
 
    void AddItemList(const CommandID & name,
-                    const ComponentInterfaceSymbol items[],
+                    const EnumLabelSymbol items[],
                     size_t nItems,
                     CommandHandlerFinder finder,
                     CommandFunctorPointer callback,
@@ -524,7 +525,7 @@ namespace MenuTable {
    // in the CommandContext identifying the command
    struct AUDACITY_DLL_API CommandGroupItem final : SingleItem {
       CommandGroupItem(const Identifier &name_,
-               std::vector< ComponentInterfaceSymbol > items_,
+               std::vector< EnumLabelSymbol > items_,
                CommandFunctorPointer callback_,
                CommandFlag flags_,
                bool isEffect_,
@@ -534,7 +535,7 @@ namespace MenuTable {
       // previous constructor; useful within the lifetime of a FinderScope
       template< typename Handler >
       CommandGroupItem(const Identifier &name_,
-               std::vector< ComponentInterfaceSymbol > items_,
+               std::vector< EnumLabelSymbol > items_,
                void (Handler::*pmf)(const CommandContext&),
                CommandFlag flags_,
                bool isEffect_,
@@ -546,7 +547,7 @@ namespace MenuTable {
 
       ~CommandGroupItem() override;
 
-      const std::vector<ComponentInterfaceSymbol> items;
+      const std::vector<EnumLabelSymbol> items;
       CommandHandlerFinder finder;
       CommandFunctorPointer callback;
       CommandFlag flags;
@@ -683,7 +684,7 @@ namespace MenuTable {
    template< typename Handler >
    inline std::unique_ptr<CommandGroupItem> CommandGroup(
       const Identifier &name,
-      std::vector< ComponentInterfaceSymbol > items,
+      std::vector< EnumLabelSymbol > items,
       void (Handler::*pmf)(const CommandContext&),
       CommandFlag flags, bool isEffect = false,
       CommandHandlerFinder finder = FinderScope::DefaultFinder())

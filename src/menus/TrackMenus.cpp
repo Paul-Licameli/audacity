@@ -185,8 +185,8 @@ enum {
    kAlignTogether
 };
 
-static const std::vector< ComponentInterfaceSymbol >
-&alignLabels() { static std::vector< ComponentInterfaceSymbol > symbols{
+static const std::vector< EnumLabelSymbol >
+&alignLabels() { static std::vector< EnumLabelSymbol > symbols{
    { L"StartToZero",     XXO("Start to &Zero") },
    { L"StartToSelStart", XXO("Start to &Cursor/Selection Start") },
    { L"StartToSelEnd",   XXO("Start to Selection &End") },

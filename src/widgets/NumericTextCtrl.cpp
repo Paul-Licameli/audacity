@@ -1764,7 +1764,7 @@ void NumericTextCtrl::OnContext(wxContextMenuEvent &event)
    for (int i = 0; i < GetNumBuiltins(); i++) {
       bool checked = (mFormatString == GetBuiltinFormat(i));
       menu.AppendRadioItem(
-         GetBuiltinName(i).Msgid(), {},
+         TranslatableLabel{ GetBuiltinName(i).Msgid() }, {},
          { true, checked }, ID_MENU + i );
       if ( checked )
          currentSelection = i;

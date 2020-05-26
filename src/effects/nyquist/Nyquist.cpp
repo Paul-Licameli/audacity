@@ -1151,7 +1151,7 @@ bool NyquistEffect::ProcessOne()
             spectralEditp = mCurTrack[0]->GetSpectrogramSettings().SpectralSelectionEnabled()? L"T" : L"NIL";
             auto displays = WaveTrackView::Get( *wt ).GetDisplays();
             auto format = [&]( decltype(displays[0]) display ) {
-               // Get the English name of the view type, without menu codes,
+               // Get the English name of the view type,
                // as a string that Lisp can examine
                return wxString::Format( L"\"%s\"",
                   display.name.Stripped().Debug() );
@@ -2847,7 +2847,7 @@ void NyquistEffect::BuildEffectWindow(ShuttleGui & S)
 
                   auto item = S.Id(ID_Text + i)
                      .Validator<wxGenericValidator>(&ctrl.valStr)
-                     .Name( prompt )
+                     .Name( prompt.Stripped() )
                      .AddTextBox( {}, L"", 50);
                }
                else if (ctrl.type == NYQ_CTRL_CHOICE)
@@ -2874,7 +2874,7 @@ void NyquistEffect::BuildEffectWindow(ShuttleGui & S)
                                      mProjectRate,
                                      options);
                   S
-                     .Name( prompt )
+                     .Name( prompt.Stripped() )
                      .Position(wxALIGN_LEFT | wxALL)
                      .AddWindow(time);
                }
@@ -2892,7 +2892,7 @@ void NyquistEffect::BuildEffectWindow(ShuttleGui & S)
                   resolveFilePath(ctrl.valStr, defaultExtension);
 
                   wxTextCtrl *item = S.Id(ID_Text+i)
-                     .Name( prompt )
+                     .Name( prompt.Stripped() )
                      .AddTextBox( {}, L"", 40);
                   item->SetValidator(wxGenericValidator(&ctrl.valStr));
 
@@ -2933,7 +2933,7 @@ void NyquistEffect::BuildEffectWindow(ShuttleGui & S)
                         (int) ctrl.low, (int) ctrl.high);
                   }
                   wxTextCtrl *item = S
-                     .Name( prompt )
+                     .Name( prompt.Stripped() )
                      .AddTextBox( {}, L"",
                         (ctrl.type == NYQ_CTRL_INT_TEXT ||
                          ctrl.type == NYQ_CTRL_FLOAT_TEXT) ? 25 : 12);

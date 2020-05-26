@@ -405,7 +405,7 @@ wxChoice * ShuttleGuiBase::AddChoice( const TranslatableLabel &Prompt,
       wxDefaultPosition,
       wxDefaultSize,
       transform_container<wxArrayString>(
-         choices, std::mem_fn( &TranslatableString::StrippedTranslation ) ),
+         choices, std::mem_fn( &TranslatableString::Translation ) ),
       GetStyle( 0 ) );
 
    pChoice->SetMinSize( { 180, -1 } );// Use -1 for 'default size' - Platform specific.
@@ -1967,7 +1967,7 @@ wxChoice *ShuttleGuiBase::TieChoice(
    // uh oh
    TranslatableStrings Choices;
    for ( const auto &msgid : choiceSetting.GetLabels() )
-      Choices.push_back( msgid.Stripped() );
+      Choices.push_back( msgid );
    const auto &InternalChoices = choiceSetting.GetValues();
 
    wxChoice * pChoice=(wxChoice*)NULL;
@@ -2096,7 +2096,7 @@ void ShuttleGuiBase::ApplyItem( int step, const DialogDefinition::Item &item,
          pWind->SetToolTip( item.mToolTip.Translation() );
 
       if ( !item.mName.empty() ) {
-         pWind->SetName( item.mName.Stripped().Translation() );
+         pWind->SetName( item.mName.Translation() );
 #ifndef __WXMAC__
          if (auto pButton = dynamic_cast< wxBitmapButton* >( pWind ))
             pButton->SetLabel(  item.mName.Translation() );
@@ -2448,7 +2448,7 @@ void ShuttleGui::SetMinSize( wxWindow *window, const TranslatableStrings & items
 {
    SetMinSize( window,
       transform_container<wxArrayStringEx>(
-         items, std::mem_fn( &TranslatableString::StrippedTranslation ) ) );
+         items, std::mem_fn( &TranslatableString::Translation ) ) );
 }
 
 void ShuttleGui::SetMinSize( wxWindow *window, const wxArrayStringEx & items )

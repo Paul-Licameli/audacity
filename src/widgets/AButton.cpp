@@ -265,12 +265,12 @@ void AButton::UseDisabledAsDownHiliteImage(bool flag)
 
 void AButton::SetToolTip( const TranslatableString &toolTip )
 {
-   wxWindow::SetToolTip( toolTip.Stripped().Translation() );
+   wxWindow::SetToolTip( toolTip.Translation() );
 }
 
 void AButton::SetLabel( const TranslatableString &toolTip )
 {
-   wxWindow::SetLabel( toolTip.Stripped().Translation() );
+   wxWindow::SetLabel( toolTip.Translation() );
 }
 
 // This compensates for a but in wxWidgets 3.0.2 for mac:

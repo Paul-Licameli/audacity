@@ -41,9 +41,9 @@ public:
 
 public:
    CommandID name;
-   wxString category;
-   wxString prefix;
-   wxString label;
+   TranslatableLabel category;
+   TranslatableLabel prefix;
+   TranslatableLabel label;
    NormalizedKeyString key;
    int index;
    int line;
@@ -80,16 +80,16 @@ public:
    wxString GetName() const override; // Gets the control name from the base class
 
    void RefreshBindings(const CommandIDs & names,
-                        const TranslatableStrings & categories,
-                        const TranslatableStrings & prefixes,
-                        const TranslatableStrings & labels,
+                        const TranslatableLabels & categories,
+                        const TranslatableLabels & prefixes,
+                        const TranslatableLabels & labels,
                         const std::vector<NormalizedKeyString> & keys,
                         bool bSort);
 
    int GetSelected() const;
 
-   wxString GetLabel(int index) const;
-   wxString GetFullLabel(int index) const;
+   TranslatableLabel GetLabel(int index) const;
+   TranslatableLabel GetFullLabel(int index) const;
 
    int GetIndexByName(const CommandID & name) const;
    CommandID GetName(int index) const;

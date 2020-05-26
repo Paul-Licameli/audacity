@@ -16,12 +16,12 @@ Paul Licameli
 
 namespace Widgets {
 
-TranslatableString MenuItemLabel::FullLabel() const
+TranslatableLabel MenuItemLabel::FullLabel() const
 {
    return accel.empty()
       ? main
-      : TranslatableString{ main }
-         .Join( Verbatim( accel.GET() ), L"\t" );
+      : TranslatableLabel{ main }
+         .Join( VerbatimLabel( accel.GET() ), L"\t" );
 }
 
 class MenuHandle::Menu : public wxMenu
@@ -31,7 +31,7 @@ public:
    ~Menu() override = default;
 
    // Remember the unstranslated strings
-   TranslatableStrings mLabels;
+   TranslatableLabels mLabels;
 };
 
 MenuHandle::MenuHandle( Menu *pMenu )
@@ -255,7 +255,7 @@ public:
    ~MenuBar() override = default;
 
    // Remember the unstranslated strings
-   TranslatableStrings mTitles;
+   TranslatableLabels mTitles;
 };
 
 MenuBarHandle::MenuBarHandle()
@@ -290,7 +290,7 @@ MenuBarHandle &MenuBarHandle::operator =( MenuBarHandle &&other )
 MenuBarHandle::~MenuBarHandle() = default;
 
 void MenuBarHandle::Append(
-   MenuHandle &&menu, const TranslatableString &title )
+   MenuHandle &&menu, const TranslatableLabel &title )
 {
    mwMenuBar->Append(
       std::move( menu.muMenu.release() ), title.Translation() );

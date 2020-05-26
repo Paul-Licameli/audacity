@@ -217,7 +217,7 @@ CommandItem::CommandItem(const CommandID &name_,
 CommandItem::~CommandItem() {}
 
 CommandGroupItem::CommandGroupItem(const Identifier &name_,
-         std::vector< ComponentInterfaceSymbol > items_,
+         std::vector< EnumLabelSymbol > items_,
          CommandFunctorPointer callback_,
          CommandFlag flags_,
          bool isEffect_,

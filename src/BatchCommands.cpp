@@ -335,8 +335,7 @@ MacroCommandsCatalog::MacroCommandsCatalog( const AudacityProject *project )
 
    for(size_t i=0; i<mNames.size(); i++) {
       if( !vExcludeFromMacros[i] ){
-         auto label = mLabels[i];
-         label.Strip();
+         auto label = mLabels[i].Stripped();
          bool suffix;
          if (!english)
             suffix = false;
@@ -648,8 +647,10 @@ bool MacroCommands::ApplyCommand( const TranslatableString &friendlyCommand,
       if( HandleTextualCommand(
          manager, command, *pContext, AlwaysEnabledFlag, true ) )
          return true;
-      pContext->Status( wxString::Format(
-         _("Your batch command of %s was not recognized."), friendlyCommand.Translation() ));
+      pContext->Status(
+         XO("Your batch command of %s was not recognized.")
+           .Format( friendlyCommand )
+              .Translation() );
       return false;
    }
    else
@@ -777,7 +778,7 @@ bool MacroCommands::ApplyMacro(
            // uh oh, using GET to expose an internal name to the user!
            // in default of any better friendly name
            Verbatim( command.GET() )
-         : iter->name.Msgid().Stripped();
+         : iter->name.Msgid();
 
       wxTimeSpan before;
       if (trace) {

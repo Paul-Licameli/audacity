@@ -186,7 +186,7 @@ void FileHistory::NotifyMenu(Widgets::MenuHandle menu)
    for (size_t i = 0; i < mHistory.size(); i++) {
       wxString item =  mHistory[i];
       item.Replace( "&", "&&" );
-      menu.Append( Verbatim( item ), {}, {}, mIDBase + 1 + i );
+      menu.Append( VerbatimLabel( item ), {}, {}, mIDBase + 1 + i );
    }
 
    if (mHistory.size() > 0)
