@@ -43,92 +43,95 @@ void DoManagePluginsMenu(AudacityProject &project, EffectType type)
       MenuCreator::RebuildAllMenuBars();
 }
 
+template< typename Projection >
+auto Comparator( Projection projection )
+   // C++14 won't need this:
+//   -> std::function<
+  //    bool( const PluginDescriptor *, const PluginDescriptor * ) >
+{
+   return [projection]( const PluginDescriptor *a, const PluginDescriptor *b ){
+     return projection( *a ) < projection( *b );
+   };
+}
+
 bool CompareEffectsByName(const PluginDescriptor *a, const PluginDescriptor *b)
 {
-   return
-      std::make_pair( a->GetSymbol().Translation(), a->GetPath() ) <
-      std::make_pair( b->GetSymbol().Translation(), b->GetPath() );
+   auto projection = []( const PluginDescriptor &desc ) {
+      return std::make_pair( desc.GetSymbol().Translation(), desc.GetPath() );
+   };
+   return projection( *a ) < projection( *b);
 }
 
 bool CompareEffectsByPublisher(
    const PluginDescriptor *a, const PluginDescriptor *b)
 {
    auto &em = EffectManager::Get();
-   
-   auto akey = em.GetVendorName(a->GetID());
-   auto bkey = em.GetVendorName(b->GetID());
+   auto projection = [&em]( const PluginDescriptor &desc )
+   {
+      auto name = em.GetVendorName(desc.GetID());
+      return std::make_tuple(
+         (name.empty() ? XO("Uncategorized") : name).Translation(),
+         desc.GetSymbol().Translation(),
+         desc.GetPath()
+      );
+   };
 
-   if (akey.empty())
-      akey = XO("Uncategorized");
-   if (bkey.empty())
-      bkey = XO("Uncategorized");
-
-   return
-      std::make_tuple(
-         akey.Translation(), a->GetSymbol().Translation(), a->GetPath() ) <
-      std::make_tuple(
-         bkey.Translation(), b->GetSymbol().Translation(), b->GetPath() );
+   return projection( *a ) < projection( *b);
 }
 
 bool CompareEffectsByPublisherAndName(
    const PluginDescriptor *a, const PluginDescriptor *b)
 {
    auto &em = EffectManager::Get();
-   auto akey = em.GetVendorName(a->GetID());
-   auto bkey = em.GetVendorName(b->GetID());
+   auto projection = [&em]( const PluginDescriptor &desc )
+   {
+      TranslatableString name;
+      if (!desc.IsEffectDefault())
+         name = em.GetVendorName(desc.GetID());
+      return std::make_tuple(
+         name.Translation(),
+         desc.GetSymbol().Translation(),
+         desc.GetPath()
+      );
+   };
 
-   if (a->IsEffectDefault())
-      akey = {};
-   if (b->IsEffectDefault())
-      bkey = {};
-
-   return
-      std::make_tuple(
-         akey.Translation(), a->GetSymbol().Translation(), a->GetPath() ) <
-      std::make_tuple(
-         bkey.Translation(), b->GetSymbol().Translation(), b->GetPath() );
+   return projection( *a ) < projection( *b);
 }
 
 bool CompareEffectsByTypeAndName(
    const PluginDescriptor *a, const PluginDescriptor *b)
 {
    auto &em = EffectManager::Get();
-   auto akey = em.GetEffectFamilyName(a->GetID());
-   auto bkey = em.GetEffectFamilyName(b->GetID());
+   auto projection = [&em]( const PluginDescriptor &desc ){
+      TranslatableString name;
+      if (!desc.IsEffectDefault()) {
+          name = em.GetEffectFamilyName(desc.GetID());
+         if (name.empty())
+            name = XO("Uncategorized");
+      }
+      return std::make_tuple(
+         name.Translation(),
+         desc.GetSymbol().Translation(),
+         desc.GetPath()
+      );
+   };
 
-   if (akey.empty())
-      akey = XO("Uncategorized");
-   if (bkey.empty())
-      bkey = XO("Uncategorized");
-
-   if (a->IsEffectDefault())
-      akey = {};
-   if (b->IsEffectDefault())
-      bkey = {};
-
-   return
-      std::make_tuple(
-         akey.Translation(), a->GetSymbol().Translation(), a->GetPath() ) <
-      std::make_tuple(
-         bkey.Translation(), b->GetSymbol().Translation(), b->GetPath() );
+   return projection( *a ) < projection( *b);
 }
 
 bool CompareEffectsByType(const PluginDescriptor *a, const PluginDescriptor *b)
 {
    auto &em = EffectManager::Get();
-   auto akey = em.GetEffectFamilyName(a->GetID());
-   auto bkey = em.GetEffectFamilyName(b->GetID());
+   auto projection = [&em]( const PluginDescriptor &desc ){
+      auto name = em.GetEffectFamilyName(desc.GetID());
+      return std::make_tuple(
+         (name.empty() ? XO("Uncategorized") : name).Translation(),
+         desc.GetSymbol().Translation(),
+         desc.GetPath()
+      );
+   };
 
-   if (akey.empty())
-      akey = XO("Uncategorized");
-   if (bkey.empty())
-      bkey = XO("Uncategorized");
-
-   return
-      std::make_tuple(
-         akey.Translation(), a->GetSymbol().Translation(), a->GetPath() ) <
-      std::make_tuple(
-         bkey.Translation(), b->GetSymbol().Translation(), b->GetPath() );
+   return projection( *a ) < projection( *b);
 }
 
 // Forward-declared function has its definition below with OnEffect in view
