@@ -451,7 +451,7 @@ void MenuManager::ModifyUndoMenuItems(AudacityProject &project)
       undoManager.GetShortDescription(cur, &desc);
       commandManager.Modify(L"Undo",
          XXO("&Undo %s")
-            .Format( desc ));
+            .Format( TranslatableLabel{ desc } ));
       commandManager.Enable(L"Undo",
          ProjectHistory::Get( project ).UndoAvailable());
    }
@@ -464,7 +464,7 @@ void MenuManager::ModifyUndoMenuItems(AudacityProject &project)
       undoManager.GetShortDescription(cur+1, &desc);
       commandManager.Modify(L"Redo",
          XXO("&Redo %s")
-            .Format( desc ));
+            .Format( TranslatableLabel{ desc } ));
       commandManager.Enable(L"Redo",
          ProjectHistory::Get( project ).RedoAvailable());
    }

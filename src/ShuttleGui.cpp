@@ -214,7 +214,7 @@ void ShuttleGuiBase::SetStretchyRow( int i )
 
 //---- Add Functions.
 
-void ShuttleGuiBase::HandleOptionality(const TranslatableString &Prompt)
+void ShuttleGuiBase::HandleOptionality(const TranslatableLabel &Prompt)
 {
    // If creating, will be handled by an AddPrompt.
    if( mShuttleMode == eIsCreating )
@@ -228,7 +228,7 @@ void ShuttleGuiBase::HandleOptionality(const TranslatableString &Prompt)
 }
 
 /// Right aligned text string.
-void ShuttleGuiBase::AddPrompt(const TranslatableString &Prompt, int wrapWidth)
+void ShuttleGuiBase::AddPrompt(const TranslatableLabel &Prompt, int wrapWidth)
 {
    if( mShuttleMode != eIsCreating )
       return;
@@ -253,14 +253,14 @@ void ShuttleGuiBase::AddPrompt(const TranslatableString &Prompt, int wrapWidth)
 }
 
 /// Left aligned text string.
-void ShuttleGuiBase::AddUnits(const TranslatableString &Prompt, int wrapWidth)
+void ShuttleGuiBase::AddUnits(const TranslatableString &Units, int wrapWidth)
 {
-   if( Prompt.empty() )
+   if( Units.empty() )
       return;
    if( mShuttleMode != eIsCreating )
       return;
    miProp = 1;
-   const auto translated = Prompt.Translation();
+   const auto translated = Units.Translation();
    auto text = safenew wxStaticText(GetParent(), -1, translated, wxDefaultPosition, wxDefaultSize,
       GetStyle( wxALIGN_LEFT ));
    mpWind = text;
@@ -271,13 +271,13 @@ void ShuttleGuiBase::AddUnits(const TranslatableString &Prompt, int wrapWidth)
 }
 
 /// Centred text string.
-void ShuttleGuiBase::AddTitle(const TranslatableString &Prompt, int wrapWidth)
+void ShuttleGuiBase::AddTitle(const TranslatableString &Title, int wrapWidth)
 {
-   if( Prompt.empty() )
+   if( Title.empty() )
       return;
    if( mShuttleMode != eIsCreating )
       return;
-   const auto translated = Prompt.Translation();
+   const auto translated = Title.Translation();
    auto text = safenew wxStaticText(GetParent(), -1, translated, wxDefaultPosition, wxDefaultSize,
       GetStyle( wxALIGN_CENTRE ));
    mpWind = text;
@@ -299,7 +299,7 @@ wxWindow * ShuttleGuiBase::AddWindow(wxWindow * pWindow)
    return pWindow;
 }
 
-wxCheckBox * ShuttleGuiBase::AddCheckBox( const TranslatableString &Prompt, bool Selected)
+wxCheckBox * ShuttleGuiBase::AddCheckBox( const TranslatableLabel &Prompt, bool Selected)
 {
    HandleOptionality( Prompt );
    auto realPrompt = Prompt.Translation();
@@ -333,7 +333,7 @@ wxCheckBox * ShuttleGuiBase::AddCheckBox( const TranslatableString &Prompt, bool
 /// For a consistent two-column layout we want labels on the left and
 /// controls on the right.  CheckBoxes break that rule, so we fake it by
 /// placing a static text label and then a tick box with an empty label.
-wxCheckBox * ShuttleGuiBase::AddCheckBoxOnRight( const TranslatableString &Prompt, bool Selected)
+wxCheckBox * ShuttleGuiBase::AddCheckBoxOnRight( const TranslatableLabel &Prompt, bool Selected)
 {
    HandleOptionality( Prompt );
    AddPrompt( Prompt );
@@ -351,13 +351,13 @@ wxCheckBox * ShuttleGuiBase::AddCheckBoxOnRight( const TranslatableString &Promp
 }
 
 wxButton * ShuttleGuiBase::AddButton(
-   const TranslatableString &Text, int PositionFlags, bool setDefault)
+   const TranslatableLabel &Label, int PositionFlags, bool setDefault)
 {
    UseUpId();
    if( mShuttleMode != eIsCreating )
       return wxDynamicCast(wxWindow::FindWindowById( miId, mpDlg), wxButton);
    wxButton * pBtn;
-   const auto translated = Text.Translation();
+   const auto translated = Label.Translation();
    mpWind = pBtn = safenew wxButton(GetParent(), miId,
       translated, wxDefaultPosition, wxDefaultSize,
       GetStyle( 0 ) );
@@ -388,7 +388,7 @@ wxBitmapButton * ShuttleGuiBase::AddBitmapButton(
    return pBtn;
 }
 
-wxChoice * ShuttleGuiBase::AddChoice( const TranslatableString &Prompt,
+wxChoice * ShuttleGuiBase::AddChoice( const TranslatableLabel &Prompt,
    const TranslatableStrings &choices, int Selected )
 {
    HandleOptionality( Prompt );
@@ -423,7 +423,7 @@ wxChoice * ShuttleGuiBase::AddChoice( const TranslatableString &Prompt,
    return pChoice;
 }
 
-wxChoice * ShuttleGuiBase::AddChoice( const TranslatableString &Prompt,
+wxChoice * ShuttleGuiBase::AddChoice( const TranslatableLabel &Prompt,
    const TranslatableStrings &choices, const TranslatableString &Selected )
 {
    return AddChoice(
@@ -508,7 +508,7 @@ ReadOnlyText * ShuttleGuiBase::AddReadOnlyText(
 }
 
 wxComboBox * ShuttleGuiBase::AddCombo(
-   const TranslatableString &Prompt,
+   const TranslatableLabel &Prompt,
    const wxString &Selected, const wxArrayStringEx & choices )
 {
    const auto translated = Prompt.Translation();
@@ -539,7 +539,7 @@ wxComboBox * ShuttleGuiBase::AddCombo(
 
 
 wxRadioButton * ShuttleGuiBase::DoAddRadioButton(
-   const TranslatableString &Prompt, int style, int selector, int initValue)
+   const TranslatableLabel &Prompt, int style, int selector, int initValue)
 {
    const auto translated = Prompt.Translation();
    /// \todo This function and the next two, suitably adapted, could be
@@ -559,13 +559,13 @@ wxRadioButton * ShuttleGuiBase::DoAddRadioButton(
 }
 
 wxRadioButton * ShuttleGuiBase::AddRadioButton(
-   const TranslatableString &Prompt, int selector, int initValue)
+   const TranslatableLabel &Prompt, int selector, int initValue)
 {
    return DoAddRadioButton( Prompt, wxRB_GROUP, selector, initValue );
 }
 
 wxRadioButton * ShuttleGuiBase::AddRadioButtonToGroup(
-   const TranslatableString &Prompt, int selector, int initValue)
+   const TranslatableLabel &Prompt, int selector, int initValue)
 {
    return DoAddRadioButton( Prompt, 0, selector, initValue );
 }
@@ -580,7 +580,7 @@ void wxSliderWrapper::SetFocus()
 #endif
 
 wxSlider * ShuttleGuiBase::AddSlider(
-   const TranslatableString &Prompt, int pos, int Max, int Min)
+   const TranslatableLabel &Prompt, int pos, int Max, int Min)
 {
    HandleOptionality( Prompt );
    AddPrompt( Prompt );
@@ -607,7 +607,7 @@ wxSlider * ShuttleGuiBase::AddSlider(
 }
 
 wxSpinCtrl * ShuttleGuiBase::AddSpinCtrl(
-   const TranslatableString &Prompt, int Value, int Max, int Min)
+   const TranslatableLabel &Prompt, int Value, int Max, int Min)
 {
    const auto translated = Prompt.Translation();
    HandleOptionality( Prompt );
@@ -629,11 +629,11 @@ wxSpinCtrl * ShuttleGuiBase::AddSpinCtrl(
 }
 
 wxTextCtrl * ShuttleGuiBase::AddTextBox(
-   const TranslatableString &Caption, const wxString &Value, const int nChars)
+   const TranslatableLabel &Prompt, const wxString &Value, const int nChars)
 {
-   const auto translated = Caption.Translation();
-   HandleOptionality( Caption );
-   AddPrompt( Caption );
+   const auto translated = Prompt.Translation();
+   HandleOptionality( Prompt );
+   AddPrompt( Prompt );
    UseUpId();
    if( mShuttleMode != eIsCreating )
       return wxDynamicCast(wxWindow::FindWindowById( miId, mpDlg), wxTextCtrl);
@@ -665,11 +665,11 @@ wxTextCtrl * ShuttleGuiBase::AddTextBox(
 }
 
 wxTextCtrl * ShuttleGuiBase::AddNumericTextBox(
-   const TranslatableString &Caption, const wxString &Value, const int nChars)
+   const TranslatableLabel &Prompt, const wxString &Value, const int nChars)
 {
-   const auto translated = Caption.Translation();
-   HandleOptionality( Caption );
-   AddPrompt( Caption );
+   const auto translated = Prompt.Translation();
+   HandleOptionality( Prompt );
+   AddPrompt( Prompt );
    UseUpId();
    if( mShuttleMode != eIsCreating )
       return wxDynamicCast(wxWindow::FindWindowById( miId, mpDlg), wxTextCtrl);
@@ -726,8 +726,9 @@ wxTextCtrl * ShuttleGuiBase::AddTextWindow(const wxString &Value)
 void ShuttleGuiBase::AddConstTextBox(
    const TranslatableString &Prompt, const TranslatableString &Value)
 {
-   HandleOptionality( Prompt );
-   AddPrompt( Prompt );
+   TranslatableLabel label{ Prompt };
+   HandleOptionality( label );
+   AddPrompt( label );
    UseUpId();
    if( mShuttleMode != eIsCreating )
       return;
@@ -1230,7 +1231,8 @@ void ShuttleGuiBase::DoDataShuttle( const wxString &Name, WrappedType & WrappedR
 // they bind to (i.e. WrappedType).
 // The type specific versions are much shorter and are later
 // in this file.
-wxCheckBox * ShuttleGuiBase::DoTieCheckBox(const TranslatableString &Prompt, WrappedType & WrappedRef)
+wxCheckBox * ShuttleGuiBase::DoTieCheckBox(
+   const TranslatableLabel &Prompt, WrappedType & WrappedRef)
 {
    HandleOptionality( Prompt );
    // The Add function does a UseUpId(), so don't do it here in that case.
@@ -1266,7 +1268,8 @@ wxCheckBox * ShuttleGuiBase::DoTieCheckBox(const TranslatableString &Prompt, Wra
    return pCheckBox;
 }
 
-wxCheckBox * ShuttleGuiBase::DoTieCheckBoxOnRight(const TranslatableString &Prompt, WrappedType & WrappedRef)
+wxCheckBox * ShuttleGuiBase::DoTieCheckBoxOnRight(
+   const TranslatableLabel &Prompt, WrappedType & WrappedRef)
 {
    HandleOptionality( Prompt );
    // The Add function does a UseUpId(), so don't do it here in that case.
@@ -1303,7 +1306,7 @@ wxCheckBox * ShuttleGuiBase::DoTieCheckBoxOnRight(const TranslatableString &Prom
 }
 
 wxSpinCtrl * ShuttleGuiBase::DoTieSpinCtrl(
-   const TranslatableString &Prompt,
+   const TranslatableLabel &Prompt,
    WrappedType & WrappedRef, const int max, const int min )
 {
    HandleOptionality( Prompt );
@@ -1342,7 +1345,7 @@ wxSpinCtrl * ShuttleGuiBase::DoTieSpinCtrl(
 }
 
 wxTextCtrl * ShuttleGuiBase::DoTieTextBox(
-   const TranslatableString &Prompt, WrappedType & WrappedRef, const int nChars)
+   const TranslatableLabel &Prompt, WrappedType & WrappedRef, const int nChars)
 {
    HandleOptionality( Prompt );
    // The Add function does a UseUpId(), so don't do it here in that case.
@@ -1380,7 +1383,7 @@ wxTextCtrl * ShuttleGuiBase::DoTieTextBox(
 }
 
 wxTextCtrl * ShuttleGuiBase::DoTieNumericTextBox(
-   const TranslatableString &Prompt, WrappedType & WrappedRef, const int nChars)
+   const TranslatableLabel &Prompt, WrappedType & WrappedRef, const int nChars)
 {
    HandleOptionality( Prompt );
    // The Add function does a UseUpId(), so don't do it here in that case.
@@ -1418,7 +1421,7 @@ wxTextCtrl * ShuttleGuiBase::DoTieNumericTextBox(
 }
 
 wxSlider * ShuttleGuiBase::DoTieSlider(
-   const TranslatableString &Prompt,
+   const TranslatableLabel &Prompt,
    WrappedType & WrappedRef, const int max, int min )
 {
    HandleOptionality( Prompt );
@@ -1461,7 +1464,7 @@ wxSlider * ShuttleGuiBase::DoTieSlider(
 
 
 wxChoice * ShuttleGuiBase::TieChoice(
-   const TranslatableString &Prompt,
+   const TranslatableLabel &Prompt,
    int &Selected,
    const TranslatableStrings &choices )
 {
@@ -1511,7 +1514,7 @@ wxRadioButton * ShuttleGuiBase::TieRadioButton()
 {
    wxASSERT( mRadioCount >= 0); // Did you remember to use StartRadioButtonGroup() ?
 
-   TranslatableString label;
+   TranslatableLabel label;
    wxString Temp;
    if (mRadioCount >= 0 && mRadioCount < (int)mRadioLabels.size() ) {
       label = mRadioLabels[ mRadioCount ];
@@ -1605,14 +1608,16 @@ void ShuttleGuiBase::EndRadioButtonGroup()
 //-- Now we are into type specific Tie() functions.
 //-- These are all 'one-step' tie functions.
 
-wxCheckBox * ShuttleGuiBase::TieCheckBox(const TranslatableString &Prompt, bool &Var)
+wxCheckBox * ShuttleGuiBase::TieCheckBox(
+   const TranslatableLabel &Prompt, bool &Var)
 {
    WrappedType WrappedRef( Var );
    return DoTieCheckBox( Prompt, WrappedRef );
 }
 
 // See comment in AddCheckBoxOnRight() for why we have this variant.
-wxCheckBox * ShuttleGuiBase::TieCheckBoxOnRight(const TranslatableString &Prompt, bool &Var)
+wxCheckBox * ShuttleGuiBase::TieCheckBoxOnRight(
+   const TranslatableLabel &Prompt, bool &Var)
 {
    // Only does anything different if it's creating.
    WrappedType WrappedRef( Var );
@@ -1622,56 +1627,56 @@ wxCheckBox * ShuttleGuiBase::TieCheckBoxOnRight(const TranslatableString &Prompt
 }
 
 wxSpinCtrl * ShuttleGuiBase::TieSpinCtrl(
-   const TranslatableString &Prompt, int &Value, const int max, const int min )
+   const TranslatableLabel &Prompt, int &Value, const int max, const int min )
 {
    WrappedType WrappedRef(Value);
    return DoTieSpinCtrl( Prompt, WrappedRef, max, min );
 }
 
 wxTextCtrl * ShuttleGuiBase::TieTextBox(
-   const TranslatableString &Prompt, wxString &Selected, const int nChars)
+   const TranslatableLabel &Prompt, wxString &Selected, const int nChars)
 {
    WrappedType WrappedRef(Selected);
    return DoTieTextBox( Prompt, WrappedRef, nChars );
 }
 
 wxTextCtrl * ShuttleGuiBase::TieTextBox(
-   const TranslatableString &Prompt, int &Selected, const int nChars)
+   const TranslatableLabel &Prompt, int &Selected, const int nChars)
 {
    WrappedType WrappedRef( Selected );
    return DoTieTextBox( Prompt, WrappedRef, nChars );
 }
 
 wxTextCtrl * ShuttleGuiBase::TieTextBox(
-   const TranslatableString &Prompt, double &Value, const int nChars)
+   const TranslatableLabel &Prompt, double &Value, const int nChars)
 {
    WrappedType WrappedRef( Value );
    return DoTieTextBox( Prompt, WrappedRef, nChars );
 }
 
 wxTextCtrl * ShuttleGuiBase::TieNumericTextBox(
-   const TranslatableString &Prompt, int &Value, const int nChars)
+   const TranslatableLabel &Prompt, int &Value, const int nChars)
 {
    WrappedType WrappedRef( Value );
    return DoTieNumericTextBox( Prompt, WrappedRef, nChars );
 }
 
 wxTextCtrl * ShuttleGuiBase::TieNumericTextBox(
-   const TranslatableString &Prompt, double &Value, const int nChars)
+   const TranslatableLabel &Prompt, double &Value, const int nChars)
 {
    WrappedType WrappedRef( Value );
    return DoTieNumericTextBox( Prompt, WrappedRef, nChars );
 }
 
 wxSlider * ShuttleGuiBase::TieSlider(
-   const TranslatableString &Prompt, int &pos, const int max, const int min )
+   const TranslatableLabel &Prompt, int &pos, const int max, const int min )
 {
    WrappedType WrappedRef( pos );
    return DoTieSlider( Prompt, WrappedRef, max, min );
 }
 
 wxSlider * ShuttleGuiBase::TieSlider(
-   const TranslatableString &Prompt,
+   const TranslatableLabel &Prompt,
    double &pos, const double max, const double min )
 {
    WrappedType WrappedRef( pos );
@@ -1679,7 +1684,7 @@ wxSlider * ShuttleGuiBase::TieSlider(
 }
 
 wxSlider * ShuttleGuiBase::TieSlider(
-   const TranslatableString &Prompt,
+   const TranslatableLabel &Prompt,
    float &pos, const float fMin, const float fMax)
 {
    const float RoundFix=0.0000001f;
@@ -1690,7 +1695,7 @@ wxSlider * ShuttleGuiBase::TieSlider(
 }
 
 wxSlider * ShuttleGuiBase::TieVSlider(
-   const TranslatableString &Prompt,
+   const TranslatableLabel &Prompt,
    float &pos, const float fMin, const float fMax)
 {
    int iVal=(pos-fMin)*100.0/(fMax-fMin);
@@ -1704,7 +1709,7 @@ wxSlider * ShuttleGuiBase::TieVSlider(
 }
 
 wxChoice * ShuttleGuiBase::TieChoice(
-   const TranslatableString &Prompt,
+   const TranslatableLabel &Prompt,
    TranslatableString &Selected,
    const TranslatableStrings &choices )
 {
@@ -1821,7 +1826,7 @@ bool ShuttleGuiBase::DoStep( int iStep )
 /// Variant of the standard TieCheckBox which does the two step exchange
 /// between gui and stack variable and stack variable and shuttle.
 wxCheckBox * ShuttleGuiBase::TieCheckBox(
-   const TranslatableString &Prompt,
+   const TranslatableLabel &Prompt,
    const BoolSetting &Setting)
 {
    wxCheckBox * pCheck=NULL;
@@ -1838,7 +1843,7 @@ wxCheckBox * ShuttleGuiBase::TieCheckBox(
 /// Variant of the standard TieCheckBox which does the two step exchange
 /// between gui and stack variable and stack variable and shuttle.
 wxCheckBox * ShuttleGuiBase::TieCheckBoxOnRight(
-   const TranslatableString &Prompt,
+   const TranslatableLabel &Prompt,
    const BoolSetting & Setting)
 {
    wxCheckBox * pCheck=NULL;
@@ -1855,7 +1860,7 @@ wxCheckBox * ShuttleGuiBase::TieCheckBoxOnRight(
 /// Variant of the standard TieSlider which does the two step exchange
 /// between gui and stack variable and stack variable and shuttle.
 wxSlider * ShuttleGuiBase::TieSlider(
-   const TranslatableString &Prompt,
+   const TranslatableLabel &Prompt,
    const IntSetting & Setting,
    const int max,
    const int min)
@@ -1874,7 +1879,7 @@ wxSlider * ShuttleGuiBase::TieSlider(
 /// Variant of the standard TieSpinCtrl which does the two step exchange
 /// between gui and stack variable and stack variable and shuttle.
 wxSpinCtrl * ShuttleGuiBase::TieSpinCtrl(
-   const TranslatableString &Prompt,
+   const TranslatableLabel &Prompt,
    const IntSetting &Setting,
    const int max,
    const int min)
@@ -1893,7 +1898,7 @@ wxSpinCtrl * ShuttleGuiBase::TieSpinCtrl(
 /// Variant of the standard TieTextBox which does the two step exchange
 /// between gui and stack variable and stack variable and shuttle.
 wxTextCtrl * ShuttleGuiBase::TieTextBox(
-   const TranslatableString & Prompt,
+   const TranslatableLabel & Prompt,
    const StringSetting & Setting,
    const int nChars)
 {
@@ -1911,7 +1916,7 @@ wxTextCtrl * ShuttleGuiBase::TieTextBox(
 /// between gui and stack variable and stack variable and shuttle.
 /// This one does it for double values...
 wxTextCtrl * ShuttleGuiBase::TieIntegerTextBox(
-   const TranslatableString & Prompt,
+   const TranslatableLabel & Prompt,
    const IntSetting &Setting,
    const int nChars)
 {
@@ -1929,7 +1934,7 @@ wxTextCtrl * ShuttleGuiBase::TieIntegerTextBox(
 /// between gui and stack variable and stack variable and shuttle.
 /// This one does it for double values...
 wxTextCtrl * ShuttleGuiBase::TieNumericTextBox(
-   const TranslatableString & Prompt,
+   const TranslatableLabel & Prompt,
    const DoubleSetting & Setting,
    const int nChars)
 {
@@ -1950,7 +1955,7 @@ wxTextCtrl * ShuttleGuiBase::TieNumericTextBox(
 ///                             choice strings, and a designation of one of
 ///                             those as default.
 wxChoice *ShuttleGuiBase::TieChoice(
-   const TranslatableString &Prompt,
+   const TranslatableLabel &Prompt,
    const ChoiceSetting &choiceSetting )
 {
    // Do this to force any needed migrations first
@@ -1993,7 +1998,7 @@ wxChoice *ShuttleGuiBase::TieChoice(
 ///   @param pInternalChoices   The corresponding values (as an integer array)
 ///                             if null, then use 0, 1, 2, ...
 wxChoice * ShuttleGuiBase::TieNumberAsChoice(
-   const TranslatableString &Prompt,
+   const TranslatableLabel &Prompt,
    const IntSetting & Setting,
    const TranslatableStrings & Choices,
    const std::vector< int > * pInternalChoices,

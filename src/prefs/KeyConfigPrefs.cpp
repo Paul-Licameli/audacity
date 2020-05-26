@@ -320,9 +320,9 @@ void KeyConfigPrefs::PopulateOrExchange(ShuttleGui & S)
 
 void KeyConfigPrefs::RefreshBindings(bool bSort)
 {
-   TranslatableStrings Labels;
-   TranslatableStrings Categories;
-   TranslatableStrings Prefixes;
+   TranslatableLabels Labels;
+   TranslatableLabels Categories;
+   TranslatableLabels Prefixes;
 
    mNames.clear();
    mKeys.clear();
@@ -377,7 +377,7 @@ void KeyConfigPrefs::ClearAllKeys()
 // Search for duplicates fully implemented here 
 // to avoid possible problems with legal shortcut duplicates.  
 bool KeyConfigPrefs::ContainsIllegalDups(
-   TranslatableString & fMatching, TranslatableString & sMatching) const
+   TranslatableLabel & fMatching, TranslatableLabel & sMatching) const
 {
    using IndexesArray = std::vector<int>;
    std::unordered_map<NormalizedKeyString, IndexesArray> seen;
@@ -521,8 +521,8 @@ void KeyConfigPrefs::OnImport(wxCommandEvent & WXUNUSED(event))
 
    // checking new setting for duplicates
    // if there are duplicates, throwing error and returning to pre-import state
-   TranslatableString fMatching;
-   TranslatableString sMatching;
+   TranslatableLabel fMatching;
+   TranslatableLabel sMatching;
 
    if (ContainsIllegalDups(fMatching, sMatching))
    {
@@ -535,7 +535,7 @@ void KeyConfigPrefs::OnImport(wxCommandEvent & WXUNUSED(event))
       AudacityMessageBox(
          XO(
 "The file with the shortcuts contains illegal shortcut duplicates for \"%s\" and \"%s\".\nNothing is imported.")
-            .Format( fMatching, sMatching ),
+            .Format( fMatching.Stripped(), sMatching.Stripped() ),
          XO("Error Importing Keyboard Shortcuts"),
          wxICON_ERROR | wxCENTRE, this);
 

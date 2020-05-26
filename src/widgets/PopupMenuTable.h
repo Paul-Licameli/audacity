@@ -66,7 +66,7 @@ struct AUDACITY_DLL_API PopupMenuTableEntry : Registry::SingleItem
 struct AUDACITY_DLL_API PopupSubMenu : Registry::ConcreteGroupItem< false >
    , MenuTable::WholeMenu
 {
-   TranslatableString caption;
+   TranslatableLabel caption;
    PopupMenuTable &table;
 
    PopupSubMenu( const Identifier &stringId,
@@ -180,8 +180,8 @@ private:
 protected:
    // This convenience function composes a label, with the following optional
    // part put in parentheses if useExtra is true
-   static TranslatableString MakeLabel( const TranslatableString &label,
-      bool useExtra, const TranslatableString &extra )
+   static TranslatableLabel MakeLabel( const TranslatableLabel &label,
+      bool useExtra, const TranslatableLabel &extra )
    {
       return useExtra
          ? XXO("%s (%s)").Format( label, extra )

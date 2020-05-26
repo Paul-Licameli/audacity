@@ -64,19 +64,19 @@ public:
    EnumLabelSymbol() = default;
 
    // Allows implicit construction from a msgid re-used as an internal string
-   EnumLabelSymbol( const TranslatableString &msgid )
+   EnumLabelSymbol( const TranslatableLabel &msgid )
       : mInternal{ msgid.MSGID().GET(), }, mMsgid{ msgid }
    {}
 
    EnumLabelSymbol( const Identifier &internal,
-      const TranslatableString &msgid )
+      const TranslatableLabel &msgid )
       : mInternal{ internal }
       // Do not permit non-empty msgid with empty internal
-      , mMsgid{ internal.empty() ? TranslatableString{} : msgid }
+      , mMsgid{ internal.empty() ? TranslatableLabel{} : msgid }
    {}
 
    wxString Internal() const { return mInternal.GET(); }
-   const TranslatableString &Msgid() const { return mMsgid; }
+   const TranslatableLabel &Msgid() const { return mMsgid; }
    wxString Translation() const { return mMsgid.Translation(); }
    TranslatableString Stripped() const { return mMsgid.Stripped(); }
 
@@ -90,7 +90,7 @@ public:
 
 private:
    Identifier mInternal;
-   TranslatableString mMsgid;
+   TranslatableLabel mMsgid;
 };
 
 //! Base class for settings objects.  It holds a configuration key path.
@@ -307,14 +307,14 @@ public:
    // initializer_list, in the case that each column has exactly two strings)
    EnumLabelSymbols(
       ByColumns_t,
-      const TranslatableStrings &msgids,
+      const TranslatableLabels &msgids,
       Identifiers internals );
 
-   const TranslatableStrings &GetMsgids() const;
+   const TranslatableLabels &GetMsgids() const;
    const Identifiers &GetInternals() const;
 
 private:
-   mutable TranslatableStrings mMsgids;
+   mutable TranslatableLabels mMsgids;
    mutable Identifiers mInternals;
 };
 
@@ -395,7 +395,7 @@ public:
    const wxString &Key() const { return mKey; }
    const Identifier GetDefault() const;
 
-   const TranslatableStrings &GetLabels() const
+   const TranslatableLabels &GetLabels() const
    { return GetSymbols().GetMsgids(); }
 
    const Identifiers &GetValues() const

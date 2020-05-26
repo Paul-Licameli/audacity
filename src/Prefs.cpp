@@ -226,7 +226,7 @@ const Identifiers &EnumValueSymbols::GetInternals() const
 //////////
 EnumLabelSymbols::EnumLabelSymbols(
    ByColumns_t,
-   const TranslatableStrings &msgids,
+   const TranslatableLabels &msgids,
    Identifiers internals
 )
    : mInternals( std::move( internals ) )
@@ -243,10 +243,10 @@ EnumLabelSymbols::EnumLabelSymbols(
       emplace_back( *iter1++, *iter2++ );
 }
 
-const TranslatableStrings &EnumLabelSymbols::GetMsgids() const
+const TranslatableLabels &EnumLabelSymbols::GetMsgids() const
 {
    if ( mMsgids.empty() )
-      mMsgids = transform_container<TranslatableStrings>( *this,
+      mMsgids = transform_container<TranslatableLabels>( *this,
          std::mem_fn( &EnumLabelSymbol::Msgid ) );
    return mMsgids;
 }

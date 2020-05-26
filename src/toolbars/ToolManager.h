@@ -223,7 +223,7 @@ public:
 // hides a toolbar
 struct AUDACITY_DLL_API AttachedToolBarMenuItem : CommandHandlerObject {
    AttachedToolBarMenuItem(
-      ToolBarID id, const CommandID &name, const TranslatableString &label_in,
+      ToolBarID id, const CommandID &name, const TranslatableLabel &label_in,
       const Registry::OrderingHint &hint = {},
       // IDs of other toolbars not to be shown simultaneously with this one:
       std::vector< ToolBarID > excludeIds = {} );

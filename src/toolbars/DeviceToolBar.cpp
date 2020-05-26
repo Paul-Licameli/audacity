@@ -718,7 +718,7 @@ void DeviceToolBar::ShowComboDialog(wxChoice *combo, const TranslatableString &t
    {
       S.StartHorizontalLay(wxCENTER, false);
       {
-         c = S.AddChoice( Verbatim( combo->GetName() ),
+         c = S.AddChoice( VerbatimLabel( combo->GetName() ),
             transform_container<TranslatableStrings>(
                inputSources, Verbatim<TranslatableString> ),
             combo->GetSelection());

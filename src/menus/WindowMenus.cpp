@@ -217,7 +217,7 @@ BaseItemSharedPtr WindowMenu()
             for (auto project : AllProjects{})
             {
                int itemId = ReservedID( ii++, project );
-               auto itemName = Verbatim( project->GetFrame()->GetTitle() );
+               auto itemName = VerbatimLabel( project->GetFrame()->GetTitle() );
                bool isActive = (GetActiveProject() == project.get());
 
                // This should never really happen, but a menu item must have a name

@@ -133,7 +133,7 @@ void ModulePrefs::PopulateOrExchange(ShuttleGui & S)
         S.StartMultiColumn( 2 );
         int i;
         for(i=0;i<(int)mModules.size();i++)
-           S.TieChoice( Verbatim( mModules[i] ),
+           S.TieChoice( VerbatimLabel( mModules[i] ),
               mStatuses[i],
               {
                  XO("Disabled" ) ,

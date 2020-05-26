@@ -664,7 +664,7 @@ void VampEffect::PopulateOrExchange(ShuttleGui & S)
                      .AddTextBox( {}, L"", 12);
 
                   wxString str = Internat::ToDisplayString(mParameters[p].minValue);
-                  S.AddPrompt( Verbatim( str ) );
+                  S.AddPrompt( VerbatimLabel( str ) );
 
                   S.Id(ID_Sliders + p);
                   mSliders[p] = S.ToolTip( Verbatim( tip ) )

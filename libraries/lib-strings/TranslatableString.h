@@ -378,4 +378,14 @@ template< typename String = TranslatableString >
 inline String Verbatim( wxString str )
 { return String( std::move( str ) ); }
 
+using TranslatableLabel = TranslatableString;
+
+using TranslatableLabels = std::vector< TranslatableLabel >;
+
+// Require calls to the one-argument constructor to go through this
+// distinct global function name.  This makes it easier to locate and
+// review the uses of this function, separately from the uses of the type.
+inline TranslatableLabel VerbatimLabel( wxString str )
+{ return Verbatim( std::move( str ) ); }
+
 #endif

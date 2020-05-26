@@ -1468,11 +1468,11 @@ struct ControlInfo {
    // (valueMin - valueMax) / sliderMax is the value increment of the slider
    const wxChar* format;
    bool formatAsInt;
-   const TranslatableString textBoxCaption;
+   const TranslatableLabel textBoxCaption;
    const TranslatableString sliderName;
 
    ControlInfo(MemberPointer f, double vMin, double vMax, long sMax, const wxChar* fmt, bool fAsInt,
-      const TranslatableString &caption, const TranslatableString &name)
+      const TranslatableLabel &caption, const TranslatableString &name)
       : field(f), valueMin(vMin), valueMax(vMax), sliderMax(sMax), format(fmt), formatAsInt(fAsInt)
       , textBoxCaption(caption), sliderName(name)
    {

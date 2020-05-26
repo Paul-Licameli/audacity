@@ -200,7 +200,7 @@ class AUDACITY_DLL_API CommandManager final
       CommandFlag flags, CommandFlag strictFlags);
    void Enable(const wxString &name, bool enabled);
    void Check(const CommandID &name, bool checked);
-   void Modify(const wxString &name, const TranslatableString &newLabel);
+   void Modify(const wxString &name, const TranslatableLabel &newLabel);
 
    //
    // Modifying accelerators
@@ -235,18 +235,18 @@ class AUDACITY_DLL_API CommandManager final
    // Accessing
    //
 
-   TranslatableStrings GetCategories( AudacityProject& );
+   TranslatableLabels GetCategories( AudacityProject& );
    void GetAllCommandNames(CommandIDs &names, bool includeMultis) const;
    void GetAllCommandLabels(
-      TranslatableStrings &labels, std::vector<bool> &vExcludeFromMacros,
+      TranslatableLabels &labels, std::vector<bool> &vExcludeFromMacros,
       bool includeMultis) const;
    void GetAllCommandData(
       CommandIDs &names,
       std::vector<NormalizedKeyString> &keys,
       std::vector<NormalizedKeyString> &default_keys,
-      TranslatableStrings &labels, TranslatableStrings &categories,
+      TranslatableLabels &labels, TranslatableLabels &categories,
 #if defined(EXPERIMENTAL_KEY_VIEW)
-      TranslatableStrings &prefixes,
+      TranslatableLabels &prefixes,
 #endif
       bool includeMultis);
 
@@ -254,9 +254,9 @@ class AUDACITY_DLL_API CommandManager final
    // which need not be the same across platforms or sessions
    CommandID GetNameFromNumericID( int id );
 
-   TranslatableString GetLabelFromName(const CommandID &name);
-   TranslatableString GetPrefixedLabelFromName(const CommandID &name);
-   TranslatableString GetCategoryFromName(const CommandID &name);
+   TranslatableLabel GetLabelFromName(const CommandID &name);
+   TranslatableLabel GetPrefixedLabelFromName(const CommandID &name);
+   TranslatableLabel GetCategoryFromName(const CommandID &name);
    NormalizedKeyString GetKeyFromName(const CommandID &name) const;
    NormalizedKeyString GetDefaultKeyFromName(const CommandID &name);
 
@@ -660,7 +660,7 @@ namespace MenuTable {
                   internalName, title, std::forward<Args>(args)... ); }
    inline BaseItemPtr MenuOrItems(
       const Identifier &internalName,
-      const TranslatableString &title, BaseItemPtrs &&items )
+      const TranslatableLabel &title, BaseItemPtrs &&items )
          {  if ( title.empty() )
                return Items( internalName, std::move( items ) );
             else

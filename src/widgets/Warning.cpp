@@ -33,7 +33,7 @@ class WarningDialog final : public wxDialogWrapper
    // constructors and destructors
    WarningDialog(wxWindow *parent,
                  const TranslatableString &message,
-                 const TranslatableString &footer,
+                 const TranslatableLabel &footer,
                  bool showCancelButton);
 
  private:
@@ -48,14 +48,14 @@ BEGIN_EVENT_TABLE(WarningDialog, wxDialogWrapper)
    EVT_BUTTON(wxID_OK, WarningDialog::OnOK)
 END_EVENT_TABLE()
 
-const TranslatableString &DefaultWarningFooter()
+const TranslatableLabel &DefaultWarningFooter()
 {
    static auto result = XXO("Don't show this warning again");
    return result;
 }
 
 WarningDialog::WarningDialog(wxWindow *parent, const TranslatableString &message,
-                             const TranslatableString &footer,
+                             const TranslatableLabel &footer,
                              bool showCancelButton)
 :  wxDialogWrapper(parent, wxID_ANY, XO("Warning"),
             wxDefaultPosition, wxDefaultSize,
@@ -91,7 +91,7 @@ int ShowWarningDialog(wxWindow *parent,
                       const wxString &internalDialogName,
                       const TranslatableString &message,
                       bool showCancelButton,
-                      const TranslatableString &footer)
+                      const TranslatableLabel &footer)
 {
    auto key = WarningDialogKey(internalDialogName);
    if (!gPrefs->Read(key, (long) true)) {

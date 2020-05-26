@@ -48,8 +48,8 @@ private:
    void RefreshBindings(bool bSort);
    void RefreshKeyInfo();
    void ClearAllKeys();
-   bool ContainsIllegalDups(TranslatableString & fMatching, 
-      TranslatableString & sMatching) const;
+   bool ContainsIllegalDups(TranslatableLabel & fMatching,
+      TranslatableLabel & sMatching) const;
    TranslatableString MergeWithExistingKeys(
       const std::vector<NormalizedKeyString> &toAdd);
    void FilterKeys( std::vector<NormalizedKeyString> & arr );

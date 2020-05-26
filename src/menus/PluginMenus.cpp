@@ -212,8 +212,9 @@ void AddEffectMenuItems(
                groupNames,
                groupPlugs, groupFlags, isDefault);
 
-            table.push_back( MenuOrItems( wxEmptyString,
-               ( bInSubmenu ? last : TranslatableString{} ), std::move( temp )
+            table.push_back( MenuOrItems( {},
+               ( bInSubmenu ? TranslatableLabel{ last } : TranslatableLabel{} ),
+               std::move( temp )
             ) );
 
             groupNames.clear();
@@ -238,7 +239,8 @@ void AddEffectMenuItems(
             groupNames, groupPlugs, groupFlags, isDefault);
 
          table.push_back( MenuOrItems( wxEmptyString,
-            ( bInSubmenu ? current : TranslatableString{} ), std::move( temp )
+            ( bInSubmenu ? TranslatableLabel{ current } : TranslatableLabel{} ),
+            std::move( temp )
          ) );
       }
    }
@@ -730,7 +732,7 @@ void AddEffectMenuItemGroup(
             wxString item = plug->GetPath();
             if( plug->GetPluginType() == PluginTypeEffect )
                temp2.push_back( Command( item,
-                  Verbatim( item ),
+                  VerbatimLabel( item ),
                   FN(OnEffect),
                   flags[i],
                   CommandManager::Options{}
@@ -740,7 +742,8 @@ void AddEffectMenuItemGroup(
 
             i++;
          }
-         pTable->push_back( Menu( wxEmptyString, name, std::move( temp2 ) ) );
+         pTable->push_back( Menu(
+            {}, TranslatableLabel{ name }, std::move( temp2 ) ) );
          i--;
       }
       else
@@ -755,7 +758,7 @@ void AddEffectMenuItemGroup(
                // avoiding the collision of the "Silence" command and the
                // "Silence..." generator
                names[i].Debug(), // names[i].MSGID(),
-               names[i],
+               TranslatableLabel{ names[i] },
                FN(OnEffect),
                flags[i],
                CommandManager::Options{}
@@ -800,7 +803,7 @@ MenuTable::BaseItemPtrs PopulateMacrosMenu( CommandFlag flags  )
    for (i = 0; i < (int)names.size(); i++) {
       auto MacroID = ApplyMacroDialog::MacroIdOfName( names[i] );
       result.push_back( MenuTable::Command( MacroID,
-         Verbatim( names[i] ), // file name verbatim
+         VerbatimLabel( names[i] ), // file name verbatim
          FN(OnApplyMacroDirectly),
          flags,
          CommandManager::Options{}.AllowInMacros()
@@ -922,7 +925,8 @@ BaseItemSharedPtr EffectMenu()
             else
                buildMenuLabel = XO("Repeat Last Effect");
 
-            return Command( L"RepeatLastEffect", buildMenuLabel,
+            return Command( L"RepeatLastEffect",
+               TranslatableLabel{ buildMenuLabel },
                FN(OnRepeatLastEffect),
                AudioIONotBusyFlag() | TimeSelectedFlag() |
                   WaveTracksSelectedFlag() | HasLastEffectFlag(),

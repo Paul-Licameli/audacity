@@ -271,7 +271,7 @@ BeginSection( "Scales" );
       const auto & names = SpectrogramSettings::GetScaleNames();
       for (int ii = 0, nn = names.size(); ii < nn; ++ii) {
          AppendRadioItem( names[ii].Internal(),
-            OnFirstSpectrumScaleID + ii, names[ii].Msgid(),
+            OnFirstSpectrumScaleID + ii, TranslatableLabel{ names[ii].Msgid() },
             POPUP_MENU_FN( OnSpectrumScaleType ),
             [this, ii]() -> Widgets::MenuItemState {
                WaveTrack *const wt = mpData->pTrack;

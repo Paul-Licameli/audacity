@@ -252,15 +252,15 @@ public:
    void ResetId();
 
 //-- Add functions.  These only add a widget or 2.
-   void HandleOptionality(const TranslatableString &Prompt);
-   void AddPrompt(const TranslatableString &Prompt, int wrapWidth = 0);
-   void AddUnits(const TranslatableString &Prompt, int wrapWidth = 0);
-   void AddTitle(const TranslatableString &Prompt, int wrapWidth = 0);
+   void HandleOptionality(const TranslatableLabel &Prompt);
+   void AddPrompt(const TranslatableLabel &Prompt, int wrapWidth = 0);
+   void AddUnits(const TranslatableString &Units, int wrapWidth = 0);
+   void AddTitle(const TranslatableString &Title, int wrapWidth = 0);
    wxWindow * AddWindow(wxWindow * pWindow);
    wxSlider * AddSlider(
-      const TranslatableString &Prompt, int pos, int Max, int Min = 0);
-   wxSlider * AddVSlider(const TranslatableString &Prompt, int pos, int Max);
-   wxSpinCtrl * AddSpinCtrl(const TranslatableString &Prompt,
+      const TranslatableLabel &Prompt, int pos, int Max, int Min = 0);
+   wxSlider * AddVSlider(const TranslatableLabel &Prompt, int pos, int Max);
+   wxSpinCtrl * AddSpinCtrl(const TranslatableLabel &Prompt,
       int Value, int Max, int Min);
    wxTreeCtrl * AddTree();
 
@@ -270,14 +270,14 @@ public:
    // Spoken name of the button defaults to the same as the prompt
    // (after stripping menu codes):
    wxRadioButton * AddRadioButton(
-      const TranslatableString & Prompt, int selector = 0, int initValue = 0 );
+      const TranslatableLabel & Prompt, int selector = 0, int initValue = 0 );
    wxRadioButton * AddRadioButtonToGroup(
-      const TranslatableString & Prompt, int selector = 1, int initValue = 0 );
+      const TranslatableLabel & Prompt, int selector = 1, int initValue = 0 );
 
    // Only the last button specified as default (if more than one) will be
    // Always ORs the flags with wxALL (which affects borders):
    wxButton * AddButton(
-      const TranslatableString & Text, int PositionFlags = wxALIGN_CENTRE,
+      const TranslatableLabel & Label, int PositionFlags = wxALIGN_CENTRE,
       bool setDefault = false );
    // Only the last button specified as default (if more than one) will be
    // Always ORs the flags with wxALL (which affects borders):
@@ -293,10 +293,10 @@ public:
       const TranslatableString &Caption,
       const wxString &Value);
    wxTextCtrl * AddTextBox(
-      const TranslatableString &Caption,
+      const TranslatableLabel &Prompt,
       const wxString &Value, const int nChars);
    wxTextCtrl * AddNumericTextBox(
-      const TranslatableString &Caption,
+      const TranslatableLabel &Prompt,
       const wxString &Value, const int nChars);
    wxTextCtrl * AddTextWindow(const wxString &Value);
    wxListBox * AddListBox(const wxArrayStringEx &choices);
@@ -322,21 +322,21 @@ public:
    );
 
    wxGrid * AddGrid();
-   wxCheckBox * AddCheckBox( const TranslatableString &Prompt, bool Selected);
-   wxCheckBox * AddCheckBoxOnRight( const TranslatableString &Prompt, bool Selected);
+   wxCheckBox * AddCheckBox( const TranslatableLabel &Prompt, bool Selected);
+   wxCheckBox * AddCheckBoxOnRight( const TranslatableLabel &Prompt, bool Selected);
 
    // These deleted overloads are meant to break compilation of old calls that
    // passed literal "true" and "false" strings
-   wxCheckBox * AddCheckBox( const TranslatableString &Prompt, const wxChar *) = delete;
-   wxCheckBox * AddCheckBox( const TranslatableString &Prompt, const char *) = delete;
-   wxCheckBox * AddCheckBoxOnRight( const TranslatableString &Prompt, const wxChar *) = delete;
-   wxCheckBox * AddCheckBoxOnRight( const TranslatableString &Prompt, const char *) = delete;
+   wxCheckBox * AddCheckBox( const TranslatableLabel &Prompt, const wxChar *) = delete;
+   wxCheckBox * AddCheckBox( const TranslatableLabel &Prompt, const char *) = delete;
+   wxCheckBox * AddCheckBoxOnRight( const TranslatableLabel &Prompt, const wxChar *) = delete;
+   wxCheckBox * AddCheckBoxOnRight( const TranslatableLabel &Prompt, const char *) = delete;
 
-   wxComboBox * AddCombo( const TranslatableString &Prompt,
+   wxComboBox * AddCombo( const TranslatableLabel &Prompt,
       const wxString &Selected, const wxArrayStringEx & choices );
-   wxChoice   * AddChoice( const TranslatableString &Prompt,
+   wxChoice   * AddChoice( const TranslatableLabel &Prompt,
       const TranslatableStrings &choices, int Selected = -1 );
-   wxChoice   * AddChoice( const TranslatableString &Prompt,
+   wxChoice   * AddChoice( const TranslatableLabel &Prompt,
       const TranslatableStrings &choices, const TranslatableString &selected );
    void AddIcon( wxBitmap * pBmp);
    void AddFixedText(
@@ -393,42 +393,42 @@ public:
 //-- Tie functions both add controls and also read/write to them.
 
    wxTextCtrl * TieTextBox(
-      const TranslatableString &Caption, wxString & Value, const int nChars=0);
+      const TranslatableLabel &Prompt, wxString & Value, const int nChars=0);
    wxTextCtrl * TieTextBox(
-      const TranslatableString &Prompt, int &Selected, const int nChars=0);
+      const TranslatableLabel &Prompt, int &Selected, const int nChars=0);
    wxTextCtrl * TieTextBox(
-      const TranslatableString &Prompt, double &Value, const int nChars=0);
+      const TranslatableLabel &Prompt, double &Value, const int nChars=0);
 
-   wxTextCtrl * TieNumericTextBox( const TranslatableString &Prompt, int &Value, const int nChars=0);
-   wxTextCtrl * TieNumericTextBox( const TranslatableString &Prompt, double &Value, const int nChars=0);
+   wxTextCtrl * TieNumericTextBox( const TranslatableLabel &Prompt, int &Value, const int nChars=0);
+   wxTextCtrl * TieNumericTextBox( const TranslatableLabel &Prompt, double &Value, const int nChars=0);
 
-   wxCheckBox * TieCheckBox( const TranslatableString &Prompt, bool & Var );
-   wxCheckBox * TieCheckBoxOnRight( const TranslatableString & Prompt, bool & Var );
+   wxCheckBox * TieCheckBox( const TranslatableLabel &Prompt, bool & Var );
+   wxCheckBox * TieCheckBoxOnRight( const TranslatableLabel & Prompt, bool & Var );
 
    wxChoice * TieChoice(
-      const TranslatableString &Prompt,
+      const TranslatableLabel &Prompt,
       TranslatableString &Selected, const TranslatableStrings &choices );
    wxChoice * TieChoice(
-      const TranslatableString &Prompt, int &Selected, const TranslatableStrings &choices );
+      const TranslatableLabel &Prompt, int &Selected, const TranslatableStrings &choices );
 
    wxSlider * TieSlider(
-      const TranslatableString &Prompt,
+      const TranslatableLabel &Prompt,
       int &pos, const int max, const int min = 0);
    wxSlider * TieSlider(
-      const TranslatableString &Prompt,
+      const TranslatableLabel &Prompt,
       double &pos, const double max, const double min = 0.0);
    wxSlider * TieSlider(
-      const TranslatableString &Prompt,
+      const TranslatableLabel &Prompt,
       float &pos, const float fMin, const float fMax);
    wxSlider * TieVSlider(
-      const TranslatableString &Prompt,
+      const TranslatableLabel &Prompt,
       float &pos, const float fMin, const float fMax);
 
    // Must be called between a StartRadioButtonGroup / EndRadioButtonGroup pair,
    // and as many times as there are values in the enumeration.
    wxRadioButton * TieRadioButton();
 
-   wxSpinCtrl * TieSpinCtrl( const TranslatableString &Prompt,
+   wxSpinCtrl * TieSpinCtrl( const TranslatableLabel &Prompt,
       int &Value, const int max, const int min = 0 );
 
 
@@ -437,14 +437,14 @@ public:
 // That's because the data is being exchanged between the dialog and mpShuttle
 // so it doesn't need an argument that is writeable.
    virtual wxCheckBox * TieCheckBox(
-      const TranslatableString &Prompt,
+      const TranslatableLabel &Prompt,
       const BoolSetting &Setting);
    virtual wxCheckBox * TieCheckBoxOnRight(
-      const TranslatableString &Prompt,
+      const TranslatableLabel &Prompt,
       const BoolSetting &Setting);
 
    virtual wxChoice *TieChoice(
-      const TranslatableString &Prompt,
+      const TranslatableLabel &Prompt,
       const ChoiceSetting &choiceSetting );
 
    // This overload presents what is really a numerical setting as a choice among
@@ -453,31 +453,31 @@ public:
    // behavior is different when the call is intercepted for purposes of
    // emitting scripting information about Preferences.
    virtual wxChoice * TieNumberAsChoice(
-      const TranslatableString &Prompt,
+      const TranslatableLabel &Prompt,
       const IntSetting &Setting,
       const TranslatableStrings & Choices,
       const std::vector<int> * pInternalChoices = nullptr,
       int iNoMatchSelector = 0 );
 
    virtual wxTextCtrl * TieTextBox(
-      const TranslatableString &Prompt,
+      const TranslatableLabel &Prompt,
       const StringSetting &Setting,
       const int nChars);
    virtual wxTextCtrl * TieIntegerTextBox(
-      const TranslatableString & Prompt,
+      const TranslatableLabel & Prompt,
       const IntSetting &Setting,
       const int nChars);
    virtual wxTextCtrl * TieNumericTextBox(
-      const TranslatableString & Prompt,
+      const TranslatableLabel & Prompt,
       const DoubleSetting &Setting,
       const int nChars);
    virtual wxSlider * TieSlider(
-      const TranslatableString & Prompt,
+      const TranslatableLabel & Prompt,
       const IntSetting &Setting,
       const int max,
       const int min = 0);
    virtual wxSpinCtrl * TieSpinCtrl(
-      const TranslatableString &Prompt,
+      const TranslatableLabel &Prompt,
       const IntSetting &Setting,
       const int max,
       const int min);
@@ -552,27 +552,28 @@ protected:
 
 private:
    void DoDataShuttle( const wxString &Name, WrappedType & WrappedRef );
-   wxCheckBox * DoTieCheckBoxOnRight( const TranslatableString & Prompt, WrappedType & WrappedRef );
+   wxCheckBox * DoTieCheckBoxOnRight( const TranslatableLabel & Prompt, WrappedType & WrappedRef );
    wxTextCtrl * DoTieTextBox(
-      const TranslatableString &Prompt,
+      const TranslatableLabel &Prompt,
       WrappedType &  WrappedRef, const int nChars);
    wxTextCtrl * DoTieNumericTextBox(
-      const TranslatableString &Prompt, WrappedType &  WrappedRef, const int nChars);
-   wxCheckBox * DoTieCheckBox( const TranslatableString &Prompt, WrappedType & WrappedRef );
+      const TranslatableLabel &Prompt, WrappedType &  WrappedRef, const int nChars);
+   wxCheckBox * DoTieCheckBox(
+      const TranslatableLabel &Prompt, WrappedType & WrappedRef );
    wxSlider * DoTieSlider(
-      const TranslatableString &Prompt,
+      const TranslatableLabel &Prompt,
       WrappedType & WrappedRef, const int max, const int min = 0 );
-   wxSpinCtrl * DoTieSpinCtrl( const TranslatableString &Prompt,
+   wxSpinCtrl * DoTieSpinCtrl( const TranslatableLabel &Prompt,
       WrappedType & WrappedRef, const int max, const int min = 0 );
 
-   TranslatableStrings mRadioLabels;
+   TranslatableLabels mRadioLabels;
    Identifiers mRadioValues;
    wxString mRadioSettingName; /// The setting controlled by a group.
    Optional<WrappedType> mRadioValue;  /// The wrapped value associated with the active radio button.
    int mRadioCount;       /// The index of this radio item.  -1 for none.
    wxString mRadioValueString; /// Unwrapped string value.
    wxRadioButton * DoAddRadioButton(
-      const TranslatableString &Prompt, int style, int selector, int initValue);
+      const TranslatableLabel &Prompt, int style, int selector, int initValue);
 
 protected:
    DialogDefinition::Item mItem;

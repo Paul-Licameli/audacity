@@ -100,10 +100,14 @@ void GUIPrefs::GetRangeChoices(
 void GUIPrefs::Populate()
 {
    // First any pre-processing for constructing the GUI.
+   TranslatableStrings langNames;
    Languages::GetLanguages(
-      FileNames::AudacityPathList(), mLangCodes, mLangNames);
+      FileNames::AudacityPathList(), mLangCodes, langNames);
+   mLangNames = { langNames.begin(), langNames.end() };
 
-   GetRangeChoices(&mRangeChoices, &mRangeCodes, &mDefaultRangeIndex);
+   TranslatableStrings rangeChoices;
+   GetRangeChoices(&rangeChoices, &mRangeCodes, &mDefaultRangeIndex);
+   mRangeChoices = { rangeChoices.begin(), rangeChoices.end() };
 
 #if 0
    mLangCodes.insert( mLangCodes.end(), {

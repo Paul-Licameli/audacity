@@ -196,13 +196,13 @@ BEGIN_POPUP_MENU(FormatMenuTable)
    };
 
    AppendRadioItem( "16Bit", On16BitID,
-      GetSampleFormatStr(int16Sample),
+      TranslatableLabel{ GetSampleFormatStr(int16Sample) },
       POPUP_MENU_FN( OnFormatChange ), fn( int16Sample ) );
    AppendRadioItem("24Bit", On24BitID,
-      GetSampleFormatStr( int24Sample),
+      TranslatableLabel{ GetSampleFormatStr( int24Sample) },
       POPUP_MENU_FN( OnFormatChange ), fn( int24Sample ) );
    AppendRadioItem( "Float", OnFloatID,
-      GetSampleFormatStr(floatSample),
+      TranslatableLabel{ GetSampleFormatStr(floatSample) },
       POPUP_MENU_FN( OnFormatChange ), fn( floatSample ) );
 
 END_POPUP_MENU()
@@ -603,7 +603,7 @@ BEGIN_POPUP_MENU(WaveTrackMenuTable)
             const auto itemType =
                view.GetMultiView() ? Entry::CheckItem : Entry::RadioItem;
             return std::make_unique<Entry>( type.name.Internal(), itemType,
-               OnSetDisplayId + index, type.name.Msgid(),
+               OnSetDisplayId + index, TranslatableLabel{ type.name.Msgid() },
                POPUP_MENU_FN( OnSetDisplay ), table,
                stateFn( !view.GetMultiView(), index ) );
          } );

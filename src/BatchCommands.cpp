@@ -323,7 +323,7 @@ MacroCommandsCatalog::MacroCommandsCatalog( const AudacityProject *project )
    }
 
    auto &manager = CommandManager::Get( *project );
-   TranslatableStrings mLabels;
+   TranslatableLabels mLabels;
    CommandIDs mNames;
    std::vector<bool> vExcludeFromMacros;
    mLabels.clear();

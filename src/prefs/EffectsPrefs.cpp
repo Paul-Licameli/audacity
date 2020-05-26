@@ -97,7 +97,7 @@ namespace {
 
 // It is not required that each module be found here, nor that each module
 // mentioned here be found.
-const std::map< wxString, TranslatableString > SuggestedPrompts{
+const std::map< wxString, TranslatableLabel > SuggestedPrompts{
 
 /* i18n-hint: Audio Unit is the name of an Apple audio software protocol */
    { L"AudioUnit", XXO("Audio Unit") },
@@ -129,7 +129,7 @@ const std::map< wxString, TranslatableString > SuggestedPrompts{
 
 // Collect needed prompts and settings paths, at most once, on demand
 struct Entry {
-   TranslatableString prompt;
+   TranslatableLabel prompt;
    wxString setting;
 };
 static const std::vector< Entry > &GetModuleData()
@@ -144,7 +144,7 @@ static const std::vector< Entry > &GetModuleData()
             if ( internal.empty() )
                continue;
 
-            TranslatableString prompt;
+            TranslatableLabel prompt;
             auto iter = SuggestedPrompts.find( internal );
             if ( iter == SuggestedPrompts.end() )
                // For the built-in modules this Msgid includes " Effects",
@@ -153,7 +153,7 @@ static const std::vector< Entry > &GetModuleData()
                // If there should be new modules, it is not important for them
                // to follow the " Effects" convention, but instead they can
                // have shorter msgids.
-               prompt = plug->GetSymbol().Msgid();
+               prompt = TranslatableLabel{ plug->GetSymbol().Msgid() };
             else
                prompt = iter->second;
 

@@ -2900,7 +2900,7 @@ void NyquistEffect::BuildEffectWindow(ShuttleGui & S)
                      // We'd expect wxFileSelectorPromptStr to already be translated, but apparently not.
                      ctrl.label = wxGetTranslation( wxFileSelectorPromptStr );
                   S.Id(ID_FILE + i).AddButton(
-                     Verbatim(ctrl.label), wxALIGN_LEFT);
+                     VerbatimLabel(ctrl.label), wxALIGN_LEFT);
                }
                else
                {

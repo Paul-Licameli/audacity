@@ -1570,7 +1570,7 @@ bool ToolManager::RestoreFocus()
 #include "../Menus.h"
 
 AttachedToolBarMenuItem::AttachedToolBarMenuItem(
-   ToolBarID id, const CommandID &name, const TranslatableString &label_in,
+   ToolBarID id, const CommandID &name, const TranslatableLabel &label_in,
    const Registry::OrderingHint &hint,
    std::vector< ToolBarID > excludeIDs )
    : mId{ id }
