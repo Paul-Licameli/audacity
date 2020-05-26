@@ -130,10 +130,6 @@ private:
    void OnLeftDown(wxMouseEvent & event);
 
 
-   static bool CmpKeyNodeByTree(KeyNode *n1, KeyNode *n2);
-   static bool CmpKeyNodeByName(KeyNode *n1, KeyNode *n2);
-   static bool CmpKeyNodeByKey(KeyNode *n1, KeyNode *n2);
-
 #if wxUSE_ACCESSIBILITY
    friend class KeyViewAx;
 
