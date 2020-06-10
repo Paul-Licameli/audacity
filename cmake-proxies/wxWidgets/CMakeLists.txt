@@ -82,6 +82,7 @@ else()
             ${GIT_EXECUTABLE} clone
                               --depth 1
                               --single-branch
+                              -b linkage
                               --recurse-submodules
                               https://github.com/audacity/wxwidgets
                               "${WXWIN}"
