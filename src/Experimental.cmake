@@ -113,7 +113,7 @@ set( EXPERIMENTAL_OPTIONS_LIST
    #OD_FLAC
    # similarly for FFmpeg:
    # Won't build on Fedora 17 or Windows VC++, per http:#bugzilla.audacityteam.org/show_bug.cgi?id=539.
-   #OD_FFMPEG
+   OD_FFMPEG
 
    # Paul Licameli (PRL) 5 Oct 2014
    SPECTRAL_EDITING
