@@ -62,6 +62,7 @@
 
 #include "FileFormats.h"
 #include "Mix.h"
+#include "ShuttleGui.h"
 #include "Tags.h"
 #include "AudacityMessageBox.h"
 #include "HelpSystem.h"

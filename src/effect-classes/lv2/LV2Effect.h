@@ -37,7 +37,6 @@ class wxArrayString;
 #include <lilv/lilv.h>
 #include <suil/suil.h>
 
-#include "ShuttleGui.h"
 #include "SampleFormat.h"
 
 #include "LoadLV2.h"
@@ -52,6 +51,9 @@ class wxArrayString;
 // plug-ins, so disable warnings
 LV2_DISABLE_DEPRECATION_WARNINGS
 
+class wxButton;
+class wxCheckBox;
+class wxChoice;
 class wxSlider;
 class wxTextCtrl;
 class NumericTextCtrl;
@@ -244,6 +246,7 @@ public:
       wxSlider *slider;
    } mCtrl;
 };
+
 using LV2ControlPortPtr = std::shared_ptr<LV2ControlPort>;
 using LV2ControlPortArray = std::vector<LV2ControlPortPtr>;
 

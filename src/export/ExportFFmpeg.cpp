@@ -36,6 +36,7 @@ function.
 #include "FileFormats.h"
 #include "Mix.h"
 #include "ProjectSettings.h"
+#include "ShuttleGui.h"
 #include "Tags.h"
 #include "Track.h"
 #include "AudacityMessageBox.h"

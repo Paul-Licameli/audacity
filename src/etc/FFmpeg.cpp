@@ -21,6 +21,7 @@ License: GPL v2.  See License.txt.
 #include "FFmpeg.h"
 
 #include "FileNames.h"
+#include "ShuttleGui.h"
 #include "HelpSystem.h"
 #include "AudacityMessageBox.h"
 

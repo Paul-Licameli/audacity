@@ -27,6 +27,10 @@ class wxArrayStringEx;
 
 class wxArrayString;
 class wxCheckBox;
+class wxChoice;
+class wxComboBox;
+class wxListBox;
+class wxSlider;
 class wxStaticText;
 class wxTextCtrl;
 

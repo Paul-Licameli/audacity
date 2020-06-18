@@ -23,6 +23,8 @@
 #include <gtk/gtk.h>
 #endif
 
+#include <wx/window.h> // to inherit
+
 class NativeWindow : public wxWindow
 {
 public:
