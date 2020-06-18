@@ -109,4 +109,6 @@ public:
    bool mStopIfWasPaused;
 };
 
+void DoReloadPreferences( AudacityProject &project );
+
 #endif

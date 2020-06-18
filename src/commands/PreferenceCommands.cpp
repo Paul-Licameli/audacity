@@ -82,6 +82,8 @@ void SetPreferenceCommand::PopulateOrExchange(ShuttleGui & S)
    S.EndMultiColumn();
 }
 
+#include "Menus.h"
+
 bool SetPreferenceCommand::Apply(const CommandContext & context)
 {
    bool bOK = gPrefs->Write(mName, mValue) && gPrefs->Flush();
