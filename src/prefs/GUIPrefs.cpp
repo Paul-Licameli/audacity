@@ -36,6 +36,7 @@
 #include "ThemePrefs.h"
 #include "AColor.h"
 #include "AudacityMessageBox.h"
+#include "HelpSystem.h"
 
 GUIPrefs::GUIPrefs(wxWindow * parent, wxWindowID winid)
 /* i18n-hint: refers to Audacity's user interface settings */
@@ -128,16 +129,6 @@ void GUIPrefs::Populate()
    PopulateOrExchange(S);
    // ----------------------- End of main section --------------
 }
-
-ChoiceSetting GUIManualLocation{
-   wxT("/GUI/Help"),
-   {
-      ByColumns,
-      { XO("Local") ,  XO("From Internet") , },
-      { wxT("Local") , wxT("FromInternet") , }
-   },
-   0 // "Local"
-};
 
 void GUIPrefs::PopulateOrExchange(ShuttleGui & S)
 {

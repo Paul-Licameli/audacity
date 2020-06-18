@@ -47,7 +47,6 @@
 #include "HelpText.h"
 #include "Prefs.h"
 #include "wxFileNameWrapper.h"
-#include "GUIPrefs.h"
 
 #ifdef USE_ALPHA_MANUAL
 const wxString HelpSystem::HelpHostname = wxT("alphamanual.audacityteam.org");
@@ -235,6 +234,16 @@ void HelpSystem::ShowHtmlText(wxWindow *pParent,
 
    return;
 }
+
+ChoiceSetting GUIManualLocation{
+   wxT("/GUI/Help"),
+   {
+      ByColumns,
+      { XO("Local") ,  XO("From Internet") , },
+      { wxT("Local") , wxT("FromInternet") , }
+   },
+   0 // "Local"
+};
 
 // Shows help in browser, or possibly in own dialog.
 void HelpSystem::ShowHelp(wxWindow *parent,

@@ -68,8 +68,4 @@ class GUIPrefs final : public PrefsPanel
 
 int ShowClippingPrefsID();
 
-extern ChoiceSetting
-     GUIManualLocation
-;
-
 #endif

@@ -155,4 +155,10 @@ public:
    DECLARE_EVENT_TABLE()
 };
 
+class ChoiceSetting;
+
+extern ChoiceSetting
+     GUIManualLocation
+;
+
 #endif // __AUDACITY_HELPSYSTEM__
