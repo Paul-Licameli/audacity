@@ -2,11 +2,11 @@ do_directory(
    INCLUDE_PRIVATE
       src/etc
       src/effects
-      src/ondemand
       src/track
       src/xml
 
    PRIVATE
+      src/utility
       src/widgets
       wxWidgets
       $<$<BOOL:${USE_SBSMS}>:sbsms>

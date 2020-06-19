@@ -7,6 +7,7 @@ do_directory(
       src/xml
 
    PRIVATE
+      src/utility
       src/widgets
       wxWidgets
 

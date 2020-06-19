@@ -15,6 +15,7 @@ my @clusterlist = qw(
    /effect-classes/vamp
    /export
    /menus
+   /utility
    /xml
 );
 my %clusters;

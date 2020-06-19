@@ -3,6 +3,7 @@ do_directory( TYPE STATIC
       src/etc
 
    PRIVATE
+      src/utility
       wxWidgets
       expat
 

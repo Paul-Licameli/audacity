@@ -5,6 +5,7 @@ do_directory(
       src/xml
 
    PRIVATE
+      src/utility
       wxWidgets
       libsndfile
 

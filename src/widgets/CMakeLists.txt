@@ -9,6 +9,7 @@ do_directory(
       src/widgets/FileDialog
 
    PRIVATE
+      src/utility
       wxWidgets
 
    PRECOMPILE
@@ -37,8 +38,6 @@ do_directory(
       ASlider.h
       AttachableScrollBar.cpp
       AttachableScrollBar.h
-      AudacityMessageBox.cpp
-      AudacityMessageBox.h
       BackedPanel.cpp
       BackedPanel.h
       ErrorDialog.cpp
@@ -81,8 +80,6 @@ do_directory(
       Warning.h
       WindowAccessible.cpp
       WindowAccessible.h
-      numformatter.cpp
-      numformatter.h
       valnum.cpp
       valnum.h
       wxPanelWrapper.cpp

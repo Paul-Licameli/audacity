@@ -3,11 +3,11 @@ do_directory(
       src/commands
       src/etc
       src/export
-      src/ondemand
       src/track
       src/xml
 
    PRIVATE
+      src/utility
       src/widgets
       wxWidgets
 

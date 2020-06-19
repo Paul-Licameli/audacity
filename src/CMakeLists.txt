@@ -26,6 +26,7 @@ foreach( SUBDIRECTORY
    timetrack
    toolbars
    track
+   utility
    wavetrack
    widgets
    xml

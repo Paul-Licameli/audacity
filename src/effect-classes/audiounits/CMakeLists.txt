@@ -5,6 +5,7 @@ do_directory(
       src/etc
 
    PRIVATE
+      src/utility
       src/widgets
       wxWidgets
 

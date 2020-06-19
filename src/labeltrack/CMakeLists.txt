@@ -2,11 +2,11 @@ do_directory(
    INCLUDE_PRIVATE
       src/commands
       src/etc
-      src/ondemand
       src/track
       src/xml
 
    PRIVATE
+      src/utility
       src/widgets
       wxWidgets
 

@@ -1,1 +1,2 @@
+utility:AudacityMessageBox Diags FileIO GUISettings Internat MemoryX ODTaskThread PitchName PlatformCompatibility Prefs Profiler numformatter wxFileNameWrapper
 END

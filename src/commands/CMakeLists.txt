@@ -4,7 +4,6 @@ do_directory(
       src/etc
       src/export
       src/labeltrack
-      src/ondemand
       src/prefs
       src/toolbars
       src/track
@@ -12,6 +11,7 @@ do_directory(
       src/xml
 
    PRIVATE
+      src/utility
       src/widgets
       wxWidgets
 

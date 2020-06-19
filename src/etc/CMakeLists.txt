@@ -14,6 +14,7 @@ do_directory(
       src/xml
 
    PRIVATE
+      src/utility
       src/widgets
       wxWidgets
       libsndfile
@@ -104,8 +105,6 @@ do_directory(
       DeviceChange.h
       DeviceManager.cpp
       DeviceManager.h
-      Diags.cpp
-      Diags.h
       DirManager.cpp
       DirManager.h
       Dither.cpp
@@ -122,8 +121,6 @@ do_directory(
       FileException.h
       FileFormats.cpp
       FileFormats.h
-      FileIO.cpp
-      FileIO.h
       FileNames.cpp
       FileNames.h
       FreqWindow.cpp
@@ -138,8 +135,6 @@ do_directory(
       ImageManipulation.h
       InconsistencyException.cpp
       InconsistencyException.h
-      Internat.cpp
-      Internat.h
       InterpolateAudio.cpp
       InterpolateAudio.h
       KeyboardCapture.cpp
@@ -162,7 +157,6 @@ do_directory(
       MacroMagic.h
       Matrix.cpp
       Matrix.h
-      MemoryX.h
       Menus.cpp
       Menus.h
       MissingAliasFileDialog.cpp
@@ -176,18 +170,10 @@ do_directory(
       NoteTrack.cpp
       NoteTrack.h
       NumberScale.h
-      PitchName.cpp
-      PitchName.h
-      PlatformCompatibility.cpp
-      PlatformCompatibility.h
       PluginManager.cpp
       PluginManager.h
-      Prefs.cpp
-      Prefs.h
       Printing.cpp
       Printing.h
-      Profiler.cpp
-      Profiler.h
       Project.cpp
       Project.h
       ProjectAudioIO.cpp
@@ -314,7 +300,6 @@ do_directory(
       ZoomInfo.cpp
       ZoomInfo.h
       float_cast.h
-      wxFileNameWrapper.h
 )
 
 # For AboutDialog.h

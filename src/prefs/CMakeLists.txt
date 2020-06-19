@@ -4,12 +4,12 @@ do_directory(
       src/etc
       src/export
       src/import
-      src/ondemand
       src/track
       src/wavetrack
       src/xml
 
    PRIVATE
+      src/utility
       src/widgets
       wxWidgets
       libsndfile
@@ -53,7 +53,6 @@ do_directory(
       ExtImportPrefs.h
       GUIPrefs.cpp
       GUIPrefs.h
-      GUISettings.h
       ImportExportPrefs.cpp
       ImportExportPrefs.h
       KeyConfigPrefs.cpp

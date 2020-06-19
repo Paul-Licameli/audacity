@@ -2,13 +2,13 @@ do_directory(
    INCLUDE_PRIVATE
       src/commands
       src/etc
-      src/ondemand
       src/playabletrack
       src/prefs
       src/track
       src/xml
 
    PRIVATE
+      src/utility
       src/widgets
       wxWidgets
       $<$<BOOL:${USE_MIDI}>:portsmf>
