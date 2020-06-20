@@ -7,15 +7,15 @@ my $traceLevel = 3;
 
 # whether to box the clusters by sub-folder, but always color nodes regardless
 my @clusterlist = qw(
-   /xml
-   /export
-   /menus
    /effect-classes/VST
    /effect-classes/audiounits
    /effect-classes/ladspa
    /effect-classes/lv2
    /effect-classes/nyquist
    /effect-classes/vamp
+   /export
+   /menus
+   /xml
 );
 my %clusters;
 @clusters{@clusterlist} = ();
