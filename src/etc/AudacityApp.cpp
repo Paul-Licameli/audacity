@@ -1036,6 +1036,19 @@ bool AudacityApp::OnExceptionInMainLoop()
    // Shouldn't ever reach this line
    return false;
 }
+
+int AudacityApp::ShowMessage(
+   const TranslatableString &message,
+   const TranslatableString &caption,
+   long style, wxWindow *parent, int x, int y )
+{
+   if ( style == -1 )
+      // supply default
+      style = wxOK | wxCENTRE;
+   return ::wxMessageBox(message.Translation(), caption.Translation(),
+      style, parent, x, y);
+}
+
 #ifdef _MSC_VER
 #pragma warning( pop )
 #endif //_MSC_VER

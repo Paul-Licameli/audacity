@@ -21,6 +21,7 @@
 
 #include <wx/app.h> // to inherit
 #include <wx/timer.h> // member variable
+#include "AudacityMessageBox.h"
 
 #include "MemoryX.h"
 
@@ -36,7 +37,10 @@ class AudacityProject;
 
 class AliasBlockFile;
 
-class AudacityApp final : public wxApp {
+class AudacityApp final
+   : public wxApp
+   , public AudacityMessageBoxCallback
+{
  public:
    AudacityApp();
    ~AudacityApp();
@@ -44,6 +48,12 @@ class AudacityApp final : public wxApp {
    int OnExit(void) override;
    void OnFatalException() override;
    bool OnExceptionInMainLoop() override;
+
+   // AudacityMessageBoxCallback implementation
+   int ShowMessage(
+      const TranslatableString &message,
+      const TranslatableString &caption,
+      long style, wxWindow *parent, int x, int y ) override;
 
    // These are currently only used on Mac OS, where it's
    // possible to have a menu bar but no windows open.  It doesn't
