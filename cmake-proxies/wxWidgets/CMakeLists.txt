@@ -1,5 +1,6 @@
 
 add_library( ${TARGET} INTERFACE )
+add_library( wxBase INTERFACE )
 add_library( ${symbol} ALIAS ${TARGET} )
 
 def_vars()
@@ -207,11 +208,16 @@ if( "${wxTOOLKIT}" MATCHES "GTK." )
    pkg_check_modules( GLIB REQUIRED IMPORTED_TARGET GLOBAL ${glib} )
 endif()
 
-target_include_directories( ${TARGET} INTERFACE ${INCLUDES} )
-target_compile_definitions( ${TARGET} INTERFACE ${DEFINES} )
-target_compile_options( ${TARGET} INTERFACE ${COPTS} )
-target_link_directories( ${TARGET} INTERFACE ${LINKDIRS} )
-target_link_libraries( ${TARGET} INTERFACE ${LIBRARIES} )
+foreach( target "${TARGET}" wxBase )
+   target_include_directories( ${target} INTERFACE ${INCLUDES} )
+   target_compile_definitions( ${target} INTERFACE ${DEFINES} )
+   target_compile_options( ${target} INTERFACE ${COPTS} )
+   target_link_directories( ${target} INTERFACE ${LINKDIRS} )
+   target_link_libraries( ${target} INTERFACE ${LIBRARIES} )
+endforeach()
+
+# wxBase exposes only the GUI-less subset of full wxWidgets
+target_compile_definitions( wxBase INTERFACE "wxUSE_GUI=0" )
 
 install( TARGETS ${TARGET} DESTINATION ${_LIBDIR} )
 
