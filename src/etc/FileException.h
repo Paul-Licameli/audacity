@@ -12,7 +12,8 @@
 #include "AudacityException.h"
 #include <wx/filename.h> // wxFileName member variable
 
-class FileException /* not final */ : public MessageBoxException
+class AUDACITY_DLL_API FileException /* not final */
+   : public MessageBoxException
 {
 public:
    enum class Cause { Open, Read, Write, Rename };

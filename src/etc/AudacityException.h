@@ -22,7 +22,7 @@
 
 #include "Internat.h"
 
-class AudacityException /* not final */
+class AUDACITY_DLL_API AudacityException /* not final */
 {
 public:
    AudacityException() {}
@@ -47,7 +47,8 @@ protected:
 /// a message box.  The message is specified by further subclasses.
 /// Not more than one message box will be displayed for each pass through
 /// the main event idle loop.
-class MessageBoxException /* not final */ : public AudacityException
+class AUDACITY_DLL_API MessageBoxException /* not final */
+   : public AudacityException
 {
    // Do not allow subclasses to change this behavior further, except
    // by overriding ErrorMessage()
@@ -70,7 +71,8 @@ private:
 };
 
 /// \brief A MessageBoxException that shows a given, unvarying string.
-class SimpleMessageBoxException /* not final */ : public MessageBoxException
+class AUDACITY_DLL_API SimpleMessageBoxException final
+   : public MessageBoxException
 {
 public:
    explicit SimpleMessageBoxException( const TranslatableString &message_,

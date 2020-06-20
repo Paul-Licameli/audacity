@@ -16,7 +16,7 @@
 // This class does not inherit from MessageBoxException, and it does nothing
 // in its delayed handler.  It might be thrown after the user clicks a
 // cancel button, as on a progress dialog.
-class UserException final : public AudacityException
+class AUDACITY_DLL_API UserException final : public AudacityException
 {
 public:
    UserException() {}

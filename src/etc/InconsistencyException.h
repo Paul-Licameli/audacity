@@ -15,7 +15,8 @@
 
 #include "AudacityException.h"
 
-class InconsistencyException final : public MessageBoxException
+class AUDACITY_DLL_API InconsistencyException final
+   : public MessageBoxException
 {
 public:
    InconsistencyException() {}

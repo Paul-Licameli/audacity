@@ -13,7 +13,7 @@
 
 // This exception can be thrown when attempting read of on-demand block files
 // that have not yet completed loading.
-class NotYetAvailableException final : public FileException
+class AUDACITY_DLL_API NotYetAvailableException final : public FileException
 {
 public:
    NotYetAvailableException( const wxFileName &fileName )
