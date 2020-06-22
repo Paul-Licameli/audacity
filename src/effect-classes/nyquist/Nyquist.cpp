@@ -3441,6 +3441,15 @@ void * nyq_reformat_aud_do_response(const wxString & Str) {
 
 #include "ScriptCommandRelay.h"
 
+static void * ExecForLisp( char * pIn )
+{
+   wxString Str1(pIn);
+   wxString Str2;
+
+   ScriptCommandRelay::Exec(&Str1, &Str2);
+
+   return nyq_reformat_aud_do_response(Str2);
+}
 
 /* xlc_aud_do -- interface to C routine aud_do */
 /**/
