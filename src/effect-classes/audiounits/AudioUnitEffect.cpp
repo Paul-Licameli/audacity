@@ -41,6 +41,7 @@
 #include <wx/textctrl.h>
 #include <wx/tokenzr.h>
 
+#include "ModuleManager.h"
 #include "ShuttleGui.h"
 #include "AudacityMessageBox.h"
 #include "valnum.h"

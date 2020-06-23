@@ -9,6 +9,7 @@
 **********************************************************************/
 
 #include "Audacity.h" // for USE_* macros
+#include "ModuleManager.h"
 
 #if defined(USE_VAMP)
 #include "LoadVamp.h"

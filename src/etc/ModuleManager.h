@@ -130,4 +130,7 @@ private:
    std::vector<std::unique_ptr<Module>> mModules;
 };
 
+typedef ModuleInterface *(*ModuleMain)(const wxString *path);
+extern void RegisterBuiltinModule(ModuleMain rtn);
+
 #endif /* __AUDACITY_MODULEMANAGER_H__ */

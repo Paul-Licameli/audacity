@@ -11,6 +11,7 @@
 #include "Audacity.h"
 
 #include "LoadNyquist.h"
+#include "ModuleManager.h"
 
 #include <wx/log.h>
 

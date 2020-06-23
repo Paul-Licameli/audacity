@@ -27,6 +27,7 @@
 #include "Audacity.h" // for USE_* macros
 #include "VSTEffect.h"
 
+#include "ModuleManager.h"
 #include "ProgressDialog.h"
 
 #if 0

@@ -170,7 +170,6 @@ static ModuleInterface * name(const wxString *path)
 // method must be supplied explicitly.
 // ----------------------------------------------------------------------------
 #define DECLARE_BUILTIN_MODULE_BASE(name)             \
-extern void RegisterBuiltinModule(ModuleMain rtn);    \
 class name                                            \
 {                                                     \
 public:                                               \

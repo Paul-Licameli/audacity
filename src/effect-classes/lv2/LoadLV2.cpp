@@ -35,6 +35,7 @@ Functions that find and load all LV2 plugins on the system.
 #include <wx/string.h>
 
 #include "Internat.h"
+#include "ModuleManager.h"
 
 #include "LV2Effect.h"
 #include "lv2/event/event.h"

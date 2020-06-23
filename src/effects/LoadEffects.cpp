@@ -13,6 +13,7 @@
 
 #include "Audacity.h" // for USE_* macros
 #include "LoadEffects.h"
+#include "ModuleManager.h"
 
 #include "Prefs.h"
 
