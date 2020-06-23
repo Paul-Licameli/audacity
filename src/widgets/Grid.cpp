@@ -26,8 +26,6 @@
 #include <wx/settings.h>
 #include <wx/toplevel.h>
 
-#include "SelectedRegion.h"
-
 #if wxUSE_ACCESSIBILITY
 #include "WindowAccessible.h"
 
@@ -143,7 +141,7 @@ void NumericEditor::Create(wxWindow *parent, wxWindowID id, wxEvtHandler *handle
       NumericTextCtrl::Options{}
          .AutoPos(true)
          .InvalidValue(mType == NumericTextCtrl::FREQUENCY,
-                       SelectedRegion::UndefinedFrequency)
+                       NumericConverter::UndefinedFrequency)
    );
    m_control = control;
 

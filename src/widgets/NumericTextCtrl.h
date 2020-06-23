@@ -54,6 +54,8 @@ public:
       BANDWIDTH,
    };
 
+   static const int UndefinedFrequency = -1;
+
    struct FormatStrings {
       TranslatableString formatStr;
       // How to name the fraction of the unit; not necessary for time formats

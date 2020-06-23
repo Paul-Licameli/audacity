@@ -954,3 +954,13 @@ void LabelDialog::OnCancel(wxCommandEvent & WXUNUSED(event))
 
    return;
 }
+
+// PRL:  This was lifted here as a small cycle-breaking move so that neither
+// of Grid and SelectedRegion should depend on the other but the consistency
+// is checked somewhere.
+// This is not wholly satisfactory.  The better fix would do more serious
+// refactoring of Grid to lift the definitions of Editor classes to this file.
+static_assert(
+   SelectedRegion::UndefinedFrequency == NumericConverter::UndefinedFrequency,
+   "inconsistent UndefinedFrequency"
+);
