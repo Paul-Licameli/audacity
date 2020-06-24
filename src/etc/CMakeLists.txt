@@ -183,8 +183,6 @@ do_directory(
       ProjectStatus.h
       ProjectWindow.cpp
       ProjectWindow.h
-      ProjectWindowBase.cpp
-      ProjectWindowBase.h
       RingBuffer.cpp
       RingBuffer.h
       Screenshot.cpp

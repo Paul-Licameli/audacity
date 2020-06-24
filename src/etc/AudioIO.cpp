@@ -3445,8 +3445,6 @@ void AudioIO::AllNotesOff(bool looping)
 // Automated Input Level Adjustment - Automatically tries to find an acceptable input volume
 #ifdef EXPERIMENTAL_AUTOMATED_INPUT_LEVEL_ADJUSTMENT
 
-#include "ProjectStatus.h"
-
 void AudioIO::AILAInitialize() {
    gPrefs->Read(wxT("/AudioIO/AutomatedInputLevelAdjustment"), &mAILAActive,         false);
    gPrefs->Read(wxT("/AudioIO/TargetPeak"),            &mAILAGoalPoint,      AILA_DEF_TARGET_PEAK);

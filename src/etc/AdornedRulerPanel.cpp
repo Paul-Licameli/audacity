@@ -36,7 +36,6 @@
 #include "Project.h"
 #include "ProjectAudioIO.h"
 #include "ProjectAudioManager.h"
-#include "ProjectStatus.h"
 #include "ProjectWindow.h"
 #include "RefreshCode.h"
 #include "Snap.h"

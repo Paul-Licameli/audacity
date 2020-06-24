@@ -13,7 +13,6 @@
 #include "ProjectHistory.h"
 #include "ProjectSettings.h"
 #include "PluginManager.h"
-#include "ProjectStatus.h"
 #include "ProjectWindow.h"
 #include "SelectUtilities.h"
 #include "ShuttleGui.h"

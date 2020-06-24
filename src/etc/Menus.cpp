@@ -490,7 +490,8 @@ void MenuCreator::RebuildMenuBar(AudacityProject &project)
    // Delete the menus, since we will soon recreate them.
    // Rather oddly, the menus don't vanish as a result of doing this.
    {
-      auto &window = static_cast<wxFrameEx&>( GetProjectFrame( project ) );
+      wxFrame &frame = GetProjectFrame( project );
+      auto &window = static_cast<wxFrameEx&>( frame );
       wxWindowPtr<wxMenuBar> menuBar{ window.GetMenuBar() };
       window.DetachMenuBar();
       // menuBar gets deleted here

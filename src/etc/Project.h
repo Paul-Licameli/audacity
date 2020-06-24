@@ -14,6 +14,7 @@
 #include "Audacity.h"
 
 #include "ClientData.h" // to inherit
+#include "ProjectStatus.h" // to inherit ProjectBase
 
 #include <memory>
 #include <wx/weakref.h> // member variable
@@ -107,6 +108,7 @@ wxDECLARE_EXPORTED_EVENT(AUDACITY_DLL_API,
 /// the cooperating attached objects.
 class AUDACITY_DLL_API AudacityProject final
    : public wxEvtHandler
+   , public ProjectBase
    , public AttachedObjects
    , public AttachedWindows
 {
@@ -116,14 +118,6 @@ class AUDACITY_DLL_API AudacityProject final
 
    AudacityProject();
    virtual ~AudacityProject();
-
-   wxFrame *GetFrame() { return mFrame; }
-   const wxFrame *GetFrame() const { return mFrame; }
-   void SetFrame( wxFrame *pFrame );
- 
-   wxWindow *GetPanel() { return mPanel; }
-   const wxWindow *GetPanel() const { return mPanel; }
-   void SetPanel( wxWindow *pPanel );
  
    wxString GetProjectName() const;
 
@@ -143,30 +137,6 @@ class AUDACITY_DLL_API AudacityProject final
  public:
    bool mbBusyImporting{ false }; // used to fix bug 584
    int mBatchMode{ 0 };// 0 means not, >0 means in batch mode.
-
- private:
-   wxWeakRef< wxFrame > mFrame{};
-   wxWeakRef< wxWindow > mPanel{};
 };
-
-///\brief Get the top-level window associated with the project (as a wxFrame
-/// only, when you do not need to use the subclass ProjectWindow)
-AUDACITY_DLL_API wxFrame &GetProjectFrame( AudacityProject &project );
-AUDACITY_DLL_API const wxFrame &GetProjectFrame( const AudacityProject &project );
-
-///\brief Get a pointer to the window associated with a project, or null if
-/// the given pointer is null.
-inline wxFrame *FindProjectFrame( AudacityProject *project ) {
-   return project ? &GetProjectFrame( *project ) : nullptr;
-}
-inline const wxFrame *FindProjectFrame( const AudacityProject *project ) {
-   return project ? &GetProjectFrame( *project ) : nullptr;
-}
-
-///\brief Get the main sub-window of the project frame that displays track data
-// (as a wxWindow only, when you do not need to use the subclass TrackPanel)
-AUDACITY_DLL_API wxWindow &GetProjectPanel( AudacityProject &project );
-AUDACITY_DLL_API const wxWindow &GetProjectPanel(
-   const AudacityProject &project );
 
 #endif

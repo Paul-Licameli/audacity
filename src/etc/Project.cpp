@@ -129,16 +129,6 @@ AudacityProject::~AudacityProject()
 {
 }
 
-void AudacityProject::SetFrame( wxFrame *pFrame )
-{
-   mFrame = pFrame;
-}
-
-void AudacityProject::SetPanel( wxWindow *pPanel )
-{
-   mPanel = pPanel;
-}
-
 wxString AudacityProject::GetProjectName() const
 {
    wxString name = wxFileNameFromPath(mFileName);
@@ -151,35 +141,3 @@ wxString AudacityProject::GetProjectName() const
    return name;
 }
 
-AUDACITY_DLL_API wxFrame &GetProjectFrame( AudacityProject &project )
-{
-   auto ptr = project.GetFrame();
-   if ( !ptr )
-      THROW_INCONSISTENCY_EXCEPTION;
-   return *ptr;
-}
-
-AUDACITY_DLL_API const wxFrame &GetProjectFrame( const AudacityProject &project )
-{
-   auto ptr = project.GetFrame();
-   if ( !ptr )
-      THROW_INCONSISTENCY_EXCEPTION;
-   return *ptr;
-}
-
-AUDACITY_DLL_API wxWindow &GetProjectPanel( AudacityProject &project )
-{
-   auto ptr = project.GetPanel();
-   if ( !ptr )
-      THROW_INCONSISTENCY_EXCEPTION;
-   return *ptr;
-}
-
-AUDACITY_DLL_API const wxWindow &GetProjectPanel(
-   const AudacityProject &project )
-{
-   auto ptr = project.GetPanel();
-   if ( !ptr )
-      THROW_INCONSISTENCY_EXCEPTION;
-   return *ptr;
-}

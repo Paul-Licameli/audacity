@@ -57,7 +57,6 @@ is time to refresh some aspect of the screen.
 #include "ProjectAudioManager.h"
 #include "ProjectHistory.h"
 #include "ProjectSettings.h"
-#include "ProjectStatus.h"
 #include "ProjectWindow.h"
 #include "Theme.h"
 #include "TrackPanelMouseEvent.h"

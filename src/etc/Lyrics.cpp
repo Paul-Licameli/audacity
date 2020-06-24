@@ -21,7 +21,6 @@
 
 #include "AudioIO.h"
 #include "Project.h"
-#include "ProjectWindowBase.h"
 #include "LabelTrack.h"
 #include "CommandManager.h"
 #include "UndoManager.h"

@@ -19,7 +19,6 @@
 #include "Effect.h"
 #include "EffectManager.h"
 #include "ProjectHistory.h"
-#include "ProjectWindowBase.h"
 #include "TrackPanelAx.h"
 #include "RealtimeEffectManager.h"
 

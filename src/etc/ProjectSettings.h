@@ -45,6 +45,14 @@ enum {
 };
 }
 
+enum StatusBarField : int {
+   stateStatusBarField,
+   mainStatusBarField,
+   rateStatusBarField,
+   
+   nStatusBarFields
+};
+
 ///\brief Holds various per-project settings values, including the sample rate,
 /// and sends events to the project when certain values change
 class ProjectSettings final

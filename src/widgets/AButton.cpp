@@ -37,9 +37,7 @@
 #include <wx/timer.h>
 
 //This is needed for tooltips
-#include "Project.h"
 #include "ProjectStatus.h"
-#include "ProjectWindowBase.h"
 #include <wx/tooltip.h>
 
 #if wxUSE_ACCESSIBILITY
@@ -485,7 +483,7 @@ void AButton::OnMouseEvent(wxMouseEvent & event)
       if (mCursorIsInWindow)
          UpdateStatus();
       else {
-         auto pProject = FindProjectFromWindow( this );
+         auto pProject = FindProjectFromWindow< ProjectBase >( this );
          if (pProject)
             ProjectStatus::Get( *pProject ).Set({});
       }
@@ -504,7 +502,7 @@ void AButton::UpdateStatus()
          auto tipText = Verbatim( pTip->GetTip() );
          if (!mEnabled)
             tipText.Join( XO("(disabled)"), " " );
-         auto pProject = FindProjectFromWindow( this );
+         auto pProject = FindProjectFromWindow< ProjectBase >( this );
          if (pProject)
             ProjectStatus::Get( *pProject ).Set( tipText );
       }

@@ -61,7 +61,9 @@ public:
    // Converts number of minutes to human readable format
    TranslatableString GetHoursMinsString(int iMinutes);
 
+   // Takes a zero-based index identifying status bar field
    void SetStatusText( const TranslatableString &text, int number );
+
    void SetSkipSavePrompt(bool bSkip) { sbSkipPromptingForSave = bSkip; };
 
 private:

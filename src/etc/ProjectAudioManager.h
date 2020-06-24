@@ -16,6 +16,7 @@ Paul Licameli split from ProjectManager.h
 
 #include "AudioIOListener.h" // to inherit
 #include "ClientData.h" // to inherit
+#include "ProjectStatus.h"
 
 constexpr int RATE_NOT_SELECTED{ -1 };
 
@@ -156,9 +157,8 @@ private:
    bool mStopping{ false };
 
    int mDisplayedRate{ 0 };
-   static std::pair< TranslatableStrings, unsigned >
-      StatusWidthFunction(
-         const AudacityProject &project, StatusBarField field);
+   static ProjectStatus::StatusWidthResult
+      StatusWidthFunction( const ProjectBase &project, unsigned field );
 };
 
 AudioIOStartStreamOptions DefaultPlayOptions( AudacityProject &project );

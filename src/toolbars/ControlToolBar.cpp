@@ -65,7 +65,6 @@
 #include "ProjectAudioIO.h"
 #include "ProjectAudioManager.h"
 #include "ProjectSettings.h"
-#include "ProjectStatus.h"
 #include "ProjectWindow.h"
 #include "Track.h"
 #include "AButton.h"
@@ -685,7 +684,7 @@ void ControlToolBar::OnFF(wxCommandEvent & WXUNUSED(evt))
 // works out the width of the field in the status bar needed for the state (eg play, record pause)
 static ProjectStatus::RegisteredStatusWidthFunction
 registeredStatusWidthFunction{
-   []( const AudacityProject &, StatusBarField field )
+   []( const ProjectBase &, unsigned field )
       -> ProjectStatus::StatusWidthResult
    {
       if ( field == stateStatusBarField ) {

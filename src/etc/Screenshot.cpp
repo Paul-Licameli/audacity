@@ -39,7 +39,6 @@ It forwards the actual work of doing the commands to the ScreenshotCommand.
 #include <wx/window.h>
 
 #include "Project.h"
-#include "ProjectStatus.h"
 #include "ProjectWindow.h"
 #include "Prefs.h"
 #include "ToolManager.h"
@@ -642,7 +641,7 @@ void ScreenshotBigDialog::DoCapture(int captureMode)
    mCommand->mPath = mDirectoryTextBox->GetValue();
    mCommand->mWhat = captureMode;
    if (!mCommand->Apply(mContext))
-      mStatus->SetStatusText(_("Capture failed!"), mainStatusBarField);
+      mStatus->SetStatusText(_("Capture failed!"), 2);
    Show();
 }
 

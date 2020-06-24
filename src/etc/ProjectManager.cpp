@@ -30,7 +30,6 @@ Paul Licameli split from AudacityProject.cpp
 #include "ProjectHistory.h"
 #include "ProjectSelectionManager.h"
 #include "ProjectSettings.h"
-#include "ProjectStatus.h"
 #include "ProjectWindow.h"
 #include "SelectUtilities.h"
 #include "TrackPanel.h"
@@ -85,7 +84,7 @@ ProjectManager::ProjectManager( AudacityProject &project )
 {
    auto &window = ProjectWindow::Get( mProject );
    window.Bind( wxEVT_CLOSE_WINDOW, &ProjectManager::OnCloseWindow, this );
-   mProject.Bind(EVT_PROJECT_STATUS_UPDATE,
+   window.Bind(EVT_PROJECT_STATUS_UPDATE,
       &ProjectManager::OnStatusChange, this);
 }
 
@@ -1005,23 +1004,7 @@ void ProjectManager::OnTimer(wxTimerEvent& WXUNUSED(event))
 void ProjectManager::OnStatusChange( wxCommandEvent &evt )
 {
    evt.Skip();
-
-   auto &project = mProject;
-
-   // Be careful to null-check the window.  We might get to this function
-   // during shut-down, but a timer hasn't been told to stop sending its
-   // messages yet.
-   auto pWindow = ProjectWindow::Find( &project );
-   if ( !pWindow )
-      return;
-   auto &window = *pWindow;
-
-   window.UpdateStatusWidths();
-
    auto field = static_cast<StatusBarField>( evt.GetInt() );
-   const auto &msg = ProjectStatus::Get( project ).Get( field );
-   SetStatusText( msg, field );
-   
    if ( field == mainStatusBarField )
       // When recording, let the NEW status message stay at least as long as
       // the timer interval (if it is not replaced again by this function),
@@ -1036,7 +1019,7 @@ void ProjectManager::SetStatusText( const TranslatableString &text, int number )
    if ( !pWindow )
       return;
    auto &window = *pWindow;
-   window.GetStatusBar()->SetStatusText(text.Translation(), number);
+   window.SetStatusText(text.Translation(), number );
 }
 
 TranslatableString ProjectManager::GetHoursMinsString(int iMinutes)

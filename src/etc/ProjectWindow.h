@@ -12,7 +12,7 @@ Paul Licameli split from AudacityProject.h
 #define __AUDACITY_PROJECT_WINDOW__
 
 #include <memory>
-#include "ProjectWindowBase.h" // to inherit
+#include "ProjectStatus.h" // to inherit ProjectWindowBase
 #include "TrackPanelListener.h" // to inherit
 #include "Prefs.h"
 
@@ -37,10 +37,13 @@ public:
    static const ProjectWindow *Find( const AudacityProject *pProject );
 
    explicit ProjectWindow(
-      wxWindow * parent, wxWindowID id,
+      wxWindowID id,
       const wxPoint & pos, const wxSize &size,
       AudacityProject &project );
    ~ProjectWindow() override;
+
+   AudacityProject &GetProject();
+   const AudacityProject &GetProject() const;
 
    // Next available ID for sub-windows
    int NextWindowID();
@@ -54,8 +57,6 @@ public:
    wxWindow *GetMainPage() { return mMainPage; }
    wxPanel *GetMainPanel() { return mMainPanel; }
    wxPanel *GetTopPanel() { return mTopPanel; }
-
-   void UpdateStatusWidths();
 
    class PlaybackScroller final : public wxEvtHandler
    {

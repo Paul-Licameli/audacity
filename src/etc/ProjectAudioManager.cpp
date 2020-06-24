@@ -27,7 +27,6 @@ Paul Licameli split from ProjectManager.cpp
 #include "ProjectFileIO.h"
 #include "ProjectHistory.h"
 #include "ProjectSettings.h"
-#include "ProjectStatus.h"
 #include "TimeTrack.h"
 #include "TrackPanelAx.h"
 #include "ViewInfo.h"
@@ -81,15 +80,18 @@ static TranslatableString FormatRate( int rate )
 }
 
 auto ProjectAudioManager::StatusWidthFunction(
-   const AudacityProject &project, StatusBarField field )
+   const ProjectBase &projectBase, unsigned field )
    -> ProjectStatus::StatusWidthResult
 {
    if ( field == rateStatusBarField ) {
+      auto &project =
+         static_cast< const AudacityProject & >( projectBase );
       auto &audioManager = ProjectAudioManager::Get( project );
       int rate = audioManager.mDisplayedRate;
       return {
          { { FormatRate( rate ) } },
-         50
+         50,
+         150 // minimum width
       };
    }
    return {};

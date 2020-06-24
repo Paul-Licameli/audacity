@@ -22,7 +22,6 @@ Paul Licameli split from TrackPanel.cpp
 #include "ProjectAudioManager.h"
 #include "ProjectHistory.h"
 #include "ProjectSettings.h"
-#include "ProjectStatus.h"
 #include "Track.h"
 #include "ViewInfo.h"
 #include "WaveTrack.h"
@@ -1107,7 +1106,7 @@ wxString Scrubber::StatusMessageForWave() const
 
 static ProjectStatus::RegisteredStatusWidthFunction
 registeredStatusWidthFunction{
-   []( const AudacityProject &, StatusBarField field )
+   []( const ProjectBase &, unsigned field )
       -> ProjectStatus::StatusWidthResult
    {
       if ( field == stateStatusBarField ) {
