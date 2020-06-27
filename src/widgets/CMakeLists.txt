@@ -12,13 +12,13 @@ do_directory(
       src/utility/math
       src/utility/registries
       src/widgets/DialogDefinition
+      src/widgets/help
       src/widgets/theme
       src/widgets/utility
       wxWidgets
 
    PRECOMPILE
       AColor.h
-      AudioIO.h
       Diags.h
       DirManager.h
       Envelope.h
@@ -42,24 +42,18 @@ do_directory(
       ASlider.h
       AttachableScrollBar.cpp
       AttachableScrollBar.h
-      ErrorDialog.cpp
-      ErrorDialog.h
       ExpandingToolBar.cpp
       ExpandingToolBar.h
       Grabber.cpp
       Grabber.h
       Grid.cpp
       Grid.h
-      HelpSystem.cpp
-      HelpSystem.h
       KeyView.cpp
       KeyView.h
       Meter.cpp
       Meter.h
       MeterPanelBase.cpp
       MeterPanelBase.h
-      MultiDialog.cpp
-      MultiDialog.h
       NumericTextCtrl.cpp
       NumericTextCtrl.h
       PopupMenuTable.cpp
@@ -68,12 +62,11 @@ do_directory(
       ProgressDialog.h
       Ruler.cpp
       Ruler.h
-      Warning.cpp
-      Warning.h
 
    SUBDIRECTORIES
       CellularPanel
       DialogDefinition
       theme
+      help
       utility
 )

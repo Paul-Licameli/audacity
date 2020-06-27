@@ -21,6 +21,7 @@ my @clusterlist = qw(
    /utility/registries
    /widgets/CellularPanel
    /widgets/DialogDefinition
+   /widgets/help
    /widgets/theme
    /widgets/utility
    /xml

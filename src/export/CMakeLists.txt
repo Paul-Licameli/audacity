@@ -42,6 +42,7 @@ do_directory(
       src/utility/registries
       src/widgets
       src/widgets/DialogDefinition
+      src/widgets/help
       src/widgets/theme
       src/widgets/utility
       wxWidgets

@@ -6,6 +6,7 @@ do_directory(
       src/xml
 
    PRIVATE
+      src/widgets/help
       src/utility/math
       src/utility/registries
       src/widgets

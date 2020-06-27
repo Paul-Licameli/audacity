@@ -17,6 +17,7 @@ do_directory(
       src/utility/math
       src/utility/registries
       src/widgets
+      src/widgets/help
       src/widgets/theme
       src/widgets/utility
       src/widgets/CellularPanel
@@ -60,8 +61,6 @@ do_directory(
       AdornedRulerPanel.h
       AudacityApp.cpp
       AudacityApp.h
-      AudacityLogger.cpp
-      AudacityLogger.h
       AudioIO.cpp
       AudioIO.h
       AudioIOBase.cpp
@@ -105,8 +104,6 @@ do_directory(
       FileFormats.h
       FreqWindow.cpp
       FreqWindow.h
-      HelpText.cpp
-      HelpText.h
       HistoryWindow.cpp
       HistoryWindow.h
       LabelDialog.cpp

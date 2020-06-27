@@ -1,0 +1,29 @@
+do_directory(
+   PRIVATE
+      src/utility
+      src/utility/registries
+      src/widgets/DialogDefinition
+      src/widgets/theme
+      src/widgets/utility
+      wxWidgets
+
+   PRECOMPILE
+      AColor.h
+      Diags.h
+      ImageManipulation.h
+      Prefs.h
+
+   SOURCES
+      AudacityLogger.cpp
+      AudacityLogger.h
+      ErrorDialog.cpp
+      ErrorDialog.h
+      HelpSystem.cpp
+      HelpSystem.h
+      HelpText.cpp
+      HelpText.h
+      MultiDialog.cpp
+      MultiDialog.h
+      Warning.cpp
+      Warning.h
+)
