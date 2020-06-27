@@ -20,6 +20,7 @@ do_directory(
       src/widgets/theme
       src/widgets/utility
       src/widgets/CellularPanel
+      src/widgets/DialogDefinition
       wxWidgets
       libsndfile
       portaudio-v19
@@ -175,14 +176,8 @@ do_directory(
       SelectionState.h
       Sequence.cpp
       Sequence.h
-      Shuttle.cpp
-      Shuttle.h
       ShuttleGetDefinition.cpp
       ShuttleGetDefinition.h
-      ShuttleGui.cpp
-      ShuttleGui.h
-      ShuttlePrefs.cpp
-      ShuttlePrefs.h
       Snap.cpp
       Snap.h
       SoundActivatedRecord.cpp
@@ -227,8 +222,6 @@ do_directory(
       WaveTrack.cpp
       WaveTrack.h
       WaveTrackLocation.h
-      WrappedType.cpp
-      WrappedType.h
       ZoomInfo.cpp
       ZoomInfo.h
 )

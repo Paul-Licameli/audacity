@@ -12,6 +12,7 @@ do_directory(
       src/widgets/theme
       src/widgets/utility
       src/widgets/CellularPanel
+      src/widgets/DialogDefinition
       wxWidgets
       $<$<BOOL:${USE_SBSMS}>:sbsms>
       $<$<BOOL:${USE_SOUNDTOUCH}>:soundtouch>
@@ -29,7 +30,6 @@ do_directory(
       Mix.h
       NoteTrack.h
       Prefs.h
-      Project.h
       Sequence.h
       TimeTrack.h
       UndoManager.h

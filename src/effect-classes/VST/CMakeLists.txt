@@ -30,6 +30,7 @@ do_directory(
       src/utility/math
       src/utility/registries
       src/widgets
+      src/widgets/DialogDefinition
       src/widgets/utility
       wxWidgets
 
@@ -38,6 +39,7 @@ do_directory(
 
    PRECOMPILE
       AudioIO.h
+      BlockFile.h
       Diags.h
       DirManager.h
       Envelope.h
@@ -47,7 +49,9 @@ do_directory(
       NoteTrack.h
       Prefs.h
       Project.h
+      Sequence.h
       TimeTrack.h
+      UndoManager.h
       WaveTrack.h
       ASlider.h
       ProgressDialog.h

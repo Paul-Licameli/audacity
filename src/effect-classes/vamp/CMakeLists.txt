@@ -10,12 +10,14 @@ do_directory(
    PRIVATE
       src/utility/math
       src/utility/registries
+      src/widgets/DialogDefinition
       src/widgets/utility
       wxWidgets
       $<$<BOOL:${USE_VAMP}>:libvamp>
 
    PRECOMPILE
       AudioIO.h
+      BlockFile.h
       Diags.h
       DirManager.h
       Envelope.h
@@ -25,7 +27,9 @@ do_directory(
       NoteTrack.h
       Prefs.h
       Project.h
+      Sequence.h
       TimeTrack.h
+      UndoManager.h
       WaveTrack.h
 
    SOURCES

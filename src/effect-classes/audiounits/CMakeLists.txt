@@ -7,6 +7,7 @@ do_directory(
    PRIVATE
       src/utility
       src/widgets
+      src/widgets/DialogDefinition
       src/widgets/utility
       wxWidgets
 

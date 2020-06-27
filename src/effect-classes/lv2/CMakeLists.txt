@@ -7,12 +7,14 @@ do_directory(
    PRIVATE
       src/utility/math
       src/widgets
+      src/widgets/DialogDefinition
       src/widgets/utility
       wxWidgets
       $<$<BOOL:${USE_LV2}>:lv2>
 
    PRECOMPILE
       AudioIO.h
+      BlockFile.h
       Diags.h
       FFT.h
       Mix.h

@@ -11,6 +11,7 @@ do_directory(
    PRIVATE
       src/utility/math
       src/utility/registries
+      src/widgets/DialogDefinition
       src/widgets/theme
       src/widgets/utility
       wxWidgets
@@ -72,6 +73,7 @@ do_directory(
 
    SUBDIRECTORIES
       CellularPanel
+      DialogDefinition
       theme
       utility
 )

@@ -5,4 +5,5 @@ registries:AttachedVirtualFunction ClientData ClientDataHelpers Registrar Regist
 widget utility:BackedPanel FileHistory FileNames HtmlWindow ImageRoll Keyboard KeyboardCapture Overlay OverlayPanel ProjectStatus WindowAccessible valnum wxPanelWrapper FileDialog FileDialogPrivate
 Cellular panel:CellularPanel HitTestResult RefreshCode TrackPanelCell TrackPanelDrawable TrackPanelDrawingContext TrackPanelMouseEvent UIHandle
 theme:AColor AllThemeResources ClassicThemeAsCeeCode DarkThemeAsCeeCode HiContrastThemeAsCeeCode ImageManipulation LightThemeAsCeeCode MacroMagic Theme ThemeAsCeeCode
+Dialog definition:Shuttle ShuttleGui ShuttlePrefs WrappedType
 END

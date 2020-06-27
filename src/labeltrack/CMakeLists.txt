@@ -12,6 +12,7 @@ do_directory(
       src/widgets/theme
       src/widgets/utility
       src/widgets/CellularPanel
+      src/widgets/DialogDefinition
       wxWidgets
 
    PRECOMPILE

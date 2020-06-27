@@ -20,6 +20,7 @@ my @clusterlist = qw(
    /utility/math
    /utility/registries
    /widgets/CellularPanel
+   /widgets/DialogDefinition
    /widgets/theme
    /widgets/utility
    /xml
