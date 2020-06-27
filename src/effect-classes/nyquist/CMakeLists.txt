@@ -9,7 +9,6 @@ do_directory(
       src/prefs
       src/track
       src/wavetrack
-      src/xml
 
    PRIVATE
       src/utility/math
@@ -18,6 +17,7 @@ do_directory(
       src/widgets/etc
       src/widgets/utility
       src/widgets/CellularPanel
+      src/xml
       wxWidgets
       $<$<BOOL:${USE_NYQUIST}>:libnyquist>
 

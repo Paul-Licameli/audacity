@@ -1,7 +1,4 @@
 do_directory( TYPE STATIC
-   INCLUDE_PRIVATE
-#      src/etc
-
    PRIVATE
       src/utility/exceptions
       wxWidgets

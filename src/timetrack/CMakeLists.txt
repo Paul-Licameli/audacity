@@ -3,7 +3,6 @@ do_directory(
       src/commands
       src/etc
       src/track
-      src/xml
 
    PRIVATE
       src/utility/math
@@ -11,6 +10,7 @@ do_directory(
       src/widgets/theme
       src/widgets/utility
       src/widgets/CellularPanel
+      src/xml
       wxWidgets
 
    PRECOMPILE

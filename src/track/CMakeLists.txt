@@ -6,7 +6,6 @@ do_directory(
       src/prefs
       src/toolbars
       src/wavetrack
-      src/xml
 
    PRIVATE
       src/utility/math
@@ -16,6 +15,7 @@ do_directory(
       src/widgets/utility
       src/widgets/CellularPanel
       src/widgets/DialogDefinition
+      src/xml
       wxWidgets
 
    PRECOMPILE

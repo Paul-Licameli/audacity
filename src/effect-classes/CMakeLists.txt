@@ -3,7 +3,6 @@ do_directory(
       src/etc
       src/effects
       src/track
-      src/xml
 
    PRIVATE
       src/widgets/help
@@ -14,6 +13,7 @@ do_directory(
       src/widgets/utility
       src/widgets/CellularPanel
       src/widgets/DialogDefinition
+      src/xml
       wxWidgets
       $<$<BOOL:${USE_SBSMS}>:sbsms>
       $<$<BOOL:${USE_SOUNDTOUCH}>:soundtouch>

@@ -24,7 +24,6 @@ do_directory(
       src/effects
       src/etc
       src/track
-      src/xml
 
    PRIVATE
       src/utility/math
@@ -32,6 +31,7 @@ do_directory(
       src/widgets/DialogDefinition
       src/widgets/etc
       src/widgets/utility
+      src/xml
       wxWidgets
 
    OBJCPP_SOURCES

@@ -3,12 +3,12 @@ do_directory(
       src/blockfile
       src/etc
       src/track
-      src/xml
 
    PRIVATE
       src/utility/math
       src/utility/registries
       src/widgets/utility
+      src/xml
       wxWidgets
       $<$<BOOL:${USE_FFMPEG}>:ffmpeg>
       $<$<BOOL:${USE_LIBFLAC}>:libflac>

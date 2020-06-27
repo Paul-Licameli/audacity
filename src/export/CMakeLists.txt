@@ -35,7 +35,6 @@ do_directory(
       src/etc
       src/prefs
       src/track
-      src/xml
 
    PRIVATE
       src/utility/math
@@ -45,6 +44,7 @@ do_directory(
       src/widgets/help
       src/widgets/theme
       src/widgets/utility
+      src/xml
       wxWidgets
       lame
       libsndfile

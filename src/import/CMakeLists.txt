@@ -47,7 +47,6 @@ do_directory(
       src/ondemand
       src/prefs
       src/track
-      src/xml
 
    PRIVATE
       src/utility/math
@@ -55,6 +54,7 @@ do_directory(
       src/widgets/DialogDefinition
       src/widgets/etc
       src/widgets/utility
+      src/xml
       wxWidgets
       libsndfile
       $<$<BOOL:${USE_FFMPEG}>:ffmpeg>

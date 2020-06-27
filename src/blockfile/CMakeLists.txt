@@ -2,11 +2,11 @@ do_directory(
    INCLUDE_PRIVATE
       src/etc
       src/ondemand
-      src/xml
 
    PRIVATE
       src/utility/math
       src/utility/registries
+      src/xml
       wxWidgets
       libsndfile
 

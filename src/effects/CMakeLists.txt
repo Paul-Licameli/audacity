@@ -6,7 +6,6 @@ do_directory(
       src/prefs
       src/track
       src/wavetrack
-      src/xml
 
    PRIVATE
       src/utility/math
@@ -16,6 +15,7 @@ do_directory(
       src/widgets/help
       src/widgets/utility
       src/widgets/CellularPanel
+      src/xml
       wxWidgets
 
    OBJCPP_SOURCES

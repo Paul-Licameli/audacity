@@ -5,13 +5,13 @@ do_directory(
       src/effects
       src/etc
       src/track
-      src/xml
 
    PRIVATE
       src/utility/math
       src/utility/registries
       src/widgets/DialogDefinition
       src/widgets/utility
+      src/xml
       wxWidgets
       $<$<BOOL:${USE_VAMP}>:libvamp>
 
