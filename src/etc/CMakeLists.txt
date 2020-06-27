@@ -14,8 +14,8 @@ do_directory(
       src/xml
 
    PRIVATE
-      src/utility/exceptions
       src/utility/math
+      src/utility/registries
       src/widgets
       wxWidgets
       libsndfile
@@ -61,7 +61,6 @@ do_directory(
       AdornedRulerPanel.h
       AllThemeResources.cpp
       AllThemeResources.h
-      AttachedVirtualFunction.h
       AudacityApp.cpp
       AudacityApp.h
       AudacityLogger.cpp
@@ -88,8 +87,6 @@ do_directory(
       CellularPanel.cpp
       CellularPanel.h
       ClassicThemeAsCeeCode.h
-      ClientData.h
-      ClientDataHelpers.h
       Clipboard.cpp
       Clipboard.h
       CommonCommandFlags.cpp
@@ -188,10 +185,6 @@ do_directory(
       ProjectWindow.h
       ProjectWindowBase.cpp
       ProjectWindowBase.h
-      RefreshCode.h
-      Registrar.h
-      Registry.cpp
-      Registry.h
       RingBuffer.cpp
       RingBuffer.h
       Screenshot.cpp

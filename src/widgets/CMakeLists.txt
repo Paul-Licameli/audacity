@@ -9,8 +9,8 @@ do_directory(
       src/widgets/FileDialog
 
    PRIVATE
-      src/utility/exceptions
       src/utility/math
+      src/utility/registries
       wxWidgets
 
    PRECOMPILE

@@ -1,4 +1,5 @@
 utility:AudacityMessageBox Diags FileIO GUISettings Internat MemoryX ODTaskThread PitchName PlatformCompatibility Prefs Profiler numformatter wxFileNameWrapper
 exceptions:AudacityException FileException InconsistencyException UserException
 math:Biquad Dither EBUR128 FFT InterpolateAudio Matrix RealFFTf RealFFTf48x Resample SampleFormat SpecPowerMeter Spectrum SseMathFuncs float_cast
+registries:AttachedVirtualFunction ClientData ClientDataHelpers Registrar Registry
 END

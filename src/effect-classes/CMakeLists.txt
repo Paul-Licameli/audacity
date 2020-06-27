@@ -6,8 +6,8 @@ do_directory(
       src/xml
 
    PRIVATE
-      src/utility/exceptions
       src/utility/math
+      src/utility/registries
       src/widgets
       wxWidgets
       $<$<BOOL:${USE_SBSMS}>:sbsms>
