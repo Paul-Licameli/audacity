@@ -38,7 +38,7 @@ do_directory(
       src/xml
 
    PRIVATE
-      src/utility
+      src/utility/exceptions
       src/widgets
       wxWidgets
       lame

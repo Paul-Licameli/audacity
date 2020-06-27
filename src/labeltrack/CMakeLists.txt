@@ -6,8 +6,8 @@ do_directory(
       src/xml
 
    PRIVATE
-      src/utility
-      src/widgets
+      src/utility/exceptions
+     src/widgets
       wxWidgets
 
    PRECOMPILE

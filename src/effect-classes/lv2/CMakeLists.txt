@@ -18,7 +18,6 @@ do_directory(
       ImageManipulation.h
       Mix.h
       Prefs.h
-      Project.h
       ASlider.h
       ProgressDialog.h
       Ruler.h

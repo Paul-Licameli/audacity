@@ -14,7 +14,7 @@ do_directory(
       src/xml
 
    PRIVATE
-      src/utility
+      src/utility/exceptions
       src/widgets
       wxWidgets
       libsndfile
@@ -64,8 +64,6 @@ do_directory(
       AttachedVirtualFunction.h
       AudacityApp.cpp
       AudacityApp.h
-      AudacityException.cpp
-      AudacityException.h
       AudacityLogger.cpp
       AudacityLogger.h
       AudioIO.cpp
@@ -117,8 +115,6 @@ do_directory(
       FFT.h
       FFmpeg.cpp
       FFmpeg.h
-      FileException.cpp
-      FileException.h
       FileFormats.cpp
       FileFormats.h
       FileNames.cpp
@@ -133,8 +129,6 @@ do_directory(
       HitTestResult.h
       ImageManipulation.cpp
       ImageManipulation.h
-      InconsistencyException.cpp
-      InconsistencyException.h
       InterpolateAudio.cpp
       InterpolateAudio.h
       KeyboardCapture.cpp
@@ -284,8 +278,6 @@ do_directory(
       UIHandle.h
       UndoManager.cpp
       UndoManager.h
-      UserException.cpp
-      UserException.h
       ViewInfo.cpp
       ViewInfo.h
       VoiceKey.cpp

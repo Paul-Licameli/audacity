@@ -30,4 +30,7 @@ do_directory(
       numformatter.cpp
       numformatter.h
       wxFileNameWrapper.h
+
+   SUBDIRECTORIES
+      exceptions
 )

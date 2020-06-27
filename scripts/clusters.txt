@@ -1,2 +1,3 @@
 utility:AudacityMessageBox Diags FileIO GUISettings Internat MemoryX ODTaskThread PitchName PlatformCompatibility Prefs Profiler numformatter wxFileNameWrapper
+exceptions:AudacityException FileException InconsistencyException UserException
 END
