@@ -1,6 +1,6 @@
 do_directory(
    PRIVATE
-      wxWidgets
+      wxBase
 
    PRECOMPILE
       Diags.h

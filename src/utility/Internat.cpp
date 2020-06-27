@@ -318,8 +318,22 @@ TranslatableString &TranslatableString::Strip( unsigned codes ) &
             bool debug = request == Request::DebugFormat;
             auto result =
                TranslatableString::DoSubstitute( prevFormatter, str, debug );
-            if ( codes & MenuCodes )
-               result = wxStripMenuCodes( result );
+            if ( codes & MenuCodes ) {
+               // Can't use this, it's in wxCore
+               // result = wxStripMenuCodes( result );
+               auto temp = result;
+               result.clear();
+               for ( auto iter = temp.begin(), end = temp.end();
+                    iter != end; ++iter ) {
+                  // Stop at trailing hot key name
+                  if ( *iter == '\t' )
+                     break;
+                  // Strip & (unless escaped by another preceding &)
+                  if ( *iter == '&' && ++iter == end )
+                     break;
+                  result.append( 1, *iter );
+               }
+            }
             if ( codes & Ellipses ) {
                if (result.EndsWith(wxT("...")))
                   result = result.Left( result.length() - 3 );

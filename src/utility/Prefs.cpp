@@ -68,13 +68,13 @@ std::unique_ptr<AudacityPrefs> ugPrefs {};
 AudacityPrefs *gPrefs = NULL;
 int gMenusDirty = 0;
 
-wxDEFINE_EVENT(EVT_PREFS_UPDATE, wxCommandEvent);
+wxDEFINE_EVENT(EVT_PREFS_UPDATE, wxEvent);
 
 struct PrefsListener::Impl : wxEvtHandler
 {
    Impl( PrefsListener &owner );
    ~Impl();
-   void OnEvent(wxCommandEvent&);
+   void OnEvent(wxEvent&);
    PrefsListener &mOwner;
 };
 
@@ -101,7 +101,7 @@ void PrefsListener::UpdateSelectedPrefs( int )
 {
 }
 
-void PrefsListener::Impl::OnEvent( wxCommandEvent &evt )
+void PrefsListener::Impl::OnEvent( wxEvent &evt )
 {
    evt.Skip();
    auto id = evt.GetId();

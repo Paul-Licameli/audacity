@@ -243,7 +243,7 @@ public:
 
 // An event emitted by the application when the Preference dialog commits
 // changes
-wxDECLARE_EVENT(EVT_PREFS_UPDATE, wxCommandEvent);
+wxDECLARE_EVENT(EVT_PREFS_UPDATE, wxEvent);
 
 // Invoke UpdatePrefs() when Preference dialog commits changes.
 class AUDACITY_DLL_API PrefsListener
