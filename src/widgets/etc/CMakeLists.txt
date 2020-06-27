@@ -1,0 +1,30 @@
+do_directory(
+   PRIVATE
+      src/utility
+      src/widgets/DialogDefinition
+      src/widgets/theme
+      src/widgets/utility
+      wxWidgets
+
+   PRECOMPILE
+      AColor.h
+      Diags.h
+      ImageManipulation.h
+      Prefs.h
+      ASlider.h
+      ProgressDialog.h
+
+   SOURCES
+      AButton.cpp
+      AButton.h
+      ASlider.cpp
+      ASlider.h
+      ExpandingToolBar.cpp
+      ExpandingToolBar.h
+      Grid.cpp
+      Grid.h
+      NumericTextCtrl.cpp
+      NumericTextCtrl.h
+      ProgressDialog.cpp
+      ProgressDialog.h
+)

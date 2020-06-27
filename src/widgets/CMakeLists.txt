@@ -30,41 +30,27 @@ do_directory(
       Project.h
       TimeTrack.h
       WaveTrack.h
-      ASlider.h
-      ProgressDialog.h
-      Ruler.h
 
    SOURCES
-      AButton.cpp
-      AButton.h
-      ASlider.cpp
-      ASlider.h
       AttachableScrollBar.cpp
       AttachableScrollBar.h
-      ExpandingToolBar.cpp
-      ExpandingToolBar.h
       Grabber.cpp
       Grabber.h
-      Grid.cpp
-      Grid.h
       KeyView.cpp
       KeyView.h
       Meter.cpp
       Meter.h
       MeterPanelBase.cpp
       MeterPanelBase.h
-      NumericTextCtrl.cpp
-      NumericTextCtrl.h
       PopupMenuTable.cpp
       PopupMenuTable.h
-      ProgressDialog.cpp
-      ProgressDialog.h
       Ruler.cpp
       Ruler.h
 
    SUBDIRECTORIES
       CellularPanel
       DialogDefinition
+      etc
       prefs
       theme
       help

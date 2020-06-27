@@ -6,8 +6,8 @@ do_directory(
 
    PRIVATE
       src/utility/math
-      src/widgets
       src/widgets/DialogDefinition
+      src/widgets/etc
       src/widgets/utility
       wxWidgets
 
@@ -20,7 +20,6 @@ do_directory(
       Prefs.h
       ASlider.h
       ProgressDialog.h
-      Ruler.h
 
    SOURCES
       LadspaEffect.cpp

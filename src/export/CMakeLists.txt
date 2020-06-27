@@ -40,8 +40,8 @@ do_directory(
    PRIVATE
       src/utility/math
       src/utility/registries
-      src/widgets
       src/widgets/DialogDefinition
+      src/widgets/etc
       src/widgets/help
       src/widgets/theme
       src/widgets/utility
@@ -76,7 +76,6 @@ do_directory(
       WaveTrack.h
       ASlider.h
       ProgressDialog.h
-      Ruler.h
 
    SOURCES
       ${MY_SOURCES}

@@ -14,8 +14,8 @@ do_directory(
    PRIVATE
       src/utility/math
       src/utility/registries
-      src/widgets
       src/widgets/DialogDefinition
+      src/widgets/etc
       src/widgets/utility
       src/widgets/CellularPanel
       wxWidgets
@@ -39,7 +39,6 @@ do_directory(
       WaveTrack.h
       ASlider.h
       ProgressDialog.h
-      Ruler.h
 
    SOURCES
       LoadNyquist.cpp

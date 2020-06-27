@@ -17,6 +17,7 @@ do_directory(
       src/utility/math
       src/utility/registries
       src/widgets
+      src/widgets/etc
       src/widgets/help
       src/widgets/theme
       src/widgets/utility

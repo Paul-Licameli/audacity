@@ -29,8 +29,6 @@ do_directory(
       Project.h
       TimeTrack.h
       WaveTrack.h
-      ASlider.h
-      ProgressDialog.h
       Ruler.h
 
    SOURCES

@@ -34,8 +34,6 @@ do_directory(
       TimeTrack.h
       UndoManager.h
       WaveTrack.h
-      ASlider.h
-      ProgressDialog.h
       Ruler.h
 
    SOURCES

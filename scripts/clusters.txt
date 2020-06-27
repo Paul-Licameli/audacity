@@ -8,4 +8,5 @@ theme:AColor AllThemeResources ClassicThemeAsCeeCode DarkThemeAsCeeCode HiContra
 Dialog definition:Shuttle ShuttleGui ShuttlePrefs WrappedType
 help:AudacityLogger ErrorDialog HelpText HelpSystem MultiDialog Warning
 prefs ui:LangChoice Languages PrefsDialog PrefsPanel
+various widgets:AButton ASlider ExpandingToolBar Grid NumericTextCtrl ProgressDialog 
 END

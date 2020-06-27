@@ -6,8 +6,8 @@ do_directory(
 
    PRIVATE
       src/utility/math
-      src/widgets
       src/widgets/DialogDefinition
+      src/widgets/etc
       src/widgets/utility
       wxWidgets
       $<$<BOOL:${USE_LV2}>:lv2>
@@ -21,7 +21,6 @@ do_directory(
       Prefs.h
       ASlider.h
       ProgressDialog.h
-      Ruler.h
 
    SOURCES
       LV2Effect.cpp
