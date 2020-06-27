@@ -1,6 +1,6 @@
 do_directory( TYPE STATIC
    PRIVATE
-      wxWidgets
+      wxBase
       libsoxr
 
    PUBLIC

@@ -14,6 +14,7 @@ Max Maisel
 #include "Biquad.h"
 #include "MemoryX.h"
 #include "SampleFormat.h"
+#include <cmath>
 
 /// \brief Implements EBU-R128 loudness measurement.
 class EBUR128
