@@ -5,7 +5,7 @@ do_directory(
       src/etc
 
    PRIVATE
-      src/utility
+      src/utility/math
       src/widgets
       wxWidgets
       $<$<BOOL:${USE_LV2}>:lv2>

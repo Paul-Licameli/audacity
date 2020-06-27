@@ -15,10 +15,10 @@ do_directory(
 
    PRIVATE
       src/utility/exceptions
+      src/utility/math
       src/widgets
       wxWidgets
       libsndfile
-      libsoxr
       portaudio-v19
       $<$<BOOL:${USE_FFMPEG}>:ffmpeg>
       $<$<BOOL:${USE_LIBFLAC}>:libflac>
@@ -105,14 +105,10 @@ do_directory(
       DeviceManager.h
       DirManager.cpp
       DirManager.h
-      Dither.cpp
-      Dither.h
       Envelope.cpp
       Envelope.h
       EnvelopeEditor.cpp
       EnvelopeEditor.h
-      FFT.cpp
-      FFT.h
       FFmpeg.cpp
       FFmpeg.h
       FileFormats.cpp
@@ -129,8 +125,6 @@ do_directory(
       HitTestResult.h
       ImageManipulation.cpp
       ImageManipulation.h
-      InterpolateAudio.cpp
-      InterpolateAudio.h
       KeyboardCapture.cpp
       KeyboardCapture.h
       LabelDialog.cpp
@@ -149,8 +143,6 @@ do_directory(
       LyricsWindow.cpp
       LyricsWindow.h
       MacroMagic.h
-      Matrix.cpp
-      Matrix.h
       Menus.cpp
       Menus.h
       MissingAliasFileDialog.cpp
@@ -196,20 +188,12 @@ do_directory(
       ProjectWindow.h
       ProjectWindowBase.cpp
       ProjectWindowBase.h
-      RealFFTf.cpp
-      RealFFTf.h
-      RealFFTf48x.cpp
-      RealFFTf48x.h
       RefreshCode.h
       Registrar.h
       Registry.cpp
       Registry.h
-      Resample.cpp
-      Resample.h
       RingBuffer.cpp
       RingBuffer.h
-      SampleFormat.cpp
-      SampleFormat.h
       Screenshot.cpp
       Screenshot.h
       SelectUtilities.cpp
@@ -232,14 +216,10 @@ do_directory(
       Snap.h
       SoundActivatedRecord.cpp
       SoundActivatedRecord.h
-      Spectrum.cpp
-      Spectrum.h
       SpectrumAnalyst.cpp
       SpectrumAnalyst.h
       SplashDialog.cpp
       SplashDialog.h
-      SseMathFuncs.cpp
-      SseMathFuncs.h
       Tags.cpp
       Tags.h
       Theme.cpp
@@ -291,7 +271,6 @@ do_directory(
       WrappedType.h
       ZoomInfo.cpp
       ZoomInfo.h
-      float_cast.h
 )
 
 # For AboutDialog.h

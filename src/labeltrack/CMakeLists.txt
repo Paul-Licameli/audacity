@@ -7,7 +7,8 @@ do_directory(
 
    PRIVATE
       src/utility/exceptions
-     src/widgets
+      src/utility/math
+      src/widgets
       wxWidgets
 
    PRECOMPILE

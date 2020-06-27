@@ -9,8 +9,6 @@ set(
       MultiFormatReader.h
       RawAudioGuess.cpp
       RawAudioGuess.h
-      SpecPowerMeter.cpp
-      SpecPowerMeter.h
       ImportLOF.cpp
       ImportPCM.cpp
       ImportPlugin.h
@@ -53,6 +51,7 @@ do_directory(
 
    PRIVATE
       src/utility/exceptions
+      src/utility/math
       src/widgets
       wxWidgets
       libsndfile

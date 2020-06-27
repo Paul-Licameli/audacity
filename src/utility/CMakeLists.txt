@@ -33,4 +33,5 @@ do_directory(
 
    SUBDIRECTORIES
       exceptions
+      math
 )

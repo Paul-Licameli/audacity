@@ -17,6 +17,7 @@ my @clusterlist = qw(
    /menus
    /utility
    /utility/exceptions
+   /utility/math
    /xml
 );
 my %clusters;

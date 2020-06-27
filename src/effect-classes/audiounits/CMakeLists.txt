@@ -14,11 +14,8 @@ do_directory(
 
    PRECOMPILE
       AColor.h
-      AudioIO.h
       Diags.h
-      FFT.h
       ImageManipulation.h
-      Mix.h
       Prefs.h
       ASlider.h
       ProgressDialog.h

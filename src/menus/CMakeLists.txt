@@ -16,6 +16,7 @@ do_directory(
 
    PRIVATE
       src/utility/exceptions
+      src/utility/math
       src/widgets
       wxWidgets
 

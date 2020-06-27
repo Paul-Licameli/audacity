@@ -10,6 +10,7 @@ do_directory(
 
    PRIVATE
       src/utility/exceptions
+      src/utility/math
       src/widgets
       wxWidgets
 
@@ -39,12 +40,8 @@ do_directory(
       Ruler.h
 
    SOURCES
-      Biquad.cpp
-      Biquad.h
       Contrast.cpp
       Contrast.h
-      EBUR128.cpp
-      EBUR128.h
       Effect.cpp
       Effect.h
       EffectManager.cpp
