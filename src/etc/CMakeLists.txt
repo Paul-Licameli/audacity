@@ -17,6 +17,7 @@ do_directory(
       src/utility/math
       src/utility/registries
       src/widgets
+      src/widgets/theme
       src/widgets/utility
       src/widgets/CellularPanel
       wxWidgets
@@ -52,14 +53,10 @@ do_directory(
       Ruler.h
 
    SOURCES
-      AColor.cpp
-      AColor.h
       AboutDialog.cpp
       AboutDialog.h
       AdornedRulerPanel.cpp
       AdornedRulerPanel.h
-      AllThemeResources.cpp
-      AllThemeResources.h
       AudacityApp.cpp
       AudacityApp.h
       AudacityLogger.cpp
@@ -83,14 +80,12 @@ do_directory(
       Benchmark.h
       BlockFile.cpp
       BlockFile.h
-      ClassicThemeAsCeeCode.h
       Clipboard.cpp
       Clipboard.h
       CommonCommandFlags.cpp
       CommonCommandFlags.h
       CrashReport.cpp
       CrashReport.h
-      DarkThemeAsCeeCode.h
       Dependencies.cpp
       Dependencies.h
       DeviceChange.cpp
@@ -111,11 +106,8 @@ do_directory(
       FreqWindow.h
       HelpText.cpp
       HelpText.h
-      HiContrastThemeAsCeeCode.h
       HistoryWindow.cpp
       HistoryWindow.h
-      ImageManipulation.cpp
-      ImageManipulation.h
       LabelDialog.cpp
       LabelDialog.h
       LabelTrack.cpp
@@ -126,12 +118,10 @@ do_directory(
       Languages.h
       Legacy.cpp
       Legacy.h
-      LightThemeAsCeeCode.h
       Lyrics.cpp
       Lyrics.h
       LyricsWindow.cpp
       LyricsWindow.h
-      MacroMagic.h
       Menus.cpp
       Menus.h
       MissingAliasFileDialog.cpp
@@ -203,9 +193,6 @@ do_directory(
       SplashDialog.h
       Tags.cpp
       Tags.h
-      Theme.cpp
-      Theme.h
-      ThemeAsCeeCode.h
       TimeDialog.cpp
       TimeDialog.h
       TimeTrack.cpp

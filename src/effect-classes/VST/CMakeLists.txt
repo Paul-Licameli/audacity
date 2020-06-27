@@ -37,13 +37,11 @@ do_directory(
       VSTControlOSX.mm
 
    PRECOMPILE
-      AColor.h
       AudioIO.h
       Diags.h
       DirManager.h
       Envelope.h
       FFT.h
-      ImageManipulation.h
       LabelTrack.h
       Mix.h
       NoteTrack.h

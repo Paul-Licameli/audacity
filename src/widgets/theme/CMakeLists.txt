@@ -1,0 +1,22 @@
+do_directory(
+   PRIVATE
+      src/utility
+      src/widgets/utility
+      wxWidgets
+
+   SOURCES
+      AColor.cpp
+      AColor.h
+      AllThemeResources.cpp
+      AllThemeResources.h
+      ClassicThemeAsCeeCode.h
+      DarkThemeAsCeeCode.h
+      HiContrastThemeAsCeeCode.h
+      ImageManipulation.cpp
+      ImageManipulation.h
+      LightThemeAsCeeCode.h
+      MacroMagic.h
+      Theme.cpp
+      Theme.h
+      ThemeAsCeeCode.h
+)

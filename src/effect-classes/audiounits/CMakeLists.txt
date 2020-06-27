@@ -14,9 +14,7 @@ do_directory(
       AUControl.mm
 
    PRECOMPILE
-      AColor.h
       Diags.h
-      ImageManipulation.h
       Prefs.h
 
    SOURCES

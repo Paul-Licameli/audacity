@@ -20,14 +20,12 @@ do_directory(
       EffectUI.cpp
 
    PRECOMPILE
-      AColor.h
       AudioIO.h
       BlockFile.h
       Diags.h
       DirManager.h
       Envelope.h
       FFT.h
-      ImageManipulation.h
       LabelTrack.h
       Mix.h
       NoteTrack.h

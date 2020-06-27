@@ -11,7 +11,6 @@ do_directory(
       libsndfile
 
    PRECOMPILE
-      AColor.h
       AudioIO.h
       BlockFile.h
       Diags.h
@@ -19,7 +18,6 @@ do_directory(
       Envelope.h
       FFT.h
       FileFormats.h
-      ImageManipulation.h
       LabelTrack.h
       Mix.h
       NoteTrack.h

@@ -11,6 +11,7 @@ do_directory(
       src/utility/math
       src/utility/registries
       src/widgets
+      src/widgets/theme
       src/widgets/utility
       src/widgets/CellularPanel
       wxWidgets

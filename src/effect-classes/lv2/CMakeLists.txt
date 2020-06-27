@@ -12,11 +12,9 @@ do_directory(
       $<$<BOOL:${USE_LV2}>:lv2>
 
    PRECOMPILE
-      AColor.h
       AudioIO.h
       Diags.h
       FFT.h
-      ImageManipulation.h
       Mix.h
       Prefs.h
       ASlider.h

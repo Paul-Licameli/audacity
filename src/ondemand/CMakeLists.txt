@@ -15,14 +15,12 @@ do_directory(
       $<$<BOOL:${USE_LIBID3TAG}>:libid3tag>
 
    PRECOMPILE
-      AColor.h
       AudioIO.h
       BlockFile.h
       Diags.h
       DirManager.h
       Envelope.h
       FFT.h
-      ImageManipulation.h
       LabelTrack.h
       Mix.h
       NoteTrack.h

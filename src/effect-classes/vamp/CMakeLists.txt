@@ -15,13 +15,11 @@ do_directory(
       $<$<BOOL:${USE_VAMP}>:libvamp>
 
    PRECOMPILE
-      AColor.h
       AudioIO.h
       Diags.h
       DirManager.h
       Envelope.h
       FFT.h
-      ImageManipulation.h
       LabelTrack.h
       Mix.h
       NoteTrack.h

@@ -21,14 +21,12 @@ do_directory(
       $<$<BOOL:${USE_NYQUIST}>:libnyquist>
 
    PRECOMPILE
-      AColor.h
       AudioIO.h
       BlockFile.h
       Diags.h
       DirManager.h
       Envelope.h
       FFT.h
-      ImageManipulation.h
       LabelTrack.h
       Mix.h
       NoteTrack.h

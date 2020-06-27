@@ -4,4 +4,5 @@ math:Biquad Dither EBUR128 FFT InterpolateAudio Matrix RealFFTf RealFFTf48x Resa
 registries:AttachedVirtualFunction ClientData ClientDataHelpers Registrar Registry
 widget utility:BackedPanel FileHistory FileNames HtmlWindow ImageRoll Keyboard KeyboardCapture Overlay OverlayPanel ProjectStatus WindowAccessible valnum wxPanelWrapper FileDialog FileDialogPrivate
 Cellular panel:CellularPanel HitTestResult RefreshCode TrackPanelCell TrackPanelDrawable TrackPanelDrawingContext TrackPanelMouseEvent UIHandle
+theme:AColor AllThemeResources ClassicThemeAsCeeCode DarkThemeAsCeeCode HiContrastThemeAsCeeCode ImageManipulation LightThemeAsCeeCode MacroMagic Theme ThemeAsCeeCode
 END
