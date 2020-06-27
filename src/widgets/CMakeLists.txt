@@ -70,5 +70,6 @@ do_directory(
       Warning.h
 
    SUBDIRECTORIES
+      CellularPanel
       utility
 )

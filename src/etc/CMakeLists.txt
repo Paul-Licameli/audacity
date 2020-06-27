@@ -18,6 +18,7 @@ do_directory(
       src/utility/registries
       src/widgets
       src/widgets/utility
+      src/widgets/CellularPanel
       wxWidgets
       libsndfile
       portaudio-v19
@@ -82,8 +83,6 @@ do_directory(
       Benchmark.h
       BlockFile.cpp
       BlockFile.h
-      CellularPanel.cpp
-      CellularPanel.h
       ClassicThemeAsCeeCode.h
       Clipboard.cpp
       Clipboard.h
@@ -115,7 +114,6 @@ do_directory(
       HiContrastThemeAsCeeCode.h
       HistoryWindow.cpp
       HistoryWindow.h
-      HitTestResult.h
       ImageManipulation.cpp
       ImageManipulation.h
       LabelDialog.cpp
@@ -224,21 +222,13 @@ do_directory(
       TrackPanel.h
       TrackPanelAx.cpp
       TrackPanelAx.h
-      TrackPanelCell.cpp
-      TrackPanelCell.h
-      TrackPanelDrawable.cpp
-      TrackPanelDrawable.h
-      TrackPanelDrawingContext.h
       TrackPanelListener.h
-      TrackPanelMouseEvent.h
       TrackPanelResizeHandle.cpp
       TrackPanelResizeHandle.h
       TrackPanelResizerCell.cpp
       TrackPanelResizerCell.h
       TrackUtilities.cpp
       TrackUtilities.h
-      UIHandle.cpp
-      UIHandle.h
       UndoManager.cpp
       UndoManager.h
       ViewInfo.cpp

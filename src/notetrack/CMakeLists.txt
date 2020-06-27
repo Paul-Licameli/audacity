@@ -12,6 +12,7 @@ do_directory(
       src/utility/registries
       src/widgets
       src/widgets/utility
+      src/widgets/CellularPanel
       wxWidgets
       $<$<BOOL:${USE_MIDI}>:portsmf>
 
