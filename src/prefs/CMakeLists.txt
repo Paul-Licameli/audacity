@@ -23,6 +23,9 @@ do_directory(
       $<$<BOOL:${USE_FFMPEG}>:ffmpeg>
       $<$<BOOL:${USE_MIDI}>:portmidi>
 
+   PUBLIC
+      src/widgets/prefs
+
    PRECOMPILE
       AColor.h
       AudioIO.h
@@ -73,10 +76,6 @@ do_directory(
       MousePrefs.h
       PlaybackPrefs.cpp
       PlaybackPrefs.h
-      PrefsDialog.cpp
-      PrefsDialog.h
-      PrefsPanel.cpp
-      PrefsPanel.h
       ProjectsPrefs.cpp
       ProjectsPrefs.h
       QualityPrefs.cpp

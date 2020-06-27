@@ -110,10 +110,6 @@ do_directory(
       LabelDialog.h
       LabelTrack.cpp
       LabelTrack.h
-      LangChoice.cpp
-      LangChoice.h
-      Languages.cpp
-      Languages.h
       Legacy.cpp
       Legacy.h
       Lyrics.cpp

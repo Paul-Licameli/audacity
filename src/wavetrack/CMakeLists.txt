@@ -4,8 +4,8 @@ do_directory(
       src/effects
       src/etc
       src/ondemand
-      src/prefs
       src/playabletrack
+      src/prefs
       src/track
       src/xml
 

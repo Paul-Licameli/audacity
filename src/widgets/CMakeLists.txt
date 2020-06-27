@@ -2,7 +2,6 @@ do_directory(
    INCLUDE_PRIVATE
       src/commands
       src/etc
-      src/prefs
       src/xml
 
    PUBLIC
@@ -66,6 +65,7 @@ do_directory(
    SUBDIRECTORIES
       CellularPanel
       DialogDefinition
+      prefs
       theme
       help
       utility

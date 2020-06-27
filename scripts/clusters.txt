@@ -7,4 +7,5 @@ Cellular panel:CellularPanel HitTestResult RefreshCode TrackPanelCell TrackPanel
 theme:AColor AllThemeResources ClassicThemeAsCeeCode DarkThemeAsCeeCode HiContrastThemeAsCeeCode ImageManipulation LightThemeAsCeeCode MacroMagic Theme ThemeAsCeeCode
 Dialog definition:Shuttle ShuttleGui ShuttlePrefs WrappedType
 help:AudacityLogger ErrorDialog HelpText HelpSystem MultiDialog Warning
+prefs ui:LangChoice Languages PrefsDialog PrefsPanel
 END
