@@ -16,7 +16,6 @@ do_directory(
    PRIVATE
       src/utility/math
       src/utility/registries
-      src/widgets
       src/widgets/etc
       src/widgets/help
       src/widgets/theme
@@ -60,6 +59,8 @@ do_directory(
       AboutDialog.h
       AdornedRulerPanel.cpp
       AdornedRulerPanel.h
+      AttachableScrollBar.cpp
+      AttachableScrollBar.h
       AudacityApp.cpp
       AudacityApp.h
       AudioIO.cpp
@@ -119,6 +120,10 @@ do_directory(
       LyricsWindow.h
       Menus.cpp
       Menus.h
+      Meter.cpp
+      Meter.h
+      MeterPanelBase.cpp
+      MeterPanelBase.h
       MissingAliasFileDialog.cpp
       MissingAliasFileDialog.h
       Mix.cpp
@@ -160,6 +165,8 @@ do_directory(
       ProjectWindow.h
       RingBuffer.cpp
       RingBuffer.h
+      Ruler.cpp
+      Ruler.h
       Screenshot.cpp
       Screenshot.h
       SelectUtilities.cpp

@@ -12,7 +12,6 @@ do_directory(
    PRIVATE
       src/utility/math
       src/utility/registries
-      src/widgets
       src/widgets/etc
       src/widgets/theme
       src/widgets/utility

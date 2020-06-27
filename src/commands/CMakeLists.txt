@@ -13,7 +13,6 @@ do_directory(
    PRIVATE
       src/utility/math
       src/utility/registries
-      src/widgets
       src/widgets/etc
       src/widgets/help
       src/widgets/theme
@@ -87,12 +86,16 @@ do_directory(
       HelpCommand.h
       ImportExportCommands.cpp
       ImportExportCommands.h
+      KeyView.cpp
+      KeyView.h
       LoadCommands.cpp
       LoadCommands.h
       MessageCommand.cpp
       MessageCommand.h
       OpenSaveCommands.cpp
       OpenSaveCommands.h
+      PopupMenuTable.cpp
+      PopupMenuTable.h
       PreferenceCommands.cpp
       PreferenceCommands.h
       ResponseQueue.cpp

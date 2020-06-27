@@ -9,7 +9,6 @@ do_directory(
    PRIVATE
       src/utility/math
       src/utility/registries
-      src/widgets
       src/widgets/etc
       src/widgets/help
       src/widgets/theme
@@ -47,6 +46,8 @@ do_directory(
       DeviceToolBar.h
       EditToolBar.cpp
       EditToolBar.h
+      Grabber.cpp
+      Grabber.h
       MeterToolBar.cpp
       MeterToolBar.h
       MixerToolBar.cpp

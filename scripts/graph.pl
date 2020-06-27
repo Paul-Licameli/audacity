@@ -19,6 +19,7 @@ my @clusterlist = qw(
    /utility/exceptions
    /utility/math
    /utility/registries
+   /widgets
    /widgets/CellularPanel
    /widgets/DialogDefinition
    /widgets/etc
