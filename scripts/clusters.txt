@@ -2,4 +2,5 @@ utility:AudacityMessageBox Diags FileIO GUISettings Internat MemoryX ODTaskThrea
 exceptions:AudacityException FileException InconsistencyException UserException
 math:Biquad Dither EBUR128 FFT InterpolateAudio Matrix RealFFTf RealFFTf48x Resample SampleFormat SpecPowerMeter Spectrum SseMathFuncs float_cast
 registries:AttachedVirtualFunction ClientData ClientDataHelpers Registrar Registry
+widget utility:BackedPanel FileHistory FileNames HtmlWindow ImageRoll Keyboard KeyboardCapture Overlay OverlayPanel ProjectStatus WindowAccessible valnum wxPanelWrapper FileDialog FileDialogPrivate
 END

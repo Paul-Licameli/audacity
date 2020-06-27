@@ -8,7 +8,7 @@ do_directory(
    PRIVATE
       src/utility/math
       src/utility/registries
-      src/widgets
+      src/widgets/utility
       wxWidgets
       $<$<BOOL:${USE_FFMPEG}>:ffmpeg>
       $<$<BOOL:${USE_LIBFLAC}>:libflac>
@@ -32,9 +32,6 @@ do_directory(
       TimeTrack.h
       UndoManager.h
       WaveTrack.h
-      ASlider.h
-      ProgressDialog.h
-      Ruler.h
 
    SOURCES
       ODComputeSummaryTask.cpp

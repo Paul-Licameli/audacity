@@ -41,6 +41,7 @@ do_directory(
       src/utility/math
       src/utility/registries
       src/widgets
+      src/widgets/utility
       wxWidgets
       lame
       libsndfile

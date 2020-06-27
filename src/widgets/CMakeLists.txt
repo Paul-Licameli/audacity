@@ -6,11 +6,12 @@ do_directory(
       src/xml
 
    PUBLIC
-      src/widgets/FileDialog
+      src/widgets/utility/FileDialog
 
    PRIVATE
       src/utility/math
       src/utility/registries
+      src/widgets/utility
       wxWidgets
 
    PRECOMPILE
@@ -39,24 +40,16 @@ do_directory(
       ASlider.h
       AttachableScrollBar.cpp
       AttachableScrollBar.h
-      BackedPanel.cpp
-      BackedPanel.h
       ErrorDialog.cpp
       ErrorDialog.h
       ExpandingToolBar.cpp
       ExpandingToolBar.h
-      FileHistory.cpp
-      FileHistory.h
       Grabber.cpp
       Grabber.h
       Grid.cpp
       Grid.h
       HelpSystem.cpp
       HelpSystem.h
-      HtmlWindow.cpp
-      HtmlWindow.h
-      ImageRoll.cpp
-      ImageRoll.h
       KeyView.cpp
       KeyView.h
       Meter.cpp
@@ -67,10 +60,6 @@ do_directory(
       MultiDialog.h
       NumericTextCtrl.cpp
       NumericTextCtrl.h
-      Overlay.cpp
-      Overlay.h
-      OverlayPanel.cpp
-      OverlayPanel.h
       PopupMenuTable.cpp
       PopupMenuTable.h
       ProgressDialog.cpp
@@ -79,13 +68,7 @@ do_directory(
       Ruler.h
       Warning.cpp
       Warning.h
-      WindowAccessible.cpp
-      WindowAccessible.h
-      valnum.cpp
-      valnum.h
-      wxPanelWrapper.cpp
-      wxPanelWrapper.h
 
    SUBDIRECTORIES
-      FileDialog
+      utility
 )

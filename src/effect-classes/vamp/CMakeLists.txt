@@ -10,7 +10,7 @@ do_directory(
    PRIVATE
       src/utility/math
       src/utility/registries
-      src/widgets
+      src/widgets/utility
       wxWidgets
       $<$<BOOL:${USE_VAMP}>:libvamp>
 
@@ -29,9 +29,6 @@ do_directory(
       Project.h
       TimeTrack.h
       WaveTrack.h
-      ASlider.h
-      ProgressDialog.h
-      Ruler.h
 
    SOURCES
       LoadVamp.cpp

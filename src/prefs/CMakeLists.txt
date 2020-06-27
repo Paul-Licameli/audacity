@@ -12,6 +12,7 @@ do_directory(
       src/utility/math
       src/utility/registries
       src/widgets
+      src/widgets/utility
       wxWidgets
       libsndfile
       portaudio-v19

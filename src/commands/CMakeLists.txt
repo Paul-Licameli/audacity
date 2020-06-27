@@ -14,6 +14,7 @@ do_directory(
       src/utility/math
       src/utility/registries
       src/widgets
+      src/widgets/utility
       wxWidgets
 
    PRECOMPILE
@@ -81,8 +82,6 @@ do_directory(
       HelpCommand.h
       ImportExportCommands.cpp
       ImportExportCommands.h
-      Keyboard.cpp
-      Keyboard.h
       LoadCommands.cpp
       LoadCommands.h
       MessageCommand.cpp

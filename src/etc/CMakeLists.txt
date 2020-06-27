@@ -17,6 +17,7 @@ do_directory(
       src/utility/math
       src/utility/registries
       src/widgets
+      src/widgets/utility
       wxWidgets
       libsndfile
       portaudio-v19
@@ -25,9 +26,6 @@ do_directory(
       $<$<BOOL:${USE_MIDI}>:portmidi>
       $<$<BOOL:${USE_PORTMIXER}>:portmixer>
       $<$<BOOL:${USE_MIDI}>:portsmf>
-
-   OBJCPP_SOURCES
-      KeyboardCapture.cpp
 
    PRECOMPILE
       AColor.h
@@ -110,8 +108,6 @@ do_directory(
       FFmpeg.h
       FileFormats.cpp
       FileFormats.h
-      FileNames.cpp
-      FileNames.h
       FreqWindow.cpp
       FreqWindow.h
       HelpText.cpp
@@ -122,8 +118,6 @@ do_directory(
       HitTestResult.h
       ImageManipulation.cpp
       ImageManipulation.h
-      KeyboardCapture.cpp
-      KeyboardCapture.h
       LabelDialog.cpp
       LabelDialog.h
       LabelTrack.cpp
@@ -179,8 +173,6 @@ do_directory(
       ProjectSelectionManager.h
       ProjectSettings.cpp
       ProjectSettings.h
-      ProjectStatus.cpp
-      ProjectStatus.h
       ProjectWindow.cpp
       ProjectWindow.h
       RingBuffer.cpp

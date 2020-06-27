@@ -7,6 +7,7 @@ do_directory(
    PRIVATE
       src/utility/math
       src/widgets
+      src/widgets/utility
       wxWidgets
       $<$<BOOL:${USE_LV2}>:lv2>
 

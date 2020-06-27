@@ -7,6 +7,7 @@ do_directory(
    PRIVATE
       src/utility
       src/widgets
+      src/widgets/utility
       wxWidgets
 
    OBJCPP_SOURCES
@@ -17,9 +18,6 @@ do_directory(
       Diags.h
       ImageManipulation.h
       Prefs.h
-      ASlider.h
-      ProgressDialog.h
-      Ruler.h
 
    SOURCES
       AUControl.h

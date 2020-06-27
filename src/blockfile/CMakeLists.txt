@@ -24,7 +24,6 @@ do_directory(
       Mix.h
       NoteTrack.h
       Prefs.h
-      Project.h
       Sequence.h
       TimeTrack.h
       UndoManager.h

@@ -9,7 +9,7 @@ do_directory(
    PRIVATE
       src/utility/math
       src/utility/registries
-      src/widgets
+      src/widgets/utility
       wxWidgets
 
    PRECOMPILE
@@ -27,9 +27,6 @@ do_directory(
       Project.h
       TimeTrack.h
       WaveTrack.h
-      ASlider.h
-      ProgressDialog.h
-      Ruler.h
 
    SOURCES
       PlayableTrackButtonHandles.cpp
