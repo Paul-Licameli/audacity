@@ -1018,6 +1018,7 @@ bool AUPImportFileHandle::HandleSequence(XMLTagHandler *&handler)
          {
             return SetError(XO("Invalid sequence 'maxsamples' attribute."));
          }
+         // Don't need to restore the sequence's max block size
       }
       else if (!wxStrcmp(attr, wxT("sampleformat")))
       {
@@ -1039,6 +1040,8 @@ bool AUPImportFileHandle::HandleSequence(XMLTagHandler *&handler)
          {
             return SetError(XO("Invalid sequence 'numsamples' attribute."));
          }
+         // Don't need to restore sequence's size, it will be deduced
+         // from the blocks
       }
    }
 
@@ -1069,6 +1072,7 @@ bool AUPImportFileHandle::HandleWaveBlock(XMLTagHandler *&handler)
          {
             return SetError(XO("Unable to parse the waveblock 'start' attribute"));
          }
+         // Don't need to restore block's start, it will be deduced
       }
    }
 
