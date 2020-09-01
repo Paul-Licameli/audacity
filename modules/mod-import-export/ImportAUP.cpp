@@ -1186,6 +1186,7 @@ bool AUPImportFileHandle::HandlePCMAliasBlockFile(XMLTagHandler *&handler)
 
       const wxString strValue = value;
 
+      // Old format also stored a "summaryfile" tag that is ignored
       if (!wxStricmp(attr, wxT("aliasfile")))
       {
          if (XMLValueChecker::IsGoodPathName(strValue))
