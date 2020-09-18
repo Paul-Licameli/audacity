@@ -167,8 +167,6 @@ list( APPEND SOURCES
       MIDIPlay.cpp
       Mix.cpp
       Mix.h
-      MixerBoard.cpp
-      MixerBoard.h
       ModuleManager.cpp
       ModuleManager.h
       ModuleSettings.cpp

@@ -336,19 +336,6 @@ const ReservedCommandFlag&
       CommandFlagOptions{}.QuickTest()
    }; return flag; }
 const ReservedCommandFlag&
-   PlayableTracksExistFlag() { static ReservedCommandFlag flag{
-      [](const AudacityProject &project){
-         auto &tracks = TrackList::Get( project );
-         return
-#ifdef EXPERIMENTAL_MIDI_OUT
-            !tracks.Any<const NoteTrack>().empty()
-         ||
-#endif
-            !tracks.Any<const WaveTrack>().empty()
-         ;
-      }
-   }; return flag; }
-const ReservedCommandFlag&
    AudioTracksSelectedFlag() { static ReservedCommandFlag flag{
       [](const AudacityProject &project){
          auto &tracks = TrackList::Get( project );
