@@ -134,8 +134,6 @@ list( APPEND SOURCES
       FFmpeg.h
       FileFormats.cpp
       FileFormats.h
-      FreqWindow.cpp
-      FreqWindow.h
       HelpText.cpp
       HelpText.h
       HiContrastThemeAsCeeCode.h

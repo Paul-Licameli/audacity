@@ -1242,3 +1242,5 @@ AttachedItem sAttachment{ wxT("Analyze/Analyzers/Windows"),
 
 }
 
+#include "ModuleConstants.h"
+DEFINE_MODULE_ENTRIES
