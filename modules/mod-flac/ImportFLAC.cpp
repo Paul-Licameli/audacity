@@ -22,8 +22,6 @@
 
 *//*******************************************************************/
 
-
-
 // For compilers that support precompilation, includes "wx/wx.h".
 #include <wx/wxprec.h>
 
@@ -34,12 +32,12 @@
 
 #include <wx/defs.h>
 
-#include "Import.h"
-#include "ImportPlugin.h"
+#include "import/Import.h"
+#include "import/ImportPlugin.h"
 
-#include "../SelectFile.h"
-#include "../Tags.h"
-#include "../widgets/ProgressDialog.h"
+#include "SelectFile.h"
+#include "Tags.h"
+#include "widgets/ProgressDialog.h"
 
 #define FLAC_HEADER "fLaC"
 
@@ -65,8 +63,8 @@ static Importer::RegisteredUnusableImportPlugin registered{
 #include "FLAC++/decoder.h"
 
 #include "Prefs.h"
-#include "../WaveTrack.h"
-#include "ImportPlugin.h"
+#include "WaveTrack.h"
+#include "import/ImportPlugin.h"
 
 #ifdef USE_LIBID3TAG
 extern "C" {
@@ -484,5 +482,8 @@ FLACImportFileHandle::~FLACImportFileHandle()
 {
    mFile->finish();
 }
+
+#include "ModuleConstants.h"
+DEFINE_MODULE_ENTRIES
 
 #endif /* USE_LIBFLAC */
