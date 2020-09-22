@@ -612,7 +612,6 @@ list( APPEND SOURCES
 
       # Menus
 
-      menus/ClipMenus.cpp
       menus/EditMenus.cpp
       menus/ExtraMenus.cpp
       menus/FileMenus.cpp

@@ -27,6 +27,7 @@ static const std::unordered_set<wxString> &autoEnabledModules()
       "mod-contrast",
       "mod-frequency-plot",
       "mod-timer-record",
+      "mod-clip-menu-items",
    };
    return modules;
 }
