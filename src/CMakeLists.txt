@@ -157,10 +157,6 @@ list( APPEND SOURCES
       LightThemeAsCeeCode.h
       LogWindow.cpp
       LogWindow.h
-      Lyrics.cpp
-      Lyrics.h
-      LyricsWindow.cpp
-      LyricsWindow.h
       MacroMagic.h
       Menus.cpp
       Menus.h
