@@ -9,23 +9,22 @@
 
 *//*******************************************************************/
 
-
 #include "Contrast.h"
 
-#include "../CommonCommandFlags.h"
-#include "../WaveTrack.h"
+#include "CommonCommandFlags.h"
+#include "WaveTrack.h"
 #include "Prefs.h"
-#include "../Project.h"
-#include "../ProjectFileIO.h"
-#include "../ProjectSettings.h"
-#include "../ProjectWindow.h"
-#include "../SelectFile.h"
-#include "../ShuttleGui.h"
+#include "Project.h"
+#include "ProjectFileIO.h"
+#include "ProjectSettings.h"
+#include "ProjectWindow.h"
+#include "SelectFile.h"
+#include "ShuttleGui.h"
 #include "FileNames.h"
-#include "../ViewInfo.h"
-#include "../widgets/HelpSystem.h"
-#include "../widgets/NumericTextCtrl.h"
-#include "../widgets/AudacityMessageBox.h"
+#include "ViewInfo.h"
+#include "widgets/HelpSystem.h"
+#include "widgets/NumericTextCtrl.h"
+#include "widgets/AudacityMessageBox.h"
 
 #include <cmath>
 #include <limits>
@@ -653,7 +652,7 @@ void ContrastDialog::OnReset(wxCommandEvent & /*event*/)
 // Remaining code hooks this add-on into the application
 #include "commands/CommandContext.h"
 #include "commands/CommandManager.h"
-#include "../commands/ScreenshotCommand.h"
+#include "commands/ScreenshotCommand.h"
 
 namespace {
 
@@ -703,3 +702,6 @@ AttachedItem sAttachment{ wxT("Analyze/Analyzers/Windows"),
 };
 
 }
+
+#include "ModuleConstants.h"
+DEFINE_MODULE_ENTRIES

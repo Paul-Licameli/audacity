@@ -384,8 +384,6 @@ list( APPEND SOURCES
       effects/ClickRemoval.h
       effects/Compressor.cpp
       effects/Compressor.h
-      effects/Contrast.cpp
-      effects/Contrast.h
       effects/Distortion.cpp
       effects/Distortion.h
       effects/DtmfGen.cpp

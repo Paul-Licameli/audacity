@@ -24,6 +24,7 @@ static const std::unordered_set<wxString> &autoEnabledModules()
       "mod-mixer-board",
       "mod-lyrics",
       "mod-undo-history",
+      "mod-contrast",
    };
    return modules;
 }
