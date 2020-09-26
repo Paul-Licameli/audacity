@@ -90,6 +90,9 @@ public:
    using Predicate = std::function< bool( const AudacityProject& ) >;
    ReservedCommandFlag( const Predicate &predicate,
       const CommandFlagOptions &options = {} );
+   ~ReservedCommandFlag();
+
+   struct AUDACITY_DLL_API Init{ Init(); };
 };
 
 // To describe auto-selection, stop-if-paused, etc.:
@@ -121,5 +124,7 @@ struct AUDACITY_DLL_API RegisteredMenuItemEnabler{
 
 // Unnecessary #include to indicate otherwise hidden link dependencies
 #include "Menus.h"
+
+static ReservedCommandFlag::Init sInitReservedCommandFlags;
 
 #endif

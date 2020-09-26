@@ -1125,8 +1125,8 @@ void ProjectAudioManager::DoPlayStopSelect()
 #include "CommonCommandFlags.h"
 
 static RegisteredMenuItemEnabler stopIfPaused{{
-   []{ return PausedFlag(); },
-   []{ return AudioIONotBusyFlag(); },
+   PausedFlag,
+   AudioIONotBusyFlag,
    []( const AudacityProject &project ){
       return MenuManager::Get( project ).mStopIfWasPaused; },
    []( AudacityProject &project, CommandFlag ){
