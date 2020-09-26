@@ -1532,4 +1532,7 @@ void ShowDiskFullExportErrorDialog(const wxFileNameWrapper &fileName)
    );
 }
 
-
+Exporter::RegisteredExportPlugin::Init::Init()
+{
+   (void) ExporterItem::Registry();
+}

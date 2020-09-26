@@ -31,6 +31,8 @@ Entry::Entry(
    sTagTable()[ tag ] = factory;
 }
 
+Entry::Init::Init(){ (void) sTagTable(); }
+
 TagHandlerFactory Lookup( const wxString &tag )
 {
    const auto &table = sTagTable();

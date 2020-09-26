@@ -88,6 +88,8 @@ class AUDACITY_DLL_API PrefsPanel /* not final */
       Registration( const wxString &name, const Factory &factory,
          bool expanded = true,
          const Registry::Placement &placement = { wxEmptyString, {} });
+
+      struct AUDACITY_DLL_API Init{ Init(); };
    };
 
    PrefsPanel(wxWindow * parent,
@@ -138,5 +140,8 @@ class AUDACITY_DLL_API PrefsPanel /* not final */
       struct Visitor;
    };
 };
+
+// Guarantees registry exists before attempts to use it
+static PrefsPanel::Registration::Init sInitPrefsPanelRegistration;
 
 #endif

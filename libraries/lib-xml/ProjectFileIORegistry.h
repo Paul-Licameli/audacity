@@ -28,6 +28,8 @@ using TagHandlerFactory =
 //! Typically statically constructed
 struct XML_API Entry{
    Entry( const wxString &tag, const TagHandlerFactory &factory );
+
+   struct AUDACITY_DLL_API Init{ Init(); };
 };
 
 XML_API TagHandlerFactory Lookup( const wxString &tag );
@@ -45,5 +47,8 @@ struct XML_API WriterEntry{
 XML_API const WriterTable &GetWriters();
 
 }
+
+// Guarantees registry exists before attempts to use it
+static ProjectFileIORegistry::Entry::Init sInitProjectFileIORegistryEntry;
 
 #endif

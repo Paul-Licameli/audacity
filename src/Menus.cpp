@@ -812,3 +812,8 @@ void MenuManager::TellUserWhyDisallowed(
       reason,
       helpPage);
 }
+
+MenuTable::AttachedItem::Init::Init()
+{
+   (void) ItemRegistry::Registry();
+}

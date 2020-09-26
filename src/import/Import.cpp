@@ -894,3 +894,13 @@ void ImportStreamDialog::OnCancel(wxCommandEvent & WXUNUSED(event))
 {
    EndModal( wxID_CANCEL );
 }
+
+Importer::RegisteredImportPlugin::Init::Init()
+{
+   (void) ImporterItem::Registry();
+}
+
+Importer::RegisteredUnusableImportPlugin::Init::Init()
+{
+   void sUnusableImportPluginList();
+}

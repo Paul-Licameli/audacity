@@ -212,3 +212,8 @@ std::unique_ptr<Effect> BuiltinEffectsModule::Instantiate(const PluginPath & pat
    wxASSERT( false );
    return nullptr;
 }
+
+BuiltinEffectsModule::Init::Init()
+{
+   (void) Entry::Registry();
+}

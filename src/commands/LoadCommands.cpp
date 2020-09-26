@@ -215,3 +215,8 @@ std::unique_ptr<AudacityCommand> BuiltinCommandsModule::Instantiate(const Plugin
    wxASSERT( false );
    return nullptr;
 }
+
+BuiltinCommandsModule::Init::Init()
+{
+   (void) Entry::Registry();
+}

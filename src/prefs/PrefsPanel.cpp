@@ -124,3 +124,8 @@ PrefsPanel::Factories
    } );
    return factories;
 }
+
+PrefsPanel::Registration::Init::Init()
+{
+   (void) PrefsItem::Registry();
+}
