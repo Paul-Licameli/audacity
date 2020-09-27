@@ -49,6 +49,52 @@ static WaveTrackSubViewType::Registration reg{ sType };
 
 WaveformView::~WaveformView() = default;
 
+static EnvelopeHandle::Data FindData(
+   const AudacityProject &project, WaveTrack *wt, wxCoord xx, wxCoord origin)
+{
+   EnvelopeHandle::Data results;
+   results.mLog = !wt->GetWaveformSettings().isLinear();
+   wt->GetDisplayBounds(&results.mLower, &results.mUpper);
+   results.mdBRange = wt->GetWaveformSettings().dBRange;
+   auto channels = TrackList::Channels( wt );
+   results.mEnvelopeEditors.resize(1);
+   // Note that there is not necessarily an envelope at every channel
+   for ( auto channel : channels ) {
+      auto &viewInfo = ViewInfo::Get(project);
+      auto time = viewInfo.PositionToTime(xx, origin);
+      auto e = channel->GetEnvelopeAtTime(time);
+      if (e) {
+         auto pEditor = std::make_unique< EnvelopeEditor >( *e, true );
+         if (channel == wt)
+            *results.mEnvelopeEditors.begin() = std::move(pEditor);
+         else
+            results.mEnvelopeEditors.push_back(std::move(pEditor));
+      }
+      else if (channel == wt) {
+         // Require an envelope at the picked channel, or else return
+         // empty vector to indicate a miss
+         results.mEnvelopeEditors.clear();
+         break;
+      }
+   }
+   results.mMessage =
+      XO("Click and drag to edit the amplitude envelope");
+
+   return results;
+}
+
+static UIHandlePtr EnvelopeHitTest
+(std::weak_ptr<EnvelopeHandle> &holder,
+ const wxMouseState &state, const wxRect &rect,
+ const AudacityProject *pProject, const std::shared_ptr<WaveTrack> &wt)
+{
+   auto data = FindData(*pProject, wt.get(), state.GetX(), rect.GetX());
+   if (data.mEnvelopeEditors.empty())
+      return {};
+   return EnvelopeHandle::HitEnvelope(holder, state, rect, pProject,
+      std::move(data));
+}
+
 std::vector<UIHandlePtr> WaveformView::DetailedHitTest(
    const TrackPanelMouseState &st,
    const AudacityProject *pProject, int currentTool, bool bMultiTool )
@@ -69,7 +115,7 @@ std::vector<UIHandlePtr> WaveformView::DetailedHitTest(
          // If Tools toolbar were eliminated, we would keep these
          // The priority of these, in case more than one might apply at one
          // point, seems arbitrary
-         if (NULL != (result = EnvelopeHandle::WaveTrackHitTest(
+         if (NULL != (result = EnvelopeHitTest(
             view.mEnvelopeHandle, st.state, st.rect,
             pProject, pTrack )))
             results.push_back(result);
@@ -88,12 +134,10 @@ std::vector<UIHandlePtr> WaveformView::DetailedHitTest(
                // Unconditional hits appropriate to the tool
                // If tools toolbar were eliminated, we would eliminate these
             case ToolCodes::envelopeTool: {
-               auto &viewInfo = ViewInfo::Get(*pProject);
-               auto time =
-                  viewInfo.PositionToTime(st.state.m_x, st.rect.GetX());
-               auto envelope = pTrack->GetEnvelopeAtTime(time);
                result = EnvelopeHandle::HitAnywhere(
-                  view.mEnvelopeHandle, envelope, false);
+                  view.mEnvelopeHandle,
+                  FindData(*pProject,
+                     pTrack.get(), st.state.m_x, st.rect.GetX()));
                break;
             }
             case ToolCodes::drawTool:

@@ -44,12 +44,50 @@ TimeTrackView::~TimeTrackView()
 {
 }
 
+namespace {
+   void GetTimeTrackData
+      (const AudacityProject &project, const TimeTrack &tt,
+       double &dBRange, bool &dB, float &zoomMin, float &zoomMax)
+   {
+      const auto &viewInfo = ViewInfo::Get( project );
+      dBRange = viewInfo.dBr;
+      dB = tt.GetDisplayLog();
+      zoomMin = tt.GetRangeLower(), zoomMax = tt.GetRangeUpper();
+      if (dB) {
+         // MB: silly way to undo the work of GetWaveYPos while still getting a logarithmic scale
+         zoomMin = LINEAR_TO_DB(std::max(1.0e-7, double(zoomMin))) / dBRange + 1.0;
+         zoomMax = LINEAR_TO_DB(std::max(1.0e-7, double(zoomMax))) / dBRange + 1.0;
+      }
+   }
+
+   static UIHandlePtr EnvelopeHitTest
+   (std::weak_ptr<EnvelopeHandle> &holder,
+    const wxMouseState &state, const wxRect &rect,
+    const AudacityProject *pProject, const std::shared_ptr<TimeTrack> &tt)
+   {
+      const auto envelope = tt->GetEnvelope();
+      if (!envelope)
+         return {};
+      EnvelopeHandle::Data data;
+      GetTimeTrackData( *pProject, *tt,
+         data.mdBRange, data.mLog, data.mLower, data.mUpper);
+      data.mEnvelopeEditors.push_back(
+         std::make_unique< EnvelopeEditor >( *envelope, false )
+      );
+      data.mMessage =
+         XO("Click and drag to warp playback time");
+
+      return EnvelopeHandle::HitEnvelope(holder, state, rect, pProject,
+         std::move(data));
+   }
+}
+
 std::vector<UIHandlePtr> TimeTrackView::DetailedHitTest
 (const TrackPanelMouseState &st,
  const AudacityProject *pProject, int, bool)
 {
    std::vector<UIHandlePtr> results;
-   auto result = EnvelopeHandle::TimeTrackHitTest
+   auto result = EnvelopeHitTest
       ( mEnvelopeHandle, st.state, st.rect, pProject,
         std::static_pointer_cast< TimeTrack >( FindTrack() ) );
    if (result)

@@ -32,6 +32,8 @@ public:
    EnvelopeEditor(Envelope &envelope, bool mirrored);
    ~EnvelopeEditor();
 
+   const Envelope &GetEnvelope() const { return mEnvelope; }
+
    // Event Handlers
    // Each of these returns true if the envelope needs to be redrawn
    bool MouseEvent(const wxMouseEvent & event, wxRect & r,

@@ -11,6 +11,7 @@ Paul Licameli split from TrackPanel.cpp
 #ifndef __AUDACITY_ENVELOPE_HANDLE__
 #define __AUDACITY_ENVELOPE_HANDLE__
 
+#include "../../Internat.h"
 #include "../../UIHandle.h"
 
 #include <vector>
@@ -21,39 +22,38 @@ class wxMouseState;
 class Envelope;
 class EnvelopeEditor;
 class ViewInfo;
-class TimeTrack;
-class WaveTrack;
 
 class AUDACITY_DLL_API EnvelopeHandle final : public UIHandle
 {
    EnvelopeHandle(const EnvelopeHandle&) = delete;
    EnvelopeHandle &operator=(const EnvelopeHandle&) = delete;
 
-   static UIHandlePtr HitEnvelope
-      (std::weak_ptr<EnvelopeHandle> &holder,
-       const wxMouseState &state, const wxRect &rect,
-       const AudacityProject *pProject,
-       Envelope *envelope, float zoomMin, float zoomMax,
-       bool dB, float dBRange, bool timeTrack);
-
 public:
-   explicit EnvelopeHandle( Envelope *pEnvelope );
+   struct Data {
+      Data() = default;
+      Data(Data&&) = default;
+      bool mLog{};
+      float mLower{}, mUpper{};
+      double mdBRange{};
+      std::vector< std::unique_ptr<EnvelopeEditor> > mEnvelopeEditors;
+      TranslatableString mMessage;
+   };
+   explicit EnvelopeHandle( Data data );
+
+   static UIHandlePtr HitEnvelope(
+      std::weak_ptr<EnvelopeHandle> &holder,
+      const wxMouseState &state, const wxRect &rect,
+      const AudacityProject *pProject,
+      Data data);
+
 
    virtual ~EnvelopeHandle();
 
-   static UIHandlePtr HitAnywhere
-      (std::weak_ptr<EnvelopeHandle> &holder, Envelope *envelope,
-       bool timeTrack);
-   static UIHandlePtr TimeTrackHitTest
-      (std::weak_ptr<EnvelopeHandle> &holder,
-       const wxMouseState &state, const wxRect &rect,
-       const AudacityProject *pProject, const std::shared_ptr<TimeTrack> &tt);
-   static UIHandlePtr WaveTrackHitTest
-      (std::weak_ptr<EnvelopeHandle> &holder,
-       const wxMouseState &state, const wxRect &rect,
-       const AudacityProject *pProject, const std::shared_ptr<WaveTrack> &wt);
+   static UIHandlePtr HitAnywhere(
+      std::weak_ptr<EnvelopeHandle> &holder,
+      Data data);
 
-   Envelope *GetEnvelope() const { return mEnvelope; }
+   const Envelope *GetEnvelope() const;
 
    void Enter(bool forward, AudacityProject *) override;
 
@@ -80,14 +80,7 @@ private:
       (const wxMouseEvent &event, const ViewInfo &viewInfo);
 
    wxRect mRect{};
-   bool mLog{};
-   float mLower{}, mUpper{};
-   double mdBRange{};
-
-   Envelope *mEnvelope{};
-   std::vector< std::unique_ptr<EnvelopeEditor> > mEnvelopeEditors;
-
-   bool mTimeTrack{};
+   Data mData{};
 };
 
 #endif
