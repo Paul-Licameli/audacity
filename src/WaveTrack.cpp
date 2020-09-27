@@ -202,6 +202,24 @@ void WaveTrack::SetPanFromChannelType()
       SetPan( 1.0f );
 };
 
+static const Track::TypeInfo &typeInfo()
+{
+   static const Track::TypeInfo info{ TrackKind::Wave,
+      { "wave", "wave", XO("Wave Track") },
+      true, &PlayableTrack::ClassTypeInfo() };
+   return info;
+}
+
+auto WaveTrack::GetTypeInfo() const -> const TypeInfo &
+{
+   return typeInfo();
+}
+
+auto WaveTrack::ClassTypeInfo() -> const TypeInfo &
+{
+   return typeInfo();
+}
+
 template< typename Container >
 static Container MakeIntervals(const std::vector<WaveClipHolder> &clips)
 {

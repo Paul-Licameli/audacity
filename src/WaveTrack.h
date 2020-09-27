@@ -526,6 +526,9 @@ private:
    // Resample track (i.e. all clips in the track)
    void Resample(int rate, ProgressDialog *progress = NULL);
 
+   const TypeInfo &GetTypeInfo() const override;
+   static const TypeInfo &ClassTypeInfo();
+
    class IntervalData final : public Track::IntervalData {
    public:
       explicit IntervalData( const std::shared_ptr<WaveClip> &pClip )
