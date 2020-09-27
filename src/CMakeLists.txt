@@ -417,10 +417,6 @@ list( APPEND SOURCES
          export/ExportMP2.cpp
       >
 
-      $<$<AND:$<BOOL:${USE_LIBOGG}>,$<BOOL:${USE_LIBVORBIS}>>:
-         export/ExportOGG.cpp
-      >
-
       # Import
 
       import/FormatClassifier.cpp
@@ -462,10 +458,6 @@ list( APPEND SOURCES
 
       $<$<BOOL:${USE_LIBMAD}>:
          import/ImportMP3.cpp
-      >
-
-      $<$<AND:$<BOOL:${USE_LIBOGG}>,$<BOOL:${USE_LIBVORBIS}>>:
-         import/ImportOGG.cpp
       >
 
       # Menus
@@ -881,7 +873,6 @@ list( APPEND LIBRARIES
       $<$<BOOL:${USE_LIBID3TAG}>:libid3tag::libid3tag>
       $<$<BOOL:${USE_LIBMAD}>:libmad::libmad>
       $<$<BOOL:${USE_LIBOGG}>:libogg>
-      $<$<BOOL:${USE_LIBVORBIS}>:libvorbis>
       $<$<BOOL:${USE_LIBTWOLAME}>:twolame>
       $<$<BOOL:${USE_MIDI}>:portmidi>
       $<$<BOOL:${USE_MIDI}>:portsmf>
@@ -970,7 +961,6 @@ elseif( CMAKE_SYSTEM_NAME MATCHES "Darwin" )
       ../mac/Resources/AudacityAIFF.icns
       ../mac/Resources/AudacityAU.icns
       ../mac/Resources/AudacityMP3.icns
-      ../mac/Resources/AudacityOGG.icns
       ../mac/Resources/AudacityProject.icns
       ../mac/Resources/AudacityWAV.icns
    )
@@ -1062,12 +1052,6 @@ else()
          audio/x-wav
       )
    endif()
-   if( USE_LIBOGG AND USE_LIBVORBIS )
-      list( APPEND MIMETYPES
-         application/ogg
-         audio/x-vorbis+ogg
-      )
-   endif()
 
    # Create the desktop file
    configure_file( audacity.desktop.in ${_INTDIR}/audacity.desktop )
@@ -1094,7 +1078,7 @@ set_target_property_all( ${TARGET} RUNTIME_OUTPUT_NAME ${AUDACITY_NAME} )
 organize_source( "${TARGET_ROOT}/.." "include" "${HEADERS}" )
 organize_source( "${TARGET_ROOT}/../presets" "presets" "${RESOURCES}" )
 organize_source( "${TARGET_ROOT}" "src" "${SOURCES}" )
-organize_source( "${TARGET_ROOT}/../mac/Resources" "mac" "${MAC_RESOURCES}" )
+organize_source( "${TARGET_ROOT}/.." "mac/resources" "${MAC_RESOURCES}" )
 organize_source( "${TARGET_ROOT}/../win" "win" "${WIN_RESOURCES}" )
 
 #

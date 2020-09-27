@@ -167,8 +167,6 @@ addlib( sqlite             sqlite      SQLITE      YES   YES   "sqlite3 >= 3.32.
 #
 #       directory          option      symbol      req   chk   version
 addlib( ffmpeg             ffmpeg      FFMPEG      NO    NO    "libavcodec >= 51.53" "libavformat >= 52.12" "libavutil >= 52.66" )
-addlib( libogg             ogg         LIBOGG      NO    YES   "ogg >= 1.3.1" )
-addlib( libvorbis          vorbis      LIBVORBIS   NO    YES   "vorbis >= 1.3.3" "vorbisenc >= 1.3.3" "vorbisfile >= 1.3.3" )
 
 addlib( portmidi           midi        MIDI        NO    YES   "portmidi >= 0.1" )
 if (NOT USE_MIDI AND

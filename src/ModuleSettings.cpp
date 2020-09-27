@@ -45,6 +45,7 @@ static const std::unordered_set<wxString> &autoEnabledModules()
       "mod-macros",
       "mod-plugin-menus",
       "mod-flac",
+      "mod-ogg",
   };
    return modules;
 }
