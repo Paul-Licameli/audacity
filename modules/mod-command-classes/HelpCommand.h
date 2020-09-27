@@ -20,8 +20,8 @@
 #ifndef __HELPCOMMAND__
 #define __HELPCOMMAND__
 
-#include "CommandType.h"
-#include "Command.h"
+#include "commands/CommandType.h"
+#include "commands/Command.h"
 
 class HelpCommand : public AudacityCommand
 {

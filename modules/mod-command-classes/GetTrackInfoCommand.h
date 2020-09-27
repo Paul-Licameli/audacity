@@ -16,8 +16,8 @@
 #ifndef __GETTRACKINFOCOMMAND__
 #define __GETTRACKINFOCOMMAND__
 
-#include "Command.h"
-#include "CommandType.h"
+#include "commands/Command.h"
+#include "commands/CommandType.h"
 
 class GetTrackInfoCommand final : public AudacityCommand
 {

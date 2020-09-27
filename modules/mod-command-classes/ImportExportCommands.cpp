@@ -14,19 +14,18 @@
 
 *//*******************************************************************/
 
-
 #include "ImportExportCommands.h"
 
-#include "LoadCommands.h"
-#include "../ProjectFileManager.h"
-#include "../ViewInfo.h"
-#include "../export/Export.h"
-#include "../SelectUtilities.h"
-#include "../Shuttle.h"
-#include "../ShuttleGui.h"
-#include "../Track.h"
+#include "commands/LoadCommands.h"
+#include "ProjectFileManager.h"
+#include "ViewInfo.h"
+#include "export/Export.h"
+#include "SelectUtilities.h"
+#include "Shuttle.h"
+#include "ShuttleGui.h"
+#include "Track.h"
 #include "wxFileNameWrapper.h"
-#include "CommandContext.h"
+#include "commands/CommandContext.h"
 
 const ComponentInterfaceSymbol ImportCommand::Symbol
 { XO("Import2") };

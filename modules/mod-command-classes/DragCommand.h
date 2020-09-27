@@ -16,8 +16,8 @@
 #ifndef __DRAG_COMMAND__
 #define __DRAG_COMMAND__
 
-#include "Command.h"
-#include "CommandType.h"
+#include "commands/Command.h"
+#include "commands/CommandType.h"
 
 class DragCommand : public AudacityCommand
 {

@@ -16,15 +16,14 @@
 
 *//*******************************************************************/
 
-
 #include "DragCommand.h"
 
-#include "LoadCommands.h"
-#include "../Project.h"
-#include "../WaveTrack.h"
-#include "../Shuttle.h"
-#include "../ShuttleGui.h"
-#include "CommandContext.h"
+#include "commands/LoadCommands.h"
+#include "Project.h"
+#include "WaveTrack.h"
+#include "Shuttle.h"
+#include "ShuttleGui.h"
+#include "commands/CommandContext.h"
 
 #include <wx/frame.h>
 

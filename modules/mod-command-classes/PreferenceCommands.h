@@ -21,8 +21,8 @@
 #ifndef __PREFERENCE_COMMANDS__
 #define __PREFERENCE_COMMANDS__
 
-#include "Command.h"
-#include "CommandType.h"
+#include "commands/Command.h"
+#include "commands/CommandType.h"
 
 // GetPreference
 

@@ -15,15 +15,14 @@ SetPreferenceCommand classes
 
 *//*******************************************************************/
 
-
 #include "PreferenceCommands.h"
 
-#include "LoadCommands.h"
+#include "commands/LoadCommands.h"
 #include "Prefs.h"
-#include "../Shuttle.h"
-#include "../ShuttleGui.h"
-#include "../commands/CommandContext.h"
-#include "../prefs/PrefsDialog.h"
+#include "Shuttle.h"
+#include "ShuttleGui.h"
+#include "commands/CommandContext.h"
+#include "prefs/PrefsDialog.h"
 
 const ComponentInterfaceSymbol GetPreferenceCommand::Symbol
 { XO("Get Preference") };

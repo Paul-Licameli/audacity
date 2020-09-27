@@ -21,8 +21,8 @@
 #ifndef __MESSAGE_COMMAND__
 #define __MESSAGE_COMMAND__
 
-#include "CommandType.h"
-#include "Command.h"
+#include "commands/CommandType.h"
+#include "commands/Command.h"
 
 class MessageCommand : public AudacityCommand
 {
