@@ -183,4 +183,3 @@ if (NOT USE_PORTMIXER AND
 endif ()
 
 addlib( portsmf            portsmf     PORTSMF     NO    YES   "portSMF >= 0.1" )
-addlib( twolame            twolame     LIBTWOLAME  NO    YES   "twolame >= 0.3.13" )
