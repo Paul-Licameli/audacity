@@ -49,7 +49,6 @@
 #include "Prefs.h"
 #include "Project.h"
 #include "Sequence.h"
-#include "TimeTrack.h"
 #include "UndoManager.h"
 #include "WaveTrack.h"
 #include "widgets/ASlider.h"
