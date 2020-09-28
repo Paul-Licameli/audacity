@@ -8,18 +8,16 @@ Paul Licameli split from TrackPanel.cpp
 
 **********************************************************************/
 
-
-
 #ifdef USE_MIDI
 #include "NoteTrackButtonHandle.h"
 
-#include "../../../../HitTestResult.h"
+#include "HitTestResult.h"
 #include "NoteTrackControls.h"
-#include "../../../../TrackPanelMouseEvent.h"
-#include "../../../../NoteTrack.h"
-#include "../../../../ProjectHistory.h"
-#include "../../../../RefreshCode.h"
-#include "../../../../TrackInfo.h"
+#include "TrackPanelMouseEvent.h"
+#include "NoteTrack.h"
+#include "ProjectHistory.h"
+#include "RefreshCode.h"
+#include "TrackInfo.h"
 
 NoteTrackButtonHandle::NoteTrackButtonHandle
 ( const std::shared_ptr<NoteTrack> &pTrack,

@@ -3,9 +3,9 @@
  @brief headerless file injects method definitions for time shifting of NoteTrack
  */
 
-#include "../../../ui/TimeShiftHandle.h"
-#include "../../../../NoteTrack.h"
-#include "../../../../ViewInfo.h"
+#include "tracks/ui/TimeShiftHandle.h"
+#include "NoteTrack.h"
+#include "ViewInfo.h"
 
 class NoteTrackShifter final : public TrackShifter {
 public:

@@ -10,11 +10,11 @@
 
 #pragma once
 
-#include "../../../ui/CommonTrackPanelCell.h"
+#include "tracks/ui/CommonTrackPanelCell.h"
 
 class AffordanceHandle;
 
-class AUDACITY_DLL_API NoteTrackAffordanceControls : public CommonTrackCell
+class NOTE_TRACK_UI_API NoteTrackAffordanceControls : public CommonTrackCell
 {
     std::weak_ptr<AffordanceHandle> mAffordanceHandle;
 public:

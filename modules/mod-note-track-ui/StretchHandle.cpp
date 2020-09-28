@@ -8,24 +8,22 @@ Paul Licameli split from TrackPanel.cpp
 
 **********************************************************************/
 
-
-
 #ifdef USE_MIDI
-#include "../lib-src/header-substitutes/allegro.h"
+#include "../../lib-src/header-substitutes/allegro.h"
 
 #include "StretchHandle.h"
 
-#include "../../../ui/CommonTrackPanelCell.h"
-#include "../../../../HitTestResult.h"
-#include "../../../../NoteTrack.h"
-#include "../../../../ProjectAudioIO.h"
-#include "../../../../ProjectHistory.h"
-#include "../../../../ProjectSettings.h"
-#include "../../../../RefreshCode.h"
-#include "../../../../TrackPanelMouseEvent.h"
-#include "../../../../UndoManager.h"
-#include "../../../../ViewInfo.h"
-#include "../../../../../images/Cursors.h"
+#include "tracks/ui/CommonTrackPanelCell.h"
+#include "HitTestResult.h"
+#include "NoteTrack.h"
+#include "ProjectAudioIO.h"
+#include "ProjectHistory.h"
+#include "ProjectSettings.h"
+#include "RefreshCode.h"
+#include "TrackPanelMouseEvent.h"
+#include "UndoManager.h"
+#include "ViewInfo.h"
+#include "../../images/Cursors.h"
 
 #include <algorithm>
 

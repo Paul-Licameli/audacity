@@ -16,7 +16,7 @@ Paul Licameli split from TrackMenus.cpp
 
 // Attach a menu item for diagnostic information
 
-#include "../../../../AudioIOBase.h"
+#include "AudioIOBase.h"
 #include "commands/CommandContext.h"
 #include "commands/CommandManager.h"
 #include "CommonCommandFlags.h"
