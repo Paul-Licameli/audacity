@@ -210,6 +210,8 @@ static const Track::TypeInfo &typeInfo()
    return info;
 }
 
+static TrackTypeRegistry::RegisteredType sType{ "Wave", typeInfo() };
+
 auto WaveTrack::GetTypeInfo() const -> const TypeInfo &
 {
    return typeInfo();

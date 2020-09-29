@@ -557,6 +557,8 @@ static const Track::TypeInfo &typeInfo()
    return info;
 }
 
+static TrackTypeRegistry::RegisteredType sType{ "Note", typeInfo() };
+
 auto NoteTrack::GetTypeInfo() const -> const TypeInfo &
 {
    return typeInfo();

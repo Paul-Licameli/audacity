@@ -21,6 +21,8 @@ static const Track::TypeInfo &typeInfo()
    return info;
 }
 
+static TrackTypeRegistry::RegisteredType sType{ "Sample", typeInfo() };
+
 auto SampleTrack::ClassTypeInfo() -> const TypeInfo &
 {
    return typeInfo();

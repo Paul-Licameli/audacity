@@ -1343,3 +1343,42 @@ bool TrackList::HasPendingTracks() const
       return true;
    return false;
 }
+
+TrackTypeRegistry::Item::Item(const Identifier &id, const Track::TypeInfo &info)
+   : SingleItem{id}
+   , info{info}
+{
+}
+
+static const auto PathStart = wxT("TrackTypes");
+
+auto TrackTypeRegistry::Item::Registry() -> Registry::GroupItem &
+{
+   static Registry::TransparentGroupItem<> registry{ PathStart };
+   return registry;
+}
+
+TrackTypeRegistry::RegisteredType::RegisteredType(
+   const Identifier &id, const Track::TypeInfo &info)
+   : RegisteredItem{ std::make_unique<Item>(id, info), { wxEmptyString, {} } }
+{
+}
+
+TrackTypeRegistry::RegisteredType::Init::Init()
+{
+   Item::Registry();
+}
+
+void TrackTypeRegistry::ForEach(std::function<void(const Track::TypeInfo&)> f)
+{
+   struct Visitor final : Registry::Visitor{
+      std::function<void(const Track::TypeInfo&)> f;
+      void Visit( Registry::SingleItem &item, const Path &path ) override
+      {
+         f(static_cast<const Item&>(item).info);
+      }
+   } visitor;
+   visitor.f = std::move(f);
+   Registry::TransparentGroupItem<> top{ PathStart };
+   Registry::Visit( visitor, &top, &Item::Registry());
+}
