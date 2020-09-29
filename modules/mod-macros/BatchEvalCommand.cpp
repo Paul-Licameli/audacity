@@ -13,12 +13,11 @@
 
 *//*******************************************************************/
 
-
 #include "BatchEvalCommand.h"
 
-#include "CommandContext.h"
-#include "CommandDirectory.h"
-#include "../Project.h"
+#include "commands/CommandContext.h"
+#include "commands/CommandDirectory.h"
+#include "Project.h"
 
 static CommandDirectory::RegisterType sRegisterType{
    std::make_unique<BatchEvalCommandType>()

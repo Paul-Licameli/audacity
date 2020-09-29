@@ -42,6 +42,7 @@ static const std::unordered_set<wxString> &autoEnabledModules()
       "mod-command-classes",
       "mod-screenshot",
       "mod-printing",
+      "mod-macros",
    };
    return modules;
 }
