@@ -682,10 +682,10 @@ void ToolManager::Reset()
 
 void ToolManager::RegenerateTooltips()
 {
-   for (const auto &bar : mBars) {
+   ForEach([](auto bar){
       if (bar)
          bar->RegenerateTooltips();
-   }
+   });
 }
 
 int ToolManager::FilterEvent(wxEvent &event)
@@ -723,7 +723,7 @@ void ToolManager::ReadConfig()
    int width[ ToolBarCount ];
    int height[ ToolBarCount ];
    int x, y;
-   int dock, ndx;
+   int dock;
    bool someFound { false };
 
 #if defined(__WXMAC__)
@@ -749,9 +749,8 @@ void ToolManager::ReadConfig()
 
 
    // Load and apply settings for each bar
-   for( ndx = 0; ndx < ToolBarCount; ndx++ )
-   {
-      ToolBar *bar = mBars[ ndx ].get();
+   { int ndx = 0;
+   ForEach([&](ToolBar *bar){
       //wxPoint Center = mParent->GetPosition() + (mParent->GetSize() * 0.33);
       //wxPoint Center(
       //   wxSystemSettings::GetMetric( wxSYS_SCREEN_X ) /2 ,
@@ -912,6 +911,8 @@ void ToolManager::ReadConfig()
       // May or may not have gone into a subdirectory,
       // so use an absolute path.
       gPrefs->SetPath( wxT("/GUI/ToolBars") );
+   });
+   ++ndx;
    }
 
    mTopDock->GetConfiguration().PostRead(topLegacy);
@@ -973,10 +974,7 @@ void ToolManager::WriteConfig()
    gPrefs->SetPath( wxT("/GUI/ToolBars") );
 
    // Save state of each bar
-   for( ndx = 0; ndx < ToolBarCount; ndx++ )
-   {
-      ToolBar *bar = mBars[ ndx ].get();
-
+   ForEach([this](ToolBar *bar){
       // Change to the bar subkey
       gPrefs->SetPath( bar->GetSection().GET() );
 
@@ -1011,7 +1009,7 @@ void ToolManager::WriteConfig()
 
       // Change back to the bar root
       gPrefs->SetPath( wxT("..") );
-   }
+   });
 
    // Restore original config path
    gPrefs->SetPath( oldpath );

@@ -736,12 +736,10 @@ void ProjectWindow::OnThemeChange(wxCommandEvent& evt)
    auto &project = mProject;
    this->ApplyUpdatedTheme();
    auto &toolManager = ToolManager::Get( project );
-   for( int ii = 0; ii < ToolBarCount; ++ii )
-   {
-      ToolBar *pToolBar = toolManager.GetToolBar(ii);
+   toolManager.ForEach([](auto pToolBar){
       if( pToolBar )
          pToolBar->ReCreateButtons();
-   }
+   });
 }
 
 void ProjectWindow::UpdatePrefs()
