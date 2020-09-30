@@ -1102,12 +1102,28 @@ bool ToolManager::IsVisible( int type )
 }
 
 //
+// Returns the visibility of the specified toolbar
+//
+bool ToolManager::IsVisible( Identifier type )
+{
+   return IsVisible(GetToolBar(type)->GetId());
+}
+
+//
 // Toggles the visible/hidden state of a toolbar
 //
 void ToolManager::ShowHide( int type )
 {
    Expose( type, !mBars[ type ]->IsVisible() );
    Updated();
+}
+
+//
+// Toggles the visible/hidden state of a toolbar
+//
+void ToolManager::ShowHide( Identifier type )
+{
+   ShowHide(GetToolBar(type)->GetId());
 }
 
 //
@@ -1126,6 +1142,14 @@ void ToolManager::Expose( int type, bool show )
    {
       t->Expose( show );
    }
+}
+
+//
+// Set the visible/hidden state of a toolbar
+//
+void ToolManager::Expose( Identifier type, bool show )
+{
+   Expose(GetToolBar(type)->GetId(), show);
 }
 
 //
@@ -1579,9 +1603,9 @@ bool ToolManager::RestoreFocus()
 #include "../Menus.h"
 
 AttachedToolBarMenuItem::AttachedToolBarMenuItem(
-   ToolBarID id, const CommandID &name, const TranslatableString &label_in,
+   Identifier id, const CommandID &name, const TranslatableString &label_in,
    const Registry::OrderingHint &hint,
-   std::vector< ToolBarID > excludeIDs )
+   std::vector< Identifier > excludeIDs )
    : mId{ id }
    , mAttachedItem{
       Registry::Placement{ wxT("View/Other/Toolbars/Toolbars/Other"), hint },
