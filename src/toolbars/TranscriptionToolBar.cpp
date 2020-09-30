@@ -110,6 +110,17 @@ TranscriptionToolBar::~TranscriptionToolBar()
 {
 }
 
+bool TranscriptionToolBar::ShownByDefault() const
+{
+   return
+#ifdef EXPERIMENTAL_DA
+      false
+#else
+      true
+#endif
+   ;
+}
+
 TranscriptionToolBar &TranscriptionToolBar::Get( AudacityProject &project )
 {
    auto &toolManager = ToolManager::Get( project );

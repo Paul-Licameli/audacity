@@ -42,6 +42,8 @@ class MeterToolBar final : public ToolBar {
       const TranslatableString &label, Identifier ID);
    virtual ~MeterToolBar();
 
+   bool ShownByDefault() const override;
+
    void Create(wxWindow *parent) override;
 
    void Populate() override;

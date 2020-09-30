@@ -357,6 +357,16 @@ ToolBar::~ToolBar()
 {
 }
 
+bool ToolBar::ShownByDefault() const
+{
+   return true;
+}
+
+ToolBar::DockID ToolBar::DefaultDockID() const
+{
+   return TopDockID;
+}
+
 //
 // Returns the toolbar title
 //

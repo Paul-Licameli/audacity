@@ -64,6 +64,11 @@ TimeToolBar::~TimeToolBar()
 {
 }
 
+ToolBar::DockID TimeToolBar::DefaultDockID() const
+{
+   return BotDockID;
+}
+
 TimeToolBar &TimeToolBar::Get(AudacityProject &project)
 {
    auto &toolManager = ToolManager::Get(project);

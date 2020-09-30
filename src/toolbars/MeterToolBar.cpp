@@ -76,6 +76,12 @@ MeterToolBar::~MeterToolBar()
 {
 }
 
+bool MeterToolBar::ShownByDefault() const
+{
+   // The combined meter hides by default
+   return mWhichMeters != (kWithPlayMeter|kWithRecordMeter);
+}
+
 void MeterToolBar::Create(wxWindow * parent)
 {
    ToolBar::Create(parent);
