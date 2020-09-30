@@ -45,21 +45,28 @@ BEGIN_EVENT_TABLE( MeterToolBar, ToolBar )
    EVT_SIZE( MeterToolBar::OnSize )
 END_EVENT_TABLE()
 
-//Standard constructor
-MeterToolBar::MeterToolBar(AudacityProject &project, int type)
-: ToolBar(project, type, XO("Combined Meter"), wxT("CombinedMeter"), true)
+Identifier MeterToolBar::ID()
 {
-   if( mType == RecordMeterBarID ){
-      mWhichMeters = kWithRecordMeter;
-      mLabel = XO("Recording Meter");
-      mSection = wxT("RecordMeter");
-   } else if( mType == PlayMeterBarID ){
-      mWhichMeters = kWithPlayMeter;
-      mLabel = XO("Playback Meter");
-      mSection = wxT("PlayMeter");
-   } else {
-      mWhichMeters = kWithPlayMeter | kWithRecordMeter;
-   }
+   return wxT("CombinedMeter");
+}
+
+Identifier MeterToolBar::PlayID()
+{
+   return wxT("PlayMeter");
+}
+
+Identifier MeterToolBar::RecordID()
+{
+   return wxT("RecordMeter");
+}
+
+//Standard constructor
+MeterToolBar::MeterToolBar(AudacityProject &project, int type,
+   unsigned whichMeters,
+   const TranslatableString &label, Identifier ID)
+: ToolBar(project, type, label, ID, true)
+, mWhichMeters{whichMeters}
+{
    mSizer = NULL;
    mPlayMeter = NULL;
    mRecordMeter = NULL;
@@ -257,17 +264,22 @@ void MeterToolBar::SetDocked(ToolDock *dock, bool pushed) {
 static RegisteredToolbarFactory factory1{ RecordMeterBarID,
    []( AudacityProject &project ){
       return ToolBar::Holder{
-         safenew MeterToolBar{ project, RecordMeterBarID } }; }
+         safenew MeterToolBar{ project, RecordMeterBarID, kWithRecordMeter,
+            XO("Recording Meter"), MeterToolBar::RecordID() } }; }
 };
 static RegisteredToolbarFactory factory2{ PlayMeterBarID,
    []( AudacityProject &project ){
       return ToolBar::Holder{
-         safenew MeterToolBar{ project, PlayMeterBarID } }; }
+         safenew MeterToolBar{ project, PlayMeterBarID, kWithPlayMeter,
+            
+            XO("Playback Meter"), MeterToolBar::PlayID() } }; }
 };
 static RegisteredToolbarFactory factory3{ MeterBarID,
    []( AudacityProject &project ){
       return ToolBar::Holder{
-         safenew MeterToolBar{ project, MeterBarID } }; }
+         safenew MeterToolBar{ project, MeterBarID,
+            (kWithPlayMeter|kWithRecordMeter),
+            XO("Combined Meter"), MeterToolBar::ID() } }; }
 };
 
 #include "ToolManager.h"

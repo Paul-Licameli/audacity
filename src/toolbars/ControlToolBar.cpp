@@ -100,13 +100,18 @@ static const TranslatableString
    , sStateRecord = XO("Recording")
 ;
 
+Identifier ControlToolBar::ID()
+{
+   return wxT("Control");
+}
+
 //Standard constructor
 // This was called "Control" toolbar in the GUI before - now it is "Transport".
 // Note that we use the legacy "Control" string as the section because this
 // gets written to prefs and cannot be changed in prefs to maintain backwards
 // compatibility
 ControlToolBar::ControlToolBar( AudacityProject &project )
-: ToolBar(project, TransportBarID, XO("Transport"), wxT("Control"))
+: ToolBar(project, TransportBarID, XO("Transport"), ID())
 {
    gPrefs->Read(wxT("/GUI/ErgonomicTransportButtons"), &mErgonomicTransportButtons, true);
    mStrLocale = gPrefs->Read(wxT("/Locale/Language"), wxT(""));

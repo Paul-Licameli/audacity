@@ -69,9 +69,14 @@ static int DeviceToolbarPrefsID()
    return value;
 }
 
+Identifier DeviceToolBar::ID()
+{
+   return wxT("Device");
+}
+
 //Standard constructor
 DeviceToolBar::DeviceToolBar( AudacityProject &project )
-: ToolBar( project, DeviceBarID, XO("Device"), wxT("Device"), true )
+: ToolBar( project, DeviceBarID, XO("Device"), ID(), true )
 {
    wxTheApp->Bind( EVT_RESCANNED_DEVICES,
       &DeviceToolBar::OnRescannedDevices, this );

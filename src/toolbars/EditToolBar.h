@@ -72,6 +72,8 @@ class EditToolBar final : public ToolBar {
 
  public:
 
+   static Identifier ID();
+
    EditToolBar( AudacityProject &project );
    virtual ~EditToolBar();
 

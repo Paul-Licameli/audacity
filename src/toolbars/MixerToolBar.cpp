@@ -52,9 +52,14 @@ BEGIN_EVENT_TABLE(MixerToolBar, ToolBar)
    EVT_COMMAND(wxID_ANY, EVT_CAPTURE_KEY, MixerToolBar::OnCaptureKey)
 END_EVENT_TABLE()
 
+Identifier MixerToolBar::ID()
+{
+   return wxT("Mixer");
+}
+
 //Standard constructor
 MixerToolBar::MixerToolBar( AudacityProject &project )
-: ToolBar(project, MixerBarID, XO("Mixer"), wxT("Mixer"), true)
+: ToolBar(project, MixerBarID, XO("Mixer"), ID(), true)
 {
    mInputSliderVolume = 0.0;
    mOutputSliderVolume = 0.0;
