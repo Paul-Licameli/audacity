@@ -1016,7 +1016,7 @@ void AdornedRulerPanel::ReCreateButtons()
 
    wxPoint position( 1, 0 );
 
-   Grabber * pGrabber = safenew Grabber(this, this->GetId());
+   Grabber * pGrabber = safenew Grabber(this, {});
    pGrabber->SetAsSpacer( true );
    //pGrabber->SetSize( 10, 27 ); // default is 10,27
    pGrabber->SetPosition( position );
