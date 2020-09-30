@@ -163,7 +163,8 @@ class WX_WRAPPERS_API FileDialogWrapper
    : public wxTabTraversalWrapper<FileDialog>
 {
 public:
-   FileDialogWrapper() {}
+   FileDialogWrapper();
+   ~FileDialogWrapper();
 
    // Constructor with no modal flag - the new convention.
    FileDialogWrapper(
@@ -176,12 +177,7 @@ public:
       const wxPoint& pos = wxDefaultPosition,
       const wxSize& sz = wxDefaultSize,
       // Important:  default window name localizes!
-      const TranslatableString& name = XO("File Dialog"))
-   : wxTabTraversalWrapper<FileDialog>(
-      parent, message.Translation(), defaultDir, defaultFile,
-      FileNames::FormatWildcard( fileTypes ),
-      style, pos, sz, name.Translation() )
-   {}
+      const TranslatableString& name = XO("File Dialog"));
 
    // Pseudo ctor
    void Create(
@@ -194,14 +190,7 @@ public:
       const wxPoint& pos = wxDefaultPosition,
       const wxSize& sz = wxDefaultSize,
       // Important:  default window name localizes!
-      const TranslatableString& name = XO("File Dialog"))
-   {
-      wxTabTraversalWrapper<FileDialog>::Create(
-         parent, message.Translation(), defaultDir, defaultFile,
-         FileNames::FormatWildcard( fileTypes ),
-         style, pos, sz, name.Translation()
-      );
-   }
+      const TranslatableString& name = XO("File Dialog"));
 };
 
 #include <wx/msgdlg.h>

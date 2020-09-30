@@ -82,4 +82,44 @@ void wxDialogWrapper::SetName()
    wxDialog::SetName( wxDialog::GetTitle() );
 }
 
+FileDialogWrapper::FileDialogWrapper() = default;
+
+FileDialogWrapper::~FileDialogWrapper() = default;
+
+FileDialogWrapper::FileDialogWrapper(
+   wxWindow *parent,
+   const TranslatableString& message,
+   const FilePath& defaultDir,
+   const FilePath& defaultFile,
+   const FileNames::FileTypes& fileTypes,
+   long style,
+   const wxPoint& pos,
+   const wxSize& sz,
+   // Important:  default window name localizes!
+   const TranslatableString& name)
+: wxTabTraversalWrapper<FileDialog>(
+   parent, message.Translation(), defaultDir, defaultFile,
+   FileNames::FormatWildcard( fileTypes ),
+   style, pos, sz, name.Translation() )
+{}
+
+void FileDialogWrapper::Create(
+   wxWindow *parent,
+   const TranslatableString& message,
+   const FilePath& defaultDir,
+   const FilePath& defaultFile,
+   const FileNames::FileTypes& fileTypes,
+   long style,
+   const wxPoint& pos,
+   const wxSize& sz,
+   // Important:  default window name localizes!
+   const TranslatableString& name)
+{
+   wxTabTraversalWrapper<FileDialog>::Create(
+      parent, message.Translation(), defaultDir, defaultFile,
+      FileNames::FormatWildcard( fileTypes ),
+      style, pos, sz, name.Translation()
+   );
+}
+
 AudacityMessageDialog::~AudacityMessageDialog() = default;
