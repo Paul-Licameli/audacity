@@ -58,7 +58,7 @@ Identifier ScrubbingToolBar::ID()
 
 //Standard constructor
 ScrubbingToolBar::ScrubbingToolBar( AudacityProject &project )
-: ToolBar(project, ScrubbingBarID, XO("Scrub"), ID())
+: ToolBar(project, XO("Scrub"), ID())
 {
 }
 
@@ -297,7 +297,7 @@ void ScrubbingToolBar::OnIdle( wxIdleEvent &evt )
    EnableDisableButtons();
 }
 
-static RegisteredToolbarFactory factory{ ScrubbingBarID,
+static RegisteredToolbarFactory factory{
    []( AudacityProject &project ){
       return ToolBar::Holder{ safenew ScrubbingToolBar{ project } }; }
 };

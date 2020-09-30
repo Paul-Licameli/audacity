@@ -53,7 +53,7 @@ Identifier TimeToolBar::ID()
 }
 
 TimeToolBar::TimeToolBar(AudacityProject &project)
-:  ToolBar(project, TimeBarID, XO("Time"), ID(), true),
+:  ToolBar(project, XO("Time"), ID(), true),
    mListener(NULL),
    mAudioTime(NULL)
 {
@@ -382,9 +382,7 @@ void TimeToolBar::OnIdle(wxIdleEvent &evt)
    mAudioTime->SetValue(wxMax(0.0, audioTime));
 }
 
-static RegisteredToolbarFactory factory
-{
-   TimeBarID,
+static RegisteredToolbarFactory factory{
    []( AudacityProject &project )
    {
       return ToolBar::Holder{ safenew TimeToolBar{ project } };

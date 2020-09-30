@@ -97,8 +97,7 @@ Identifier TranscriptionToolBar::ID()
 
 ////Standard Constructor
 TranscriptionToolBar::TranscriptionToolBar( AudacityProject &project )
-: ToolBar( project,
-   TranscriptionBarID, XO("Play-at-Speed"), ID(), true )
+: ToolBar( project, XO("Play-at-Speed"), ID(), true )
 {
    SetPlaySpeed( 1.0 * 100.0 );
 #ifdef EXPERIMENTAL_VOICE_DETECTION
@@ -1067,7 +1066,7 @@ void TranscriptionToolBar::AdjustPlaySpeed(float adj)
    OnSpeedSlider(e);
 }
 
-static RegisteredToolbarFactory factory{ TranscriptionBarID,
+static RegisteredToolbarFactory factory{
    []( AudacityProject &project ){
       return ToolBar::Holder{ safenew TranscriptionToolBar{ project } }; }
 };

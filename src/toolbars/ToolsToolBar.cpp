@@ -76,7 +76,7 @@ Identifier ToolsToolBar::ID()
 
 //Standard constructor
 ToolsToolBar::ToolsToolBar( AudacityProject &project )
-: ToolBar(project, ToolsBarID, XO("Tools"), ID())
+: ToolBar(project, XO("Tools"), ID())
 {
    using namespace ToolCodes;
 
@@ -298,7 +298,7 @@ void ToolsToolBar::Create(wxWindow * parent)
    UpdatePrefs();
 }
 
-static RegisteredToolbarFactory factory{ ToolsBarID,
+static RegisteredToolbarFactory factory{
    []( AudacityProject &project ){
       return ToolBar::Holder{ safenew ToolsToolBar{ project } }; }
 };
