@@ -59,7 +59,7 @@ extern int gMenusDirty;
 
 
 struct ByColumns_t{};
-extern ByColumns_t ByColumns;
+constexpr ByColumns_t ByColumns;
 
 //! Base class for settings objects.  It holds a configuration key path.
 /* The constructors are non-explicit for convenience */
