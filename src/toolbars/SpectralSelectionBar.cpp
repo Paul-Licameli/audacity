@@ -114,7 +114,7 @@ SpectralSelectionBar &SpectralSelectionBar::Get( AudacityProject &project )
 {
    auto &toolManager = ToolManager::Get( project );
    return *static_cast<SpectralSelectionBar*>(
-      toolManager.GetToolBar(SpectralSelectionBarID) );
+      toolManager.GetToolBar(ID()));
 }
 
 const SpectralSelectionBar &SpectralSelectionBar::Get( const AudacityProject &project )

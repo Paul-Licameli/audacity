@@ -364,7 +364,8 @@ void ProjectAudioManager::Stop(bool stopStream /* = true*/)
       }
    }
 
-   const auto toolbar = ToolManager::Get( *project ).GetToolBar(ScrubbingBarID);
+   // To do: eliminate this, use an event instead
+   const auto toolbar = ToolManager::Get( *project ).GetToolBar(wxT("Scrub"));
    if (toolbar)
       toolbar->EnableDisableButtons();
 }

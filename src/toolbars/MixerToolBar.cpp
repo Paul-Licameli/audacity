@@ -73,7 +73,7 @@ MixerToolBar::~MixerToolBar()
 MixerToolBar &MixerToolBar::Get( AudacityProject &project )
 {
    auto &toolManager = ToolManager::Get( project );
-   return *static_cast<MixerToolBar*>( toolManager.GetToolBar(MixerBarID) );
+   return *static_cast<MixerToolBar*>( toolManager.GetToolBar(ID()));
 }
 
 const MixerToolBar &MixerToolBar::Get( const AudacityProject &project )
