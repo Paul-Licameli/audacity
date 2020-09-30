@@ -459,7 +459,7 @@ void ToolManager::CreateWindows()
    size_t ii = 0;
    for (const auto &factory : RegisteredToolbarFactory::GetFactories()) {
       if (factory) {
-         mBars[ii] = factory( *parent );
+         (mBars[ii] = factory( *parent )) -> SetIndex(ii);
       }
       else
          wxASSERT( false );
@@ -644,10 +644,13 @@ void ToolManager::Reset()
          // This bar is undocked and invisible.
          // We are doing a reset toolbars, so even the invisible undocked bars should
          // be moved somewhere sensible. Put bar near center of window.
-         // If there were multiple hidden toobars the ndx * 10 adjustment means
+         // If there were multiple hidden toobars the index * 10 adjustment means
          // they won't overlap too much.
+         auto index = bar->GetIndex();
          floater->CentreOnParent( );
-         floater->Move( floater->GetPosition() + wxSize( ndx * 10 - 200, ndx * 10 ));
+         floater->Move(
+            floater->GetPosition() +
+               wxSize( index * 10 - 200, index * 10 ));
          bar->SetDocked( NULL, false );
          Expose( ndx, false );
       }
