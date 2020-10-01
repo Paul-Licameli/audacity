@@ -30,7 +30,6 @@
 *//*******************************************************************/
 
 
-
 #include "EditToolBar.h"
 
 // For compilers that support precompilation, includes "wx/wx.h".
@@ -43,17 +42,17 @@
 #include <wx/tooltip.h>
 #endif
 
-#include "../AllThemeResources.h"
-#include "../ImageManipulation.h"
-#include "../Menus.h"
+#include "AllThemeResources.h"
+#include "ImageManipulation.h"
+#include "Menus.h"
 #include "Prefs.h"
-#include "../Project.h"
-#include "../UndoManager.h"
-#include "../widgets/AButton.h"
+#include "Project.h"
+#include "UndoManager.h"
+#include "widgets/AButton.h"
 
-#include "../commands/CommandContext.h"
-#include "../commands/CommandDispatch.h"
-#include "../commands/CommandManager.h"
+#include "commands/CommandContext.h"
+#include "commands/CommandDispatch.h"
+#include "commands/CommandManager.h"
 
 IMPLEMENT_CLASS(EditToolBar, ToolBar);
 
@@ -319,7 +318,7 @@ static RegisteredToolbarFactory factory{
       return ToolBar::Holder{ safenew EditToolBar{ project } }; }
 };
 
-#include "ToolManager.h"
+#include "toolbars/ToolManager.h"
 
 namespace {
 AttachedToolBarMenuItem sAttachment{
@@ -328,3 +327,5 @@ AttachedToolBarMenuItem sAttachment{
 };
 }
 
+#include "ModuleConstants.h"
+DEFINE_MODULE_ENTRIES
