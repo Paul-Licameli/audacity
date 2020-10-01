@@ -70,18 +70,14 @@ class AUDACITY_DLL_API ToolManager final
 
    void LayoutToolBars();
 
-   bool IsDocked( int type );
+   bool IsDocked( Identifier type );
 
-   bool IsVisible( int type );
    bool IsVisible( Identifier type );
 
-   void ShowHide( int type );
    void ShowHide( Identifier type );
 
-   void Expose( int type, bool show );
    void Expose( Identifier type, bool show );
 
-   ToolBar *GetToolBar( int type ) const;
    ToolBar *GetToolBar( Identifier type ) const;
 
    ToolDock *GetTopDock();
@@ -102,14 +98,14 @@ class AUDACITY_DLL_API ToolManager final
    template< typename F >
    void ForEach( const F &fun )
    {
-      std::for_each(std::begin(mBars), std::end(mBars), [&fun](auto pBar){
-         fun(pBar.get());
+      std::for_each(std::begin(mBars), std::end(mBars), [&fun](auto &pair){
+         fun(pair.second.get());
       });
    }
 
    size_t CountBars() const
    {
-      return ToolBarCount;
+      return mBars.size();
    }
 
  private:
@@ -158,7 +154,7 @@ class AUDACITY_DLL_API ToolManager final
    ToolDock *mTopDock{};
    ToolDock *mBotDock{};
 
-   ToolBar::Holder mBars[ ToolBarCount ];
+   std::map<Identifier, ToolBar::Holder> mBars;
 
    wxPoint mPrevPosition {};
    ToolDock *mPrevDock {};

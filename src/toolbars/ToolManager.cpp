@@ -459,11 +459,21 @@ void ToolManager::CreateWindows()
    size_t ii = 0;
    for (const auto &factory : RegisteredToolbarFactory::GetFactories()) {
       if (factory) {
-         (mBars[ii] = factory( *parent )) -> SetIndex(ii);
+         auto bar = factory( *parent );
+         if (bar) {
+            auto &slot = mBars[bar->GetSection()];
+            if (slot) {
+               // Oh no, name collision of registered toolbars
+               wxASSERT(false);
+               bar->Destroy();
+               continue;
+            }
+            bar->SetIndex(ii++);
+            slot = std::move(bar);
+         }
       }
       else
          wxASSERT( false );
-      ++ii;
    }
 
    // We own the timer
@@ -496,8 +506,8 @@ void ToolManager::Destroy()
 
       mTopDock = mBotDock = nullptr; // indicate that it has been destroyed
 
-      for ( size_t ii = 0; ii < ToolBarCount; ++ii )
-         mBars[ii].reset();
+      for ( auto &pair : mBars )
+         pair.second.reset();
 
       mIndicator.reset();
    }
@@ -569,9 +579,10 @@ void ToolManager::Reset()
    // Disconnect all docked bars
    for ( const auto &entry : DefaultConfigTable )
    {
-      auto ndx = entry.barID;
-      
+      auto ndx = entry.barID;    
       ToolBar *bar = GetToolBar(ndx);
+      if (!bar)
+         continue;
 
       ToolBarConfiguration::Position position {
          (entry.rightOf == Identifier{}) ? nullptr : GetToolBar(entry.rightOf),
@@ -626,7 +637,7 @@ void ToolManager::Reset()
       {
          // when we dock, we reparent, so bar is no longer a child of floater.
          dock->Dock( bar, false, position );
-         Expose( ndx, expose );
+         Expose( bar->GetSection(), expose );
       }
       else
       {
@@ -653,9 +664,8 @@ void ToolManager::Reset()
             floater->GetPosition() +
                wxSize( index * 10 - 200, index * 10 ));
          bar->SetDocked( NULL, false );
-         Expose( ndx, false );
+         Expose( bar->GetSection(), false );
       }
-
    }
    // TODO:??
    // If audio was playing, we stopped the VU meters,
@@ -702,11 +712,11 @@ int ToolManager::FilterEvent(wxEvent &event)
 void ToolManager::ReadConfig()
 {
    wxString oldpath = gPrefs->GetPath();
-   std::vector<int> unordered[ DockCount ];
+   std::vector<Identifier> unordered[ DockCount ];
    std::vector<ToolBar*> dockedAndHidden;
-   bool show[ ToolBarCount ];
-   int width[ ToolBarCount ];
-   int height[ ToolBarCount ];
+   std::map<Identifier, bool> show;
+   std::map<Identifier, int> width;
+   std::map<Identifier, int> height;
    int x, y;
    int dock;
    bool someFound { false };
@@ -734,7 +744,6 @@ void ToolManager::ReadConfig()
 
 
    // Load and apply settings for each bar
-   { int ndx = 0;
    ForEach([&](ToolBar *bar){
       //wxPoint Center = mParent->GetPosition() + (mParent->GetSize() * 0.33);
       //wxPoint Center(
@@ -742,7 +751,8 @@ void ToolManager::ReadConfig()
       //   wxSystemSettings::GetMetric( wxSYS_SCREEN_Y ) /2 );
 
       // Change to the bar subkey
-      gPrefs->SetPath( bar->GetSection().GET() );
+      auto ndx = bar->GetSection();
+      gPrefs->SetPath( ndx.GET() );
 
       const bool bShownByDefault = bar->ShownByDefault();
       const int defaultDock = bar->DefaultDockID();
@@ -872,7 +882,7 @@ void ToolManager::ReadConfig()
          bar->SetDocked( NULL, false );
 
          // Show or hide it
-         Expose( ndx, show[ ndx ] );
+         Expose( bar->GetSection(), show[ ndx ] );
       }
 
       // Change back to the bar root
@@ -881,8 +891,6 @@ void ToolManager::ReadConfig()
       // so use an absolute path.
       gPrefs->SetPath( wxT("/GUI/ToolBars") );
    });
-   ++ndx;
-   }
 
    mTopDock->GetConfiguration().PostRead(topLegacy);
    mBotDock->GetConfiguration().PostRead(botLegacy);
@@ -903,7 +911,7 @@ void ToolManager::ReadConfig()
          d->Dock( t, false );
 
          // Show or hide the bar
-         Expose( t->GetId(), show[ t->GetId() ] );
+         Expose( t->GetSection(), show[ t->GetSection() ] );
       }
    }
 
@@ -986,21 +994,12 @@ void ToolManager::WriteConfig()
 }
 
 //
-// Return a pointer to the specified toolbar
-//
-ToolBar *ToolManager::GetToolBar( int type ) const
-{
-   return mBars[ type ].get();
-}
-
-//
-// Return a pointer to the specified toolbar
+// Return a pointer to the specified toolbar or nullptr
 //
 ToolBar *ToolManager::GetToolBar( Identifier type ) const
 {
-   auto end = std::end(mBars), iter = std::find_if( std::begin(mBars), end,
-      [&](auto pBar){ return pBar->GetSection() == type; } );
-   return (iter == end) ? nullptr : iter->get();
+   auto end = mBars.end(), iter = mBars.find( type );
+   return (iter == end ? nullptr : iter->second.get());
 }
 
 //
@@ -1043,7 +1042,7 @@ void ToolManager::Updated()
 //
 // Return docked state of specified toolbar
 //
-bool ToolManager::IsDocked( int type )
+bool ToolManager::IsDocked( Identifier type )
 {
    return mBars[ type ]->IsDocked();
 }
@@ -1051,7 +1050,7 @@ bool ToolManager::IsDocked( int type )
 //
 // Returns the visibility of the specified toolbar
 //
-bool ToolManager::IsVisible( int type )
+bool ToolManager::IsVisible( Identifier type )
 {
    ToolBar *t = mBars[ type ].get();
 
@@ -1071,34 +1070,18 @@ bool ToolManager::IsVisible( int type )
 }
 
 //
-// Returns the visibility of the specified toolbar
-//
-bool ToolManager::IsVisible( Identifier type )
-{
-   return IsVisible(GetToolBar(type)->GetId());
-}
-
-//
 // Toggles the visible/hidden state of a toolbar
 //
-void ToolManager::ShowHide( int type )
+void ToolManager::ShowHide( Identifier type )
 {
    Expose( type, !mBars[ type ]->IsVisible() );
    Updated();
 }
 
 //
-// Toggles the visible/hidden state of a toolbar
-//
-void ToolManager::ShowHide( Identifier type )
-{
-   ShowHide(GetToolBar(type)->GetId());
-}
-
-//
 // Set the visible/hidden state of a toolbar
 //
-void ToolManager::Expose( int type, bool show )
+void ToolManager::Expose( Identifier type, bool show )
 {
    ToolBar *t = mBars[ type ].get();
 
@@ -1111,14 +1094,6 @@ void ToolManager::Expose( int type, bool show )
    {
       t->Expose( show );
    }
-}
-
-//
-// Set the visible/hidden state of a toolbar
-//
-void ToolManager::Expose( Identifier type, bool show )
-{
-   Expose(GetToolBar(type)->GetId(), show);
 }
 
 //

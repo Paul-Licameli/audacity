@@ -312,13 +312,8 @@ bool ScreenshotCommand::Capture(
 
 bool ScreenshotCommand::CaptureToolbar(
    const CommandContext & context,
-   ToolManager *man, Identifier id, const wxString &name)
+   ToolManager *man, Identifier type, const wxString &name)
 {
-   auto pBar = man->GetToolBar(id);
-   if (!pBar)
-      return false;
-   auto type = pBar->GetType();
-
    bool visible = man->IsVisible(type);
    if (!visible) {
       man->ShowHide(type);
@@ -326,6 +321,9 @@ bool ScreenshotCommand::CaptureToolbar(
    }
 
    wxWindow *w = man->GetToolBar(type);
+   if (!w)
+      return false;
+
    int x = 0, y = 0;
    int width, height;
 
