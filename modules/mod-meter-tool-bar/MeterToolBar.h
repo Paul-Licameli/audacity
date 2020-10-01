@@ -14,7 +14,7 @@
 #ifndef __AUDACITY_METER_TOOLBAR__
 #define __AUDACITY_METER_TOOLBAR__
 
-#include "ToolBar.h"
+#include "toolbars/ToolBar.h"
 
 class wxDC;
 class wxGridBagSizer;
