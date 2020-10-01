@@ -405,6 +405,7 @@ void ToolBar::SetLabel(const TranslatableString & label)
    // Only this overload is publicly accessible when you have a pointer to
    // Toolbar or a subclass of it
    mLabel = label;
+   wxPanel::SetLabel(label.Translation());
 }
 
 //
