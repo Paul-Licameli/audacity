@@ -36,6 +36,7 @@ static const std::unordered_set<wxString> &autoEnabledModules()
       "mod-audiounits",
       "mod-ladspa",
       "mod-lv2",
+      "mod-nyquist",
    };
    return modules;
 }
