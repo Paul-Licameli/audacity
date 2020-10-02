@@ -356,3 +356,112 @@ AttachedToolBarMenuItem sAttachment{
    MixerToolBar::ID(), wxT("ShowMixerTB"), XXO("Mi&xer Toolbar")
 };
 }
+
+// Now define other related menu items
+#include "commands/CommandContext.h"
+
+namespace {
+struct Handler : CommandHandlerObject {
+
+void OnOutputGain(const CommandContext &context)
+{
+   auto &project = context.project;
+   auto tb = &MixerToolBar::Get( project );
+
+   if (tb) {
+      tb->ShowOutputGainDialog();
+   }
+}
+
+void OnOutputGainInc(const CommandContext &context)
+{
+   auto &project = context.project;
+   auto tb = &MixerToolBar::Get( project );
+
+   if (tb) {
+      tb->AdjustOutputGain(1);
+   }
+}
+
+void OnOutputGainDec(const CommandContext &context)
+{
+   auto &project = context.project;
+   auto tb = &MixerToolBar::Get( project );
+
+   if (tb) {
+      tb->AdjustOutputGain(-1);
+   }
+}
+
+void OnInputGain(const CommandContext &context)
+{
+   auto &project = context.project;
+   auto tb = &MixerToolBar::Get( project );
+
+   if (tb) {
+      tb->ShowInputGainDialog();
+   }
+}
+
+void OnInputGainInc(const CommandContext &context)
+{
+   auto &project = context.project;
+   auto tb = &MixerToolBar::Get( project );
+
+   if (tb) {
+      tb->AdjustInputGain(1);
+   }
+}
+
+void OnInputGainDec(const CommandContext &context)
+{
+   auto &project = context.project;
+   auto tb = &MixerToolBar::Get( project );
+
+   if (tb) {
+      tb->AdjustInputGain(-1);
+   }
+}
+   
+};
+
+static CommandHandlerObject &findCommandHandler(AudacityProject &) {
+   // Handler is not stateful.  Doesn't need a factory registered with
+   // AudacityProject.
+   static Handler instance;
+   return instance;
+};
+
+using namespace MenuTable;
+
+#define FN(X) (& Handler :: X)
+
+BaseItemSharedPtr ExtraMixerMenu()
+{
+   static BaseItemSharedPtr menu{
+   ( FinderScope{ findCommandHandler },
+   Menu( wxT("Mixer"), XXO("Mi&xer"),
+      Command( wxT("OutputGain"), XXO("Ad&just Playback Volume..."),
+         FN(OnOutputGain), AlwaysEnabledFlag ),
+      Command( wxT("OutputGainInc"), XXO("&Increase Playback Volume"),
+         FN(OnOutputGainInc), AlwaysEnabledFlag ),
+      Command( wxT("OutputGainDec"), XXO("&Decrease Playback Volume"),
+         FN(OnOutputGainDec), AlwaysEnabledFlag ),
+      Command( wxT("InputGain"), XXO("Adj&ust Recording Volume..."),
+         FN(OnInputGain), AlwaysEnabledFlag ),
+      Command( wxT("InputGainInc"), XXO("I&ncrease Recording Volume"),
+         FN(OnInputGainInc), AlwaysEnabledFlag ),
+      Command( wxT("InputGainDec"), XXO("D&ecrease Recording Volume"),
+         FN(OnInputGainDec), AlwaysEnabledFlag )
+   ) ) };
+   return menu;
+}
+
+#undef FN
+
+AttachedItem sAttachment2{
+   wxT("Optional/Extra/Part1"),
+   Shared( ExtraMixerMenu() )
+};
+
+}
