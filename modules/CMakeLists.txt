@@ -3,6 +3,7 @@
 # The list of modules is ordered so that each module occurs after any others
 # that it depends on
 set( MODULES
+   mod-tools-tool-bar
    mod-meter-tool-bar
    mod-edit-tool-bar
    mod-mixer-tool-bar
