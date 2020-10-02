@@ -9,8 +9,6 @@
 
 *********************************************************************/
 
-
-
 #if USE_LV2
 
 class wxArrayString;
@@ -36,7 +34,7 @@ class wxArrayString;
 #include <lilv/lilv.h>
 #include <suil/suil.h>
 
-#include "../../ShuttleGui.h"
+#include "ShuttleGui.h"
 #include "SampleFormat.h"
 
 #include "LoadLV2.h"
