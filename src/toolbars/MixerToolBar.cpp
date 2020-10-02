@@ -36,6 +36,7 @@
 #include "../ImageManipulation.h"
 #include "../KeyboardCapture.h"
 #include "Prefs.h"
+#include "../ProjectManager.h"
 #include "../widgets/ASlider.h"
 #include "../widgets/Grabber.h"
 
@@ -64,6 +65,9 @@ MixerToolBar::MixerToolBar( AudacityProject &project )
    mInputSliderVolume = 0.0;
    mOutputSliderVolume = 0.0;
    mEnabled = true;
+
+   ProjectManager::Get(project).
+      Bind(wxEVT_TIMER, &MixerToolBar::OnTimer, this, AudacityProjectTimerID);
 }
 
 MixerToolBar::~MixerToolBar()
@@ -332,6 +336,12 @@ void MixerToolBar::SetToolTips()
    else {
       mOutputSlider->SetToolTipTemplate(XO("Playback Volume (Unavailable; use system mixer.)"));
    }
+}
+
+void MixerToolBar::OnTimer(wxTimerEvent &event)
+{
+   event.Skip();
+   UpdateControls();
 }
 
 static RegisteredToolbarFactory factory{

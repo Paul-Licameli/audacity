@@ -35,7 +35,6 @@ Paul Licameli split from AudacityProject.cpp
 #include "WaveTrack.h"
 #include "wxFileNameWrapper.h"
 #include "prefs/QualitySettings.h"
-#include "toolbars/MixerToolBar.h"
 #include "toolbars/SelectionBar.h"
 #include "toolbars/SpectralSelectionBar.h"
 #include "toolbars/TimeToolBar.h"
@@ -51,8 +50,6 @@ Paul Licameli split from AudacityProject.cpp
 #ifdef __WXGTK__
 #include "../images/AudacityLogoAlpha.xpm"
 #endif
-
-const int AudacityProjectTimerID = 5200;
 
 static AudacityProject::AttachedObjects::RegisteredFactory sProjectManagerKey {
    []( AudacityProject &project ) {
@@ -802,12 +799,11 @@ void ProjectManager::RestartTimer()
    }
 }
 
-void ProjectManager::OnTimer(wxTimerEvent& WXUNUSED(event))
+void ProjectManager::OnTimer(wxTimerEvent& event)
 {
+   event.Skip(); // Let other listeners react to it too
    auto &project = mProject;
    auto &projectAudioIO = ProjectAudioIO::Get( project );
-   auto mixerToolBar = &MixerToolBar::Get( project );
-   mixerToolBar->UpdateControls();
    
    auto gAudioIO = AudioIO::Get();
    // gAudioIO->GetNumCaptureChannels() should only be positive

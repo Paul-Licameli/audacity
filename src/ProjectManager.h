@@ -130,4 +130,7 @@ private:
    static bool sbSkipPromptingForSave;
 };
 
+// ID of a wxTimer event that ProjectManager emits
+const int AudacityProjectTimerID = 5200;
+
 #endif
