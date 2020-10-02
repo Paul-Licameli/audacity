@@ -970,6 +970,11 @@ RegisteredToolbarFactory::RegisteredToolbarFactory(const Function &function)
    GetFunctions().emplace_back(function);
 }
 
+RegisteredToolbarFactory::~RegisteredToolbarFactory()
+{
+   GetFunctions().pop_back();
+}
+
 auto RegisteredToolbarFactory::GetFactories() -> const Functions&
 {
    return GetFunctions();

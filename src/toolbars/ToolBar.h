@@ -255,6 +255,7 @@ struct AUDACITY_DLL_API RegisteredToolbarFactory {
    using Functions = std::vector< Function >;
 
    RegisteredToolbarFactory( const Function &function );
+   ~RegisteredToolbarFactory();
 
    static const Functions &GetFactories();
 };
