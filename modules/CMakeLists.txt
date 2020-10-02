@@ -3,6 +3,7 @@
 # The list of modules is ordered so that each module occurs after any others
 # that it depends on
 set( MODULES
+   mod-transcription-tool-bar
    mod-effects
    mod-effect-classes
    mod-tags

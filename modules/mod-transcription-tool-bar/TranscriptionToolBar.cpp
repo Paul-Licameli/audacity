@@ -14,9 +14,8 @@
 
 *//*******************************************************************/
 
-
 #include "TranscriptionToolBar.h"
-#include "ToolManager.h"
+#include "toolbars/ToolManager.h"
 
 // For compilers that support precompilation, includes "wx/wx.h".
 #include <wx/wxprec.h>
@@ -27,26 +26,26 @@
 #include <wx/brush.h>
 #endif // WX_PRECOMP
 
-#include "../Envelope.h"
+#include "Envelope.h"
 
-#include "../AllThemeResources.h"
-#include "../AudioIO.h"
-#include "../ImageManipulation.h"
-#include "../KeyboardCapture.h"
-#include "../Project.h"
-#include "../ProjectAudioManager.h"
-#include "../ProjectSettings.h"
-#include "../Envelope.h"
-#include "../ViewInfo.h"
-#include "../WaveTrack.h"
-#include "../widgets/AButton.h"
-#include "../widgets/ASlider.h"
-#include "../tracks/ui/Scrubbing.h"
+#include "AllThemeResources.h"
+#include "AudioIO.h"
+#include "ImageManipulation.h"
+#include "KeyboardCapture.h"
+#include "Project.h"
+#include "ProjectAudioManager.h"
+#include "ProjectSettings.h"
+#include "Envelope.h"
+#include "ViewInfo.h"
+#include "WaveTrack.h"
+#include "widgets/AButton.h"
+#include "widgets/ASlider.h"
+#include "tracks/ui/Scrubbing.h"
 #include "Prefs.h"
 
 #ifdef EXPERIMENTAL_VOICE_DETECTION
-#include "../VoiceKey.h"
-#include "../ProjectWindow.h"
+#include "VoiceKey.h"
+#include "ProjectWindow.h"
 #endif
 
 IMPLEMENT_CLASS(TranscriptionToolBar, ToolBar);
@@ -844,11 +843,11 @@ void TranscriptionToolBar::OnCalibrate(wxCommandEvent & WXUNUSED(event))
 
 }
 
-#include "../LabelTrack.h"
-#include "../ProjectHistory.h"
-#include "../TrackPanel.h"
-#include "../TrackPanelAx.h"
-#include "../tracks/labeltrack/ui/LabelTrackView.h"
+#include "LabelTrack.h"
+#include "ProjectHistory.h"
+#include "TrackPanel.h"
+#include "TrackPanelAx.h"
+#include "tracks/labeltrack/ui/LabelTrackView.h"
 namespace {
 int DoAddLabel(
    AudacityProject &project, const SelectedRegion &region )
@@ -1082,7 +1081,7 @@ AttachedToolBarMenuItem sAttachment{
 
 // Menu handler functions
 
-#include "../CommonCommandFlags.h"
+#include "CommonCommandFlags.h"
 
 namespace {
 
@@ -1192,3 +1191,6 @@ AttachedItem sAttachment2{
 };
 
 }
+
+#include "ModuleConstants.h"
+DEFINE_MODULE_ENTRIES

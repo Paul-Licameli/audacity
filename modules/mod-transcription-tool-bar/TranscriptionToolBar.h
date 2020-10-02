@@ -13,7 +13,7 @@
 #ifndef __AUDACITY_TRANSCRIPTION_TOOLBAR__
 #define __AUDACITY_TRANSCRIPTION_TOOLBAR__
 
-#include "ToolBar.h"
+#include "toolbars/ToolBar.h"
 
 #include <wx/brush.h> // member variable
 

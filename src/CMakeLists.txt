@@ -242,8 +242,6 @@ list( APPEND SOURCES
       UndoManager.h
       ViewInfo.cpp
       ViewInfo.h
-      VoiceKey.cpp
-      VoiceKey.h
       WaveClip.cpp
       WaveClip.h
       WaveTrack.cpp
@@ -391,8 +389,6 @@ list( APPEND SOURCES
       toolbars/ToolManager.h
       toolbars/ToolsToolBar.cpp
       toolbars/ToolsToolBar.h
-      toolbars/TranscriptionToolBar.cpp
-      toolbars/TranscriptionToolBar.h
 
       # Tracks
 
