@@ -52,14 +52,6 @@ else()
    set ( wxIS_GTK on)
 endif()
 
-# Handle Ladspa option
-cmd_option(
-   ${_OPT}use_ladspa
-   "Use LADSPA plug-in support [on, off]"
-   ON
-)
-set( USE_LADSPA ${${_OPT}use_ladspa} CACHE INTERNAL "" )
-
 # Handle VST option
 cmd_option(
    ${_OPT}use_vst
@@ -476,14 +468,6 @@ list( APPEND SOURCES
       $<$<AND:$<BOOL:${USE_VST}>,$<BOOL:${wxIS_MAC}>>:
          effects/VST/VSTControlOSX.h
          effects/VST/VSTControlOSX.mm
-      >
-
-      # Ladspa Effects
-
-      $<$<BOOL:${USE_LADSPA}>:
-         effects/ladspa/LadspaEffect.cpp
-         effects/ladspa/LadspaEffect.h
-         effects/ladspa/ladspa.h
       >
 
       # LV2 Effects

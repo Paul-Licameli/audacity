@@ -22,7 +22,6 @@ effects from this one class.
 *//*******************************************************************/
 
 
-
 #include "LadspaEffect.h"       // This class's header file
 #include "SampleCount.h"
 
@@ -53,14 +52,14 @@ effects from this one class.
 #include <wx/version.h>
 
 #include "FileNames.h"
-#include "../../ShuttleGui.h"
-#include "../../widgets/NumericTextCtrl.h"
-#include "../../widgets/valnum.h"
-#include "../../widgets/wxPanelWrapper.h"
-#include "../../ModuleManager.h"
+#include "ShuttleGui.h"
+#include "widgets/NumericTextCtrl.h"
+#include "widgets/valnum.h"
+#include "widgets/wxPanelWrapper.h"
+#include "ModuleManager.h"
 
 #if wxUSE_ACCESSIBILITY
-#include "../../widgets/WindowAccessible.h"
+#include "widgets/WindowAccessible.h"
 #endif
 
 // ============================================================================
@@ -1825,3 +1824,6 @@ void LadspaEffect::RefreshControls(bool outputOnly)
       mFields[p]->SetValue(fieldText);
    }
 }
+
+#include "ModuleConstants.h"
+DEFINE_MODULE_ENTRIES
