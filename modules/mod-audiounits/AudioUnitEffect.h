@@ -10,8 +10,6 @@
 **********************************************************************/
 #ifndef AUDACITY_AUDIOUNIT_EFFECT_H
 
-
-
 #if USE_AUDIO_UNITS
 
 #include "MemoryX.h"

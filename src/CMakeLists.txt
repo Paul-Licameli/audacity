@@ -478,15 +478,6 @@ list( APPEND SOURCES
          effects/VST/VSTControlOSX.mm
       >
 
-      # Audio Unit Effects
-
-      $<$<AND:$<BOOL:${USE_AUDIO_UNITS}>,$<BOOL:${wxIS_MAC}>>:
-         effects/audiounits/AUControl.h
-         effects/audiounits/AUControl.mm
-         effects/audiounits/AudioUnitEffect.cpp
-         effects/audiounits/AudioUnitEffect.h
-      >
-
       # Ladspa Effects
 
       $<$<BOOL:${USE_LADSPA}>:
@@ -1139,7 +1130,6 @@ elseif( CMAKE_SYSTEM_NAME MATCHES "Darwin" )
       KeyboardCapture.cpp
       effects/EffectUI.cpp
       effects/VST/VSTControlOSX.mm
-      effects/audiounits/AUControl.mm
       menus/WindowMenus.cpp
       widgets/FileDialog/mac/FileDialogPrivate.mm
       PROPERTIES
