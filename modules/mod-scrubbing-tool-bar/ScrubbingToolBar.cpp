@@ -13,9 +13,8 @@
 // Much of this is imitative of EditToolBar.  Should there be a common base
 // class?
 
-
 #include "ScrubbingToolBar.h"
-#include "ToolManager.h"
+#include "toolbars/ToolManager.h"
 
 // For compilers that support precompilation, includes "wx/wx.h".
 #include <wx/wxprec.h>
@@ -26,13 +25,13 @@
 #include <wx/tooltip.h>
 #endif
 
-#include "../AdornedRulerPanel.h"
-#include "../AllThemeResources.h"
-#include "../ImageManipulation.h"
+#include "AdornedRulerPanel.h"
+#include "AllThemeResources.h"
+#include "ImageManipulation.h"
 #include "Prefs.h"
-#include "../UndoManager.h"
-#include "../widgets/AButton.h"
-#include "../tracks/ui/Scrubbing.h"
+#include "UndoManager.h"
+#include "widgets/AButton.h"
+#include "tracks/ui/Scrubbing.h"
 
 IMPLEMENT_CLASS(ScrubbingToolBar, ToolBar);
 
@@ -310,3 +309,6 @@ AttachedToolBarMenuItem sAttachment{
 };
 }
 
+
+#include "ModuleConstants.h"
+DEFINE_MODULE_ENTRIES

@@ -363,8 +363,6 @@ list( APPEND SOURCES
 
       toolbars/ControlToolBar.cpp
       toolbars/ControlToolBar.h
-      toolbars/ScrubbingToolBar.cpp
-      toolbars/ScrubbingToolBar.h
       toolbars/SelectionBar.cpp
       toolbars/SelectionBar.h
       toolbars/SelectionBarListener.h

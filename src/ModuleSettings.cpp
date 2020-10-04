@@ -62,6 +62,7 @@ static const std::unordered_set<wxString> &autoEnabledModules()
       "mod-edit-tool-bar",
       "mod-meter-tool-bar",
       "mod-tools-tool-bar",
+      "mod-scrubbing-tool-bar",
    };
    return modules;
 }
