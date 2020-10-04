@@ -11,18 +11,14 @@ Paul Licameli split from ProjectManager.cpp
 #ifndef __AUDACITY_PROJECT_SELECTION_MANAGER__
 #define __AUDACITY_PROJECT_SELECTION_MANAGER__
 
+#include "audacity/Types.h"
 #include "ClientData.h" // to inherit
-#include "toolbars/SelectionBarListener.h" // to inherit
-#include "toolbars/SpectralSelectionBarListener.h" // to inherit
 #include "ComponentInterfaceSymbol.h"
 
 class AudacityProject;
 
 class AUDACITY_DLL_API ProjectSelectionManager final
    : public ClientData::Base
-   , public SelectionBarListener
-   , public SpectralSelectionBarListener
-   , public TimeToolBarListener
 {
 public:
    static ProjectSelectionManager &Get( AudacityProject &project );
@@ -34,27 +30,27 @@ public:
       const ProjectSelectionManager & ) PROHIBITED;
    ~ProjectSelectionManager() override;
 
-   // SelectionBarListener callback methods
-   double AS_GetRate() override;
-   void AS_SetRate(double rate) override;
-   int AS_GetSnapTo() override;
-   void AS_SetSnapTo(int snap) override;
-   const NumericFormatSymbol & AS_GetSelectionFormat() override;
-   void AS_SetSelectionFormat(const NumericFormatSymbol & format) override;
-   const NumericFormatSymbol & TT_GetAudioTimeFormat() override;
-   void TT_SetAudioTimeFormat(const NumericFormatSymbol & format) override;
-   void AS_ModifySelection(double &start, double &end, bool done) override;
+   double AS_GetRate();
+   void AS_SetRate(double rate);
+   int AS_GetSnapTo();
+   void AS_SetSnapTo(int snap);
+   const NumericFormatSymbol & AS_GetSelectionFormat();
+   void AS_SetSelectionFormat(const NumericFormatSymbol & format);
 
-   // SpectralSelectionBarListener callback methods
-   double SSBL_GetRate() const override;
-   const NumericFormatSymbol & SSBL_GetFrequencySelectionFormatName() override;
+   const NumericFormatSymbol & TT_GetAudioTimeFormat();
+   void TT_SetAudioTimeFormat(const NumericFormatSymbol & format);
+   void AS_ModifySelection(double &start, double &end, bool done);
+
+
+   double SSBL_GetRate() const;
+   const NumericFormatSymbol & SSBL_GetFrequencySelectionFormatName();
    void SSBL_SetFrequencySelectionFormatName(
-      const NumericFormatSymbol & formatName) override;
-   const NumericFormatSymbol & SSBL_GetBandwidthSelectionFormatName() override;
+      const NumericFormatSymbol & formatName);
+   const NumericFormatSymbol & SSBL_GetBandwidthSelectionFormatName();
    void SSBL_SetBandwidthSelectionFormatName(
-      const NumericFormatSymbol & formatName) override;
+      const NumericFormatSymbol & formatName);
    void SSBL_ModifySpectralSelection(
-      double &bottom, double &top, bool done) override;
+      double &bottom, double &top, bool done);
 
 private:
    bool SnapSelection();

@@ -17,19 +17,12 @@
 \brief (not quite a Toolbar) at foot of screen for setting and viewing the
 selection range.
 
-*//****************************************************************//**
-
-\class SelectionBarListener
-\brief A parent class of SelectionBar, used to forward events to do
-with changes in the SelectionBar.
-
 *//*******************************************************************/
 
 
 
 #include "SelectionBar.h"
 
-#include "SelectionBarListener.h"
 #include "ToolManager.h"
 
 // For compilers that support precompilation, includes "wx/wx.h".
@@ -54,6 +47,7 @@ with changes in the SelectionBar.
 #include "Prefs.h"
 #include "../Project.h"
 #include "../ProjectAudioIO.h"
+#include "../ProjectSelectionManager.h"
 #include "../ProjectSettings.h"
 #include "../Snap.h"
 #include "../ViewInfo.h"
@@ -111,7 +105,7 @@ Identifier SelectionBar::ID()
 
 SelectionBar::SelectionBar( AudacityProject &project )
 : ToolBar(project, XO("Selection"), ID()),
-  mListener(NULL), mRate(0.0),
+  mRate(0.0),
   mStart(0.0), mEnd(0.0), mLength(0.0), mCenter(0.0), mAudio(0.0),
   mDrive1( StartTimeID), mDrive2( EndTimeID ),
   mSelectionMode(0),
@@ -184,8 +178,7 @@ auStaticText * SelectionBar::AddTitle(
 
 NumericTextCtrl * SelectionBar::AddTime(
    const TranslatableString &Name, int id, wxSizer * pSizer ){
-   auto formatName = mListener ? mListener->AS_GetSelectionFormat()
-      : NumericFormatSymbol{};
+   auto formatName = ProjectSelectionManager::Get(mProject).AS_GetSelectionFormat();
    auto pCtrl = safenew NumericTextCtrl(
       this, id, NumericConverter::TIME, formatName, 0.0, mRate);
    pCtrl->SetName( Name );
@@ -301,7 +294,9 @@ void SelectionBar::Populate()
 #endif
    mSnapTo->SetName(_("Snap To"));
    //mSnapTo->SetForegroundColour( clrText2 );
-   mSnapTo->SetSelection(mListener ? mListener->AS_GetSnapTo() : SNAP_OFF);
+
+   auto &manager = ProjectSelectionManager::Get(mProject);
+   mSnapTo->SetSelection(manager.AS_GetSnapTo());
 
    mSnapTo->Bind(wxEVT_SET_FOCUS,
                     &SelectionBar::OnFocus,
@@ -364,6 +359,13 @@ void SelectionBar::Populate()
    mainSizer->Layout();
    RegenerateTooltips();
    Layout();
+   
+   CallAfter([this]{
+      auto &manager = ProjectSelectionManager::Get(mProject);
+      SetRate(manager.AS_GetRate());
+      SetSnapTo(manager.AS_GetSnapTo());
+      SetSelectionFormat(manager.AS_GetSelectionFormat());
+   });
 }
 
 void SelectionBar::UpdatePrefs()
@@ -397,21 +399,11 @@ void SelectionBar::UpdatePrefs()
    ToolBar::UpdatePrefs();
 }
 
-void SelectionBar::SetListener(SelectionBarListener *l)
-{
-   mListener = l;
-   SetRate(mListener->AS_GetRate());
-   SetSnapTo(mListener->AS_GetSnapTo());
-   SetSelectionFormat(mListener->AS_GetSelectionFormat());
-};
-
 void SelectionBar::RegenerateTooltips()
 {
 #if wxUSE_TOOLTIPS
-   auto formatName =
-      mListener
-         ? mListener->AS_GetSelectionFormat()
-         : NumericFormatSymbol{};
+   auto &manager = ProjectSelectionManager::Get(mProject);
+   auto formatName = manager.AS_GetSelectionFormat();
    mSnapTo->SetToolTip(
       wxString::Format(
          _("Snap Clicks/Selections to %s"), formatName.Translation() ));
@@ -505,7 +497,8 @@ void SelectionBar::ModifySelection(int newDriver, bool done)
    ValuesToControls();
 
    // Places the start-end markers on the track panel.
-   mListener->AS_ModifySelection(mStart, mEnd, done);
+   auto &manager = ProjectSelectionManager::Get(mProject);
+   manager.AS_ModifySelection(mStart, mEnd, done);
 }
 
 void SelectionBar::OnChangedTime(wxCommandEvent & event)
@@ -531,8 +524,8 @@ void SelectionBar::OnUpdate(wxCommandEvent &evt)
    // Save format name before recreating the controls so they resize properly
    if (mStartTime)
    {
-      if (mListener)
-         mListener->AS_SetSelectionFormat(format);
+      auto &manager = ProjectSelectionManager::Get(mProject);
+      manager.AS_SetSelectionFormat(format);
    }
 
    // ReCreateButtons() will get rid of our sizers and controls
@@ -763,7 +756,8 @@ void SelectionBar::OnRate(wxCommandEvent & WXUNUSED(event))
       for(i=0;i<5;i++)
          if( *Ctrls[i] )
             (*Ctrls[i])->SetSampleRate( mRate );
-      if (mListener) mListener->AS_SetRate(mRate);
+      auto &manager = ProjectSelectionManager::Get(mProject);
+      manager.AS_SetRate(mRate);
 
       mLastValidText = value;
    }
@@ -824,7 +818,8 @@ void SelectionBar::OnCaptureKey(wxCommandEvent &event)
 
 void SelectionBar::OnSnapTo(wxCommandEvent & WXUNUSED(event))
 {
-   mListener->AS_SetSnapTo(mSnapTo->GetSelection());
+   auto &manager = ProjectSelectionManager::Get(mProject);
+   manager.AS_SetSnapTo(mSnapTo->GetSelection());
 }
 
 static RegisteredToolbarFactory factory{
