@@ -81,6 +81,7 @@ class AUDACITY_DLL_API SelectionBar final : public ToolBar {
    void OnUpdate(wxCommandEvent &evt);
    void OnChangedTime(wxCommandEvent &evt);
 
+   void OnSettingsChanged(wxCommandEvent &evt);
    void OnRate(wxCommandEvent & event);
    void OnSnapTo(wxCommandEvent & event);
    void OnChoice(wxCommandEvent & event);

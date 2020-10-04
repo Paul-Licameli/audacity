@@ -58,7 +58,12 @@ public:
    // Values retrievable from GetInt() of the event for settings change
    enum EventCode : int {
       ChangedSyncLock,
-      ChangedProjectRate
+      ChangedProjectRate,
+      ChangedSnapTo,
+      ChangedSelectionFormat,
+      ChangedAudioTimeFormat,
+      ChangedFrequencyFormat,
+      ChangedBandwidthFormat,
    };
 
    explicit ProjectSettings( AudacityProject &project );

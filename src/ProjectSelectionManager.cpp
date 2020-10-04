@@ -47,6 +47,8 @@ const ProjectSelectionManager &ProjectSelectionManager::Get(
 ProjectSelectionManager::ProjectSelectionManager( AudacityProject &project )
    : mProject{ project }
 {
+   mProject.Bind( EVT_PROJECT_SETTINGS_CHANGE,
+        &ProjectSelectionManager::OnSettingsChanged, this );
 }
 
 ProjectSelectionManager::~ProjectSelectionManager() = default;
@@ -82,6 +84,16 @@ bool ProjectSelectionManager::SnapSelection()
    }
 
    return false;
+}
+
+void ProjectSelectionManager::OnSettingsChanged(wxCommandEvent &evt)
+{
+   evt.Skip();
+   auto &settings = ProjectSettings::Get(mProject);
+   switch (evt.GetInt()) {
+   default:
+      break;
+   }
 }
 
 // Typically this came from the SelectionToolbar and does not need to

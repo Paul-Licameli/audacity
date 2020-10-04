@@ -132,7 +132,10 @@ ProjectSettings::GetFrequencySelectionFormatName() const
 void ProjectSettings::SetFrequencySelectionFormatName(
    const NumericFormatSymbol & formatName)
 {
-   mFrequencySelectionFormatName = formatName;
+   if (formatName != mFrequencySelectionFormatName) {
+      mFrequencySelectionFormatName = formatName;
+      Notify( mProject, ChangedFrequencyFormat );
+   }
 }
 
 const NumericFormatSymbol &
@@ -144,12 +147,18 @@ ProjectSettings::GetBandwidthSelectionFormatName() const
 void ProjectSettings::SetBandwidthSelectionFormatName(
    const NumericFormatSymbol & formatName)
 {
-   mBandwidthSelectionFormatName = formatName;
+   if (formatName != mBandwidthSelectionFormatName) {
+      mBandwidthSelectionFormatName = formatName;
+      Notify( mProject, ChangedBandwidthFormat );
+   }
 }
 
 void ProjectSettings::SetSelectionFormat(const NumericFormatSymbol & format)
 {
-   mSelectionFormat = format;
+   if (format != mSelectionFormat) {
+      mSelectionFormat = format;
+      Notify( mProject, ChangedSelectionFormat );
+   }
 }
 
 const NumericFormatSymbol & ProjectSettings::GetSelectionFormat() const
@@ -159,7 +168,10 @@ const NumericFormatSymbol & ProjectSettings::GetSelectionFormat() const
 
 void ProjectSettings::SetAudioTimeFormat(const NumericFormatSymbol & format)
 {
-   mAudioTimeFormat = format;
+   if (format != mAudioTimeFormat) {
+      mAudioTimeFormat = format;
+      Notify( mProject, ChangedAudioTimeFormat );
+   }
 }
 
 const NumericFormatSymbol & ProjectSettings::GetAudioTimeFormat() const
@@ -174,16 +186,18 @@ double ProjectSettings::GetRate() const
 
 void ProjectSettings::SetRate(double rate)
 {
-   auto &project = mProject;
    if (rate != mRate) {
       mRate = rate;
-      Notify( project, ChangedProjectRate );
+      Notify( mProject, ChangedProjectRate );
    }
 }
 
 void ProjectSettings::SetSnapTo(int snap)
 {
-   mSnapTo = snap;
+   if (snap != mSnapTo) {
+      mSnapTo = snap;
+      Notify( mProject, ChangedSnapTo );
+   }
 }
    
 int ProjectSettings::GetSnapTo() const
@@ -202,10 +216,9 @@ bool ProjectSettings::IsSyncLocked() const
 
 void ProjectSettings::SetSyncLock(bool flag)
 {
-   auto &project = mProject;
    if (flag != mIsSyncLocked) {
       mIsSyncLocked = flag;
-      Notify( project, ChangedSyncLock );
+      Notify( mProject, ChangedSyncLock );
    }
 }
 

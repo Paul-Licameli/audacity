@@ -266,12 +266,19 @@ void TimeToolBar::SetResizingLimits()
 // Called when the project settings change
 void TimeToolBar::OnSettingsChanged(wxCommandEvent &evt)
 {
-   evt.Skip(false);
+   evt.Skip();
 
-   if (evt.GetInt() == ProjectSettings::ChangedProjectRate && mAudioTime)
-   {
-      const auto &settings = ProjectSettings::Get(mProject);
-      mAudioTime->SetSampleRate(settings.GetRate());
+   auto &settings = ProjectSettings::Get(mProject);
+   switch (evt.GetInt()) {
+   case ProjectSettings::ChangedProjectRate: {
+      if (mAudioTime) {
+         const auto &settings = ProjectSettings::Get(mProject);
+         mAudioTime->SetSampleRate(settings.GetRate());
+      }
+   }
+      break;
+   default:
+      break;
    }
 }
 

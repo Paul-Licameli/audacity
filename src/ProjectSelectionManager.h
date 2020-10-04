@@ -18,7 +18,8 @@ Paul Licameli split from ProjectManager.cpp
 class AudacityProject;
 
 class AUDACITY_DLL_API ProjectSelectionManager final
-   : public ClientData::Base
+   : public wxEvtHandler
+   , public ClientData::Base
 {
 public:
    static ProjectSelectionManager &Get( AudacityProject &project );
@@ -30,8 +31,13 @@ public:
       const ProjectSelectionManager & ) PROHIBITED;
    ~ProjectSelectionManager() override;
 
+private:
+   void OnSettingsChanged(wxCommandEvent &evt);
+
+public:
    void AS_SetRate(double rate);
    void AS_SetSnapTo(int snap);
+
    void AS_SetSelectionFormat(const NumericFormatSymbol & format);
 
    void TT_SetAudioTimeFormat(const NumericFormatSymbol & format);

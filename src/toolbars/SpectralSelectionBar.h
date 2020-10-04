@@ -56,6 +56,7 @@ private:
 
    void ValuesToControls();
    void SetBounds();
+   void OnSettingsChanged(wxCommandEvent &evt);
    void OnUpdate(wxCommandEvent &evt);
    void OnCtrl(wxCommandEvent &evt);
    void OnChoice(wxCommandEvent &evt);
