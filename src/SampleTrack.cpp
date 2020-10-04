@@ -9,7 +9,7 @@ Paul Licameli split from WaveTrack.cpp
 **********************************************************************/
 
 #include "SampleTrack.h"
-#include "audacity/Types.h"
+#include "SampleCount.h"
 
 SampleTrack::~SampleTrack() = default;
 

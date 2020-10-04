@@ -19,5 +19,6 @@ list( APPEND SOURCES
    LabelTrackView.cpp
    LabelTrackView.h
 )
-audacity_module( mod-label-track-ui "${SOURCES}" "mod-common-track-ui-interface"
+audacity_module( mod-label-track-ui "${SOURCES}"
+   "mod-common-track-ui-interface;mod-import-export-interface"
    "" "" )

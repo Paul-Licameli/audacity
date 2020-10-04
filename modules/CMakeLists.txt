@@ -11,6 +11,9 @@ set( MODULES
    mod-wave-track-ui
    mod-spectrum-ui
    mod-waveform-ui
+   mod-tags
+   mod-tags-ui
+   mod-import-export
    mod-label-track-ui
    mod-time-track-ui
    mod-note-track-ui
@@ -27,9 +30,6 @@ set( MODULES
    mod-transcription-tool-bar
    mod-effects
    mod-effect-classes
-   mod-tags
-   mod-tags-ui
-   mod-import-export
    mod-midi-import-export
    mod-pcm
    mod-mp3

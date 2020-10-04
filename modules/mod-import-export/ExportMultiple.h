@@ -24,7 +24,6 @@ class wxStaticText;
 class wxTextCtrl;
 
 class AudacityProject;
-class LabelTrack;
 class SelectionState;
 class ShuttleGui;
 class Track;
@@ -34,7 +33,13 @@ class IMPORT_EXPORT_API ExportMultipleDialog final : public wxDialogWrapper
 public:
    using ProgressResult = BasicUI::ProgressResult;
 
-   ExportMultipleDialog(AudacityProject *parent);
+   struct Label {
+      double t0, t1;
+      wxString title;
+   };
+
+   ExportMultipleDialog(
+      AudacityProject *parent, std::vector<Label> labels = {});
    virtual ~ExportMultipleDialog();
 
    int ShowModal();
@@ -43,7 +48,7 @@ private:
 
    // Export
    void CanExport();
-   void CountTracksAndLabels();
+   void CountTracks();
    bool DirOk();
    /** \brief Export multiple labeled regions of the project to separate files
     *
@@ -110,8 +115,7 @@ private:
    AudacityProject *mProject;
    TrackList *mTracks;           /**< The list of tracks in the project that is
                                    being exported */
-   const LabelTrack *mLabels;
-   int mNumLabels;
+   const std::vector<Label> mLabels;
    int mNumWaveTracks;
 
    int mFilterIndex;          /**< The index in the drop-down list of export

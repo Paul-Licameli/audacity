@@ -35,7 +35,6 @@
 #include <wx/textdlg.h>
 
 #include "FileNames.h"
-#include "LabelTrack.h"
 #include "Project.h"
 #include "ProjectSettings.h"
 #include "ProjectWindow.h"
@@ -122,10 +121,12 @@ BEGIN_EVENT_TABLE(MouseEvtHandler, wxEvtHandler)
    EVT_LEFT_DCLICK(MouseEvtHandler::OnMouse)
 END_EVENT_TABLE()
 
-ExportMultipleDialog::ExportMultipleDialog(AudacityProject *project)
+ExportMultipleDialog::ExportMultipleDialog(
+   AudacityProject *project, std::vector<Label> labels)
 : wxDialogWrapper( &GetProjectFrame( *project ),
    wxID_ANY, XO("Export Multiple") )
 , mExporter{ *project }
+, mLabels{ std::move(labels) }
 , mSelectionState{ SelectionState::Get( *project ) }
 {
    SetName();
@@ -136,7 +137,7 @@ ExportMultipleDialog::ExportMultipleDialog(AudacityProject *project)
    for (const auto &plugin : mExporter.GetPlugins())
       mPlugins.push_back(plugin.get());
 
-   this->CountTracksAndLabels();
+   this->CountTracks();
 
    mBook = NULL;
 
@@ -161,17 +162,13 @@ ExportMultipleDialog::~ExportMultipleDialog()
 {
 }
 
-void ExportMultipleDialog::CountTracksAndLabels()
+void ExportMultipleDialog::CountTracks()
 {
    bool anySolo = !(( mTracks->Any<const WaveTrack>() + &WaveTrack::GetSolo ).empty());
 
    mNumWaveTracks =
       (mTracks->Leaders< const WaveTrack >() - 
       (anySolo ? &WaveTrack::GetNotSolo : &WaveTrack::GetMute)).size();
-
-   // only the first label track
-   mLabels = *mTracks->Any< const LabelTrack >().begin();
-   mNumLabels = mLabels ? mLabels->GetNumLabels() : 0;
 }
 
 int ExportMultipleDialog::ShowModal()
@@ -187,7 +184,7 @@ int ExportMultipleDialog::ShowModal()
       return wxID_CANCEL;
    }
 
-   if ((mNumWaveTracks < 1) && (mNumLabels < 1))
+   if ((mNumWaveTracks < 1) && (mLabels.empty()))
    {
       ::AudacityMessageBox(
          XO(
@@ -199,7 +196,7 @@ int ExportMultipleDialog::ShowModal()
       return wxID_CANCEL;
    }
 
-   bool bHasLabels = (mNumLabels > 0);
+   bool bHasLabels = (!mLabels.empty());
    bool bHasTracks = (mNumWaveTracks > 0);
    
    mLabel->Enable(bHasLabels && bHasTracks);
@@ -746,7 +743,7 @@ ProgressResult ExportMultipleDialog::ExportMultipleByLabel(bool byName,
    const wxString &prefix, bool addNumber)
 {
    wxASSERT(mProject);
-   int numFiles = mNumLabels;
+   int numFiles = mLabels.size();
    int l = 0;        // counter for files done
    std::vector<ExportKit> exportSettings; // dynamic array for settings.
    exportSettings.reserve(numFiles); // Allocate some guessed space to use.
@@ -770,10 +767,11 @@ ProgressResult ExportMultipleDialog::ExportMultipleByLabel(bool byName,
    wxString name;    // used to hold file name whilst we mess with it
    wxString title;   // un-messed-with title of file for tagging with
 
-   const LabelStruct *info = NULL;
    /* Examine all labels a first time, sort out all data but don't do any
     * exporting yet (so this run is quick but interactive) */
-   while( l < mNumLabels ) {
+   int size = mLabels.size();
+   while( l < size ) {
+      const Label *info = nullptr;
 
       // Get file name and starting time
       if( l < 0 ) {
@@ -781,18 +779,18 @@ ProgressResult ExportMultipleDialog::ExportMultipleByLabel(bool byName,
          name = (mFirstFileName->GetValue());
          setting.t0 = 0.0;
       } else {
-         info = mLabels->GetLabel(l);
+         info = &mLabels[l];
          name = (info->title);
-         setting.t0 = info->selectedRegion.t0();
+         setting.t0 = info->t0;
       }
 
       // Figure out the ending time
-      if( info && !info->selectedRegion.isPoint() ) {
-         setting.t1 = info->selectedRegion.t1();
-      } else if( l < mNumLabels-1 ) {
+      if( info && info->t1 > info->t0 ) {
+         setting.t1 = info->t1;
+      } else if( l < size - 1 ) {
          // Use start of next label as end
-         const LabelStruct *info1 = mLabels->GetLabel(l+1);
-         setting.t1 = info1->selectedRegion.t0();
+         auto *info1 = &mLabels[ l + 1 ];
+         setting.t1 = info1->t0;
       } else {
          setting.t1 = mTracks->GetEndTime();
       }
