@@ -84,13 +84,8 @@ bool ProjectSelectionManager::SnapSelection()
    return false;
 }
 
-double ProjectSelectionManager::AS_GetRate()
-{
-   auto &project = mProject;
-   auto &settings = ProjectSettings::Get( project );
-   return settings.GetRate();
-}
-
+// Typically this came from the SelectionToolbar and does not need to
+// be communicated back to it.
 void ProjectSelectionManager::AS_SetRate(double rate)
 {
    auto &project = mProject;
@@ -98,13 +93,6 @@ void ProjectSelectionManager::AS_SetRate(double rate)
    settings.SetRate( rate );
 
    SelectionBar::Get( project ).SetRate(rate);
-}
-
-int ProjectSelectionManager::AS_GetSnapTo()
-{
-   auto &project = mProject;
-   auto &settings = ProjectSettings::Get( project );
-   return settings.GetSnapTo();
 }
 
 void ProjectSelectionManager::AS_SetSnapTo(int snap)
@@ -127,13 +115,6 @@ void ProjectSelectionManager::AS_SetSnapTo(int snap)
    SelectionBar::Get( project ).SetSnapTo(snap);
 }
 
-const NumericFormatSymbol & ProjectSelectionManager::AS_GetSelectionFormat()
-{
-   auto &project = mProject;
-   auto &settings = ProjectSettings::Get( project );
-   return settings.GetSelectionFormat();
-}
-
 void ProjectSelectionManager::AS_SetSelectionFormat(
    const NumericFormatSymbol & format)
 {
@@ -148,13 +129,6 @@ void ProjectSelectionManager::AS_SetSelectionFormat(
       TrackPanel::Get( project ).Refresh(false);
 
    SelectionBar::Get( project ).SetSelectionFormat(format);
-}
-
-const NumericFormatSymbol & ProjectSelectionManager::TT_GetAudioTimeFormat()
-{
-   auto &project = mProject;
-   auto &settings = ProjectSettings::Get( project );
-   return settings.GetAudioTimeFormat();
 }
 
 void ProjectSelectionManager::TT_SetAudioTimeFormat(
@@ -184,24 +158,6 @@ void ProjectSelectionManager::AS_ModifySelection(
    }
 }
 
-double ProjectSelectionManager::SSBL_GetRate() const
-{
-   auto &project = mProject;
-   auto &settings = ProjectSettings::Get( project );
-   auto &tracks = TrackList::Get( project );
-   // Return maximum of project rate and all track rates.
-   return std::max( settings.GetRate(),
-      tracks.Any<const WaveTrack>().max( &WaveTrack::GetRate ) );
-}
-
-const NumericFormatSymbol &
-ProjectSelectionManager::SSBL_GetFrequencySelectionFormatName()
-{
-   auto &project = mProject;
-   auto &settings = ProjectSettings::Get( project );
-   return settings.GetFrequencySelectionFormatName();
-}
-
 void ProjectSelectionManager::SSBL_SetFrequencySelectionFormatName(
    const NumericFormatSymbol & formatName)
 {
@@ -217,14 +173,6 @@ void ProjectSelectionManager::SSBL_SetFrequencySelectionFormatName(
 #ifdef EXPERIMENTAL_SPECTRAL_EDITING
    SpectralSelectionBar::Get( project ).SetFrequencySelectionFormatName(formatName);
 #endif
-}
-
-const NumericFormatSymbol &
-ProjectSelectionManager::SSBL_GetBandwidthSelectionFormatName()
-{
-   auto &project = mProject;
-   auto &settings = ProjectSettings::Get( project );
-   return settings.GetBandwidthSelectionFormatName();
 }
 
 void ProjectSelectionManager::SSBL_SetBandwidthSelectionFormatName(
@@ -253,7 +201,11 @@ void ProjectSelectionManager::SSBL_ModifySpectralSelection(
    auto &trackPanel = TrackPanel::Get( project );
    auto &viewInfo = ViewInfo::Get( project );
 
-   double nyq = SSBL_GetRate() / 2.0;
+   auto &settings = ProjectSettings::Get(mProject);
+   auto &tracks = TrackList::Get(mProject);
+      auto nyq = std::max( settings.GetRate(),
+         tracks.Any<const WaveTrack>().max( &WaveTrack::GetRate ) )
+         / 2.0;
    if (bottom >= 0.0)
       bottom = std::min(nyq, bottom);
    if (top >= 0.0)

@@ -106,9 +106,9 @@ void TimeToolBar::Populate()
    // and OnUpdate() for more info.
    mSettingInitialSize = true;
    CallAfter([this]{
+      auto &settings = ProjectSettings::Get(mProject);
       // Get (and set) the saved time format
-      SetAudioTimeFormat(
-         ProjectSelectionManager::Get(mProject).TT_GetAudioTimeFormat());
+      SetAudioTimeFormat(settings.GetAudioTimeFormat());
 
       // During initialization, if the saved format is the same as the default,
       // OnUpdate() will not be called and need it to set the initial size.

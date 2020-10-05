@@ -46,9 +46,11 @@ frequency selection range.
 #include "Prefs.h"
 #include "../Project.h"
 #include "../ProjectSelectionManager.h"
+#include "../ProjectSettings.h"
 #include "../AllThemeResources.h"
 #include "../SelectedRegion.h"
 #include "../ViewInfo.h"
+#include "../WaveTrack.h"
 
 #if wxUSE_ACCESSIBILITY
 #include "../widgets/WindowAccessible.h"
@@ -137,9 +139,9 @@ void SpectralSelectionBar::Populate()
    SetBackgroundColour( theTheme.Colour( clrMedium  ) );
    gPrefs->Read(preferencePath, &mbCenterAndWidth, true);
 
-   auto &manager = ProjectSelectionManager::Get(mProject);
-   auto frequencyFormatName = manager.SSBL_GetFrequencySelectionFormatName();
-   auto bandwidthFormatName = manager.SSBL_GetBandwidthSelectionFormatName();
+   auto &settings = ProjectSettings::Get(mProject);
+   auto frequencyFormatName = settings.GetFrequencySelectionFormatName();
+   auto bandwidthFormatName = settings.GetBandwidthSelectionFormatName();
    wxFlexGridSizer *mainSizer = safenew wxFlexGridSizer(1, 1, 1);
    Add(mainSizer, 0, wxALIGN_CENTER_VERTICAL | wxLEFT, 5);
 
@@ -219,11 +221,11 @@ void SpectralSelectionBar::Populate()
    Layout();
 
    CallAfter([this]{
-      auto &manager = ProjectSelectionManager::Get(mProject);
+      auto &settings = ProjectSettings::Get(mProject);
       SetFrequencySelectionFormatName(
-         manager.SSBL_GetFrequencySelectionFormatName());
+         settings.GetFrequencySelectionFormatName());
       SetBandwidthSelectionFormatName(
-         manager.SSBL_GetBandwidthSelectionFormatName());
+         settings.GetBandwidthSelectionFormatName());
    });
 }
 
@@ -261,7 +263,11 @@ void SpectralSelectionBar::OnSize(wxSizeEvent &evt)
 void SpectralSelectionBar::ModifySpectralSelection(bool done)
 {
    auto &manager = ProjectSelectionManager::Get(mProject);
-   const double nyq = manager.SSBL_GetRate() / 2.0;
+   auto &settings = ProjectSettings::Get(mProject);
+   auto &tracks = TrackList::Get(mProject);
+   auto rate = std::max( settings.GetRate(),
+      tracks.Any<const WaveTrack>().max( &WaveTrack::GetRate ) );
+   const double nyq = rate / 2.0;
 
    double bottom, top;
    if (mbCenterAndWidth) {
