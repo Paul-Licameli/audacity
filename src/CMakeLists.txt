@@ -52,14 +52,6 @@ else()
    set ( wxIS_GTK on)
 endif()
 
-# Handle VST option
-cmd_option(
-   ${_OPT}use_vst
-   "Use VST2 plug-in support [on, off]"
-   ON
-)
-set( USE_VST ${${_OPT}use_vst} CACHE INTERNAL "" )
-
 #
 #
 #
@@ -445,30 +437,6 @@ list( APPEND SOURCES
       effects/TwoPassSimpleMono.h
       effects/Wahwah.cpp
       effects/Wahwah.h
-
-      # VST Effects
-
-      $<$<BOOL:${USE_VST}>:
-         effects/VST/VSTControl.h
-         effects/VST/VSTEffect.cpp
-         effects/VST/VSTEffect.h
-         effects/VST/aeffectx.h
-      >
-
-      $<$<AND:$<BOOL:${USE_VST}>,$<BOOL:${wxIS_GTK}>>:
-         effects/VST/VSTControlGTK.cpp
-         effects/VST/VSTControlGTK.h
-      >
-
-      $<$<AND:$<BOOL:${USE_VST}>,$<BOOL:${wxIS_WIN}>>:
-         effects/VST/VSTControlMSW.cpp
-         effects/VST/VSTControlMSW.h
-      >
-
-      $<$<AND:$<BOOL:${USE_VST}>,$<BOOL:${wxIS_MAC}>>:
-         effects/VST/VSTControlOSX.h
-         effects/VST/VSTControlOSX.mm
-      >
 
       # Export
 
@@ -1078,7 +1046,6 @@ elseif( CMAKE_SYSTEM_NAME MATCHES "Darwin" )
       AudacityApp.mm
       KeyboardCapture.cpp
       effects/EffectUI.cpp
-      effects/VST/VSTControlOSX.mm
       menus/WindowMenus.cpp
       widgets/FileDialog/mac/FileDialogPrivate.mm
       PROPERTIES

@@ -24,16 +24,15 @@
 // WARNING:  This is NOT 64-bit safe
 // *******************************************************************
 
-
 #include "VSTEffect.h"
-#include "../../ModuleManager.h"
+#include "ModuleManager.h"
 #include "SampleCount.h"
 
-#include "../../widgets/ProgressDialog.h"
+#include "widgets/ProgressDialog.h"
 
 #if 0
 #if defined(BUILDING_AUDACITY)
-#include "../../PlatformCompatibility.h"
+#include "PlatformCompatibility.h"
 
 // Make the main function private
 #else
@@ -81,15 +80,15 @@
 
 #include "FileNames.h"
 #include "PlatformCompatibility.h"
-#include "../../SelectFile.h"
-#include "../../ShuttleGui.h"
-#include "../../widgets/valnum.h"
-#include "../../widgets/AudacityMessageBox.h"
-#include "../../widgets/NumericTextCtrl.h"
+#include "SelectFile.h"
+#include "ShuttleGui.h"
+#include "widgets/valnum.h"
+#include "widgets/AudacityMessageBox.h"
+#include "widgets/NumericTextCtrl.h"
 #include "XMLFileReader.h"
 
 #if wxUSE_ACCESSIBILITY
-#include "../../widgets/WindowAccessible.h"
+#include "widgets/WindowAccessible.h"
 #endif
 
 #include "ConfigInterface.h"
@@ -4005,5 +4004,9 @@ XMLTagHandler *VSTEffect::HandleXMLChild(const wxChar *tag)
 
    return NULL;
 }
+
+
+#include "ModuleConstants.h"
+DEFINE_MODULE_ENTRIES
 
 #endif // USE_VST
