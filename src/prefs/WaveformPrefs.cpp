@@ -27,8 +27,6 @@ Paul Licameli
 #include "../TrackPanel.h"
 #include "../ShuttleGui.h"
 #include "../WaveTrack.h"
-#include "../tracks/playabletrack/wavetrack/ui/WaveTrackView.h"
-#include "../tracks/playabletrack/wavetrack/ui/WaveTrackViewConstants.h"
 
 WaveformPrefs::WaveformPrefs(wxWindow * parent, wxWindowID winid,
    AudacityProject *pProject, WaveTrack *wt)
@@ -186,11 +184,18 @@ bool WaveformPrefs::Commit()
 
    mTempSettings.ConvertToEnumeratedDBRange();
 
-   if (mWt && isOpenPage) {
+   /*
+    Analogously to commit 7f8905be for spectrogram prefs
+    Comment this out so it won't upset MultiView
+    (if ever the WaveformPrefs page is made visible)
+    */
+   /*
+    if (mWt && isOpenPage) {
       for (auto channel : TrackList::Channels(mWt))
          WaveTrackView::Get( *channel )
             .SetDisplay( WaveTrackViewConstants::Waveform );
    }
+    */
 
    if (isOpenPage) {
       if ( mProject ) {
