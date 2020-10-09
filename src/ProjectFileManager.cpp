@@ -37,7 +37,6 @@ Paul Licameli split from AudacityProject.cpp
 #include "UndoManager.h"
 #include "WaveTrack.h"
 #include "wxFileNameWrapper.h"
-#include "toolbars/SelectionBar.h"
 #include "widgets/AudacityMessageBox.h"
 #include "widgets/FileHistory.h"
 #include "widgets/UnwritableLocationErrorDialog.h"
@@ -991,11 +990,8 @@ AudacityProject *ProjectFileManager::OpenProjectFile(
    const bool err = results.trackError;
 
    if (bParseSuccess) {
-      auto &settings = ProjectSettings::Get( project );
       window.mbInitializingScrollbar = true; // this must precede AS_SetSnapTo
          // to make persistence of the vertical scrollbar position work
-
-      SelectionBar::Get( project ).SetRate( settings.GetRate() );
 
       ProjectHistory::Get( project ).InitialState();
       TrackFocus::Get( project ).Set( *tracks.Any().begin() );

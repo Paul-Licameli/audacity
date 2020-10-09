@@ -756,6 +756,8 @@ void SelectionBar::OnSettingsChanged(wxCommandEvent &evt)
       return SetSnapTo( settings.GetSnapTo() );
    case ProjectSettings::ChangedSelectionFormat:
       return SetSelectionFormat( settings.GetSelectionFormat() );
+   case ProjectSettings::ChangedProjectRate:
+      return SetRate( settings.GetRate() );
    default:
       break;
    }
@@ -768,13 +770,8 @@ void SelectionBar::OnRate(wxCommandEvent & WXUNUSED(event))
    if (value.ToDouble(&mRate) && // is a numeric value
          (mRate != 0.0))
    {
-      NumericTextCtrl ** Ctrls[5] = { &mStartTime, &mEndTime, &mLengthTime, &mCenterTime, &mAudioTime };
-      int i;
-      for(i=0;i<5;i++)
-         if( *Ctrls[i] )
-            (*Ctrls[i])->SetSampleRate( mRate );
-      auto &manager = ProjectSelectionManager::Get(mProject);
-      manager.AS_SetRate(mRate);
+      auto &settings = ProjectSettings::Get(mProject);
+      settings.SetRate( mRate );
 
       mLastValidText = value;
    }

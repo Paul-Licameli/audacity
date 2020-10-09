@@ -39,7 +39,6 @@
 #include "ViewInfo.h"
 #include "WaveClip.h"
 #include "WaveTrack.h"
-#include "toolbars/SelectionBar.h"
 #include "widgets/AudacityMessageBox.h"
 #include "widgets/NumericTextCtrl.h"
 #include "widgets/ProgressDialog.h"
@@ -383,8 +382,7 @@ auto AUPImportFileHandle::Import(
 
    if (mProjectAttrs.haverate)
    {
-      auto &bar = SelectionBar::Get(mProject);
-      bar.SetRate(mProjectAttrs.rate);
+      settings.SetRate(mProjectAttrs.rate);
    }
 
    if (mProjectAttrs.havesnapto)
