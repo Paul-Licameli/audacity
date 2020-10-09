@@ -375,6 +375,9 @@ void SpectralSelectionBar::OnSettingsChanged(wxCommandEvent &evt)
    evt.Skip();
    auto &settings = ProjectSettings::Get(mProject);
    switch (evt.GetInt()) {
+   case ProjectSettings::ChangedFrequencyFormat:
+      return SetFrequencySelectionFormatName(
+         settings.GetFrequencySelectionFormatName());
    default:
       break;
    }
@@ -383,6 +386,7 @@ void SpectralSelectionBar::OnSettingsChanged(wxCommandEvent &evt)
 void SpectralSelectionBar::OnUpdate(wxCommandEvent &evt)
 {
    auto &manager = ProjectSelectionManager::Get(mProject);
+   auto &settings = ProjectSettings::Get(mProject);
    int index = evt.GetInt();
    wxWindow *w = FindFocus();
    bool centerFocus = (w && w == mCenterCtrl);
@@ -397,7 +401,7 @@ void SpectralSelectionBar::OnUpdate(wxCommandEvent &evt)
    if (type == EVT_FREQUENCYTEXTCTRL_UPDATED) {
       NumericTextCtrl *frequencyCtrl = (mbCenterAndWidth ? mCenterCtrl : mLowCtrl);
       auto frequencyFormatName = frequencyCtrl->GetBuiltinName(index);
-      manager.SSBL_SetFrequencySelectionFormatName(frequencyFormatName);
+      settings.SetFrequencySelectionFormatName(frequencyFormatName);
    }
    else if (mbCenterAndWidth &&
             type == EVT_BANDWIDTHTEXTCTRL_UPDATED) {

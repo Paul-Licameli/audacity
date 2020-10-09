@@ -95,6 +95,9 @@ void ProjectSelectionManager::OnSettingsChanged(wxCommandEvent &evt)
       return AS_SetSelectionFormat( settings.GetSelectionFormat() );
    case ProjectSettings::ChangedAudioTimeFormat:
       return TT_SetAudioTimeFormat( settings.GetAudioTimeFormat() );
+   case ProjectSettings::ChangedFrequencyFormat:
+      return SSBL_SetFrequencySelectionFormatName(
+         settings.GetFrequencySelectionFormatName() );
    default:
       break;
    }
@@ -163,18 +166,9 @@ void ProjectSelectionManager::AS_ModifySelection(
 void ProjectSelectionManager::SSBL_SetFrequencySelectionFormatName(
    const NumericFormatSymbol & formatName)
 {
-   auto &project = mProject;
-   auto &settings = ProjectSettings::Get( project );
-
-   settings.SetFrequencySelectionFormatName( formatName );
-
    gPrefs->Write(wxT("/FrequencySelectionFormatName"),
                  formatName.Internal());
    gPrefs->Flush();
-
-#ifdef EXPERIMENTAL_SPECTRAL_EDITING
-   SpectralSelectionBar::Get( project ).SetFrequencySelectionFormatName(formatName);
-#endif
 }
 
 void ProjectSelectionManager::SSBL_SetBandwidthSelectionFormatName(
