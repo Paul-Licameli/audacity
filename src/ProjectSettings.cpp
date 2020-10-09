@@ -199,7 +199,7 @@ void ProjectSettings::SetSnapTo(int snap)
       Notify( mProject, ChangedSnapTo );
    }
 }
-   
+
 int ProjectSettings::GetSnapTo() const
 {
    return mSnapTo;

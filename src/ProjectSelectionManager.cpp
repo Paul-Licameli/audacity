@@ -91,6 +91,8 @@ void ProjectSelectionManager::OnSettingsChanged(wxCommandEvent &evt)
    evt.Skip();
    auto &settings = ProjectSettings::Get(mProject);
    switch (evt.GetInt()) {
+   case ProjectSettings::ChangedSnapTo:
+      return AS_SetSnapTo( settings.GetSnapTo() );
    default:
       break;
    }
@@ -109,22 +111,18 @@ void ProjectSelectionManager::AS_SetRate(double rate)
 
 void ProjectSelectionManager::AS_SetSnapTo(int snap)
 {
-   auto &project = mProject;
-   auto &settings = ProjectSettings::Get( project );
-   auto &window = ProjectWindow::Get( project );
+   CallAfter([this, snap]{
+      auto &window = ProjectWindow::Get( mProject );
 
-   settings.SetSnapTo( snap );
+   // LLL: TODO - what should this be changed to???
+   // GetCommandManager()->Check(wxT("Snap"), mSnapTo);
+      gPrefs->Write(wxT("/SnapTo"), snap);
+      gPrefs->Flush();
 
-// LLL: TODO - what should this be changed to???
-// GetCommandManager()->Check(wxT("Snap"), mSnapTo);
-   gPrefs->Write(wxT("/SnapTo"), snap);
-   gPrefs->Flush();
+      SnapSelection();
 
-   SnapSelection();
-
-   window.RedrawProject();
-
-   SelectionBar::Get( project ).SetSnapTo(snap);
+      window.RedrawProject();
+   });
 }
 
 void ProjectSelectionManager::AS_SetSelectionFormat(

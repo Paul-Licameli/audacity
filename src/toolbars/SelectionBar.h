@@ -63,7 +63,11 @@ class AUDACITY_DLL_API SelectionBar final : public ToolBar {
    void UpdatePrefs() override;
 
    void SetTimes(double start, double end, double audio);
+
+ private:
    void SetSnapTo(int);
+
+ public:
    void SetSelectionFormat(const NumericFormatSymbol & format);
    void SetRate(double rate);
    void RegenerateTooltips() override;

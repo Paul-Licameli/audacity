@@ -391,7 +391,7 @@ auto AUPImportFileHandle::Import(
 
    if (mProjectAttrs.havesnapto)
    {
-      selman.AS_SetSnapTo(mProjectAttrs.snapto ? SNAP_NEAREST : SNAP_OFF);
+      settings.SetSnapTo(mProjectAttrs.snapto ? SNAP_NEAREST : SNAP_OFF);
    }
 
    if (mProjectAttrs.haveselectionformat)

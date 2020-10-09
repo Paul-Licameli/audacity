@@ -410,8 +410,7 @@ void OnResetConfig(const CommandContext &context)
 
    gPrefs->Flush();
 
-   ProjectSelectionManager::Get( project )
-      .AS_SetSnapTo(gPrefs->ReadLong("/SnapTo", SNAP_OFF));
+   ProjectSettings::Get(project).SetSnapTo(0);
    ProjectSelectionManager::Get( project )
       .AS_SetRate(gPrefs->ReadDouble("/DefaultProjectSampleRate", 44100.0));
 }

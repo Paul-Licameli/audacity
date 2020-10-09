@@ -997,7 +997,6 @@ AudacityProject *ProjectFileManager::OpenProjectFile(
          // to make persistence of the vertical scrollbar position work
 
       auto &selectionManager = ProjectSelectionManager::Get( project );
-      selectionManager.AS_SetSnapTo(settings.GetSnapTo());
       selectionManager.AS_SetSelectionFormat(settings.GetSelectionFormat());
       selectionManager.TT_SetAudioTimeFormat(settings.GetAudioTimeFormat());
       selectionManager.SSBL_SetFrequencySelectionFormatName(

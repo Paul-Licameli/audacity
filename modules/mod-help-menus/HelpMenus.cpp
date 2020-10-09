@@ -14,7 +14,7 @@
 #include "Menus.h"
 #include "Prefs.h"
 #include "Project.h"
-#include "ProjectSelectionManager.h"
+#include "ProjectSettings.h"
 #include "SelectFile.h"
 #include "ShuttleGui.h"
 #include "SplashDialog.h"
@@ -229,7 +229,7 @@ void QuickFixDialog::PopulateOrExchange(ShuttleGui & S)
                // Sadly SnapTo has to be handled specially,
                // as it is not part of the standard
                // preference dialogs.
-               ProjectSelectionManager::Get( *pProject ).AS_SetSnapTo( 0 );
+               ProjectSettings::Get( *pProject ).SetSnapTo( 0 );
             },
             XO("Can't select precisely"), "Quick_Fix#snap_to" );
          AddStuck( S, mbSoundActivated,
