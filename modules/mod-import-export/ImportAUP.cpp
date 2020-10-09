@@ -32,7 +32,6 @@
 #include "ProjectFileIO.h"
 #include "ProjectFileManager.h"
 #include "ProjectHistory.h"
-#include "ProjectSelectionManager.h"
 #include "ProjectSettings.h"
 #include "Sequence.h"
 #include "Tags.h"
@@ -290,7 +289,6 @@ auto AUPImportFileHandle::Import(
    auto &tracks = TrackList::Get(mProject);
    auto &viewInfo = ViewInfo::Get(mProject);
    auto &settings = ProjectSettings::Get(mProject);
-   auto &selman = ProjectSelectionManager::Get(mProject);
 
    auto oldNumTracks = tracks.size();
    auto cleanup = finally([this, &tracks, oldNumTracks]{
@@ -417,7 +415,9 @@ auto AUPImportFileHandle::Import(
 
    if (mProjectAttrs.havebandwidthformat)
    {
-      selman.SSBL_SetBandwidthSelectionFormatName(NumericConverter::LookupFormat(NumericConverter::TIME, mProjectAttrs.bandwidthformat));
+      settings.SetBandwidthSelectionFormatName(
+         NumericConverter::LookupFormat(
+            NumericConverter::TIME, mProjectAttrs.bandwidthformat));
    }
 
    // PRL: It seems this must happen after SetSnapTo
