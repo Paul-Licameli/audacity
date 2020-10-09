@@ -1,30 +1,29 @@
-
 #include <wx/app.h>
 #include <wx/bmpbuttn.h>
 #include <wx/textctrl.h>
 #include <wx/frame.h>
 
-#include "../AboutDialog.h"
-#include "../AllThemeResources.h"
-#include "../AudioIOBase.h"
-#include "../CommonCommandFlags.h"
-#include "../CrashReport.h" // for HAS_CRASH_REPORT
+#include "AboutDialog.h"
+#include "AllThemeResources.h"
+#include "AudioIOBase.h"
+#include "CommonCommandFlags.h"
+#include "CrashReport.h" // for HAS_CRASH_REPORT
 #include "FileNames.h"
-#include "../HelpText.h"
-#include "../LogWindow.h"
-#include "../Menus.h"
+#include "HelpText.h"
+#include "LogWindow.h"
+#include "Menus.h"
 #include "Prefs.h"
-#include "../Project.h"
-#include "../ProjectSelectionManager.h"
-#include "../SelectFile.h"
-#include "../ShuttleGui.h"
-#include "../SplashDialog.h"
-#include "../Theme.h"
-#include "../commands/CommandContext.h"
-#include "../commands/CommandManager.h"
-#include "../prefs/PrefsDialog.h"
-#include "../widgets/AudacityMessageBox.h"
-#include "../widgets/HelpSystem.h"
+#include "Project.h"
+#include "ProjectSelectionManager.h"
+#include "SelectFile.h"
+#include "ShuttleGui.h"
+#include "SplashDialog.h"
+#include "Theme.h"
+#include "commands/CommandContext.h"
+#include "commands/CommandManager.h"
+#include "prefs/PrefsDialog.h"
+#include "widgets/AudacityMessageBox.h"
+#include "widgets/HelpSystem.h"
 
 // private helper classes and functions
 namespace {
@@ -595,3 +594,6 @@ AttachedItem sAttachment1{
 }
 
 #undef FN
+
+#include "ModuleConstants.h"
+DEFINE_MODULE_ENTRIES

@@ -615,7 +615,6 @@ list( APPEND SOURCES
       menus/EditMenus.cpp
       menus/ExtraMenus.cpp
       menus/FileMenus.cpp
-      menus/HelpMenus.cpp
       menus/LabelMenus.cpp
       menus/NavigationMenus.cpp
       menus/PluginMenus.cpp
