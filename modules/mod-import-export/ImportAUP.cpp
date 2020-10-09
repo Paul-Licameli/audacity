@@ -403,7 +403,9 @@ auto AUPImportFileHandle::Import(
 
    if (mProjectAttrs.haveaudiotimeformat)
    {
-      selman.TT_SetAudioTimeFormat(NumericConverter::LookupFormat(NumericConverter::TIME, mProjectAttrs.audiotimeformat));
+      settings.SetAudioTimeFormat(
+         NumericConverter::LookupFormat(
+            NumericConverter::TIME, mProjectAttrs.audiotimeformat));
    }
 
    if (mProjectAttrs.havefrequencyformat)

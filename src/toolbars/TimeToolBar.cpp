@@ -28,7 +28,6 @@
 #include "../AudioIO.h"
 #include "../Project.h"
 #include "../ProjectAudioIO.h"
-#include "../ProjectSelectionManager.h"
 #include "../ProjectSettings.h"
 #include "../ViewInfo.h"
 
@@ -277,6 +276,9 @@ void TimeToolBar::OnSettingsChanged(wxCommandEvent &evt)
       }
    }
       break;
+   case ProjectSettings::ChangedAudioTimeFormat:
+      SetAudioTimeFormat(settings.GetAudioTimeFormat());
+      break;
    default:
       break;
    }
@@ -293,7 +295,8 @@ void TimeToolBar::OnUpdate(wxCommandEvent &evt)
    SetMaxSize(wxDefaultSize);
 
    // Save format name before recreating the controls so they resize properly
-   ProjectSelectionManager::Get(mProject).TT_SetAudioTimeFormat(mAudioTime->GetBuiltinName(evt.GetInt()));
+   auto &settings = ProjectSettings::Get( mProject );
+   settings.SetAudioTimeFormat( mAudioTime->GetBuiltinName(evt.GetInt()) );
 
    // During initialization, the desired size will have already been set at this point
    // and the "best" size" would override it, so we simply send a size event to force
