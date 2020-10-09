@@ -57,6 +57,7 @@ static const std::unordered_set<wxString> &autoEnabledModules()
       "mod-effect-classes",
       "mod-effects",
       "mod-transcription-tool-bar",
+      "mod-device-tool-bar",
    };
    return modules;
 }
