@@ -13,8 +13,8 @@
 
 #include <wx/defs.h>
 
-#include "ToolBar.h"
-#include "../widgets/NumericTextCtrl.h"
+#include "toolbars/ToolBar.h"
+#include "widgets/NumericTextCtrl.h"
 
 class NumericTextCtrl;
 
