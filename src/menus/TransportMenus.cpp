@@ -175,7 +175,8 @@ bool MakeReadyToPlay(AudacityProject &project)
       // Make momentary changes of button appearances
       toolbar.SetPlay(false);        //Pops
       toolbar.SetStop();         //Pushes stop down
-      toolbar.OnStop(evt);
+
+      ProjectAudioManager::Get( project ).Stop();
 
       ::wxMilliSleep(100);
    }
