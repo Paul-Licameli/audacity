@@ -770,3 +770,80 @@ AttachedToolBarMenuItem sAttachment{
 };
 }
 
+
+// Define some related menu items
+#include "../commands/CommandContext.h"
+#include "../CommonCommandFlags.h"
+
+namespace {
+struct Handler : CommandHandlerObject {
+void OnInputDevice(const CommandContext &context)
+{
+   auto &project = context.project;
+   auto &tb = DeviceToolBar::Get( project );
+   tb.ShowInputDialog();
+}
+
+void OnOutputDevice(const CommandContext &context)
+{
+   auto &project = context.project;
+   auto &tb = DeviceToolBar::Get( project );
+   tb.ShowOutputDialog();
+}
+
+void OnInputChannels(const CommandContext &context)
+{
+   auto &project = context.project;
+   auto &tb = DeviceToolBar::Get( project );
+   tb.ShowChannelsDialog();
+}
+
+void OnAudioHost(const CommandContext &context)
+{
+   auto &project = context.project;
+   auto &tb = DeviceToolBar::Get( project );
+   tb.ShowHostDialog();
+}
+};
+
+static CommandHandlerObject &findCommandHandler(AudacityProject &) {
+   // Handler is not stateful.  Doesn't need a factory registered with
+   // AudacityProject.
+   static Handler instance;
+   return instance;
+};
+
+// Menu definitions
+
+using namespace MenuTable;
+#define FN(X) (& Handler :: X)
+
+// Under /MenuBar/Optional/Extra/Part1
+BaseItemSharedPtr ExtraDeviceMenu()
+{
+   static BaseItemSharedPtr menu{
+   ( FinderScope{ findCommandHandler },
+   Menu( wxT("Device"), XXO("De&vice"),
+      Command( wxT("InputDevice"), XXO("Change &Recording Device..."),
+         FN(OnInputDevice),
+         AudioIONotBusyFlag(), wxT("Shift+I") ),
+      Command( wxT("OutputDevice"), XXO("Change &Playback Device..."),
+         FN(OnOutputDevice),
+         AudioIONotBusyFlag(), wxT("Shift+O") ),
+      Command( wxT("AudioHost"), XXO("Change Audio &Host..."), FN(OnAudioHost),
+         AudioIONotBusyFlag(), wxT("Shift+H") ),
+      Command( wxT("InputChannels"), XXO("Change Recording Cha&nnels..."),
+         FN(OnInputChannels),
+         AudioIONotBusyFlag(), wxT("Shift+N") )
+   ) ) };
+   return menu;
+}
+
+#undef FN
+
+AttachedItem sAttachment2{
+   Placement{ wxT("Optional/Extra/Part1"), { OrderingHint::End } },
+   Shared( ExtraDeviceMenu() )
+};
+
+}
