@@ -20,10 +20,9 @@ selection range.
 *//*******************************************************************/
 
 
-
 #include "SelectionBar.h"
 
-#include "ToolManager.h"
+#include "toolbars/ToolManager.h"
 
 // For compilers that support precompilation, includes "wx/wx.h".
 #include <wx/wxprec.h>
@@ -41,21 +40,21 @@ selection range.
 #include <wx/statline.h>
 
 
-#include "../AudioIO.h"
-#include "../AColor.h"
-#include "../KeyboardCapture.h"
+#include "AudioIO.h"
+#include "AColor.h"
+#include "KeyboardCapture.h"
 #include "Prefs.h"
-#include "../Project.h"
-#include "../ProjectAudioIO.h"
-#include "../ProjectSelectionManager.h"
-#include "../ProjectSettings.h"
-#include "../Snap.h"
-#include "../ViewInfo.h"
-#include "../prefs/QualitySettings.h"
-#include "../AllThemeResources.h"
+#include "Project.h"
+#include "ProjectAudioIO.h"
+#include "ProjectSelectionManager.h"
+#include "ProjectSettings.h"
+#include "Snap.h"
+#include "ViewInfo.h"
+#include "prefs/QualitySettings.h"
+#include "AllThemeResources.h"
 
 #if wxUSE_ACCESSIBILITY
-#include "../widgets/WindowAccessible.h"
+#include "widgets/WindowAccessible.h"
 #endif
 
 IMPLEMENT_CLASS(SelectionBar, ToolBar);
@@ -849,3 +848,6 @@ AttachedToolBarMenuItem sAttachment{
 };
 }
 
+
+#include "ModuleConstants.h"
+DEFINE_MODULE_ENTRIES

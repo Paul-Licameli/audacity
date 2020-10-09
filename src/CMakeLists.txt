@@ -363,8 +363,6 @@ list( APPEND SOURCES
 
       toolbars/ControlToolBar.cpp
       toolbars/ControlToolBar.h
-      toolbars/SelectionBar.cpp
-      toolbars/SelectionBar.h
       toolbars/ToolBar.cpp
       toolbars/ToolBar.h
       toolbars/ToolDock.cpp
