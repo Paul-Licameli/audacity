@@ -46,19 +46,25 @@ WaveformSettings::Globals
    return instance;
 }
 
+static WaveTrack::Caches::RegisteredFactory key1{
+   [](WaveTrack&){
+      return std::make_unique<WaveformSettings>(WaveformSettings::defaults());
+   }
+};
+
 WaveformSettings &WaveformSettings::Get( WaveTrack &track )
 {
-   return track.GetWaveformSettings();
+   return static_cast<WaveformSettings&>(track.WaveTrack::Caches::Get(key1));
 }
 
 const WaveformSettings &WaveformSettings::Get( const WaveTrack &track )
 {
-   return track.GetWaveformSettings();
+   return Get(const_cast<WaveTrack&>(track));
 }
 
 void WaveformSettings::Set(WaveTrack &track, const WaveformSettings &settings)
 {
-   track.GetWaveformSettings() = settings;
+   Get(track) = settings;
 }
 
 WaveformSettings::WaveformSettings()
@@ -233,6 +239,41 @@ const EnumValueSymbols &WaveformSettings::GetScaleNames()
 
 WaveformSettings::~WaveformSettings()
 {
+}
+
+auto WaveformSettings::Clone() const -> PointerType
+{
+   return std::make_unique<WaveformSettings>(*this);
+}
+
+static WaveTrack::Caches::RegisteredFactory key2{
+   [](WaveTrack&){
+      return std::make_unique<WaveformSettingsCache>();
+   }
+};
+
+WaveformSettingsCache &WaveformSettingsCache::Get( WaveTrack &track )
+{
+   return static_cast<WaveformSettingsCache&>(
+      track.WaveTrack::Caches::Get(key2));
+}
+
+const WaveformSettingsCache &WaveformSettingsCache::Get( const WaveTrack &track )
+{
+   return Get(const_cast<WaveTrack&>(track));
+}
+
+WaveformSettingsCache::~WaveformSettingsCache() = default;
+
+auto WaveformSettingsCache::Clone() const -> PointerType
+{
+   return std::make_unique<WaveformSettingsCache>(*this);
+}
+
+int WaveformSettingsCache::ZeroLevelYCoordinate(wxRect rect) const
+{
+   return rect.GetTop() +
+      (int)((mDisplayMax / (mDisplayMax - mDisplayMin)) * rect.height);
 }
 
 // Attach things to Tracks preferences page

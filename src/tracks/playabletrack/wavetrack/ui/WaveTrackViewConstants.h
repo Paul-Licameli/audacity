@@ -1,4 +1,3 @@
-#include "../../../../Registry.h"
 /**********************************************************************
 
 Audacity: A Digital Audio Editor
@@ -12,6 +11,7 @@ Paul Licameli split from class WaveTrack
 #ifndef __AUDACITY_WAVE_TRACK_VIEW_CONSTANTS__
 #define __AUDACITY_WAVE_TRACK_VIEW_CONSTANTS__
 
+#include "Registry.h"
 #include "ComponentInterfaceSymbol.h" // for EnumValueSymbol
 
 namespace WaveTrackViewConstants

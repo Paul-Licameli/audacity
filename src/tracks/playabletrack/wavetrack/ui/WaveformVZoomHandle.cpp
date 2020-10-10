@@ -129,7 +129,8 @@ void WaveformVZoomHandle::DoZoom(
    float half=0.5;
 
    {
-      pTrack->GetDisplayBounds(&min, &max);
+      auto &cache = WaveformSettingsCache::Get(*pTrack);
+      cache.GetDisplayBounds(min, max);
       auto &waveSettings = WaveformSettings::Get(*pTrack);
       const bool linear = waveSettings.isLinear();
       if( !linear ){
@@ -246,7 +247,7 @@ void WaveformVZoomHandle::DoZoom(
 
    // Now actually apply the zoom.
    for (auto channel : TrackList::Channels(pTrack))
-      channel->SetDisplayBounds(min, max);
+      WaveformSettingsCache::Get(*channel).SetDisplayBounds(min, max);
 
    zoomEnd = zoomStart = 0;
    if( pProject )

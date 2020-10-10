@@ -26,7 +26,6 @@ class SampleBlockFactory;
 using SampleBlockFactoryPtr = std::shared_ptr<SampleBlockFactory>;
 
 class SpectrogramSettings;
-class WaveformSettings;
 class TimeWarper;
 
 class Sequence;
@@ -66,8 +65,19 @@ using Regions = std::vector < Region >;
 
 class Envelope;
 
-class AUDACITY_DLL_API WaveTrack final : public PlayableTrack {
+class WaveTrack;
+
+using WaveTrackCaches = ClientData::Site<
+   WaveTrack,
+   ClientData::Cloneable< ClientData::UniquePtr >,
+   ClientData::DeepCopying
+>;
+
+class AUDACITY_DLL_API WaveTrack final : public PlayableTrack
+   , public WaveTrackCaches
+{
 public:
+   using Caches = WaveTrackCaches;
 
    //
    // Constructor / Destructor / Duplicator
@@ -155,9 +165,6 @@ private:
    SpectrogramSettings &GetIndependentSpectrogramSettings();
    void SetSpectrogramSettings(std::unique_ptr<SpectrogramSettings> &&pSettings);
 
-   const WaveformSettings &GetWaveformSettings() const;
-   WaveformSettings &GetWaveformSettings();
-   void SetWaveformSettings(std::unique_ptr<WaveformSettings> &&pSettings);
    void UseSpectralPrefs( bool bUse=true );
    //
    // High-level editing
@@ -535,21 +542,8 @@ private:
    // Resample track (i.e. all clips in the track)
    void Resample(int rate, ProgressDialog *progress = NULL);
 
-   int GetLastScaleType() const { return mLastScaleType; }
-   void SetLastScaleType() const;
-
-   int GetLastdBRange() const { return mLastdBRange; }
-   void SetLastdBRange() const;
-
-   void GetDisplayBounds(float *min, float *max) const;
-   void SetDisplayBounds(float min, float max) const;
    void GetSpectrumBounds(float *min, float *max) const;
    void SetSpectrumBounds(float min, float max) const;
-
-   // For display purposes, calculate the y coordinate where the midline of
-   // the wave should be drawn, if display minimum and maximum map to the
-   // bottom and top.  Maybe that is out of bounds.
-   int ZeroLevelYCoordinate(wxRect rect) const;
 
    class IntervalData final : public Track::IntervalData {
    public:
@@ -586,13 +580,9 @@ private:
    // Data that should be part of GUIWaveTrack
    // and will be taken out of the WaveTrack class:
    //
-   mutable float         mDisplayMin;
-   mutable float         mDisplayMax;
    mutable float         mSpectrumMin;
    mutable float         mSpectrumMax;
 
-   mutable int   mLastScaleType; // last scale type choice
-   mutable int           mLastdBRange;
    mutable std::vector <Location> mDisplayLocationsCache;
 
    //
@@ -614,7 +604,6 @@ private:
    double mLegacyProjectFileOffset;
 
    std::unique_ptr<SpectrogramSettings> mpSpectrumSettings;
-   std::unique_ptr<WaveformSettings> mpWaveformSettings;
 };
 
 //! A short-lived object, during whose lifetime, the contents of the WaveTrack are assumed not to change.

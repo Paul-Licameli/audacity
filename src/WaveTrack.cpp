@@ -54,7 +54,6 @@ from the project that will own the track.
 #include "prefs/SpectrogramSettings.h"
 #include "prefs/TracksPrefs.h"
 #include "prefs/TracksBehaviorsPrefs.h"
-#include "prefs/WaveformSettings.h"
 
 #include "InconsistencyException.h"
 
@@ -106,11 +105,7 @@ WaveTrack::WaveTrack( const SampleBlockFactoryPtr &pFactory,
    mWaveColorIndex = 0;
    SetDefaultName(TracksPrefs::GetDefaultAudioTrackNamePreference());
    SetName(GetDefaultName());
-   mDisplayMin = -1.0;
-   mDisplayMax = 1.0;
    mSpectrumMin = mSpectrumMax = -1; // so values will default to settings
-   mLastScaleType = -1;
-   mLastdBRange = -1;
 }
 
 WaveTrack::WaveTrack(const WaveTrack &orig):
@@ -120,14 +115,7 @@ WaveTrack::WaveTrack(const WaveTrack &orig):
       ? std::make_unique<SpectrogramSettings>(*orig.mpSpectrumSettings)
       : nullptr
    )
-   , mpWaveformSettings(orig.mpWaveformSettings 
-      ? std::make_unique<WaveformSettings>(*orig.mpWaveformSettings)
-      : nullptr
-   )
 {
-   mLastScaleType = -1;
-   mLastdBRange = -1;
-
    mLegacyProjectFileOffset = 0;
 
    Init(orig);
@@ -152,8 +140,6 @@ void WaveTrack::Init(const WaveTrack &orig)
    mOldGain[1] = 0.0;
    SetDefaultName(orig.GetDefaultName());
    SetName(orig.GetName());
-   mDisplayMin = orig.mDisplayMin;
-   mDisplayMax = orig.mDisplayMax;
    mSpectrumMin = orig.mSpectrumMin;
    mSpectrumMax = orig.mSpectrumMax;
    mDisplayLocationsCache.clear();
@@ -171,13 +157,8 @@ void WaveTrack::Reinit(const WaveTrack &orig)
          mpSpectrumSettings.reset();
    }
 
-   {
-      auto &settings = orig.mpWaveformSettings;
-      if (settings)
-         mpWaveformSettings = std::make_unique<WaveformSettings>(*settings);
-      else
-         mpWaveformSettings.reset();
-   }
+   // Copy attached data from orig.  Nullify data in this where orig had null.
+   ((Caches&)*this) = orig;
 }
 
 void WaveTrack::Merge(const Track &orig)
@@ -186,12 +167,10 @@ void WaveTrack::Merge(const Track &orig)
       const WaveTrack &wt = *pwt;
       mGain    = wt.mGain;
       mPan     = wt.mPan;
-      mDisplayMin = wt.mDisplayMin;
-      mDisplayMax = wt.mDisplayMax;
       SetSpectrogramSettings(wt.mpSpectrumSettings
          ? std::make_unique<SpectrogramSettings>(*wt.mpSpectrumSettings) : nullptr);
-      SetWaveformSettings
-         (wt.mpWaveformSettings ? std::make_unique<WaveformSettings>(*wt.mpWaveformSettings) : nullptr);
+      // Copy attached data from orig.  Nullify data in this where orig had null.
+      ((Caches&)*this) = *pwt;
    });
    PlayableTrack::Merge(orig);
 }
@@ -241,28 +220,6 @@ void WaveTrack::SetPanFromChannelType()
       SetPan( 1.0f );
 };
 
-void WaveTrack::SetLastScaleType() const
-{
-   mLastScaleType = GetWaveformSettings().scaleType;
-}
-
-void WaveTrack::SetLastdBRange() const
-{
-   mLastdBRange = GetWaveformSettings().dBRange;
-}
-
-void WaveTrack::GetDisplayBounds(float *min, float *max) const
-{
-   *min = mDisplayMin;
-   *max = mDisplayMax;
-}
-
-void WaveTrack::SetDisplayBounds(float min, float max) const
-{
-   mDisplayMin = min;
-   mDisplayMax = max;
-}
-
 void WaveTrack::GetSpectrumBounds(float *min, float *max) const
 {
    const double rate = GetRate();
@@ -311,12 +268,6 @@ void WaveTrack::SetSpectrumBounds(float min, float max) const
 {
    mSpectrumMin = min;
    mSpectrumMax = max;
-}
-
-int WaveTrack::ZeroLevelYCoordinate(wxRect rect) const
-{
-   return rect.GetTop() +
-      (int)((mDisplayMax / (mDisplayMax - mDisplayMin)) * rect.height);
 }
 
 template< typename Container >
@@ -706,27 +657,6 @@ void WaveTrack::UseSpectralPrefs( bool bUse )
 }
 
 
-
-const WaveformSettings &WaveTrack::GetWaveformSettings() const
-{
-   // Create on demand
-   return const_cast<WaveTrack*>(this)->GetWaveformSettings();
-}
-
-WaveformSettings &WaveTrack::GetWaveformSettings()
-{
-   // Create on demand
-   if (!mpWaveformSettings)
-      mpWaveformSettings = std::make_unique<WaveformSettings>(WaveformSettings::defaults());
-   return *mpWaveformSettings;
-}
-
-void WaveTrack::SetWaveformSettings(std::unique_ptr<WaveformSettings> &&pSettings)
-{
-   if (mpWaveformSettings != pSettings) {
-      mpWaveformSettings = std::move(pSettings);
-   }
-}
 
 //
 // ClearAndPaste() is a specialized version of HandleClear()
