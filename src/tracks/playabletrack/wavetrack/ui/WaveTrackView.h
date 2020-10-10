@@ -91,8 +91,6 @@ public:
    // Preserve some view state too for undo/redo purposes
    void CopyTo( Track &track ) const override;
 
-   std::shared_ptr<TrackVRulerControls> DoGetVRulerControls() override;
-
    // CommonTrackView implementation
    void Reparent( const std::shared_ptr<Track> &parent ) override;
 
@@ -133,11 +131,6 @@ public:
 private:
    void BuildSubViews() const;
    void DoSetDisplay(Display display, bool exclusive = true);
-
-   // TrackPanelDrawable implementation
-   void Draw(
-      TrackPanelDrawingContext &context,
-      const wxRect &rect, unsigned iPass ) override;
 
    std::vector<UIHandlePtr> DetailedHitTest
       (const TrackPanelMouseState &state,
