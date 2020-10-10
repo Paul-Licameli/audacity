@@ -343,10 +343,6 @@ list( APPEND SOURCES
       prefs/QualitySettings.h
       prefs/RecordingPrefs.cpp
       prefs/RecordingPrefs.h
-      prefs/SpectrogramSettings.cpp
-      prefs/SpectrogramSettings.h
-      prefs/SpectrumPrefs.cpp
-      prefs/SpectrumPrefs.h
       prefs/ThemePrefs.cpp
       prefs/ThemePrefs.h
       prefs/TracksBehaviorsPrefs.cpp
@@ -373,14 +369,7 @@ list( APPEND SOURCES
       tracks/playabletrack/ui/PlayableTrackControls.h
       tracks/playabletrack/wavetrack/ui/CutlineHandle.cpp
       tracks/playabletrack/wavetrack/ui/CutlineHandle.h
-      tracks/playabletrack/wavetrack/ui/SpectrumVRulerControls.cpp
-      tracks/playabletrack/wavetrack/ui/SpectrumVRulerControls.h
-      tracks/playabletrack/wavetrack/ui/SpectrumVZoomHandle.cpp
-      tracks/playabletrack/wavetrack/ui/SpectrumVZoomHandle.h
-      tracks/playabletrack/wavetrack/ui/SpectrumView.cpp
-      tracks/playabletrack/wavetrack/ui/SpectrumView.h
       tracks/playabletrack/wavetrack/ui/WaveTrackAffordanceControls.cpp
-      tracks/playabletrack/wavetrack/ui/WaveTrackAffordanceControls.h
       tracks/playabletrack/wavetrack/ui/WaveTrackControls.cpp
       tracks/playabletrack/wavetrack/ui/WaveTrackControls.h
       tracks/playabletrack/wavetrack/ui/WaveTrackMenuItems.cpp
@@ -424,8 +413,6 @@ list( APPEND SOURCES
       tracks/ui/SelectHandle.h
       tracks/ui/SliderHandle.cpp
       tracks/ui/SliderHandle.h
-      tracks/ui/SpectralSelectHandle.cpp
-      tracks/ui/SpectralSelectHandle.h
       tracks/ui/TimeShiftHandle.cpp
       tracks/ui/TimeShiftHandle.h
       tracks/ui/TrackButtonHandles.cpp

@@ -41,7 +41,7 @@ SetTrackAudioCommand and SetTrackVisualsCommand.
 #include "TrackPanel.h"
 #include "WaveTrack.h"
 #include "WaveformSettings.h"
-#include "prefs/SpectrogramSettings.h"
+#include "SpectrogramSettings.h"
 #include "Shuttle.h"
 #include "ShuttleGui.h"
 #include "tracks/playabletrack/wavetrack/ui/WaveTrackView.h"

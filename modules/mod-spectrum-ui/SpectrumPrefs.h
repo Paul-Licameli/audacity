@@ -24,7 +24,7 @@
 #include <vector>
 #include <wx/defs.h>
 
-#include "PrefsPanel.h"
+#include "prefs/PrefsPanel.h"
 #include "SpectrogramSettings.h"
 
 class wxChoice;

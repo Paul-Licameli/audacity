@@ -11,7 +11,7 @@ Paul Licameli
 #ifndef __AUDACITY_SPECTROGRAM_SETTINGS__
 #define __AUDACITY_SPECTROGRAM_SETTINGS__
 
-#include "../ClientData.h" // to inherit
+#include "ClientData.h" // to inherit
 #include "Prefs.h"
 #include "SampleFormat.h"
 #include "RealFFTf.h"
@@ -25,7 +25,7 @@ class SpectrumPrefs;
 class wxArrayStringEx;
 class WaveTrack;
 
-class AUDACITY_DLL_API SpectrogramSettings
+class SPECTRUM_UI_API SpectrogramSettings
    : public PrefsListener
    , public ClientData::Cloneable< ClientData::UniquePtr >
 {
@@ -33,7 +33,7 @@ class AUDACITY_DLL_API SpectrogramSettings
 public:
 
    // Singleton for settings that are not per-track
-   class AUDACITY_DLL_API Globals
+   class SPECTRUM_UI_API Globals
    {
    public:
       static Globals &Get();
@@ -200,7 +200,7 @@ public:
    mutable Floats         dWindow; // Derivative of window
 };
 
-class AUDACITY_DLL_API SpectrogramSettingsCache
+class SPECTRUM_UI_API SpectrogramSettingsCache
    : public ClientData::Cloneable< ClientData::UniquePtr >
 {
 public:

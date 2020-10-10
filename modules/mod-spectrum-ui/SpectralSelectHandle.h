@@ -11,7 +11,7 @@
 #ifndef __AUDACITY__SPECTRAL_SELECT_HANDLE__
 #define __AUDACITY__SPECTRAL_SELECT_HANDLE__
 
-#include "SelectHandle.h" // to inherit
+#include "tracks/ui/SelectHandle.h" // to inherit
 
 class SpectrumAnalyst;
 

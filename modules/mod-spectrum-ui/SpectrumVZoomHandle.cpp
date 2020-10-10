@@ -8,19 +8,18 @@ Paul Licameli split from WaveTrackVZoomHandle.cpp
 
 **********************************************************************/
 
-
 #include "SpectrumVZoomHandle.h"
 
-#include "WaveTrackVZoomHandle.h"
+#include "tracks/playabletrack/wavetrack/ui/WaveTrackVZoomHandle.h"
 
-#include "../../../../HitTestResult.h"
-#include "../../../../NumberScale.h"
+#include "HitTestResult.h"
+#include "NumberScale.h"
 #include "Prefs.h"
-#include "../../../../ProjectHistory.h"
-#include "../../../../RefreshCode.h"
-#include "../../../../TrackPanelMouseEvent.h"
-#include "../../../../WaveTrack.h"
-#include "../../../../prefs/SpectrogramSettings.h"
+#include "ProjectHistory.h"
+#include "RefreshCode.h"
+#include "TrackPanelMouseEvent.h"
+#include "WaveTrack.h"
+#include "SpectrogramSettings.h"
 
 SpectrumVZoomHandle::SpectrumVZoomHandle
 (const std::shared_ptr<WaveTrack> &pTrack, const wxRect &rect, int y)

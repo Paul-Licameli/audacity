@@ -71,6 +71,7 @@ static const std::unordered_set<wxString> &autoEnabledModules()
       "mod-time-track-ui",
       "mod-label-track-ui",
       "mod-waveform-ui",
+      "mod-spectrum-ui",
    };
    return modules;
 }

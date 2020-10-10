@@ -9,17 +9,17 @@
  **********************************************************************/
 
 #include "SpectralSelectHandle.h"
-#include "../../prefs/SpectrogramSettings.h"
-#include "../../NumberScale.h"
-#include "../../SpectrumAnalyst.h"
-#include "TrackView.h"
-#include "../../ViewInfo.h"
-#include "../../WaveTrack.h"
-#include "../../HitTestResult.h"
-#include "../../ProjectHistory.h"
-#include "../../TrackPanelAx.h"
-#include "../../TrackPanelMouseEvent.h"
-#include "../../../images/Cursors.h"
+#include "SpectrogramSettings.h"
+#include "NumberScale.h"
+#include "SpectrumAnalyst.h"
+#include "tracks/ui/TrackView.h"
+#include "ViewInfo.h"
+#include "WaveTrack.h"
+#include "HitTestResult.h"
+#include "ProjectHistory.h"
+#include "TrackPanelAx.h"
+#include "TrackPanelMouseEvent.h"
+#include "../images/Cursors.h"
 
 class SpectrumView;
 
