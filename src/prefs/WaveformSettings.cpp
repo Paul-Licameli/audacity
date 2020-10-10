@@ -15,6 +15,7 @@ Paul Licameli
 
 
 #include "WaveformSettings.h"
+#include "WaveTrack.h"
 
 #include "GUISettings.h"
 #include "GUIPrefs.h"
@@ -43,6 +44,21 @@ WaveformSettings::Globals
 {
    static Globals instance;
    return instance;
+}
+
+WaveformSettings &WaveformSettings::Get( WaveTrack &track )
+{
+   return track.GetWaveformSettings();
+}
+
+const WaveformSettings &WaveformSettings::Get( const WaveTrack &track )
+{
+   return track.GetWaveformSettings();
+}
+
+void WaveformSettings::Set(WaveTrack &track, const WaveformSettings &settings)
+{
+   track.GetWaveformSettings() = settings;
 }
 
 WaveformSettings::WaveformSettings()

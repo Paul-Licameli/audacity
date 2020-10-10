@@ -395,7 +395,7 @@ bool SetTrackVisualsCommand::ApplyInner(const CommandContext & context, Track * 
       }
    }
    if( wt && bHasScaleType )
-      wt->GetWaveformSettings().scaleType = 
+      WaveformSettings::Get(*wt).scaleType =
          (mScaleType==kLinear) ? 
             WaveformSettings::stLinear
             : WaveformSettings::stLogarithmic;

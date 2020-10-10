@@ -37,7 +37,7 @@ WaveformPrefs::WaveformPrefs(wxWindow * parent, wxWindowID winid,
 , mPopulating(false)
 {
    if (mWt) {
-      WaveformSettings &settings = wt->GetWaveformSettings();
+      WaveformSettings &settings = WaveformSettings::Get(*wt);
       mDefaulted = (&WaveformSettings::defaults() == &settings);
       mTempSettings = settings;
    }
@@ -166,10 +166,9 @@ bool WaveformPrefs::Commit()
    if (mWt) {
       for (auto channel : TrackList::Channels(mWt)) {
          if (mDefaulted)
-            channel->SetWaveformSettings({});
+            WaveformSettings::Set(*channel, {});
          else {
-            WaveformSettings &settings =
-               channel->GetWaveformSettings();
+            auto &settings = WaveformSettings::Get(*channel);
             settings = mTempSettings;
          }
       }

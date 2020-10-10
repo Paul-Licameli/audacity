@@ -53,9 +53,10 @@ static EnvelopeHandle::Data FindData(
    const AudacityProject &project, WaveTrack *wt, wxCoord xx, wxCoord origin)
 {
    EnvelopeHandle::Data results;
-   results.mLog = !wt->GetWaveformSettings().isLinear();
    wt->GetDisplayBounds(&results.mLower, &results.mUpper);
-   results.mdBRange = wt->GetWaveformSettings().dBRange;
+   auto &settings = WaveformSettings::Get(*wt);
+   results.mLog = !settings.isLinear();
+   results.mdBRange = settings.dBRange;
    auto channels = TrackList::Channels( wt );
    results.mEnvelopeEditors.resize(1);
    // Note that there is not necessarily an envelope at every channel
@@ -1325,7 +1326,8 @@ void DrawClipWaveform(TrackPanelDrawingContext &context,
    double leftOffset = params.leftOffset;
    const wxRect &mid = params.mid;
 
-   const float dBRange = track->GetWaveformSettings().dBRange;
+   auto &settings = WaveformSettings::Get(*track);
+   const float dBRange = settings.dBRange;
 
    dc.SetPen(*wxTRANSPARENT_PEN);
    int iColorIndex = clip->GetColourIndex();
@@ -1608,7 +1610,7 @@ void WaveformView::DoDraw(TrackPanelDrawingContext &context,
    highlight = target && target->GetTrack().get() == track;
 #endif
 
-   const bool dB = !track->GetWaveformSettings().isLinear();
+   const bool dB = !WaveformSettings::Get(*track).isLinear();
 
    const auto &blankSelectedBrush = artist->blankSelectedBrush;
    const auto &blankBrush = artist->blankBrush;
