@@ -31,7 +31,6 @@
 
 class wxRect;
 
-class SpectrumAnalyst;
 class Track;
 class TrackList;
 struct TrackListEvent;
