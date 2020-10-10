@@ -70,6 +70,7 @@ static const std::unordered_set<wxString> &autoEnabledModules()
       "mod-note-track-ui",
       "mod-time-track-ui",
       "mod-label-track-ui",
+      "mod-waveform-ui",
    };
    return modules;
 }

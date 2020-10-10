@@ -13,20 +13,19 @@ Paul Licameli
 
 *//*******************************************************************/
 
-
 #include "WaveformPrefs.h"
 
-#include "GUIPrefs.h"
-#include "GUISettings.h"
+#include "prefs/GUIPrefs.h"
+#include "prefs/GUISettings.h"
 
 #include <wx/checkbox.h>
 #include <wx/choice.h>
 
-#include "../Project.h"
+#include "Project.h"
 
-#include "../TrackPanel.h"
-#include "../ShuttleGui.h"
-#include "../WaveTrack.h"
+#include "TrackPanel.h"
+#include "ShuttleGui.h"
+#include "WaveTrack.h"
 
 WaveformPrefs::WaveformPrefs(wxWindow * parent, wxWindowID winid,
    AudacityProject *pProject, WaveTrack *wt)
@@ -278,3 +277,6 @@ PrefsPanel::Registration sAttachment{ "Waveform",
 };
 }
 #endif
+
+#include "ModuleConstants.h"
+DEFINE_MODULE_ENTRIES

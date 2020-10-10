@@ -8,25 +8,24 @@ Paul Licameli split from TrackPanel.cpp
 
 **********************************************************************/
 
-
 #include "SampleHandle.h"
 
 #include <algorithm>
 #include <wx/gdicmn.h>
 
-#include "../../../../Envelope.h"
-#include "../../../../HitTestResult.h"
-#include "../../../../prefs/WaveformSettings.h"
-#include "../../../../ProjectAudioIO.h"
-#include "../../../../ProjectHistory.h"
-#include "../../../../RefreshCode.h"
-#include "../../../../TrackArtist.h"
-#include "../../../../TrackPanelMouseEvent.h"
-#include "../../../../UndoManager.h"
-#include "../../../../ViewInfo.h"
-#include "../../../../WaveTrack.h"
-#include "../../../../../images/Cursors.h"
-#include "../../../../widgets/AudacityMessageBox.h"
+#include "Envelope.h"
+#include "HitTestResult.h"
+#include "WaveformSettings.h"
+#include "ProjectAudioIO.h"
+#include "ProjectHistory.h"
+#include "RefreshCode.h"
+#include "TrackArtist.h"
+#include "TrackPanelMouseEvent.h"
+#include "UndoManager.h"
+#include "ViewInfo.h"
+#include "WaveTrack.h"
+#include "../../images/Cursors.h"
+#include "widgets/AudacityMessageBox.h"
 
 
 static const int SMOOTHING_KERNEL_RADIUS = 3;

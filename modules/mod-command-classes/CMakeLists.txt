@@ -34,5 +34,5 @@ list( APPEND SOURCES
    SetTrackInfoCommand.h
 )
 audacity_module( mod-command-classes "${SOURCES}"
-   "mod-import-export-interface;mod-effects-interface;mod-label-track-ui-interface"
+   "mod-import-export-interface;mod-effects-interface;mod-label-track-ui-interface;mod-waveform-ui-interface"
    "" "" )

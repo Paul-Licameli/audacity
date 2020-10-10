@@ -355,10 +355,6 @@ list( APPEND SOURCES
       prefs/TracksPrefs.h
       prefs/WarningsPrefs.cpp
       prefs/WarningsPrefs.h
-      prefs/WaveformPrefs.cpp
-      prefs/WaveformPrefs.h
-      prefs/WaveformSettings.cpp
-      prefs/WaveformSettings.h
 
       # Toolbars
 
@@ -377,8 +373,6 @@ list( APPEND SOURCES
       tracks/playabletrack/ui/PlayableTrackControls.h
       tracks/playabletrack/wavetrack/ui/CutlineHandle.cpp
       tracks/playabletrack/wavetrack/ui/CutlineHandle.h
-      tracks/playabletrack/wavetrack/ui/SampleHandle.cpp
-      tracks/playabletrack/wavetrack/ui/SampleHandle.h
       tracks/playabletrack/wavetrack/ui/SpectrumVRulerControls.cpp
       tracks/playabletrack/wavetrack/ui/SpectrumVRulerControls.h
       tracks/playabletrack/wavetrack/ui/SpectrumVZoomHandle.cpp
@@ -401,12 +395,6 @@ list( APPEND SOURCES
       tracks/playabletrack/wavetrack/ui/WaveTrackView.h
       tracks/playabletrack/wavetrack/ui/WaveTrackViewConstants.cpp
       tracks/playabletrack/wavetrack/ui/WaveTrackViewConstants.h
-      tracks/playabletrack/wavetrack/ui/WaveformVRulerControls.cpp
-      tracks/playabletrack/wavetrack/ui/WaveformVRulerControls.h
-      tracks/playabletrack/wavetrack/ui/WaveformVZoomHandle.cpp
-      tracks/playabletrack/wavetrack/ui/WaveformVZoomHandle.h
-      tracks/playabletrack/wavetrack/ui/WaveformView.cpp
-      tracks/playabletrack/wavetrack/ui/WaveformView.h
 
       # Tracks UI
 

@@ -13,13 +13,12 @@ Paul Licameli
 
 *//*******************************************************************/
 
-
 #include "WaveformSettings.h"
 #include "WaveTrack.h"
 
-#include "GUISettings.h"
-#include "GUIPrefs.h"
-#include "TracksPrefs.h"
+#include "prefs/GUISettings.h"
+#include "prefs/GUIPrefs.h"
+#include "prefs/TracksPrefs.h"
 
 #include <algorithm>
 
@@ -277,7 +276,7 @@ int WaveformSettingsCache::ZeroLevelYCoordinate(wxRect rect) const
 }
 
 // Attach things to Tracks preferences page
-#include "../ShuttleGui.h"
+#include "ShuttleGui.h"
 
 namespace {
 void AddScale( ShuttleGui &S )

@@ -11,7 +11,7 @@ Paul Licameli split from WaveTrackView.h
 #ifndef __AUDACITY_WAVEFORM_VIEW__
 #define __AUDACITY_WAVEFORM_VIEW__
 
-#include "WaveTrackView.h" // to inherit
+#include "tracks/playabletrack/wavetrack/ui/WaveTrackView.h" // to inherit
 
 class WaveTrack;
 class SampleHandle;

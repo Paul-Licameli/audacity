@@ -8,32 +8,31 @@ Paul Licameli split from WaveTrackView.cpp
 
 **********************************************************************/
 
-
 #include "WaveformView.h"
 
 #include "Dither.h"
 #include "Sequence.h"
 
 #include "WaveformVRulerControls.h"
-#include "WaveTrackView.h"
-#include "WaveTrackViewConstants.h"
+#include "tracks/playabletrack/wavetrack/ui/WaveTrackView.h"
+#include "tracks/playabletrack/wavetrack/ui/WaveTrackViewConstants.h"
 
 #include "SampleHandle.h"
-#include "../../../ui/EnvelopeHandle.h"
-#include "../../../ui/TimeShiftHandle.h"
-#include "../../../../AColor.h"
-#include "../../../../Envelope.h"
-#include "../../../../EnvelopeEditor.h"
-#include "../../../../ProjectSettings.h"
-#include "../../../../SampleBlock.h"
-#include "../../../../SelectedRegion.h"
-#include "../../../../TrackArtist.h"
-#include "../../../../TrackPanelDrawingContext.h"
-#include "../../../../TrackPanelMouseEvent.h"
-#include "../../../../ViewInfo.h"
-#include "../../../../WaveClip.h"
-#include "../../../../WaveTrack.h"
-#include "../../../../prefs/WaveformSettings.h"
+#include "tracks/ui/EnvelopeHandle.h"
+#include "tracks/ui/TimeShiftHandle.h"
+#include "AColor.h"
+#include "Envelope.h"
+#include "EnvelopeEditor.h"
+#include "ProjectSettings.h"
+#include "SampleBlock.h"
+#include "SelectedRegion.h"
+#include "TrackArtist.h"
+#include "TrackPanelDrawingContext.h"
+#include "TrackPanelMouseEvent.h"
+#include "ViewInfo.h"
+#include "WaveClip.h"
+#include "WaveTrack.h"
+#include "WaveformSettings.h"
 
 #include <wx/graphics.h>
 #include <wx/dc.h>
@@ -1685,11 +1684,11 @@ static const WaveTrackSubViews::RegisteredFactory key{
 // source file with the rest of the waveform view implementation.
 
 #include <mutex> // for std::call_once
-#include "WaveTrackControls.h"
-#include "../../../../widgets/PopupMenuTable.h"
-#include "../../../../ProjectAudioIO.h"
-#include "../../../../ProjectHistory.h"
-#include "../../../../RefreshCode.h"
+#include "tracks/playabletrack/wavetrack/ui/WaveTrackControls.h"
+#include "widgets/PopupMenuTable.h"
+#include "ProjectAudioIO.h"
+#include "ProjectHistory.h"
+#include "RefreshCode.h"
 
 //=============================================================================
 // Table class for a sub-menu
