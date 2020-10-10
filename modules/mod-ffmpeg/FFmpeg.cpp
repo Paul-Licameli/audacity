@@ -1023,4 +1023,22 @@ void FFmpegLibs::FreeLibs()
    return;
 }
 
+#include "ModuleConstants.h"
+DEFINE_VERSION_CHECK
+
+extern "C" DLL_API int ModuleDispatch(ModuleDispatchTypes type)
+{
+   switch (type){
+   case AppInitialized:
+      FFmpegStartup();
+      break;
+   case AppQuiting:
+      DropFFmpegLibs();
+      break;
+   default:
+      break;
+   }
+   return 1;
+}
+
 #endif //USE_FFMPEG

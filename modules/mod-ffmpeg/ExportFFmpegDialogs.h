@@ -11,11 +11,9 @@ LRN
 #if !defined(__EXPORT_FFMPEG_DIALOGS_H__)
 #define __EXPORT_FFMPEG_DIALOGS_H__
 
-
-
 #if defined(USE_FFMPEG)
 
-#include "../FFmpeg.h"
+#include "FFmpeg.h"
 
 #include "XMLFileReader.h"
 #include "FileNames.h"
