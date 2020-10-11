@@ -11,10 +11,10 @@
 
 #include "ExportMP3.h"
 #include "Internat.h"
-#include "../ShuttleGui.h"
-#include "../prefs/LibraryPrefs.h"
-#include "../widgets/HelpSystem.h"
-#include "../widgets/ReadOnlyText.h"
+#include "ShuttleGui.h"
+#include "prefs/LibraryPrefs.h"
+#include "widgets/HelpSystem.h"
+#include "widgets/ReadOnlyText.h"
 #include <wx/button.h>
 #include <wx/stattext.h>
 

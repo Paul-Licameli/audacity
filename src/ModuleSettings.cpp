@@ -48,6 +48,7 @@ static const std::unordered_set<wxString> &autoEnabledModules()
       "mod-ogg",
       "mod-mp2",
       "mod-ffmpeg",
+      "mod-mp3",
    };
    return modules;
 }
