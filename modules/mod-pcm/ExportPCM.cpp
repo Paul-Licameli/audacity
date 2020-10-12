@@ -8,8 +8,6 @@
 
 **********************************************************************/
 
-
-
 #include <wx/defs.h>
 
 #include <wx/app.h>
@@ -22,19 +20,19 @@
 #include "sndfile.h"
 
 #include "Dither.h"
-#include "../FileFormats.h"
-#include "../Mix.h"
+#include "FileFormats.h"
+#include "Mix.h"
 #include "Prefs.h"
-#include "../ProjectSettings.h"
-#include "../ShuttleGui.h"
-#include "../Tags.h"
-#include "../Track.h"
-#include "../widgets/AudacityMessageBox.h"
-#include "../widgets/ProgressDialog.h"
-#include "../widgets/wxWidgetsBasicUI.h"
+#include "ProjectSettings.h"
+#include "ShuttleGui.h"
+#include "Tags.h"
+#include "Track.h"
+#include "widgets/AudacityMessageBox.h"
+#include "widgets/ProgressDialog.h"
+#include "widgets/wxWidgetsBasicUI.h"
 #include "wxFileNameWrapper.h"
 
-#include "Export.h"
+#include "export/Export.h"
 
 #ifdef USE_LIBID3TAG
    #include <id3tag.h>
@@ -1099,3 +1097,39 @@ unsigned ExportPCM::GetMaxChannels(int index)
 static Exporter::RegisteredExportPlugin sRegisteredPlugin{ "PCM",
    []{ return std::make_unique< ExportPCM >(); }
 };
+
+// Register a menu item
+#include "commands/CommandContext.h"
+#include "commands/CommandManager.h"
+#include "CommonCommandFlags.h"
+
+namespace {
+struct Handler : CommandHandlerObject {
+void OnExportWav(const CommandContext &context)
+{
+   Exporter::DoExport(context.project, "WAV");
+}
+}; // struct Handler
+
+static CommandHandlerObject &findCommandHandler(AudacityProject &) {
+   // Handler is not stateful.  Doesn't need a factory registered with
+   // AudacityProject.
+   static Handler instance;
+   return instance;
+};
+
+using namespace MenuTable;
+#define FN(X) (& Handler :: X)
+AttachedItem sAttachment{
+   { wxT("File/Import-Export/Export"),
+      // This item may be duplicated in other modules,
+      // so use the "ignore" conflict resolution
+      { OrderingHint::Unspecified, {}, OrderingHint::Ignore } },
+   ( FinderScope{ findCommandHandler },
+   Command( wxT("ExportWav"), XXO("Export as &WAV"), FN(OnExportWav),
+      AudioIONotBusyFlag() | WaveTracksExistFlag() )
+   )
+};
+#undef FN
+
+} // namespace

@@ -19,10 +19,8 @@
 
 *//*******************************************************************/
 
-
-
-#include "Import.h"
-#include "../Tags.h"
+#include "import/Import.h"
+#include "Tags.h"
 
 #include <wx/wx.h>
 #include <wx/ffile.h>
@@ -31,19 +29,19 @@
 
 #include "sndfile.h"
 
-#include "../ShuttleGui.h"
+#include "ShuttleGui.h"
 
-#include "../widgets/ProgressDialog.h"
+#include "widgets/ProgressDialog.h"
 
 #ifndef SNDFILE_1
 #error Requires libsndfile 1.0 or higher
 #endif
 
-#include "../FileFormats.h"
+#include "FileFormats.h"
 #include "Prefs.h"
-#include "../ShuttleGui.h"
-#include "../WaveTrack.h"
-#include "ImportPlugin.h"
+#include "ShuttleGui.h"
+#include "WaveTrack.h"
+#include "import/ImportPlugin.h"
 
 #include <algorithm>
 
@@ -582,3 +580,6 @@ ProgressResult PCMImportFileHandle::Import(WaveTrackFactory *trackFactory,
 PCMImportFileHandle::~PCMImportFileHandle()
 {
 }
+
+#include "ModuleConstants.h"
+DEFINE_MODULE_ENTRIES

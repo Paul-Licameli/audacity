@@ -49,6 +49,7 @@ static const std::unordered_set<wxString> &autoEnabledModules()
       "mod-mp2",
       "mod-ffmpeg",
       "mod-mp3",
+      "mod-pcm",
    };
    return modules;
 }
