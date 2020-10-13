@@ -11,6 +11,9 @@ Paul Licameli split from WaveTrackView.cpp
 
 #include "WaveformView.h"
 
+#include "Dither.h"
+#include "Sequence.h"
+
 #include "WaveformVRulerControls.h"
 #include "WaveTrackView.h"
 #include "WaveTrackViewConstants.h"
@@ -22,6 +25,7 @@ Paul Licameli split from WaveTrackView.cpp
 #include "../../../../Envelope.h"
 #include "../../../../EnvelopeEditor.h"
 #include "../../../../ProjectSettings.h"
+#include "../../../../SampleBlock.h"
 #include "../../../../SelectedRegion.h"
 #include "../../../../TrackArtist.h"
 #include "../../../../TrackPanelDrawingContext.h"
@@ -33,6 +37,7 @@ Paul Licameli split from WaveTrackView.cpp
 
 #include <wx/graphics.h>
 #include <wx/dc.h>
+#include <float.h>
 
 static const Identifier WaveformId = wxT("Waveform");
 
@@ -661,6 +666,573 @@ void DrawEnvelope(TrackPanelDrawingContext &context,
       DrawEnvLine( context, rect, x0, envTop, cenvTop, true );
       DrawEnvLine( context, rect, x0, envBot, cenvBot, false );
    }
+}
+
+class WaveCache {
+public:
+   WaveCache()
+      : dirty(-1)
+      , start(-1)
+      , pps(0)
+      , rate(-1)
+      , where(0)
+      , min(0)
+      , max(0)
+      , rms(0)
+      , bl(0)
+   {
+   }
+
+   WaveCache(size_t len_, double pixelsPerSecond, double rate_, double t0, int dirty_)
+      : dirty(dirty_)
+      , len(len_)
+      , start(t0)
+      , pps(pixelsPerSecond)
+      , rate(rate_)
+      , where(1 + len)
+      , min(len)
+      , max(len)
+      , rms(len)
+      , bl(len)
+   {
+   }
+
+   ~WaveCache()
+   {
+   }
+
+   int          dirty;
+   const size_t len { 0 }; // counts pixels, not samples
+   const double start;
+   const double pps;
+   const int    rate;
+   std::vector<sampleCount> where;
+   std::vector<float> min;
+   std::vector<float> max;
+   std::vector<float> rms;
+   std::vector<int> bl;
+};
+
+struct WaveClipWaveformCache final : WaveClipListener
+{
+   WaveClipWaveformCache();
+   ~WaveClipWaveformCache() override;
+
+   // Cache of values to colour pixels of Spectrogram - used by TrackArtist
+   std::unique_ptr<WaveCache> mWaveCache;
+   int mDirty { 0 };
+
+   static WaveClipWaveformCache &Get( const WaveClip &clip );
+
+   void MarkChanged() override; // NOFAIL-GUARANTEE
+   void Invalidate() override; // NOFAIL-GUARANTEE
+
+   ///Delete the wave cache - force redraw.  Thread-safe
+   void Clear();
+
+   /** Getting high-level data for screen display */
+   bool GetWaveDisplay(const WaveClip &clip, WaveDisplay &display,
+                       double t0, double pixelsPerSecond);
+};
+
+WaveClipWaveformCache::WaveClipWaveformCache()
+: mWaveCache{ std::make_unique<WaveCache>() }
+{
+}
+
+WaveClipWaveformCache::~WaveClipWaveformCache()
+{
+}
+
+static WaveClip::Caches::RegisteredFactory sKeyW{ []( WaveClip& ){
+   return std::make_unique< WaveClipWaveformCache >();
+} };
+
+WaveClipWaveformCache &WaveClipWaveformCache::Get( const WaveClip &clip )
+{
+   return const_cast< WaveClip& >( clip )
+      .Caches::Get< WaveClipWaveformCache >( sKeyW );
+}
+
+void WaveClipWaveformCache::MarkChanged()
+{
+   ++mDirty;
+}
+
+void WaveClipWaveformCache::Invalidate()
+{
+   // Invalidate wave display cache
+   mWaveCache = std::make_unique<WaveCache>();
+}
+
+///Delete the wave cache - force redraw.  Thread-safe
+void WaveClipWaveformCache::Clear()
+{
+   mWaveCache = std::make_unique<WaveCache>();
+}
+
+struct MinMaxSumsq
+{
+   MinMaxSumsq(const float *pv, int count, int divisor)
+   {
+      min = FLT_MAX, max = -FLT_MAX, sumsq = 0.0f;
+      while (count--) {
+         float v;
+         switch (divisor) {
+         default:
+         case 1:
+            // array holds samples
+            v = *pv++;
+            if (v < min)
+               min = v;
+            if (v > max)
+               max = v;
+            sumsq += v * v;
+            break;
+         case 256:
+         case 65536:
+            // array holds triples of min, max, and rms values
+            v = *pv++;
+            if (v < min)
+               min = v;
+            v = *pv++;
+            if (v > max)
+               max = v;
+            v = *pv++;
+            sumsq += v * v;
+            break;
+         }
+      }
+   }
+
+   float min;
+   float max;
+   float sumsq;
+};
+
+// where is input, assumed to be nondecreasing, and its size is len + 1.
+// min, max, rms, bl are outputs, and their lengths are len.
+// Each position in the output arrays corresponds to one column of pixels.
+// The column for pixel p covers samples from
+// where[p] up to (but excluding) where[p + 1].
+// bl is negative wherever data are not yet available.
+// Return true if successful.
+bool GetWaveDisplay(const Sequence &sequence,
+   float *min, float *max, float *rms, int* bl,
+   size_t len, const sampleCount *where)
+{
+   wxASSERT(len > 0);
+   const auto s0 = std::max(sampleCount(0), where[0]);
+   const auto numSamples = sequence.GetNumSamples();
+   if (s0 >= numSamples)
+      // None of the samples asked for are in range. Abandon.
+      return false;
+
+   // In case where[len - 1] == where[len], raise the limit by one,
+   // so we load at least one pixel for column len - 1
+   // ... unless the mNumSamples ceiling applies, and then there are other defenses
+   const auto s1 =
+      std::min(numSamples, std::max(1 + where[len - 1], where[len]));
+   const auto maxSamples = sequence.GetMaxBlockSize();
+   Floats temp{ maxSamples };
+
+   decltype(len) pixel = 0;
+
+   auto srcX = s0;
+   decltype(srcX) nextSrcX = 0;
+   int lastRmsDenom = 0;
+   int lastDivisor = 0;
+   auto whereNow = std::min(s1 - 1, where[0]);
+   decltype(whereNow) whereNext = 0;
+   // Loop over block files, opening and reading and closing each
+   // not more than once
+   const auto &blocks = sequence.GetBlockArray();
+   unsigned nBlocks = blocks.size();
+   const unsigned int block0 = sequence.FindBlock(s0);
+   for (unsigned int b = block0; b < nBlocks; ++b) {
+      if (b > block0)
+         srcX = nextSrcX;
+      if (srcX >= s1)
+         break;
+
+      // Find the range of sample values for this block that
+      // are in the display.
+      const SeqBlock &seqBlock = blocks[b];
+      const auto start = seqBlock.start;
+      nextSrcX = std::min(s1, start + seqBlock.sb->GetSampleCount());
+
+      // The column for pixel p covers samples from
+      // where[p] up to but excluding where[p + 1].
+
+      // Find the range of pixels covered by the current block file
+      // (Their starting samples covered by it, to be exact)
+      decltype(len) nextPixel;
+      if (nextSrcX >= s1)
+         // last pass
+         nextPixel = len;
+      else {
+         nextPixel = pixel;
+         // Taking min with s1 - 1, here and elsewhere, is another defense
+         // to be sure the last pixel column gets at least one sample
+         while (nextPixel < len &&
+                (whereNext = std::min(s1 - 1, where[nextPixel])) < nextSrcX)
+            ++nextPixel;
+      }
+      if (nextPixel == pixel)
+         // The entire block's samples fall within one pixel column.
+         // Either it's a rare odd block at the end, or else,
+         // we must be really zoomed out!
+         // Omit the entire block's contents from min/max/rms
+         // calculation, which is not correct, but correctness might not
+         // be worth the compute time if this happens every pixel
+         // column. -- PRL
+         continue;
+      if (nextPixel == len)
+         whereNext = s1;
+
+      // Decide the summary level
+      const double samplesPerPixel =
+         (whereNext - whereNow).as_double() / (nextPixel - pixel);
+      const int divisor =
+           (samplesPerPixel >= 65536) ? 65536
+         : (samplesPerPixel >= 256) ? 256
+         : 1;
+
+      int blockStatus = b;
+
+      // How many samples or triples are needed?
+
+      const size_t startPosition =
+         // srcX and start are in the same block
+         std::max(sampleCount(0), (srcX - start) / divisor).as_size_t();
+      const size_t inclusiveEndPosition =
+         // nextSrcX - 1 and start are in the same block
+         std::min((sampleCount(maxSamples) / divisor) - 1,
+                  (nextSrcX - 1 - start) / divisor).as_size_t();
+      const auto num = 1 + inclusiveEndPosition - startPosition;
+      if (num <= 0) {
+         // What?  There was a zero length block file?
+         wxASSERT(false);
+         // Do some defense against this case anyway
+         while (pixel < nextPixel) {
+            min[pixel] = max[pixel] = rms[pixel] = 0;
+            bl[pixel] = blockStatus;//MC
+            ++pixel;
+         }
+         continue;
+      }
+
+      // Read from the block file or its summary
+      switch (divisor) {
+      default:
+      case 1:
+         // Read samples
+         // no-throw for display operations!
+         sequence.Read(
+            (samplePtr)temp.get(), floatSample, seqBlock, startPosition, num,
+            false);
+         break;
+      case 256:
+         // Read triples
+         // Ignore the return value.
+         // This function fills with zeroes if read fails
+         seqBlock.sb->GetSummary256(temp.get(), startPosition, num);
+         break;
+      case 65536:
+         // Read triples
+         // Ignore the return value.
+         // This function fills with zeroes if read fails
+         seqBlock.sb->GetSummary64k(temp.get(), startPosition, num);
+         break;
+      }
+      
+      auto filePosition = startPosition;
+
+      // The previous pixel column might straddle blocks.
+      // If so, impute some of the data to it.
+      if (b > block0 && pixel > 0) {
+         // whereNow and start are in the same block
+         auto midPosition = ((whereNow - start) / divisor).as_size_t();
+         int diff(midPosition - filePosition);
+         if (diff > 0) {
+            MinMaxSumsq values(temp.get(), diff, divisor);
+            const int lastPixel = pixel - 1;
+            float &lastMin = min[lastPixel];
+            lastMin = std::min(lastMin, values.min);
+            float &lastMax = max[lastPixel];
+            lastMax = std::max(lastMax, values.max);
+            float &lastRms = rms[lastPixel];
+            int lastNumSamples = lastRmsDenom * lastDivisor;
+            lastRms = sqrt(
+               (lastRms * lastRms * lastNumSamples + values.sumsq * divisor) /
+               (lastNumSamples + diff * divisor)
+            );
+
+            filePosition = midPosition;
+         }
+      }
+
+      // Loop over file positions
+      int rmsDenom = 0;
+      for (; filePosition <= inclusiveEndPosition;) {
+         // Find range of pixel columns for this file position
+         // (normally just one, but maybe more when zoomed very close)
+         // and the range of positions for those columns
+         // (normally one or more, for that one column)
+         auto pixelX = pixel + 1;
+         decltype(filePosition) positionX = 0;
+         while (pixelX < nextPixel &&
+            filePosition ==
+               (positionX = (
+                  // s1 - 1 or where[pixelX] and start are in the same block
+                  (std::min(s1 - 1, where[pixelX]) - start) / divisor).as_size_t() )
+         )
+            ++pixelX;
+         if (pixelX >= nextPixel)
+            positionX = 1 + inclusiveEndPosition;
+
+         // Find results to assign
+         rmsDenom = (positionX - filePosition);
+         wxASSERT(rmsDenom > 0);
+         const float *const pv =
+            temp.get() + (filePosition - startPosition) * (divisor == 1 ? 1 : 3);
+         MinMaxSumsq values(pv, std::max(0, rmsDenom), divisor);
+
+         // Assign results
+         std::fill(&min[pixel], &min[pixelX], values.min);
+         std::fill(&max[pixel], &max[pixelX], values.max);
+         std::fill(&bl[pixel], &bl[pixelX], blockStatus);
+         std::fill(&rms[pixel], &rms[pixelX], (float)sqrt(values.sumsq / rmsDenom));
+
+         pixel = pixelX;
+         filePosition = positionX;
+      }
+
+      wxASSERT(pixel == nextPixel);
+      whereNow = whereNext;
+      pixel = nextPixel;
+      lastDivisor = divisor;
+      lastRmsDenom = rmsDenom;
+   } // for each block file
+
+   wxASSERT(pixel == len);
+
+   return true;
+}
+
+//
+// Getting high-level data from the track for screen display and
+// clipping calculations
+//
+
+bool WaveClipWaveformCache::GetWaveDisplay(
+   const WaveClip &clip, WaveDisplay &display, double t0,
+   double pixelsPerSecond )
+{
+   const bool allocated = (display.where != 0);
+
+   const size_t numPixels = (int)display.width;
+
+   size_t p0 = 0;         // least column requiring computation
+   size_t p1 = numPixels; // greatest column requiring computation, plus one
+
+   float *min;
+   float *max;
+   float *rms;
+   int *bl;
+   std::vector<sampleCount> *pWhere;
+
+   if (allocated) {
+      // assume ownWhere is filled.
+      min = &display.min[0];
+      max = &display.max[0];
+      rms = &display.rms[0];
+      bl = &display.bl[0];
+      pWhere = &display.ownWhere;
+   }
+   else {
+      const double tstep = 1.0 / pixelsPerSecond;
+      const auto rate = clip.GetRate();
+      const double samplesPerPixel = rate * tstep;
+
+      // Make a tolerant comparison of the pps values in this wise:
+      // accumulated difference of times over the number of pixels is less than
+      // a sample period.
+      const bool ppsMatch = mWaveCache &&
+         (fabs(tstep - 1.0 / mWaveCache->pps) * numPixels < (1.0 / rate));
+
+      const bool match =
+         mWaveCache &&
+         ppsMatch &&
+         mWaveCache->len > 0 &&
+         mWaveCache->dirty == mDirty;
+
+      if (match &&
+         mWaveCache->start == t0 &&
+         mWaveCache->len >= numPixels) {
+
+         // Satisfy the request completely from the cache
+         display.min = &mWaveCache->min[0];
+         display.max = &mWaveCache->max[0];
+         display.rms = &mWaveCache->rms[0];
+         display.bl = &mWaveCache->bl[0];
+         display.where = &mWaveCache->where[0];
+         return true;
+      }
+
+      std::unique_ptr<WaveCache> oldCache(std::move(mWaveCache));
+
+      int oldX0 = 0;
+      double correction = 0.0;
+      size_t copyBegin = 0, copyEnd = 0;
+      if (match) {
+         findCorrection(oldCache->where, oldCache->len, numPixels,
+            t0, rate, samplesPerPixel,
+            oldX0, correction);
+         // Remember our first pixel maps to oldX0 in the old cache,
+         // possibly out of bounds.
+         // For what range of pixels can data be copied?
+         copyBegin = std::min<size_t>(numPixels, std::max(0, -oldX0));
+         copyEnd = std::min<size_t>(numPixels, std::max(0,
+            (int)oldCache->len - oldX0
+         ));
+      }
+      if (!(copyEnd > copyBegin))
+         oldCache.reset(0);
+
+      mWaveCache = std::make_unique<WaveCache>(numPixels, pixelsPerSecond, rate, t0, mDirty);
+      min = &mWaveCache->min[0];
+      max = &mWaveCache->max[0];
+      rms = &mWaveCache->rms[0];
+      bl = &mWaveCache->bl[0];
+      pWhere = &mWaveCache->where;
+
+      fillWhere(*pWhere, numPixels, 0.0, correction,
+         t0, rate, samplesPerPixel);
+
+      // The range of pixels we must fetch from the Sequence:
+      p0 = (copyBegin > 0) ? 0 : copyEnd;
+      p1 = (copyEnd >= numPixels) ? copyBegin : numPixels;
+
+      // Optimization: if the old cache is good and overlaps
+      // with the current one, re-use as much of the cache as
+      // possible
+
+      if (oldCache) {
+
+         // Copy what we can from the old cache.
+         const int length = copyEnd - copyBegin;
+         const size_t sizeFloats = length * sizeof(float);
+         const int srcIdx = (int)copyBegin + oldX0;
+         memcpy(&min[copyBegin], &oldCache->min[srcIdx], sizeFloats);
+         memcpy(&max[copyBegin], &oldCache->max[srcIdx], sizeFloats);
+         memcpy(&rms[copyBegin], &oldCache->rms[srcIdx], sizeFloats);
+         memcpy(&bl[copyBegin], &oldCache->bl[srcIdx], length * sizeof(int));
+      }
+   }
+
+   if (p1 > p0) {
+      // Cache was not used or did not satisfy the whole request
+      std::vector<sampleCount> &where = *pWhere;
+
+      /* handle values in the append buffer */
+
+      const auto sequence = clip.GetSequence();
+      auto numSamples = sequence->GetNumSamples();
+      auto a = p0;
+
+      // Not all of the required columns might be in the sequence.
+      // Some might be in the append buffer.
+      for (; a < p1; ++a) {
+         if (where[a + 1] > numSamples)
+            break;
+      }
+
+      // Handle the columns that land in the append buffer.
+      //compute the values that are outside the overlap from scratch.
+      if (a < p1) {
+         const auto appendBufferLen = clip.GetAppendBufferLen();
+         const auto &appendBuffer = clip.GetAppendBuffer();
+         sampleFormat seqFormat = sequence->GetSampleFormat();
+         bool didUpdate = false;
+         for(auto i = a; i < p1; i++) {
+            auto left = std::max(sampleCount{ 0 },
+                                 where[i] - numSamples);
+            auto right = std::min(sampleCount{ appendBufferLen },
+                                  where[i + 1] - numSamples);
+
+            //wxCriticalSectionLocker locker(mAppendCriticalSection);
+
+            if (right > left) {
+               Floats b;
+               const float *pb{};
+               // left is nonnegative and at most mAppendBufferLen:
+               auto sLeft = left.as_size_t();
+               // The difference is at most mAppendBufferLen:
+               size_t len = ( right - left ).as_size_t();
+
+               if (seqFormat == floatSample)
+                  pb = &((const float *)appendBuffer.ptr())[sLeft];
+               else {
+                  b.reinit(len);
+                  pb = b.get();
+                  SamplesToFloats(
+                     appendBuffer.ptr() + sLeft * SAMPLE_SIZE(seqFormat),
+                     seqFormat, b.get(), len);
+               }
+
+               float theMax, theMin, sumsq;
+               {
+                  const float val = pb[0];
+                  theMax = theMin = val;
+                  sumsq = val * val;
+               }
+               for(decltype(len) j = 1; j < len; j++) {
+                  const float val = pb[j];
+                  theMax = std::max(theMax, val);
+                  theMin = std::min(theMin, val);
+                  sumsq += val * val;
+               }
+
+               min[i] = theMin;
+               max[i] = theMax;
+               rms[i] = (float)sqrt(sumsq / len);
+               bl[i] = 1; //for now just fake it.
+
+               didUpdate=true;
+            }
+         }
+
+         // Shrink the right end of the range to fetch from Sequence
+         if(didUpdate)
+            p1 = a;
+      }
+
+      // Done with append buffer, now fetch the rest of the cache miss
+      // from the sequence
+      if (p1 > p0) {
+         if (!::GetWaveDisplay(*sequence, &min[p0],
+                                        &max[p0],
+                                        &rms[p0],
+                                        &bl[p0],
+                                        p1-p0,
+                                        &where[p0]))
+         {
+            return false;
+         }
+      }
+   }
+
+   if (!allocated) {
+      // Now report the results
+      display.min = min;
+      display.max = max;
+      display.rms = rms;
+      display.bl = bl;
+      display.where = &(*pWhere)[0];
+   }
+
+   return true;
 }
 
 // Headers needed only for experimental drawing below
