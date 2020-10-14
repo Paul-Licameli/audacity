@@ -29,7 +29,7 @@ using TagHandlerFactory =
 struct XML_API Entry{
    Entry( const wxString &tag, const TagHandlerFactory &factory );
 
-   struct AUDACITY_DLL_API Init{ Init(); };
+   struct XML_API Init{ Init(); };
 };
 
 XML_API TagHandlerFactory Lookup( const wxString &tag );

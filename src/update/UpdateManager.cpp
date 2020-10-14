@@ -18,6 +18,8 @@
 #include "IResponse.h"
 #include "Request.h"
 
+#include "widgets/ErrorDialog.h"
+
 #include <wx/utils.h>
 #include <wx/frame.h>
 #include <wx/app.h>

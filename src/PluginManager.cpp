@@ -742,7 +742,7 @@ void PluginManager::Terminate()
 
       ++iter;
    }
-
+   
    // Now get rid of the modules
    iter = mPlugins.begin();
    while (iter != mPlugins.end())
