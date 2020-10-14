@@ -52,25 +52,15 @@ namespace {
 }
 
 
-namespace {
-   const auto waveformScaleKey = wxT("/GUI/DefaultWaveformScaleChoice");
-   const auto dbValueString = wxT("dB");
+const wxChar *TracksPrefs::WaveformScaleKey()
+{
+   return wxT("/GUI/DefaultWaveformScaleChoice");
 }
 
-static EnumSetting< WaveformSettings::ScaleTypeValues > waveformScaleSetting{
-   waveformScaleKey,
-   {
-      { XO("Linear") },
-      { dbValueString, XO("Logarithmic (dB)") },
-   },
-
-   0, // linear
-   
-   {
-      WaveformSettings::stLinear,
-      WaveformSettings::stLogarithmic,
-   }
-};
+const wxChar *TracksPrefs::DBValueString()
+{
+   return wxT("dB");
+}
 
 //////////
 // There is a complicated migration history here!
@@ -159,7 +149,8 @@ public:
       if ( !gPrefs->Read( key3, &value ) ) {
          if (newValue == obsoleteValue) {
             newValue = waveformSymbol.Internal();
-            gPrefs->Write(waveformScaleKey, dbValueString);
+            gPrefs->Write(
+               TracksPrefs::WaveformScaleKey(), TracksPrefs::DBValueString());
          }
 
          Write( value = newValue );
@@ -226,11 +217,6 @@ static TracksViewModeEnumSetting viewModeSetting()
 Identifier TracksPrefs::ViewModeChoice()
 {
    return viewModeSetting().Read();
-}
-
-WaveformSettings::ScaleTypeValues TracksPrefs::WaveformScaleChoice()
-{
-   return waveformScaleSetting.ReadEnum();
 }
 
 //////////
@@ -323,6 +309,30 @@ WaveTrackViewConstants::ZoomPresets TracksPrefs::Zoom2Choice()
 }
 
 //////////
+static const auto PathStart = wxT("TracksPreferences");
+
+Registry::GroupItem &TracksPrefs::PopulatorItem::Registry()
+{
+   static Registry::TransparentGroupItem<> registry{ PathStart };
+   return registry;
+}
+
+TracksPrefs::PopulatorItem::PopulatorItem(
+   const Identifier &id, unsigned section, Populator populator)
+   : SingleItem{ id }
+   , mSection{ section }
+   , mPopulator{ populator }
+{}
+
+TracksPrefs::RegisteredControls::RegisteredControls(
+   const Identifier &id, unsigned section, Populator populator,
+   const Registry::Placement &placement )
+   : RegisteredItem{
+      std::make_unique< PopulatorItem >( id, section, std::move(populator) ),
+      placement
+   }
+{}
+
 TracksPrefs::TracksPrefs(wxWindow * parent, wxWindowID winid)
 /* i18n-hint: "Tracks" include audio recordings but also other collections of
  * data associated with a time line, such as sequences of labels, and musical
@@ -371,6 +381,23 @@ void TracksPrefs::Populate()
 
 void TracksPrefs::PopulateOrExchange(ShuttleGui & S)
 {
+   using namespace Registry;
+   struct MyVisitor final : Visitor {
+      MyVisitor( ShuttleGui &S, unsigned section ) : S{S}, section{section}
+      {
+      }
+
+      void Visit( Registry::SingleItem &item, const Path &path ) override
+      {
+         auto &myItem = static_cast<PopulatorItem&>(item);
+         if (myItem.mSection == section)
+            myItem.mPopulator(S);
+      }
+
+      ShuttleGui &S;
+      unsigned section;
+   };
+
    S.SetBorder(2);
    S.StartScroller();
 
@@ -382,6 +409,13 @@ void TracksPrefs::PopulateOrExchange(ShuttleGui & S)
       S.TieCheckBox(XXO("Sho&w track name as overlay"),
                   {wxT("/GUI/ShowTrackNameInWaveform"),
                    false});
+
+      {
+         TransparentGroupItem<> top{ PathStart };
+         MyVisitor visitor{ S, 0u };
+         Registry::Visit( visitor, &top, &PopulatorItem::Registry() );
+      }
+
 #ifdef EXPERIMENTAL_HALF_WAVE
       S.TieCheckBox(XXO("Use &half-wave display when collapsed"),
                   {wxT("/GUI/CollapseToHalfWave"),
@@ -412,8 +446,11 @@ void TracksPrefs::PopulateOrExchange(ShuttleGui & S)
          S.TieChoice(XXO("Default &view mode:"),
                      viewModeSetting() );
 
-         S.TieChoice(XXO("Default Waveform scale:"),
-                     waveformScaleSetting );
+         {
+            TransparentGroupItem<> top{ PathStart };
+            MyVisitor visitor{ S, 1u };
+            Registry::Visit( visitor, &top, &PopulatorItem::Registry() );
+         }
 
          S.TieChoice(XXO("Display &samples:"),
                      sampleDisplaySetting );
@@ -516,4 +553,9 @@ PrefsPanel::Registration sAttachment{ "Tracks",
       return safenew TracksPrefs(parent, winid);
    }
 };
+}
+
+TracksPrefs::RegisteredControls::Init::Init()
+{
+   (void) PopulatorItem::Registry();
 }
