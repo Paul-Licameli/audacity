@@ -31,7 +31,6 @@
 #include "BasicUI.h"
 #include "Import.h"
 #include "ImportPlugin.h"
-#include "Project.h"
 
 #define DESC XO("MP3 files")
 

@@ -72,7 +72,7 @@ void SpectrumView::DoSetMinimized( bool minimized )
       // Nyquist frequency.
       constexpr auto max = std::numeric_limits<float>::max();
       const bool spectrumLinear =
-         (wt->GetSpectrogramSettings().scaleType ==
+         (SpectrogramSettings::Get(*wt).scaleType ==
             SpectrogramSettings::stLinear);
       // Zoom out full
       wt->SetSpectrumBounds( spectrumLinear ? 0.0f : 1.0f, max );
@@ -765,7 +765,7 @@ bool WaveClipSpectrumCache::GetSpectrogram(const WaveClip &clip,
                               double t0, double pixelsPerSecond)
 {
    const WaveTrack *const track = waveTrackCache.GetTrack().get();
-   const SpectrogramSettings &settings = track->GetSpectrogramSettings();
+   const auto &settings = SpectrogramSettings::Get(*track);
    const auto rate = clip.GetRate();
 
    bool match =
@@ -886,7 +886,7 @@ void DrawClipSpectrum(TrackPanelDrawingContext &context,
 #endif
 
    const WaveTrack *const track = waveTrackCache.GetTrack().get();
-   const SpectrogramSettings &settings = track->GetSpectrogramSettings();
+   const auto &settings = SpectrogramSettings::Get(*track);
    const bool autocorrelation = (settings.algorithm == SpectrogramSettings::algPitchEAC);
 
    enum { DASH_LENGTH = 10 /* pixels */ };
