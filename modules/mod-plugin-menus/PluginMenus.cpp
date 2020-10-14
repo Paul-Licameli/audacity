@@ -1,27 +1,25 @@
-
-
-#include "../AudioIO.h"
-#include "../Benchmark.h"
-#include "../CommonCommandFlags.h"
-#include "../Menus.h"
-#include "../PluginManager.h"
-#include "../PluginRegistrationDialog.h"
+#include "AudioIO.h"
+#include "Benchmark.h"
+#include "CommonCommandFlags.h"
+#include "Menus.h"
+#include "PluginManager.h"
+#include "PluginRegistrationDialog.h"
 #include "Prefs.h"
-#include "../Project.h"
-#include "../ProjectSettings.h"
-#include "../ProjectWindow.h"
-#include "../ProjectSelectionManager.h"
-#include "../toolbars/ToolManager.h"
+#include "Project.h"
+#include "ProjectSettings.h"
+#include "ProjectWindow.h"
+#include "ProjectSelectionManager.h"
+#include "toolbars/ToolManager.h"
 #include "TempDirectory.h"
-#include "../UndoManager.h"
-#include "../commands/CommandContext.h"
-#include "../commands/CommandManager.h"
-#include "../effects/EffectManager.h"
-#include "../effects/EffectUI.h"
-#include "../effects/RealtimeEffectManager.h"
-#include "../prefs/EffectsPrefs.h"
-#include "../prefs/PrefsDialog.h"
-
+#include "UndoManager.h"
+#include "commands/CommandContext.h"
+#include "commands/CommandManager.h"
+#include "effects/EffectManager.h"
+#include "effects/EffectUI.h"
+#include "effects/RealtimeEffectManager.h"
+#include "prefs/EffectsPrefs.h"
+#include "prefs/PrefsDialog.h"
+   
 #include <wx/log.h>
 
 // private helper classes and functions
@@ -948,3 +946,6 @@ AttachedItem sAttachment4{
 }
 
 #undef FN
+
+#include "ModuleConstants.h"
+DEFINE_MODULE_ENTRIES
