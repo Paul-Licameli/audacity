@@ -52,7 +52,6 @@ audio tracks.
 #include "ViewInfo.h"
 
 #include "prefs/GUISettings.h"
-#include "prefs/TracksPrefs.h"
 
 #include <wx/dc.h>
 
@@ -64,7 +63,6 @@ TrackArtist::TrackArtist( TrackPanel *parent_ )
 {
    mdBrange = ENV_DB_RANGE;
    mShowClipping = false;
-   mSampleDisplay = 1;// Stem plots by default.
 
    SetColours(0);
 
@@ -255,7 +253,6 @@ void TrackArtist::UpdateSelectedPrefs( int id )
 void TrackArtist::UpdatePrefs()
 {
    mdBrange = gPrefs->Read(ENV_DB_KEY, mdBrange);
-   mSampleDisplay = TracksPrefs::SampleViewChoice();
 
    UpdateSelectedPrefs( ShowClippingPrefsID() );
    UpdateSelectedPrefs( ShowTrackNameInWaveformPrefsID() );

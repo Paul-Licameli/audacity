@@ -12,6 +12,7 @@ Paul Licameli
 #define __AUDACITY_WAVEFORM_SETTINGS__
 
 #include "Prefs.h"
+#include "tracks/playabletrack/wavetrack/ui/WaveTrackViewConstants.h"
 
 class EnumValueSymbols;
 
@@ -63,6 +64,8 @@ public:
    };
 
    static const EnumValueSymbols &GetScaleNames();
+
+   static WaveTrackViewConstants::SampleDisplay SampleViewChoice();
 
    ScaleType scaleType;
    int dBRange;

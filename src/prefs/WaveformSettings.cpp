@@ -84,6 +84,31 @@ bool WaveformSettings::Validate(bool /* quiet */)
 }
 
 namespace {
+
+static EnumSetting< WaveTrackViewConstants::SampleDisplay >
+sampleDisplaySetting{
+   wxT("/GUI/SampleViewChoice"),
+   {
+      { wxT("ConnectDots"), XO("Connect dots") },
+      { wxT("StemPlot"), XO("Stem plot") }
+   },
+   1, // StemPlot
+
+   // for migrating old preferences:
+   {
+      WaveTrackViewConstants::LinearInterpolate,
+      WaveTrackViewConstants::StemPlot
+   },
+   wxT("/GUI/SampleView")
+};
+}
+
+WaveTrackViewConstants::SampleDisplay WaveformSettings::SampleViewChoice()
+{
+   return sampleDisplaySetting.ReadEnum();
+}
+
+namespace {
 static EnumSetting< WaveformSettings::ScaleTypeValues > waveformScaleSetting{
    TracksPrefs::WaveformScaleKey(),
    {
@@ -204,5 +229,12 @@ void AddScale( ShuttleGui &S )
                waveformScaleSetting );
 }
 
+void AddSamples( ShuttleGui &S )
+{
+   S.TieChoice(XXO("Display &samples:"),
+               sampleDisplaySetting );
+}
+
 TracksPrefs::RegisteredControls reg{ wxT("Scale"), 1u, AddScale };
+TracksPrefs::RegisteredControls reg2{ wxT("Samples"), 1u, AddSamples };
 }

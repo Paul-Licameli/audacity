@@ -570,7 +570,7 @@ void DrawIndividualSamples(TrackPanelDrawingContext &context,
       }
    }
 
-   const auto sampleDisplay = artist->mSampleDisplay;
+   const auto sampleDisplay = WaveformSettings::SampleViewChoice();
    if (showPoints && (sampleDisplay == (int) WaveTrackViewConstants::StemPlot)) {
       // Draw vertical lines
       int yZero = GetWaveYPos(0.0, zoomMin, zoomMax, rect.height, dB, true, dBRange, false);

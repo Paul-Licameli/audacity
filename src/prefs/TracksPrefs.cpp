@@ -25,7 +25,6 @@
 
 #include "Prefs.h"
 #include "../ShuttleGui.h"
-#include "../tracks/playabletrack/wavetrack/ui/WaveTrackViewConstants.h"
 
 int TracksPrefs::iPreferencePinned = -1;
 
@@ -217,29 +216,6 @@ static TracksViewModeEnumSetting viewModeSetting()
 Identifier TracksPrefs::ViewModeChoice()
 {
    return viewModeSetting().Read();
-}
-
-//////////
-static EnumSetting< WaveTrackViewConstants::SampleDisplay >
-sampleDisplaySetting{
-   wxT("/GUI/SampleViewChoice"),
-   {
-      { wxT("ConnectDots"), XO("Connect dots") },
-      { wxT("StemPlot"), XO("Stem plot") }
-   },
-   1, // StemPlot
-
-   // for migrating old preferences:
-   {
-      WaveTrackViewConstants::LinearInterpolate,
-      WaveTrackViewConstants::StemPlot
-   },
-   wxT("/GUI/SampleView")
-};
-
-WaveTrackViewConstants::SampleDisplay TracksPrefs::SampleViewChoice()
-{
-   return sampleDisplaySetting.ReadEnum();
 }
 
 //////////
@@ -451,9 +427,6 @@ void TracksPrefs::PopulateOrExchange(ShuttleGui & S)
             MyVisitor visitor{ S, 1u };
             Registry::Visit( visitor, &top, &PopulatorItem::Registry() );
          }
-
-         S.TieChoice(XXO("Display &samples:"),
-                     sampleDisplaySetting );
 
          S.TieTextBox(XXO("Default audio track &name:"),
                       {wxT("/GUI/TrackNames/DefaultTrackName"),
