@@ -191,8 +191,6 @@ list( APPEND SOURCES
       Sequence.h
       Shuttle.cpp
       Shuttle.h
-      ShuttleGetDefinition.cpp
-      ShuttleGetDefinition.h
       ShuttleGui.cpp
       ShuttleGui.h
       ShuttlePrefs.cpp
@@ -298,26 +296,12 @@ list( APPEND SOURCES
 
       # Built-in Effects
 
-      effects/Effect.cpp
-      effects/Effect.h
-      effects/EffectManager.cpp
-      effects/EffectManager.h
-      effects/EffectUI.cpp
-      effects/EffectUI.h
-      effects/Generator.cpp
-      effects/Generator.h
-      effects/LoadEffects.cpp
-      effects/LoadEffects.h
       effects/RealtimeEffectManager.cpp
       effects/RealtimeEffectManager.h
       effects/ScoreAlignDialog.cpp
       effects/ScoreAlignDialog.h
-      effects/SimpleMono.cpp
-      effects/SimpleMono.h
       effects/TimeWarper.cpp
       effects/TimeWarper.h
-      effects/TwoPassSimpleMono.cpp
-      effects/TwoPassSimpleMono.h
 
       # Menus
 
@@ -333,8 +317,6 @@ list( APPEND SOURCES
       prefs/DevicePrefs.h
       prefs/DirectoriesPrefs.cpp
       prefs/DirectoriesPrefs.h
-      prefs/EffectsPrefs.cpp
-      prefs/EffectsPrefs.h
       prefs/GUIPrefs.cpp
       prefs/GUIPrefs.h
       prefs/GUISettings.h

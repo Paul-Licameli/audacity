@@ -16,7 +16,7 @@
 
 #include "Invert.h"
 
-#include "effects/LoadEffects.h"
+#include "LoadEffects.h"
 
 const ComponentInterfaceSymbol EffectInvert::Symbol
 { XO("Invert") };

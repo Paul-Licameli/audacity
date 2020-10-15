@@ -38,9 +38,9 @@
 
 #include "NoiseReduction.h"
 
-#include "effects/LoadEffects.h"
-#include "effects/EffectManager.h"
-#include "effects/EffectUI.h"
+#include "LoadEffects.h"
+#include "EffectManager.h"
+#include "EffectUI.h"
 
 #include "ShuttleGui.h"
 #include "widgets/HelpSystem.h"

@@ -18,19 +18,18 @@ effects.
 
 *//*******************************************************************/
 
-
 #include "EffectManager.h"
 
 #include "Effect.h"
 
 #include <algorithm>
 
-#include "../widgets/AudacityMessageBox.h"
+#include "widgets/AudacityMessageBox.h"
 
-#include "../ShuttleGetDefinition.h"
-#include "../commands/CommandContext.h"
-#include "../commands/AudacityCommand.h"
-#include "../PluginManager.h"
+#include "ShuttleGetDefinition.h"
+#include "commands/CommandContext.h"
+#include "commands/AudacityCommand.h"
+#include "PluginManager.h"
 
 
 /*******************************************************************************
@@ -346,7 +345,7 @@ bool EffectManager::HasPresets(const PluginID & ID)
 
 #include <wx/choice.h>
 #include <wx/listbox.h>
-#include "../ShuttleGui.h"
+#include "ShuttleGui.h"
 
 namespace {
 

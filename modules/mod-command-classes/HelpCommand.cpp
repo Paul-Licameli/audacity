@@ -21,7 +21,7 @@
 #include "ShuttleGui.h"
 #include "commands/CommandTargets.h"
 #include "commands/CommandContext.h"
-#include "effects/EffectManager.h"
+#include "EffectManager.h"
 
 const ComponentInterfaceSymbol HelpCommand::Symbol
 { XO("Help") };

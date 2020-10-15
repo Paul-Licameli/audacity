@@ -6,5 +6,5 @@ list( APPEND SOURCES
    VampEffect.cpp
    VampEffect.h
 )
-audacity_module( mod-vamp "${SOURCES}" "Audacity;libvamp"
+audacity_module( mod-vamp "${SOURCES}" "mod-effects-interface;libvamp"
    "" "" )

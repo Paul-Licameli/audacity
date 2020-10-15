@@ -14,7 +14,7 @@
 *//*******************************************************************/
 
 #include "DtmfGen.h"
-#include "effects/LoadEffects.h"
+#include "LoadEffects.h"
 
 #include <wx/slider.h>
 #include <wx/valgen.h>

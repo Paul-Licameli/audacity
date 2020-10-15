@@ -17,7 +17,7 @@ the pitch without changing the tempo.
 
 #if USE_SOUNDTOUCH
 #include "ChangePitch.h"
-#include "effects/LoadEffects.h"
+#include "LoadEffects.h"
 
 #if USE_SBSMS
 #include <wx/valgen.h>

@@ -108,7 +108,7 @@ private:
 #include "EffectInterface.h"
 #include "widgets/wxPanelWrapper.h" // to inherit
 
-#include "../SelectedRegion.h"
+#include "SelectedRegion.h"
 
 class AudacityCommand;
 class AudacityProject;
@@ -223,7 +223,7 @@ class CommandContext;
 
 namespace  EffectUI {
 
-   AUDACITY_DLL_API
+   EFFECTS_API
    wxDialog *DialogFactory( wxWindow &parent, EffectHostInterface *pHost,
       EffectUIClientInterface *client);
 
@@ -231,7 +231,7 @@ namespace  EffectUI {
    // Returns true on success.  Will only operate on tracks that
    // have the "selected" flag set to true, which is consistent with
    // Audacity's standard UI.
-   AUDACITY_DLL_API bool DoEffect(
+   EFFECTS_API bool DoEffect(
       const PluginID & ID, const CommandContext &context, unsigned flags );
 
 }
@@ -239,7 +239,7 @@ namespace  EffectUI {
 class ShuttleGui;
 
 // Obsolescent dialog still used only in Noise Reduction/Removal
-class AUDACITY_DLL_API EffectDialog /* not final */ : public wxDialogWrapper
+class EFFECTS_API EffectDialog /* not final */ : public wxDialogWrapper
 {
 public:
    // constructors and destructors

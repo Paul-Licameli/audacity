@@ -18,10 +18,9 @@ doing the second pass over all selected tracks.
 *//*******************************************************************/
 
 
-
 #include "TwoPassSimpleMono.h"
 
-#include "../WaveTrack.h"
+#include "WaveTrack.h"
 
 bool EffectTwoPassSimpleMono::Process()
 {

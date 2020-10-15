@@ -13,7 +13,7 @@
 #ifndef __AUDACITY_EFFECT_INVERT__
 #define __AUDACITY_EFFECT_INVERT__
 
-#include "effects/Effect.h"
+#include "Effect.h"
 
 class EffectInvert final : public Effect
 {

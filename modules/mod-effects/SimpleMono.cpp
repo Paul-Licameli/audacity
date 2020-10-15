@@ -19,10 +19,9 @@
 *//*******************************************************************/
 
 
-
 #include "SimpleMono.h"
 
-#include "../WaveTrack.h"
+#include "WaveTrack.h"
 
 #include <math.h>
 

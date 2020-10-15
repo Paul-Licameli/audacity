@@ -26,13 +26,13 @@ class Effect;
 //
 ///////////////////////////////////////////////////////////////////////////////
 
-class AUDACITY_DLL_API BuiltinEffectsModule final : public ModuleInterface
+class EFFECTS_API BuiltinEffectsModule final : public ModuleInterface
 {
 public:
    BuiltinEffectsModule();
    virtual ~BuiltinEffectsModule();
 
-   struct AUDACITY_DLL_API Init{ Init(); };
+   struct EFFECTS_API Init{ Init(); };
 
    using Factory = std::function< std::unique_ptr<Effect> () >;
 

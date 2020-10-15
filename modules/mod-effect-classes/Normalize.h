@@ -12,7 +12,7 @@
 #ifndef __AUDACITY_EFFECT_NORMALIZE__
 #define __AUDACITY_EFFECT_NORMALIZE__
 
-#include "effects/Effect.h"
+#include "Effect.h"
 #include "Biquad.h"
 
 class wxCheckBox;

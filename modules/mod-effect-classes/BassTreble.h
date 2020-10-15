@@ -12,7 +12,7 @@
 #ifndef __AUDACITY_EFFECT_BASS_TREBLE__
 #define __AUDACITY_EFFECT_BASS_TREBLE__
 
-#include "effects/Effect.h"
+#include "Effect.h"
 
 class wxSlider;
 class wxCheckBox;

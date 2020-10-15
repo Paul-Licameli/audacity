@@ -13,7 +13,7 @@
 #ifndef __AUDACITY_EFFECT_SILENCE__
 #define __AUDACITY_EFFECT_SILENCE__
 
-#include "effects/Generator.h"
+#include "Generator.h"
 
 class NumericTextCtrl;
 

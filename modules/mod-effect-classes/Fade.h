@@ -11,7 +11,7 @@
 #ifndef __AUDACITY_EFFECT_FADE__
 #define __AUDACITY_EFFECT_FADE__
 
-#include "effects/Effect.h"
+#include "Effect.h"
 
 class EffectFade : public Effect
 {

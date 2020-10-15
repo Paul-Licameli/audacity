@@ -13,7 +13,7 @@
 
 #include <queue>
 
-#include "effects/Effect.h"
+#include "Effect.h"
 
 class wxSlider;
 class wxStaticText;

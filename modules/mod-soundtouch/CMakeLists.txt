@@ -17,7 +17,7 @@ set( SOURCES
    TimeScale.h
 )
 set( LIBS
-   Audacity
+   mod-effects-interface
    libsbsms
    soundtouch
 )

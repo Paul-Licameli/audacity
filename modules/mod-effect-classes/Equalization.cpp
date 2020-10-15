@@ -53,7 +53,7 @@
 
 
 #include "Equalization.h"
-#include "effects/LoadEffects.h"
+#include "LoadEffects.h"
 
 #include <math.h>
 #include <vector>

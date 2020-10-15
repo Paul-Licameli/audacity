@@ -17,7 +17,7 @@
 
 #include <wx/setup.h> // for wxUSE_* macros
 
-#include "effects/Effect.h"
+#include "Effect.h"
 #include "RealFFTf.h"
 
 // Flags to specialise the UI

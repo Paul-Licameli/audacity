@@ -15,9 +15,8 @@
 
 *//*******************************************************************/
 
-
 #include "Effect.h"
-#include "TimeWarper.h"
+#include "effects/TimeWarper.h"
 
 #include <algorithm>
 
@@ -25,28 +24,28 @@
 #include <wx/sizer.h>
 #include <wx/tokenzr.h>
 
-#include "../AudioIO.h"
+#include "AudioIO.h"
 #include "widgets/wxWidgetsBasicUI.h"
-#include "../DBConnection.h"
-#include "../LabelTrack.h"
-#include "../Mix.h"
-#include "../PluginManager.h"
-#include "../ProjectAudioManager.h"
-#include "../ProjectFileIO.h"
-#include "../ProjectSettings.h"
-#include "../prefs/QualitySettings.h"
-#include "../SelectFile.h"
-#include "../ShuttleGui.h"
-#include "../Shuttle.h"
-#include "../ViewInfo.h"
-#include "../WaveTrack.h"
+#include "DBConnection.h"
+#include "LabelTrack.h"
+#include "Mix.h"
+#include "PluginManager.h"
+#include "ProjectAudioManager.h"
+#include "ProjectFileIO.h"
+#include "ProjectSettings.h"
+#include "prefs/QualitySettings.h"
+#include "SelectFile.h"
+#include "ShuttleGui.h"
+#include "Shuttle.h"
+#include "ViewInfo.h"
+#include "WaveTrack.h"
 #include "wxFileNameWrapper.h"
-#include "../widgets/ProgressDialog.h"
-#include "../tracks/playabletrack/wavetrack/ui/WaveTrackView.h"
-#include "../tracks/playabletrack/wavetrack/ui/WaveTrackViewConstants.h"
-#include "../widgets/NumericTextCtrl.h"
-#include "../widgets/AudacityMessageBox.h"
-#include "../widgets/VetoDialogHook.h"
+#include "widgets/ProgressDialog.h"
+#include "tracks/playabletrack/wavetrack/ui/WaveTrackView.h"
+#include "tracks/playabletrack/wavetrack/ui/WaveTrackViewConstants.h"
+#include "widgets/NumericTextCtrl.h"
+#include "widgets/AudacityMessageBox.h"
+#include "widgets/VetoDialogHook.h"
 
 #include <unordered_map>
 

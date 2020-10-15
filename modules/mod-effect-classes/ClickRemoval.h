@@ -16,7 +16,7 @@
 #ifndef __AUDACITY_EFFECT_CLICK_REMOVAL__
 #define __AUDACITY_EFFECT_CLICK_REMOVAL__
 
-#include "effects/Effect.h"
+#include "Effect.h"
 
 class wxSlider;
 class wxTextCtrl;

@@ -15,7 +15,7 @@
 
 #include "Fade.h"
 
-#include "effects/LoadEffects.h"
+#include "LoadEffects.h"
 
 const ComponentInterfaceSymbol EffectFadeIn::Symbol
 { XO("Fade In") };

@@ -13,7 +13,7 @@
 #ifndef __AUDACITY_EFFECT_TONEGEN__
 #define __AUDACITY_EFFECT_TONEGEN__
 
-#include "effects/Effect.h"
+#include "Effect.h"
 
 class NumericTextCtrl;
 class ShuttleGui;

@@ -16,7 +16,7 @@
 
 #if USE_SBSMS
 
-#include "effects/Effect.h"
+#include "Effect.h"
 #include <sbsms.h>
 
 using namespace _sbsms_;

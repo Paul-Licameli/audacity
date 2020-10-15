@@ -17,7 +17,7 @@ Vaughan Johnson (Preview)
 
 #include "Biquad.h"
 
-#include "effects/Effect.h"
+#include "Effect.h"
 
 class wxBitmap;
 class wxChoice;

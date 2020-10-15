@@ -21,7 +21,7 @@
 #include "Effect.h"
 
 // Base class for Generators (effects which fill a given duration)
-class Generator /* not final */ : public Effect
+class EFFECTS_API Generator /* not final */ : public Effect
 {
 public:
    Generator() { }
@@ -51,7 +51,7 @@ protected:
    // Postcondition:
    // If mDuration was valid (>= 0), then the tracks are replaced by the
    // generated results and true is returned. Otherwise, return false.
-   AUDACITY_DLL_API bool Process() override;
+   bool Process() override;
 };
 
 // Abstract generator which creates the sound in discrete blocks, whilst

@@ -17,7 +17,7 @@
 *//*******************************************************************/
 
 #include "Distortion.h"
-#include "effects/LoadEffects.h"
+#include "LoadEffects.h"
 
 #include <cmath>
 #include <algorithm>

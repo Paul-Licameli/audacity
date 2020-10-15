@@ -34,7 +34,7 @@
 #include "widgets/NumericTextCtrl.h"
 #include "widgets/valnum.h"
 
-#include "effects/LoadEffects.h"
+#include "LoadEffects.h"
 
 // Define keys, defaults, minimums, and maximums for the effect parameters
 //

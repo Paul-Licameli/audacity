@@ -11,7 +11,6 @@
 \brief Internal module to auto register all built in effects.  
 *****************************************************************************/
 
-
 #include "LoadEffects.h"
 
 #include "Prefs.h"

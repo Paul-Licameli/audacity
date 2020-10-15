@@ -16,7 +16,7 @@
 #ifndef __AUDACITY_EFFECT_PHASER__
 #define __AUDACITY_EFFECT_PHASER__
 
-#include "effects/Effect.h"
+#include "Effect.h"
 
 class wxSlider;
 class wxTextCtrl;

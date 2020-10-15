@@ -15,7 +15,7 @@
 *//*******************************************************************/
 
 #include "Paulstretch.h"
-#include "effects/LoadEffects.h"
+#include "LoadEffects.h"
 
 #include <algorithm>
 

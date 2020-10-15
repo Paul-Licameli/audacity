@@ -29,7 +29,7 @@ the audio, rather than actually finding the clicks.
 #include "WaveTrack.h"
 #include "widgets/AudacityMessageBox.h"
 
-#include "effects/LoadEffects.h"
+#include "LoadEffects.h"
 
 const ComponentInterfaceSymbol EffectRepair::Symbol
 { XO("Repair") };

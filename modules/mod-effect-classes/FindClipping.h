@@ -16,7 +16,7 @@ class wxString;
 
 class LabelTrack;
 
-#include "effects/Effect.h"
+#include "Effect.h"
 
 class EffectFindClipping final : public Effect
 {

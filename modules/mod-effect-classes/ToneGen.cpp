@@ -19,7 +19,7 @@ frequency changes smoothly during the tone.
 *//*******************************************************************/
 
 #include "ToneGen.h"
-#include "effects/LoadEffects.h"
+#include "LoadEffects.h"
 
 #include <math.h>
 #include <float.h>

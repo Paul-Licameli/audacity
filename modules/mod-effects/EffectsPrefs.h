@@ -15,7 +15,7 @@
 
 #include <wx/defs.h>
 
-#include "PrefsPanel.h"
+#include "prefs/PrefsPanel.h"
 
 class ChoiceSetting;
 class ShuttleGui;
@@ -38,5 +38,5 @@ class EffectsPrefs final : public PrefsPanel
    void Populate();
 };
 
-AUDACITY_DLL_API extern ChoiceSetting EffectsGroupBy;
+EFFECTS_API extern ChoiceSetting EffectsGroupBy;
 #endif

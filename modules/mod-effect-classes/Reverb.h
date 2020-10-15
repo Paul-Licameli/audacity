@@ -12,7 +12,7 @@
 #ifndef __AUDACITY_EFFECT_REVERB__
 #define __AUDACITY_EFFECT_REVERB__
 
-#include "effects/Effect.h"
+#include "Effect.h"
 
 class wxCheckBox;
 class wxSlider;

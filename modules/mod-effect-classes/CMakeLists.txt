@@ -68,5 +68,5 @@ list( APPEND SOURCES
    Wahwah.cpp
    Wahwah.h
 )
-audacity_module( mod-effect-classes "${SOURCES}" "Audacity"
+audacity_module( mod-effect-classes "${SOURCES}" "mod-effects-interface"
    "" "" )

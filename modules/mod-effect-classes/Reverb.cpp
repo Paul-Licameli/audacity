@@ -15,7 +15,7 @@
 *//*******************************************************************/
 
 #include "Reverb.h"
-#include "effects/LoadEffects.h"
+#include "LoadEffects.h"
 
 #include <wx/arrstr.h>
 #include <wx/checkbox.h>

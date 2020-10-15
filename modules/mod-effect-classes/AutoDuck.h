@@ -11,7 +11,7 @@
 #ifndef __AUDACITY_EFFECT_AUTODUCK__
 #define __AUDACITY_EFFECT_AUTODUCK__
 
-#include "effects/Effect.h"
+#include "Effect.h"
 
 class wxBitmap;
 class wxTextCtrl;

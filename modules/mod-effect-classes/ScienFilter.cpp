@@ -33,7 +33,7 @@ a graph for EffectScienFilter.
 *//*******************************************************************/
 
 #include "ScienFilter.h"
-#include "effects/LoadEffects.h"
+#include "LoadEffects.h"
 
 #include <math.h>
 #include <float.h>

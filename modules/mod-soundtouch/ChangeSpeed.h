@@ -13,7 +13,7 @@
 #ifndef __AUDACITY_EFFECT_CHANGESPEED__
 #define __AUDACITY_EFFECT_CHANGESPEED__
 
-#include "effects/Effect.h"
+#include "Effect.h"
 
 class wxSlider;
 class wxChoice;

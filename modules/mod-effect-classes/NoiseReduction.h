@@ -13,7 +13,7 @@
 #ifndef __AUDACITY_EFFECT_NOISE_REDUCTION__
 #define __AUDACITY_EFFECT_NOISE_REDUCTION__
 
-#include "effects/Effect.h"
+#include "Effect.h"
 
 class EffectNoiseReduction final : public Effect {
 public:

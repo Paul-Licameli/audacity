@@ -16,7 +16,7 @@
 #include <wx/stattext.h>
 #include <wx/textctrl.h>
 
-#include "effects/Effect.h"
+#include "Effect.h"
 #include "Biquad.h"
 #include "EBUR128.h"
 

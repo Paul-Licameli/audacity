@@ -10,7 +10,7 @@
 #ifndef __AUDACITY_EFFECT_PAULSTRETCH__
 #define __AUDACITY_EFFECT_PAULSTRETCH__
 
-#include "effects/Effect.h"
+#include "Effect.h"
 
 class ShuttleGui;
 

@@ -12,7 +12,7 @@
 #ifndef __AUDACITY_EFFECT_ECHO__
 #define __AUDACITY_EFFECT_ECHO__
 
-#include "effects/Effect.h"
+#include "Effect.h"
 
 class ShuttleGui;
 

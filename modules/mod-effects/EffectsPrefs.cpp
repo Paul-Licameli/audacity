@@ -17,16 +17,15 @@
 
 *//*******************************************************************/
 
-
 #include "EffectsPrefs.h"
 
 #include <wx/choice.h>
 #include <wx/defs.h>
 
 #include "Languages.h"
-#include "../PluginManager.h"
+#include "PluginManager.h"
 #include "Prefs.h"
-#include "../ShuttleGui.h"
+#include "ShuttleGui.h"
 
 EffectsPrefs::EffectsPrefs(wxWindow * parent, wxWindowID winid)
 :  PrefsPanel(parent, winid, XO("Effects"))
