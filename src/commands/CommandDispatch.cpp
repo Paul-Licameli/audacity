@@ -13,8 +13,25 @@
 
 #include "CommandManager.h"
 #include "../PluginManager.h"
-#include "../effects/EffectManager.h"
-#include "../effects/EffectUI.h"
+
+using TextualCommandHandlers = std::vector<TextualCommandHandler>;
+
+static TextualCommandHandlers& handlers()
+{
+   static TextualCommandHandlers theHandlers;
+   return theHandlers;
+}
+
+RegisteredTextualCommandHandler::RegisteredTextualCommandHandler(
+   TextualCommandHandler handler )
+{
+   handlers().emplace_back( std::move( handler ) );
+}
+
+RegisteredTextualCommandHandler::~RegisteredTextualCommandHandler()
+{
+   handlers().pop_back();
+}
 
 bool HandleTextualCommand( CommandManager &commandManager,
    const CommandID & Str,
@@ -31,15 +48,10 @@ bool HandleTextualCommand( CommandManager &commandManager,
       break;
    }
 
-   // Not one of the singleton commands.
-   // We could/should try all the list-style commands.
-   // instead we only try the effects.
-   EffectManager & em = EffectManager::Get();
-   for (auto &plug : PluginManager::Get().PluginsOfType(PluginTypeEffect))
-      if (em.GetCommandIdentifier(plug.GetID()) == Str)
-         return EffectUI::DoEffect(
-            plug.GetID(), context,
-            EffectManager::kConfigured);
+   for (auto &handler: handlers()) {
+      if (handler && handler( Str, context ))
+         return true;
+   }
 
    return false;
 }
