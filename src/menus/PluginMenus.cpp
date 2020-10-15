@@ -13,12 +13,10 @@
 #include "../ProjectWindow.h"
 #include "../ProjectSelectionManager.h"
 #include "../toolbars/ToolManager.h"
-#include "../Screenshot.h"
 #include "TempDirectory.h"
 #include "../UndoManager.h"
 #include "../commands/CommandContext.h"
 #include "../commands/CommandManager.h"
-#include "../commands/ScreenshotCommand.h"
 #include "../effects/EffectManager.h"
 #include "../effects/EffectUI.h"
 #include "../effects/RealtimeEffectManager.h"
@@ -560,12 +558,6 @@ void OnApplyMacrosPalette(const CommandContext &context )
    }
 }
 
-void OnScreenshot(const CommandContext &context )
-{
-   CommandManager::Get(context.project).RegisterLastTool(context);  //Register Screenshot as Last Tool
-   ::OpenScreenshotTools( context.project );
-}
-
 void OnBenchmark(const CommandContext &context)
 {
    auto &project = context.project;
@@ -1092,9 +1084,6 @@ BaseItemSharedPtr ToolsMenu()
          Command( wxT("ConfigReset"), XXO("Reset &Configuration"),
             FN(OnResetConfig),
             AudioIONotBusyFlag() ),
-
-         Command( wxT("FancyScreenshot"), XXO("&Screenshot..."),
-            FN(OnScreenshot), AudioIONotBusyFlag() ),
 
    // PRL: team consensus for 2.2.0 was, we let end users have this diagnostic,
    // as they used to in 1.3.x

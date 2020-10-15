@@ -127,7 +127,7 @@ ScreenshotBigDialogPtr mFrame;
 
 ////////////////////////////////////////////////////////////////////////////////
 
-void OpenScreenshotTools( AudacityProject &project )
+static void OpenScreenshotTools( AudacityProject &project )
 {
    if (!mFrame) {
       auto parent = wxTheApp->GetTopWindow();
@@ -140,11 +140,6 @@ void OpenScreenshotTools( AudacityProject &project )
    }
    mFrame->Show();
    mFrame->Raise();
-}
-
-void CloseScreenshotTools()
-{
-   mFrame = nullptr;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -825,4 +820,37 @@ void ScreenshotBigDialog::UpdatePrefs()
    Populate();
 
    Thaw();
+}
+
+#include "CommonCommandFlags.h"
+#include "commands/CommandManager.h"
+
+namespace {
+
+struct Handler : CommandHandlerObject {
+void OnScreenshot(const CommandContext &context )
+{
+   OpenScreenshotTools( context.project );
+}
+};
+
+static CommandHandlerObject &findCommandHandler(AudacityProject &) {
+   // Handler is not stateful.  Doesn't need a factory registered with
+   // AudacityProject.
+   static Handler instance;
+   return instance;
+};
+
+// Menu definitions
+
+using namespace MenuTable;
+#define FN(X) (& Handler :: X)
+AttachedItem sAttachment{
+   { wxT("Tools/Other"), { OrderingHint::After, wxT("ConfigReset") } },
+   ( FinderScope{ findCommandHandler },
+   Command( wxT("FancyScreenshot"), XXO("&Screenshot..."),
+      FN(OnScreenshot), AudioIONotBusyFlag() ) )
+};
+#undef FN
+
 }
