@@ -79,9 +79,10 @@ the mouse around.
 
 #include "WaveTrack.h"
 
-#include "./widgets/HelpSystem.h"
+#include "widgets/HelpSystem.h"
 #include "widgets/AudacityMessageBox.h"
 #include "widgets/Ruler.h"
+#include "widgets/VetoDialogHook.h"
 
 #if wxUSE_ACCESSIBILITY
 #include "widgets/WindowAccessible.h"
@@ -1192,7 +1193,7 @@ void FreqPlot::OnMouseEvent(wxMouseEvent & event)
 // Remaining code hooks this add-on into the application
 #include "commands/CommandContext.h"
 #include "commands/CommandManager.h"
-#include "commands/ScreenshotCommand.h"
+#include "ModuleConstants.h"
 
 namespace {
 
@@ -1215,7 +1216,7 @@ struct Handler : CommandHandlerObject {
       auto freqWindow =
          &project.AttachedWindows::Get< FrequencyPlotDialog >( sFrequencyWindowKey );
 
-      if( ScreenshotCommand::MayCapture( freqWindow ) )
+      if( ::CallVetoDialogHook( freqWindow ) )
          return;
       freqWindow->Show(true);
       freqWindow->Raise();

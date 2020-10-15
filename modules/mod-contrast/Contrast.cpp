@@ -25,6 +25,7 @@
 #include "widgets/HelpSystem.h"
 #include "widgets/NumericTextCtrl.h"
 #include "widgets/AudacityMessageBox.h"
+#include "widgets/VetoDialogHook.h"
 
 #include <cmath>
 #include <limits>
@@ -652,7 +653,7 @@ void ContrastDialog::OnReset(wxCommandEvent & /*event*/)
 // Remaining code hooks this add-on into the application
 #include "commands/CommandContext.h"
 #include "commands/CommandManager.h"
-#include "commands/ScreenshotCommand.h"
+#include "ModuleConstants.h"
 
 namespace {
 
@@ -677,7 +678,7 @@ struct Handler : CommandHandlerObject {
          &project.AttachedWindows::Get< ContrastDialog >( sContrastDialogKey );
 
       contrastDialog->CentreOnParent();
-      if( ScreenshotCommand::MayCapture( contrastDialog ) )
+      if( ::CallVetoDialogHook( contrastDialog ) )
          return;
       contrastDialog->Show();
    }

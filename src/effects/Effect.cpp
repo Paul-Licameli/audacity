@@ -46,6 +46,7 @@
 #include "../tracks/playabletrack/wavetrack/ui/WaveTrackViewConstants.h"
 #include "../widgets/NumericTextCtrl.h"
 #include "../widgets/AudacityMessageBox.h"
+#include "../widgets/VetoDialogHook.h"
 
 #include <unordered_map>
 
@@ -62,25 +63,6 @@ const wxString Effect::kCurrentSettingsIdent = wxT("<Current Settings>");
 const wxString Effect::kFactoryDefaultsIdent = wxT("<Factory Defaults>");
 
 using t2bHash = std::unordered_map< void*, bool >;
-
-namespace {
-
-Effect::VetoDialogHook &GetVetoDialogHook()
-{
-   static Effect::VetoDialogHook sHook = nullptr;
-   return sHook;
-}
-
-}
-
-auto Effect::SetVetoDialogHook( VetoDialogHook hook )
-   -> VetoDialogHook
-{
-   auto &theHook = GetVetoDialogHook();
-   auto result = theHook;
-   theHook = hook;
-   return result;
-}
 
 Effect::Effect()
 {
@@ -513,8 +495,7 @@ bool Effect::ShowInterface(wxWindow &parent,
    mUIDialog->Fit();
    mUIDialog->SetMinSize(mUIDialog->GetSize());
 
-   auto hook = GetVetoDialogHook();
-   if( hook && hook( mUIDialog ) )
+   if( ::CallVetoDialogHook( mUIDialog ) )
       return false;
 
    if( SupportsRealtime() && !forceModal )
