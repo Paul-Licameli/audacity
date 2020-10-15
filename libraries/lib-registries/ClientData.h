@@ -402,6 +402,45 @@ protected:
       }
    }
 
+   //! Invoke function on pointers to client data in `this` and in `other`
+   /*! Visits all corresponding pairs, even when one or both pointers are null */
+   /*!
+   @tparam Function takes a pointer to `ClientData` in `this` and a pointer to `const ClientData` in `other`.
+       If return value is false, pointer in `this` is reassigned null
+   @param create if true, then try to create left pointer if it was null and right pointer was not, before callback
+   @param function of type @b Function
+    */
+   template< typename Function >
+   void ForCorresponding(
+      const Site &other, bool create, const Function &function )
+   {
+      auto data = GetData();
+      auto otherData = other.GetData();
+      if (data.mObject.size() != otherData.mObject.size())
+         THROW_INCONSISTENCY_EXCEPTION;
+      auto factories = GetFactories();
+      size_t index = 0;
+      auto iter = otherData.mObject.begin();
+      for( auto &pObject : data.mObject ) {
+         const auto &ptr2 = Dereferenceable(*iter++);
+         DataType *p2 = ptr2 ? &*ptr2 : nullptr;
+         if ( create && p2 && !Dereferenceable(pObject) ) {
+            if (index < factories.mObject.size()) {
+               auto &factory = factories.mObject[index];
+               auto result = factory
+                  ? factory( static_cast< Host& >( *this ) )
+                  : DataPointer{};
+               pObject = std::move( result );
+            }
+         }
+         auto &ptr1 = Dereferenceable(pObject);
+         DataType *p1 = ptr1 ? &*ptr1 : nullptr;
+         if (!function( p1, p2 ))
+            pObject = nullptr;
+         ++index;
+      }
+   }
+
    //! Return pointer to first attachment in @c this that is not null and satisfies a predicate, or nullptr
    /*!
    Beware that the sequence of visitation is not specified.
