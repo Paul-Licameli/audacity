@@ -314,8 +314,6 @@ list( APPEND SOURCES
       effects/ScoreAlignDialog.h
       effects/SimpleMono.cpp
       effects/SimpleMono.h
-      effects/StereoToMono.cpp
-      effects/StereoToMono.h
       effects/TimeWarper.cpp
       effects/TimeWarper.h
       effects/TwoPassSimpleMono.cpp

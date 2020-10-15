@@ -23,8 +23,6 @@
 #include "WaveTrack.h"
 #include "commands/CommandContext.h"
 #include "commands/CommandManager.h"
-#include "effects/EffectManager.h"
-#include "effects/EffectUI.h"
 #include "prefs/QualitySettings.h"
 #include "tracks/playabletrack/wavetrack/ui/WaveTrackControls.h"
 #include "widgets/ASlider.h"
@@ -698,14 +696,6 @@ void OnNewTimeTrack(const CommandContext &context)
    t->EnsureVisible();
 }
 
-void OnStereoToMono(const CommandContext &context)
-{
-   EffectUI::DoEffect(
-      EffectManager::Get().GetEffectByIdentifier(wxT("StereoToMono")),
-      context,
-      EffectManager::kConfigured);
-}
-
 void OnMixAndRender(const CommandContext &context)
 {
    auto &project = context.project;
@@ -1310,24 +1300,8 @@ BaseItemSharedPtr TracksMenu()
 
       //////////////////////////////////////////////////////////////////////////
 
-      Section( "",
+      Section( "Mix",
          Menu( wxT("Mix"), XXO("Mi&x"),
-            // Delayed evaluation
-            // Stereo to Mono is an oddball command that is also subject to control
-            // by the plug-in manager, as if an effect.  Decide whether to show or
-            // hide it.
-            [](AudacityProject&) -> BaseItemPtr {
-               const PluginID ID =
-                  EffectManager::Get().GetEffectByIdentifier(wxT("StereoToMono"));
-               const PluginDescriptor *plug = PluginManager::Get().GetPlugin(ID);
-               if (plug && plug->IsEnabled())
-                  return Command( wxT("Stereo to Mono"),
-                     XXO("Mix Stereo Down to &Mono"), FN(OnStereoToMono),
-                     AudioIONotBusyFlag() | StereoRequiredFlag() |
-                        WaveTracksSelectedFlag(), Options{}, findCommandHandler );
-               else
-                  return {};
-            },
             Command( wxT("MixAndRender"), XXO("Mi&x and Render"),
                FN(OnMixAndRender),
                AudioIONotBusyFlag() | WaveTracksSelectedFlag() ),

@@ -13,14 +13,13 @@
 
 *//*******************************************************************/
 
-
 #include "StereoToMono.h"
-#include "LoadEffects.h"
+#include "effects/LoadEffects.h"
 
-#include "../Mix.h"
-#include "../Project.h"
-#include "../WaveTrack.h"
-#include "../widgets/ProgressDialog.h"
+#include "Mix.h"
+#include "Project.h"
+#include "WaveTrack.h"
+#include "widgets/ProgressDialog.h"
 
 const ComponentInterfaceSymbol EffectStereoToMono::Symbol
 { XO("Stereo To Mono") };
@@ -220,4 +219,67 @@ bool EffectStereoToMono::ProcessOne(sampleCount & curTime, sampleCount totalTime
 bool EffectStereoToMono::IsHidden()
 {
    return true;
+}
+
+// Attach a menu item
+#include "CommonCommandFlags.h"
+#include "PluginManager.h"
+#include "commands/CommandManager.h"
+#include "effects/EffectManager.h"
+#include "effects/EffectUI.h"
+
+namespace {
+struct Handler : CommandHandlerObject {
+void OnStereoToMono(const CommandContext &context)
+{
+   EffectUI::DoEffect(
+      EffectManager::Get().GetEffectByIdentifier(wxT("StereoToMono")),
+      context,
+      EffectManager::kConfigured);
+}
+};
+
+static CommandHandlerObject &findCommandHandler(AudacityProject &) {
+   // Handler is not stateful.  Doesn't need a factory registered with
+   // AudacityProject.
+   static Handler instance;
+   return instance;
+};
+
+using namespace MenuTable;
+#define FN(X) (& Handler :: X)
+
+BaseItemSharedPtr MenuItem()
+{
+   using Options = CommandManager::Options;
+
+   static BaseItemSharedPtr menu {
+   ( FinderScope{ findCommandHandler },
+   // Delayed evaluation
+   // Stereo to Mono is an oddball command that is also subject to control
+   // by the plug-in manager, as if an effect.  Decide whether to show or
+   // hide it.
+   Items( "",
+      [](AudacityProject&) -> BaseItemPtr {
+         const PluginID ID =
+            EffectManager::Get().GetEffectByIdentifier(wxT("StereoToMono"));
+         const PluginDescriptor *plug = PluginManager::Get().GetPlugin(ID);
+         if (plug && plug->IsEnabled())
+            return Command( wxT("Stereo to Mono"),
+               XXO("Mix Stereo Down to &Mono"), FN(OnStereoToMono),
+               AudioIONotBusyFlag() | StereoRequiredFlag() |
+                  WaveTracksSelectedFlag(), Options{}, findCommandHandler );
+         else
+            return {};
+      }
+   ) ) };
+   return menu;
+}
+
+#undef FN
+
+AttachedItem sAttachment{
+   { wxT("Tracks/Mix/Mix"), { OrderingHint::Begin, {} } },
+   Shared( MenuItem() )
+};
 }
