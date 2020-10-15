@@ -40,6 +40,7 @@ static const std::unordered_set<wxString> &autoEnabledModules()
       "mod-vamp",
       "mod-vst",
       "mod-command-classes",
+      "mod-screenshot",
    };
    return modules;
 }

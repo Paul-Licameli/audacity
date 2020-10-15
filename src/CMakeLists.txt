@@ -193,8 +193,6 @@ list( APPEND SOURCES
       RingBuffer.h
       SampleBlock.cpp
       SampleBlock.h
-      Screenshot.cpp
-      Screenshot.h
       SelectUtilities.cpp
       SelectUtilities.h
       SelectFile.cpp
@@ -314,8 +312,6 @@ list( APPEND SOURCES
       commands/LoadCommands.h
       commands/ResponseQueue.cpp
       commands/ResponseQueue.h
-      commands/ScreenshotCommand.cpp
-      commands/ScreenshotCommand.h
       commands/ScriptCommandRelay.cpp
       commands/ScriptCommandRelay.h
       commands/Validators.h
