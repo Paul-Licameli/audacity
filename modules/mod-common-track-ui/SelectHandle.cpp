@@ -14,6 +14,7 @@ Paul Licameli split from TrackPanel.cpp
 #include "tracks/ui/TrackView.h"
 
 #include "AColor.h"
+#include "HitTestResult.h"
 #include "Project.h"
 #include "ProjectAudioIO.h"
 #include "ProjectHistory.h"
@@ -24,7 +25,6 @@ Paul Licameli split from TrackPanel.cpp
 #include "SelectionState.h"
 #include "TrackArtist.h"
 #include "TrackPanelAx.h"
-#include "TrackPanel.h"
 #include "TrackPanelDrawingContext.h"
 #include "TrackPanelMouseEvent.h"
 #include "ViewInfo.h"
@@ -308,7 +308,8 @@ UIHandle::Result SelectHandle::Click
       return Cancelled;
 
    wxMouseEvent &event = evt.event;
-   const auto sTrack = TrackList::Get( *pProject ).Lock( FindTrack() );
+   auto &trackList = TrackList::Get( *pProject );
+   const auto sTrack = trackList.Lock( FindTrack() );
    const auto pTrack = sTrack.get();
    auto &viewInfo = ViewInfo::Get( *pProject );
 
@@ -318,8 +319,6 @@ UIHandle::Result SelectHandle::Click
    auto &selectionState = SelectionState::Get( *pProject );
    const auto &settings = ProjectSettings::Get( *pProject );
    if (event.LeftDClick() && !event.ShiftDown()) {
-      auto &trackList = TrackList::Get( *pProject );
-
       // Deselect all other tracks and select this one.
       selectionState.SelectNone( trackList );
 
@@ -350,7 +349,6 @@ UIHandle::Result SelectHandle::Click
 
    mInitialSelection = viewInfo.selectedRegion;
 
-   auto &trackList = TrackList::Get( *pProject );
    mSelectionStateChanger =
       std::make_shared< SelectionStateChanger >( selectionState, trackList );
 
@@ -363,8 +361,6 @@ UIHandle::Result SelectHandle::Click
 
    // I. Shift-click adjusts an existing selection
    if (bShiftDown || bCtrlDown) {
-      auto &trackPanel = TrackPanel::Get( *pProject );
-
       if (bShiftDown)
          selectionState.ChangeSelectionOnShiftClick( trackList, *pTrack );
       if( bCtrlDown ){
@@ -373,7 +369,7 @@ UIHandle::Result SelectHandle::Click
          //Actual bIsSelected will always add.
          bool bIsSelected = false;
          // Don't toggle away the last selected track.
-         if( !bIsSelected || trackPanel.GetSelectedTrackCount() > 1 )
+         if( !bIsSelected || trackList.SelectedLeaders().size() > 1 )
             selectionState.SelectTrack( *pTrack, !bIsSelected, true );
       }
 
@@ -776,7 +772,7 @@ void SelectHandle::TimerHandler::OnTimer(wxCommandEvent &event)
    //  smoother on MacOS 9.
 
    const auto project = mConnectedProject;
-   const auto &trackPanel = TrackPanel::Get( *project );
+   const auto &trackPanel = GetProjectPanel( *project );
    auto &window = ProjectWindow::Get( *project );
    if (mParent->mMostRecentX >= mParent->mRect.x + mParent->mRect.width) {
       mParent->mAutoScrolling = true;
@@ -823,7 +819,7 @@ void SelectHandle::TimerHandler::OnTimer(wxCommandEvent &event)
          project
       );
       mParent->mAutoScrolling = false;
-      TrackPanel::Get( *mConnectedProject ).Refresh(false);
+      GetProjectPanel( *mConnectedProject ).Refresh(false);
    }
 }
 
