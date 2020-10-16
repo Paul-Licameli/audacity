@@ -419,15 +419,6 @@ list( APPEND SOURCES
       tracks/playabletrack/wavetrack/ui/WaveformVZoomHandle.h
       tracks/playabletrack/wavetrack/ui/WaveformView.cpp
       tracks/playabletrack/wavetrack/ui/WaveformView.h
-      tracks/timetrack/ui/TimeTrackControls.cpp
-      tracks/timetrack/ui/TimeTrackControls.h
-      tracks/timetrack/ui/TimeTrackMenuItems.cpp
-      tracks/timetrack/ui/TimeTrackVRulerControls.cpp
-      tracks/timetrack/ui/TimeTrackVRulerControls.h
-      tracks/timetrack/ui/TimeTrackVZoomHandle.cpp
-      tracks/timetrack/ui/TimeTrackVZoomHandle.h
-      tracks/timetrack/ui/TimeTrackView.cpp
-      tracks/timetrack/ui/TimeTrackView.h
 
       # Tracks UI
 

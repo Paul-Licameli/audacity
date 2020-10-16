@@ -9,24 +9,24 @@ Paul Licameli split from TrackPanel.cpp
 **********************************************************************/
 
 #include "TimeTrackView.h"
-#include "../../../TimeTrack.h"
+#include "TimeTrack.h"
 
 #include "TimeTrackControls.h"
 
 #include "TimeTrackVRulerControls.h"
-#include "../../../AColor.h"
-#include "../../../AllThemeResources.h"
-#include "../../../Envelope.h"
-#include "../../../EnvelopeEditor.h"
-#include "../../../HitTestResult.h"
-#include "../../../Theme.h"
-#include "../../../TrackArtist.h"
-#include "../../../TrackPanelDrawingContext.h"
-#include "../../../TrackPanelMouseEvent.h"
-#include "../../../ViewInfo.h"
-#include "../../../widgets/Ruler.h"
+#include "AColor.h"
+#include "AllThemeResources.h"
+#include "Envelope.h"
+#include "EnvelopeEditor.h"
+#include "HitTestResult.h"
+#include "Theme.h"
+#include "TrackArtist.h"
+#include "TrackPanelDrawingContext.h"
+#include "TrackPanelMouseEvent.h"
+#include "ViewInfo.h"
+#include "widgets/Ruler.h"
 
-#include "../../ui/EnvelopeHandle.h"
+#include "tracks/ui/EnvelopeHandle.h"
 
 #include <wx/dc.h>
 
@@ -166,3 +166,6 @@ void TimeTrackView::Draw(
       DrawTimeTrack( context, *tt, GetRuler(), rect );
    }
 }
+
+#include "ModuleConstants.h"
+DEFINE_MODULE_ENTRIES
