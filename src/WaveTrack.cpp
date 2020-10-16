@@ -54,9 +54,6 @@ from the project that will own the track.
 
 #include "InconsistencyException.h"
 
-#include "tracks/ui/TrackView.h"
-#include "tracks/ui/TrackControls.h"
-
 using std::max;
 
 static auto DefaultName = XO("Audio Track");
@@ -76,14 +73,7 @@ wxString WaveTrack::GetDefaultAudioTrackNamePreference()
 
 static ProjectFileIORegistry::Entry registerFactory{
    wxT( "wavetrack" ),
-   []( AudacityProject &project ){
-      auto &trackFactory = WaveTrackFactory::Get( project );
-      auto &tracks = TrackList::Get( project );
-      auto result = tracks.Add(trackFactory.NewWaveTrack());
-      TrackView::Get( *result );
-      TrackControls::Get( *result );
-      return result;
-   }
+   WaveTrack::New
 };
 
 WaveTrack::Holder WaveTrackFactory::DuplicateWaveTrack(const WaveTrack &orig)
@@ -99,6 +89,15 @@ WaveTrack::Holder WaveTrackFactory::NewWaveTrack(sampleFormat format, double rat
    if (rate == 0)
       rate = mSettings.GetRate();
    return std::make_shared<WaveTrack> ( mpFactory, format, rate );
+}
+
+WaveTrack *WaveTrack::New( AudacityProject &project )
+{
+   auto &trackFactory = WaveTrackFactory::Get( project );
+   auto &tracks = TrackList::Get( project );
+   auto result = tracks.Add(trackFactory.NewWaveTrack());
+   result->AttachedTrackObjects::BuildAll();
+   return result;
 }
 
 WaveTrack::WaveTrack( const SampleBlockFactoryPtr &pFactory,

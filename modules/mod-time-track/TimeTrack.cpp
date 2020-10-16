@@ -27,9 +27,6 @@
 #include "ProjectFileIORegistry.h"
 #include "ViewInfo.h"
 
-#include "tracks/ui/TrackView.h"
-#include "tracks/ui/TrackControls.h"
-
 
 //TODO-MB: are these sensible values?
 #define TIMETRACK_MIN 0.01
@@ -37,20 +34,22 @@
 
 static ProjectFileIORegistry::Entry registerFactory{
    wxT( "timetrack" ),
-   []( AudacityProject &project ) -> Track * {
-      auto &tracks = TrackList::Get( project );
-      if (*tracks.Any<TimeTrack>().begin())
-         // There is already one time track.
-         // Can come here if importing legacy .aup files into a project.
-         // Maintain uniqueness of the time track.  Ignore XML file data.
-         return nullptr;
-      auto &viewInfo = ViewInfo::Get( project );
-      auto result = tracks.Add(std::make_shared<TimeTrack>(&viewInfo));
-      TrackView::Get( *result );
-      TrackControls::Get( *result );
-      return result;
-   }
+   TimeTrack::New
 };
+
+TimeTrack *TimeTrack::New( AudacityProject &project )
+{
+   auto &tracks = TrackList::Get( project );
+   if (*tracks.Any<TimeTrack>().begin())
+      // There is already one time track.
+      // Can come here if importing legacy .aup files into a project.
+      // Maintain uniqueness of the time track.  Ignore XML file data.
+      return nullptr;
+   auto &viewInfo = ViewInfo::Get( project );
+   auto result = tracks.Add(std::make_shared<TimeTrack>(&viewInfo));
+   result->AttachedTrackObjects::BuildAll();
+   return result;
+}
 
 TimeTrack::TimeTrack(const ZoomInfo *zoomInfo):
    Track()

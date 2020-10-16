@@ -80,6 +80,9 @@ class LABEL_TRACK_API LabelTrack final
    , public wxEvtHandler
 {
  public:
+   // Construct and also build all attachments
+   static LabelTrack *New(AudacityProject &project);
+
    LabelTrack();
    LabelTrack(const LabelTrack &orig);
 
@@ -96,7 +99,7 @@ class LABEL_TRACK_API LabelTrack final
    double GetEndTime() const override;
 
    using Holder = std::shared_ptr<LabelTrack>;
-   
+
 private:
    Track::Holder Clone() const override;
 

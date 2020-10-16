@@ -34,8 +34,6 @@
 #include "InconsistencyException.h"
 
 #include "effects/TimeWarper.h"
-#include "tracks/ui/TrackView.h"
-#include "tracks/ui/TrackControls.h"
 
 #ifdef SONIFY
 #include "../lib-src/portmidi/pm_common/portmidi.h"
@@ -102,14 +100,16 @@ SONFNS(AutoSave)
 
 static ProjectFileIORegistry::Entry registerFactory{
    wxT( "notetrack" ),
-   []( AudacityProject &project ){
-      auto &tracks = TrackList::Get( project );
-      auto result = tracks.Add( std::make_shared<NoteTrack>());
-      TrackView::Get( *result );
-      TrackControls::Get( *result );
-      return result;
-   }
+   NoteTrack::New
 };
+
+NoteTrack *NoteTrack::New( AudacityProject &project )
+{
+   auto &tracks = TrackList::Get( project );
+   auto result = tracks.Add( std::make_shared<NoteTrack>());
+   result->AttachedTrackObjects::BuildAll();
+   return result;
+}
 
 NoteTrack::NoteTrack()
    : NoteTrackBase()

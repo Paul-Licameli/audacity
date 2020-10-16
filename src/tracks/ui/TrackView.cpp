@@ -64,30 +64,27 @@ void TrackView::CopyTo( Track &track ) const
    other.mHeight = mHeight;
 }
 
+static const AttachedTrackObjects::RegisteredFactory key{
+   []( Track &track ){
+      return DoGetView::Call( track );
+   }
+};
+
 TrackView &TrackView::Get( Track &track )
 {
-   auto pView = std::static_pointer_cast<TrackView>( track.GetTrackView() );
-   if (!pView)
-      // create on demand
-      track.SetTrackView( pView = DoGetView::Call( track ) );
-   return *pView;
+   return track.AttachedObjects::Get< TrackView >( key );
 }
 
 const TrackView &TrackView::Get( const Track &track )
 {
-   return Get( const_cast< Track& >( track ) );
+   return Get( const_cast< Track & >( track ) );
 }
 
 TrackView *TrackView::Find( Track *pTrack )
 {
    if (!pTrack)
       return nullptr;
-   auto &track = *pTrack;
-
-   auto pView = std::static_pointer_cast<TrackView>( track.GetTrackView() );
-   // do not create on demand if it is null
-
-   return pView.get();
+   return pTrack->AttachedObjects::Find< TrackView >( key );
 }
 
 const TrackView *TrackView::Find( const Track *pTrack )
