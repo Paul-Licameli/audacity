@@ -10,7 +10,7 @@ Paul Licameli split from WaveTrackVZoomHandle.cpp
 
 #include "WaveformVZoomHandle.h"
 
-#include "tracks/playabletrack/wavetrack/ui/WaveTrackVZoomHandle.h"
+#include "WaveTrackVZoomHandle.h"
 
 #include "HitTestResult.h"
 #include "NumberScale.h"

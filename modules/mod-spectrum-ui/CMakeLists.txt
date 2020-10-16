@@ -12,5 +12,5 @@ list( APPEND SOURCES
    SpectrogramSettings.cpp
    SpectrogramSettings.h
 )
-audacity_module( mod-spectrum-ui "${SOURCES}" "Audacity"
+audacity_module( mod-spectrum-ui "${SOURCES}" "mod-wave-track-ui-interface"
    "" "" )

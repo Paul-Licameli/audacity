@@ -8,19 +8,18 @@ Paul Licameli split from TrackPanel.cpp
 
 **********************************************************************/
 
-
 #include "CutlineHandle.h"
 
-#include "../../../../HitTestResult.h"
-#include "../../../../ProjectAudioIO.h"
-#include "../../../../ProjectHistory.h"
-#include "../../../../RefreshCode.h"
-#include "../../../../Snap.h" // for kPixelTolerance
-#include "../../../../TrackPanelMouseEvent.h"
-#include "../../../../UndoManager.h"
-#include "../../../../ViewInfo.h"
-#include "../../../../WaveTrack.h"
-#include "../../../../../images/Cursors.h"
+#include "HitTestResult.h"
+#include "ProjectAudioIO.h"
+#include "ProjectHistory.h"
+#include "RefreshCode.h"
+#include "Snap.h" // for kPixelTolerance
+#include "TrackPanelMouseEvent.h"
+#include "UndoManager.h"
+#include "ViewInfo.h"
+#include "WaveTrack.h"
+#include "../images/Cursors.h"
 
 CutlineHandle::CutlineHandle
 ( const std::shared_ptr<WaveTrack> &pTrack, WaveTrackLocation location )

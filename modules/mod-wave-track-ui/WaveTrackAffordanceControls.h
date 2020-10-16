@@ -10,7 +10,7 @@
 
 #pragma once
 
-#include "../../../ui/CommonTrackPanelCell.h"
+#include "tracks/ui/CommonTrackPanelCell.h"
 
 class AffordanceHandle;
 class WaveClip;

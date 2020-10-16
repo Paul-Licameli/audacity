@@ -12,14 +12,14 @@
 
 #include <wx/dc.h>
 
-#include "../../../../AllThemeResources.h"
-#include "../../../../TrackPanelMouseEvent.h"
-#include "../../../../TrackArtist.h"
-#include "../../../../TrackPanelDrawingContext.h"
-#include "../../../../ViewInfo.h"
-#include "../../../../WaveTrack.h"
-#include "../../../../WaveClip.h"
-#include "../../../ui/AffordanceHandle.h"
+#include "AllThemeResources.h"
+#include "TrackPanelMouseEvent.h"
+#include "TrackArtist.h"
+#include "TrackPanelDrawingContext.h"
+#include "ViewInfo.h"
+#include "WaveTrack.h"
+#include "WaveClip.h"
+#include "tracks/ui/AffordanceHandle.h"
 #include "WaveTrackView.h"//need only ClipParameters
 
 

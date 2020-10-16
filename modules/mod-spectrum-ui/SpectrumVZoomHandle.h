@@ -12,7 +12,7 @@ Paul Licameli split from WaveTrackVZoomHandle.h
 #define __AUDACITY_SPECTRUM_VZOOM_HANDLE__
 
 #include "UIHandle.h" // to inherit
-#include "tracks/playabletrack/wavetrack/ui/WaveTrackViewConstants.h"
+#include "WaveTrackViewConstants.h"
 
 class WaveTrack;
 
@@ -71,7 +71,7 @@ private:
    wxRect mRect{};
 };
 
-#include "tracks/playabletrack/wavetrack/ui/WaveTrackVZoomHandle.h" // to inherit
+#include "WaveTrackVZoomHandle.h" // to inherit
 
 class SpectrumVRulerMenuTable : public WaveTrackVRulerMenuTable
 {

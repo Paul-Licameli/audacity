@@ -11,7 +11,7 @@ Paul Licameli split from TrackPanel.cpp
 #ifndef __AUDACITY_WAVE_TRACK_CONTROLS__
 #define __AUDACITY_WAVE_TRACK_CONTROLS__
 
-#include "../../ui/PlayableTrackControls.h" // to inherit
+#include "tracks/playabletrack/ui/PlayableTrackControls.h" // to inherit
 
 class CellularPanel;
 class LWSlider;
@@ -23,7 +23,7 @@ class WaveTrack;
 class wxEvent;
 class wxWindow;
 
-class AUDACITY_DLL_API WaveTrackControls final : public PlayableTrackControls
+class WAVE_TRACK_UI_API WaveTrackControls final : public PlayableTrackControls
 {
    WaveTrackControls(const WaveTrackControls&) = delete;
    WaveTrackControls &operator=(const WaveTrackControls&) = delete;
@@ -68,9 +68,9 @@ private:
    std::weak_ptr<PanSliderHandle> mPanHandle;
 };
 
-#include "../../../../widgets/PopupMenuTable.h"
+#include "widgets/PopupMenuTable.h"
 
-struct AUDACITY_DLL_API WaveTrackPopupMenuTable : public PopupMenuTable
+struct WAVE_TRACK_UI_API WaveTrackPopupMenuTable : public PopupMenuTable
 {
    using PopupMenuTable::PopupMenuTable;
    PlayableTrackControls::InitMenuData *mpData{};
@@ -81,7 +81,7 @@ protected:
 };
 
 // Expose the wave track menu table to registration of menu items
-AUDACITY_DLL_API
+WAVE_TRACK_UI_API
 WaveTrackPopupMenuTable &GetWaveTrackMenuTable();
 
 #endif

@@ -14,8 +14,8 @@ Paul Licameli split from WaveTrackView.cpp
 #include "Sequence.h"
 
 #include "WaveformVRulerControls.h"
-#include "tracks/playabletrack/wavetrack/ui/WaveTrackView.h"
-#include "tracks/playabletrack/wavetrack/ui/WaveTrackViewConstants.h"
+#include "WaveTrackView.h"
+#include "WaveTrackViewConstants.h"
 
 #include "SampleHandle.h"
 #include "tracks/ui/EnvelopeHandle.h"
@@ -1687,7 +1687,7 @@ static const WaveTrackSubViews::RegisteredFactory key{
 // source file with the rest of the waveform view implementation.
 
 #include <mutex> // for std::call_once
-#include "tracks/playabletrack/wavetrack/ui/WaveTrackControls.h"
+#include "WaveTrackControls.h"
 #include "widgets/PopupMenuTable.h"
 #include "ProjectAudioIO.h"
 #include "ProjectHistory.h"

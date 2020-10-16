@@ -16,7 +16,7 @@ Paul Licameli -- split from WaveTrack.h
 
 class WaveTrack;
 
-struct WaveTrackLocation {
+struct WAVE_TRACK_UI_API WaveTrackLocation {
 
    enum LocationType {
       locationCutLine = 1,
@@ -56,7 +56,7 @@ bool operator != (const WaveTrackLocation &a, const WaveTrackLocation &b)
    return !( a == b );
 }
 
-class AUDACITY_DLL_API WaveTrackLocationsCache final
+class WAVE_TRACK_UI_API WaveTrackLocationsCache final
    : public ClientData::Cloneable< ClientData::UniquePtr >
 {
    using Location = WaveTrackLocation;

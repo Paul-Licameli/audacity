@@ -11,7 +11,7 @@ Paul Licameli split from WaveTrackView.h
 #ifndef __AUDACITY_SPECTRUM_VIEW__
 #define __AUDACITY_SPECTRUM_VIEW__
 
-#include "tracks/playabletrack/wavetrack/ui/WaveTrackView.h" // to inherit
+#include "WaveTrackView.h" // to inherit
 
 class WaveTrack;
 

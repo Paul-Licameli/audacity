@@ -11,7 +11,7 @@ Paul Licameli split from TrackPanel.cpp
 #ifndef __AUDACITY_WAVE_TRACK_SLIDER_HANDLES__
 #define __AUDACITY_WAVE_TRACK_SLIDER_HANDLES__
 
-#include "../../../ui/SliderHandle.h"
+#include "tracks/ui/SliderHandle.h"
 
 class wxMouseState;
 class WaveTrack;

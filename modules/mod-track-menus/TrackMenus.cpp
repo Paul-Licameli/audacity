@@ -23,7 +23,7 @@
 #include "commands/CommandContext.h"
 #include "commands/CommandManager.h"
 #include "prefs/QualitySettings.h"
-#include "tracks/playabletrack/wavetrack/ui/WaveTrackControls.h"
+#include "WaveTrackControls.h"
 #include "widgets/ASlider.h"
 #include "widgets/AudacityMessageBox.h"
 #include "widgets/ProgressDialog.h"

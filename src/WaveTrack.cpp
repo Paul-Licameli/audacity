@@ -160,6 +160,7 @@ WaveTrack::~WaveTrack()
 {
 }
 
+
 double WaveTrack::GetOffset() const
 {
    return GetStartTime();

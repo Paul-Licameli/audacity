@@ -8,17 +8,16 @@ Paul Licameli split from TrackPanel.cpp
 
 **********************************************************************/
 
-
 #include "WaveTrackSliderHandles.h"
 
 #include "WaveTrackControls.h"
-#include "../../../../ProjectHistory.h"
-#include "../../../../RefreshCode.h"
-#include "../../../../TrackInfo.h"
-#include "../../../../TrackPanel.h"
-#include "../../../../TrackPanelAx.h"
-#include "../../../../UndoManager.h"
-#include "../../../../WaveTrack.h"
+#include "ProjectHistory.h"
+#include "RefreshCode.h"
+#include "TrackInfo.h"
+#include "TrackPanel.h"
+#include "TrackPanelAx.h"
+#include "UndoManager.h"
+#include "WaveTrack.h"
 
 GainSliderHandle::GainSliderHandle
 ( SliderFn sliderFn, const wxRect &rect, const std::shared_ptr<Track> &pTrack )

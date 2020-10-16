@@ -11,7 +11,7 @@ Paul Licameli split from WaveTrackVRulerControls.cpp
 #include "WaveformVRulerControls.h"
 
 #include "WaveformVZoomHandle.h"
-#include "tracks/playabletrack/wavetrack/ui/WaveTrackVRulerControls.h"
+#include "WaveTrackVRulerControls.h"
 
 #include "NumberScale.h"
 #include "ProjectHistory.h"

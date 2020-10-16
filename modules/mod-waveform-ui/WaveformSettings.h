@@ -13,7 +13,7 @@ Paul Licameli
 
 #include "ClientData.h" // to inherit
 #include "Prefs.h"
-#include "tracks/playabletrack/wavetrack/ui/WaveTrackViewConstants.h"
+#include "WaveTrackViewConstants.h"
 
 class wxRect;
 

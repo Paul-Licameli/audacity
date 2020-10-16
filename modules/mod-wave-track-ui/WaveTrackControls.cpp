@@ -8,30 +8,29 @@ Paul Licameli split from TrackPanel.cpp
 
 **********************************************************************/
 
-
 #include "WaveTrackControls.h"
 
-#include "../../ui/PlayableTrackButtonHandles.h"
+#include "tracks/playabletrack/ui/PlayableTrackButtonHandles.h"
 #include "WaveTrackSliderHandles.h"
 
 #include "WaveTrackView.h"
 #include "WaveTrackViewConstants.h"
-#include "../../../../AudioIOBase.h"
-#include "../../../../CellularPanel.h"
-#include "../../../../Project.h"
-#include "../../../../ProjectAudioIO.h"
-#include "../../../../ProjectHistory.h"
-#include "../../../../RefreshCode.h"
-#include "../../../../ShuttleGui.h"
-#include "../../../../TrackArtist.h"
-#include "../../../../TrackPanel.h"
-#include "../../../../TrackPanelAx.h"
-#include "../../../../TrackPanelMouseEvent.h"
-#include "../../../../WaveTrack.h"
-#include "../../../../effects/RealtimeEffectManager.h"
-#include "../../../../prefs/PrefsDialog.h"
-#include "../../../../prefs/ThemePrefs.h"
-#include "../../../../widgets/AudacityMessageBox.h"
+#include "AudioIOBase.h"
+#include "CellularPanel.h"
+#include "Project.h"
+#include "ProjectAudioIO.h"
+#include "ProjectHistory.h"
+#include "RefreshCode.h"
+#include "ShuttleGui.h"
+#include "TrackArtist.h"
+#include "TrackPanel.h"
+#include "TrackPanelAx.h"
+#include "TrackPanelMouseEvent.h"
+#include "WaveTrack.h"
+#include "effects/RealtimeEffectManager.h"
+#include "prefs/PrefsDialog.h"
+#include "prefs/ThemePrefs.h"
+#include "widgets/AudacityMessageBox.h"
 #include "widgets/ProgressDialog.h"
 #include "UserException.h"
 #include "Identifier.h"
@@ -975,10 +974,10 @@ WaveTrackPopupMenuTable &GetWaveTrackMenuTable()
 }
 
 // drawing related
-#include "../../../../widgets/ASlider.h"
-#include "../../../../TrackInfo.h"
-#include "../../../../TrackPanelDrawingContext.h"
-#include "../../../../ViewInfo.h"
+#include "widgets/ASlider.h"
+#include "TrackInfo.h"
+#include "TrackPanelDrawingContext.h"
+#include "ViewInfo.h"
 
 namespace {
 
