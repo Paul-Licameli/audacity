@@ -28,6 +28,7 @@
 
 class wxRect;
 
+class AudacityProject;
 class TrackList;
 class TrackPanel;
 class SelectedRegion;
@@ -55,8 +56,9 @@ public:
       NPasses
    };
 
-   TrackArtist( TrackPanel &parent, const ZoomInfo &zoomInfo,
-         const SelectedRegion &selectedRegion );
+   TrackArtist( AudacityProject &project,
+      TrackPanel &parent, const ZoomInfo &zoomInfo,
+      const SelectedRegion &selectedRegion );
    ~TrackArtist();
    static TrackArtist *Get( TrackPanelDrawingContext & );
 
@@ -73,6 +75,7 @@ public:
    void UpdatePrefs() override;
    void UpdateSelectedPrefs( int id ) override;
 
+   AudacityProject &project;
    TrackPanel &parent;
 
    // Preference values

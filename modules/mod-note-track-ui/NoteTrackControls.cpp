@@ -20,7 +20,6 @@ Paul Licameli split from TrackPanel.cpp
 #include "AllThemeResources.h"
 #include "HitTestResult.h"
 #include "TrackArtist.h"
-#include "TrackPanel.h"
 #include "TrackPanelMouseEvent.h"
 #include "NoteTrack.h"
 #include "widgets/PopupMenuTable.h"
@@ -200,7 +199,7 @@ void VelocitySliderDrawFunction
    bool captured = hit && target->IsClicked();
 
    const auto artist = TrackArtist::Get( context );
-   auto pParent = FindProjectFrame( artist->parent.GetProject() );
+   auto pParent = FindProjectFrame( &artist->project );
 
    SliderDrawFunction(
       &NoteTrackControls::VelocitySlider, dc, rect, pTrack,

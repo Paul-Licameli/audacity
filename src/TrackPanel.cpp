@@ -284,7 +284,7 @@ TrackPanel::TrackPanel(wxWindow * parent, wxWindowID id,
    }
 
    mTrackArtist = std::make_unique<TrackArtist>(
-      *this, *mViewInfo, mViewInfo->selectedRegion );
+      *GetProject(), *this, *mViewInfo, mViewInfo->selectedRegion );
 
    mTimeCount = 0;
    mTimer.parent = this;

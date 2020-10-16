@@ -23,7 +23,6 @@ Paul Licameli split from TrackPanel.cpp
 #include "RefreshCode.h"
 #include "ShuttleGui.h"
 #include "TrackArtist.h"
-#include "TrackPanel.h"
 #include "TrackPanelAx.h"
 #include "TrackPanelMouseEvent.h"
 #include "WaveTrack.h"
@@ -1003,7 +1002,7 @@ void PanSliderDrawFunction
    bool captured = hit && target->IsClicked();
 
    const auto artist = TrackArtist::Get( context );
-   auto pParent = FindProjectFrame( artist->parent.GetProject() );
+   auto pParent = FindProjectFrame( &artist->project );
 
    SliderDrawFunction(
       &WaveTrackControls::PanSlider, dc, rect, pTrack,
@@ -1022,7 +1021,7 @@ void GainSliderDrawFunction
    bool captured = hit && target->IsClicked();
 
    const auto artist = TrackArtist::Get( context );
-   auto pParent = FindProjectFrame( artist->parent.GetProject() );
+   auto pParent = FindProjectFrame( &artist->project );
 
    SliderDrawFunction(
       &WaveTrackControls::GainSlider, dc, rect, pTrack,

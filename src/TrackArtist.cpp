@@ -47,9 +47,11 @@ audio tracks.
 
 #include "prefs/GUISettings.h"
 
-TrackArtist::TrackArtist( TrackPanel &parent, const ZoomInfo &zoomInfo,
+TrackArtist::TrackArtist( AudacityProject &project,
+   TrackPanel &parent, const ZoomInfo &zoomInfo,
    const SelectedRegion &selectedRegion )
-   : parent{ parent }
+   : project{ project }
+   , parent{ parent }
    , zoomInfo{ zoomInfo }
    , selectedRegion{ selectedRegion }
 {
