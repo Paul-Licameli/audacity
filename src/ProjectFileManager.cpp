@@ -33,7 +33,6 @@ Paul Licameli split from AudacityProject.cpp
 #include "SelectionState.h"
 #include "TempDirectory.h"
 #include "TrackPanelAx.h"
-#include "TrackPanel.h"
 #include "UndoManager.h"
 #include "WaveTrack.h"
 #include "wxFileNameWrapper.h"
@@ -980,7 +979,7 @@ AudacityProject *ProjectFileManager::OpenProjectFile(
    auto &project = mProject;
    auto &history = ProjectHistory::Get( project );
    auto &tracks = TrackList::Get( project );
-   auto &trackPanel = TrackPanel::Get( project );
+   auto &trackPanel = GetProjectPanel( project );
    auto &projectFileIO = ProjectFileIO::Get( project );
    auto &window = ProjectWindow::Get( project );
 

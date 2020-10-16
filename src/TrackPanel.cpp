@@ -1567,27 +1567,3 @@ void TrackPanel::OnTrackFocusChange( wxCommandEvent &event )
       Refresh( false );
    }
 }
-
-IsVisibleTrack::IsVisibleTrack(AudacityProject *project)
-   : mPanelRect {
-        wxPoint{ 0, ViewInfo::Get( *project ).vpos },
-        wxSize{
-           ViewInfo::Get( *project ).GetTracksUsableWidth(),
-           ViewInfo::Get( *project ).GetHeight()
-        }
-     }
-{}
-
-bool IsVisibleTrack::operator () (const Track *pTrack) const
-{
-   // Need to return true if this track or a later channel intersects
-   // the view
-   return
-   TrackList::Channels(pTrack).StartingWith(pTrack).any_of(
-      [this]( const Track *pT ) {
-         auto &view = TrackView::Get( *pT );
-         wxRect r(0, view.GetY(), 1, view.GetHeight());
-         return r.Intersects(mPanelRect);
-      }
-   );
-}

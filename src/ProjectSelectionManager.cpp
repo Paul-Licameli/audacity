@@ -17,7 +17,6 @@ Paul Licameli split from ProjectManager.cpp
 #include "ProjectSettings.h"
 #include "ProjectWindow.h"
 #include "Snap.h"
-#include "TrackPanel.h"
 #include "ViewInfo.h"
 #include "WaveTrack.h"
 
@@ -129,7 +128,7 @@ void ProjectSelectionManager::AS_SetSelectionFormat(
       gPrefs->Flush();
 
       if (SnapSelection())
-         TrackPanel::Get( mProject ).Refresh(false);
+         GetProjectPanel( mProject ).Refresh(false);
    });
 }
 
@@ -145,7 +144,7 @@ void ProjectSelectionManager::AS_ModifySelection(
 {
    auto &project = mProject;
    auto &history = ProjectHistory::Get( project );
-   auto &trackPanel = TrackPanel::Get( project );
+   auto &trackPanel = GetProjectPanel( project );
    auto &viewInfo = ViewInfo::Get( project );
    viewInfo.selectedRegion.setTimes(start, end);
    trackPanel.Refresh(false);
@@ -176,7 +175,7 @@ void ProjectSelectionManager::SSBL_ModifySpectralSelection(
 #ifdef EXPERIMENTAL_SPECTRAL_EDITING
    auto &project = mProject;
    auto &history = ProjectHistory::Get( project );
-   auto &trackPanel = TrackPanel::Get( project );
+   auto &trackPanel = GetProjectPanel( project );
    auto &viewInfo = ViewInfo::Get( project );
 
    auto &settings = ProjectSettings::Get(mProject);

@@ -19,7 +19,6 @@
 #include "ProjectSettings.h"
 #include "SelectionState.h"
 #include "TrackPanelAx.h"
-#include "TrackPanel.h"
 #include "ViewInfo.h"
 #include "WaveTrack.h"
 
@@ -75,8 +74,7 @@ void SelectNone( AudacityProject &project )
    for (auto t : tracks.Any())
       t->SetSelected(false);
 
-   auto &trackPanel = TrackPanel::Get( project );
-   trackPanel.Refresh(false);
+   GetProjectPanel( project ).Refresh(false);
 }
 
 // Select the full time range, if no

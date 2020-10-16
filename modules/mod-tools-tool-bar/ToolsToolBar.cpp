@@ -312,8 +312,6 @@ AttachedToolBarMenuItem sAttachment{
 
 // Following code injects menu items for changing the current tool
 
-#include "TrackPanel.h"
-
 // private helper classes and functions
 namespace {
 
@@ -323,7 +321,7 @@ void SetTool(AudacityProject &project, int tool)
    auto toolbar = &ToolsToolBar::Get( project );
    if (toolbar) {
       toolbar->SetCurrentTool(tool);
-      TrackPanel::Get( project ).Refresh(false);
+      GetProjectPanel( project ).Refresh(false);
    }
 }
 
@@ -376,7 +374,7 @@ void OnPrevTool(const CommandContext &context)
 {
    auto &project = context.project;
    auto &toolbar = ToolsToolBar::Get( project );
-   auto &trackPanel = TrackPanel::Get( project );
+   auto &trackPanel = GetProjectPanel( project );
 
    using namespace ToolCodes;
    // Use GetDownTool() here since GetCurrentTool() can return a value that
@@ -389,7 +387,7 @@ void OnNextTool(const CommandContext &context)
 {
    auto &project = context.project;
    auto &toolbar = ToolsToolBar::Get( project );
-   auto &trackPanel = TrackPanel::Get( project );
+   auto &trackPanel = GetProjectPanel( project );
 
    using namespace ToolCodes;
    // Use GetDownTool() here since GetCurrentTool() can return a value that

@@ -16,7 +16,6 @@
 #include "ProjectHistory.h"
 #include "RefreshCode.h"
 #include "TrackInfo.h"
-#include "TrackPanel.h"
 #include "TrackPanelAx.h"
 #include "UndoManager.h"
 #include "NoteTrack.h"
@@ -108,7 +107,7 @@ UIHandlePtr VelocitySliderHandle::HitTest
       []( AudacityProject *pProject, const wxRect &sliderRect, Track *pTrack ) {
          return NoteTrackControls::VelocitySlider
             (sliderRect, static_cast<NoteTrack*>( pTrack ), true,
-             &TrackPanel::Get( *pProject ));
+             &GetProjectPanel( *pProject ));
       };
       auto result = std::make_shared<VelocitySliderHandle>(
          sliderFn, sliderRect, pTrack );

@@ -199,14 +199,4 @@ protected:
    void UpdateStatusMessage( const TranslatableString &status ) override;
 };
 
-// A predicate class
-struct AUDACITY_DLL_API IsVisibleTrack
-{
-   IsVisibleTrack(AudacityProject *project);
-
-   bool operator () (const Track *pTrack) const;
-
-   wxRect mPanelRect;
-};
-
 #endif

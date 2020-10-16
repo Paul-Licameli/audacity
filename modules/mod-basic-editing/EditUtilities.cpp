@@ -18,7 +18,6 @@
 #include "ProjectWindow.h"
 #include "effects/TimeWarper.h"
 #include "SelectUtilities.h"
-#include "TrackPanel.h"
 #include "TrackPanelAx.h"
 #include "ViewInfo.h"
 #include "WaveTrack.h"
@@ -121,7 +120,6 @@ void OnCut(const CommandContext &context)
 {
    auto &project = context.project;
    auto &tracks = TrackList::Get( project );
-   auto &trackPanel = TrackPanel::Get( project );
    auto &selectedRegion = ViewInfo::Get( project ).selectedRegion;
    auto &window = ProjectWindow::Get( project );
 
@@ -191,7 +189,7 @@ void OnCopy(const CommandContext &context)
 {
    auto &project = context.project;
    auto &tracks = TrackList::Get( project );
-   auto &trackPanel = TrackPanel::Get( project );
+   auto &trackPanel = GetProjectPanel( project );
    auto &selectedRegion = ViewInfo::Get( project ).selectedRegion;
 
    // Handle special copy (such as from label tracks) first.

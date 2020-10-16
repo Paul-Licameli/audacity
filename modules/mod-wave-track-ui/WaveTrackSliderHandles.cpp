@@ -14,7 +14,6 @@ Paul Licameli split from TrackPanel.cpp
 #include "ProjectHistory.h"
 #include "RefreshCode.h"
 #include "TrackInfo.h"
-#include "TrackPanel.h"
 #include "TrackPanelAx.h"
 #include "UndoManager.h"
 #include "WaveTrack.h"
@@ -103,7 +102,7 @@ UIHandlePtr GainSliderHandle::HitTest
       []( AudacityProject *pProject, const wxRect &sliderRect, Track *pTrack ) {
          return WaveTrackControls::GainSlider
             (sliderRect, static_cast<WaveTrack*>( pTrack ), true,
-             &TrackPanel::Get( *pProject ));
+             &GetProjectPanel( *pProject ));
       };
       auto result =
          std::make_shared<GainSliderHandle>( sliderFn, sliderRect2, pTrack );
@@ -212,7 +211,7 @@ UIHandlePtr PanSliderHandle::HitTest
       []( AudacityProject *pProject, const wxRect &sliderRect, Track *pTrack ) {
          return WaveTrackControls::PanSlider
             (sliderRect, static_cast<WaveTrack*>( pTrack ), true,
-             &TrackPanel::Get( *pProject ));
+             &GetProjectPanel( *pProject ));
       };
       auto result = std::make_shared<PanSliderHandle>(
          sliderFn, sliderRect, pTrack );

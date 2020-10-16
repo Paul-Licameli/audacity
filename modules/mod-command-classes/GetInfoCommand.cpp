@@ -29,7 +29,6 @@ This class now lists
 #include "EffectManager.h"
 #include "widgets/Overlay.h"
 #include "TrackPanelAx.h"
-#include "TrackPanel.h"
 #include "WaveClip.h"
 #include "ViewInfo.h"
 #include "WaveTrack.h"
@@ -682,11 +681,46 @@ void GetInfoCommand::ExploreAdornments( const CommandContext &context,
    context.EndStruct();
 }
 
+namespace {
+// A predicate class
+struct IsVisibleTrack
+{
+   IsVisibleTrack(AudacityProject *project);
+
+   bool operator () (const Track *pTrack) const;
+
+   wxRect mPanelRect;
+};
+
+IsVisibleTrack::IsVisibleTrack(AudacityProject *project)
+   : mPanelRect {
+        wxPoint{ 0, ViewInfo::Get( *project ).vpos },
+        wxSize{
+           ViewInfo::Get( *project ).GetTracksUsableWidth(),
+           ViewInfo::Get( *project ).GetHeight()
+        }
+     }
+{}
+
+bool IsVisibleTrack::operator () (const Track *pTrack) const
+{
+   // Need to return true if this track or a later channel intersects
+   // the view
+   return
+   TrackList::Channels(pTrack).StartingWith(pTrack).any_of(
+      [this]( const Track *pT ) {
+         auto &view = TrackView::Get( *pT );
+         wxRect r(0, view.GetY(), 1, view.GetHeight());
+         return r.Intersects(mPanelRect);
+      }
+   );
+}
+}
+
 void GetInfoCommand::ExploreTrackPanel( const CommandContext &context,
    wxPoint P, wxWindow * pWin, int WXUNUSED(Id), int depth )
 {
    AudacityProject * pProj = &context.project;
-   auto &tp = TrackPanel::Get( *pProj );
    auto &viewInfo = ViewInfo::Get( *pProj );
 
    wxRect trackRect = pWin->GetRect();
