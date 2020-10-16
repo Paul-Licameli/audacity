@@ -104,6 +104,8 @@ list( APPEND SOURCES
       DeviceManager.h
       Diags.cpp
       Diags.h
+      EditUtilities.cpp
+      EditUtilities.h
       Envelope.cpp
       Envelope.h
       EnvelopeEditor.cpp
