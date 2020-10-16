@@ -1393,7 +1393,7 @@ struct LabeledChannelGroup final : TrackPanelGroup {
          // was the focus and no highlight should be drawn. -RBD
          const auto artist = TrackArtist::Get( context );
          auto &trackPanel = artist->parent;
-         auto &trackFocus = TrackFocus::Get( *trackPanel.GetProject() );
+         auto &trackFocus = TrackFocus::Get( artist->project );
          if (trackFocus.Get() == mpTrack.get() &&
              wxWindow::FindFocus() == &trackPanel ) {
             /// Draw a three-level highlight gradient around the focused track.

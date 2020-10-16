@@ -34,7 +34,6 @@
 #include "commands/CommandManager.h"
 #include "CommonCommandFlags.h"
 #include "Project.h"
-#include "TrackPanel.h"
 
 namespace {
 // Globals, so that we remember settings from session to session
@@ -49,7 +48,7 @@ class AudacityPrintout final : public wxPrintout
  public:
    AudacityPrintout(wxString title,
                     TrackList *tracks,
-                    AudacityProject &project, TrackPanel &panel):
+                    AudacityProject &project, wxWindow &panel):
       wxPrintout(title),
       mTracks(tracks)
       , mProject{ project }
@@ -64,7 +63,7 @@ class AudacityPrintout final : public wxPrintout
 
  private:
    AudacityProject &mProject;
-   TrackPanel &mPanel;
+   wxWindow &mPanel;
    TrackList *mTracks;
 };
 
@@ -170,7 +169,7 @@ void HandlePageSetup(wxWindow *parent)
 
 void HandlePrint(
    wxWindow *parent, const wxString &name, TrackList *tracks,
-   AudacityProject &project, TrackPanel &panel)
+   AudacityProject &project, wxWindow &panel)
 {
    wxPrintDialogData printDialogData(gPrintData());
 
@@ -206,7 +205,7 @@ void OnPrint(const CommandContext &context)
    auto name = project.GetProjectName();
    auto &tracks = TrackList::Get( project );
    auto &window = GetProjectFrame( project );
-   HandlePrint(&window, name, &tracks, project, TrackPanel::Get( project ));
+   HandlePrint(&window, name, &tracks, project, GetProjectPanel( project ));
 }
 };
 

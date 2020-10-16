@@ -736,9 +736,11 @@ void LabelTrackView::CalcHighlightXs(int *x1, int *x2) const
 
 #include "LabelGlyphHandle.h"
 namespace {
-   LabelTrackHit *findHit( TrackPanel &panel )
+   LabelTrackHit *findHit( wxWindow &window )
    {
-      auto pPanel = &panel;
+      auto pPanel = dynamic_cast<CellularPanel*>(&window);
+      if ( !pPanel )
+         return nullptr;
 
       // Fetch the highlighting state
       auto target = pPanel->Target();

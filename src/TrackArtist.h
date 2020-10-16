@@ -30,10 +30,8 @@ class wxRect;
 
 class AudacityProject;
 class TrackList;
-class TrackPanel;
 class SelectedRegion;
 class Track;
-class TrackPanel;
 struct TrackPanelDrawingContext;
 class ZoomInfo;
 
@@ -57,7 +55,7 @@ public:
    };
 
    TrackArtist( AudacityProject &project,
-      TrackPanel &parent, const ZoomInfo &zoomInfo,
+      wxWindow &parent, const ZoomInfo &zoomInfo,
       const SelectedRegion &selectedRegion );
    ~TrackArtist();
    static TrackArtist *Get( TrackPanelDrawingContext & );
@@ -76,7 +74,7 @@ public:
    void UpdateSelectedPrefs( int id ) override;
 
    AudacityProject &project;
-   TrackPanel &parent;
+   wxWindow &parent;
 
    // Preference values
    float mdBrange;            // "/GUI/EnvdBRange"
