@@ -8,31 +8,30 @@ Paul Licameli split from TrackPanel.cpp
 
 **********************************************************************/
 
-
 #include "LabelTrackView.h"
 
 #include "LabelTrackVRulerControls.h"
 #include "LabelGlyphHandle.h"
 #include "LabelTextHandle.h"
 
-#include "../../../LabelTrack.h"
+#include "LabelTrack.h"
 
-#include "../../../AColor.h"
-#include "../../../AllThemeResources.h"
-#include "../../../HitTestResult.h"
-#include "../../../Project.h"
-#include "../../../ProjectHistory.h"
-#include "../../../ProjectSettings.h"
-#include "../../../ProjectWindow.h"
-#include "../../../RefreshCode.h"
-#include "../../../Theme.h"
-#include "../../../TrackArtist.h"
-#include "../../../TrackPanelAx.h"
-#include "../../../TrackPanel.h"
-#include "../../../TrackPanelMouseEvent.h"
-#include "../../../UndoManager.h"
-#include "../../../ViewInfo.h"
-#include "../../../widgets/AudacityTextEntryDialog.h"
+#include "AColor.h"
+#include "AllThemeResources.h"
+#include "HitTestResult.h"
+#include "Project.h"
+#include "ProjectHistory.h"
+#include "ProjectSettings.h"
+#include "ProjectWindow.h"
+#include "RefreshCode.h"
+#include "Theme.h"
+#include "TrackArtist.h"
+#include "TrackPanelAx.h"
+#include "TrackPanel.h"
+#include "TrackPanelMouseEvent.h"
+#include "UndoManager.h"
+#include "ViewInfo.h"
+#include "widgets/AudacityTextEntryDialog.h"
 
 #include <wx/clipbrd.h>
 #include <wx/dcclient.h>
@@ -752,7 +751,7 @@ namespace {
    }
 }
 
-#include "../../../TrackPanelDrawingContext.h"
+#include "TrackPanelDrawingContext.h"
 #include "LabelTextHandle.h"
 
 /// Draw calls other functions to draw the LabelTrack.
@@ -2174,7 +2173,7 @@ void LabelTrackView::CreateCustomGlyphs()
    mbGlyphsReady=true;
 }
 
-#include "../../../LabelDialog.h"
+#include "LabelDialog.h"
 
 void LabelTrackView::DoEditLabels
 (AudacityProject &project, LabelTrack *lt, int index)
@@ -2263,7 +2262,7 @@ std::shared_ptr<TrackVRulerControls> LabelTrackView::DoGetVRulerControls()
 }
 
 // Install cut-copy-paste hooks
-#include "../../../EditUtilities.h"
+#include "EditUtilities.h"
 
 namespace {
 
@@ -2354,3 +2353,6 @@ RegisterCopyPasteMethods regMethods{
 };
 
 }
+
+#include "ModuleConstants.h"
+DEFINE_MODULE_ENTRIES

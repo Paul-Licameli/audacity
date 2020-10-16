@@ -104,7 +104,6 @@ list( APPEND SOURCES
       DeviceManager.h
       Diags.cpp
       Diags.h
-      DropoutDetector.cpp
       EditUtilities.cpp
       EditUtilities.h
       Envelope.cpp
@@ -121,10 +120,6 @@ list( APPEND SOURCES
       ImageManipulation.h
       KeyboardCapture.cpp
       KeyboardCapture.h
-      LabelDialog.cpp
-      LabelDialog.h
-      LabelImportExport.cpp
-      LabelImportExport.h
       LabelTrack.cpp
       LabelTrack.h
       LangChoice.cpp
@@ -315,7 +310,6 @@ list( APPEND SOURCES
       menus/EditMenus.cpp
       menus/ExtraMenus.cpp
       menus/FileMenus.cpp
-      menus/LabelMenus.cpp
       menus/TransportMenus.cpp
 
       # Preferences
@@ -377,19 +371,6 @@ list( APPEND SOURCES
 
       # Tracks
 
-      tracks/labeltrack/ui/LabelDefaultClickHandle.cpp
-      tracks/labeltrack/ui/LabelDefaultClickHandle.h
-      tracks/labeltrack/ui/LabelGlyphHandle.cpp
-      tracks/labeltrack/ui/LabelGlyphHandle.h
-      tracks/labeltrack/ui/LabelTextHandle.cpp
-      tracks/labeltrack/ui/LabelTextHandle.h
-      tracks/labeltrack/ui/LabelTrackControls.cpp
-      tracks/labeltrack/ui/LabelTrackControls.h
-      tracks/labeltrack/ui/LabelTrackShifter.cpp
-      tracks/labeltrack/ui/LabelTrackVRulerControls.cpp
-      tracks/labeltrack/ui/LabelTrackVRulerControls.h
-      tracks/labeltrack/ui/LabelTrackView.cpp
-      tracks/labeltrack/ui/LabelTrackView.h
       tracks/playabletrack/ui/PlayableTrackButtonHandles.cpp
       tracks/playabletrack/ui/PlayableTrackButtonHandles.h
       tracks/playabletrack/ui/PlayableTrackControls.cpp

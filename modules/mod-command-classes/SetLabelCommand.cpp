@@ -26,7 +26,7 @@
 #include "Shuttle.h"
 #include "ShuttleGui.h"
 #include "commands/CommandContext.h"
-#include "tracks/labeltrack/ui/LabelTrackView.h"
+#include "LabelTrackView.h"
 
 const ComponentInterfaceSymbol SetLabelCommand::Symbol
 { XO("Set Label") };
