@@ -24,6 +24,7 @@ class wxWindow;
 
 class AudacityProject;
 struct AudioIOStartStreamOptions;
+class CellularPanel;
 
 class ProjectWindow;
 
@@ -38,6 +39,14 @@ class AUDACITY_DLL_API ProjectManager final
    static void InitProjectWindow( ProjectWindow &window );
 
 public:
+   //! Type of function that makes the main project panel
+   using MainPanelFactory = std::function< CellularPanel &(
+      AudacityProject &, wxWindow * /*parent*/, wxWindowID) >;
+
+   //! Install a factory, returning the previous factory
+   //! @pre factory is not null
+   static MainPanelFactory InstallMainPanelFactory( MainPanelFactory factory );
+
    //! Type of function that adds panels to the main window
    using PanelFactory =
       std::function< wxWindow *(AudacityProject &, wxWindow * /*parent*/) >;

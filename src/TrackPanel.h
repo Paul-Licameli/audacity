@@ -59,7 +59,7 @@ class AUDACITY_DLL_API TrackPanel final
  public:
    static TrackPanel &Get( AudacityProject &project );
    static const TrackPanel &Get( const AudacityProject &project );
-   static void Destroy( AudacityProject &project );
+   bool Destroy() override;
  
    TrackPanel(wxWindow * parent,
               wxWindowID id,

@@ -13,6 +13,7 @@ Paul Licameli split from AudacityProject.cpp
 
 
 #include "AudioIO.h"
+#include "CellularPanel.h"
 #include "Clipboard.h"
 #include "FileNames.h"
 #include "Menus.h"
@@ -27,7 +28,6 @@ Paul Licameli split from AudacityProject.cpp
 #include "ProjectStatus.h"
 #include "ProjectWindow.h"
 #include "SelectUtilities.h"
-#include "TrackPanel.h"
 #include "TrackUtilities.h"
 #include "UndoManager.h"
 #include "ViewInfo.h"
@@ -41,10 +41,82 @@ Paul Licameli split from AudacityProject.cpp
 #include <wx/app.h>
 #include <wx/scrolbar.h>
 #include <wx/sizer.h>
+#include <wx/timer.h>
 
 #ifdef __WXGTK__
 #include "../images/AudacityLogoAlpha.xpm"
 #endif
+
+namespace {
+class StubTrackPanel final : public CellularPanel {
+public:
+   StubTrackPanel(wxWindow * parent, wxWindowID id,
+         const wxPoint & pos,
+         const wxSize & size,
+         ViewInfo *viewInfo,
+         AudacityProject &project)
+      : CellularPanel{ parent, id, pos, size, viewInfo }
+      , mProject{ project }
+   {}
+
+   AudacityProject *GetProject() const override
+   {
+      return &mProject;
+   }
+      
+   std::shared_ptr<TrackPanelNode> Root() override
+   {
+      return {};
+   }
+
+   TrackPanelCell *GetFocusedCell() override
+   {
+      return nullptr;
+   }
+
+   void SetFocusedCell() override
+   {
+   }
+   
+   void ProcessUIHandleResult
+   (TrackPanelCell *pClickedCell, TrackPanelCell *pLatestCell,
+    unsigned refreshResult) override
+   {
+   }
+   
+   void UpdateStatusMessage( const TranslatableString & ) override
+   {
+   }
+
+private:
+   AudacityProject &mProject;
+};
+
+static ProjectManager::MainPanelFactory &GetMainPanelFactory()
+{
+   static ProjectManager::MainPanelFactory theFactory{
+      [](AudacityProject &project, wxWindow *parent, wxWindowID id)
+         -> CellularPanel&
+      {
+         return *safenew StubTrackPanel{
+            parent, id, wxDefaultPosition, wxDefaultSize,
+            &ViewInfo::Get(project), project };
+      }
+   };
+   return theFactory;
+}
+
+}
+
+auto ProjectManager::InstallMainPanelFactory( MainPanelFactory factory )
+   -> MainPanelFactory
+{
+   wxASSERT(factory);
+   auto &theFactory = GetMainPanelFactory();
+   auto result = theFactory;
+   theFactory = std::move( factory );
+   return result;
+}
 
 static const auto PathStart = wxT("MainWindowPanels");
 
@@ -290,7 +362,9 @@ void ProjectManager::InitProjectWindow( ProjectWindow &window )
    }
    bs->Layout();
 
-   auto &trackPanel = TrackPanel::Get( project );
+   auto &trackPanel =
+      GetMainPanelFactory()(project, pPage, window.NextWindowID());
+   project.SetPanel(&trackPanel);
 
    // LLL: When Audacity starts or becomes active after returning from
    //      another application, the first window that can accept focus
@@ -608,7 +682,7 @@ void ProjectManager::OnCloseWindow(wxCloseEvent & event)
    // deleting things like tracks and such out from underneath it.
    // Check validity of mTrackPanel per bug 584 Comment 1.
    // Deeper fix is in the Import code, but this failsafes against crash.
-   TrackPanel::Destroy( project );
+   GetProjectPanel( project ).Destroy();
 
    // Finalize the tool manager before the children since it needs
    // to save the state of the toolbars.
