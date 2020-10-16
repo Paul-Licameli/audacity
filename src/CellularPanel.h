@@ -116,10 +116,11 @@ public:
    // repeatedly with a pass count from 0 to nPasses - 1
    void Draw( TrackPanelDrawingContext &context, unsigned nPasses );
    
+   void DoContextMenu( TrackPanelCell *pCell = nullptr );
+
 protected:
    bool HasEscape();
    bool CancelDragging( bool escaping );
-   void DoContextMenu( TrackPanelCell *pCell = nullptr );
    void ClearTargets();
    
 private:

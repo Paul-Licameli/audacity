@@ -101,8 +101,6 @@ class AUDACITY_DLL_API TrackPanel final
    void HandlePageDownKey();
    AudacityProject * GetProject() const override;
 
-   void OnTrackMenu(Track *t = NULL);
-
    void VerticalScroll( float fracPosition);
 
    TrackPanelCell *GetFocusedCell() override;
