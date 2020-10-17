@@ -1003,7 +1003,7 @@ void PanSliderDrawFunction
    bool captured = hit && target->IsClicked();
 
    const auto artist = TrackArtist::Get( context );
-   auto pParent = FindProjectFrame( artist->parent->GetProject() );
+   auto pParent = FindProjectFrame( artist->parent.GetProject() );
 
    SliderDrawFunction(
       &WaveTrackControls::PanSlider, dc, rect, pTrack,
@@ -1022,7 +1022,7 @@ void GainSliderDrawFunction
    bool captured = hit && target->IsClicked();
 
    const auto artist = TrackArtist::Get( context );
-   auto pParent = FindProjectFrame( artist->parent->GetProject() );
+   auto pParent = FindProjectFrame( artist->parent.GetProject() );
 
    SliderDrawFunction(
       &WaveTrackControls::GainSlider, dc, rect, pTrack,

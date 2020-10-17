@@ -283,7 +283,8 @@ TrackPanel::TrackPanel(wxWindow * parent, wxWindowID id,
          *this, std::move( pAx ) );
    }
 
-   mTrackArtist = std::make_unique<TrackArtist>( this );
+   mTrackArtist = std::make_unique<TrackArtist>(
+      *this, *mViewInfo, mViewInfo->selectedRegion );
 
    mTimeCount = 0;
    mTimer.parent = this;
@@ -801,9 +802,6 @@ void TrackPanel::DrawTracks(wxDC * dc)
 
    const wxRect clip = GetRect();
 
-   const SelectedRegion &sr = mViewInfo->selectedRegion;
-   mTrackArtist->pSelectedRegion = &sr;
-   mTrackArtist->pZoomInfo = mViewInfo;
    TrackPanelDrawingContext context {
       *dc, Target(), mLastMouseState, mTrackArtist.get()
    };
@@ -1394,7 +1392,7 @@ struct LabeledChannelGroup final : TrackPanelGroup {
          // the highlight was reportedly drawn even when something else
          // was the focus and no highlight should be drawn. -RBD
          const auto artist = TrackArtist::Get( context );
-         auto &trackPanel = *artist->parent;
+         auto &trackPanel = artist->parent;
          auto &trackFocus = TrackFocus::Get( *trackPanel.GetProject() );
          if (trackFocus.Get() == mpTrack.get() &&
              wxWindow::FindFocus() == &trackPanel ) {

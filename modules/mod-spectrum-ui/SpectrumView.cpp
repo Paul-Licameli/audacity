@@ -896,8 +896,8 @@ void DrawClipSpectrum(TrackPanelDrawingContext &context,
 {
    auto &dc = context.dc;
    const auto artist = TrackArtist::Get( context );
-   const auto &selectedRegion = *artist->pSelectedRegion;
-   const auto &zoomInfo = *artist->pZoomInfo;
+   const auto &selectedRegion = artist->selectedRegion;
+   const auto &zoomInfo = artist->zoomInfo;
 
 #ifdef PROFILE_WAVEFORM
    Profiler profiler;

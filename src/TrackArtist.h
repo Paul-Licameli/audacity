@@ -55,7 +55,8 @@ public:
       NPasses
    };
 
-   TrackArtist( TrackPanel *parent_ );
+   TrackArtist( TrackPanel &parent, const ZoomInfo &zoomInfo,
+         const SelectedRegion &selectedRegion );
    ~TrackArtist();
    static TrackArtist *Get( TrackPanelDrawingContext & );
 
@@ -72,7 +73,7 @@ public:
    void UpdatePrefs() override;
    void UpdateSelectedPrefs( int id ) override;
 
-   TrackPanel *parent;
+   TrackPanel &parent;
 
    // Preference values
    float mdBrange;            // "/GUI/EnvdBRange"
@@ -113,8 +114,8 @@ public:
    bool findNotesQuantizeOld;
 #endif
 
-   const SelectedRegion *pSelectedRegion{};
-   ZoomInfo *pZoomInfo{};
+   const SelectedRegion &selectedRegion;
+   const ZoomInfo &zoomInfo;
 
    bool drawEnvelope{ false };
    bool bigPoints{ false };

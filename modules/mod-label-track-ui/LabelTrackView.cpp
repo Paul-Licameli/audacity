@@ -736,10 +736,9 @@ void LabelTrackView::CalcHighlightXs(int *x1, int *x2) const
 
 #include "LabelGlyphHandle.h"
 namespace {
-   LabelTrackHit *findHit( TrackPanel *pPanel )
+   LabelTrackHit *findHit( TrackPanel &panel )
    {
-      if (! pPanel )
-         return nullptr;
+      auto pPanel = &panel;
 
       // Fetch the highlighting state
       auto target = pPanel->Target();
@@ -763,7 +762,7 @@ void LabelTrackView::Draw
 {
    auto &dc = context.dc;
    const auto artist = TrackArtist::Get( context );
-   const auto &zoomInfo = *artist->pZoomInfo;
+   const auto &zoomInfo = artist->zoomInfo;
 
    auto pHit = findHit( artist->parent );
 
@@ -824,7 +823,7 @@ void LabelTrackView::Draw
       DrawGlyphs( dc, labelStruct, r, GlyphLeft, GlyphRight );
    }}
 
-   auto &project = *artist->parent->GetProject();
+   auto &project = *artist->parent.GetProject();
 
    // Draw the label boxes.
    {

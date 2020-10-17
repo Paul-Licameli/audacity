@@ -883,7 +883,7 @@ void WaveTrackSubView::DrawBoldBoundaries(
    auto &dc = context.dc;
    const auto artist = TrackArtist::Get( context );
 
-   const auto &zoomInfo = *artist->pZoomInfo;
+   const auto &zoomInfo = artist->zoomInfo;
 
 #ifdef EXPERIMENTAL_TRACK_PANEL_HIGHLIGHTING
    auto target2 = dynamic_cast<CutlineHandle*>(context.target.get());

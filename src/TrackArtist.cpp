@@ -47,8 +47,11 @@ audio tracks.
 
 #include "prefs/GUISettings.h"
 
-TrackArtist::TrackArtist( TrackPanel *parent_ )
-   : parent( parent_ )
+TrackArtist::TrackArtist( TrackPanel &parent, const ZoomInfo &zoomInfo,
+   const SelectedRegion &selectedRegion )
+   : parent{ parent }
+   , zoomInfo{ zoomInfo }
+   , selectedRegion{ selectedRegion }
 {
    mdBrange = ENV_DB_RANGE;
    mShowClipping = false;

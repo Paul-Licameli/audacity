@@ -209,7 +209,7 @@ void DrawWaveformBackground(TrackPanelDrawingContext &context,
 {
    auto &dc = context.dc;
    const auto artist = TrackArtist::Get( context );
-   const auto &zoomInfo = *artist->pZoomInfo;
+   const auto &zoomInfo = artist->zoomInfo;
 
    // Visually (one vertical slice of the waveform background, on its side;
    // the "*" is the actual waveform background we're drawing
@@ -537,7 +537,7 @@ void DrawIndividualSamples(TrackPanelDrawingContext &context,
 {
    auto &dc = context.dc;
    const auto artist = TrackArtist::Get( context );
-   const auto &zoomInfo = *artist->pZoomInfo;
+   const auto &zoomInfo = artist->zoomInfo;
 
    const double toffset = clip->GetOffset();
    double rate = clip->GetRate();
@@ -1299,8 +1299,8 @@ void DrawClipWaveform(TrackPanelDrawingContext &context,
 {
    auto &dc = context.dc;
    const auto artist = TrackArtist::Get( context );
-   const auto &selectedRegion = *artist->pSelectedRegion;
-   const auto &zoomInfo = *artist->pZoomInfo;
+   const auto &selectedRegion = artist->selectedRegion;
+   const auto &zoomInfo = artist->zoomInfo;
 
 #ifdef PROFILE_WAVEFORM
    Profiler profiler;
@@ -1522,7 +1522,8 @@ void DrawClipWaveform(TrackPanelDrawingContext &context,
       DrawEnvelope(
          context, mid, env, zoomMin, zoomMax, dB, dBRange, highlightEnvelope );
       EnvelopeEditor::DrawPoints( *clip->GetEnvelope(),
-          context, rect, dB, dBRange, zoomMin, zoomMax, true );
+          context.dc, artist->zoomInfo,
+          rect, dB, dBRange, zoomMin, zoomMax, true );
    }
 
    // Draw arrows on the left side if the track extends to the left of the

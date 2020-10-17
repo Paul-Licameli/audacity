@@ -89,14 +89,12 @@ bool AudacityPrintout::OnPrintPage(int WXUNUSED(page))
    ruler.SetLabelEdges(true);
    ruler.Draw(*dc);
 
-   TrackArtist artist( &mPanel );
+   const double screenDuration = mTracks->GetEndTime();
+   ZoomInfo zoomInfo(0.0, width / screenDuration);
+   SelectedRegion region{};
+   TrackArtist artist( mPanel, zoomInfo, region );
    artist.SetBackgroundBrushes(*wxWHITE_BRUSH, *wxWHITE_BRUSH,
                                *wxWHITE_PEN, *wxWHITE_PEN);
-   const double screenDuration = mTracks->GetEndTime();
-   SelectedRegion region{};
-   artist.pSelectedRegion = &region;
-   ZoomInfo zoomInfo(0.0, width / screenDuration);
-   artist.pZoomInfo = &zoomInfo;
    int y = rulerPageHeight;
 
    for (auto n : mTracks->Any()) {

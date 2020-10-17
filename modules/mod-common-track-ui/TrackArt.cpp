@@ -236,8 +236,8 @@ void TrackArt::DrawBackgroundWithSelection(
 {
    const auto dc = &context.dc;
    const auto artist = TrackArtist::Get( context );
-   const auto &selectedRegion = *artist->pSelectedRegion;
-   const auto &zoomInfo = *artist->pZoomInfo;
+   const auto &selectedRegion = artist->selectedRegion;
+   const auto &zoomInfo = artist->zoomInfo;
 
    //MM: Draw background. We should optimize that a bit more.
    const double sel0 = useSelection ? selectedRegion.t0() : 0.0;
