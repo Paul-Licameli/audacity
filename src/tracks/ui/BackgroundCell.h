@@ -17,7 +17,6 @@ Paul Licameli split from TrackPanel.cpp
 class AudacityProject;
 
 class BackgroundHandle;
-class ZoomHandle;
 
 
 /// \brief Class representing the background of a Track.  It
@@ -57,10 +56,6 @@ private:
    AudacityProject *mpProject;
 
    std::weak_ptr<BackgroundHandle> mHandle;
-
-public:
-   // For want of a better place...
-   mutable std::weak_ptr<ZoomHandle> mZoomHandle;
 };
 
 #endif

@@ -10,7 +10,6 @@ Paul Licameli split from class TrackView
 
 #include "CommonTrackView.h"
 
-#include "BackgroundCell.h"
 #include "TimeShiftHandle.h"
 #include "TrackControls.h"
 #include "ZoomHandle.h"
@@ -41,7 +40,7 @@ std::vector<UIHandlePtr> CommonTrackView::HitTest
       // Zoom tool is a non-selecting tool that takes precedence in all tracks
       // over all other tools, no matter what detail you point at.
       result = ZoomHandle::HitAnywhere(
-         BackgroundCell::Get( *pProject ).mZoomHandle );
+         mZoomHandle );
       results.push_back(result);
       return results;
    }
@@ -63,8 +62,7 @@ std::vector<UIHandlePtr> CommonTrackView::HitTest
    // Let the multi-tool right-click handler apply only in default of all
    // other detailed hits.
    if ( isMultiTool ) {
-      result = ZoomHandle::HitTest(
-         BackgroundCell::Get( *pProject ).mZoomHandle, st.state);
+      result = ZoomHandle::HitTest(mZoomHandle, st.state);
       if (result)
          results.push_back(result);
    }
