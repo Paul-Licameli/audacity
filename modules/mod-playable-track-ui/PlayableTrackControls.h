@@ -11,12 +11,12 @@
 #ifndef __AUDACITY_PLAYABLE_TRACK_CONTROLS__
 #define __AUDACITY_PLAYABLE_TRACK_CONTROLS__
 
-#include "../../ui/CommonTrackControls.h"
+#include "tracks/ui/CommonTrackControls.h"
 
 class wxRect;
 class Track;
 
-class AUDACITY_DLL_API PlayableTrackControls /* not final */
+class PLAYABLE_TRACK_UI_API PlayableTrackControls /* not final */
    : public CommonTrackControls
 {
 public:

@@ -11,7 +11,7 @@ Paul Licameli split from TrackPanel.cpp
 #ifndef __AUDACITY_NOTE_TRACK_CONTROLS__
 #define __AUDACITY_NOTE_TRACK_CONTROLS__
 
-#include "tracks/playabletrack/ui/PlayableTrackControls.h" // to inherit
+#include "PlayableTrackControls.h" // to inherit
 class wxEvent;
 class LWSlider;
 class NoteTrack;

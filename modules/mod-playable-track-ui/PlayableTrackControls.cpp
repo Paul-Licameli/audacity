@@ -10,14 +10,12 @@ Paul Licameli split from TrackInfo.cpp
 
 #include "PlayableTrackControls.h"
 
-
-
 #include "PlayableTrackButtonHandles.h"
-#include "../../../AColor.h"
-#include "../../../Track.h"
-#include "../../../TrackInfo.h"
-#include "../../../TrackPanelDrawingContext.h"
-#include "../../../ViewInfo.h"
+#include "AColor.h"
+#include "Track.h"
+#include "TrackInfo.h"
+#include "TrackPanelDrawingContext.h"
+#include "ViewInfo.h"
 
 #include <wx/dc.h>
 
@@ -217,3 +215,7 @@ const TCPLines& PlayableTrackControls::StaticTCPLines()
    } );
    return playableTrackTCPLines;
 }
+
+
+#include "ModuleConstants.h"
+DEFINE_MODULE_ENTRIES

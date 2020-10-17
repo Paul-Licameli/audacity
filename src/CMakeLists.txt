@@ -360,13 +360,6 @@ list( APPEND SOURCES
       toolbars/ToolManager.cpp
       toolbars/ToolManager.h
 
-      # Tracks
-
-      tracks/playabletrack/ui/PlayableTrackButtonHandles.cpp
-      tracks/playabletrack/ui/PlayableTrackButtonHandles.h
-      tracks/playabletrack/ui/PlayableTrackControls.cpp
-      tracks/playabletrack/ui/PlayableTrackControls.h
-
       # Tracks UI
 
       tracks/ui/AffordanceHandle.cpp

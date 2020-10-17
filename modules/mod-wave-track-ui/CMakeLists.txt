@@ -20,5 +20,5 @@ list( APPEND SOURCES
    WaveTrackViewConstants.cpp
    WaveTrackViewConstants.h
 )
-audacity_module( mod-wave-track-ui "${SOURCES}" "Audacity"
+audacity_module( mod-wave-track-ui "${SOURCES}" "mod-playable-track-ui-interface"
    "" "" )

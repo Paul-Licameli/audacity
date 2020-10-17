@@ -13,7 +13,7 @@ Paul Licameli split from TrackPanel.cpp
 
 #include "NoteTrackButtonHandle.h"
 
-#include "tracks/playabletrack/ui/PlayableTrackButtonHandles.h"
+#include "PlayableTrackButtonHandles.h"
 #include "NoteTrackSliderHandles.h"
 
 #include "AColor.h"
