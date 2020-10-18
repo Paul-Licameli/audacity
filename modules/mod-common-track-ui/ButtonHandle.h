@@ -2,56 +2,54 @@
 
 Audacity: A Digital Audio Editor
 
-SliderHandle.h
+ButtonHandle.h
 
 Paul Licameli
 
 **********************************************************************/
 
-#ifndef __AUDACITY_SLIDER_HANDLE__
-#define __AUDACITY_SLIDER_HANDLE__
+#ifndef __AUDACITY_BUTTON_HANDLE__
+#define __AUDACITY_BUTTON_HANDLE__
 
-#include "../../UIHandle.h"
+#include "UIHandle.h"
 
 class wxMouseEvent;
 class wxMouseState;
-class LWSlider;
+
 class Track;
 class TranslatableString;
 
-class AUDACITY_DLL_API SliderHandle /* not final */ : public UIHandle
+
+/// \brief A UIHandle for a TrackPanel button, such as the Mute and Solo 
+/// buttons.
+class COMMON_TRACK_UI_API ButtonHandle /* not final */ : public UIHandle
 {
-   SliderHandle(const SliderHandle&) = delete;
+   ButtonHandle(const ButtonHandle&) = delete;
 
 public:
-   using SliderFn = LWSlider *(*)( AudacityProject*, const wxRect&, Track* );
-
-   explicit SliderHandle
-      ( SliderFn sliderFn, const wxRect &rect,
-        const std::shared_ptr<Track> &pTrack );
-
-   SliderHandle &operator=(const SliderHandle&) = default;
-
    std::shared_ptr<Track> GetTrack() const { return mpTrack.lock(); }
    bool IsClicked() const { return mIsClicked; }
 
 protected:
-   virtual ~SliderHandle();
+   explicit ButtonHandle
+      ( const std::shared_ptr<Track> &pTrack, const wxRect &rect );
 
-   // These NEW abstract virtuals simplify the duties of further subclasses.
-   // This class will decide whether to refresh the clicked cell for slider state
+   ButtonHandle &operator=(const ButtonHandle&) = default;
+
+   virtual ~ButtonHandle();
+
+   // This NEW abstract virtual simplifies the duties of further subclasses.
+   // This class will decide whether to refresh the clicked cell for button state
    // change.
    // Subclass can decide to refresh other things and the results will be ORed.
-   virtual float GetValue() = 0;
-   virtual Result SetValue(AudacityProject *pProject, float newValue) = 0;
    virtual Result CommitChanges
-      (const wxMouseEvent &event, AudacityProject *pProject) = 0;
+      (const wxMouseEvent &event, AudacityProject *pProject, wxWindow *pParent) = 0;
 
    // Define a message for the status bar and tooltip.
    virtual TranslatableString Tip(
       const wxMouseState &state, AudacityProject &project) const = 0;
- 
-   void Enter(bool forward, AudacityProject *) override;
+
+   void Enter(bool forward, AudacityProject *) final override;
 
    Result Click
       (const TrackPanelMouseEvent &event, AudacityProject *pProject)
@@ -71,14 +69,9 @@ protected:
 
    Result Cancel(AudacityProject *pProject) final override;
 
-   // Derived class is expected to set these two before Click():
    std::weak_ptr<Track> mpTrack;
-   wxRect mRect{};
-   SliderFn mSliderFn;
-   LWSlider *GetSlider( AudacityProject *pProject );
-
-   float mStartingValue {};
-
+   wxRect mRect;
+   bool mWasIn{ true };
    bool mIsClicked{};
 };
 

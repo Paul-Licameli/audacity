@@ -30,7 +30,7 @@ static const int TitleSoloBorderOverlap = 1;
 
 namespace TrackInfo
 {
-   AUDACITY_DLL_API
+   COMMON_TRACK_UI_API
    unsigned MinimumTrackHeight();
 
    struct TCPLine {
@@ -66,81 +66,81 @@ namespace TrackInfo
    using TCPLines = std::vector< TCPLine >;
 
    // return y value and height
-   AUDACITY_DLL_API
+   COMMON_TRACK_UI_API
    std::pair< int, int > CalcItemY( const TCPLines &lines, unsigned iItem );
 
-   AUDACITY_DLL_API
+   COMMON_TRACK_UI_API
    unsigned DefaultTrackHeight( const TCPLines &topLines );
 
-   AUDACITY_DLL_API
+   COMMON_TRACK_UI_API
    void DrawItems
       ( TrackPanelDrawingContext &context,
         const wxRect &rect, const Track &track );
 
-   AUDACITY_DLL_API
+   COMMON_TRACK_UI_API
    void DrawItems
       ( TrackPanelDrawingContext &context,
         const wxRect &rect, const Track *pTrack,
         const std::vector<TCPLine> &topLines,
         const std::vector<TCPLine> &bottomLines );
 
-   AUDACITY_DLL_API
+   COMMON_TRACK_UI_API
    void DrawCloseButton(
       TrackPanelDrawingContext &context, const wxRect &bev,
       const Track *pTrack, ButtonHandle *target );
 
-   AUDACITY_DLL_API
+   COMMON_TRACK_UI_API
    void CloseTitleDrawFunction
       ( TrackPanelDrawingContext &context,
         const wxRect &rect, const Track *pTrack );
 
-   AUDACITY_DLL_API
+   COMMON_TRACK_UI_API
    void MinimizeSyncLockDrawFunction
       ( TrackPanelDrawingContext &context,
         const wxRect &rect, const Track *pTrack );
 
-   AUDACITY_DLL_API
+   COMMON_TRACK_UI_API
    void SetTrackInfoFont(wxDC *dc);
 
 
-   AUDACITY_DLL_API
+   COMMON_TRACK_UI_API
    void GetCloseBoxHorizontalBounds( const wxRect & rect, wxRect &dest );
-   AUDACITY_DLL_API
+   COMMON_TRACK_UI_API
    void GetCloseBoxRect(const wxRect & rect, wxRect &dest);
 
-   AUDACITY_DLL_API
+   COMMON_TRACK_UI_API
    void GetTitleBarHorizontalBounds( const wxRect & rect, wxRect &dest );
-   AUDACITY_DLL_API
+   COMMON_TRACK_UI_API
    void GetTitleBarRect(const wxRect & rect, wxRect &dest);
 
-   AUDACITY_DLL_API
+   COMMON_TRACK_UI_API
    void GetSliderHorizontalBounds( const wxPoint &topleft, wxRect &dest );
 
-   AUDACITY_DLL_API
+   COMMON_TRACK_UI_API
    void GetMinimizeHorizontalBounds( const wxRect &rect, wxRect &dest );
-   AUDACITY_DLL_API
+   COMMON_TRACK_UI_API
    void GetMinimizeRect(const wxRect & rect, wxRect &dest);
 
-   AUDACITY_DLL_API
+   COMMON_TRACK_UI_API
    void GetSelectButtonHorizontalBounds( const wxRect &rect, wxRect &dest );
-   AUDACITY_DLL_API
+   COMMON_TRACK_UI_API
    void GetSelectButtonRect(const wxRect & rect, wxRect &dest);
 
-   AUDACITY_DLL_API
+   COMMON_TRACK_UI_API
    void GetSyncLockHorizontalBounds( const wxRect &rect, wxRect &dest );
-   AUDACITY_DLL_API
+   COMMON_TRACK_UI_API
    void GetSyncLockIconRect(const wxRect & rect, wxRect &dest);
 
-   AUDACITY_DLL_API
+   COMMON_TRACK_UI_API
    bool HideTopItem( const wxRect &rect, const wxRect &subRect,
                                int allowance = 0 );
 
    // Non-member, namespace function relying on TrackPanel to invoke it
    // when it handles preference update events
-   AUDACITY_DLL_API
+   COMMON_TRACK_UI_API
    void UpdatePrefs( wxWindow *pParent );
 
-   AUDACITY_DLL_API
+   COMMON_TRACK_UI_API
    bool HasSoloButton();
 };
 

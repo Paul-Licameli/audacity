@@ -12,7 +12,7 @@
 
 #include <wx/dc.h>
 
-#include "tracks/ui/AffordanceHandle.h"
+#include "AffordanceHandle.h"
 #include "AllThemeResources.h"
 #include "AColor.h"
 #include "NoteTrack.h"

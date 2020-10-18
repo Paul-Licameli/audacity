@@ -4,5 +4,5 @@ list( APPEND SOURCES
    PlayableTrackControls.cpp
    PlayableTrackControls.h
 )
-audacity_module( mod-playable-track-ui "${SOURCES}" "Audacity"
+audacity_module( mod-playable-track-ui "${SOURCES}" "mod-common-track-ui-interface"
    "" "" )

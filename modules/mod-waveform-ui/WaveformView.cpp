@@ -18,8 +18,8 @@ Paul Licameli split from WaveTrackView.cpp
 #include "WaveTrackViewConstants.h"
 
 #include "SampleHandle.h"
-#include "tracks/ui/EnvelopeHandle.h"
-#include "tracks/ui/TimeShiftHandle.h"
+#include "EnvelopeHandle.h"
+#include "TimeShiftHandle.h"
 #include "AColor.h"
 #include "Envelope.h"
 #include "EnvelopeEditor.h"

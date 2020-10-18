@@ -8,25 +8,24 @@ Paul Licameli split from TrackPanel.cpp
 
 **********************************************************************/
 
-
 #include "TimeShiftHandle.h"
 
-#include "TrackView.h"
-#include "../../AColor.h"
-#include "../../HitTestResult.h"
-#include "../../ProjectAudioIO.h"
-#include "../../ProjectHistory.h"
-#include "../../ProjectSettings.h"
-#include "../../RefreshCode.h"
-#include "../../Snap.h"
-#include "../../Track.h"
-#include "../../TrackArtist.h"
-#include "../../TrackPanelDrawingContext.h"
-#include "../../TrackPanelMouseEvent.h"
-#include "../../UndoManager.h"
-#include "../../ViewInfo.h"
-#include "../../../images/Cursors.h"
-
+#include "tracks/ui/TrackView.h"
+#include "AColor.h"
+#include "HitTestResult.h"
+#include "ProjectAudioIO.h"
+#include "ProjectHistory.h"
+#include "ProjectSettings.h"
+#include "RefreshCode.h"
+#include "Snap.h"
+#include "Track.h"
+#include "TrackArtist.h"
+#include "TrackPanelDrawingContext.h"
+#include "TrackPanelMouseEvent.h"
+#include "UndoManager.h"
+#include "ViewInfo.h"
+#include "../images/Cursors.h"
+\
 TimeShiftHandle::TimeShiftHandle
 ( const std::shared_ptr<Track> &pTrack, bool gripHit )
    : mGripHit{ gripHit }

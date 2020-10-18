@@ -108,8 +108,6 @@ list( APPEND SOURCES
       EditUtilities.h
       Envelope.cpp
       Envelope.h
-      EnvelopeEditor.cpp
-      EnvelopeEditor.h
       HelpText.cpp
       HelpText.h
       HelpUtilities.cpp
@@ -217,12 +215,8 @@ list( APPEND SOURCES
       TimeTrack.h
       Track.cpp
       Track.h
-      TrackArt.cpp
-      TrackArt.h
       TrackArtist.cpp
       TrackArtist.h
-      TrackInfo.cpp
-      TrackInfo.h
       TrackPanel.cpp
       TrackPanel.h
       TrackPanelAx.cpp
@@ -364,46 +358,24 @@ list( APPEND SOURCES
 
       # Tracks UI
 
-      tracks/ui/AffordanceHandle.cpp
-      tracks/ui/AffordanceHandle.h
       tracks/ui/BackgroundCell.cpp
       tracks/ui/BackgroundCell.h
-      tracks/ui/ButtonHandle.cpp
-      tracks/ui/ButtonHandle.h
-      tracks/ui/CommonTrackControls.cpp
-      tracks/ui/CommonTrackControls.h
       tracks/ui/CommonTrackPanelCell.cpp
       tracks/ui/CommonTrackPanelCell.h
-      tracks/ui/CommonTrackView.cpp
-      tracks/ui/CommonTrackView.h
       tracks/ui/EditCursorOverlay.cpp
       tracks/ui/EditCursorOverlay.h
-      tracks/ui/EnvelopeHandle.cpp
-      tracks/ui/EnvelopeHandle.h
       tracks/ui/PlayIndicatorOverlay.cpp
       tracks/ui/PlayIndicatorOverlay.h
       tracks/ui/ScrubUI.cpp
       tracks/ui/ScrubUI.h
       tracks/ui/Scrubbing.cpp
       tracks/ui/Scrubbing.h
-      tracks/ui/SelectHandle.cpp
-      tracks/ui/SelectHandle.h
-      tracks/ui/SliderHandle.cpp
-      tracks/ui/SliderHandle.h
-      tracks/ui/TimeShiftHandle.cpp
-      tracks/ui/TimeShiftHandle.h
-      tracks/ui/TrackButtonHandles.cpp
-      tracks/ui/TrackButtonHandles.h
       tracks/ui/TrackControls.cpp
       tracks/ui/TrackControls.h
-      tracks/ui/TrackSelectHandle.cpp
-      tracks/ui/TrackSelectHandle.h
       tracks/ui/TrackVRulerControls.cpp
       tracks/ui/TrackVRulerControls.h
       tracks/ui/TrackView.cpp
       tracks/ui/TrackView.h
-      tracks/ui/ZoomHandle.cpp
-      tracks/ui/ZoomHandle.h
 
       # ui helpers
       ui/AccessibleLinksFormatter.h

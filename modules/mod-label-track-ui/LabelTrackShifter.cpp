@@ -4,7 +4,7 @@
  */
 
 #include "LabelTrackView.h"
-#include "tracks/ui/TimeShiftHandle.h"
+#include "TimeShiftHandle.h"
 #include "LabelTrack.h"
 #include "ViewInfo.h"
 

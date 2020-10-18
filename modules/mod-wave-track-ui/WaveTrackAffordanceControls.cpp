@@ -20,7 +20,7 @@
 #include "ViewInfo.h"
 #include "WaveTrack.h"
 #include "WaveClip.h"
-#include "tracks/ui/AffordanceHandle.h"
+#include "AffordanceHandle.h"
 #include "WaveTrackView.h"//need only ClipParameters
 
 

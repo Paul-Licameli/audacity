@@ -8,33 +8,32 @@ Paul Licameli split from TrackPanel.cpp
 
 **********************************************************************/
 
-
 #include "SelectHandle.h"
 
-#include "Scrubbing.h"
-#include "TrackView.h"
+#include "tracks/ui/Scrubbing.h"
+#include "tracks/ui/TrackView.h"
 
-#include "../../AColor.h"
-#include "../../Project.h"
-#include "../../ProjectAudioIO.h"
-#include "../../ProjectHistory.h"
-#include "../../ProjectSettings.h"
-#include "../../ProjectWindow.h"
-#include "../../RefreshCode.h"
-#include "../../SelectUtilities.h"
-#include "../../SelectionState.h"
-#include "../../TrackArtist.h"
-#include "../../TrackPanelAx.h"
-#include "../../TrackPanel.h"
-#include "../../TrackPanelDrawingContext.h"
-#include "../../TrackPanelMouseEvent.h"
-#include "../../ViewInfo.h"
-#include "../../WaveClip.h"
-#include "../../WaveTrack.h"
-#include "../../../images/Cursors.h"
+#include "AColor.h"
+#include "Project.h"
+#include "ProjectAudioIO.h"
+#include "ProjectHistory.h"
+#include "ProjectSettings.h"
+#include "ProjectWindow.h"
+#include "RefreshCode.h"
+#include "SelectUtilities.h"
+#include "SelectionState.h"
+#include "TrackArtist.h"
+#include "TrackPanelAx.h"
+#include "TrackPanel.h"
+#include "TrackPanelDrawingContext.h"
+#include "TrackPanelMouseEvent.h"
+#include "ViewInfo.h"
+#include "WaveClip.h"
+#include "WaveTrack.h"
+#include "../images/Cursors.h"
 
 // Only for definition of SonifyBeginModifyState:
-//#include "../../NoteTrack.h"
+//#include "NoteTrack.h"
 
 enum {
    //This constant determines the size of the horizontal region (in pixels) around

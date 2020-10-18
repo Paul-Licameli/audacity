@@ -1543,7 +1543,7 @@ PopupMenuTable::AttachedItem sAttachment{
 
 #ifdef EXPERIMENTAL_SPECTRAL_EDITING
 // Attach some related menu items
-#include "tracks/ui/SelectHandle.h"
+#include "SelectHandle.h"
 #include "CommonCommandFlags.h"
 #include "Project.h"
 #include "SpectrumAnalyst.h"

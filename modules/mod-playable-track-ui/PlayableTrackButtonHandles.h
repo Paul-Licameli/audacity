@@ -11,7 +11,7 @@ Paul Licameli split from TrackPanel.cpp
 #ifndef __AUDACITY_PLAYABLE_TRACK_BUTTON_HANDLES__
 #define __AUDACITY_PLAYABLE_TRACK_BUTTON_HANDLES__
 
-#include "tracks/ui/ButtonHandle.h"
+#include "ButtonHandle.h"
 class wxMouseState;
 
 class PLAYABLE_TRACK_UI_API MuteButtonHandle final : public ButtonHandle

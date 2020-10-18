@@ -12,7 +12,7 @@
 
 #include "TimeShiftHandle.h"
 
-class AUDACITY_DLL_API AffordanceHandle : public TimeShiftHandle
+class COMMON_TRACK_UI_API AffordanceHandle : public TimeShiftHandle
 {
     static HitTestPreview HitPreview(const AudacityProject*, bool unsafe, bool moving);
 public:

@@ -8,23 +8,22 @@ Paul Licameli split from TrackPanel.cpp
 
 **********************************************************************/
 
-
 #include "TrackSelectHandle.h"
 
-#include "TrackView.h"
-#include "../../HitTestResult.h"
-#include "../../Project.h"
-#include "../../ProjectAudioIO.h"
-#include "../../ProjectHistory.h"
-#include "../../RefreshCode.h"
-#include "../../SelectUtilities.h"
-#include "../../TrackPanelMouseEvent.h"
-#include "../../Track.h"
+#include "tracks/ui/TrackView.h"
+#include "HitTestResult.h"
+#include "Project.h"
+#include "ProjectAudioIO.h"
+#include "ProjectHistory.h"
+#include "RefreshCode.h"
+#include "SelectUtilities.h"
+#include "TrackPanelMouseEvent.h"
+#include "Track.h"
 
 #include <wx/cursor.h>
 #include <wx/translation.h>
 
-#include "../../../images/Cursors.h"
+#include "../images/Cursors.h"
 
 #if defined(__WXMAC__)
 /* i18n-hint: Command names a modifier key on Macintosh keyboards */

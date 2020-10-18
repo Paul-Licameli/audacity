@@ -11,16 +11,16 @@ Paul Licameli split from class TrackView
 #include "CommonTrackView.h"
 
 #include "TimeShiftHandle.h"
-#include "TrackControls.h"
+#include "tracks/ui/TrackControls.h"
 #include "ZoomHandle.h"
-#include "../ui/SelectHandle.h"
-#include "../../AColor.h"
-#include "../../ProjectSettings.h"
-#include "../../Track.h"
-#include "../../TrackArtist.h"
-#include "../../TrackInfo.h"
-#include "../../TrackPanelDrawingContext.h"
-#include "../../TrackPanelMouseEvent.h"
+#include "SelectHandle.h"
+#include "AColor.h"
+#include "ProjectSettings.h"
+#include "Track.h"
+#include "TrackArtist.h"
+#include "TrackInfo.h"
+#include "TrackPanelDrawingContext.h"
+#include "TrackPanelMouseEvent.h"
 
 #include <wx/dc.h>
 #include <wx/graphics.h>
@@ -110,3 +110,6 @@ int CommonTrackView::GetMinimizedHeight() const
       std::distance(begin, std::find(begin, channels.end(), pTrack.get()));
    return (height * (index + 1) / nChannels) - (height * index / nChannels);
 }
+
+#include "ModuleConstants.h"
+DEFINE_MODULE_ENTRIES

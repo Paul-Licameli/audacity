@@ -26,7 +26,7 @@ Paul Licameli split from TrackPanel.cpp
 #include "ViewInfo.h"
 #include "widgets/Ruler.h"
 
-#include "tracks/ui/EnvelopeHandle.h"
+#include "EnvelopeHandle.h"
 
 #include <wx/dc.h>
 

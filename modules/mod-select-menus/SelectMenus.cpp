@@ -15,7 +15,7 @@
 #include "commands/CommandContext.h"
 #include "commands/CommandManager.h"
 #include "ControlToolBar.h"
-#include "tracks/ui/SelectHandle.h"
+#include "SelectHandle.h"
 
 // private helper classes and functions
 namespace {

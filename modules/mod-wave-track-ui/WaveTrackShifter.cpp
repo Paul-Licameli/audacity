@@ -3,7 +3,7 @@
  @brief headerless file injects method definitions for time shifting of WaveTrack
  */
 
-#include "tracks/ui/TimeShiftHandle.h"
+#include "TimeShiftHandle.h"
 #include "ViewInfo.h"
 #include "WaveClip.h"
 #include "WaveTrack.h"

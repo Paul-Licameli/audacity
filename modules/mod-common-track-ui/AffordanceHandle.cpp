@@ -10,18 +10,18 @@
 
 #include "AffordanceHandle.h"
 
-#include "../../HitTestResult.h"
-#include "../../ProjectAudioIO.h"
-#include "../../RefreshCode.h"
-#include "../../ViewInfo.h"
-#include "../../SelectionState.h"
-#include "../../ProjectSettings.h"
-#include "../../TrackPanelMouseEvent.h"
-#include "../../WaveClip.h"
-#include "../../ProjectHistory.h"
-#include "../../Track.h"
-#include "../../WaveTrack.h"
-#include "../../../images/Cursors.h"
+#include "HitTestResult.h"
+#include "ProjectAudioIO.h"
+#include "RefreshCode.h"
+#include "ViewInfo.h"
+#include "SelectionState.h"
+#include "ProjectSettings.h"
+#include "TrackPanelMouseEvent.h"
+#include "WaveClip.h"
+#include "ProjectHistory.h"
+#include "Track.h"
+#include "WaveTrack.h"
+#include "../images/Cursors.h"
 
 UIHandlePtr AffordanceHandle::HitAnywhere(std::weak_ptr<AffordanceHandle>& holder, const std::shared_ptr<Track>& pTrack)
 {

@@ -12,7 +12,7 @@ Paul Licameli split from TrackPanel.cpp
 #define __AUDACITY_ENVELOPE_HANDLE__
 
 #include "Internat.h"
-#include "../../UIHandle.h"
+#include "UIHandle.h"
 
 #include <vector>
 
@@ -23,7 +23,7 @@ class Envelope;
 class EnvelopeEditor;
 class ViewInfo;
 
-class AUDACITY_DLL_API EnvelopeHandle final : public UIHandle
+class COMMON_TRACK_UI_API EnvelopeHandle final : public UIHandle
 {
    EnvelopeHandle(const EnvelopeHandle&) = delete;
    EnvelopeHandle &operator=(const EnvelopeHandle&) = delete;
