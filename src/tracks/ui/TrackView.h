@@ -30,7 +30,7 @@ public:
 
    explicit
    TrackView( const std::shared_ptr<Track> &pTrack );
-   virtual ~TrackView() = 0;
+   virtual ~TrackView();
 
    // some static conveniences, useful for summation over track iterator
    // ranges
@@ -51,7 +51,7 @@ public:
 
    int GetY() const { return mY; }
    int GetActualHeight() const { return mHeight; }
-   virtual int GetMinimizedHeight() const = 0;
+   virtual int GetMinimizedHeight() const;
    int GetHeight() const;
 
    void SetY(int y) { DoSetY( y ); }
@@ -81,6 +81,16 @@ public:
 
    virtual void DoSetMinimized( bool isMinimized );
 
+   //! Returns no hits
+   std::vector<UIHandlePtr> HitTest
+      (const TrackPanelMouseState &state,
+       const AudacityProject *) override;
+
+   //! Paints a blank rectangle
+   void Draw(
+      TrackPanelDrawingContext &context, const wxRect &rect, unsigned iPass )
+      override;
+
 protected:
 
    // No need yet to make this virtual
@@ -88,11 +98,12 @@ protected:
 
    void DoSetHeight(int h);
 
-   // Private factory to make appropriate object; class TrackView handles
-   // memory management thereafter
-   virtual std::shared_ptr<TrackVRulerControls> DoGetVRulerControls() = 0;
+   // Private factory to make appropriate object; class TrackView handles memory management thereafter
+   /*! Default returns a stub implementation of VRuler controls */
+   virtual std::shared_ptr<TrackVRulerControls> DoGetVRulerControls();
    // May return nullptr (which is default) if track does not need affordance area
-   virtual std::shared_ptr<CommonTrackCell> DoGetAffordanceControls();
+   /*! Default returns nullptr */
+    virtual std::shared_ptr<CommonTrackCell> DoGetAffordanceControls();
 
    std::shared_ptr<TrackVRulerControls> mpVRulerControls;
    std::shared_ptr<CommonTrackCell> mpAffordanceCellControl;

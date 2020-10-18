@@ -897,9 +897,9 @@ void LabelTrackView::Draw(
    TrackPanelDrawingContext &context,
    const wxRect &rect, unsigned iPass )
 {
+   CommonTrackView::Draw( context, rect, iPass );
    if ( iPass == TrackArtist::PassTracks )
       Draw( context, rect );
-   CommonTrackView::Draw( context, rect, iPass );
 }
 
 void LabelTrackView::SetSelectedIndex( int index )

@@ -14,6 +14,7 @@ Paul Licameli split from ProjectManager.cpp
 #include "audacity/Types.h"
 #include "ClientData.h" // to inherit
 #include "ComponentInterfaceSymbol.h"
+#include <wx/event.h> // to inherit
 
 class AudacityProject;
 
