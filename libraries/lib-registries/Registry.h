@@ -26,8 +26,8 @@ namespace Registry {
       // item is delegated to (by a SharedItem, ComputedItem, or nameless
       // transparent group), the delegating item's hint will be used instead
       enum Type : int {
-         Before, After,
          Begin, End,
+         Before, After,
          Unspecified // keep this last
       } type{ Unspecified };
 
@@ -237,7 +237,7 @@ namespace Registry {
    );
    
    // Undo registration of an item, returning success
-   AUDACITY_DLL_API
+   REGISTRIES_API
    bool UnregisterItem( GroupItem &registry, const Placement &placement,
       const BaseItem *pItem //!< Registry already has ownership, and will delete it if found
    );
@@ -283,7 +283,7 @@ namespace Registry {
 
    private:
       std::vector< BaseItemSharedPtr > computedItems;
-      friend AUDACITY_DLL_API void Visit(
+      friend REGISTRIES_API void Visit(
          Visitor &visitor,
          BaseItem *pTopItem,
          const GroupItem *pRegistry );
@@ -300,7 +300,7 @@ namespace Registry {
    // yet other previously unknown items).
    // Computed registry items' lifetimes last until visitor is destroyed or
    // passed again to Visit().
-   AUDACITY_DLL_API void Visit(
+   REGISTRIES_API void Visit(
       Visitor &visitor,
       BaseItem *pTopItem,
       const GroupItem *pRegistry = nullptr );
