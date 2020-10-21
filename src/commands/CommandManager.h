@@ -332,6 +332,9 @@ private:
    wxMenuBar * GetMenuBar(const wxString & sMenu) const;
    wxMenu * CurrentSubMenu() const;
 public:
+   //! Call only when there is no current menu
+   void SetCurrentMenu( wxMenu* );
+   void ResetCurrentMenu();
    wxMenu * CurrentMenu() const;
 
    void UpdateCheckmarks( AudacityProject &project );

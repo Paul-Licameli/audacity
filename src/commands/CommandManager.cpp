@@ -507,6 +507,17 @@ wxMenu * CommandManager::CurrentSubMenu() const
    return mSubMenuList.back().menu.get();
 }
 
+void CommandManager::SetCurrentMenu(wxMenu *menu)
+{
+   wxASSERT(!mCurrentMenu);
+   mCurrentMenu = menu;
+}
+
+void CommandManager::ResetCurrentMenu()
+{
+   mCurrentMenu = nullptr;
+}
+
 ///
 /// This returns the current menu that we're appending to - note that
 /// it could be a submenu if BeginSubMenu was called and we haven't

@@ -283,7 +283,7 @@ struct MenuItemVisitor : ToolbarMenuVisitor
    MenuItemVisitor( AudacityProject &proj, CommandManager &man )
       : ToolbarMenuVisitor(proj), manager( man ) {}
 
-   void DoBeginGroup( GroupItem &item, const Path& ) override
+   void DoBeginGroup( GroupItem &item, const Path & ) override
    {
       auto pItem = &item;
       if (const auto pMenu =
@@ -309,7 +309,7 @@ struct MenuItemVisitor : ToolbarMenuVisitor
          wxASSERT( false );
    }
 
-   void DoEndGroup( GroupItem &item, const Path& ) override
+   void DoEndGroup( GroupItem &item, const Path & ) override
    {
       auto pItem = &item;
       if (const auto pMenu =
@@ -338,11 +338,17 @@ struct MenuItemVisitor : ToolbarMenuVisitor
    {
       const auto pCurrentMenu = manager.CurrentMenu();
       if ( !pCurrentMenu ) {
-         // There may have been a mistake in the placement hint that registered
-         // this single item.  It's not within any menu.
-         wxASSERT( false );
+         // The placement hint that registered this single item does not refer
+         // to an existing menu, maybe because that menu is defined in another
+         // module that is not loaded.
+         mOrphanItems.push_back( &item );
          return;
       }
+      DoItem(item);
+   }
+
+   void DoItem(SingleItem &item)
+   {
       auto pItem = &item;
       if (const auto pCommand =
           dynamic_cast<CommandItem*>( pItem )) {
@@ -363,6 +369,7 @@ struct MenuItemVisitor : ToolbarMenuVisitor
       else
       if (const auto pSpecial =
           dynamic_cast<SpecialItem*>( pItem )) {
+         const auto pCurrentMenu = manager.CurrentMenu();
          wxASSERT( pCurrentMenu );
          pSpecial->fn( project, *pCurrentMenu );
       }
@@ -377,6 +384,7 @@ struct MenuItemVisitor : ToolbarMenuVisitor
 
    CommandManager &manager;
    std::vector<bool> flags;
+   std::vector<SingleItem*> mOrphanItems;
 };
 }
 
@@ -425,6 +433,22 @@ void MenuCreator::CreateMenusAndCommands(AudacityProject &project)
 
    MenuItemVisitor visitor{ project, commandManager };
    MenuManager::Visit( visitor );
+
+   // Post step:  place orphan menu items under Extra
+   if (!visitor.mOrphanItems.empty())
+   {
+      auto index = menubar->FindMenu(_("Extra"));
+      auto pExtraMenu = (index < 0) ? nullptr : menubar->GetMenu(index);
+      if (pExtraMenu) {
+         commandManager.SetCurrentMenu(pExtraMenu);
+         auto cleanup = finally([&]{
+            commandManager.ResetCurrentMenu();
+         });
+         for ( auto pItem : visitor.mOrphanItems )
+            if (pItem)
+               visitor.DoItem(*pItem);
+      }
+   }
 
    GetProjectFrame( project ).SetMenuBar(menubar.release());
 
