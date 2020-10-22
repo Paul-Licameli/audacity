@@ -33,7 +33,7 @@ static WaveTrackSubView::Type sType{
    { wxT("Spectrogram"), XXO("&Spectrogram") }
 };
 
-static WaveTrackSubViewType::RegisteredType reg{ sType };
+static WaveTrackSubViewType::Registration reg{ sType };
 
 SpectrumView::~SpectrumView() = default;
 

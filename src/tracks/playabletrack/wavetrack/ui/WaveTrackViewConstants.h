@@ -1,3 +1,4 @@
+#include "../../../../Registry.h"
 /**********************************************************************
 
 Audacity: A Digital Audio Editor
@@ -89,6 +90,9 @@ namespace WaveTrackViewConstants
 #include <vector>
 
 struct AUDACITY_DLL_API WaveTrackSubViewType {
+
+   struct TypeItem;
+
    using Display = WaveTrackViewConstants::Display;
 
    // Identifies the type session-wide, and determines relative position in
@@ -98,15 +102,21 @@ struct AUDACITY_DLL_API WaveTrackSubViewType {
    // and it may contain a menu accelerator
    EnumValueSymbol name;
 
-   bool operator < ( const WaveTrackSubViewType &other ) const
-   { return id < other.id; }
+   // Types are extrinsically ordered by registration order
+   bool operator < ( const WaveTrackSubViewType &other ) const;
 
    bool operator == ( const WaveTrackSubViewType &other ) const
    { return id == other.id; }
 
    // Typically a file scope statically constructed object
-   struct AUDACITY_DLL_API RegisteredType {
-      RegisteredType( WaveTrackSubViewType type );
+   struct AUDACITY_DLL_API Registration final
+      : public Registry::RegisteredItem<TypeItem>
+   {
+      Registration( WaveTrackSubViewType type,
+         const Registry::Placement &placement = { wxEmptyString, {} });
+      ~Registration();
+
+      struct AUDACITY_DLL_API Init{ Init(); };
    };
 
    //! Discover all registered types
@@ -115,5 +125,16 @@ struct AUDACITY_DLL_API WaveTrackSubViewType {
    //! Return a preferred type
    static Display Default();
 };
+
+struct AUDACITY_DLL_API WaveTrackSubViewType::TypeItem final
+   : ::Registry::SingleItem {
+   static ::Registry::GroupItem &Registry();
+   TypeItem( WaveTrackSubViewType type );
+   ~TypeItem();
+   struct Visitor;
+   WaveTrackSubViewType type;
+};
+
+static WaveTrackSubViewType::Registration::Init sInitWaveTrackSubViewTypes;
 
 #endif
