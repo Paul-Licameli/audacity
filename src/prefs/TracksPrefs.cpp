@@ -83,10 +83,9 @@ namespace {
    const wxString obsoleteValue{ wxT("WaveformDB") };
 };
 
-class TracksViewModeEnumSetting
-   : public EnumSetting< WaveTrackViewConstants::Display > {
+class TracksViewModeEnumSetting : public ChoiceSetting {
 public:
-   using EnumSetting< WaveTrackViewConstants::Display >::EnumSetting;
+   using ChoiceSetting::ChoiceSetting;
 
    void Migrate( wxString &value ) override
    {
@@ -150,26 +149,22 @@ static TracksViewModeEnumSetting viewModeSetting()
    const auto &types = WaveTrackSubViewType::All();
    auto symbols = transform_container< EnumValueSymbols >(
       types, std::mem_fn( &WaveTrackSubViewType::name ) );
-   auto ids = transform_container< std::vector< WaveTrackSubViewType::Display > >(
-      types, std::mem_fn( &WaveTrackSubViewType::id ) );
 
    // Special entry for multi
    if (types.size() > 1) {
       symbols.push_back( WaveTrackViewConstants::MultiViewSymbol );
-      ids.push_back( WaveTrackViewConstants::MultiView );
    }
 
    return {
       key3,
       symbols,
       0,
-      ids
    };
 }
 
-WaveTrackViewConstants::Display TracksPrefs::ViewModeChoice()
+Identifier TracksPrefs::ViewModeChoice()
 {
-   return viewModeSetting().ReadEnum();
+   return viewModeSetting().Read();
 }
 
 WaveformSettings::ScaleTypeValues TracksPrefs::WaveformScaleChoice()

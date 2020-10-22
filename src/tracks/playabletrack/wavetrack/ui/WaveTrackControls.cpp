@@ -725,7 +725,7 @@ void WaveTrackMenuTable::OnMultiView(wxCommandEvent & event)
    const auto &displays = view.GetDisplays();
    const auto display = displays.empty()
       ? WaveTrackSubViewType::Default()
-      : displays.begin()->id;
+      : displays.begin()->name.Internal();
    for (const auto channel : TrackList::Channels(pTrack)) {
       auto &channelView = WaveTrackView::Get( *channel );
       channelView.SetMultiView( multi );
@@ -745,13 +745,12 @@ void WaveTrackMenuTable::OnSetDisplay(wxCommandEvent & event)
             idInt <= lastDisplayId);
    const auto pTrack = static_cast<WaveTrack*>(mpData->pTrack);
 
-   auto id = AllTypes()[ idInt - OnSetDisplayId ].id;
+   auto id = AllTypes()[ idInt - OnSetDisplayId ].name.Internal();
 
    auto &view = WaveTrackView::Get( *pTrack );
    if ( view.GetMultiView() ) {
       for (auto channel : TrackList::Channels(pTrack)) {
-         if ( !WaveTrackView::Get( *channel )
-               .ToggleSubView( WaveTrackView::Display{ id } ) ) {
+         if ( !WaveTrackView::Get( *channel ).ToggleSubView( id ) ) {
             // Trying to toggle off the last sub-view.  It was refused.
             // Decide what to do here.  Turn off multi-view instead?
             // PRL:  I don't agree that it makes sense
@@ -763,11 +762,10 @@ void WaveTrackMenuTable::OnSetDisplay(wxCommandEvent & event)
    else {
       const auto displays = view.GetDisplays();
       const bool wrongType =
-         !(displays.size() == 1 && displays[0].id == id);
+         !(displays.size() == 1 && displays[0].name.Internal() == id);
       if (wrongType) {
          for (auto channel : TrackList::Channels(pTrack)) {
-            WaveTrackView::Get( *channel )
-               .SetDisplay( WaveTrackView::Display{ id } );
+            WaveTrackView::Get( *channel ).SetDisplay( id );
          }
 
          AudacityProject *const project = &mpData->project;

@@ -105,12 +105,12 @@ WaveTrackSubViewType::operator < ( const WaveTrackSubViewType &other ) const
 }
 
 // static
-auto WaveTrackSubViewType::Default() -> Display
+auto WaveTrackSubViewType::Default() -> Identifier
 {
    auto &all = All();
    if (all.empty())
-      return WaveTrackViewConstants::NoDisplay;
-   return all[0].id;
+      return {};
+   return all[0].name.Internal();
 }
 
 const EnumValueSymbol WaveTrackViewConstants::MultiViewSymbol{

@@ -388,7 +388,7 @@ bool SetTrackVisualsCommand::ApplyInner(const CommandContext & context, Track * 
       auto &view = WaveTrackView::Get( *wt );
       auto &all = WaveTrackSubViewType::All();
       if (mDisplayType < all.size())
-         view.SetDisplay( all[ mDisplayType ].id );
+         view.SetDisplay( all[ mDisplayType ].name.Internal() );
       else {
          view.SetMultiView( true );
          view.SetDisplay( WaveTrackSubViewType::Default(), false );

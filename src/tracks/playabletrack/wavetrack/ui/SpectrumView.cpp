@@ -28,9 +28,10 @@ Paul Licameli split from WaveTrackView.cpp
 #include <wx/dcmemory.h>
 #include <wx/graphics.h>
 
+static const Identifier SpectrogramId = wxT("Spectrogram");
+
 static WaveTrackSubView::Type sType{
-   WaveTrackViewConstants::Spectrum,
-   { wxT("Spectrogram"), XXO("&Spectrogram") }
+   { SpectrogramId, XXO("&Spectrogram") }
 };
 
 static WaveTrackSubViewType::Registration reg{ sType };
@@ -793,7 +794,7 @@ PopupMenuTable::AttachedItem sAttachment{
             const auto displays = view.GetDisplays();
             bool hasSpectrum = (displays.end() != std::find(
                displays.begin(), displays.end(),
-               WaveTrackSubView::Type{ WaveTrackViewConstants::Spectrum, {} }
+               WaveTrackSubView::Type{ { SpectrogramId, {} } }
             ) );
             if( hasSpectrum )
                // In future, we might move this to the context menu of the

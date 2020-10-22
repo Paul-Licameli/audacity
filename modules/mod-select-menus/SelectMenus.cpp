@@ -34,7 +34,7 @@ void DoNextPeakFrequency(AudacityProject &project, bool up)
       const auto displays = WaveTrackView::Get( *wt ).GetDisplays();
       bool hasSpectrum = (displays.end() != std::find(
          displays.begin(), displays.end(),
-         WaveTrackSubView::Type{ WaveTrackViewConstants::Spectrum, {} }
+         WaveTrackSubView::Type{ { wxT("Spectrogram"), {} } }
       ) );
       if ( hasSpectrum ) {
          pTrack = wt;

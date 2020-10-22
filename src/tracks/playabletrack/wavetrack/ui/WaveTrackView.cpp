@@ -876,18 +876,18 @@ auto WaveTrackView::GetDisplays() const
    return results;
 }
 
-void WaveTrackView::SetDisplay(Display display, bool exclusive)
+void WaveTrackView::SetDisplay(Identifier display, bool exclusive)
 {
    BuildSubViews();
    DoSetDisplay( display, exclusive );
 }
 
-bool WaveTrackView::ToggleSubView(Display display)
+bool WaveTrackView::ToggleSubView(Identifier display)
 {
    size_t ii = 0;
    size_t found = 0;
    if ( WaveTrackSubViews::FindIf( [&]( const WaveTrackSubView &subView ) {
-      if ( subView.SubViewType().id == display ) {
+      if ( subView.SubViewType().name.Internal() == display ) {
          found = ii;
          return true;
       }
@@ -940,22 +940,22 @@ bool WaveTrackView::ToggleSubView(Display display)
 // If exclusive, make the chosen view take up all the height.  Else,
 // partition equally, putting the specified view on top.
 // Be sure the sequence in which the other views appear is determinate.
-void WaveTrackView::DoSetDisplay(Display display, bool exclusive)
+void WaveTrackView::DoSetDisplay(Identifier display, bool exclusive)
 {
    // Some generality here anticipating more than two views.
    // The order of sub-views in the array is not specified, so make it definite
    // by sorting by the view type constants.
    size_t ii = 0;
-   std::vector< std::pair< WaveTrackViewConstants::Display, size_t > > pairs;
+   std::vector< std::pair< WaveTrackSubViewType, size_t > > pairs;
    WaveTrackSubViews::ForEach( [&pairs, &ii]( WaveTrackSubView &subView ){
-      pairs.push_back( { subView.SubViewType().id, ii++ } );
+      pairs.push_back( { subView.SubViewType(), ii++ } );
    } );
    std::sort( pairs.begin(), pairs.end() );
 
    int jj = 1;
    for ( const auto &pair : pairs ) {
       auto &placement = mPlacements[ pair.second ];
-      if (pair.first == display) {
+      if (pair.first.name.Internal() == display) {
          // 0 for first view
          placement = { 0, 1.0 };
       }
@@ -1301,7 +1301,8 @@ void WaveTrackView::BuildSubViews() const
          
          auto pTrack = pThis->FindTrack();
          auto display = TracksPrefs::ViewModeChoice();
-         bool multi = (display == WaveTrackViewConstants::MultiView);
+         bool multi =
+            (display == WaveTrackViewConstants::MultiViewSymbol.Internal());
          if ( multi ) {
             pThis->SetMultiView( true );
             display = WaveTrackSubViewType::Default();

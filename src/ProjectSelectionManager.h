@@ -11,7 +11,6 @@ Paul Licameli split from ProjectManager.cpp
 #ifndef __AUDACITY_PROJECT_SELECTION_MANAGER__
 #define __AUDACITY_PROJECT_SELECTION_MANAGER__
 
-#include "audacity/Types.h"
 #include "ClientData.h" // to inherit
 #include "ComponentInterfaceSymbol.h"
 #include <wx/event.h> // to inherit

@@ -43,7 +43,7 @@ class AUDACITY_DLL_API TracksPrefs final : public PrefsPanel
    
    static wxString GetDefaultAudioTrackNamePreference();
 
-   static WaveTrackViewConstants::Display ViewModeChoice();
+   static Identifier ViewModeChoice();
    static WaveformSettings::ScaleTypeValues WaveformScaleChoice();
    static WaveTrackViewConstants::SampleDisplay SampleViewChoice();
    static WaveTrackViewConstants::ZoomPresets Zoom1Choice();
