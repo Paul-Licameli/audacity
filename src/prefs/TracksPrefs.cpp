@@ -25,7 +25,6 @@
 
 #include "Prefs.h"
 #include "../ShuttleGui.h"
-#include "../tracks/playabletrack/wavetrack/ui/WaveTrackViewConstants.h"
 
 int TracksPrefs::iPreferencePinned = -1;
 
@@ -60,163 +59,6 @@ const wxChar *TracksPrefs::WaveformScaleKey()
 const wxChar *TracksPrefs::DBValueString()
 {
    return wxT("dB");
-}
-
-//////////
-// There is a complicated migration history here!
-namespace {
-   const auto key0 = wxT("/GUI/DefaultViewMode");
-   const auto key1 = wxT("/GUI/DefaultViewModeNew");
-   const auto key2 = wxT("/GUI/DefaultViewModeChoice");
-   const auto key3 = wxT("/GUI/DefaultViewModeChoiceNew");
-
-   const wxString obsoleteValue{ wxT("WaveformDB") };
-};
-
-class TracksViewModeEnumSetting : public ChoiceSetting {
-public:
-   using ChoiceSetting::ChoiceSetting;
-
-   enum class Display : int {
-
-      MultiView = -1, //!< "Multi" is special, not really a view type on par with the others.
-
-      // DO NOT REORDER OLD VALUES!  Replace obsoletes with placeholders.
-
-      Waveform = 0,
-      MinDisplay = Waveform,
-
-      obsoleteWaveformDBDisplay,
-
-      Spectrum,
-
-      obsolete1, // was SpectrumLogDisplay
-      obsolete2, // was SpectralSelectionDisplay
-      obsolete3, // was SpectralSelectionLogDisplay
-      obsolete4, // was PitchDisplay
-
-      // Add values here, and update MaxDisplay.
-
-      MaxDisplay = Spectrum,
-
-      NoDisplay,            // Preview track has no display
-   };
-   // Handle remapping of enum values from 2.1.0 and earlier
-   static Display ConvertLegacyDisplayValue(int oldValue);
-
-   void Migrate( wxString &value ) override
-   {
-      // Special logic for this preference which was three times migrated!
-
-      // PRL:  Bugs 1043, 1044
-      // 2.1.1 writes a NEW key for this preference, which got NEW values,
-      // to avoid confusing version 2.1.0 if it reads the preference file afterwards.
-      // Prefer the NEW preference key if it is present
-
-      static const EnumValueSymbol waveformSymbol{ XO("Waveform") };
-      static const EnumValueSymbol spectrumSymbol{ XO("Spectrogram") };
-
-      Display viewMode;
-      int oldMode;
-      wxString newValue;
-      auto stringValue =
-         []( Display display ){
-         switch ( display ) {
-            case Display::Spectrum:
-               return spectrumSymbol.Internal();
-            case Display::obsoleteWaveformDBDisplay:
-               return obsoleteValue;
-            default:
-               return waveformSymbol.Internal();
-         }
-      };
-
-      if ( gPrefs->Read(key0, // The very old key
-         &oldMode,
-         (int)(Display::Waveform) ) ) {
-         viewMode = ConvertLegacyDisplayValue(oldMode);
-         newValue = stringValue( viewMode );
-      }
-      else if ( gPrefs->Read(key1,
-         &oldMode,
-         (int)(Display::Waveform) ) ) {
-         viewMode = static_cast<Display>( oldMode );
-         newValue = stringValue( viewMode );
-      }
-      else
-         gPrefs->Read( key2, &newValue );
-
-      if ( !gPrefs->Read( key3, &value ) ) {
-         if (newValue == obsoleteValue) {
-            newValue = waveformSymbol.Internal();
-            gPrefs->Write(
-               TracksPrefs::WaveformScaleKey(), TracksPrefs::DBValueString());
-         }
-
-         Write( value = newValue );
-         gPrefs->Flush();
-         return;
-      }
-   }
-};
-
-// static
-auto
-TracksViewModeEnumSetting::ConvertLegacyDisplayValue(int oldValue) -> Display
-{
-   // Remap old values.
-   enum class OldValues {
-      Waveform,
-      WaveformDB,
-      Spectrogram,
-      SpectrogramLogF,
-      Pitch,
-   };
-
-   Display newValue;
-   switch ((OldValues)oldValue) {
-   default:
-   case OldValues::Waveform:
-      newValue = Display::Waveform; break;
-   case OldValues::WaveformDB:
-      newValue = Display::obsoleteWaveformDBDisplay; break;
-   case OldValues::Spectrogram:
-   case OldValues::SpectrogramLogF:
-   case OldValues::Pitch:
-      newValue = Display::Spectrum; break;
-      /*
-   case SpectrogramLogF:
-      newValue = WaveTrack::SpectrumLogDisplay; break;
-   case Pitch:
-      newValue = WaveTrack::PitchDisplay; break;
-      */
-   }
-   return newValue;
-}
-
-static TracksViewModeEnumSetting viewModeSetting()
-{
-   // Do a delayed computation, so that registration of sub-view types completes
-   // first
-   const auto &types = WaveTrackSubViewType::All();
-   auto symbols = transform_container< EnumValueSymbols >(
-      types, std::mem_fn( &WaveTrackSubViewType::name ) );
-
-   // Special entry for multi
-   if (types.size() > 1) {
-      symbols.push_back( WaveTrackViewConstants::MultiViewSymbol );
-   }
-
-   return {
-      key3,
-      symbols,
-      0,
-   };
-}
-
-Identifier TracksPrefs::ViewModeChoice()
-{
-   return viewModeSetting().Read();
 }
 
 //////////
@@ -393,11 +235,6 @@ void TracksPrefs::PopulateOrExchange(ShuttleGui & S)
          Registry::Visit( visitor, &top, &PopulatorItem::Registry() );
       }
 
-#ifdef EXPERIMENTAL_HALF_WAVE
-      S.TieCheckBox(XXO("Use &half-wave display when collapsed"),
-                  {wxT("/GUI/CollapseToHalfWave"),
-                   false});
-#endif
 #ifdef SHOW_PINNED_UNPINNED_IN_PREFS
       S.TieCheckBox(XXO("&Pinned Recording/Playback head"),
          {PinnedHeadPreferenceKey(),
@@ -420,10 +257,11 @@ void TracksPrefs::PopulateOrExchange(ShuttleGui & S)
          );
 #endif
 
-         S.TieChoice(XXO("Default &view mode:"),
-                     viewModeSetting() );
-
          {
+            static Registry::OrderingPreferenceInitializer init {
+               PathStart,
+               { { wxT(""), wxT("Collapse,Mode,Scale,Samples") } }
+            };
             TransparentGroupItem<> top{ PathStart };
             MyVisitor visitor{ S, 1u };
             Registry::Visit( visitor, &top, &PopulatorItem::Registry() );
