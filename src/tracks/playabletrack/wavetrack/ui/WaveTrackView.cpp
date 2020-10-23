@@ -37,6 +37,7 @@ Paul Licameli split from TrackPanel.cpp
 #include "../../../ui/TimeShiftHandle.h"
 #include "../../../ui/ButtonHandle.h"
 #include "../../../../TrackInfo.h"
+#include "WaveTrackViewConstants.h"
 
 #include "WaveTrackAffordanceControls.h"
 

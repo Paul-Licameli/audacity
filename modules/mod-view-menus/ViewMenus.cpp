@@ -64,52 +64,51 @@ double GetZoomOfPreset( const AudacityProject &project, int preset )
    double result = 1.0;
    auto &window = ProjectWindow::Get( project );
    double zoomToFit = window.GetZoomOfToFit();
-   using namespace WaveTrackViewConstants;
    switch( preset ){
       default:
-      case kZoomDefault:
+      case TracksPrefs::kZoomDefault:
          result = ZoomInfo::GetDefaultZoom();
          break;
-      case kZoomToFit:
+      case TracksPrefs::kZoomToFit:
          result = zoomToFit;
          break;
-      case kZoomToSelection:
+      case TracksPrefs::kZoomToSelection:
          result = GetZoomOfSelection( project );
          break;
-      case kZoomMinutes:
+      case TracksPrefs::kZoomMinutes:
          result = pixelsPerUnit * 1.0/60;
          break;
-      case kZoomSeconds:
+      case TracksPrefs::kZoomSeconds:
          result = pixelsPerUnit * 1.0;
          break;
-      case kZoom5ths:
+      case TracksPrefs::kZoom5ths:
          result = pixelsPerUnit * 5.0;
          break;
-      case kZoom10ths:
+      case TracksPrefs::kZoom10ths:
          result = pixelsPerUnit * 10.0;
          break;
-      case kZoom20ths:
+      case TracksPrefs::kZoom20ths:
          result = pixelsPerUnit * 20.0;
          break;
-      case kZoom50ths:
+      case TracksPrefs::kZoom50ths:
          result = pixelsPerUnit * 50.0;
          break;
-      case kZoom100ths:
+      case TracksPrefs::kZoom100ths:
          result = pixelsPerUnit * 100.0;
          break;
-      case kZoom500ths:
+      case TracksPrefs::kZoom500ths:
          result = pixelsPerUnit * 500.0;
          break;
-      case kZoomMilliSeconds:
+      case TracksPrefs::kZoomMilliSeconds:
          result = pixelsPerUnit * 1000.0;
          break;
-      case kZoomSamples:
+      case TracksPrefs::kZoomSamples:
          result = 44100.0;
          break;
-      case kZoom4To1:
+      case TracksPrefs::kZoom4To1:
          result = 44100.0 * 4;
          break;
-      case kMaxZoom:
+      case TracksPrefs::kMaxZoom:
          result = ZoomInfo::GetMaxZoom();
          break;
    };

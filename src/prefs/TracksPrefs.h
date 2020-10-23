@@ -18,7 +18,6 @@
 #include <functional>
 #include <vector>
 #include "PrefsPanel.h"
-#include "../tracks/playabletrack/wavetrack/ui/WaveTrackViewConstants.h"
 
 class ShuttleGui;
 
@@ -43,6 +42,25 @@ class AUDACITY_DLL_API TracksPrefs final : public PrefsPanel
       struct AUDACITY_DLL_API Init{ Init(); };
    };
 
+   // Various preset zooming levels.
+   enum ZoomPresets {
+      kZoomToFit = 0,
+      kZoomToSelection,
+      kZoomDefault,
+      kZoomMinutes,
+      kZoomSeconds,
+      kZoom5ths,
+      kZoom10ths,
+      kZoom20ths,
+      kZoom50ths,
+      kZoom100ths,
+      kZoom500ths,
+      kZoomMilliSeconds,
+      kZoomSamples,
+      kZoom4To1,
+      kMaxZoom,
+   };
+
    TracksPrefs(wxWindow * parent, wxWindowID winid);
    ~TracksPrefs();
    ComponentInterfaceSymbol GetSymbol() override;
@@ -63,8 +81,8 @@ class AUDACITY_DLL_API TracksPrefs final : public PrefsPanel
    static const wxChar *DBValueString();
 
    static Identifier ViewModeChoice();
-   static WaveTrackViewConstants::ZoomPresets Zoom1Choice();
-   static WaveTrackViewConstants::ZoomPresets Zoom2Choice();
+   static ZoomPresets Zoom1Choice();
+   static ZoomPresets Zoom2Choice();
 
  private:
    struct AUDACITY_DLL_API PopulatorItem final : Registry::SingleItem {

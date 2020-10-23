@@ -25,6 +25,7 @@
 
 #include "Prefs.h"
 #include "../ShuttleGui.h"
+#include "../tracks/playabletrack/wavetrack/ui/WaveTrackViewConstants.h"
 
 int TracksPrefs::iPreferencePinned = -1;
 
@@ -237,24 +238,24 @@ static const std::initializer_list<EnumValueSymbol> choicesZoom{
    { wxT("MaxZoom"), XO("Max Zoom") },
 };
 static auto enumChoicesZoom = {
-   WaveTrackViewConstants::kZoomToFit,
-   WaveTrackViewConstants::kZoomToSelection,
-   WaveTrackViewConstants::kZoomDefault,
-   WaveTrackViewConstants::kZoomMinutes,
-   WaveTrackViewConstants::kZoomSeconds,
-   WaveTrackViewConstants::kZoom5ths,
-   WaveTrackViewConstants::kZoom10ths,
-   WaveTrackViewConstants::kZoom20ths,
-   WaveTrackViewConstants::kZoom50ths,
-   WaveTrackViewConstants::kZoom100ths,
-   WaveTrackViewConstants::kZoom500ths,
-   WaveTrackViewConstants::kZoomMilliSeconds,
-   WaveTrackViewConstants::kZoomSamples,
-   WaveTrackViewConstants::kZoom4To1,
-   WaveTrackViewConstants::kMaxZoom,
+   TracksPrefs::kZoomToFit,
+   TracksPrefs::kZoomToSelection,
+   TracksPrefs::kZoomDefault,
+   TracksPrefs::kZoomMinutes,
+   TracksPrefs::kZoomSeconds,
+   TracksPrefs::kZoom5ths,
+   TracksPrefs::kZoom10ths,
+   TracksPrefs::kZoom20ths,
+   TracksPrefs::kZoom50ths,
+   TracksPrefs::kZoom100ths,
+   TracksPrefs::kZoom500ths,
+   TracksPrefs::kZoomMilliSeconds,
+   TracksPrefs::kZoomSamples,
+   TracksPrefs::kZoom4To1,
+   TracksPrefs::kMaxZoom,
 };
 
-static EnumSetting< WaveTrackViewConstants::ZoomPresets > zoom1Setting{
+static EnumSetting< TracksPrefs::ZoomPresets > zoom1Setting{
    wxT("/GUI/ZoomPreset1Choice"),
    choicesZoom,
    2, // kZoomDefault
@@ -264,7 +265,7 @@ static EnumSetting< WaveTrackViewConstants::ZoomPresets > zoom1Setting{
    wxT("/GUI/ZoomPreset1")
 };
 
-static EnumSetting< WaveTrackViewConstants::ZoomPresets > zoom2Setting{
+static EnumSetting< TracksPrefs::ZoomPresets > zoom2Setting{
    wxT("/GUI/ZoomPreset2Choice"),
    choicesZoom,
    13, // kZoom4To1
@@ -274,12 +275,12 @@ static EnumSetting< WaveTrackViewConstants::ZoomPresets > zoom2Setting{
    wxT("/GUI/ZoomPreset2")
 };
 
-WaveTrackViewConstants::ZoomPresets TracksPrefs::Zoom1Choice()
+TracksPrefs::ZoomPresets TracksPrefs::Zoom1Choice()
 {
    return zoom1Setting.ReadEnum();
 }
 
-WaveTrackViewConstants::ZoomPresets TracksPrefs::Zoom2Choice()
+TracksPrefs::ZoomPresets TracksPrefs::Zoom2Choice()
 {
    return zoom2Setting.ReadEnum();
 }
