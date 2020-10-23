@@ -16,32 +16,6 @@ Paul Licameli split from class WaveTrack
 
 namespace WaveTrackViewConstants
 {
-   // This type is used only in old configuration files
-   enum Display : int {
-
-      MultiView = -1, //!< "Multi" is special, not really a view type on par with the others.
-
-      // DO NOT REORDER OLD VALUES!  Replace obsoletes with placeholders.
-
-      Waveform = 0,
-      MinDisplay = Waveform,
-
-      obsoleteWaveformDBDisplay,
-
-      Spectrum,
-
-      obsolete1, // was SpectrumLogDisplay
-      obsolete2, // was SpectralSelectionDisplay
-      obsolete3, // was SpectralSelectionLogDisplay
-      obsolete4, // was PitchDisplay
-
-      // Add values here, and update MaxDisplay.
-
-      MaxDisplay = Spectrum,
-
-      NoDisplay,            // Preview track has no display
-   };
-
    // Only two types of sample display for now, but
    // others (eg sinc interpolation) may be added later.
    enum SampleDisplay {
@@ -80,9 +54,6 @@ namespace WaveTrackViewConstants
       kZoomOut,
       kZoomReset
    };
-
-   // Handle remapping of enum values from 2.1.0 and earlier
-   Display ConvertLegacyDisplayValue(int oldValue);
 
    //! String identifier for a preference for one of each type of view
    extern AUDACITY_DLL_API const EnumValueSymbol MultiViewSymbol;

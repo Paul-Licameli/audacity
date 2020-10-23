@@ -87,6 +87,33 @@ class TracksViewModeEnumSetting : public ChoiceSetting {
 public:
    using ChoiceSetting::ChoiceSetting;
 
+   enum class Display : int {
+
+      MultiView = -1, //!< "Multi" is special, not really a view type on par with the others.
+
+      // DO NOT REORDER OLD VALUES!  Replace obsoletes with placeholders.
+
+      Waveform = 0,
+      MinDisplay = Waveform,
+
+      obsoleteWaveformDBDisplay,
+
+      Spectrum,
+
+      obsolete1, // was SpectrumLogDisplay
+      obsolete2, // was SpectralSelectionDisplay
+      obsolete3, // was SpectralSelectionLogDisplay
+      obsolete4, // was PitchDisplay
+
+      // Add values here, and update MaxDisplay.
+
+      MaxDisplay = Spectrum,
+
+      NoDisplay,            // Preview track has no display
+   };
+   // Handle remapping of enum values from 2.1.0 and earlier
+   static Display ConvertLegacyDisplayValue(int oldValue);
+
    void Migrate( wxString &value ) override
    {
       // Special logic for this preference which was three times migrated!
@@ -99,15 +126,15 @@ public:
       static const EnumValueSymbol waveformSymbol{ XO("Waveform") };
       static const EnumValueSymbol spectrumSymbol{ XO("Spectrogram") };
 
-      WaveTrackViewConstants::Display viewMode;
+      Display viewMode;
       int oldMode;
       wxString newValue;
       auto stringValue =
-         []( WaveTrackViewConstants::Display display ){
+         []( Display display ){
          switch ( display ) {
-            case WaveTrackViewConstants::Spectrum:
+            case Display::Spectrum:
                return spectrumSymbol.Internal();
-            case WaveTrackViewConstants::obsoleteWaveformDBDisplay:
+            case Display::obsoleteWaveformDBDisplay:
                return obsoleteValue;
             default:
                return waveformSymbol.Internal();
@@ -116,14 +143,14 @@ public:
 
       if ( gPrefs->Read(key0, // The very old key
          &oldMode,
-         (int)(WaveTrackViewConstants::Waveform) ) ) {
-         viewMode = WaveTrackViewConstants::ConvertLegacyDisplayValue(oldMode);
+         (int)(Display::Waveform) ) ) {
+         viewMode = ConvertLegacyDisplayValue(oldMode);
          newValue = stringValue( viewMode );
       }
       else if ( gPrefs->Read(key1,
          &oldMode,
-         (int)(WaveTrackViewConstants::Waveform) ) ) {
-         viewMode = static_cast<WaveTrackViewConstants::Display>( oldMode );
+         (int)(Display::Waveform) ) ) {
+         viewMode = static_cast<Display>( oldMode );
          newValue = stringValue( viewMode );
       }
       else
@@ -141,6 +168,40 @@ public:
       }
    }
 };
+
+// static
+auto
+TracksViewModeEnumSetting::ConvertLegacyDisplayValue(int oldValue) -> Display
+{
+   // Remap old values.
+   enum class OldValues {
+      Waveform,
+      WaveformDB,
+      Spectrogram,
+      SpectrogramLogF,
+      Pitch,
+   };
+
+   Display newValue;
+   switch ((OldValues)oldValue) {
+   default:
+   case OldValues::Waveform:
+      newValue = Display::Waveform; break;
+   case OldValues::WaveformDB:
+      newValue = Display::obsoleteWaveformDBDisplay; break;
+   case OldValues::Spectrogram:
+   case OldValues::SpectrogramLogF:
+   case OldValues::Pitch:
+      newValue = Display::Spectrum; break;
+      /*
+   case SpectrogramLogF:
+      newValue = WaveTrack::SpectrumLogDisplay; break;
+   case Pitch:
+      newValue = WaveTrack::PitchDisplay; break;
+      */
+   }
+   return newValue;
+}
 
 static TracksViewModeEnumSetting viewModeSetting()
 {
