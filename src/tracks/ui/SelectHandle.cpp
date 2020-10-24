@@ -539,10 +539,10 @@ UIHandle::Result SelectHandle::Click
    bool bCtrlDown = event.ControlDown();
 
    mSelStart = mUseSnap ? mSnapStart.outTime : mSnapStart.timeSnappedTime;
-   auto xx = viewInfo.TimeToPosition(mSelStart, mRect.x);
 
    // I. Shift-click adjusts an existing selection
    if (bShiftDown || bCtrlDown) {
+      const auto xx = viewInfo.TimeToPosition(mSelStart, mRect.x);
       if (bShiftDown)
          selectionState.ChangeSelectionOnShiftClick( trackList, *pTrack );
       if( bCtrlDown ){
@@ -615,7 +615,34 @@ UIHandle::Result SelectHandle::Click
       return RefreshAll;
    }
 
-   // II. Unmodified click starts a NEW selection
+   // II. Unmodified click may start a NEW selection
+   if( UnmodifiedClick(evt, pProject) ) {
+      // If we didn't move a selection boundary, start a NEW selection
+      selectionState.SelectNone( trackList );
+      selectionState.SelectTrack( *pTrack, true, true );
+      TrackFocus::Get( *pProject ).Set(pTrack);
+
+      Connect(pProject);
+      return RefreshAll;
+   }
+   else {
+      Connect(pProject);
+      return RefreshAll;
+   }
+}
+
+bool SelectHandle::UnmodifiedClick(
+   const TrackPanelMouseEvent &evt, AudacityProject *pProject)
+{
+   using namespace RefreshCode;
+
+   const auto pTrack = TrackList::Get( *pProject ).Lock( FindTrack() ).get();
+   auto &viewInfo = ViewInfo::Get( *pProject );
+
+   const auto pView = mpView.lock();
+
+   wxMouseEvent &event = evt.event;
+   const auto xx = viewInfo.TimeToPosition(mSelStart, mRect.x);
 
    //Make sure you are within the selected track
    bool startNewSelection = true;
@@ -645,7 +672,8 @@ UIHandle::Result SelectHandle::Click
             // For persistence of the selection change:
             ProjectHistory::Get( *pProject ).ModifyState(false);
             mSelectionBoundary = SBWidth;
-            return RefreshNone;
+            //return RefreshNone;
+            return false;
          }
          else
 #endif
@@ -699,27 +727,16 @@ UIHandle::Result SelectHandle::Click
          }
       } // bAdjustSelectionEdges
    }
-
-   // III. Common case for starting a NEW selection
-
+   
    if (startNewSelection) {
-      // If we didn't move a selection boundary, start a NEW selection
-      selectionState.SelectNone( trackList );
 #ifdef EXPERIMENTAL_SPECTRAL_EDITING
       StartFreqSelection (viewInfo, event.m_y, mRect.y, mRect.height,
          pView.get());
 #endif
       StartSelection(pProject);
-      selectionState.SelectTrack( *pTrack, true, true );
-      TrackFocus::Get( *pProject ).Set(pTrack);
+   }
 
-      Connect(pProject);
-      return RefreshAll;
-   }
-   else {
-      Connect(pProject);
-      return RefreshAll;
-   }
+   return startNewSelection;
 }
 
 UIHandle::Result SelectHandle::Drag

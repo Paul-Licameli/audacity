@@ -78,6 +78,12 @@ public:
    Result Click
       (const TrackPanelMouseEvent &event, AudacityProject *pProject) override;
 
+   /*!
+   @return true if starting a new selection
+    */
+   virtual bool UnmodifiedClick(
+      const TrackPanelMouseEvent &event, AudacityProject *pProject);
+
    Result Drag
       (const TrackPanelMouseEvent &event, AudacityProject *pProject) final;
 
