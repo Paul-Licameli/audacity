@@ -13,6 +13,8 @@
 #include "../../SpectrumAnalyst.h"
 #include "../../ViewInfo.h"
 #include "../../WaveTrack.h"
+#include "../../HitTestResult.h"
+#include "../../../images/Cursors.h"
 
 namespace {
    // Is the distance between A and B less than D?
@@ -30,6 +32,14 @@ namespace {
             std::max(minFrequency, center));
       return
          std::min(frequency / minFrequency, maxFrequency / frequency);
+   }
+
+   wxCursor *EnvelopeCursor()
+   {
+      // This one doubles as the center frequency cursor for spectral selection:
+      static auto envelopeCursor =
+         ::MakeCursor(wxCURSOR_ARROW, EnvCursorXpm, 16, 16);
+      return &*envelopeCursor;
    }
 }
 
@@ -80,6 +90,78 @@ void SpectralSelectHandle::SnapCenterOnce
 }
 
 SpectralSelectHandle::~SpectralSelectHandle() = default;
+
+void SpectralSelectHandle::SetTipAndCursorForBoundary(
+   int boundary, bool shiftDown,
+   TranslatableString &tip, wxCursor *&pCursor)
+{
+   bool frequencySnapping =
+      !shiftDown || mFreqSelMode == FREQ_SEL_SNAPPING_CENTER;
+   static auto bottomFrequencyCursor =
+      ::MakeCursor(wxCURSOR_ARROW, BottomFrequencyCursorXpm, 16, 16);
+   static auto topFrequencyCursor =
+      ::MakeCursor(wxCURSOR_ARROW, TopFrequencyCursorXpm, 16, 16);
+   static auto bandWidthCursor =
+      ::MakeCursor(wxCURSOR_ARROW, BandWidthCursorXpm, 16, 16);
+
+   switch (boundary) {
+   case SBBottom:
+      tip = XO("Click and drag to move bottom selection frequency.");
+      pCursor = &*bottomFrequencyCursor;
+      break;
+   case SBTop:
+      tip = XO("Click and drag to move top selection frequency.");
+      pCursor = &*topFrequencyCursor;
+      break;
+   case SBCenter:
+   {
+#ifndef SPECTRAL_EDITING_ESC_KEY
+      tip =
+         frequencySnapping ?
+         XO("Click and drag to move center selection frequency to a spectral peak.") :
+         XO("Click and drag to move center selection frequency.");
+
+#else
+      shiftDown;
+
+      tip =
+         XO("Click and drag to move center selection frequency.");
+
+#endif
+
+      pCursor = EnvelopeCursor();
+   }
+   break;
+   case SBWidth:
+      tip = XO("Click and drag to adjust frequency bandwidth.");
+      pCursor = &*bandWidthCursor;
+      break;
+   default:
+      SelectHandle::SetTipAndCursorForBoundary(
+            boundary, shiftDown, tip, pCursor);
+   }
+}
+
+HitTestPreview SpectralSelectHandle::Preview
+(const TrackPanelMouseState &st, AudacityProject *pProject)
+{
+#if 0
+   if (!IsClicked()) {
+      // This is a vestige of an idea in the prototype version.
+      // Center would snap without mouse button down, click would pin the center
+      // and drag width.
+      if ((mFreqSelMode == FREQ_SEL_SNAPPING_CENTER) &&
+         isSpectralSelectionView(pView)) {
+         // Not shift-down, but center frequency snapping toggle is on
+         tip = XO("Click and drag to set frequency bandwidth.");
+         pCursor = &*envelopeCursor;
+         return {};
+      }
+   }
+#endif
+
+   return SelectHandle::Preview(st, pProject);
+}
 
 void SpectralSelectHandle::DoDrag( AudacityProject &project,
    ViewInfo &viewInfo, TrackView &view, Track &clickedTrack, Track &track,

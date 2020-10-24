@@ -24,6 +24,14 @@ public:
    using SelectHandle::SelectHandle;
    ~SpectralSelectHandle() override;
 
+   void SetTipAndCursorForBoundary(
+      int boundary, bool,
+      TranslatableString &tip, wxCursor *&pCursor) override;
+
+   HitTestPreview Preview
+      (const TrackPanelMouseState &state, AudacityProject *pProject)
+      override;
+
    void DoDrag( AudacityProject &project,
       ViewInfo &viewInfo,
       TrackView &view, Track &clickedTrack, Track &track,

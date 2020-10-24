@@ -121,14 +121,6 @@ namespace
            });
    }
 
-   enum SelectionBoundary {
-      SBNone,
-      SBLeft, SBRight,
-#ifdef EXPERIMENTAL_SPECTRAL_EDITING
-      SBBottom, SBTop, SBCenter, SBWidth,
-#endif
-   };
-
    SelectionBoundary ChooseTimeBoundary
       (
       const double t0, const double t1,
@@ -282,79 +274,31 @@ namespace
          ::MakeCursor(wxCURSOR_IBEAM, IBeamCursorXpm, 17, 16);
       return &*selectCursor;
    }
+}
 
-   wxCursor *EnvelopeCursor()
-   {
-      // This one doubles as the center frequency cursor for spectral selection:
-      static auto envelopeCursor =
-         ::MakeCursor(wxCURSOR_ARROW, EnvCursorXpm, 16, 16);
-      return &*envelopeCursor;
-   }
+void SelectHandle::SetTipAndCursorForBoundary(
+   int boundary, bool,
+   TranslatableString &tip, wxCursor *&pCursor)
+{
+   static wxCursor adjustLeftSelectionCursor{ wxCURSOR_POINT_LEFT };
+   static wxCursor adjustRightSelectionCursor{ wxCURSOR_POINT_RIGHT };
 
-   void SetTipAndCursorForBoundary
-      (SelectionBoundary boundary, bool frequencySnapping,
-       TranslatableString &tip, wxCursor *&pCursor)
-   {
-      static wxCursor adjustLeftSelectionCursor{ wxCURSOR_POINT_LEFT };
-      static wxCursor adjustRightSelectionCursor{ wxCURSOR_POINT_RIGHT };
-
-      static auto bottomFrequencyCursor =
-         ::MakeCursor(wxCURSOR_ARROW, BottomFrequencyCursorXpm, 16, 16);
-      static auto topFrequencyCursor =
-         ::MakeCursor(wxCURSOR_ARROW, TopFrequencyCursorXpm, 16, 16);
-      static auto bandWidthCursor =
-         ::MakeCursor(wxCURSOR_ARROW, BandWidthCursorXpm, 16, 16);
-
-      switch (boundary) {
-      case SBNone:
-         pCursor = SelectCursor();
-         break;
-      case SBLeft:
-         tip = XO("Click and drag to move left selection boundary.");
-         pCursor = &adjustLeftSelectionCursor;
-         break;
-      case SBRight:
-         tip = XO("Click and drag to move right selection boundary.");
-         pCursor = &adjustRightSelectionCursor;
-         break;
-#ifdef EXPERIMENTAL_SPECTRAL_EDITING
-      case SBBottom:
-         tip = XO("Click and drag to move bottom selection frequency.");
-         pCursor = &*bottomFrequencyCursor;
-         break;
-      case SBTop:
-         tip = XO("Click and drag to move top selection frequency.");
-         pCursor = &*topFrequencyCursor;
-         break;
-      case SBCenter:
-      {
-#ifndef SPECTRAL_EDITING_ESC_KEY
-         tip =
-            frequencySnapping ?
-            XO("Click and drag to move center selection frequency to a spectral peak.") :
-            XO("Click and drag to move center selection frequency.");
-
-#else
-         shiftDown;
-
-         tip =
-            XO("Click and drag to move center selection frequency.");
-
-#endif
-
-         pCursor = EnvelopeCursor();
-      }
+   switch (boundary) {
+   case SBNone:
+      pCursor = SelectCursor();
       break;
-      case SBWidth:
-         tip = XO("Click and drag to adjust frequency bandwidth.");
-         pCursor = &*bandWidthCursor;
-         break;
-#endif
-      default:
-         wxASSERT(false);
-      } // switch
-      // Falls through the switch if there was no boundary found.
-   }
+   case SBLeft:
+      tip = XO("Click and drag to move left selection boundary.");
+      pCursor = &adjustLeftSelectionCursor;
+      break;
+   case SBRight:
+      tip = XO("Click and drag to move right selection boundary.");
+      pCursor = &adjustRightSelectionCursor;
+      break;
+   default:
+      wxASSERT(false);
+   } // switch
+   // Falls through the switch if there was no boundary found.
 }
 
 UIHandlePtr SelectHandle::HitTest( SelectHandleFactory factory,
@@ -887,7 +831,7 @@ HitTestPreview SelectHandle::Preview
       // Use same cursor as at the click
       SetTipAndCursorForBoundary
          (SelectionBoundary(mSelectionBoundary),
-          (mFreqSelMode == FREQ_SEL_SNAPPING_CENTER),
+          st.state.ShiftDown(),
           tip, pCursor);
    else {
       // Choose one of many cursors for mouse-over
@@ -933,24 +877,9 @@ HitTestPreview SelectHandle::Preview
             ChooseBoundary(viewInfo, xx, state.m_y,
                pView.get(), rect, !bModifierDown, !bModifierDown);
 
-            SetTipAndCursorForBoundary(boundary, !bShiftDown, tip, pCursor);
+            SetTipAndCursorForBoundary(boundary, bShiftDown, tip, pCursor);
          }
       }
-
-#if 0
-      // This is a vestige of an idea in the prototype version.
-      // Center would snap without mouse button down, click would pin the center
-      // and drag width.
-#ifdef EXPERIMENTAL_SPECTRAL_EDITING
-      if ((mFreqSelMode == FREQ_SEL_SNAPPING_CENTER) &&
-         isSpectralSelectionView(pView)) {
-         // Not shift-down, but center frequency snapping toggle is on
-         tip = XO("Click and drag to set frequency bandwidth.");
-         pCursor = &*envelopeCursor;
-         return {};
-      }
-#endif
-#endif
 
       if (!pTrack->GetSelected() || !viewInfo.bAdjustSelectionEdges)
          ;
@@ -962,7 +891,7 @@ HitTestPreview SelectHandle::Preview
          SelectionBoundary boundary = ChooseBoundary(
             viewInfo, xx, state.m_y,
                pView.get(), rect, !bModifierDown, !bModifierDown);
-         SetTipAndCursorForBoundary(boundary, !bShiftDown, tip, pCursor);
+         SetTipAndCursorForBoundary(boundary, bShiftDown, tip, pCursor);
       }
    }
    if (tip.empty()) {

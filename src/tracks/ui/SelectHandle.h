@@ -27,6 +27,14 @@ class ViewInfo;
 class WaveTrack;
 class wxMouseState;
 
+enum SelectionBoundary {
+   SBNone,
+   SBLeft, SBRight,
+#ifdef EXPERIMENTAL_SPECTRAL_EDITING
+   SBBottom, SBTop, SBCenter, SBWidth,
+#endif
+};
+
 class AUDACITY_DLL_API SelectHandle : public UIHandle
 {
    SelectHandle(const SelectHandle&);
@@ -73,11 +81,16 @@ public:
    Result Drag
       (const TrackPanelMouseEvent &event, AudacityProject *pProject) final;
 
-   // Further overridable part of the drag operation
+   //! Further overridable part of the drag operation
    virtual void DoDrag( AudacityProject &project,
       ViewInfo &viewInfo,
       TrackView &view, Track &clickedTrack, Track &track,
       wxCoord x, wxCoord y, bool controlDown);
+
+   //! Called within Preview()
+   virtual void SetTipAndCursorForBoundary(
+      int boundary, bool,
+      TranslatableString &tip, wxCursor *&pCursor);
 
    HitTestPreview Preview
       (const TrackPanelMouseState &state, AudacityProject *pProject)
