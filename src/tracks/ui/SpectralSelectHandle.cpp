@@ -80,3 +80,30 @@ void SpectralSelectHandle::SnapCenterOnce
 }
 
 SpectralSelectHandle::~SpectralSelectHandle() = default;
+
+void SpectralSelectHandle::DoDrag( AudacityProject &project,
+   ViewInfo &viewInfo, TrackView &view, Track &clickedTrack, Track &track,
+   wxCoord x, wxCoord y, bool controlDown)
+{
+   SelectHandle::DoDrag(
+      project, viewInfo, view, clickedTrack, track, x, y, controlDown);
+#ifndef SPECTRAL_EDITING_ESC_KEY
+   if (mFreqSelMode == FREQ_SEL_SNAPPING_CENTER &&
+       !viewInfo.selectedRegion.isPoint())
+      MoveSnappingFreqSelection
+      (&project, viewInfo, y, mRect.y, mRect.height, &view);
+   else
+#endif
+   if ( TrackList::Get( project ).Lock(mFreqSelTrack).get() == &track )
+      AdjustFreqSelection(
+         static_cast<const WaveTrack*>(&track),
+         viewInfo, y, mRect.y, mRect.height);
+}
+
+UIHandle::Result SpectralSelectHandle::Release(
+   const TrackPanelMouseEvent &evt, AudacityProject *pProject,
+   wxWindow *pWindow)
+{
+   mFrequencySnapper.reset();
+   return SelectHandle::Release(evt, pProject, pWindow);
+}

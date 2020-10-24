@@ -71,7 +71,13 @@ public:
       (const TrackPanelMouseEvent &event, AudacityProject *pProject) override;
 
    Result Drag
-      (const TrackPanelMouseEvent &event, AudacityProject *pProject) override;
+      (const TrackPanelMouseEvent &event, AudacityProject *pProject) final;
+
+   // Further overridable part of the drag operation
+   virtual void DoDrag( AudacityProject &project,
+      ViewInfo &viewInfo,
+      TrackView &view, Track &clickedTrack, Track &track,
+      wxCoord x, wxCoord y, bool controlDown);
 
    HitTestPreview Preview
       (const TrackPanelMouseState &state, AudacityProject *pProject)
@@ -118,7 +124,6 @@ protected:
       (AudacityProject *pProject, ViewInfo &viewInfo, int mouseYCoordinate,
        int trackTopEdge,
        int trackHeight, TrackView *pTrackView);
-private:
 
    // TrackPanelDrawable implementation
    void Draw(

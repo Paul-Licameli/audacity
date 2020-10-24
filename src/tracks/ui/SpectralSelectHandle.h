@@ -13,9 +13,8 @@
 
 #include "SelectHandle.h" // to inherit
 
-class SpectralSelectHandle : public SelectHandle
+class SpectralSelectHandle final : public SelectHandle
 {
-public:
 public:
    // This is needed to implement a command assignable to keystrokes
    static void SnapCenterOnce
@@ -24,6 +23,15 @@ public:
 
    using SelectHandle::SelectHandle;
    ~SpectralSelectHandle() override;
+
+   void DoDrag( AudacityProject &project,
+      ViewInfo &viewInfo,
+      TrackView &view, Track &clickedTrack, Track &track,
+      wxCoord x, wxCoord y, bool controlDown) override;
+
+   UIHandle::Result Release(
+      const TrackPanelMouseEvent &evt, AudacityProject *pProject,
+      wxWindow *pWindow) override;
 };
 
 #endif

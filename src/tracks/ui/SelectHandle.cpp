@@ -832,30 +832,8 @@ UIHandle::Result SelectHandle::Drag
    if (evt.pCell) {
       if ( auto clickedTrack =
           static_cast<CommonTrackPanelCell*>(evt.pCell.get())->FindTrack() ) {
-         // Handle which tracks are selected
-         Track *sTrack = pTrack.get();
-         Track *eTrack = clickedTrack.get();
-         auto &trackList = TrackList::Get( *pProject );
-         if ( sTrack && eTrack && !event.ControlDown() ) {
-            auto &selectionState = SelectionState::Get( *pProject );
-            selectionState.SelectRangeOfTracks( trackList, *sTrack, *eTrack );
-         }
-
-   #ifdef EXPERIMENTAL_SPECTRAL_EDITING
-   #ifndef SPECTRAL_EDITING_ESC_KEY
-         if (mFreqSelMode == FREQ_SEL_SNAPPING_CENTER &&
-             !viewInfo.selectedRegion.isPoint())
-            MoveSnappingFreqSelection
-            (pProject, viewInfo, y, mRect.y, mRect.height, pView.get());
-         else
-   #endif
-            if ( TrackList::Get( *pProject ).Lock(mFreqSelTrack) == pTrack )
-               AdjustFreqSelection(
-                  static_cast<WaveTrack*>(pTrack.get()),
-                  viewInfo, y, mRect.y, mRect.height);
-   #endif
-         
-         AdjustSelection(pProject, viewInfo, x, mRect.x, clickedTrack.get());
+         DoDrag(*pProject, viewInfo, *pView, *clickedTrack, *pTrack,
+            x, y, event.ControlDown());
       }
    }
 
@@ -870,6 +848,22 @@ UIHandle::Result SelectHandle::Drag
       // | UpdateSelection
 
    ;
+}
+
+void SelectHandle::DoDrag( AudacityProject &project,
+   ViewInfo &viewInfo, TrackView &, Track &clickedTrack, Track &track,
+   wxCoord x, wxCoord y, bool controlDown)
+{
+   // Handle which tracks are selected
+   Track *sTrack = &track;
+   Track *eTrack = &clickedTrack;
+   auto &trackList = TrackList::Get( project );
+   if ( sTrack && eTrack && !controlDown ) {
+      auto &selectionState = SelectionState::Get( project );
+      selectionState.SelectRangeOfTracks( trackList, *sTrack, *eTrack );
+   }
+
+   AdjustSelection(&project, viewInfo, x, mRect.x, &clickedTrack);
 }
 
 HitTestPreview SelectHandle::Preview
@@ -989,7 +983,6 @@ UIHandle::Result SelectHandle::Release
 {
    using namespace RefreshCode;
    ProjectHistory::Get( *pProject ).ModifyState(false);
-   mFrequencySnapper.reset();
    mSnapManager.reset();
    if (mSelectionStateChanger) {
       mSelectionStateChanger->Commit();
