@@ -1573,7 +1573,7 @@ void DoNextPeakFrequency(AudacityProject &project, bool up)
 
    if (pTrack) {
       SpectrumAnalyst analyst;
-      SelectHandle::SnapCenterOnce(analyst, viewInfo, pTrack, up);
+      SpectralSelectHandle::SnapCenterOnce(analyst, viewInfo, pTrack, up);
       ProjectHistory::Get( project ).ModifyState(false);
    }
 }

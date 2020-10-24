@@ -16,6 +16,12 @@
 class SpectralSelectHandle : public SelectHandle
 {
 public:
+public:
+   // This is needed to implement a command assignable to keystrokes
+   static void SnapCenterOnce
+      (SpectrumAnalyst &analyst,
+       ViewInfo &viewInfo, const WaveTrack *pTrack, bool up);
+
    using SelectHandle::SelectHandle;
    ~SpectralSelectHandle() override;
 };
