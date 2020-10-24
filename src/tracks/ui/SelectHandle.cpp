@@ -471,7 +471,6 @@ UIHandle::Result SelectHandle::Click
    wxMouseEvent &event = evt.event;
    const auto sTrack = TrackList::Get( *pProject ).Lock( FindTrack() );
    const auto pTrack = sTrack.get();
-   auto &trackPanel = TrackPanel::Get( *pProject );
    auto &viewInfo = ViewInfo::Get( *pProject );
 
    mMostRecentX = event.m_x;
@@ -542,7 +541,8 @@ UIHandle::Result SelectHandle::Click
 
    // I. Shift-click adjusts an existing selection
    if (bShiftDown || bCtrlDown) {
-      const auto xx = viewInfo.TimeToPosition(mSelStart, mRect.x);
+      auto &trackPanel = TrackPanel::Get( *pProject );
+
       if (bShiftDown)
          selectionState.ChangeSelectionOnShiftClick( trackList, *pTrack );
       if( bCtrlDown ){
@@ -555,54 +555,7 @@ UIHandle::Result SelectHandle::Click
             selectionState.SelectTrack( *pTrack, !bIsSelected, true );
       }
 
-      double value;
-      // Shift-click, choose closest boundary
-      SelectionBoundary boundary =
-         ChooseBoundary(viewInfo, xx, event.m_y,
-            pView.get(), mRect, false, false, &value);
-      mSelectionBoundary = boundary;
-      switch (boundary) {
-         case SBLeft:
-         case SBRight:
-         {
-#ifdef EXPERIMENTAL_SPECTRAL_EDITING
-            // If drag starts, change time selection only
-            // (also exit frequency snapping)
-            mFreqSelMode = FREQ_SEL_INVALID;
-#endif
-            mSelStartValid = true;
-            mSelStart = value;
-            mSnapStart = SnapResults{};
-            AdjustSelection(pProject, viewInfo, event.m_x, mRect.x, pTrack);
-            break;
-         }
-#ifdef EXPERIMENTAL_SPECTRAL_EDITING
-         case SBBottom:
-         case SBTop:
-         {
-            mFreqSelTrack = pTrack->SharedPointer<const WaveTrack>();
-            mFreqSelPin = value;
-            mFreqSelMode =
-               (boundary == SBBottom)
-               ? FREQ_SEL_BOTTOM_FREE : FREQ_SEL_TOP_FREE;
-
-            // Drag frequency only, not time:
-            mSelStartValid = false;
-            AdjustFreqSelection(
-               static_cast<WaveTrack*>(pTrack),
-               viewInfo, event.m_y, mRect.y, mRect.height);
-            break;
-         }
-         case SBCenter:
-         {
-            const auto wt = static_cast<const WaveTrack*>(pTrack);
-            HandleCenterFrequencyClick(viewInfo, true, wt, value);
-            break;
-         }
-#endif
-         default:
-            wxASSERT(false);
-      };
+      ModifiedClick(evt, pProject, bShiftDown, bCtrlDown);
 
       // For persistence of the selection change:
       ProjectHistory::Get( *pProject ).ModifyState(false);
@@ -629,6 +582,68 @@ UIHandle::Result SelectHandle::Click
       Connect(pProject);
       return RefreshAll;
    }
+}
+
+void SelectHandle::ModifiedClick(
+   const TrackPanelMouseEvent &evt, AudacityProject *pProject,
+   bool bShiftDown, bool bCtrlDown)
+{
+   const auto pTrack = TrackList::Get( *pProject ).Lock( FindTrack() ).get();
+   auto &viewInfo = ViewInfo::Get( *pProject );
+
+   const auto pView = mpView.lock();
+
+   wxMouseEvent &event = evt.event;
+   const auto xx = viewInfo.TimeToPosition(mSelStart, mRect.x);
+
+   double value;
+   // Shift-click, choose closest boundary
+   SelectionBoundary boundary =
+      ChooseBoundary(viewInfo, xx, event.m_y,
+         pView.get(), mRect, false, false, &value);
+   mSelectionBoundary = boundary;
+   switch (boundary) {
+      case SBLeft:
+      case SBRight:
+      {
+#ifdef EXPERIMENTAL_SPECTRAL_EDITING
+         // If drag starts, change time selection only
+         // (also exit frequency snapping)
+         mFreqSelMode = FREQ_SEL_INVALID;
+#endif
+         mSelStartValid = true;
+         mSelStart = value;
+         mSnapStart = SnapResults{};
+         AdjustSelection(pProject, viewInfo, event.m_x, mRect.x, pTrack);
+         break;
+      }
+#ifdef EXPERIMENTAL_SPECTRAL_EDITING
+      case SBBottom:
+      case SBTop:
+      {
+         mFreqSelTrack = pTrack->SharedPointer<const WaveTrack>();
+         mFreqSelPin = value;
+         mFreqSelMode =
+            (boundary == SBBottom)
+            ? FREQ_SEL_BOTTOM_FREE : FREQ_SEL_TOP_FREE;
+
+         // Drag frequency only, not time:
+         mSelStartValid = false;
+         AdjustFreqSelection(
+            static_cast<WaveTrack*>(pTrack),
+            viewInfo, event.m_y, mRect.y, mRect.height);
+         break;
+      }
+      case SBCenter:
+      {
+         const auto wt = static_cast<const WaveTrack*>(pTrack);
+         HandleCenterFrequencyClick(viewInfo, true, wt, value);
+         break;
+      }
+#endif
+      default:
+         wxASSERT(false);
+   };
 }
 
 bool SelectHandle::UnmodifiedClick(
