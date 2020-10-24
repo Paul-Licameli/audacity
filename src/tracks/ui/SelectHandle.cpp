@@ -160,114 +160,116 @@ namespace
          return SBRight;
       }
    }
+}
 
-   SelectionBoundary ChooseBoundary
-      (const ViewInfo &viewInfo,
-       wxCoord xx, wxCoord yy, const TrackView *pTrackView, const wxRect &rect,
-       bool mayDragWidth, bool onlyWithinSnapDistance,
-       double *pPinValue = NULL)
-   {
-      // Choose one of four boundaries to adjust, or the center frequency.
-      // May choose frequencies only if in a spectrogram view and
-      // within the time boundaries.
-      // May choose no boundary if onlyWithinSnapDistance is true.
-      // Otherwise choose the eligible boundary nearest the mouse click.
-      const double selend = viewInfo.PositionToTime(xx, rect.x);
-      wxInt64 pixelDist = 0;
-      const double t0 = viewInfo.selectedRegion.t0();
-      const double t1 = viewInfo.selectedRegion.t1();
+int SelectHandle::ChooseBoundary
+   (const ViewInfo &viewInfo,
+    wxCoord xx, wxCoord yy, const TrackView *pTrackView, const wxRect &rect,
+    bool mayDragWidth, bool onlyWithinSnapDistance,
+    double *pPinValue)
+{
+   // Choose one of four boundaries to adjust, or the center frequency.
+   // May choose frequencies only if in a spectrogram view and
+   // within the time boundaries.
+   // May choose no boundary if onlyWithinSnapDistance is true.
+   // Otherwise choose the eligible boundary nearest the mouse click.
+   const double selend = viewInfo.PositionToTime(xx, rect.x);
+   wxInt64 pixelDist = 0;
+   const double t0 = viewInfo.selectedRegion.t0();
+   const double t1 = viewInfo.selectedRegion.t1();
 
-      SelectionBoundary boundary =
-         ChooseTimeBoundary(t0,t1,viewInfo, selend, onlyWithinSnapDistance,
-         &pixelDist, pPinValue);
+   SelectionBoundary boundary =
+      ChooseTimeBoundary(t0,t1,viewInfo, selend, onlyWithinSnapDistance,
+      &pixelDist, pPinValue);
 
 #ifdef EXPERIMENTAL_SPECTRAL_EDITING
-      //const double t0 = viewInfo.selectedRegion.t0();
-      //const double t1 = viewInfo.selectedRegion.t1();
-      const double f0 = viewInfo.selectedRegion.f0();
-      const double f1 = viewInfo.selectedRegion.f1();
-      const double fc = viewInfo.selectedRegion.fc();
-      double ratio = 0;
+   //const double t0 = viewInfo.selectedRegion.t0();
+   //const double t1 = viewInfo.selectedRegion.t1();
+   const double f0 = viewInfo.selectedRegion.f0();
+   const double f1 = viewInfo.selectedRegion.f1();
+   const double fc = viewInfo.selectedRegion.fc();
+   double ratio = 0;
 
-      bool chooseTime = true;
-      bool chooseBottom = true;
-      bool chooseCenter = false;
-      // Consider adjustment of frequencies only if mouse is
-      // within the time boundaries
-      if (!viewInfo.selectedRegion.isPoint() &&
-         t0 <= selend && selend < t1 &&
-         isSpectralSelectionView(pTrackView)) {
-         // Spectral selection track is always wave
-         auto pTrack = pTrackView->FindTrack();
-         const WaveTrack *const wt =
-           static_cast<const WaveTrack*>(pTrack.get());
-         const wxInt64 bottomSel = (f0 >= 0)
-            ? FrequencyToPosition(wt, f0, rect.y, rect.height)
-            : rect.y + rect.height;
-         const wxInt64 topSel = (f1 >= 0)
-            ? FrequencyToPosition(wt, f1, rect.y, rect.height)
-            : rect.y;
-         wxInt64 signedBottomDist = (int)(yy - bottomSel);
-         wxInt64 verticalDist = std::abs(signedBottomDist);
-         if (bottomSel == topSel)
-            // Top and bottom are too close to resolve on screen
-            chooseBottom = (signedBottomDist >= 0);
-         else {
-            const wxInt64 topDist = std::abs((int)(yy - topSel));
-            if (topDist < verticalDist)
-               chooseBottom = false, verticalDist = topDist;
-         }
-         if (fc > 0
+   bool chooseTime = true;
+   bool chooseBottom = true;
+   bool chooseCenter = false;
+   // Consider adjustment of frequencies only if mouse is
+   // within the time boundaries
+   if (!viewInfo.selectedRegion.isPoint() &&
+      t0 <= selend && selend < t1 &&
+      isSpectralSelectionView(pTrackView)) {
+      // Spectral selection track is always wave
+      auto pTrack = pTrackView->FindTrack();
+      const WaveTrack *const wt =
+        static_cast<const WaveTrack*>(pTrack.get());
+      const wxInt64 bottomSel = (f0 >= 0)
+         ? FrequencyToPosition(wt, f0, rect.y, rect.height)
+         : rect.y + rect.height;
+      const wxInt64 topSel = (f1 >= 0)
+         ? FrequencyToPosition(wt, f1, rect.y, rect.height)
+         : rect.y;
+      wxInt64 signedBottomDist = (int)(yy - bottomSel);
+      wxInt64 verticalDist = std::abs(signedBottomDist);
+      if (bottomSel == topSel)
+         // Top and bottom are too close to resolve on screen
+         chooseBottom = (signedBottomDist >= 0);
+      else {
+         const wxInt64 topDist = std::abs((int)(yy - topSel));
+         if (topDist < verticalDist)
+            chooseBottom = false, verticalDist = topDist;
+      }
+      if (fc > 0
 #ifdef SPECTRAL_EDITING_ESC_KEY
-            && mayDragWidth
+         && mayDragWidth
 #endif
-            ) {
-            const wxInt64 centerSel =
-               FrequencyToPosition(wt, fc, rect.y, rect.height);
-            const wxInt64 centerDist = abs((int)(yy - centerSel));
-            if (centerDist < verticalDist)
-               chooseCenter = true, verticalDist = centerDist,
-               ratio = f1 / fc;
-         }
-         if (verticalDist >= 0 &&
-            verticalDist < pixelDist) {
-            pixelDist = verticalDist;
-            chooseTime = false;
-         }
+         ) {
+         const wxInt64 centerSel =
+            FrequencyToPosition(wt, fc, rect.y, rect.height);
+         const wxInt64 centerDist = abs((int)(yy - centerSel));
+         if (centerDist < verticalDist)
+            chooseCenter = true, verticalDist = centerDist,
+            ratio = f1 / fc;
       }
-
-      if (!chooseTime) {
-         // PRL:  Seems I need a larger tolerance to make snapping work
-         // at top of track, not sure why
-         if (onlyWithinSnapDistance &&
-            pixelDist >= FREQ_SNAP_DISTANCE) {
-            SetIfNotNull(pPinValue, -1.0);
-            return SBNone;
-         }
-         else if (chooseCenter) {
-            SetIfNotNull(pPinValue, ratio);
-            return SBCenter;
-         }
-         else if (mayDragWidth && fc > 0) {
-            SetIfNotNull(pPinValue, fc);
-            return SBWidth;
-         }
-         else if (chooseBottom) {
-            SetIfNotNull(pPinValue, f1);
-            return SBBottom;
-         }
-         else {
-            SetIfNotNull(pPinValue, f0);
-            return SBTop;
-         }
-      }
-      else
-#endif
-      {
-         return boundary;
+      if (verticalDist >= 0 &&
+         verticalDist < pixelDist) {
+         pixelDist = verticalDist;
+         chooseTime = false;
       }
    }
 
+   if (!chooseTime) {
+      // PRL:  Seems I need a larger tolerance to make snapping work
+      // at top of track, not sure why
+      if (onlyWithinSnapDistance &&
+         pixelDist >= FREQ_SNAP_DISTANCE) {
+         SetIfNotNull(pPinValue, -1.0);
+         return SBNone;
+      }
+      else if (chooseCenter) {
+         SetIfNotNull(pPinValue, ratio);
+         return SBCenter;
+      }
+      else if (mayDragWidth && fc > 0) {
+         SetIfNotNull(pPinValue, fc);
+         return SBWidth;
+      }
+      else if (chooseBottom) {
+         SetIfNotNull(pPinValue, f1);
+         return SBBottom;
+      }
+      else {
+         SetIfNotNull(pPinValue, f0);
+         return SBTop;
+      }
+   }
+   else
+#endif
+   {
+      return boundary;
+   }
+}
+
+namespace {
    wxCursor *SelectCursor()
    {
       static auto selectCursor =
@@ -598,7 +600,7 @@ void SelectHandle::ModifiedClick(
 
    double value;
    // Shift-click, choose closest boundary
-   SelectionBoundary boundary =
+   auto boundary =
       ChooseBoundary(viewInfo, xx, event.m_y,
          pView.get(), mRect, false, false, &value);
    mSelectionBoundary = boundary;
@@ -695,7 +697,7 @@ bool SelectHandle::UnmodifiedClick(
          {
             // Not shift-down, choose boundary only within snapping
             double value;
-            SelectionBoundary boundary =
+            auto boundary =
                ChooseBoundary(viewInfo, xx, event.m_y,
                   pView.get(), mRect, true, true, &value);
             mSelectionBoundary = boundary;
@@ -905,7 +907,7 @@ HitTestPreview SelectHandle::Preview
             // If not shift-down and not snapping center, then
             // choose boundaries only in snapping tolerance,
             // and may choose center.
-            SelectionBoundary boundary =
+            auto boundary =
             ChooseBoundary(viewInfo, xx, state.m_y,
                pView.get(), rect, !bModifierDown, !bModifierDown);
 
@@ -920,7 +922,7 @@ HitTestPreview SelectHandle::Preview
          const bool bShiftDown = state.ShiftDown();
          const bool bCtrlDown = state.ControlDown();
          const bool bModifierDown = bShiftDown || bCtrlDown;
-         SelectionBoundary boundary = ChooseBoundary(
+         auto boundary = ChooseBoundary(
             viewInfo, xx, state.m_y,
                pView.get(), rect, !bModifierDown, !bModifierDown);
          SetTipAndCursorForBoundary(boundary, bShiftDown, tip, pCursor);

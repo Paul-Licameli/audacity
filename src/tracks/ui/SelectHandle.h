@@ -75,6 +75,12 @@ public:
 
    bool Escape(AudacityProject *pProject) override;
 
+   virtual int ChooseBoundary
+      (const ViewInfo &viewInfo,
+       wxCoord xx, wxCoord yy, const TrackView *pTrackView, const wxRect &rect,
+       bool mayDragWidth, bool onlyWithinSnapDistance,
+       double *pPinValue = NULL);
+
    Result Click
       (const TrackPanelMouseEvent &event, AudacityProject *pProject) override;
 
