@@ -14,6 +14,7 @@
 #include "SelectHandle.h" // to inherit
 
 class SpectrumAnalyst;
+class WaveTrack;
 
 class SpectralSelectHandle final : public SelectHandle
 {

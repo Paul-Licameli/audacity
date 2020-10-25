@@ -23,7 +23,6 @@ class Track;
 class TrackView;
 class TrackList;
 class ViewInfo;
-class WaveTrack;
 class wxMouseState;
 
 enum SelectionBoundary {

@@ -35,9 +35,6 @@ Paul Licameli split from TrackPanel.cpp
 #include "WaveTrack.h"
 #include "../images/Cursors.h"
 
-// Only for definition of SonifyBeginModifyState:
-//#include "NoteTrack.h"
-
 enum {
    //This constant determines the size of the horizontal region (in pixels) around
    //the right and left selection bounds that can be used for horizontal selection adjusting
