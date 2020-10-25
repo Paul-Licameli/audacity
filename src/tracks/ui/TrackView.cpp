@@ -139,11 +139,6 @@ auto TrackView::GetSubViews( const wxRect &rect ) -> Refinement
    return { { rect.GetTop(), shared_from_this() } };
 }
 
-bool TrackView::IsSpectral() const
-{
-   return false;
-}
-
 void TrackView::DoSetMinimized(bool isMinimized)
 {
    mMinimized = isMinimized;

@@ -42,11 +42,6 @@ static WaveTrackSubViewType::Registration reg{ sType };
 
 SpectrumView::~SpectrumView() = default;
 
-bool SpectrumView::IsSpectral() const
-{
-   return true;
-}
-
 std::vector<UIHandlePtr> SpectrumView::DetailedHitTest(
    const TrackPanelMouseState &state,
    const AudacityProject *pProject, int currentTool, bool bMultiTool )

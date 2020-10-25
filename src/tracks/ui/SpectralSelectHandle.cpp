@@ -21,6 +21,8 @@
 #include "../../TrackPanelMouseEvent.h"
 #include "../../../images/Cursors.h"
 
+class SpectrumView;
+
 // #define SPECTRAL_EDITING_ESC_KEY
 
 enum {
@@ -110,8 +112,6 @@ namespace {
    // This returns true if we're a spectral editing track.
    inline bool isSpectralSelectionView(const TrackView *pTrackView) {
       return
-        pTrackView &&
-        pTrackView->IsSpectral() &&
         pTrackView->FindTrack() &&
         pTrackView->FindTrack()->TypeSwitch< bool >(
            [&](const WaveTrack *wt) {
