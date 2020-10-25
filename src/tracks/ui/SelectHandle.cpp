@@ -316,23 +316,6 @@ UIHandle::Result SelectHandle::Click
    mMostRecentX = event.m_x;
    mMostRecentY = event.m_y;
 
-   bool selectChange = (
-      event.LeftDown() &&
-      event.ControlDown() &&
-      pTrack->TypeSwitch<bool>( [&](LabelTrack *){
-         // We should reach this, only in default of other hits on glyphs or
-         // text boxes.
-         bool bShift = event.ShiftDown();
-         bool unsafe = ProjectAudioIO::Get( *pProject ).IsAudioActive();
-         SelectUtilities::DoListSelection(
-            *pProject, pTrack, bShift, true, !unsafe);
-         return true;
-       } )
-   );
-   if ( selectChange )
-      // Do not start a drag
-      return RefreshAll | Cancelled;
-   
    auto &selectionState = SelectionState::Get( *pProject );
    const auto &settings = ProjectSettings::Get( *pProject );
    if (event.LeftDClick() && !event.ShiftDown()) {
