@@ -56,9 +56,20 @@ SpectrogramSettings::Globals
    return instance;
 }
 
+static WaveTrack::Caches::RegisteredFactory key1{
+   [](WaveTrack&){
+      return nullptr;
+   }
+};
+
 SpectrogramSettings &SpectrogramSettings::Get(WaveTrack &track)
 {
-   return track.GetSpectrogramSettings();
+   auto pSettings =
+      static_cast<SpectrogramSettings*>(track.WaveTrack::Caches::Find(key1));
+   if (pSettings)
+      return *pSettings;
+   else
+      return SpectrogramSettings::defaults();
 }
 
 const SpectrogramSettings &SpectrogramSettings::Get(const WaveTrack &track)
@@ -68,12 +79,19 @@ const SpectrogramSettings &SpectrogramSettings::Get(const WaveTrack &track)
 
 SpectrogramSettings &SpectrogramSettings::Own(WaveTrack &track)
 {
-   return track.GetIndependentSpectrogramSettings();
+   auto pSettings =
+      static_cast<SpectrogramSettings*>(track.WaveTrack::Caches::Find(key1));
+   if (!pSettings) {
+      auto uSettings = std::make_unique<SpectrogramSettings>();
+      pSettings = uSettings.get();
+      track.WaveTrack::Caches::Assign(key1, std::move(uSettings));
+   }
+   return *pSettings;
 }
 
 void SpectrogramSettings::Reset(WaveTrack &track)
 {
-   track.mpSpectrumSettings.reset();
+   track.WaveTrack::Caches::Assign(key1, nullptr);
 }
 
 SpectrogramSettings::SpectrogramSettings()
@@ -495,6 +513,11 @@ SpectrogramSettings::~SpectrogramSettings()
    DestroyWindows();
 }
 
+auto SpectrogramSettings::Clone() const -> PointerType
+{
+   return std::make_unique<SpectrogramSettings>(*this);
+}
+
 void SpectrogramSettings::DestroyWindows()
 {
    hFFT.reset();
@@ -667,4 +690,74 @@ bool SpectrogramSettings::SpectralSelectionEnabled() const
 #else
    return spectralSelection;
 #endif
+}
+
+static WaveTrack::Caches::RegisteredFactory key2{
+   [](WaveTrack&){
+      return std::make_unique<SpectrogramSettingsCache>();
+   }
+};
+
+SpectrogramSettingsCache &SpectrogramSettingsCache::Get( WaveTrack &track )
+{
+   return static_cast<SpectrogramSettingsCache&>(
+      track.WaveTrack::Caches::Get(key2));
+}
+
+const SpectrogramSettingsCache &SpectrogramSettingsCache::Get(
+   const WaveTrack &track )
+{
+   return Get(const_cast<WaveTrack&>(track));
+}
+
+SpectrogramSettingsCache::~SpectrogramSettingsCache() = default;
+
+auto SpectrogramSettingsCache::Clone() const -> PointerType
+{
+   return std::make_unique<SpectrogramSettingsCache>(*this);
+}
+
+void SpectrogramSettingsCache::GetBounds(
+   const WaveTrack &wt, float &min, float &max) const
+{
+   const double rate = wt.GetRate();
+
+   const auto &settings = SpectrogramSettings::Get(wt);
+   const SpectrogramSettings::ScaleType type = settings.scaleType;
+
+   const float top = (rate / 2.);
+
+   float bottom;
+   if (type == SpectrogramSettings::stLinear)
+      bottom = 0.0f;
+   else if (type == SpectrogramSettings::stPeriod) {
+      // special case
+      const auto half = settings.GetFFTLength() / 2;
+      // EAC returns no data for below this frequency:
+      const float bin2 = rate / half;
+      bottom = bin2;
+   }
+   else
+      // logarithmic, etc.
+      bottom = 1.0f;
+
+   {
+      float spectrumMax = mSpectrumMax;
+      if (spectrumMax < 0)
+         spectrumMax = settings.maxFreq;
+      if (spectrumMax < 0)
+         max = top;
+      else
+         max = std::max(bottom, std::min(top, spectrumMax));
+   }
+
+   {
+      float spectrumMin = mSpectrumMin;
+      if (spectrumMin < 0)
+         spectrumMin = settings.minFreq;
+      if (spectrumMin < 0)
+         min = std::max(bottom, top / 1000.0f);
+      else
+         min = std::max(bottom, std::min(top, spectrumMin));
+   }
 }

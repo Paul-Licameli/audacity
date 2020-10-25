@@ -136,7 +136,7 @@ void SpectrumVZoomHandle::DoZoom(
    float half=0.5;
 
    {
-      pTrack->GetSpectrumBounds(&min, &max);
+      SpectrogramSettingsCache::Get(*pTrack).GetBounds(*pTrack, min, max);
       scale = (specSettings.GetScale(min, max));
       const auto fftLength = specSettings.GetFFTLength();
       const float binSize = rate / fftLength;
@@ -247,7 +247,7 @@ void SpectrumVZoomHandle::DoZoom(
 
    // Now actually apply the zoom.
    for (auto channel : TrackList::Channels(pTrack))
-      channel->SetSpectrumBounds(min, max);
+      SpectrogramSettingsCache::Get(*channel).SetBounds(min, max);
 
    zoomEnd = zoomStart = 0;
    if( pProject )
