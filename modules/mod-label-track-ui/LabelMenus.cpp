@@ -26,6 +26,13 @@
 // private helper classes and functions
 namespace {
 
+const ReservedCommandFlag&
+LabelTracksExistFlag() { static ReservedCommandFlag flag{
+   [](const AudacityProject &project){
+      return !TrackList::Get( project ).Any<const LabelTrack>().empty();
+   }
+}; return flag; }
+
 const ReservedCommandFlag
 &LabelsSelectedFlag() { static ReservedCommandFlag flag{
    [](const AudacityProject &project){

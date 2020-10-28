@@ -17,6 +17,7 @@
 #include "Project.h"
 #include "ProjectAudioIO.h"
 #include "ProjectFileIO.h"
+#include "Track.h"
 #include "ViewInfo.h"
 
 #include <wx/app.h>
@@ -223,6 +224,12 @@ CommandHandlerObject &findCommandHandler(AudacityProject &) {
 }
 
 // Register that menu item
+const ReservedCommandFlag&
+   LabelTracksExistFlag() { static ReservedCommandFlag flag{
+      [](const AudacityProject &project){
+         return !TrackList::Get( project ).Any<const LabelTrack>().empty();
+      }
+   }; return flag; }
 
 using namespace MenuTable;
 AttachedItem sAttachment{ wxT("View/Windows"),

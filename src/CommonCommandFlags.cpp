@@ -221,12 +221,6 @@ const ReservedCommandFlag&
    }; return flag; };
 
 const ReservedCommandFlag&
-   LabelTracksExistFlag() { static ReservedCommandFlag flag{
-      [](const AudacityProject &project){
-         return !TrackList::Get( project ).Any<const LabelTrack>().empty();
-      }
-   }; return flag; }
-const ReservedCommandFlag&
    UnsavedChangesFlag() { static ReservedCommandFlag flag{
       [](const AudacityProject &project){
          auto &undoManager = UndoManager::Get( project );
