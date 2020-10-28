@@ -8,7 +8,8 @@
 #include "../ProjectAudioIO.h"
 #include "../ProjectHistory.h"
 #include "../ProjectSettings.h"
-#include "../SelectFile.h"
+#include "../ProjectWindow.h"
+#include "../SelectUtilities.h"
 #include "../TrackPanelAx.h"
 #include "../TrackPanel.h"
 #include "../ViewInfo.h"
@@ -671,6 +672,25 @@ void OnDisjoinLabels(const CommandContext &context)
       XO( "Detach Labeled Audio" ) );
 }
 
+void OnNewLabelTrack(const CommandContext &context)
+{
+   auto &project = context.project;
+   auto &tracks = TrackList::Get( project );
+   auto &window = ProjectWindow::Get( project );
+
+   auto t = tracks.Add( std::make_shared<LabelTrack>() );
+
+   SelectUtilities::SelectNone( project );
+
+   t->SetSelected(true);
+
+   ProjectHistory::Get( project )
+      .PushState(XO("Created new label track"), XO("New Track"));
+
+   TrackFocus::Get(project).Set(t);
+   t->EnsureVisible();
+}
+
 }; // struct Handler
 
 } // namespace
@@ -794,6 +814,12 @@ AttachedItem sAttachment1{
    Shared( LabelEditMenus() )
 };
 
-}
+AttachedItem sAttachment2{ wxT("Tracks/Add/Add"),
+   ( FinderScope{ findCommandHandler },
+   Command( wxT("NewLabelTrack"), XXO("&Label Track"),
+      FN(OnNewLabelTrack), AudioIONotBusyFlag() )
+   )
+};
 
+}
 #undef FN

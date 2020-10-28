@@ -423,6 +423,8 @@ void MenuCreator::CreateMenusAndCommands(AudacityProject &project)
 "ExportMp3,ExportWav,ExportOgg,Export,ExportSel,ExportLabels,"
 "ExportMultiple,ExportMIDI"
           )},
+         {wxT("/Tracks/Add/Add"), wxT(
+   "NewMonoTrack,NewStereoTrack,NewLabelTrack,NewTimeTrack")},
       }
    };
 
