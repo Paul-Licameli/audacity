@@ -104,6 +104,7 @@ list( APPEND SOURCES
       DeviceManager.h
       Diags.cpp
       Diags.h
+      DropoutDetector.cpp
       EditUtilities.cpp
       EditUtilities.h
       Envelope.cpp
