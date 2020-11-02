@@ -213,6 +213,8 @@ public:
    std::weak_ptr<StretchHandle> mStretchHandle;
 };
 
+ENUMERATE_TRACK_TYPE(NoteTrack);
+
 #endif // USE_MIDI
 
 #ifndef SONIFY

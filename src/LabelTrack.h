@@ -175,6 +175,8 @@ public:
    int miLastLabel;                 // used by FindNextLabel and FindPrevLabel
 };
 
+ENUMERATE_TRACK_TYPE(LabelTrack);
+
 struct LabelTrackEvent : TrackListEvent
 {
    explicit
