@@ -29,6 +29,7 @@
 
 #include "Project.h"
 #include "Track.h"
+#include "WaveTrack.h"
 
 
 wxDEFINE_EVENT(EVT_TRACK_FOCUS_CHANGE, wxCommandEvent);
@@ -367,26 +368,9 @@ wxAccStatus TrackPanelAx::GetName( int childId, wxString* name )
                name->Printf(_("Track %d"), TrackNum( t ) );
             }
 
-            t->TypeSwitch(
-               [&](const LabelTrack *) {
-                  /* i18n-hint: This is for screen reader software and indicates that
-                     this is a Label track.*/
-                  name->Append( wxT(" ") + wxString(_("Label Track")));
-               },
-               [&](const TimeTrack *) {
-                  /* i18n-hint: This is for screen reader software and indicates that
-                     this is a Time track.*/
-                  name->Append( wxT(" ") + wxString(_("Time Track")));
-               }
-#ifdef USE_MIDI
-                ,
-               [&](const NoteTrack *) {
-                  /* i18n-hint: This is for screen reader software and indicates that
-                     this is a Note track.*/
-                  name->Append( wxT(" ") + wxString(_("Note Track")));
-               }
-#endif
-            );
+            if (!track_cast<const WaveTrack*>(t.get()))
+               name->Append(wxT(" ") +
+                  t->GetTypeNames().name.Translation());
 
             // LLL: Remove these during "refactor"
             auto pt = dynamic_cast<PlayableTrack *>(t.get());

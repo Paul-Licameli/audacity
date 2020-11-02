@@ -1149,49 +1149,37 @@ bool NyquistEffect::ProcessOne()
       wxString bitFormat;
       wxString spectralEditp;
 
-      mCurTrack[0]->TypeSwitch(
-         [&](const WaveTrack *wt) {
-            type = wxT("wave");
-            spectralEditp = SpectrogramSettings::Get(*mCurTrack[0])
-               .SpectralSelectionEnabled()? wxT("T") : wxT("NIL");
-            view = wxT("NIL");
-            // Find() not Get() to avoid creation-on-demand of views in case we are
-            // only previewing
-            if ( const auto pView = WaveTrackView::Find( wt ) ) {
-               auto displays = WaveTrackView::Get( *wt ).GetDisplays();
-               auto format = [&]( decltype(displays[0]) display ) {
-                  // Get the English name of the view type, without menu codes,
-                  // as a string that Lisp can examine
-                  return wxString::Format( wxT("\"%s\""),
-                     display.name.Stripped().Debug() );
-               };
-               if (displays.empty())
-                  ;
-               else if (displays.size() == 1)
-                  view = format( displays[0] );
-               else {
-                  view = wxT("(list");
-                  for ( auto display : displays )
-                     view += wxString(wxT(" ")) + format( display );
-                  view += wxT(")");
-               }
+      if (auto wt = track_cast<const WaveTrack*>(mCurTrack[0])) {
+         type = wxT("wave");
+         spectralEditp = SpectrogramSettings::Get(*mCurTrack[0])
+            .SpectralSelectionEnabled()? wxT("T") : wxT("NIL");
+         view = wxT("NIL");
+         // Find() not Get() to avoid creation-on-demand of views in case we are
+         // only previewing
+         if ( const auto pView = WaveTrackView::Find( wt ) ) {
+            auto displays = WaveTrackView::Get( *wt ).GetDisplays();
+            auto format = [&]( decltype(displays[0]) display ) {
+               // Get the English name of the view type, without menu codes,
+               // as a string that Lisp can examine
+               return wxString::Format( wxT("\"%s\""),
+                  display.name.Stripped().Debug() );
+            };
+            if (displays.empty())
+               ;
+            else if (displays.size() == 1)
+               view = format( displays[0] );
+            else {
+               view = wxT("(list");
+               for ( auto display : displays )
+                  view += wxString(wxT(" ")) + format( display );
+               view += wxT(")");
             }
-         },
-#if defined(USE_MIDI)
-         [&](const NoteTrack *) {
-            type = wxT("midi");
-            view = wxT("\"Midi\"");
-         },
-#endif
-         [&](const LabelTrack *) {
-            type = wxT("label");
-            view = wxT("\"Label\"");
-         },
-         [&](const TimeTrack *) {
-            type = wxT("time");
-            view = wxT("\"Time\"");
          }
-      );
+      }
+      else {
+         type = mCurTrack[0]->GetTypeNames().property;
+         view = wxString::Format("\"%s\"", type.Capitalize());
+      }
 
       cmd += wxString::Format(wxT("(putprop '*TRACK* %d 'INDEX)\n"), ++mTrackIndex);
       cmd += wxString::Format(wxT("(putprop '*TRACK* \"%s\" 'NAME)\n"), EscapeString(mCurTrack[0]->GetName()));

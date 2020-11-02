@@ -474,10 +474,10 @@ bool GetInfoCommand::SendTracks(const CommandContext & context)
       context.AddBool( trk->GetSelected(), "selected" );
       //JKC: Possibly add later...
       //context.AddItem( TrackView::Get( *trk ).GetHeight(), "height" );
-      trk->TypeSwitch( [&] (const WaveTrack* t ) {
+      context.AddItem( trk->GetTypeNames().info, "kind" );
+      if (auto t = dynamic_cast<const WaveTrack*>(trk)) {
          float vzmin, vzmax;
          WaveformSettingsCache::Get(*t).GetDisplayBounds(vzmin, vzmax);
-         context.AddItem( "wave", "kind" );
          context.AddItem( t->GetStartTime(), "start" );
          context.AddItem( t->GetEndTime(), "end" );
          context.AddItem( t->GetPan() , "pan");
@@ -487,19 +487,7 @@ bool GetInfoCommand::SendTracks(const CommandContext & context)
          context.AddBool( t->GetMute(), "mute");
          context.AddItem( vzmin, "VZoomMin");
          context.AddItem( vzmax, "VZoomMax");
-      },
-#if defined(USE_MIDI)
-      [&](const NoteTrack *) {
-         context.AddItem( "note", "kind" );
-      },
-#endif
-      [&](const LabelTrack *) {
-         context.AddItem( "label", "kind" );
-      },
-      [&](const TimeTrack *) {
-         context.AddItem( "time", "kind" );
       }
-      );
       context.EndStruct();
    }
    context.EndArray();
