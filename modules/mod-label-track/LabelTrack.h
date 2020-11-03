@@ -113,7 +113,8 @@ public:
    void Clear(double t0, double t1) override;
    void Paste(double t, const Track * src) override;
    void PasteOver( double t0, double t1, const
-      Track *src, double duration, bool isSyncLocked) override;
+      Track *src, double duration,
+      bool isSyncLocked, bool syncLockSelected) override;
    bool Repeat(double t0, double t1, int n);
    void SyncLockAdjust(double oldT1, double newT1) override;
 

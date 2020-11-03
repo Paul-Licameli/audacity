@@ -1189,7 +1189,8 @@ void WaveTrack::Paste(double t0, const Track *src)
 }
 
 void WaveTrack::PasteOver(
-   double t0, double t1, const Track *src, double duration, bool isSyncLocked)
+   double t0, double t1, const Track *src, double duration,
+   bool isSyncLocked, bool syncLockSelected)
 {
    PasteTimeWarper warper{ t1, t0 + src->GetEndTime() };
 
@@ -1199,7 +1200,8 @@ void WaveTrack::PasteOver(
    }
    else {
       if (!GetSelected())
-         return Track::PasteOver(t0, t1, src, duration, isSyncLocked);
+         return Track::PasteOver(t0, t1, src, duration,
+            isSyncLocked, syncLockSelected);
 
       auto tmp = EmptyCopy( mpFactory );
       tmp->InsertSilence( 0.0,

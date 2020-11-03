@@ -25,6 +25,7 @@ Paul Licameli split from TrackPanel.cpp
 #include "ProjectSettings.h"
 #include "ProjectWindow.h"
 #include "RefreshCode.h"
+#include "SyncLock.h"
 #include "Theme.h"
 #include "TrackArt.h"
 #include "TrackArtist.h"
@@ -781,7 +782,7 @@ void LabelTrackView::Draw
 
    TrackArt::DrawBackgroundWithSelection( context, r, pTrack.get(),
       AColor::labelSelectedBrush, AColor::labelUnselectedBrush,
-      ( pTrack->GetSelected() || pTrack->IsSyncLockSelected() ) );
+      SyncLock::IsSelectedOrSyncLockSelected(pTrack.get()) );
 
    wxCoord textWidth, textHeight;
 

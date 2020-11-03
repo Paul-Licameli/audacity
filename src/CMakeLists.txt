@@ -176,6 +176,8 @@ list( APPEND SOURCES
       SqliteSampleBlock.cpp
       SseMathFuncs.cpp
       SseMathFuncs.h
+      SyncLock.cpp
+      SyncLock.h
       TimeDialog.cpp
       TimeDialog.h
       Track.cpp

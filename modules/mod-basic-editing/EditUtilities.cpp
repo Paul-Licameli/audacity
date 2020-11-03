@@ -18,6 +18,7 @@
 #include "ProjectWindow.h"
 #include "effects/TimeWarper.h"
 #include "SelectUtilities.h"
+#include "SyncLock.h"
 #include "ProjectWindows.h"
 #include "TrackPanelAx.h"
 #include "ViewInfo.h"
@@ -138,7 +139,7 @@ void OnCut(const CommandContext &context)
    // Proceed to change the project.  If this throws, the project will be
    // rolled back by the top level handler.
    for (auto pTrack: (tracks.Any() + &Track::SupportsBasicEditing
-      + &Track::IsSelectedOrSyncLockSelected)) {
+      + &SyncLock::IsSelectedOrSyncLockSelected)) {
       std::shared_ptr<Track> dest;
       pTrack->CutOrClear(selectedRegion.t0(), selectedRegion.t1(),
          (pTrack->IsSelected() ? &dest: nullptr));
@@ -170,7 +171,7 @@ void OnDelete(const CommandContext &context)
    for (auto n : tracks.Any()) {
       if (!n->SupportsBasicEditing())
          continue;
-      if (n->GetSelected() || n->IsSyncLockSelected()) {
+      if (SyncLock::IsSelectedOrSyncLockSelected(n)) {
          n->Clear(selectedRegion.t0(), selectedRegion.t1());
       }
    }
@@ -297,7 +298,7 @@ void OnPaste(const CommandContext &context)
             while (n && (!c->SameKindAs(*n) || !n->GetSelected()))
             {
                // Must perform sync-lock adjustment before incrementing n
-               if (n->IsSyncLockSelected()) {
+               if (SyncLock::IsSyncLockSelected(n)) {
                   auto newT1 = t0 + clipboard.Duration();
                   if (t1 != newT1 && t1 <= n->GetEndTime()) {
                      n->SyncLockAdjust(t1, newT1);
@@ -360,7 +361,8 @@ void OnPaste(const CommandContext &context)
             ff = n;
 
          wxASSERT( n && c && n->SameKindAs(*c) );
-         n->PasteOver(t0, t1, c, clipboard.Duration(), isSyncLocked);
+         n->PasteOver(t0, t1, c, clipboard.Duration(),
+            isSyncLocked, SyncLock::IsSyncLockSelected(n));
          bPastedSomething = true;
 
          --nnChannels;
@@ -392,7 +394,7 @@ void OnPaste(const CommandContext &context)
             c = * ++ pC;
          }
       } // if (n->GetSelected())
-      else if (n->IsSyncLockSelected())
+      else if (SyncLock::IsSyncLockSelected(n))
       {
          auto newT1 = t0 + clipboard.Duration();
          if (t1 != newT1 && t1 <= n->GetEndTime()) {
@@ -415,7 +417,8 @@ void OnPaste(const CommandContext &context)
       for ( auto track : tracks.Any().StartingWith(*pN) ) {
          track->PasteOver(t0, t1,
             track->GetSelected() ? wc : nullptr,
-            clipboard.Duration(), isSyncLocked);
+            clipboard.Duration(),
+            isSyncLocked, SyncLock::IsSyncLockSelected(track));
          bPastedSomething = true;
       }
    }

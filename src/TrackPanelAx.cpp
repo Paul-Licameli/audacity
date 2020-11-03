@@ -28,6 +28,7 @@
 #endif
 
 #include "Project.h"
+#include "SyncLock.h"
 #include "Track.h"
 #include "WaveTrack.h"
 
@@ -399,7 +400,7 @@ wxAccStatus TrackPanelAx::GetName( int childId, wxString* name )
                   this track is selected.*/
                name->Append( wxT(" ") + wxString(_( " Selected" )) );
             }
-            if( t->IsSyncLockSelected() )
+            if (SyncLock::IsSyncLockSelected(t.get()))
             {
                /* i18n-hint: This is for screen reader software and indicates that
                   this track is shown with a sync-locked icon.*/

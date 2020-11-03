@@ -28,6 +28,7 @@ Paul Licameli split from TrackPanel.cpp
 #include "HitTestResult.h"
 #include "ProjectHistory.h"
 #include "RefreshCode.h"
+#include "SyncLock.h"
 #include "TrackArtist.h"
 #include "TrackPanelDrawingContext.h"
 #include "TrackPanelMouseEvent.h"
@@ -1286,7 +1287,8 @@ ClipParameters::ClipParameters
 
    //If the track isn't selected, make the selection empty
    if (!track->GetSelected() &&
-      (spectrum || !track->IsSyncLockSelected())) { // PRL: why was there a difference for spectrum?
+      (spectrum ||
+       !SyncLock::IsSyncLockSelected(track))) { // PRL: why was there a difference for spectrum?
       sel0 = sel1 = 0.0;
    }
 

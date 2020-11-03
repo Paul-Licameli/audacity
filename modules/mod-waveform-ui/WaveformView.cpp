@@ -26,6 +26,7 @@ Paul Licameli split from WaveTrackView.cpp
 #include "ProjectSettings.h"
 #include "SampleBlock.h"
 #include "SelectedRegion.h"
+#include "SyncLock.h"
 #include "TrackArt.h"
 #include "TrackArtist.h"
 #include "TrackPanelDrawingContext.h"
@@ -1361,7 +1362,7 @@ void DrawClipWaveform(TrackPanelDrawingContext &context,
    // part of the waveform
    {
       double tt0, tt1;
-      if (track->GetSelected() || track->IsSyncLockSelected()) {
+      if (SyncLock::IsSelectedOrSyncLockSelected(track)) {
          tt0 = track->LongSamplesToTime(track->TimeToLongSamples(selectedRegion.t0())),
             tt1 = track->LongSamplesToTime(track->TimeToLongSamples(selectedRegion.t1()));
       }

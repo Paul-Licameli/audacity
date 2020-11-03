@@ -18,6 +18,7 @@ effect that uses SoundTouch to do its processing (ChangeTempo
 #include <math.h>
 
 #include "LabelTrack.h"
+#include "SyncLock.h"
 #include "WaveClip.h"
 #include "WaveTrack.h"
 #include "NoteTrack.h"
@@ -92,14 +93,15 @@ bool EffectSoundTouch::ProcessWithTimeWarper(InitFunction initer,
 
    mOutputTracks->Leaders().VisitWhile( bGoodResult,
       [&]( LabelTrack *lt, const Track::Fallthrough &fallthrough ) {
-         if ( !(lt->GetSelected() || (mustSync && lt->IsSyncLockSelected())) )
+         if ( !(lt->GetSelected() ||
+                (mustSync && SyncLock::IsSyncLockSelected(lt))) )
             return fallthrough();
          if (!ProcessLabelTrack(lt, warper))
             bGoodResult = false;
       },
 #ifdef USE_MIDI
       [&]( NoteTrack *nt, const Track::Fallthrough &fallthrough ) {
-         if ( !(nt->GetSelected() || (mustSync && nt->IsSyncLockSelected())) )
+         if ( !(nt->GetSelected() || (mustSync && SyncLock::IsSyncLockSelected(nt))) )
             return fallthrough();
          if (!ProcessNoteTrack(nt, warper))
             bGoodResult = false;
@@ -168,7 +170,7 @@ bool EffectSoundTouch::ProcessWithTimeWarper(InitFunction initer,
          mCurTrackNum++;
       },
       [&]( Track *t ) {
-         if (mustSync && t->IsSyncLockSelected()) {
+         if (mustSync && SyncLock::IsSyncLockSelected(t)) {
             t->SyncLockAdjust(mT1, warper.Warp(mT1));
          }
       }

@@ -25,8 +25,6 @@ and TimeTrack.
 
 #include "Track.h"
 
-
-
 #include <algorithm>
 #include <numeric>
 
@@ -36,7 +34,6 @@ and TimeTrack.
 #include <wx/log.h>
 
 #include "Project.h"
-#include "ProjectSettings.h"
 
 #include "InconsistencyException.h"
 
@@ -202,63 +199,6 @@ Track *Track::GetLink() const
    return nullptr;
 }
 
-namespace {
-inline bool IsSyncLockableNonSeparatorTrack( const Track *pTrack )
-{
-   return pTrack && pTrack->GetSyncLockPolicy() == Track::Grouped;
-}
-
-inline bool IsSeparatorTrack( const Track *pTrack )
-{
-   return pTrack && pTrack->GetSyncLockPolicy() == Track::EndSeparator;
-}
-
-bool IsGoodNextSyncLockTrack(const Track *t, bool inSeparatorSection)
-{
-   if (!t)
-      return false;
-   const bool isSeparator = IsSeparatorTrack(t);
-   if (inSeparatorSection)
-      return isSeparator;
-   else if (isSeparator)
-      return true;
-   else
-      return IsSyncLockableNonSeparatorTrack( t );
-}
-}
-
-bool Track::IsSyncLockSelected() const
-{
-#ifdef EXPERIMENTAL_SYNC_LOCK
-   auto pList = mList.lock();
-   if (!pList)
-      return false;
-
-   auto p = pList->GetOwner();
-   if (!p || !ProjectSettings::Get( *p ).IsSyncLocked())
-      return false;
-
-   auto shTrack = this->SubstituteOriginalTrack();
-   if (!shTrack)
-      return false;
-
-   const auto pOrigTrack = shTrack.get();
-   auto trackRange = TrackList::SyncLockGroup(pOrigTrack);
-
-   if (trackRange.size() <= 1) {
-      // Not in a sync-locked group.
-      // Return true iff selected and of a sync-lockable type.
-      return (IsSyncLockableNonSeparatorTrack( pOrigTrack ) ||
-              IsSeparatorTrack(pOrigTrack)) && this->GetSelected();
-   }
-
-   // Return true iff any track in the group is selected.
-   return *(trackRange + &Track::IsSelected).begin();
-
-#endif
-   return false;
-}
-
 void Track::Notify( int code )
 {
    auto pList = mList.lock();
@@ -275,14 +215,14 @@ void Track::CutOrClear(double t0, double t1, Holder *pHolder)
 }
 
 void Track::PasteOver(double t0, double t1,
-   const Track *src, double duration, bool)
+   const Track *src, double duration, bool, bool syncLockSelected)
 {
    if (src && SameKindAs(*src)) {
       Clear(t0, t1);
       Paste(t0, src);
    }
    else {
-      if (IsSyncLockSelected())
+      if (syncLockSelected)
          SyncLockAdjust(t1, t0 + duration);
    }
 }
@@ -370,9 +310,6 @@ bool Track::Any() const
 bool Track::IsSelected() const
    { return GetSelected(); }
 
-bool Track::IsSelectedOrSyncLockSelected() const
-   { return GetSelected() || IsSyncLockSelected(); }
-
 bool Track::IsLeader() const
    { return !GetLink() || GetLinked(); }
 
@@ -435,48 +372,6 @@ bool Track::LinkConsistencyCheck()
 
    return ! err;
 }
-
-std::pair<Track *, Track *> TrackList::FindSyncLockGroup(Track *pMember) const
-{
-   if (!pMember)
-      return { nullptr, nullptr };
-
-   // A non-trivial sync-locked group is a maximal sub-sequence of the tracks
-   // consisting of any positive number of Grouped tracks followed by zero or
-   // more Separator tracks.
-
-   // Step back through any Separator tracks.
-   auto pList = pMember->GetOwner();
-   auto member = pList->Find(pMember);
-   while (*member && IsSeparatorTrack(*member) )
-      --member;
-
-   // Step back through the wave and note tracks before the Separator tracks.
-   Track *first = nullptr;
-   while (*member && IsSyncLockableNonSeparatorTrack(*member)) {
-      first = *member;
-      --member;
-   }
-
-   if (!first)
-      // Can't meet the criteria described above.  In that case,
-      // consider the track to be the sole member of a group.
-      return { pMember, pMember };
-
-   auto last = pList->Find(first);
-   auto next = last;
-   bool inSeparators = false;
-
-   while (*++next) {
-      if ( ! IsGoodNextSyncLockTrack(*next, inSeparators) )
-         break;
-      last = next;
-      inSeparators = IsSeparatorTrack(*last);
-   }
-
-   return { first, *last };
-}
-
 
 // TrackList
 //
@@ -641,15 +536,6 @@ auto TrackList::EmptyRange() const
       { it, it, it, &Track::Any },
       { it, it, it, &Track::Any }
    };
-}
-
-auto TrackList::SyncLockGroup( Track *pTrack )
-   -> TrackIterRange< Track >
-{
-   auto pList = pTrack->GetOwner();
-   auto tracks =
-      pList->FindSyncLockGroup( const_cast<Track*>( pTrack ) );
-   return pList->Any().StartingWith(tracks.first).EndingAfter(tracks.second);
 }
 
 auto TrackList::FindLeader( Track *pTrack )

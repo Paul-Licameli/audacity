@@ -10,6 +10,7 @@
 #include "ProjectSettings.h"
 #include "ProjectWindow.h"
 #include "SelectUtilities.h"
+#include "SyncLock.h"
 #include "TimeDialog.h"
 #include "WaveTrack.h"
 #include "commands/CommandContext.h"
@@ -452,8 +453,8 @@ void OnSelectSyncLockSel(const CommandContext &context)
    auto &tracks = TrackList::Get( project );
 
    bool selected = false;
-   for (auto t : tracks.Any() + &Track::SupportsBasicEditing
-         + &Track::IsSyncLockSelected - &Track::IsSelected) {
+   for (auto t : tracks.Any()  + &Track::SupportsBasicEditing
+         + &SyncLock::IsSyncLockSelected - &Track::IsSelected) {
       t->SetSelected(true);
       selected = true;
    }

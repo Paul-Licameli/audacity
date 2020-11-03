@@ -20,6 +20,7 @@
 #include <math.h>
 
 #include "LabelTrack.h"
+#include "SyncLock.h"
 #include "WaveClip.h"
 #include "WaveTrack.h"
 
@@ -74,7 +75,7 @@ bool EffectReverse::Process()
    int count = 0;
 
    auto trackRange =
-      mOutputTracks->Any() + &Track::IsSelectedOrSyncLockSelected;
+      mOutputTracks->Any() + &SyncLock::IsSelectedOrSyncLockSelected;
    trackRange.VisitWhile( bGoodResult,
       [&](WaveTrack * track) {
          if (mT1 > mT0) {

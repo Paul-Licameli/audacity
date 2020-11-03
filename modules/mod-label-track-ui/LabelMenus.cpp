@@ -13,6 +13,7 @@
 #include "ProjectWindow.h"
 #include "SelectFile.h"
 #include "SelectUtilities.h"
+#include "SyncLock.h"
 #include "TrackPanelAx.h"
 #include "TransportUtilities.h"
 #include "ViewInfo.h"
@@ -193,7 +194,7 @@ void EditByLabel(AudacityProject &project,
    {
       const bool playable = dynamic_cast<const PlayableTrack *>(t) != nullptr;
 
-      if (t->IsSyncLockSelected() || notLocked && playable)
+      if (SyncLock::IsSyncLockSelected(t) || notLocked && playable)
       {
          for (int i = (int)regions.size() - 1; i >= 0; i--)
          {
@@ -239,7 +240,7 @@ void EditClipboardByLabel( AudacityProject &project,
    {
       const bool playable = dynamic_cast<const PlayableTrack *>(t) != nullptr;
 
-      if (t->IsSyncLockSelected() || notLocked && playable)
+      if (SyncLock::IsSyncLockSelected(t) || notLocked && playable)
       {
          // This track accumulates the needed clips, right to left:
          Track::Holder merged;

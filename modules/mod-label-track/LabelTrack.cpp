@@ -666,7 +666,8 @@ void LabelTrack::Paste(double t, const Track *src)
 }
 
 void LabelTrack::PasteOver(
-   double t0, double t1, const Track *src, double duration, bool isSyncLocked)
+   double t0, double t1, const Track *src, double duration,
+   bool isSyncLocked, bool syncLockSelected)
 {
    if (src && SameKindAs(*src)) {
       // Per Bug 293, users expect labels to move on a paste into
@@ -678,8 +679,9 @@ void LabelTrack::PasteOver(
       PasteOver(t0, src);
    }
    else {
-      if (!GetSelected() && !IsSyncLockSelected())
-         return Track::PasteOver(t0, t1, src, duration, isSyncLocked);
+      if (!GetSelected() && !syncLockSelected)
+         return Track::PasteOver(t0, t1, src, duration,
+            isSyncLocked, syncLockSelected);
 
       Clear(t0, t1);
 
