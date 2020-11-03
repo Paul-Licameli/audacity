@@ -917,7 +917,7 @@ template<typename T>
 {
    using BareType = typename std::remove_pointer< T >::type;
    if (track &&
-       CompatibleTrackKinds( track_kind<BareType>(), track->GetKind() ))
+       CompatibleTrackKinds( BareType::ClassTypeInfo().kind, track->GetKind() ))
       return reinterpret_cast<T>(track);
    else
       return nullptr;
@@ -935,7 +935,7 @@ template<typename T>
 {
    using BareType = typename std::remove_pointer< T >::type;
    if (track &&
-       CompatibleTrackKinds( track_kind<BareType>(), track->GetKind() ))
+       CompatibleTrackKinds( BareType::ClassTypeInfo().kind, track->GetKind() ))
       return reinterpret_cast<T>(track);
    else
       return nullptr;
