@@ -474,6 +474,15 @@ public:
 
    virtual void Paste(double WXUNUSED(t), const Track * WXUNUSED(src)) = 0;
 
+   //! Describes how a track participates in sync-lock groupings
+   enum SyncLockPolicy {
+      Isolated, //!< Never part of a group
+      Grouped, //!< Can be part of a group
+      EndSeparator, //!< Delimits the end of a group (of which it is a part)
+   };
+   //! Describe how this track participates in sync-lock groupings; defaults to Isolated
+   virtual SyncLockPolicy GetSyncLockPolicy() const { return Isolated; }
+
    // This can be used to adjust a sync-lock selected track when the selection
    // is replaced by one of a different length.
    virtual void SyncLockAdjust(double oldT1, double newT1);
@@ -851,6 +860,9 @@ public:
    AudioTrack(const Track &orig) : Track{ orig } {}
 
    static const TypeInfo &ClassTypeInfo();
+
+   //! Returns `Track::Grouped`
+   SyncLockPolicy GetSyncLockPolicy() const override;
 
    // Serialize, not with tags of its own, but as attributes within a tag.
    void WriteXMLAttributes(XMLWriter &WXUNUSED(xmlFile)) const {}

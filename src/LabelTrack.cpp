@@ -99,6 +99,11 @@ auto LabelTrack::ClassTypeInfo() -> const TypeInfo &
    return typeInfo();
 }
 
+Track::SyncLockPolicy LabelTrack::GetSyncLockPolicy() const
+{
+   return EndSeparator;
+}
+
 Track::Holder LabelTrack::PasteInto( AudacityProject & ) const
 {
    auto pNewTrack = std::make_shared<LabelTrack>();

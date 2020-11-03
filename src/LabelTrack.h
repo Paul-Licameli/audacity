@@ -147,6 +147,9 @@ public:
    const TypeInfo &GetTypeInfo() const override;
    static const TypeInfo &ClassTypeInfo();
 
+   //! Returns `Track::EndSeparator`
+   SyncLockPolicy GetSyncLockPolicy() const override;
+
    Track::Holder PasteInto( AudacityProject & ) const override;
 
    struct IntervalData final : Track::IntervalData {

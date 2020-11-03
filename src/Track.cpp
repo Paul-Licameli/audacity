@@ -223,23 +223,28 @@ Track *Track::GetLink() const
 }
 
 namespace {
-   inline bool IsSyncLockableNonLabelTrack( const Track *pTrack )
-   {
-      return nullptr != track_cast< const AudioTrack * >( pTrack );
-   }
+inline bool IsSyncLockableNonSeparatorTrack( const Track *pTrack )
+{
+   return pTrack && pTrack->GetSyncLockPolicy() == Track::Grouped;
+}
 
-   bool IsGoodNextSyncLockTrack(const Track *t, bool inLabelSection)
-   {
-      if (!t)
-         return false;
-      const bool isLabel = ( nullptr != track_cast<const LabelTrack*>(t) );
-      if (inLabelSection)
-         return isLabel;
-      else if (isLabel)
-         return true;
-      else
-         return IsSyncLockableNonLabelTrack( t );
-   }
+inline bool IsSeparatorTrack( const Track *pTrack )
+{
+   return pTrack && pTrack->GetSyncLockPolicy() == Track::EndSeparator;
+}
+
+bool IsGoodNextSyncLockTrack(const Track *t, bool inSeparatorSection)
+{
+   if (!t)
+      return false;
+   const bool isSeparator = IsSeparatorTrack(t);
+   if (inSeparatorSection)
+      return isSeparator;
+   else if (isSeparator)
+      return true;
+   else
+      return IsSyncLockableNonSeparatorTrack( t );
+}
 }
 
 bool Track::IsSyncLockSelected() const
@@ -257,20 +262,20 @@ bool Track::IsSyncLockSelected() const
    if (!shTrack)
       return false;
 
-   const auto pTrack = shTrack.get();
-   auto trackRange = TrackList::SyncLockGroup( pTrack );
+   const auto pOrigTrack = shTrack.get();
+   auto trackRange = TrackList::SyncLockGroup(pOrigTrack);
 
    if (trackRange.size() <= 1) {
       // Not in a sync-locked group.
       // Return true iff selected and of a sync-lockable type.
-      return (IsSyncLockableNonLabelTrack( pTrack ) ||
-              track_cast<const LabelTrack*>( pTrack )) && GetSelected();
+      return (IsSyncLockableNonSeparatorTrack( pOrigTrack ) ||
+              IsSeparatorTrack(pOrigTrack)) && this->GetSelected();
    }
 
    // Return true iff any track in the group is selected.
    return *(trackRange + &Track::IsSelected).begin();
-#endif
 
+#endif
    return false;
 }
 
@@ -436,20 +441,20 @@ std::pair<Track *, Track *> TrackList::FindSyncLockGroup(Track *pMember) const
       return { nullptr, nullptr };
 
    // A non-trivial sync-locked group is a maximal sub-sequence of the tracks
-   // consisting of any positive number of audio tracks followed by zero or
-   // more label tracks.
+   // consisting of any positive number of Grouped tracks followed by zero or
+   // more Separator tracks.
 
-   // Step back through any label tracks.
-   auto member = pMember;
-   while (member && ( nullptr != track_cast<const LabelTrack*>(member) )) {
-      member = GetPrev(member);
-   }
+   // Step back through any Separator tracks.
+   auto pList = pMember->GetOwner();
+   auto member = pList->Find(pMember);
+   while (*member && IsSeparatorTrack(*member) )
+      --member;
 
-   // Step back through the wave and note tracks before the label tracks.
+   // Step back through the wave and note tracks before the Separator tracks.
    Track *first = nullptr;
-   while (member && IsSyncLockableNonLabelTrack(member)) {
-      first = member;
-      member = GetPrev(member);
+   while (*member && IsSyncLockableNonSeparatorTrack(*member)) {
+      first = *member;
+      --member;
    }
 
    if (!first)
@@ -457,17 +462,18 @@ std::pair<Track *, Track *> TrackList::FindSyncLockGroup(Track *pMember) const
       // consider the track to be the sole member of a group.
       return { pMember, pMember };
 
-   Track *last = first;
-   bool inLabels = false;
+   auto last = pList->Find(first);
+   auto next = last;
+   bool inSeparators = false;
 
-   while (const auto next = GetNext(last)) {
-      if ( ! IsGoodNextSyncLockTrack(next, inLabels) )
+   while (*++next) {
+      if ( ! IsGoodNextSyncLockTrack(*next, inSeparators) )
          break;
       last = next;
-      inLabels = (nullptr != track_cast<const LabelTrack*>(last) );
+      inSeparators = IsSeparatorTrack(*last);
    }
 
-   return { first, last };
+   return { first, *last };
 }
 
 
@@ -1305,6 +1311,11 @@ auto PlayableTrack::ClassTypeInfo() -> const TypeInfo &
       { "playable", "playable", XO("Playable Track") },
       false, &AudioTrack::ClassTypeInfo() };
    return info;
+}
+
+Track::SyncLockPolicy AudioTrack::GetSyncLockPolicy() const
+{
+   return Grouped;
 }
 
 TrackIntervalData::~TrackIntervalData() = default;
