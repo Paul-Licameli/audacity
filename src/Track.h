@@ -36,18 +36,10 @@ class Track;
 class AudioTrack;
 class PlayableTrack;
 class ProjectSettings;
-class LabelTrack;
-class SampleTrack;
-class TimeTrack;
 class WaveTrack;
-class NoteTrack;
 class AudacityProject;
 
 using TrackArray = std::vector< Track* >;
-using WaveTrackArray = std::vector < std::shared_ptr< WaveTrack > > ;
-using WaveTrackConstArray = std::vector < std::shared_ptr < const WaveTrack > >;
-
-using NoteTrackConstArray = std::vector < std::shared_ptr< const NoteTrack > >;
 
 class TrackList;
 
@@ -394,11 +386,12 @@ private:
    Track *GetLink() const;
    bool GetLinked  () const { return mLinked; }
 
-   friend WaveTrack; // WaveTrack needs to call SetLinked when reloading project
+public:
    void SetLinked  (bool l);
 
-   void SetChannel(ChannelType c) { mChannel = c; }
 private:
+   void SetChannel(ChannelType c) { mChannel = c; }
+
    // No need yet to make this virtual
    void DoSetLinked(bool l);
 
