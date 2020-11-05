@@ -13,6 +13,7 @@ Paul Licameli split from TrackPanel.cpp
 #include "AColor.h"
 #include "AdornedRulerPanel.h"
 #include "AudioIO.h"
+#include "LabelTrack.h"
 #include "Project.h"
 #include "ProjectAudioIO.h"
 #include "ProjectAudioManager.h"
