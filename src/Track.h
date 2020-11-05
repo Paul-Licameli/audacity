@@ -609,18 +609,22 @@ private:
    /*! Mutually recursive (in compile time) with template Track::Executor. */
    struct Dispatcher {
       //! First, recursive case of metafunction, defers generation of operator ()
-      template< typename R, typename ConcreteType,
+      template< typename Tag, typename R, typename ConcreteType,
                 typename Function, typename ...Functions >
       struct inapplicable
       {
+         using QualifiedTrackType =
+            std::conditional_t< std::is_const<ConcreteType>::value,
+               const Track, Track >;
+   
          //! The template specialization to recur with
-         using Tail = Executor< R, ConcreteType, Functions... >;
+         using Tail = Executor< Tag, R, ConcreteType, Functions... >;
          //! Constant used in a compile-time check
          enum : unsigned { SetUsed = Tail::SetUsed << 1 };
 
          //! Ignore the first, inapplicable function and try others.
          R operator ()
-            (const Track *pTrack,
+            (QualifiedTrackType *pTrack,
              const Function &, const Functions &...functions) const
          { return Tail{}( pTrack, functions... ); }
       };
@@ -630,35 +634,51 @@ private:
                 typename Function, typename ...Functions >
       struct applicable1
       {
+         using QualifiedTrackType =
+            std::conditional_t< std::is_const<ConcreteType>::value,
+               const Track, Track >;
+         using QualifiedBaseClass =
+            std::conditional_t< std::is_const<ConcreteType>::value,
+               const BaseClass, BaseClass >;
+   
          //! Constant used in a compile-time check
          enum : unsigned { SetUsed = 1u };
 
          //! Ignore the remaining functions and call the first only.
          R operator ()
-            (const Track *pTrack,
+            (QualifiedTrackType *pTrack,
              const Function &function, const Functions &...) const
-         { return function( (BaseClass *)pTrack ); }
+         { return function( static_cast<QualifiedBaseClass *>(pTrack) ); }
       };
 
       //! Third, recursive case of metafunction, generates operator () that calls function with fallthrough
-      template< typename R, typename BaseClass, typename ConcreteType,
+      template< typename Tag,
+                typename R, typename BaseClass, typename ConcreteType,
                 typename Function, typename ...Functions >
       struct applicable2
       {
+         using QualifiedTrackType =
+            std::conditional_t< std::is_const<ConcreteType>::value,
+               const Track, Track >;
+         using QualifiedBaseClass =
+            std::conditional_t< std::is_const<ConcreteType>::value,
+               const BaseClass, BaseClass >;
+   
          //! The template specialization to recur with
-         using Tail = Executor< R, ConcreteType, Functions... >;
+         using Tail = Executor< Tag, R, ConcreteType, Functions... >;
          //! Constant used in a compile-time check
          enum : unsigned { SetUsed = (Tail::SetUsed << 1) | 1u };
 
          //! Call the first function, which may request dispatch to the further functions by invoking a continuation.
          R operator ()
-            (const Track *pTrack, const Function &function,
+            (QualifiedTrackType *pTrack, const Function &function,
              const Functions &...functions) const
          {
             auto continuation = Continuation<R>{ [&] {
                return Tail{}( pTrack, functions... );
             } };
-            return function( (BaseClass *)pTrack, continuation );
+            return function( static_cast<QualifiedBaseClass *>(pTrack),
+               continuation );
          }
       };
 
@@ -667,27 +687,32 @@ private:
 
       //! Base case, no more base classes of ConcreteType
       /*! Computes a type as the return type of undefined member test() */
-      template< typename R, typename ConcreteType >
-      struct Switch< R, ConcreteType >
+      template< typename Tag, typename R, typename ConcreteType >
+      struct Switch< Tag, R, ConcreteType, std::tuple<> >
       {
          //! No BaseClass of ConcreteType is acceptable to Function.
          template< typename Function, typename ...Functions >
             static auto test()
-               -> inapplicable< R, ConcreteType, Function, Functions... >;
+               -> inapplicable< Tag, R, ConcreteType, Function, Functions... >;
       };
 
       //! Recursive case, tries to match function with one base class of ConcreteType
       /*! Computes a type as the return type of undefined member test() */
-      template< typename R, typename ConcreteType,
+      template< typename Tag, typename R, typename ConcreteType,
                 typename BaseClass, typename ...BaseClasses >
-      struct Switch< R, ConcreteType, BaseClass, BaseClasses... >
+      struct Switch< Tag, R, ConcreteType, std::tuple<BaseClass, BaseClasses...> >
       {
+         using QualifiedBaseClass =
+            std::conditional_t< std::is_const<ConcreteType>::value,
+               const BaseClass, BaseClass >;
+
          //! Recur to this type to try the next base class
-         using Retry = Switch< R, ConcreteType, BaseClasses... >;
+         using Retry =
+            Switch< Tag, R, ConcreteType, std::tuple<BaseClasses...> >;
 
          //! Catch-all overload of undefined function used in decltype only
          /*! If ConcreteType is not compatible with BaseClass, or if
-          Function does not accept BaseClass*, try other BaseClasses. */
+          Function does not accept QualifiedBaseClass*, try other BaseClasses. */
          template< typename Function, typename ...Functions >
             static auto test( const void * )
                -> decltype( Retry::template test< Function, Functions... >() );
@@ -700,7 +725,7 @@ private:
             static auto test( std::true_type * )
                -> decltype(
                   (void) std::declval<Function>()
-                     ( (BaseClass*)nullptr ),
+                     ( (QualifiedBaseClass*)nullptr ),
                   applicable1< R, BaseClass, ConcreteType,
                                Function, Functions... >{}
                );
@@ -714,9 +739,9 @@ private:
             static auto test( std::true_type * )
                -> decltype(
                   (void) std::declval<Function>()
-                     ( (BaseClass*)nullptr,
+                     ( (QualifiedBaseClass*)nullptr,
                        std::declval< Continuation<R> >() ),
-                  applicable2< R, BaseClass, ConcreteType,
+                  applicable2< Tag, R, BaseClass, ConcreteType,
                                Function, Functions... >{}
                );
 
@@ -733,8 +758,8 @@ private:
    };
 
    //! Base case of metafunction implementing Track::TypeSwitch generates operator () with nonvoid return
-   template< typename R, typename ConcreteType >
-   struct Executor< R, ConcreteType >
+   template< typename Tag, typename R, typename ConcreteType >
+   struct Executor< Tag, R, ConcreteType >
    {
       using NominalType = ConcreteType;
       //! Constant used in a compile-time check
@@ -744,8 +769,8 @@ private:
    };
 
    //! Base case of metafunction implementing Track::TypeSwitch generates operator () with void return
-   template< typename ConcreteType >
-   struct Executor< void, ConcreteType >
+   template< typename Tag, typename ConcreteType >
+   struct Executor< Tag, void, ConcreteType >
    {
       using NominalType = ConcreteType;
       //! Constant used in a compile-time check
@@ -756,29 +781,12 @@ private:
 
    //! Implements Track::TypeSwitch, its operator() invokes the first function that can accept ConcreteType*
    /*! Mutually recursive (in compile time) with template Track::Dispatcher. */
-   template< typename R, typename ConcreteType,
+   template< typename Tag, typename R, typename ConcreteType,
              typename Function, typename ...Functions >
-   struct Executor< R, ConcreteType, Function, Functions... >
+   struct Executor< Tag, R, ConcreteType, Function, Functions... >
       : decltype(
-         Dispatcher::Switch< R, ConcreteType,
-            Track, AudioTrack, PlayableTrack,
-            WaveTrack, LabelTrack, TimeTrack,
-            NoteTrack >
-               ::template test<Function, Functions... >())
-   {
-      using NominalType = ConcreteType;
-   };
-
-   //! Implements const overload of Track::TypeSwitch, its operator() invokes the first function that can accept ConcreteType*
-   /*! Mutually recursive (in compile time) with template Track::Dispatcher. */
-   template< typename R, typename ConcreteType,
-             typename Function, typename ...Functions >
-   struct Executor< R, const ConcreteType, Function, Functions... >
-      : decltype(
-         Dispatcher::Switch< R, ConcreteType,
-            const Track, const AudioTrack, const PlayableTrack,
-            const WaveTrack, const LabelTrack, const TimeTrack,
-            const NoteTrack >
+         Dispatcher::Switch< Tag, R, ConcreteType,
+            typename CollectTrackTypes<Tag>::type >
                ::template test<Function, Functions... >())
    {
       using NominalType = ConcreteType;
@@ -832,6 +840,7 @@ public:
    }
 
    template<
+      typename Tag,
       bool IsConst,
       typename R,
       typename ...TrackTypes,
@@ -843,7 +852,7 @@ public:
       const Functions &...functions )
    {
       using Executors = std::tuple< Executor<
-         R,
+         Tag, R,
          std::conditional_t<IsConst, const TrackTypes, TrackTypes>,
          Functions...
       >... >;
@@ -884,7 +893,7 @@ public:
       struct Tag : TrackTypeCountTag {};
       using TrackTypes = typename CollectTrackTypes<Tag>::type;
       TrackTypes *const trackTypes = nullptr;
-      return DoTypeSwitch<false, R>(*this, trackTypes, functions...);
+      return DoTypeSwitch<Tag, false, R>(*this, trackTypes, functions...);
    }
 
    /*! @copydoc Track::TypeSwitch */
@@ -899,7 +908,7 @@ public:
       struct Tag : TrackTypeCountTag {};
       using TrackTypes = typename CollectTrackTypes<Tag>::type;
       TrackTypes *const trackTypes = nullptr;
-      return DoTypeSwitch<true, R>(*this, trackTypes, functions...);
+      return DoTypeSwitch<Tag, true, R>(*this, trackTypes, functions...);
    }
 
    // XMLTagHandler callback methods -- NEW virtual for writing
