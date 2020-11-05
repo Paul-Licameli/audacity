@@ -15,7 +15,7 @@ SampleTrack::~SampleTrack() = default;
 
 static const Track::TypeInfo &typeInfo()
 {
-   static const Track::TypeInfo info{ TrackKind::Sample,
+   static const Track::TypeInfo info{
       { "sample", "sample", XO("Sample Track") },
       true, &PlayableTrack::ClassTypeInfo() };
    return info;

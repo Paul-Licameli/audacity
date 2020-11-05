@@ -204,7 +204,7 @@ void WaveTrack::SetPanFromChannelType()
 
 static const Track::TypeInfo &typeInfo()
 {
-   static const Track::TypeInfo info{ TrackKind::Wave,
+   static const Track::TypeInfo info{
       { "wave", "wave", XO("Wave Track") },
       true, &SampleTrack::ClassTypeInfo() };
    return info;

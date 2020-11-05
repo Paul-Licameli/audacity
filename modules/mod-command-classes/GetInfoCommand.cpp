@@ -705,22 +705,6 @@ void GetInfoCommand::ExploreTrackPanel( const CommandContext &context,
          rect.height += l->GetHeight();
       }
 
-      switch (t->GetKind()) {
-         case Track::Wave:
-         {
-            break;
-         }
-#ifdef USE_MIDI
-         case Track::Note:
-         {
-            break;
-         }
-#endif // USE_MIDI
-         case Track::Label:
-            break;
-         case Track::Time:
-            break;
-      }
       {
          // Start with whole track rect
          wxRect R = trackRect;

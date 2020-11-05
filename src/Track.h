@@ -135,20 +135,6 @@ struct TrackTypeCounter {
    TrackTypeCountTag, \
    std::integral_constant<unsigned, TrackTypeCounter<T>::value>) -> T&; }
 
-//! Enumerates all subclasses of Track (not just the leaf classes) and the None value
-enum class TrackKind
-{
-   None, //!< no class
-   Wave,
-   Note,
-   Label,
-   Time,
-   Audio, //!< nonleaf
-   Playable, //!< nonleaf
-   Sample, //!< nonleaf
-   All //!< the root class
-};
-
 // forward declarations, so we can make them friends
 template<typename T>
    typename std::enable_if< std::is_pointer<T>::value, T >::type
@@ -338,7 +324,6 @@ class AUDACITY_DLL_API Track /* not final */
       TranslatableString name; //!< long, like "Wave Track"
    };
    struct TypeInfo {
-      TrackKind kind = TrackKind::None;
       TypeNames names;
       bool concrete = false;
       const TypeInfo *pBaseInfo = nullptr;
@@ -511,8 +496,6 @@ private:
    // the track data proper (not associated data such as for groups and views):
    virtual Holder Clone() const = 0;
 
-   virtual TrackKind GetKind() const { return TrackKind::None; }
-
    template<typename T>
       friend typename std::enable_if< std::is_pointer<T>::value, T >::type
          track_cast(Track *track);
@@ -526,7 +509,7 @@ private:
 
 public:
    bool SameKindAs(const Track &track) const
-      { return GetKind() == track.GetKind(); }
+      { return &GetTypeInfo() == &track.GetTypeInfo(); }
 
    //! Type of arguments passed as optional second parameter to TypeSwitch() cases
    template < typename R = void >

@@ -1232,7 +1232,7 @@ std::shared_ptr<const Track> Track::SubstituteOriginalTrack() const
 
 auto Track::ClassTypeInfo() -> const TypeInfo &
 {
-   static Track::TypeInfo info{ TrackKind::All,
+   static Track::TypeInfo info{
       { "generic", "generic", XO("Generic Track") }, false };
    return info;
 }
@@ -1299,7 +1299,7 @@ void Track::AdjustPositions()
 
 auto AudioTrack::ClassTypeInfo() -> const TypeInfo &
 {
-   static Track::TypeInfo info{ TrackKind::Audio,
+   static Track::TypeInfo info{
       { "audio", "audio", XO("Audio Track") },
       false, &Track::ClassTypeInfo() };
    return info;
@@ -1307,7 +1307,7 @@ auto AudioTrack::ClassTypeInfo() -> const TypeInfo &
 
 auto PlayableTrack::ClassTypeInfo() -> const TypeInfo &
 {
-   static Track::TypeInfo info{ TrackKind::Playable,
+   static Track::TypeInfo info{
       { "playable", "playable", XO("Playable Track") },
       false, &AudioTrack::ClassTypeInfo() };
    return info;

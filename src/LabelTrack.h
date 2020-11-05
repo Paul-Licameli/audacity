@@ -165,8 +165,6 @@ public:
    void SortLabels();
 
  private:
-   TrackKind GetKind() const override { return TrackKind::Label; }
-
    LabelArray mLabels;
 
    // Set in copied label tracks
