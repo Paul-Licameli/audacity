@@ -149,72 +149,6 @@ enum class TrackKind
    All //!< the root class
 };
 
-//! Compile-time function on enum values
-/*! It knows all inheritance relations among Track subclasses
-    even where the track types are only forward declared. */
-constexpr bool CompatibleTrackKinds( TrackKind desired, TrackKind actual )
-{
-   return
-      (desired == actual)
-      ||
-      (desired == TrackKind::All)
-      ||
-      (desired == TrackKind::Sample    && actual == TrackKind::Wave)
-      ||
-      (desired == TrackKind::Audio    && actual == TrackKind::Wave)
-#ifdef USE_MIDI
-      ||
-      (desired == TrackKind::Audio    && actual == TrackKind::Note)
-#endif
-      ||
-      (desired == TrackKind::Playable && actual == TrackKind::Wave)
-#ifdef EXPERIMENTAL_MIDI_OUT
-      ||
-      (desired == TrackKind::Playable && actual == TrackKind::Note)
-#endif
-   ;
-}
-
-//! Metaprogramming enabling track_cast even when the subclasses are incomplete types
-namespace TrackTyper {
-   template<typename, TrackKind> struct Pair;
-   //! Compile-time map from types to enum values
-   using List = std::tuple<
-     Pair<Track,         TrackKind::All>,
-     Pair<AudioTrack,    TrackKind::Audio>,
-     Pair<PlayableTrack, TrackKind::Playable>,
-     Pair<LabelTrack,    TrackKind::Label>,
-     Pair<NoteTrack,     TrackKind::Note>,
-     Pair<TimeTrack,     TrackKind::Time>,
-     Pair<SampleTrack,   TrackKind::Sample>,
-     Pair<WaveTrack,     TrackKind::Wave>
-     // New classes can be added easily to this list
-   >;
-   //! Variadic template implements metafunction with specializations, to associate enum values with types
-   template<typename...> struct Lookup {};
-   //! Base case of metafunction
-   template<typename TrackType, TrackKind Here, typename... Rest>
-      struct Lookup< TrackType, std::tuple< Pair<TrackType, Here>, Rest... > > {
-         static constexpr TrackKind value() {
-            return Here;
-         }
-      };
-   //! Recursive case of metafunction
-   template<typename TrackType, typename NotHere, typename... Rest>
-      struct Lookup< TrackType, std::tuple< NotHere, Rest... > > {
-         static constexpr TrackKind value() {
-            return Lookup< TrackType, std::tuple< Rest... > >::value();
-         }
-      };
-};
-
-//! Metafunction from track subtype (as template parameter) to enum value
-template<typename TrackType> constexpr TrackKind track_kind ()
-{
-   using namespace TrackTyper;
-   return Lookup< typename std::remove_const<TrackType>::type, List >::value();
-}
-
 // forward declarations, so we can make them friends
 template<typename T>
    typename std::enable_if< std::is_pointer<T>::value, T >::type
@@ -746,8 +680,8 @@ private:
                );
 
          //! Whether upcast of ConcreteType* to first BaseClass* works
-         static constexpr bool Compatible = CompatibleTrackKinds(
-            track_kind<BaseClass>(), track_kind<ConcreteType>() );
+         static constexpr bool Compatible =
+            std::is_base_of<BaseClass, ConcreteType>::value;
          //! undefined function used in decltype only to compute a type, using other overloads
          template< typename Function, typename ...Functions >
             static auto test()
@@ -1026,7 +960,7 @@ template<typename T>
 {
    using BareType = typename std::remove_pointer< T >::type;
    if (track &&
-       CompatibleTrackKinds( BareType::ClassTypeInfo().kind, track->GetKind() ))
+       BareType::ClassTypeInfo().IsBaseOf(track->GetTypeInfo() ))
       return reinterpret_cast<T>(track);
    else
       return nullptr;
@@ -1044,7 +978,7 @@ template<typename T>
 {
    using BareType = typename std::remove_pointer< T >::type;
    if (track &&
-       CompatibleTrackKinds( BareType::ClassTypeInfo().kind, track->GetKind() ))
+       BareType::ClassTypeInfo().IsBaseOf(track->GetTypeInfo() ))
       return reinterpret_cast<T>(track);
    else
       return nullptr;

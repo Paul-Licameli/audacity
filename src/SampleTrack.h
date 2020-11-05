@@ -14,6 +14,7 @@ Paul Licameli split from WaveTrack.h
 
 #include "Prefs.h"
 #include "SampleFormat.h"
+#include "Prefs.h" // for EnumSetting
 #include "Track.h"
 
 class sampleCount;
