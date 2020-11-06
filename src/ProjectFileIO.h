@@ -210,8 +210,11 @@ private:
 
    // XMLTagHandler callback methods
    bool HandleXMLTag(const wxChar *tag, const wxChar **attrs) override;
+
+public:
    XMLTagHandler *HandleXMLChild(const wxChar *tag) override;
 
+private:
    void UpdatePrefs() override;
 
    int Exec(const char *query, const ExecCB &callback);
