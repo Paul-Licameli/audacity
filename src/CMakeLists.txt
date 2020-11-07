@@ -241,6 +241,8 @@ list( APPEND SOURCES
       TrackPanelResizerCell.h
       TrackUtilities.cpp
       TrackUtilities.h
+      TransportUtilities.cpp
+      TransportUtilities.h
       UIHandle.cpp
       UIHandle.h
       UndoManager.cpp
