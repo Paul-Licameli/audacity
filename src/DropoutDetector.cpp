@@ -14,6 +14,7 @@ Paul Licameli split from ProjectAudioManager.cpp
 #include "ProjectAudioManager.h"
 #include "ProjectHistory.h"
 #include "widgets/Warning.h"
+#include <wx/app.h>
 #include <wx/frame.h>
 
 static AudacityProject::AttachedObjects::RegisteredFactory sKey {
