@@ -1589,5 +1589,41 @@ void TrackPanel::OnTrackFocusChange( wxCommandEvent &event )
    }
 }
 
+static const auto PathStart = wxT("TrackPanel");
+
+Registry::GroupItem &MyRegistry()
+{
+   static Registry::TransparentGroupItem<> registry{ PathStart };
+   return registry;
+}
+
+struct Visitor final : Registry::Visitor {
+   Visitor()
+   {
+   }
+
+   void BeginGroup( Registry::GroupItem &item, const Path &path ) override
+   {
+   }
+
+   void EndGroup( Registry::GroupItem &item, const Path &path ) override
+   {
+   }
+   
+   void Visit( Registry::SingleItem &item, const Path &path ) override
+   {
+   }
+};
+
+void foo()
+{
+   static std::once_flag flag;
+   std::call_once( flag, []{
+      Visitor visitor{};
+      Registry::TransparentGroupItem<> top{ PathStart };
+      Registry::Visit( visitor, &top, &MyRegistry() );
+   } );
+}
+
 #include "ModuleConstants.h"
 DEFINE_MODULE_ENTRIES
