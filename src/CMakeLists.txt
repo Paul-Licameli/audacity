@@ -118,8 +118,6 @@ list( APPEND SOURCES
       ImageManipulation.h
       KeyboardCapture.cpp
       KeyboardCapture.h
-      LabelTrack.cpp
-      LabelTrack.h
       LangChoice.cpp
       LangChoice.h
       Legacy.cpp

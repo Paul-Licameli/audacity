@@ -18,7 +18,7 @@ list( APPEND SOURCES
    TwoPassSimpleMono.cpp
    TwoPassSimpleMono.h
 )
-audacity_module( mod-effects "${SOURCES}" "Audacity"
+audacity_module( mod-effects "${SOURCES}" "mod-label-track-interface"
    "" "" )
 
 if (CMAKE_SYSTEM_NAME MATCHES "Darwin")

@@ -974,3 +974,6 @@ int LabelTrack::FindNextLabel(const SelectedRegion& currentRegion)
    miLastLabel = i;
    return i;
 }
+
+#include "ModuleConstants.h"
+DEFINE_MODULE_ENTRIES

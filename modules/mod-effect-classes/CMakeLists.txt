@@ -69,5 +69,5 @@ list( APPEND SOURCES
    Wahwah.h
 )
 audacity_module( mod-effect-classes "${SOURCES}"
-   "mod-effects-interface;mod-common-track-ui-interface"
+   "mod-effects-interface;mod-common-track-ui-interface;mod-label-track-interface"
    "" "" )

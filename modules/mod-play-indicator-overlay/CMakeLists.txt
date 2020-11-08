@@ -3,5 +3,5 @@ list( APPEND SOURCES
    PlayIndicatorOverlay.h
 )
 audacity_module( mod-play-indicator-overlay "${SOURCES}"
-   "Audacity"
+   "mod-label-track-interface"
    "" "" )

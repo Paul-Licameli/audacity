@@ -18,6 +18,7 @@ set( SOURCES
 )
 set( LIBS
    mod-effects-interface
+   mod-label-track-interface
    libsbsms
    soundtouch
 )
