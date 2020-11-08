@@ -1,6 +1,7 @@
 #include "../AudioIO.h"
 #include "../Clipboard.h"
 #include "../CommonCommandFlags.h"
+#include "../LabelImportExport.h"
 #include "../LabelTrack.h"
 #include "../Menus.h"
 #include "Prefs.h"

@@ -16,6 +16,8 @@ Paul Licameli split from ProjectManager.cpp
 #include "ComponentInterfaceSymbol.h"
 #include <wx/event.h> // to inherit
 
+#include <wx/event.h>
+
 class AudacityProject;
 
 class AUDACITY_DLL_API ProjectSelectionManager final

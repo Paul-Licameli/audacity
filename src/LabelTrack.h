@@ -215,9 +215,3 @@ wxDECLARE_EXPORTED_EVENT(AUDACITY_DLL_API,
 wxDECLARE_EXPORTED_EVENT(AUDACITY_DLL_API,
                          EVT_LABELTRACK_SELECTION, LabelTrackEvent);
 #endif
-
-class wxTextFile;
-LabelStruct ImportLabelStruct(wxTextFile &file, int &index);
-void ExportLabelStruct(const LabelStruct &label, wxTextFile &file);
-void ImportLabelTrack(LabelTrack &track, wxTextFile & f);
-void ExportLabelTrack(const LabelTrack &track, wxTextFile & f);

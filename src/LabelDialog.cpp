@@ -26,6 +26,7 @@
 #include <wx/textdlg.h>
 
 #include "ShuttleGui.h"
+#include "LabelImportExport.h"
 #include "LabelTrack.h"
 #include "Prefs.h"
 #include "Project.h"
