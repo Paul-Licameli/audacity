@@ -14,6 +14,7 @@ Paul Licameli
 #include <memory>
 #include <utility>
 #include "TrackPanelDrawable.h" // to inherit
+#include "Internat.h"
 
 class AudacityProject;
 struct HitTestPreview;
@@ -65,6 +66,10 @@ public:
 
    // Report a subdivision of one of the axes of the given rectangle
    virtual Subdivision Children( const wxRect &rect ) = 0;
+
+   // Report an Identifier to be used in Registry paths, to make the
+   // subdivision procedure hookable
+   virtual Identifier GetName() const = 0;
 };
 
 /// Abstract base class defining TrackPanel's access to specialist classes that

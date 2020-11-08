@@ -2300,6 +2300,10 @@ struct AdornedRulerPanel::Subgroup final : TrackPanelGroup {
          }
       };
    }
+   Identifier GetName() const override
+   {
+      return wxT("AdornedRulerPanel-Subgroup");
+   }
    const AdornedRulerPanel &mRuler;
 };
 
@@ -2312,6 +2316,10 @@ struct AdornedRulerPanel::MainGroup final : TrackPanelGroup {
       { mRuler.mInner.GetLeft(), std::make_shared< Subgroup >( mRuler ) },
       { mRuler.mInner.GetRight() + 1, nullptr }
    } }; }
+   Identifier GetName() const override
+   {
+      return wxT("AdornedRulerPanel");
+   }
    const AdornedRulerPanel &mRuler;
 };
 
