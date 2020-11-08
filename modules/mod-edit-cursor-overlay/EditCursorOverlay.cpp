@@ -8,17 +8,16 @@ Paul Licameli split from TrackPanel.cpp
 
 **********************************************************************/
 
-
 #include "EditCursorOverlay.h"
 
-#include "TrackView.h"
-#include "../../AColor.h"
-#include "../../AdornedRulerPanel.h"
-#include "../../Project.h"
-#include "../../Track.h" //
-#include "../../TrackPanelAx.h"
-#include "../../TrackPanel.h"
-#include "../../ViewInfo.h"
+#include "tracks/ui/TrackView.h"
+#include "AColor.h"
+#include "AdornedRulerPanel.h"
+#include "Project.h"
+#include "Track.h" //
+#include "TrackPanelAx.h"
+#include "TrackPanel.h"
+#include "ViewInfo.h"
 
 #include <wx/dc.h>
 
@@ -129,3 +128,6 @@ void EditCursorOverlay::Draw(OverlayPanel &panel, wxDC &dc)
    else
       wxASSERT(false);
 }
+
+#include "ModuleConstants.h"
+DEFINE_MODULE_ENTRIES

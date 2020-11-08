@@ -342,8 +342,6 @@ list( APPEND SOURCES
       tracks/ui/BackgroundCell.h
       tracks/ui/CommonTrackPanelCell.cpp
       tracks/ui/CommonTrackPanelCell.h
-      tracks/ui/EditCursorOverlay.cpp
-      tracks/ui/EditCursorOverlay.h
       tracks/ui/PlayIndicatorOverlay.cpp
       tracks/ui/PlayIndicatorOverlay.h
       tracks/ui/ScrubUI.cpp
