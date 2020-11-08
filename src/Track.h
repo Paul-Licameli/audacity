@@ -463,7 +463,14 @@ public:
    // May assume precondition: t0 <= t1
    virtual void Clear(double WXUNUSED(t0), double WXUNUSED(t1)) = 0;
 
-   virtual void Paste(double WXUNUSED(t), const Track * WXUNUSED(src)) = 0;
+   // Paste at a point
+   virtual void Paste(double t, const Track *src) = 0;
+
+   // Clear an interval and then paste;
+   // src may be null or of wrong type, in which case, paste silence
+   // of given duration
+   virtual void PasteOver( double t0, double t1,
+      const Track *src, double duration, bool isSyncLocked);
 
    //! Describes how a track participates in sync-lock groupings
    enum SyncLockPolicy {

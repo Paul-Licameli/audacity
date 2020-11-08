@@ -286,6 +286,19 @@ void Track::Notify( int code )
       pList->DataEvent( SharedPointer(), code );
 }
 
+void Track::PasteOver(double t0, double t1,
+   const Track *src, double duration, bool)
+{
+   if (src && SameKindAs(*src)) {
+      Clear(t0, t1);
+      Paste(t0, src);
+   }
+   else {
+      if (IsSyncLockSelected())
+         SyncLockAdjust(t1, t0 + duration);
+   }
+}
+
 void Track::SyncLockAdjust(double oldT1, double newT1)
 {
    if (newT1 > oldT1) {

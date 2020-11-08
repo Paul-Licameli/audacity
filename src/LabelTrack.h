@@ -109,6 +109,8 @@ public:
    Track::Holder Copy (double t0, double t1, bool forClipboard = true) const override;
    void Clear(double t0, double t1) override;
    void Paste(double t, const Track * src) override;
+   void PasteOver( double t0, double t1, const
+      Track *src, double duration, bool isSyncLocked) override;
    bool Repeat(double t0, double t1, int n);
    void SyncLockAdjust(double oldT1, double newT1) override;
 
@@ -127,7 +129,7 @@ public:
    void DeleteLabel(int index);
 
    // This pastes labels without shifting existing ones
-   bool PasteOver(double t, const Track *src);
+   void PasteOver(double t, const Track *src);
 
    // PRL:  These functions were not used because they were not overrides!  Was that right?
    //Track::Holder SplitCut(double b, double e) /* not override */;

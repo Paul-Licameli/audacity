@@ -2,7 +2,6 @@
 #include "../Clipboard.h"
 #include "../CommonCommandFlags.h"
 #include "../EditUtilities.h"
-#include "../LabelTrack.h"
 #include "../Menus.h"
 #include "../NoteTrack.h"
 #include "Prefs.h"
@@ -307,8 +306,6 @@ void OnPaste(const CommandContext &context)
 {
    auto &project = context.project;
    auto &tracks = TrackList::Get( project );
-   auto &trackFactory = WaveTrackFactory::Get( project );
-   auto &pSampleBlockFactory = trackFactory.GetSampleBlockFactory();
    auto &selectedRegion = ViewInfo::Get( project ).selectedRegion;
    const auto &settings = ProjectSettings::Get( project );
    auto &window = ProjectWindow::Get( project );
@@ -445,25 +442,8 @@ void OnPaste(const CommandContext &context)
             ff = n;
 
          wxASSERT( n && c && n->SameKindAs(*c) );
-         n->TypeSwitch(
-            [&](WaveTrack *wn){
-               pasteWaveTrack(wn, static_cast<const WaveTrack *>(c));
-            },
-            [&](LabelTrack *ln){
-               // Per Bug 293, users expect labels to move on a paste into
-               // a label track.
-               ln->Clear(t0, t1);
-
-               ln->ShiftLabelsOnInsert( clipboard.Duration(), t0 );
-
-               bPastedSomething |= ln->PasteOver(t0, c);
-            },
-            [&](Track *){
-               bPastedSomething = true;
-               n->Clear(t0, t1);
-               n->Paste(t0, c);
-            }
-         );
+         n->PasteOver(t0, t1, c, clipboard.Duration(), isSyncLocked);
+         bPastedSomething = true;
 
          --nnChannels;
          --ncChannels;
@@ -514,40 +494,12 @@ void OnPaste(const CommandContext &context)
       const auto wc =
          *clipboard.GetTracks().Any< const WaveTrack >().rbegin();
 
-      tracks.Any().StartingWith(*pN).Visit(
-         [&](WaveTrack *wt, const Track::Fallthrough &fallthrough) {
-            if (!wt->GetSelected())
-               return fallthrough();
-
-            if (wc) {
-               pasteWaveTrack(wt, wc);
-            }
-            else {
-               auto tmp = wt->EmptyCopy( pSampleBlockFactory );
-               tmp->InsertSilence( 0.0,
-                  // MJS: Is this correct?
-                  clipboard.Duration() );
-               tmp->Flush();
-
-               pasteWaveTrack(wt, tmp.get());
-            }
-         },
-         [&](LabelTrack *lt, const Track::Fallthrough &fallthrough) {
-            if (!lt->GetSelected() && !lt->IsSyncLockSelected())
-               return fallthrough();
-
-            lt->Clear(t0, t1);
-
-            // As above, only shift labels if sync-lock is on.
-            if (isSyncLocked)
-               lt->ShiftLabelsOnInsert(
-                  clipboard.Duration(), t0);
-         },
-         [&](Track *n) {
-            if (n->IsSyncLockSelected())
-               n->SyncLockAdjust(t1, t0 + clipboard.Duration() );
-         }
-      );
+      for ( auto track : tracks.Any().StartingWith(*pN) ) {
+         track->PasteOver(t0, t1,
+            track->GetSelected() ? wc : nullptr,
+            clipboard.Duration(), isSyncLocked);
+         bPastedSomething = true;
+      }
    }
 
    // TODO: What if we clicked past the end of the track?

@@ -1163,6 +1163,29 @@ void WaveTrack::Paste(double t0, const Track *src)
       (void)0;// Empty if intentional.
 }
 
+void WaveTrack::PasteOver(
+   double t0, double t1, const Track *src, double duration, bool isSyncLocked)
+{
+   PasteTimeWarper warper{ t1, t0 + src->GetEndTime() };
+
+   if (src && SameKindAs(*src)) {
+      const auto wc = static_cast<const WaveTrack *>(src);
+      ClearAndPaste(t0, t1, wc, true, true, &warper);
+   }
+   else {
+      if (!GetSelected())
+         return Track::PasteOver(t0, t1, src, duration, isSyncLocked);
+
+      auto tmp = EmptyCopy( mpFactory );
+      tmp->InsertSilence( 0.0,
+         // MJS: Is this correct?
+         duration );
+      tmp->Flush();
+
+      ClearAndPaste(t0, t1, tmp.get(), true, true, &warper);
+   }
+}
+
 void WaveTrack::Silence(double t0, double t1)
 {
    if (t1 < t0)

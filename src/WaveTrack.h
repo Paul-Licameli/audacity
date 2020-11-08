@@ -166,6 +166,8 @@ private:
 
    void Clear(double t0, double t1) override;
    void Paste(double t0, const Track *src) override;
+   void PasteOver( double t0, double t1, const
+      Track *src, double duration, bool isSyncLocked) override;
    // May assume precondition: t0 <= t1
    void ClearAndPaste(double t0, double t1,
                               const Track *src,
