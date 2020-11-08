@@ -30,7 +30,6 @@
 
 #include "Prefs.h"
 #include "ProjectFileIORegistry.h"
-#include "prefs/ImportExportPrefs.h"
 
 #include "InconsistencyException.h"
 
@@ -736,10 +735,25 @@ bool NoteTrack::ExportMIDI(const wxString &f) const
    return rslt;
 }
 
+EnumSetting< bool > AllegroStyleSetting{
+   wxT("/FileFormats/AllegroStyleChoice"),
+   {
+      EnumValueSymbol{ wxT("Seconds"), XXO("&Seconds") },
+      EnumValueSymbol{ wxT("Beats"), XXO("&Beats") },
+   },
+   0, // true
+
+   // for migrating old preferences:
+   {
+      true, false,
+   },
+   wxT("/FileFormats/AllegroStyle"),
+};
+
 bool NoteTrack::ExportAllegro(const wxString &f) const
 {
    double offset = GetOffset();
-   auto in_seconds = ImportExportPrefs::AllegroStyleSetting.ReadEnum();
+   auto in_seconds = AllegroStyleSetting.ReadEnum();
    auto &seq = GetSeq();
    if (in_seconds) {
        seq.convert_to_seconds();

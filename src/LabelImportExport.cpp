@@ -11,6 +11,7 @@
 #include "LabelImportExport.h"
 
 #include "LabelTrack.h"
+#include "ShuttleGui.h"
 #include "prefs/ImportExportPrefs.h"
 #include "widgets/AudacityMessageBox.h"
 
@@ -19,7 +20,24 @@
 
 #include <float.h>
 
-namespace { struct BadFormatException {}; }
+namespace {
+
+struct BadFormatException {};
+
+static EnumSetting< bool > LabelStyleSetting{
+   wxT("/FileFormats/LabelStyleChoice"),
+   {
+      EnumValueSymbol{ wxT("Standard"), XXO("S&tandard") },
+      EnumValueSymbol{ wxT("Extended"), XXO("E&xtended (with frequency ranges)") },
+   },
+   0, // true
+
+   {
+      true, false,
+   },
+};
+
+}
 
 LabelStruct ImportLabelStruct(wxTextFile &file, int &index)
 {
@@ -106,7 +124,7 @@ void ExportLabelStruct(const LabelStruct &label, wxTextFile &file)
    auto f1 = label.selectedRegion.f1();
    if ((f0 == SelectedRegion::UndefinedFrequency &&
       f1 == SelectedRegion::UndefinedFrequency) ||
-      ImportExportPrefs::LabelStyleSetting.ReadEnum())
+      LabelStyleSetting.ReadEnum())
       return;
 
    // Write a \ character at the start of a second line,
@@ -149,4 +167,30 @@ void ImportLabelTrack(LabelTrack &track, wxTextFile & in)
    if (error)
       ::AudacityMessageBox( XO("One or more saved labels could not be read.") );
    track.SortLabels();
+}
+
+namespace {
+
+void AddControls(ShuttleGui &S)
+{
+   S.StartStatic(XO("Exported Label Style:"));
+   {
+      // Bug 2692: Place button group in panel so tabbing will work and,
+      // on the Mac, VoiceOver will announce as radio buttons.
+      S.StartPanel();
+      {
+         S.StartRadioButtonGroup(LabelStyleSetting);
+         {
+            S.TieRadioButton();
+            S.TieRadioButton();
+         }
+         S.EndRadioButtonGroup();
+      }
+      S.EndPanel();
+   }
+   S.EndStatic();
+}
+
+ImportExportPrefs::RegisteredControls reg{ wxT("LabelStyle"), AddControls };
+
 }

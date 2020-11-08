@@ -233,4 +233,7 @@ public:
 #endif
 
 
+#include "Prefs.h"
+extern AUDACITY_DLL_API EnumSetting< bool > AllegroStyleSetting;
+
 #endif
