@@ -16,9 +16,6 @@
 #include "SelectedRegion.h"
 #include "Track.h"
 
-
-class wxTextFile;
-
 class AudacityProject;
 class NotifyingSelectedRegion;
 class TimeWarper;
@@ -42,11 +39,6 @@ public:
    // Returns true iff the label got inverted:
    bool AdjustEdge( int iEdge, double fNewTime);
    void MoveLabel( int iEdge, double fNewTime);
-
-   struct BadFormatException {};
-   static LabelStruct Import(wxTextFile &file, int &index);
-
-   void Export(wxTextFile &file) const;
 
    /// Relationships between selection region and labels
    enum TimeRelations
@@ -121,9 +113,6 @@ public:
 
    void Silence(double t0, double t1) override;
    void InsertSilence(double t, double len) override;
-
-   void Import(wxTextFile & f);
-   void Export(wxTextFile & f) const;
 
    int GetNumLabels() const;
    const LabelStruct *GetLabel(int index) const;
@@ -226,3 +215,9 @@ wxDECLARE_EXPORTED_EVENT(AUDACITY_DLL_API,
 wxDECLARE_EXPORTED_EVENT(AUDACITY_DLL_API,
                          EVT_LABELTRACK_SELECTION, LabelTrackEvent);
 #endif
+
+class wxTextFile;
+LabelStruct ImportLabelStruct(wxTextFile &file, int &index);
+void ExportLabelStruct(const LabelStruct &label, wxTextFile &file);
+void ImportLabelTrack(LabelTrack &track, wxTextFile & f);
+void ExportLabelTrack(const LabelTrack &track, wxTextFile & f);
