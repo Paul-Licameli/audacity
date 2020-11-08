@@ -26,6 +26,8 @@
 #include "Command.h"
 #include <wx/app.h>
 
+#include <wx/app.h>
+
 CommandHandler::CommandHandler()
 {
    wxTheApp->Bind(wxEVT_APP_COMMAND_RECEIVED,

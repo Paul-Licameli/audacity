@@ -8,21 +8,20 @@ Paul Licameli split from TrackPanel.cpp
 
 **********************************************************************/
 
-
 #include "PlayIndicatorOverlay.h"
 
-#include "../../AColor.h"
-#include "../../AdornedRulerPanel.h"
-#include "../../AudioIO.h"
-#include "../../Project.h"
-#include "../../ProjectAudioIO.h"
-#include "../../ProjectAudioManager.h"
-#include "../../ProjectWindow.h"
-#include "../../Track.h"
-#include "../../TrackPanel.h"
-#include "../../ViewInfo.h"
-#include "Scrubbing.h"
-#include "TrackView.h"
+#include "AColor.h"
+#include "AdornedRulerPanel.h"
+#include "AudioIO.h"
+#include "Project.h"
+#include "ProjectAudioIO.h"
+#include "ProjectAudioManager.h"
+#include "ProjectWindow.h"
+#include "Track.h"
+#include "TrackPanel.h"
+#include "ViewInfo.h"
+#include "tracks/ui/Scrubbing.h"
+#include "tracks/ui/TrackView.h"
 
 #include <wx/dc.h>
 
@@ -228,3 +227,7 @@ void PlayIndicatorOverlay::OnTimer(wxCommandEvent &event)
    if(mPartner)
       mPartner->Update(mNewIndicatorX);
 }
+
+#include "ModuleConstants.h"
+DEFINE_MODULE_ENTRIES
+

@@ -77,6 +77,7 @@ static const std::unordered_set<wxString> &autoEnabledModules()
       "mod-common-track-ui",
       "mod-scripting",
       "mod-edit-cursor-overlay",
+      "mod-play-indicator-overlay",
    };
    return modules;
 }
