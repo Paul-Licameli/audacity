@@ -364,3 +364,6 @@ static struct WarpFunctionInstaller {
       Mixer::WarpOptions::SetDefaultWarpFunction(prevFunction);
    }
 } installer;
+
+#include "ModuleConstants.h"
+DEFINE_MODULE_ENTRIES

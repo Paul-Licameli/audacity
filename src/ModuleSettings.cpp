@@ -79,6 +79,7 @@ static const std::unordered_set<wxString> &autoEnabledModules()
       "mod-edit-cursor-overlay",
       "mod-play-indicator-overlay",
       "mod-label-track",
+      "mod-time-track",
    };
    return modules;
 }

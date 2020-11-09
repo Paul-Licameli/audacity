@@ -9,5 +9,6 @@ list( APPEND SOURCES
    TimeTrackView.cpp
    TimeTrackView.h
 )
-audacity_module( mod-time-track-ui "${SOURCES}" "mod-common-track-ui-interface"
+audacity_module( mod-time-track-ui "${SOURCES}"
+   "mod-common-track-ui-interface;mod-time-track-interface"
    "" "" )

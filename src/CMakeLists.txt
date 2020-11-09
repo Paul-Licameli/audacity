@@ -211,8 +211,6 @@ list( APPEND SOURCES
       ThemeAsCeeCode.h
       TimeDialog.cpp
       TimeDialog.h
-      TimeTrack.cpp
-      TimeTrack.h
       Track.cpp
       Track.h
       TrackArtist.cpp
