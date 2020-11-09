@@ -408,6 +408,7 @@ bool Scrubber::MaybeStartScrubbing(wxCoord xx)
                return ScrubPollInterval_ms;
             };
 #endif
+            options.playNonWaveTracks = false;
             options.pScrubbingOptions = &mOptions;
             options.envelope = nullptr;
             mOptions.delay = (ScrubPollInterval_ms / 1000.0);
@@ -524,6 +525,7 @@ bool Scrubber::StartSpeedPlay(double speed, double time0, double time1)
             };
 #endif
 
+   options.playNonWaveTracks = false;
    options.pScrubbingOptions = &mOptions;
    options.envelope = nullptr;
    mOptions.delay = (ScrubPollInterval_ms / 1000.0);
@@ -599,6 +601,7 @@ bool Scrubber::StartKeyboardScrubbing(double time0, bool backwards)
    };
 #endif
 
+   options.playNonWaveTracks = false;
    options.pScrubbingOptions = &mOptions;
    options.envelope = nullptr;
 
