@@ -290,12 +290,6 @@ const ReservedCommandFlag&
    }; return flag; }
 #ifdef USE_MIDI
 const ReservedCommandFlag&
-   NoteTracksExistFlag() { static ReservedCommandFlag flag{
-      [](const AudacityProject &project){
-         return !TrackList::Get( project ).Any<const NoteTrack>().empty();
-      }
-   }; return flag; }  //gsw
-const ReservedCommandFlag&
    NoteTracksSelectedFlag() { static ReservedCommandFlag flag{
       [](const AudacityProject &project){
          return !TrackList::Get( project ).Selected<const NoteTrack>().empty();

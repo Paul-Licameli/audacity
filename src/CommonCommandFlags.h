@@ -52,7 +52,6 @@ extern AUDACITY_DLL_API const ReservedCommandFlag
    &PlayRegionLockedFlag(),  //msmeyer
    &PlayRegionNotLockedFlag(),  //msmeyer
    &WaveTracksExistFlag(),
-   &NoteTracksExistFlag(),  //gsw
    &NoteTracksSelectedFlag(),  //gsw
    &IsNotSyncLockedFlag(),  //awd
    &IsSyncLockedFlag(),  //awd
