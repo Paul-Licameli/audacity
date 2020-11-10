@@ -202,7 +202,8 @@ public:
 
    ///! Imports audio
    ///\return import status (see Import.cpp)
-   ProgressResult Import(WaveTrackFactory *trackFactory, TrackHolders &outTracks,
+   ImportResult Import(
+      WaveTrackFactory *trackFactory, TrackHolders &outTracks,
       Tags *tags) override;
 
    ///! Reads next audio frame
@@ -469,9 +470,9 @@ auto FFmpegImportFileHandle::GetFileUncompressedBytes() -> ByteCount
    return 0;
 }
 
-ProgressResult FFmpegImportFileHandle::Import(WaveTrackFactory *trackFactory,
-              TrackHolders &outTracks,
-              Tags *tags)
+auto FFmpegImportFileHandle::Import(WaveTrackFactory *trackFactory,
+   TrackHolders &outTracks,
+   Tags *tags) -> ImportResult
 {
    outTracks.clear();
 
@@ -593,7 +594,7 @@ ProgressResult FFmpegImportFileHandle::Import(WaveTrackFactory *trackFactory,
 
    // Something bad happened - destroy everything!
    if (res == ProgressResult::Cancelled || res == ProgressResult::Failed)
-      return res;
+      return ImportResult::Failed;
    //else if (res == 2), we just stop the decoding as if the file has ended
 
    // Copy audio from mChannels to newly created tracks (destroying mChannels elements in process)
@@ -606,7 +607,9 @@ ProgressResult FFmpegImportFileHandle::Import(WaveTrackFactory *trackFactory,
    // Save metadata
    WriteMetadata(tags);
 
-   return res;
+   return (res == ProgressResult::Success)
+      ? (outTracks.empty() ? ImportResult::Retry : ImportResult::Success)
+      : ImportResult::Failed;
 }
 
 streamContext *FFmpegImportFileHandle::ReadNextFrame()

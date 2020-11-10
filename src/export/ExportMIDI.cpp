@@ -16,7 +16,7 @@
 //#include "strparse.h"
 //#include "mfmidi.h"
 
-#include "../FileNames.h"
+#include "FileNames.h"
 #include "../NoteTrack.h"
 #include "../Project.h"
 #include "../SelectFile.h"
