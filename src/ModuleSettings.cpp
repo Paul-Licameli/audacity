@@ -50,6 +50,7 @@ static const std::unordered_set<wxString> &autoEnabledModules()
       "mod-ffmpeg",
       "mod-mp3",
       "mod-pcm",
+      "mod-midi-import-export",
    };
    return modules;
 }

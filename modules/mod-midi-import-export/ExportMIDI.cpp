@@ -17,11 +17,11 @@
 //#include "mfmidi.h"
 
 #include "FileNames.h"
-#include "../NoteTrack.h"
-#include "../Project.h"
-#include "../SelectFile.h"
-#include "../widgets/AudacityMessageBox.h"
-#include "../widgets/FileDialog/FileDialog.h"
+#include "NoteTrack.h"
+#include "Project.h"
+#include "SelectFile.h"
+#include "widgets/AudacityMessageBox.h"
+#include "widgets/FileDialog/FileDialog.h"
 
 // Insert a menu item
 #include "commands/CommandContext.h"
