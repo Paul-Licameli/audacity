@@ -11,10 +11,10 @@
 \file Import.cpp
 
   This file contains a general function which will import almost
-  any type of sampled audio file (i.e. anything except MIDI)
-  and return the tracks that were imported.  This function just
-  figures out which one to call; the actual importers are in
-  ImportPCM, ImportMP3, ImportOGG, ImportRawData, ImportLOF,
+  any type of sampled audio file (including MIDI)
+  and return the wave tracks that were imported.  This function just
+  figures out which one to call; among actual importers are
+  ImportPCM, ImportMP3, ImportOGG, ImportLOF,
   ImportQT, ImportFLAC and ImportAUP.
 
 *//***************************************************************//**
@@ -27,8 +27,8 @@ It's defined in Import.h
 *//***************************************************************//**
 
 \class Importer
-\brief Class which actually imports the auido, using functions defined
-in ImportPCM.cpp, ImportMP3.cpp, ImportOGG.cpp, ImportRawData.cpp,
+\brief Class which actually imports the audio, using functions defined
+in ImportPCM.cpp, ImportMP3.cpp, ImportOGG.cpp,
 ImportLOF.cpp, and ImportAUP.cpp.
 
 *//******************************************************************/
@@ -152,7 +152,7 @@ bool Importer::Initialize()
    using namespace Registry;
    static OrderingPreferenceInitializer init{
       PathStart,
-      { {wxT(""), wxT("AUP,PCM,OGG,FLAC,MP3,LOF,FFmpeg") } }
+      { {wxT(""), wxT("AUP,PCM,OGG,FLAC,MP3,LOF,portsmf,FFmpeg") } }
       // QT and GStreamer are only conditionally compiled and would get
       // placed at the end if present
    };
@@ -479,17 +479,6 @@ bool Importer::Import( AudacityProject &project,
    auto cleanup = valueRestorer( pProj->mbBusyImporting, true );
 
    const FileExtension extension{ fName.AfterLast(wxT('.')) };
-
-   // Always refuse to import MIDI, even though the FFmpeg plugin pretends to know how (but makes very bad renderings)
-#ifdef USE_MIDI
-   // MIDI files must be imported, not opened
-   if (FileNames::IsMidi(fName)) {
-      errorMessage = XO(
-"\"%s\" \nis a MIDI file, not an audio file. \nAudacity cannot open this type of file for playing, but you can\nedit it by clicking File > Import > MIDI.")
-         .Format( fName );
-      return false;
-   }
-#endif
 
    // Bug #2647: Peter has a Word 2000 .doc file that is recognized and imported by FFmpeg.
    if (wxFileName(fName).GetExt() == wxT("doc")) {
