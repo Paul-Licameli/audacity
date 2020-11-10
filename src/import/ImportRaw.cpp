@@ -93,8 +93,9 @@ class ImportRawDialog final : public wxDialogWrapper {
 // This function leaves outTracks empty as an indication of error,
 // but may also throw FileException to make use of the application's
 // user visible error reporting.
-void ImportRaw(const AudacityProject &project, wxWindow *parent, const wxString &fileName,
-              WaveTrackFactory *trackFactory, TrackHolders &outTracks)
+void ImportRaw(const AudacityProject &project, wxWindow *parent,
+   const wxString &fileName,
+   WaveTrackFactory *trackFactory, TrackHolders &outTracks)
 {
    outTracks.clear();
    int encoding = 0; // Guess Format
@@ -203,7 +204,8 @@ void ImportRaw(const AudacityProject &project, wxWindow *parent, const wxString 
          for (decltype(numChannels) c = 0; c < numChannels; ++iter, ++c)
             *iter = trackFactory->NewWaveTrack(format, rate);
       }
-      const auto firstChannel = channels.begin()->get();
+      const auto firstChannel =
+         static_cast<WaveTrack*>(channels.begin()->get());
       auto maxBlockSize = firstChannel->GetMaxBlockSize();
 
       SampleBuffer srcbuffer(maxBlockSize * numChannels, format);
@@ -254,7 +256,7 @@ void ImportRaw(const AudacityProject &project, wxWindow *parent, const wxString 
                      ((float *)srcbuffer.ptr())[numChannels*j+c];
                }
 
-               iter->get()->Append(buffer.ptr(), (format == int16Sample)?int16Sample:floatSample, block);
+               static_cast<WaveTrack*>(iter->get())->Append(buffer.ptr(), (format == int16Sample)?int16Sample:floatSample, block);
             }
             framescompleted += block;
          }
@@ -274,7 +276,7 @@ void ImportRaw(const AudacityProject &project, wxWindow *parent, const wxString 
 
    if (!results.empty() && !results[0].empty()) {
       for (const auto &channel : results[0])
-         channel->Flush();
+         static_cast<WaveTrack*>(channel.get())->Flush();
       outTracks.swap(results);
    }
 }

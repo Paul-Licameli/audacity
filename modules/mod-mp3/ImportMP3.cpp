@@ -97,7 +97,7 @@ public:
    std::unique_ptr<ImportFileHandle> Open(const FilePath &Filename, AudacityProject*) override;
 };
 
-using NewChannelGroup = std::vector< std::shared_ptr<WaveTrack> >;
+using NewChannelGroup = std::vector< std::shared_ptr<Track> >;
 
 class MP3ImportFileHandle final : public ImportFileHandle
 {
@@ -291,13 +291,14 @@ auto MP3ImportFileHandle::Import(WaveTrackFactory *trackFactory,
    // Flush and trim the channels
    for (const auto &channel : mChannels)
    {
-      channel->Flush();
+      auto pChannel = static_cast<WaveTrack*>(channel.get());
+      pChannel->Flush();
 
       // Trim any padding
       if (mPadding)
       {
          double et = channel->GetEndTime();
-         double t1 = et - channel->LongSamplesToTime(mPadding);
+         double t1 = et - pChannel->LongSamplesToTime(mPadding);
          channel->Clear(t1, et);
       }
 
@@ -305,7 +306,7 @@ auto MP3ImportFileHandle::Import(WaveTrackFactory *trackFactory,
       if (mDelay)
       {
          double st = channel->GetStartTime();
-         double t0 = st + channel->LongSamplesToTime(mDelay);
+         double t0 = st + pChannel->LongSamplesToTime(mDelay);
          channel->Clear(st, t0);
       }
    }
@@ -1062,7 +1063,8 @@ enum mad_flow MP3ImportFileHandle::OutputCB(struct mad_header const * WXUNUSED(h
       }
 
       // And append to the channel
-      mChannels[chn]->Append((samplePtr) sampleBuf, floatSample, samples);
+      static_cast<WaveTrack*>(mChannels[chn].get())
+         ->Append((samplePtr) sampleBuf, floatSample, samples);
    }
 
    return MAD_FLOW_CONTINUE;

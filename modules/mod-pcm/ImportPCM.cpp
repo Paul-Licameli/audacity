@@ -277,7 +277,7 @@ struct id3_tag_deleter {
 using id3_tag_holder = std::unique_ptr<id3_tag, id3_tag_deleter>;
 #endif
 
-using NewChannelGroup = std::vector< std::shared_ptr<WaveTrack> >;
+using NewChannelGroup = std::vector< std::shared_ptr<Track> >;
 
 auto PCMImportFileHandle::Import(WaveTrackFactory *trackFactory,
    TrackHolders &outTracks,
@@ -300,7 +300,8 @@ auto PCMImportFileHandle::Import(WaveTrackFactory *trackFactory,
 
    auto fileTotalFrames =
       (sampleCount)mInfo.frames; // convert from sf_count_t
-   auto maxBlockSize = channels.begin()->get()->GetMaxBlockSize();
+   auto maxBlockSize =
+      static_cast<WaveTrack*>(channels.begin()->get())->GetMaxBlockSize();
    auto updateResult = ProgressResult::Cancelled;
 
    {
@@ -360,7 +361,7 @@ auto PCMImportFileHandle::Import(WaveTrackFactory *trackFactory,
                         ((float *)srcbuffer.ptr())[mInfo.channels*j+c];
                }
 
-               iter->get()->Append(buffer.ptr(), (mFormat == int16Sample)?int16Sample:floatSample, block);
+               static_cast<WaveTrack*>(iter->get())->Append(buffer.ptr(), (mFormat == int16Sample)?int16Sample:floatSample, block);
             }
             framescompleted += block;
          }
@@ -380,7 +381,7 @@ auto PCMImportFileHandle::Import(WaveTrackFactory *trackFactory,
    }
 
    for(const auto &channel : channels)
-      channel->Flush();
+      static_cast<WaveTrack*>(channel.get())->Flush();
 
    if (!channels.empty())
       outTracks.push_back(std::move(channels));
