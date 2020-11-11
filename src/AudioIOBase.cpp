@@ -368,13 +368,6 @@ bool AudioIOBase::IsBusy() const
    return false;
 }
 
-#ifdef EXPERIMENTAL_MIDI_OUT
-bool MIDIPlay::IsOtherStreamActive() const
-{
-   return ( mMidiStreamActive && !mMidiOutputComplete );
-}
-#endif
-
 bool AudioIOBase::IsStreamActive() const
 {
    bool isActive = false;
