@@ -560,7 +560,14 @@ protected:
    } mTimeQueue;
 
    PlaybackSchedule mPlaybackSchedule;
+
+#ifdef EXPERIMENTAL_MIDI_OUT
+   void SignalOtherCompletion();
+   unsigned CountOtherSoloTracks() const;
+#endif
 };
+
+struct PaStreamInfo;
 
 //! Describes an amount of contiguous (but maybe time-warped) data to be extracted from tracks to play
 struct PlaybackSlice {
@@ -806,6 +813,13 @@ private:
      *
      * If bOnlyBuffers is specified, it only cleans up the buffers. */
    void StartStreamCleanup(bool bOnlyBuffers = false);
+
+#ifdef EXPERIMENTAL_MIDI_OUT
+   bool StartOtherStream(const TransportTracks &tracks,
+      const PaStreamInfo* info, double startTime, double rate);
+   void AbortOtherStream();
+   void StopOtherStream();
+#endif
 };
 
 static constexpr unsigned ScrubPollInterval_ms = 50;
