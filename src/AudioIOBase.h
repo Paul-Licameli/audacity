@@ -346,9 +346,22 @@ public:
    void ForEachExt(const std::function<void(AudioIOExt&)> &fn);
 };
 
+struct PlaybackSchedule;
+
 class AUDACITY_DLL_API AudioIOExt
 {
 public:
+   using Factory = std::function<std::unique_ptr<AudioIOExt>(
+      const PlaybackSchedule&)>;
+   using Factories = std::vector<AudioIOExt::Factory>;
+   static Factories &GetFactories();
+
+   //! Typically statically constructed
+   struct AUDACITY_DLL_API RegisteredFactory{
+      RegisteredFactory(Factory factory);
+      ~RegisteredFactory();
+   };
+
    virtual ~AudioIOExt();
 
    // Formerly in AudioIOBase

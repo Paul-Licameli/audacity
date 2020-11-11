@@ -927,6 +927,12 @@ bool AudioIO::ValidateDeviceNames(const wxString &play, const wxString &rec)
    return pInfo != nullptr && rInfo != nullptr && pInfo->hostApi == rInfo->hostApi;
 }
 
+static AudioIOExt::RegisteredFactory sMIDIPlayFactory{
+   [](const auto &playbackSchedule){
+      return std::make_unique<MIDIPlay>(playbackSchedule);
+   }
+};
+
 MIDIPlay::MIDIPlay(const PlaybackSchedule &schedule)
    : mPlaybackSchedule{ schedule }
 {
@@ -4338,7 +4344,9 @@ bool AudioIoCallback::AllTracksAlreadySilent()
 
 AudioIoCallback::AudioIoCallback()
 {
-   mAudioIOExt.push_back(std::make_unique<MIDIPlay>(mPlaybackSchedule));
+   auto &factories = AudioIOExt::GetFactories();
+   for (auto &factory: factories)
+      mAudioIOExt.push_back(factory(mPlaybackSchedule));
 }
 
 
