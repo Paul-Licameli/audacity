@@ -117,6 +117,7 @@ struct AudioIOStartStreamOptions
 
 //! Abstract interface to alternative, concurrent playback with the main audio (such as MIDI events)
 class AudioIOExt;
+struct AudioIODiagnostics;
 
 ///\brief A singleton object supporting queries of the state of any active
 /// audio streams, and audio device capabilities
@@ -213,12 +214,10 @@ public:
    /** \brief Get diagnostic information on all the available audio I/O devices
     *
     */
-   wxString GetDeviceInfo();
+   wxString GetDeviceInfo() const;
 
-#ifdef EXPERIMENTAL_MIDI_OUT
-   /** \brief Get diagnostic information on all the available MIDI I/O devices */
-   wxString GetMidiDeviceInfo();
-#endif
+   //! Get diagnostic information for audio devices and also for extensions
+   std::vector<AudioIODiagnostics> GetAllDeviceInfo();
 
    /** \brief Find out if playback / recording is currently paused */
    bool IsPaused() const;
@@ -343,7 +342,6 @@ protected:
 public:
    void ForEachExt(const std::function<void(AudioIOExt&)> &fn);
 };
-
 #endif
 
 #include "Prefs.h"

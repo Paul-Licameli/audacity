@@ -16,10 +16,18 @@
 #include <memory>
 #include <vector>
 
+#include <wx/string.h>
+
 struct PaStreamCallbackTimeInfo;
 struct PaStreamInfo;
 struct PlaybackSchedule;
 struct TransportTracks;
+
+struct AudioIODiagnostics{
+   wxString filename;    // For crash report bundle
+   wxString text;        // One big string, may be localized
+   wxString description; // Non-localized short description
+};
 
 class AUDACITY_DLL_API AudioIOExt
 {
@@ -54,6 +62,8 @@ public:
    virtual void FillOtherBuffers(
       double rate, unsigned long pauseFrames, bool paused, bool hasSolo) = 0;
    virtual void StopOtherStream() = 0;
+
+   virtual AudioIODiagnostics Dump() const = 0;
 };
 
 #endif

@@ -362,6 +362,9 @@ Time (in seconds, = total_sample_count / sample_rate)
 #include "../lib-src/portmidi/porttime/porttime.h"
 #include "../lib-src/header-substitutes/allegro.h"
 #include "widgets/AudacityMessageBox.h"
+#include <wx/log.h>
+#include <wx/sstream.h>
+#include <wx/txtstrm.h>
 
    #define ROUND(x) (int) ((x)+0.5)
    //#include <string.h>
@@ -419,10 +422,10 @@ struct MIDIPlay : AudioIOExt
    NoteTrackConstArray mMidiPlaybackTracks;
 
    /// True when output reaches mT1
-   bool             mMidiOutputComplete{ true };
+   static bool      mMidiOutputComplete;
 
    /// mMidiStreamActive tells when mMidiStream is open for output
-   bool             mMidiStreamActive = false;
+   static bool      mMidiStreamActive;
 
    PmStream        *mMidiStream = nullptr;
    int              mLastPmError;
@@ -525,6 +528,7 @@ struct MIDIPlay : AudioIOExt
 
    bool mUsingAlsa = false;
 
+   static bool IsActive();
    bool IsOtherStreamActive() const override;
 
    void ComputeOtherTimings(double rate,
@@ -539,15 +543,18 @@ struct MIDIPlay : AudioIOExt
    void FillOtherBuffers(double rate, unsigned long pauseFrames,
       bool paused, bool hasSolo) override;
    void StopOtherStream() override;
+
+   AudioIODiagnostics Dump() const override;
 };
 
-#ifdef EXPERIMENTAL_MIDI_OUT
-AudioIOExt::RegisteredFactory sMIDIPlayFactory{
+bool MIDIPlay::mMidiStreamActive = false;
+bool MIDIPlay::mMidiOutputComplete = true;
+
+static AudioIOExt::RegisteredFactory sMIDIPlayFactory{
    [](const auto &playbackSchedule){
       return std::make_unique<MIDIPlay>(playbackSchedule);
    }
 };
-#endif
 
 MIDIPlay::MIDIPlay(const PlaybackSchedule &schedule)
    : mPlaybackSchedule{ schedule }
@@ -672,9 +679,14 @@ void MIDIPlay::StopOtherStream()
    mMidiPlaybackTracks.clear();
 }
 
-bool MIDIPlay::IsOtherStreamActive() const
+bool MIDIPlay::IsActive()
 {
    return ( mMidiStreamActive && !mMidiOutputComplete );
+}
+
+bool MIDIPlay::IsOtherStreamActive() const
+{
+   return IsActive();
 }
 
 PmTimestamp MidiTime(void *pInfo)
@@ -1190,5 +1202,119 @@ void MIDIPlay::SignalOtherCompletion()
 {
    mMidiOutputComplete = true;
 }
-
 }
+
+// FIXME: When EXPERIMENTAL_MIDI_IN is added (eventually) this should also be enabled -- Poke
+wxString GetMIDIDeviceInfo()
+{
+   wxStringOutputStream o;
+   wxTextOutputStream s(o, wxEOL_UNIX);
+
+   if (AudioIOBase::Get()->IsStreamActive()) {
+      return XO("Stream is active ... unable to gather information.\n")
+         .Translation();
+   }
+
+
+   // XXX: May need to trap errors as with the normal device info
+   int recDeviceNum = Pm_GetDefaultInputDeviceID();
+   int playDeviceNum = Pm_GetDefaultOutputDeviceID();
+   int cnt = Pm_CountDevices();
+
+   // PRL:  why only into the log?
+   wxLogDebug(wxT("PortMidi reports %d MIDI devices"), cnt);
+
+   s << wxT("==============================\n");
+   s << XO("Default recording device number: %d\n").Format( recDeviceNum );
+   s << XO("Default playback device number: %d\n").Format( playDeviceNum );
+
+   wxString recDevice = gPrefs->Read(wxT("/MidiIO/RecordingDevice"), wxT(""));
+   wxString playDevice = gPrefs->Read(wxT("/MidiIO/PlaybackDevice"), wxT(""));
+
+   // This gets info on all available audio devices (input and output)
+   if (cnt <= 0) {
+      s << XO("No devices found\n");
+      return o.GetString();
+   }
+
+   for (int i = 0; i < cnt; i++) {
+      s << wxT("==============================\n");
+
+      const PmDeviceInfo* info = Pm_GetDeviceInfo(i);
+      if (!info) {
+         s << XO("Device info unavailable for: %d\n").Format( i );
+         continue;
+      }
+
+      wxString name = wxSafeConvertMB2WX(info->name);
+      wxString hostName = wxSafeConvertMB2WX(info->interf);
+
+      s << XO("Device ID: %d\n").Format( i );
+      s << XO("Device name: %s\n").Format( name );
+      s << XO("Host name: %s\n").Format( hostName );
+      /* i18n-hint: Supported, meaning made available by the system */
+      s << XO("Supports output: %d\n").Format( info->output );
+      /* i18n-hint: Supported, meaning made available by the system */
+      s << XO("Supports input: %d\n").Format( info->input );
+      s << XO("Opened: %d\n").Format( info->opened );
+
+      if (name == playDevice && info->output)
+         playDeviceNum = i;
+
+      if (name == recDevice && info->input)
+         recDeviceNum = i;
+
+      // XXX: This is only done because the same was applied with PortAudio
+      // If PortMidi returns -1 for the default device, use the first one
+      if (recDeviceNum < 0 && info->input){
+         recDeviceNum = i;
+      }
+      if (playDeviceNum < 0 && info->output){
+         playDeviceNum = i;
+      }
+   }
+
+   bool haveRecDevice = (recDeviceNum >= 0);
+   bool havePlayDevice = (playDeviceNum >= 0);
+
+   s << wxT("==============================\n");
+   if (haveRecDevice)
+      s << XO("Selected MIDI recording device: %d - %s\n").Format( recDeviceNum, recDevice );
+   else
+      s << XO("No MIDI recording device found for '%s'.\n").Format( recDevice );
+
+   if (havePlayDevice)
+      s << XO("Selected MIDI playback device: %d - %s\n").Format( playDeviceNum, playDevice );
+   else
+      s << XO("No MIDI playback device found for '%s'.\n").Format( playDevice );
+
+   // Mention our conditional compilation flags for Alpha only
+#ifdef IS_ALPHA
+
+   // Not internationalizing these alpha-only messages
+   s << wxT("==============================\n");
+#ifdef EXPERIMENTAL_MIDI_OUT
+   s << wxT("EXPERIMENTAL_MIDI_OUT is enabled\n");
+#else
+   s << wxT("EXPERIMENTAL_MIDI_OUT is NOT enabled\n");
+#endif
+#ifdef EXPERIMENTAL_MIDI_IN
+   s << wxT("EXPERIMENTAL_MIDI_IN is enabled\n");
+#else
+   s << wxT("EXPERIMENTAL_MIDI_IN is NOT enabled\n");
+#endif
+
+#endif
+
+   return o.GetString();
+}
+
+AudioIODiagnostics MIDIPlay::Dump() const
+{
+   return {
+      wxT("mididev.txt"),
+      GetMIDIDeviceInfo(),
+      wxT("MIDI Device Info")
+   };
+}
+

@@ -21,6 +21,7 @@ Paul Licameli split from TrackMenus.cpp
 #include "commands/CommandManager.h"
 #include "CommonCommandFlags.h"
 #include "HelpUtilities.h"
+#include "NoteTrack.h"
 
 #ifdef EXPERIMENTAL_MIDI_OUT
 namespace {
@@ -29,7 +30,7 @@ void OnMidiDeviceInfo(const CommandContext &context)
 {
    auto &project = context.project;
    auto gAudioIO = AudioIOBase::Get();
-   wxString info = gAudioIO->GetMidiDeviceInfo();
+   wxString info = GetMIDIDeviceInfo();
    ShowDiagnostics( project, info,
       XO("MIDI Device Info"), wxT("midideviceinfo.txt") );
 }
