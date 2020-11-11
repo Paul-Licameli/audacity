@@ -91,6 +91,8 @@ wxString AudioIOBase::HostName(const PaDeviceInfo* info)
 
 std::unique_ptr<AudioIOBase> AudioIOBase::ugAudioIO;
 
+AudioIOExt::~AudioIOExt() = default;
+
 AudioIOBase *AudioIOBase::Get()
 {
    return ugAudioIO.get();
@@ -351,7 +353,7 @@ bool AudioIOBase::IsBusy() const
 }
 
 #ifdef EXPERIMENTAL_MIDI_OUT
-bool AudioIOBase::IsOtherStreamActive() const
+bool MIDIPlay::IsOtherStreamActive() const
 {
    return ( mMidiStreamActive && !mMidiOutputComplete );
 }
@@ -365,7 +367,9 @@ bool AudioIOBase::IsStreamActive() const
       isActive = (Pa_IsStreamActive( mPortStreamV19 ) > 0);
 
 #ifdef EXPERIMENTAL_MIDI_OUT
-   isActive = isActive || IsOtherStreamActive();
+   isActive = isActive ||
+      std::any_of(mAudioIOExt.begin(), mAudioIOExt.end(),
+         [](auto &pExt){ return pExt->IsOtherStreamActive(); });
 #endif
    return isActive;
 }
@@ -1061,6 +1065,12 @@ wxString AudioIOBase::GetMidiDeviceInfo()
 
    return o.GetString();
 }
+
+void AudioIOBase::ForEachExt(const std::function<void(AudioIOExt&)> &fn) {
+   for (const auto &pExt : mAudioIOExt)
+      fn(*pExt);
+}
+
 #endif
 
 StringSetting AudioIOHost{
