@@ -350,6 +350,13 @@ bool AudioIOBase::IsBusy() const
    return false;
 }
 
+#ifdef EXPERIMENTAL_MIDI_OUT
+bool AudioIOBase::IsOtherStreamActive() const
+{
+   return ( mMidiStreamActive && !mMidiOutputComplete );
+}
+#endif
+
 bool AudioIOBase::IsStreamActive() const
 {
    bool isActive = false;
@@ -358,8 +365,7 @@ bool AudioIOBase::IsStreamActive() const
       isActive = (Pa_IsStreamActive( mPortStreamV19 ) > 0);
 
 #ifdef EXPERIMENTAL_MIDI_OUT
-   if( mMidiStreamActive && !mMidiOutputComplete )
-      isActive = true;
+   isActive = isActive || IsOtherStreamActive();
 #endif
    return isActive;
 }
