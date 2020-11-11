@@ -1612,7 +1612,7 @@ int AudioIO::StartStream(const TransportTracks &tracks,
    bool successMidi = true;
 
    if(!mMidiPlaybackTracks.empty()){
-      successMidi = StartPortMidiStream();
+      successMidi = StartPortMidiStream(mRate);
    }
 
    // On the other hand, if MIDI cannot be opened, we will not complain
@@ -2083,7 +2083,7 @@ void AudioIoCallback::PrepareMidiIterator(bool send, double offset)
    mSendMidiState = false;
 }
 
-bool AudioIoCallback::StartPortMidiStream()
+bool AudioIoCallback::StartPortMidiStream(double rate)
 {
    int i;
    int nTracks = mMidiPlaybackTracks.size();
@@ -3295,7 +3295,7 @@ bool AudioIoCallback::SetHasSolo(bool hasSolo)
 }
 
 
-void AudioIoCallback::FillMidiBuffers()
+void AudioIoCallback::FillMidiBuffers(double rate)
 {
    // Keep track of time paused. If not paused, fill buffers.
    if (IsPaused()) {
@@ -3333,7 +3333,7 @@ void AudioIoCallback::FillMidiBuffers()
    // we would have a built-in compute-ahead of mAudioOutLatency, and
    // it's probably good to compute MIDI when we compute audio (so when
    // we stop, both stop about the same time).
-   double time = AudioTime(); // compute to here
+   double time = AudioTime(rate); // compute to here
    // But if mAudioOutLatency is very low, we might need some extra
    // compute-ahead to deal with mSynthLatency or even this thread.
    double actual_latency  = (MIDI_MINIMAL_LATENCY_MS + mSynthLatency) * 0.001;
@@ -3341,15 +3341,15 @@ void AudioIoCallback::FillMidiBuffers()
        time += actual_latency - mAudioOutLatency;
    }
    while (mNextEvent &&
-          UncorrectedMidiEventTime(PauseTime()) < time) {
-      OutputEvent(PauseTime());
+          UncorrectedMidiEventTime(PauseTime(rate)) < time) {
+      OutputEvent(PauseTime(rate));
       GetNextEvent();
    }
 }
 
-double AudioIoCallback::PauseTime()
+double AudioIoCallback::PauseTime(double rate)
 {
-   return mNumPauseFrames / mRate;
+   return mNumPauseFrames / rate;
 }
 
 
@@ -3639,7 +3639,7 @@ int audacityAudioCallback(const void *inputBuffer, void *outputBuffer,
 }
 
 
-void AudioIoCallback::ComputeMidiTimings(
+void AudioIoCallback::ComputeMidiTimings(double rate,
    const PaStreamCallbackTimeInfo *timeInfo,
    unsigned long framesPerBuffer
    )
@@ -3656,7 +3656,7 @@ void AudioIoCallback::ComputeMidiTimings(
    // rnow is system time as a double to simplify math
    double rnow = SystemTime(mUsingAlsa);
    // anow is next-sample-to-be-computed audio time as a double
-   double anow = AudioTime();
+   double anow = AudioTime(rate);
 
    if (mUsingAlsa) {
       // timeInfo's fields are not all reliable.
@@ -3670,7 +3670,7 @@ void AudioIoCallback::ComputeMidiTimings(
       //   so we are using enow to smooth out this jitter, in fact to < 1ms.)
       // Add worst-case clock drift using previous framesPerBuffer:
       const auto increase =
-         mAudioFramesPerBuffer * 0.0002 / mRate;
+         mAudioFramesPerBuffer * 0.0002 / rate;
       mSystemMinusAudioTime += increase;
       mSystemMinusAudioTimePlusLatency += increase;
       double enow = rnow - mSystemMinusAudioTime;
@@ -4360,7 +4360,7 @@ int AudioIoCallback::AudioCallback(
    // but it does nothing unless we have EXPERIMENTAL_MIDI_OUT
    // TODO: Possibly rename variables to make it clearer which ones are MIDI specific
    // and which ones affect all audio.
-   ComputeMidiTimings( 
+   ComputeMidiTimings(mRate,
       timeInfo, 
       framesPerBuffer 
    );
@@ -4375,7 +4375,7 @@ int AudioIoCallback::AudioCallback(
       mNumPauseFrames += framesPerBuffer;
 
    if (mMidiStream)
-      FillMidiBuffers();
+      FillMidiBuffers(mRate);
 #endif
 
    // ------ MEMORY ALLOCATIONS -----------------------------------------------
