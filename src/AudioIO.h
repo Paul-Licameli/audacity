@@ -244,9 +244,10 @@ public:
    double UncorrectedMidiEventTime(double pauseTime);
 
    void OutputEvent(double pauseTime);
-   void FillMidiBuffers(double rate);
+   void FillMidiBuffers(
+         double rate, unsigned long pauseFrames, bool paused, bool hasSolo);
    void GetNextEvent();
-   double PauseTime(double rate);
+   double PauseTime(double rate, unsigned long pauseFrames);
    void AllNotesOff(bool looping = false);
 
    /** \brief Compute the current PortMidi timestamp time.
