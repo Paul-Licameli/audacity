@@ -110,6 +110,8 @@ list( APPEND SOURCES
       EnvelopeEditor.h
       HelpText.cpp
       HelpText.h
+      HelpUtilities.cpp
+      HelpUtilities.h
       HiContrastThemeAsCeeCode.h
       HitTestResult.h
       ImageManipulation.cpp
