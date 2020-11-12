@@ -458,8 +458,11 @@ void CommandManager::EndMainMenu()
    // added to the menu to allow OSX to rearrange special menu
    // items like Preferences, About, and Quit.
    wxASSERT(uCurrentMenu);
-   CurrentMenuBar()->Append(
-      uCurrentMenu.release(), mCurrentMenuName.Translation());
+   if (uCurrentMenu->GetMenuItemCount() > 0)
+      CurrentMenuBar()->Append(
+         uCurrentMenu.release(), mCurrentMenuName.Translation());
+   else
+      uCurrentMenu.reset();
    mCurrentMenu = nullptr;
    mCurrentMenuName = COMMAND;
 }
@@ -490,9 +493,14 @@ void CommandManager::EndSubMenu()
 
    //Add the submenu to the current menu
    auto name = tmpSubMenu.name.Translation();
-   CurrentMenu()->Append(0, name, tmpSubMenu.menu.release(),
-      name /* help string */ );
-   mbSeparatorAllowed = true;
+   auto &pMenu = tmpSubMenu.menu;
+   if (pMenu->GetMenuItemCount() > 0) {
+      CurrentMenu()->Append(0, name, pMenu.release(),
+         name /* help string */ );
+      mbSeparatorAllowed = true;
+   }
+   else
+      pMenu.reset();
 }
 
 
