@@ -525,3 +525,39 @@ void ImportRawDialog::OnChoice(wxCommandEvent & WXUNUSED(event))
    // Otherwise, this is an unsupported format
    mOK->Enable(false);
 }
+
+// Register a menu item
+#include "Import.h"
+#include "../commands/CommandManager.h"
+#include "../commands/CommandContext.h"
+#include "../CommonCommandFlags.h"
+#include "../ProjectWindow.h"
+
+namespace {
+struct Handler : CommandHandlerObject {
+void OnImportRaw(const CommandContext &context)
+{
+   Importer::DoImport(context.project, true);
+}
+};
+
+CommandHandlerObject &findCommandHandler(AudacityProject &) {
+   // Handler is not stateful.  Doesn't need a factory registered with
+   // AudacityProject.
+   static Handler instance;
+   return instance;
+}
+
+using namespace MenuTable;
+
+#define FN(X) (& Handler :: X)
+AttachedItem sAttachment1{
+   { wxT("File/Import-Export/Import"),
+      { OrderingHint::End, {} } },
+   ( FinderScope{ findCommandHandler },
+   Command( wxT("ImportRaw"), XXO("&Raw Data..."), FN(OnImportRaw),
+      AudioIONotBusyFlag() )
+   )
+};
+#undef FN
+}

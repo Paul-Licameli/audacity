@@ -39,6 +39,7 @@ ImportLOF.cpp, and ImportAUP.cpp.
 #include "Import.h"
 
 #include "ImportPlugin.h"
+#include "ImportRaw.h" // CYCLE FIX ME
 
 #include <algorithm>
 
@@ -52,8 +53,10 @@ ImportLOF.cpp, and ImportAUP.cpp.
 #include "ShuttleGui.h"
 #include "Project.h"
 #include "ProjectFileIO.h"
+#include "ProjectFileManager.h"
 #include "ProjectHistory.h"
 #include "ProjectSettings.h"
+#include "ProjectWindow.h"
 #include "SelectUtilities.h"
 #include "Tags.h"
 #include "WaveTrack.h"
@@ -1087,4 +1090,83 @@ Importer::RegisteredImportPlugin::Init::Init()
 Importer::RegisteredUnusableImportPlugin::Init::Init()
 {
    void sUnusableImportPluginList();
+}
+
+void Importer::DoImport(AudacityProject &project, bool isRaw)
+{
+   auto &trackFactory = WaveTrackFactory::Get( project );
+   auto &window = ProjectWindow::Get( project );
+
+   auto selectedFiles = ProjectFileManager::ShowOpenDialog(FileNames::Operation::Import);
+   if (selectedFiles.size() == 0) {
+      FileNames::SetLastOpenType({});
+      return;
+   }
+
+   // PRL:  This affects FFmpegImportPlugin::Open which resets the preference
+   // to false.  Should it also be set to true on other paths that reach
+   // AudacityProject::Import ?
+   gPrefs->Write(wxT("/NewImportingSession"), true);
+
+   selectedFiles.Sort(FileNames::CompareNoCase);
+
+   auto cleanup = finally( [&] {
+
+      FileNames::SetLastOpenType({});
+      window.ZoomAfterImport(nullptr);
+      window.HandleResize(); // Adjust scrollers for NEW track sizes.
+   } );
+
+   for (size_t ff = 0; ff < selectedFiles.size(); ff++) {
+      wxString fileName = selectedFiles[ff];
+
+      FileNames::UpdateDefaultPath(FileNames::Operation::Import, ::wxPathOnly(fileName));
+
+      if (isRaw) {
+         TrackHolders newTracks;
+
+         ::ImportRaw(project, &window, fileName, &trackFactory, newTracks);
+
+         if (newTracks.size() > 0)
+            Importer::AddImportedTracks(project, fileName, std::move(newTracks));
+      }
+      else
+         Importer::Import(project, fileName);
+   }
+}
+
+// Register a menu item
+#include "../commands/CommandManager.h"
+#include "../commands/CommandContext.h"
+#include "../CommonCommandFlags.h"
+#include "../ProjectFileManager.h"
+#include "../ProjectWindow.h"
+
+namespace {
+struct Handler : CommandHandlerObject {
+void OnImport(const CommandContext &context)
+{
+   Importer::DoImport(context.project, false);
+}
+};
+
+CommandHandlerObject &findCommandHandler(AudacityProject &) {
+   // Handler is not stateful.  Doesn't need a factory registered with
+   // AudacityProject.
+   static Handler instance;
+   return instance;
+}
+
+using namespace MenuTable;
+
+#define FN(X) (& Handler :: X)
+AttachedItem sAttachment1{
+   { wxT("File/Import-Export/Import"),
+      { OrderingHint::Begin, {} } },
+   ( FinderScope{ findCommandHandler },
+   Command( wxT("ImportAudio"), XXO("&Audio..."), FN(OnImport),
+      AudioIONotBusyFlag(), wxT("Ctrl+Shift+I") )
+   )
+};
+#undef FN
 }

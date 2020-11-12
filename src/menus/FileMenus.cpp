@@ -18,63 +18,12 @@
 #include "../commands/CommandContext.h"
 #include "../commands/CommandManager.h"
 #include "../export/ExportMultiple.h"
-#include "../import/Import.h"
-#include "../import/ImportRaw.h"
 #include "../widgets/AudacityMessageBox.h"
 #include "../widgets/FileHistory.h"
 #include "../widgets/wxPanelWrapper.h"
 
 #include <wx/app.h>
 #include <wx/menu.h>
-
-// private helper classes and functions
-namespace {
-
-void DoImport(const CommandContext &context, bool isRaw)
-{
-   auto &project = context.project;
-   auto &trackFactory = WaveTrackFactory::Get( project );
-   auto &window = ProjectWindow::Get( project );
-
-   auto selectedFiles = ProjectFileManager::ShowOpenDialog(FileNames::Operation::Import);
-   if (selectedFiles.size() == 0) {
-      FileNames::SetLastOpenType({});
-      return;
-   }
-
-   // PRL:  This affects FFmpegImportPlugin::Open which resets the preference
-   // to false.  Should it also be set to true on other paths that reach
-   // AudacityProject::Import ?
-   gPrefs->Write(wxT("/NewImportingSession"), true);
-
-   selectedFiles.Sort(FileNames::CompareNoCase);
-
-   auto cleanup = finally( [&] {
-
-      FileNames::SetLastOpenType({});
-      window.ZoomAfterImport(nullptr);
-      window.HandleResize(); // Adjust scrollers for NEW track sizes.
-   } );
-
-   for (size_t ff = 0; ff < selectedFiles.size(); ff++) {
-      wxString fileName = selectedFiles[ff];
-
-      FileNames::UpdateDefaultPath(FileNames::Operation::Import, ::wxPathOnly(fileName));
-
-      if (isRaw) {
-         TrackHolders newTracks;
-
-         ::ImportRaw(project, &window, fileName, &trackFactory, newTracks);
-
-         if (newTracks.size() > 0)
-            Importer::AddImportedTracks(project, fileName, std::move(newTracks));
-      }
-      else
-         Importer::Import(project, fileName);
-   }
-}
-
-}
 
 // Menu handler functions
 
@@ -243,11 +192,6 @@ void OnExportMultiple(const CommandContext &context)
    em.ShowModal();
 }
 
-void OnImport(const CommandContext &context)
-{
-   DoImport(context, false);
-}
-
 void OnImportLabels(const CommandContext &context)
 {
    auto &project = context.project;
@@ -292,11 +236,6 @@ void OnImportLabels(const CommandContext &context)
 
       window.ZoomAfterImport(nullptr);
    }
-}
-
-void OnImportRaw(const CommandContext &context)
-{
-   DoImport(context, true);
 }
 
 void OnExit(const CommandContext &WXUNUSED(context) )
@@ -442,11 +381,7 @@ BaseItemSharedPtr FileMenu()
          ),
 
          Menu( wxT("Import"), XXO("&Import"),
-            Command( wxT("ImportAudio"), XXO("&Audio..."), FN(OnImport),
-               AudioIONotBusyFlag(), wxT("Ctrl+Shift+I") ),
             Command( wxT("ImportLabels"), XXO("&Labels..."), FN(OnImportLabels),
-               AudioIONotBusyFlag() ),
-            Command( wxT("ImportRaw"), XXO("&Raw Data..."), FN(OnImportRaw),
                AudioIONotBusyFlag() )
          )
       ),

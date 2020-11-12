@@ -160,6 +160,8 @@ public:
       const FilePath &fileName,
       TrackHolders &&newTracks);
 
+   static void DoImport(AudacityProject &project, bool isRaw);
+
 private:
    // if false, the import failed and errorMessage will be set.
    bool Import( AudacityProject &project,
