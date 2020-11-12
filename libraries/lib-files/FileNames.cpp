@@ -27,6 +27,7 @@ used throughout Audacity into this one place.
 #include <memory>
 
 #include <wx/defs.h>
+#include <wx/frame.h>
 #include <wx/filename.h>
 #include <wx/stdpaths.h>
 #include "BasicUI.h"
@@ -42,6 +43,8 @@ used throughout Audacity into this one place.
 #if defined(__WXMSW__)
 #include <windows.h>
 #endif
+
+#include <unordered_set>
 
 static wxString gDataDir;
 
@@ -766,3 +769,103 @@ wxString FileNames::AbbreviatePath( const wxFileName &fileName )
    return target;
 }
 
+void FileNames::SetLastOpenType( const FileNames::FileType &type )
+{
+   // PRL:  Preference key /LastOpenType, unusually, stores a localized
+   // string!
+   // The bad consequences of a change of locale are not severe -- only that
+   // a default choice of file type for an open dialog is not remembered
+   gPrefs->Write(wxT("/LastOpenType"), type.description.Translation());
+   gPrefs->Flush();
+}
+
+void FileNames::SetDefaultOpenType( const FileNames::FileType &type )
+{
+   // PRL:  Preference key /DefaultOpenType, unusually, stores a localized
+   // string!
+   // The bad consequences of a change of locale are not severe -- only that
+   // a default choice of file type for an open dialog is not remembered
+   gPrefs->Write(wxT("/DefaultOpenType"), type.description.Translation());
+   gPrefs->Flush();
+}
+
+size_t FileNames::SelectDefaultOpenType( const FileNames::FileTypes &fileTypes )
+{
+   wxString defaultValue;
+   if ( !fileTypes.empty() )
+      defaultValue = fileTypes[0].description.Translation();
+
+   wxString type = gPrefs->Read(wxT("/DefaultOpenType"), defaultValue);
+   // Convert the type to the filter index
+   auto begin = fileTypes.begin();
+   auto index = std::distance(
+      begin,
+      std::find_if( begin, fileTypes.end(),
+         [&type](const FileNames::FileType &fileType){
+            return fileType.description.Translation() == type; } ) );
+   return (index == fileTypes.size()) ? 0 : index;
+}
+
+namespace {
+using FileTypeListers = std::vector<FileNames::FileTypeLister>;
+static FileTypeListers &listers()
+{
+   static FileTypeListers listers;
+   return listers;
+}
+}
+
+FileNames::
+RegisteredFileTypeLister::RegisteredFileTypeLister(FileTypeLister lister)
+{
+   listers().emplace_back(std::move(lister));
+}
+
+FileNames::
+RegisteredFileTypeLister::~RegisteredFileTypeLister()
+{
+   listers().pop_back();
+}
+
+FileNames::FileTypes
+FileNames::GetFileTypes( const FileNames::FileType &extraType )
+{
+   // Construct the filter
+   FileNames::FileTypes fileTypes{
+      FileNames::AllFiles,
+      // Will fill in the list of extensions later:
+      { XO("All supported files"), {} },
+      FileNames::AudacityProjects
+   };
+
+   if ( !extraType.extensions.empty() )
+      fileTypes.push_back( extraType );
+ 
+   FileNames::FileTypes list;
+   for (auto &lister : listers()) {
+      auto newList = lister();
+      if (list.empty())
+         list.swap(newList);
+      else
+         list.insert(list.end(), newList.begin(), newList.end());
+   }
+
+   using ExtensionSet = std::unordered_set< FileExtension >;
+   FileExtensions allList = FileNames::AudacityProjects.extensions, newList;
+   allList.insert(allList.end(), extraType.extensions.begin(), extraType.extensions.end());
+   ExtensionSet allSet{ allList.begin(), allList.end() }, newSet;
+   for ( const auto &format : list ) {
+      newList.clear();
+      newSet.clear();
+      for ( const auto &extension : format.extensions ) {
+         if ( newSet.insert( extension ).second )
+            newList.push_back( extension );
+         if ( allSet.insert( extension ).second )
+            allList.push_back( extension );
+      }
+      fileTypes.push_back( { format.description, newList } );
+   }
+
+   fileTypes[1].extensions = allList;
+   return fileTypes;
+}
