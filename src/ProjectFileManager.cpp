@@ -39,7 +39,6 @@ Paul Licameli split from AudacityProject.cpp
 #include "WaveTrack.h"
 #include "wxFileNameWrapper.h"
 #include "export/Export.h"
-#include "import/Import.h"
 #include "toolbars/SelectionBar.h"
 #include "widgets/AudacityMessageBox.h"
 #include "widgets/FileHistory.h"
@@ -859,6 +858,27 @@ bool ProjectFileManager::IsAlreadyOpen(const FilePath &projPathName)
    return false;
 }
 
+namespace {
+using ImportProcedures = std::vector<ProjectFileManager::ImportProcedure>;
+static ImportProcedures& GetImportProcedures()
+{
+   static ImportProcedures procedures;
+   return procedures;
+}
+}
+
+ProjectFileManager::
+RegisteredImportProcedure::RegisteredImportProcedure(ImportProcedure procedure)
+{
+   GetImportProcedures().push_back(std::move(procedure));
+}
+
+ProjectFileManager::
+RegisteredImportProcedure::~RegisteredImportProcedure()
+{
+   GetImportProcedures().pop_back();
+}
+
 AudacityProject *ProjectFileManager::OpenFile( const ProjectChooserFn &chooser,
    const FilePath &fileNameArg, bool addtohistory)
 {
@@ -935,23 +955,10 @@ AudacityProject *ProjectFileManager::OpenFile( const ProjectChooserFn &chooser,
       if (wxStrncmp(buf, "SQLite", 6) != 0)
       {
          // Not a database
-#ifdef EXPERIMENTAL_DRAG_DROP_PLUG_INS
-         // Is it a plug-in?
-         if (PluginManager::Get().DropFile(fileName)) {
-            MenuCreator::RebuildAllMenuBars();
-            // Plug-in installation happened, not really opening of a file,
-            // so return null
-            return nullptr;
-         }
-#endif
          auto &project = chooser(false);
-         // Undo history is incremented inside this:
-         if (Importer::Import(project, fileName)) {
-            // Undo history is incremented inside this:
-            // Bug 2743: Don't zoom with lof.
-            if (!fileName.AfterLast('.').IsSameAs(wxT("lof"), false))
-               ProjectWindow::Get(project).ZoomAfterImport(nullptr);
-            return &project;
+         for (auto &procedure : GetImportProcedures()) {
+            if (procedure(project, fileName))
+               return &project;
          }
          return nullptr;
       }

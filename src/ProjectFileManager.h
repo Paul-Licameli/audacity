@@ -33,6 +33,20 @@ class AUDACITY_DLL_API ProjectFileManager final
    : public ClientData::Base
 {
 public:
+   //! Type of function that handles the Open command for files that are not Audacity projects
+   /*!
+    Returns true if the file was recognized and other procedures should be skipped; not necessarily a
+    successful import.  Responsible for doing its own push of undo history if it is successful.
+    */
+   using ImportProcedure =
+      std::function<bool(AudacityProject&, const FilePath&)>;
+
+   //! Statically constructed object injects an import procedure
+   struct AUDACITY_DLL_API RegisteredImportProcedure {
+      RegisteredImportProcedure(ImportProcedure procedure);
+      ~RegisteredImportProcedure();
+   };
+
    static ProjectFileManager &Get( AudacityProject &project );
    static const ProjectFileManager &Get( const AudacityProject &project );
 

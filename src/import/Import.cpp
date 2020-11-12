@@ -1170,3 +1170,17 @@ AttachedItem sAttachment1{
 };
 #undef FN
 }
+
+//! Hook the Open command
+#include "ProjectFileManager.h"
+#include "ProjectWindow.h"
+static ProjectFileManager::RegisteredImportProcedure sProcedure {
+   [](AudacityProject &project, const FilePath &fileName) {
+      bool success = Importer::Import(project, fileName);
+      auto &window = ProjectWindow::Get( project );
+      // Bug 2743: Don't zoom with lof.
+      if (!fileName.AfterLast('.').IsSameAs(wxT("lof"), false))
+         window.ZoomAfterImport(nullptr);
+      return success;
+   }
+};
