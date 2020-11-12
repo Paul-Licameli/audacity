@@ -1405,8 +1405,7 @@ bool AUPImportFileHandle::HandleImport(XMLTagHandler *&handler)
    // Guard this call so that C++ exceptions don't propagate through
    // the expat library
    GuardedCall(
-      [&] {
-         ProjectFileManager::Get( mProject ).Import(strAttr, false); },
+      [&] { Importer::Import(mProject, strAttr, false); },
       [&] (AudacityException*) {}
    );
 

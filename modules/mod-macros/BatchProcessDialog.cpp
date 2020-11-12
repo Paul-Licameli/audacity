@@ -458,7 +458,7 @@ void ApplyMacroDialog::OnApplyToFiles(wxCommandEvent & WXUNUSED(event))
          fileList->EnsureVisible(i);
 
          auto success = GuardedCall< bool >([&] {
-            ProjectFileManager::Get(*project).Import(files[i]);
+            Importer::Import(*project, files[i]);
             ProjectWindow::Get(*project).ZoomAfterImport(nullptr);
             SelectUtilities::DoSelectAll(*project);
             if (!mMacroCommands.ApplyMacro(mCatalog))

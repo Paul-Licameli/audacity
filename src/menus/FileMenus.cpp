@@ -66,14 +66,11 @@ void DoImport(const CommandContext &context, bool isRaw)
 
          ::ImportRaw(project, &window, fileName, &trackFactory, newTracks);
 
-         if (newTracks.size() > 0) {
-            ProjectFileManager::Get( project )
-               .AddImportedTracks(fileName, std::move(newTracks));
-         }
+         if (newTracks.size() > 0)
+            Importer::AddImportedTracks(project, fileName, std::move(newTracks));
       }
-      else {
-         ProjectFileManager::Get( project ).Import(fileName);
-      }
+      else
+         Importer::Import(project, fileName);
    }
 }
 

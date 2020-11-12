@@ -178,6 +178,14 @@ public:
     */
     std::unique_ptr<ExtImportItem> CreateDefaultImportItem();
 
+   static bool Import(AudacityProject &project, const FilePath &fileName,
+               bool addToHistory = true);
+
+   static void AddImportedTracks(AudacityProject &project,
+      const FilePath &fileName,
+      TrackHolders &&newTracks);
+
+private:
    // if false, the import failed and errorMessage will be set.
    bool Import( AudacityProject &project,
               const FilePath &fName,
@@ -186,7 +194,6 @@ public:
               Tags *tags,
               TranslatableString &errorMessage);
 
-private:
    struct AUDACITY_DLL_API ImporterItem final : Registry::SingleItem {
       static Registry::GroupItem &Registry();
 

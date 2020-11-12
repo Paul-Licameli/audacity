@@ -95,13 +95,7 @@ public:
    static AudacityProject *OpenFile( const ProjectChooserFn &chooser,
       const FilePath &fileName, bool addtohistory = true);
 
-   bool Import(const FilePath &fileName,
-               bool addToHistory = true);
-
    void Compact();
-
-   void AddImportedTracks(const FilePath &fileName,
-                     TrackHolders &&newTracks);
 
    bool GetMenuClose() const { return mMenuClose; }
    void SetMenuClose(bool value) { mMenuClose = value; }

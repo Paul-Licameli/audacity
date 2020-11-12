@@ -43,18 +43,27 @@ ImportLOF.cpp, and ImportAUP.cpp.
 #include <algorithm>
 #include <unordered_set>
 
+#include <wx/frame.h>
 #include <wx/textctrl.h>
 #include <wx/listbox.h>
 #include <wx/log.h>
 #include <wx/sizer.h>         //for wxBoxSizer
+#include "BasicUI.h"
 #include "FileNames.h"
-#include "../ShuttleGui.h"
-#include "../Project.h"
-#include "../WaveTrack.h"
+#include "ShuttleGui.h"
+#include "Project.h"
+#include "ProjectFileIO.h"
+#include "ProjectHistory.h"
+#include "ProjectSettings.h"
+#include "SelectUtilities.h"
+#include "Tags.h"
+#include "WaveTrack.h"
+#include "toolbars/SelectionBar.h"
+#include "widgets/FileHistory.h"
 
 #include "Prefs.h"
 
-#include "../widgets/ProgressDialog.h"
+#include "widgets/ProgressDialog.h"
 
 // ============================================================================
 //
@@ -465,6 +474,261 @@ std::unique_ptr<ExtImportItem> Importer::CreateDefaultImportItem()
    }
    new_item->divider = -1;
    return new_item;
+}
+
+void
+Importer::AddImportedTracks( AudacityProject &project,
+   const FilePath &fileName, TrackHolders &&newTracks)
+{
+   auto &history = ProjectHistory::Get( project );
+   auto &projectFileIO = ProjectFileIO::Get( project );
+   auto &tracks = TrackList::Get( project );
+
+   std::vector< std::shared_ptr< Track > > results;
+
+   SelectUtilities::SelectNone( project );
+
+   wxFileName fn(fileName);
+
+   bool initiallyEmpty = tracks.empty();
+   double newRate = 0;
+   wxString trackNameBase = fn.GetName();
+   int i = -1;
+   
+   // Fix the bug 2109.
+   // In case the project had soloed tracks before importing,
+   // all newly imported tracks are muted.
+   const bool projectHasSolo =
+      !(tracks.Any<PlayableTrack>() + &PlayableTrack::GetSolo).empty();
+   if (projectHasSolo)
+   {
+      for (auto& track : newTracks)
+         for (auto& channel : track)
+            if (auto pChannel = track_cast<PlayableTrack*>(channel.get()))
+               pChannel->SetMute(true);
+   }
+
+   // Must add all tracks first (before using Track::IsLeader)
+   for (auto &group : newTracks) {
+      if (group.empty()) {
+         wxASSERT(false);
+         continue;
+      }
+      auto first = group.begin()->get();
+      auto nChannels = group.size();
+      for (auto &uNewTrack : group) {
+         auto newTrack = tracks.Add( uNewTrack );
+         results.push_back(newTrack->SharedPointer());
+      }
+      tracks.GroupChannels(*first, nChannels);
+   }
+   newTracks.clear();
+      
+   // Now name them
+
+   // Add numbers to track names only if there is more than one (mono or stereo)
+   // track (not necessarily, more than one channel)
+   const bool useSuffix =
+      make_iterator_range( results.begin() + 1, results.end() )
+         .any_of( []( decltype(*results.begin()) &pTrack )
+            { return pTrack->IsLeader(); } );
+
+   for (const auto &newTrack : results) {
+      if ( newTrack->IsLeader() )
+         // Count groups only
+         ++i;
+
+      newTrack->SetSelected(true);
+
+      if ( useSuffix )
+         newTrack->SetName(trackNameBase + wxString::Format(wxT(" %d" ), i + 1));
+      else
+         newTrack->SetName(trackNameBase);
+
+      newTrack->TypeSwitch( [&](WaveTrack *wt) {
+         if (newRate == 0)
+            newRate = wt->GetRate();
+      });
+   }
+
+   // Automatically assign rate of imported file to whole project,
+   // if this is the first file that is imported
+   if (initiallyEmpty && newRate > 0) {
+      auto &settings = ProjectSettings::Get( project );
+      settings.SetRate( newRate );
+      SelectionBar::Get( project ).SetRate( newRate );
+   }
+
+   history.PushState(XO("Imported '%s'").Format( fileName ),
+       XO("Import"));
+
+#if defined(__WXGTK__)
+   // See bug #1224
+   // The track panel hasn't we been fully created, so the DoZoomFit() will not give
+   // expected results due to a window width of zero.  Should be safe to yield here to
+   // allow the creation to complete.  If this becomes a problem, it "might" be possible
+   // to queue a dummy event to trigger the DoZoomFit().
+   wxEventLoopBase::GetActive()->YieldFor(wxEVT_CATEGORY_UI | wxEVT_CATEGORY_USER_INPUT);
+#endif
+
+   // If the project was clean and temporary (not permanently saved), then set
+   // the filename to the just imported path.
+   if (initiallyEmpty && projectFileIO.IsTemporary()) {
+      project.SetProjectName(fn.GetName());
+      project.SetInitialImportPath(fn.GetPath());
+      projectFileIO.SetProjectTitle();
+   }
+
+   // Moved this call to higher levels to prevent flicker redrawing everything on each file.
+   //   HandleResize();
+}
+
+namespace {
+bool ImportProject(AudacityProject &dest, const FilePath &fileName)
+{
+   InvisibleTemporaryProject temp;
+   auto &project = temp.Project();
+
+   auto &projectFileIO = ProjectFileIO::Get(project);
+   if (!projectFileIO.LoadProject(fileName, false))
+      return false;
+   auto &srcTracks = TrackList::Get(project);
+   auto &destTracks = TrackList::Get(dest);
+   for (const Track *pTrack : srcTracks.Any()) {
+      auto destTrack = pTrack->PasteInto(dest);
+      Track::FinishCopy(pTrack, destTrack.get());
+      if (destTrack.use_count() == 1)
+         destTracks.Add(destTrack);
+   }
+   Tags::Get(dest).Merge(Tags::Get(project));
+
+   return true;
+}
+}
+
+// If pNewTrackList is passed in non-NULL, it gets filled with the pointers to NEW tracks.
+bool Importer::Import(AudacityProject &project,
+   const FilePath &fileName,
+   bool addToHistory /* = true */)
+{
+   auto &projectFileIO = ProjectFileIO::Get(project);
+   auto oldTags = Tags::Get( project ).shared_from_this();
+   bool initiallyEmpty = TrackList::Get(project).empty();
+   TrackHolders newTracks;
+   TranslatableString errorMessage;
+
+#ifdef EXPERIMENTAL_IMPORT_AUP3
+   // Handle AUP3 ("project") files directly
+   if (fileName.AfterLast('.').IsSameAs(wxT("aup3"), false)) {
+      if (ImportProject(project, fileName)) {
+         auto &history = ProjectHistory::Get(project);
+
+         // If the project was clean and temporary (not permanently saved), then set
+         // the filename to the just imported path.
+         if (initiallyEmpty && projectFileIO.IsTemporary()) {
+            wxFileName fn(fileName);
+            project.SetProjectName(fn.GetName());
+            project.SetInitialImportPath(fn.GetPath());
+            projectFileIO.SetProjectTitle();
+         }
+
+         history.PushState(XO("Imported '%s'").Format(fileName), XO("Import"));
+
+         if (addToHistory) {
+            FileHistory::Global().Append(fileName);
+         }
+      }
+      else {
+         errorMessage = projectFileIO.GetLastError();
+         if (errorMessage.empty()) {
+            errorMessage = XO("Failed to import project");
+         }
+
+         // Additional help via a Help button links to the manual.
+         BasicUI::ShowErrorDialog( *ProjectFramePlacement(&project),
+            XO("Error Importing"), errorMessage, wxT("Importing_Audio"));
+      }
+
+      return false;
+   }
+#endif
+
+   {
+      // Backup Tags, before the import.  Be prepared to roll back changes.
+      bool committed = false;
+      auto cleanup = finally([&]{
+         if ( !committed )
+            Tags::Set( project, oldTags );
+      });
+      auto newTags = oldTags->Duplicate();
+      Tags::Set( project, newTags );
+
+#ifndef EXPERIMENTAL_IMPORT_AUP3
+      // Handle AUP3 ("project") files specially
+      if (fileName.AfterLast('.').IsSameAs(wxT("aup3"), false)) {
+         BasicUI::ShowErrorDialog( *ProjectFramePlacement(&project),
+            XO("Error Importing"),
+            XO( "Cannot import AUP3 format.  Use File > Open instead"),
+            wxT("File_Menu"));
+         return false;
+      }
+#endif
+      bool success = Importer::Get().Import(project, fileName,
+                                            &WaveTrackFactory::Get( project ),
+                                            newTracks,
+                                            newTags.get(),
+                                            errorMessage);
+
+      if (!errorMessage.empty()) {
+         // Error message derived from Importer::Import
+         // Additional help via a Help button links to the manual.
+         BasicUI::ShowErrorDialog( *ProjectFramePlacement(&project),
+            XO("Error Importing"), errorMessage, wxT("Importing_Audio"));
+      }
+      if (!success)
+         return false;
+
+      if (addToHistory) {
+         FileHistory::Global().Append(fileName);
+      }
+
+      // no more errors, commit
+      committed = true;
+   }
+
+   // for LOF ("list of files") files, do not import the file as if it
+   // were an audio file itself
+   if (fileName.AfterLast('.').IsSameAs(wxT("lof"), false)) {
+      // PRL: don't redundantly do the steps below, because we already
+      // did it in case of LOF, because of some weird recursion back to this
+      // same function.  I think this should be untangled.
+
+      // So Undo history push is not bypassed, despite appearances.
+      return false;
+   }
+
+   // Handle AUP ("legacy project") files directly
+   if (fileName.AfterLast('.').IsSameAs(wxT("aup"), false)) {
+      // If the project was clean and temporary (not permanently saved), then set
+      // the filename to the just imported path.
+      if (initiallyEmpty && projectFileIO.IsTemporary()) {
+         wxFileName fn(fileName);
+         project.SetProjectName(fn.GetName());
+         project.SetInitialImportPath(fn.GetPath());
+         projectFileIO.SetProjectTitle();
+      }
+
+      auto &history = ProjectHistory::Get( project );
+
+      history.PushState(XO("Imported '%s'").Format( fileName ), XO("Import"));
+
+      return false;
+   }
+
+   // PRL: Undo history is incremented inside this:
+   AddImportedTracks(project, fileName, std::move(newTracks));
+
+   return true;
 }
 
 // returns number of tracks imported

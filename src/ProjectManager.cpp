@@ -328,7 +328,7 @@ public:
          } );
 
          for (const auto &name : sortednames)
-            ProjectFileManager::Get( *mProject ).Import(name);
+            Importer::Import(*mProject, name);
 
          auto &window = ProjectWindow::Get( *mProject );
          window.ZoomAfterImport(nullptr);
