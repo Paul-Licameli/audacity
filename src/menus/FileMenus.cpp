@@ -17,7 +17,6 @@
 #include "../WaveTrack.h"
 #include "../commands/CommandContext.h"
 #include "../commands/CommandManager.h"
-#include "../export/ExportMultiple.h"
 #include "../widgets/AudacityMessageBox.h"
 #include "../widgets/FileHistory.h"
 #include "../widgets/wxPanelWrapper.h"
@@ -87,41 +86,6 @@ void OnSaveCopy(const CommandContext &context )
    projectFileManager.SaveCopy();
 }
 
-void OnExportMp3(const CommandContext &context)
-{
-   auto &project = context.project;
-   Exporter::DoExport(project, "MP3");
-}
-
-void OnExportWav(const CommandContext &context)
-{
-   auto &project = context.project;
-   Exporter::DoExport(project, "WAV");
-}
-
-void OnExportOgg(const CommandContext &context)
-{
-   auto &project = context.project;
-   Exporter::DoExport(project, "OGG");
-}
-
-void OnExportAudio(const CommandContext &context)
-{
-   auto &project = context.project;
-   Exporter::DoExport(project, "");
-}
-
-void OnExportSelection(const CommandContext &context)
-{
-   auto &project = context.project;
-   auto &selectedRegion = ViewInfo::Get( project ).selectedRegion;
-   Exporter e{ project };
-
-   e.SetFileDialogTitle( XO("Export Selected Audio") );
-   e.Process(true, selectedRegion.t0(),
-      selectedRegion.t1());
-}
-
 void OnExportLabels(const CommandContext &context)
 {
    auto &project = context.project;
@@ -184,14 +148,6 @@ void OnExportLabels(const CommandContext &context)
    f.Close();
 }
 
-void OnExportMultiple(const CommandContext &context)
-{
-   auto &project = context.project;
-   ExportMultipleDialog em(&project);
-
-   em.ShowModal();
-}
-
 void OnImportLabels(const CommandContext &context)
 {
    auto &project = context.project;
@@ -243,11 +199,6 @@ void OnExit(const CommandContext &WXUNUSED(context) )
    // Simulate the application Exit menu item
    wxCommandEvent evt{ wxEVT_MENU, wxID_EXIT };
    wxTheApp->AddPendingEvent( evt );
-}
-
-void OnExportFLAC(const CommandContext &context)
-{
-   Exporter::DoExport(context.project, "FLAC");
 }
 
 }; // struct Handler
@@ -353,31 +304,9 @@ BaseItemSharedPtr FileMenu()
 
       Section( "Import-Export",
          Menu( wxT("Export"), XXO("&Export"),
-            // Enable Export audio commands only when there are audio tracks.
-            Command( wxT("ExportMp3"), XXO("Export as MP&3"), FN(OnExportMp3),
-               AudioIONotBusyFlag() | WaveTracksExistFlag() ),
-
-            Command( wxT("ExportWav"), XXO("Export as &WAV"), FN(OnExportWav),
-               AudioIONotBusyFlag() | WaveTracksExistFlag() ),
-
-            Command( wxT("ExportOgg"), XXO("Export as &OGG"), FN(OnExportOgg),
-               AudioIONotBusyFlag() | WaveTracksExistFlag() ),
-
-            Command( wxT("Export"), XXO("&Export Audio..."), FN(OnExportAudio),
-               AudioIONotBusyFlag() | WaveTracksExistFlag(), wxT("Ctrl+Shift+E") ),
-
-            // Enable Export Selection commands only when there's a selection.
-            Command( wxT("ExportSel"), XXO("Expo&rt Selected Audio..."),
-               FN(OnExportSelection),
-               AudioIONotBusyFlag() | TimeSelectedFlag() | WaveTracksSelectedFlag() ),
-
             Command( wxT("ExportLabels"), XXO("Export &Labels..."),
                FN(OnExportLabels),
-               AudioIONotBusyFlag() | LabelTracksExistFlag() ),
-            // Enable Export audio commands only when there are audio tracks.
-            Command( wxT("ExportMultiple"), XXO("Export &Multiple..."),
-               FN(OnExportMultiple),
-               AudioIONotBusyFlag() | WaveTracksExistFlag(), wxT("Ctrl+Shift+L") )
+               AudioIONotBusyFlag() | LabelTracksExistFlag() )
          ),
 
          Menu( wxT("Import"), XXO("&Import"),
@@ -425,15 +354,6 @@ BaseItemSharedPtr HiddenFileMenu()
 AttachedItem sAttachment2{
    wxT(""),
    Shared( HiddenFileMenu() )
-};
-
-AttachedItem sAttachment3{
-   wxT("HiddenFileItems/HiddenFileMenu"),
-   ( FinderScope{ findCommandHandler },
-   Command( wxT("ExportFLAC"), XXO("Export as FLAC"),
-      FN(OnExportFLAC),
-      AudioIONotBusyFlag() )
-   )
 };
 
 }

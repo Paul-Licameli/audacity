@@ -1200,3 +1200,69 @@ void MouseEvtHandler::OnMouse(wxMouseEvent& event)
 {
    event.Skip(false);
 }
+
+// Register some menu items
+#include "../commands/CommandContext.h"
+#include "../commands/CommandManager.h"
+#include "../CommonCommandFlags.h"
+#include "../ViewInfo.h"
+
+namespace {
+struct Handler : CommandHandlerObject {
+void OnExportAudio(const CommandContext &context)
+{
+   auto &project = context.project;
+   Exporter::DoExport(project, "");
+}
+
+void OnExportSelection(const CommandContext &context)
+{
+   auto &project = context.project;
+   auto &selectedRegion = ViewInfo::Get( project ).selectedRegion;
+   Exporter e{ project };
+
+   e.SetFileDialogTitle( XO("Export Selected Audio") );
+   e.Process(true, selectedRegion.t0(),
+      selectedRegion.t1());
+}
+
+void OnExportMultiple(const CommandContext &context)
+{
+   auto &project = context.project;
+   ExportMultipleDialog em(&project);
+
+   em.ShowModal();
+}
+};
+
+static CommandHandlerObject &findCommandHandler(AudacityProject &) {
+   // Handler is not stateful.  Doesn't need a factory registered with
+   // AudacityProject.
+   static Handler instance;
+   return instance;
+};
+
+using namespace MenuTable;
+using Options = CommandManager::Options;
+#define FN(X) (& Handler :: X)
+AttachedItem sAttachment{
+   wxT("File/Import-Export/Export"),
+   ( FinderScope{ findCommandHandler },
+   Items( "",
+      // Enable Export audio commands only when there are audio tracks.
+      Command( wxT("Export"), XXO("&Export Audio..."), FN(OnExportAudio),
+         AudioIONotBusyFlag() | WaveTracksExistFlag(), wxT("Ctrl+Shift+E") ),
+
+      // Enable Export Selection commands only when there's a selection.
+      Command( wxT("ExportSel"), XXO("Expo&rt Selected Audio..."),
+         FN(OnExportSelection),
+         AudioIONotBusyFlag() | TimeSelectedFlag() | WaveTracksSelectedFlag() ),
+
+      Command( wxT("ExportMultiple"), XXO("Export &Multiple..."),
+         FN(OnExportMultiple),
+         AudioIONotBusyFlag() | WaveTracksExistFlag(), wxT("Ctrl+Shift+L") )
+   ) )
+};
+#undef FN
+
+}

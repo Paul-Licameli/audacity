@@ -231,33 +231,33 @@ namespace FileNames
 /**
     * Remember a file type in preferences
     */
-   AUDACITY_DLL_API void
+   FILES_API void
    SetLastOpenType( const FileNames::FileType &type );
 
    /**
     * Remember a file type in preferences
     */
-   AUDACITY_DLL_API void
+   FILES_API void
    SetDefaultOpenType( const FileNames::FileType &type );
 
    /**
     * Choose index of preferred type
     */
-   AUDACITY_DLL_API size_t
+   FILES_API size_t
    SelectDefaultOpenType( const FileNames::FileTypes &fileTypes );
 
    /**
     * Constructs a list of types, for use by file opening dialogs, that includes
     * all supported file types
     */
-   AUDACITY_DLL_API FileTypes
+   FILES_API FileTypes
    GetFileTypes( const FileNames::FileType &extraType = {} );
 
    //! Type of a function that reports other known file types
    using FileTypeLister = std::function<FileTypes()>;
 
    //! Statically constructed instance injects extra file types into open dialogs
-   struct AUDACITY_DLL_API RegisteredFileTypeLister final {
+   struct FILES_API RegisteredFileTypeLister final {
       RegisteredFileTypeLister(FileTypeLister lister);
       ~RegisteredFileTypeLister();
    };
