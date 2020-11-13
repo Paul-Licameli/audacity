@@ -609,21 +609,14 @@ BaseItemSharedPtr HiddenFileMenu()
 {
    static BaseItemSharedPtr menu
    {
-      (
-         FinderScope{ findCommandHandler },
-         ConditionalItems( wxT("HiddenFileItems"),
-            []()
-            {
-               // Ensures that these items never appear in a menu, but
-               // are still available to scripting
-               return false;
-            },
-            Menu( wxT("HiddenFileMenu"), XXO("Hidden File Menu"),
-               Command( wxT("ExportFLAC"), XXO("Export as FLAC"),
-                  FN(OnExportFLAC),
-                  AudioIONotBusyFlag() )
-            )
-         )
+      ConditionalItems( wxT("HiddenFileItems"),
+         []()
+         {
+            // Ensures that these items never appear in a menu, but
+            // are still available to scripting
+            return false;
+         },
+         Menu( wxT("HiddenFileMenu"), XXO("Hidden File Menu") )
       )
    };
    return menu;
@@ -632,6 +625,15 @@ BaseItemSharedPtr HiddenFileMenu()
 AttachedItem sAttachment2{
    wxT(""),
    Shared( HiddenFileMenu() )
+};
+
+AttachedItem sAttachment3{
+   wxT("HiddenFileItems/HiddenFileMenu"),
+   ( FinderScope{ findCommandHandler },
+   Command( wxT("ExportFLAC"), XXO("Export as FLAC"),
+      FN(OnExportFLAC),
+      AudioIONotBusyFlag() )
+   )
 };
 
 }
