@@ -418,7 +418,11 @@ void MenuCreator::CreateMenusAndCommands(AudacityProject &project)
 //"ShowMeterTB,"
 "ShowMixerTB,"
 "ShowEditTB,ShowTranscriptionTB,ShowScrubbingTB,ShowDeviceTB,ShowSelectionTB,"
-"ShowSpectralSelectionTB") }
+"ShowSpectralSelectionTB") },
+         {wxT("/File/Import-Export/Export"), wxT(
+"ExportMp3,ExportWav,ExportOgg,Export,ExportSel,ExportLabels,"
+"ExportMultiple,ExportMIDI"
+          )},
       }
    };
 
