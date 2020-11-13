@@ -12,7 +12,7 @@
 #include "../SelectUtilities.h"
 #include "UndoManager.h"
 #include "ViewInfo.h"
-#include "WaveTrack.h"
+#include "Track.h"
 #include "CommandContext.h"
 #include "CommandManager.h"
 #include "AudacityMessageBox.h"

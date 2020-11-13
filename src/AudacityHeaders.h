@@ -50,7 +50,6 @@
 #include "Project.h"
 #include "Sequence.h"
 #include "UndoManager.h"
-#include "WaveTrack.h"
 #include "ASlider.h"
 #include "widgets/ProgressDialog.h"
 #include "Ruler.h"
