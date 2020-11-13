@@ -970,4 +970,8 @@ void NoteTrack::ZoomAllNotes()
 
 StringSetting MidiPlaybackDevice{ L"/MidiIO/PlaybackDevice", L"" };
 StringSetting MidiRecordingDevice{ L"/MidiIO/RecordingDevice", L"" };
+
+#include "ModuleConstants.h"
+DEFINE_MODULE_ENTRIES
+
 #endif // USE_MIDI

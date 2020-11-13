@@ -7,5 +7,5 @@ list( APPEND SOURCES
    ImportMIDI.cpp
 )
 audacity_module( mod-midi-import-export "${SOURCES}"
-   "mod-import-export-interface;portsmf"
+   "mod-import-export-interface;portsmf;mod-note-track-interface"
    "" "" )

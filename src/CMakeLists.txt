@@ -128,15 +128,12 @@ list( APPEND SOURCES
       MacroMagic.h
       Menus.cpp
       Menus.h
-      MIDIPlay.cpp
       Mix.cpp
       Mix.h
       ModuleManager.cpp
       ModuleManager.h
       ModuleSettings.cpp
       ModuleSettings.h
-      NoteTrack.cpp
-      NoteTrack.h
       NumberScale.h
       PitchName.cpp
       PitchName.h
@@ -545,8 +542,6 @@ list( APPEND LIBRARIES
       $<$<BOOL:${USE_LIBID3TAG}>:libid3tag::libid3tag>
       $<$<BOOL:${USE_LIBMAD}>:libmad::libmad>
       $<$<BOOL:${USE_LIBOGG}>:libogg>
-      $<$<BOOL:${USE_MIDI}>:portmidi>
-      $<$<BOOL:${USE_MIDI}>:portsmf>
       $<$<BOOL:${USE_PORTMIXER}>:portmixer>
       $<$<PLATFORM_ID:Linux,FreeBSD,OpenBSD,NetBSD,CYGWIN>:PkgConfig::GLIB>
       $<$<PLATFORM_ID:Linux,FreeBSD,OpenBSD,NetBSD,CYGWIN>:PkgConfig::GTK>

@@ -166,18 +166,9 @@ addlib( sqlite             sqlite      SQLITE      YES   YES   "sqlite3 >= 3.32.
 #
 #       directory          option      symbol      req   chk   version
 
-addlib( portmidi           midi        MIDI        NO    YES   "portmidi >= 0.1" )
-if (NOT USE_MIDI AND
-   "EXPERIMENTAL_MIDI_OUT" IN_LIST EXPERIMENTAL_OPTIONS_LIST )
-   message(FATAL_ERROR "EXPERIMENTAL_MIDI_OUT requires USE_MIDI")
-endif ()
-
-
 addlib( portmixer          portmixer   PORTMIXER   NO    YES   "" )
 if (NOT USE_PORTMIXER AND
    "EXPERIMENTAL_AUTOMATED_INPUT_LEVEL_ADJUSTMENT" IN_LIST
       EXPERIMENTAL_OPTIONS_LIST )
    message(FATAL_ERROR "EXPERIMENTAL_AUTOMATED_INPUT_LEVEL_ADJUSTMENT requires USE_PORTMIXER")
 endif ()
-
-addlib( portsmf            portsmf     PORTSMF     NO    YES   "portSMF >= 0.1" )

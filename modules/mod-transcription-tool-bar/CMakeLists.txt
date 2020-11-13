@@ -4,5 +4,5 @@ list( APPEND SOURCES
    VoiceKey.cpp
    VoiceKey.h
 )
-audacity_module( mod-transcription-tool-bar "${SOURCES}" "Audacity"
+audacity_module( mod-transcription-tool-bar "${SOURCES}" "mod-note-track-interface"
    "" "" )

@@ -80,6 +80,7 @@ static const std::unordered_set<wxString> &autoEnabledModules()
       "mod-play-indicator-overlay",
       "mod-label-track",
       "mod-time-track",
+      "mod-note-track",
    };
    return modules;
 }
