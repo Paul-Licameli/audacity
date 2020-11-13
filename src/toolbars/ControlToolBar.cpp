@@ -651,8 +651,11 @@ void ControlToolBar::OnIdle(wxIdleEvent & event)
    else
       StopScrolling();
 
-   if ( projectAudioManager.Stopping() )
+   if ( projectAudioManager.Stopping() ) {
+      mPlay->PopUp();
+      mPlay->SetAlternateIdx(0);
       mStop->PushDown();
+   }
    else
       // push-downs of the stop button are only momentary and always pop up now
       mStop->PopUp();

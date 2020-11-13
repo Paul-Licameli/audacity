@@ -26,7 +26,6 @@
 #include "../ViewInfo.h"
 #include "../commands/CommandContext.h"
 #include "../commands/CommandManager.h"
-#include "../toolbars/ControlToolBar.h"
 #include "../widgets/AudacityMessageBox.h"
 #include "BasicUI.h"
 #include "../widgets/ProgressDialog.h"
@@ -164,7 +163,6 @@ void RecordAndWait(const CommandContext &context, bool altAppearance)
 /// the stop button.
 bool MakeReadyToPlay(AudacityProject &project)
 {
-   auto &toolbar = ControlToolBar::Get( project );
    wxCommandEvent evt;
 
    // If this project is playing, stop playing
@@ -172,12 +170,7 @@ bool MakeReadyToPlay(AudacityProject &project)
    if (gAudioIO->IsStreamActive(
       ProjectAudioIO::Get( project ).GetAudioIOToken()
    )) {
-      // Make momentary changes of button appearances
-      toolbar.SetPlay(false);        //Pops
-      toolbar.SetStop();         //Pushes stop down
-
       ProjectAudioManager::Get( project ).Stop();
-
       ::wxMilliSleep(100);
    }
 
@@ -196,12 +189,10 @@ bool DoStopPlaying(const CommandContext &context)
    auto &project = context.project;
    auto &projectAudioManager = ProjectAudioManager::Get(project);
    auto gAudioIO = AudioIOBase::Get();
-   auto &toolbar = ControlToolBar::Get(project);
    auto token = ProjectAudioIO::Get(project).GetAudioIOToken();
 
    //If this project is playing, stop playing, make sure everything is unpaused.
    if (gAudioIO->IsStreamActive(token)) {
-      toolbar.SetStop();         //Pushes stop down
       projectAudioManager.Stop();
       // Playing project was stopped.  All done.
       return true;
@@ -221,10 +212,8 @@ bool DoStopPlaying(const CommandContext &context)
       //stop playing the other project
       if (iter != finish) {
          auto otherProject = *iter;
-         auto &otherToolbar = ControlToolBar::Get(*otherProject);
          auto &otherProjectAudioManager =
             ProjectAudioManager::Get(*otherProject);
-         otherToolbar.SetStop();         //Pushes stop down
          otherProjectAudioManager.Stop();
       }
    }
