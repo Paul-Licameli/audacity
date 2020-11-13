@@ -44,7 +44,6 @@
 #include "Diags.h"
 #include "Envelope.h"
 #include "FFT.h"
-#include "FileFormats.h"
 #include "ImageManipulation.h"
 #include "LabelTrack.h"
 #include "Mix.h"
