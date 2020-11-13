@@ -134,21 +134,6 @@ const ReservedCommandFlag&
       .Priority( 1 )
    }; return flag; }//lll
 const ReservedCommandFlag&
-   StereoRequiredFlag() { static ReservedCommandFlag flag{
-      [](const AudacityProject &project){
-         // True iff at least one stereo track is selected, i.e., at least
-         // one right channel is selected.
-         // TODO: more-than-two-channels
-         auto range = TrackList::Get( project ).Selected<const WaveTrack>()
-            - &Track::IsLeader;
-         return !range.empty();
-      },
-      { []( const TranslatableString& ) { return
-         // This reason will not be shown, because the stereo-to-mono is greyed out if not allowed.
-         XO("You must first select some stereo audio to perform this\naction. (You cannot use this with mono.)");
-      } ,"Audacity_Selection"}
-   }; return flag; }  //lda
-const ReservedCommandFlag&
    NoiseReductionTimeSelectedFlag() { static ReservedCommandFlag flag{
       TimeSelectedPred,
       noiseReductionOptions

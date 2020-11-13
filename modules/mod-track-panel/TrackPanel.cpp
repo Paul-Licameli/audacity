@@ -77,7 +77,7 @@ is time to refresh some aspect of the screen.
 #include "TrackPanelAx.h"
 #include "TrackPanelResizerCell.h"
 #include "ViewInfo.h"
-#include "WaveTrack.h"
+#include "Track.h"
 
 #include "TrackControls.h"
 #include "TrackView.h"
@@ -841,7 +841,7 @@ std::shared_ptr< TrackPanelCell > TrackPanel::GetBackgroundCell()
 
 void TrackPanel::UpdateVRulers()
 {
-   for (auto t : GetTracks()->Any< WaveTrack >())
+   for (auto t : GetTracks()->Any())
       UpdateTrackVRuler(t);
 
    UpdateVRulerSize();

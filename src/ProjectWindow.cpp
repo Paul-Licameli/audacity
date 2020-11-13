@@ -27,8 +27,7 @@ Paul Licameli split from AudacityProject.cpp
 #include "TrackPanelAx.h"
 #include "UndoManager.h"
 #include "ViewInfo.h"
-#include "WaveClip.h"
-#include "WaveTrack.h"
+#include "Track.h"
 #include "tracks/ui/Scrubbing.h"
 #include "TrackView.h"
 #include "wxPanelWrapper.h"
@@ -716,10 +715,10 @@ void ProjectWindow::ApplyUpdatedTheme()
    ClearBackground();// For wxGTK.
 }
 
-void ProjectWindow::RedrawProject(const bool bForceWaveTracks /*= false*/)
+void ProjectWindow::RedrawProject()
 {
    auto pThis = wxWeakRef<ProjectWindow>(this);
-   CallAfter( [pThis, bForceWaveTracks]{
+   CallAfter( [pThis]{
 
    if (!pThis)
       return;
@@ -730,12 +729,6 @@ void ProjectWindow::RedrawProject(const bool bForceWaveTracks /*= false*/)
    auto &tracks = TrackList::Get( project );
    auto &trackPanel = GetProjectPanel( project );
    pThis->FixScrollbars();
-   if (bForceWaveTracks)
-   {
-      for ( auto pWaveTrack : tracks.Any< WaveTrack >() )
-         for (const auto &clip: pWaveTrack->GetClips())
-            clip->MarkChanged();
-   }
    trackPanel.Refresh(false);
 
    });

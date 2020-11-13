@@ -27,7 +27,6 @@ const CommandFlagOptions &cutCopyOptions();
 
 extern COMMON_COMMAND_FLAGS_API const ReservedCommandFlag
    &AudioIONotBusyFlag(),
-   &StereoRequiredFlag(),  //lda
    &NoiseReductionTimeSelectedFlag(),
    &TimeSelectedFlag(), // This is equivalent to check if there is a valid selection, so it's used for Zoom to Selection too
    &WaveTracksSelectedFlag(),

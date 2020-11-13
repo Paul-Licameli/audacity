@@ -300,7 +300,7 @@ private:
    // doing a copy and paste between projects.
    //
 
-   bool CloseLock(); //should be called when the project closes.
+   bool CloseLock() override; //should be called when the project closes.
    // not balanced by unlocking calls.
 
    // Get access to the (visible) clips in the tracks, in unspecified order

@@ -105,7 +105,7 @@ public:
    void SetNormalizedWindowState(wxRect pSizeAndLocation) {  mNormalizedWindowState = pSizeAndLocation;   }
    wxRect GetNormalizedWindowState() const { return mNormalizedWindowState;   }
 
-   void RedrawProject(const bool bForceWaveTracks = false);
+   void RedrawProject();
 
    void Zoom(double level);
    void ZoomInByFactor( double ZoomFactor );

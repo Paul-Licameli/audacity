@@ -1125,6 +1125,11 @@ bool Track::SupportsBasicEditing() const
    return true;
 }
 
+bool Track::CloseLock()
+{
+   return true;
+}
+
 auto Track::GetIntervals() const -> ConstIntervals
 {
    return {};

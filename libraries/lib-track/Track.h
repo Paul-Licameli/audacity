@@ -335,6 +335,9 @@ class TRACK_API Track /* not final */
    //! Whether this track type implements cut-copy-paste; by default, true
    virtual bool SupportsBasicEditing() const;
 
+   //! Invoked just before project closes.  Default implementation does nothing, returns true.
+   virtual bool CloseLock();
+
    using Holder = std::shared_ptr<Track>;
 
    //! Find or create the destination track for a paste, maybe in a different project
