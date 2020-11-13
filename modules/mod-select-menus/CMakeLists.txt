@@ -1,5 +1,5 @@
 list( APPEND SOURCES
    SelectMenus.cpp
 )
-audacity_module( mod-select-menus "${SOURCES}" "Audacity"
+audacity_module( mod-select-menus "${SOURCES}" "mod-control-tool-bar-interface"
    "" "" )
