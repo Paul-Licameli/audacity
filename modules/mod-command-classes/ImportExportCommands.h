@@ -18,8 +18,8 @@
 
 *//*******************************************************************/
 
-#include "commands/Command.h"
-#include "commands/CommandType.h"
+#include "Command.h"
+#include "CommandType.h"
 
 // Import
 

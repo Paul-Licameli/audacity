@@ -13,7 +13,6 @@
 
 *//*******************************************************************/
 
-
 #include "CommandSignature.h"
 
 CommandSignature::CommandSignature() = default;

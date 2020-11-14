@@ -20,7 +20,7 @@ parameters.  It is for development purposes.
 *//*******************************************************************/
 
 #include "Demo.h"
-#include "commands/LoadCommands.h"
+#include "LoadCommands.h"
 
 #include <float.h>
 

@@ -75,6 +75,7 @@ static const std::unordered_set<wxString> &autoEnabledModules()
       "mod-wave-track-ui",
       "mod-playable-track-ui",
       "mod-common-track-ui",
+      "mod-scripting",
    };
    return modules;
 }

@@ -14,7 +14,6 @@ functions to look up a command by name.
 
 *//*******************************************************************/
 
-
 #include "CommandDirectory.h"
 
 std::unique_ptr<CommandDirectory> CommandDirectory::mInstance;

@@ -13,7 +13,7 @@
 #ifndef __SCREENSHOT_COMMAND__
 #define __SCREENSHOT_COMMAND__
 
-#include "commands/Command.h"
+#include "Command.h"
 
 #include <wx/colour.h> // member variable
 

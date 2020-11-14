@@ -17,7 +17,6 @@ Also acts as a factory.
 
 *//*******************************************************************/
 
-
 #include "CommandType.h"
 
 OldStyleCommandType::OldStyleCommandType()

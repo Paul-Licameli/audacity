@@ -3457,7 +3457,7 @@ void * nyq_reformat_aud_do_response(const wxString & Str) {
    return (void *)dst;
 }
 
-#include "commands/ScriptCommandRelay.h"
+#include "ScriptCommandRelay.h"
 
 
 static void * ExecForLisp( char * pIn )

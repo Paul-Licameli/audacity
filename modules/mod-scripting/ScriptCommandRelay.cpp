@@ -21,10 +21,10 @@ code out of ModuleManager.
 
 #include "ScriptCommandRelay.h"
 
-#include "CommandTargets.h"
+#include "commands/CommandTargets.h"
 #include "CommandBuilder.h"
 #include "AppCommandEvent.h"
-#include "../Project.h"
+#include "Project.h"
 #include <thread>
 #include <wx/app.h>
 

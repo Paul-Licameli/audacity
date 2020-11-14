@@ -29,8 +29,6 @@ class wxSocketEvent;
 class wxSocketServer;
 
 class IPCServ;
-class CommandHandler;
-class AppCommandEvent;
 class AudacityProject;
 
 class AudacityApp final : public wxApp {
@@ -63,8 +61,6 @@ class AudacityApp final : public wxApp {
    // A wrapper of the above that does not throw
    bool SafeMRUOpen(const wxString &fileName);
 
-   void OnReceiveCommand(AppCommandEvent &event);
-
    void OnKeyDown(wxKeyEvent &event);
 
    void OnTimer(wxTimerEvent & event);
@@ -93,13 +89,9 @@ class AudacityApp final : public wxApp {
 
 
  private:
-   std::unique_ptr<CommandHandler> mCmdHandler;
-
    std::unique_ptr<wxSingleInstanceChecker> mChecker;
 
    wxTimer mTimer;
-
-   void InitCommandHandler();
 
    bool InitTempDir();
    bool CreateSingleInstanceChecker(const wxString &dir);

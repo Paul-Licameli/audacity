@@ -6,5 +6,5 @@ list( APPEND SOURCES
    Nyquist.cpp
    Nyquist.h
 )
-audacity_module( mod-nyquist "${SOURCES}" "mod-effects-interface;libnyquist;mod-spectrum-ui-interface"
+audacity_module( mod-nyquist "${SOURCES}" "mod-effects-interface;libnyquist;mod-spectrum-ui-interface;mod-scripting-interface"
    "" "" )

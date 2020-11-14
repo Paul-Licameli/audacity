@@ -74,8 +74,6 @@ It handles initialization and termination by subclassing wxApp.
 #include "Benchmark.h"
 #include "Clipboard.h"
 #include "CrashReport.h" // for HAS_CRASH_REPORT
-#include "commands/CommandHandler.h"
-#include "commands/AppCommandEvent.h"
 #include "widgets/ASlider.h"
 //#include "LangChoice.h"
 #include "Languages.h"
@@ -812,9 +810,6 @@ BEGIN_EVENT_TABLE(AudacityApp, wxApp)
    EVT_MENU_RANGE(FileHistory::ID_RECENT_FIRST, FileHistory::ID_RECENT_LAST,
       AudacityApp::OnMRUFile)
 
-   // Handle AppCommandEvents (usually from a script)
-   EVT_APP_COMMAND(wxID_ANY, AudacityApp::OnReceiveCommand)
-
    // Global ESC key handling
    EVT_KEY_DOWN(AudacityApp::OnKeyDown)
 END_EVENT_TABLE()
@@ -1347,11 +1342,8 @@ bool AudacityApp::InitPart2()
 
    //<<<< Try to avoid dialogs before this point.
    // The reason is that InitTempDir starts the single instance checker.
-   // If we're waiitng in a dialog before then we can very easily
+   // If we're waiting in a dialog before then we can very easily
    // start multiple instances, defeating the single instance checker.
-
-   // Initialize the CommandHandler
-   InitCommandHandler();
 
    // Initialize the ModuleManager, including loading found modules
    ModuleManager::Get().Initialize();
@@ -1589,19 +1581,6 @@ bool AudacityApp::InitPart2()
 #endif
 
    return TRUE;
-}
-
-void AudacityApp::InitCommandHandler()
-{
-   mCmdHandler = std::make_unique<CommandHandler>();
-   //SetNextHandler(mCmdHandler);
-}
-
-// AppCommandEvent callback - just pass the event on to the CommandHandler
-void AudacityApp::OnReceiveCommand(AppCommandEvent &event)
-{
-   wxASSERT(NULL != mCmdHandler);
-   mCmdHandler->OnReceiveCommand(event);
 }
 
 void AudacityApp::OnKeyDown(wxKeyEvent &event)

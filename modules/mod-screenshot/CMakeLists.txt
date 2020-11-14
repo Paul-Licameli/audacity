@@ -3,5 +3,5 @@ list( APPEND SOURCES
    ScreenshotCommand.cpp
    ScreenshotCommand.h
 )
-audacity_module( mod-screenshot "${SOURCES}" "Audacity"
+audacity_module( mod-screenshot "${SOURCES}" "mod-scripting-interface"
    "" "" )

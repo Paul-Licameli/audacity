@@ -11,13 +11,11 @@
 #ifndef __AUDACITY_COMMAND__
 #define __AUDACITY_COMMAND__
 
-
-
 #include <set>
 
 #include <wx/defs.h>
 
-#include "../widgets/wxPanelWrapper.h" // to inherit
+#include "widgets/wxPanelWrapper.h" // to inherit
 
 #include "ComponentInterface.h"
 #include "EffectAutomationParameters.h" // for command automation

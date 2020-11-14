@@ -16,7 +16,7 @@
 
 #include "OpenSaveCommands.h"
 
-#include "commands/LoadCommands.h"
+#include "LoadCommands.h"
 #include "AudacityLogger.h"
 #include "Project.h"
 #include "ProjectFileIO.h"

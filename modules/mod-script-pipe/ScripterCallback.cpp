@@ -15,7 +15,7 @@
 
 #include <wx/wx.h>
 #include "ScripterCallback.h"
-#include "commands/ScriptCommandRelay.h"
+#include "ScriptCommandRelay.h"
 
 /*
 //#define ModuleDispatchName "ModuleDispatch"

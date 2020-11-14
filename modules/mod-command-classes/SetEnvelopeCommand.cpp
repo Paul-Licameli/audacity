@@ -19,7 +19,7 @@
 #include "SetEnvelopeCommand.h"
 
 #include "commands/CommandContext.h"
-#include "commands/LoadCommands.h"
+#include "LoadCommands.h"
 #include "ProjectHistory.h"
 #include "UndoManager.h"
 #include "WaveClip.h"

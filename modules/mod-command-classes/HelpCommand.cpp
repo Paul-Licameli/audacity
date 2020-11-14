@@ -17,7 +17,7 @@
 #include "HelpCommand.h"
 
 #include "Shuttle.h"
-#include "commands/LoadCommands.h"
+#include "LoadCommands.h"
 #include "ShuttleGui.h"
 #include "commands/CommandTargets.h"
 #include "commands/CommandContext.h"

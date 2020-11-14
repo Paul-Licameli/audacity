@@ -11,5 +11,5 @@ list( APPEND SOURCES
    BatchProcessDialog.h
 )
 audacity_module( mod-macros "${SOURCES}"
-   "mod-import-export-interface;mod-effects-interface"
+   "mod-import-export-interface;mod-effects-interface;mod-scripting-interface"
    "" "" )

@@ -21,8 +21,9 @@ class AudacityApp;
 class AudacityProject;
 class AppCommandEvent;
 class CommandContext;
+#include <wx/event.h>
 
-class CommandHandler
+class CommandHandler : public wxEvtHandler
 {
    public:
       CommandHandler();

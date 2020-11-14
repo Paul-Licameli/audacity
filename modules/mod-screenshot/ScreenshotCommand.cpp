@@ -21,7 +21,7 @@ small calculations of rectangles.
 
 #include <mutex>
 
-#include "commands/LoadCommands.h"
+#include "LoadCommands.h"
 #include "Project.h"
 #include <wx/app.h>
 #include <wx/toplevel.h>

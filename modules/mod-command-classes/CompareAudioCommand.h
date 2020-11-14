@@ -18,8 +18,8 @@ classes
 #ifndef __COMPAREAUDIOCOMMAND__
 #define __COMPAREAUDIOCOMMAND__
 
-#include "commands/Command.h"
-#include "commands/CommandType.h"
+#include "Command.h"
+#include "CommandType.h"
 
 class WaveTrack;
 

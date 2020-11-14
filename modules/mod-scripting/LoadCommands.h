@@ -27,13 +27,13 @@ class AudacityCommand;
 //
 ///////////////////////////////////////////////////////////////////////////////
 
-class AUDACITY_DLL_API BuiltinCommandsModule final : public ModuleInterface
+class SCRIPTING_API BuiltinCommandsModule final : public ModuleInterface
 {
 public:
    BuiltinCommandsModule();
    virtual ~BuiltinCommandsModule();
 
-   struct AUDACITY_DLL_API Init{ Init(); };
+   struct SCRIPTING_API Init{ Init(); };
 
    using Factory = std::function< std::unique_ptr<AudacityCommand> () >;
 

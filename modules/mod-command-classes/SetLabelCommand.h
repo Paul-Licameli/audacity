@@ -16,8 +16,8 @@
 #ifndef __SET_LABEL_COMMAND__
 #define __SET_LABEL_COMMAND__
 
-#include "commands/Command.h"
-#include "commands/CommandType.h"
+#include "Command.h"
+#include "CommandType.h"
 
 class SetLabelCommand : public AudacityCommand
 {

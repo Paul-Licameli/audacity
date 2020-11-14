@@ -16,18 +16,20 @@
 
 *//*******************************************************************/
 
-
 #include "CommandHandler.h"
 
-#include "../Project.h"
-#include "../ProjectWindow.h"
+#include "Project.h"
+#include "ProjectWindow.h"
 #include "AppCommandEvent.h"
 #include "ScriptCommandRelay.h"
-#include "../commands/CommandContext.h"
-#include "../commands/Command.h"
+#include "commands/CommandContext.h"
+#include "Command.h"
+#include <wx/app.h>
 
 CommandHandler::CommandHandler()
 {
+   wxTheApp->Bind(wxEVT_APP_COMMAND_RECEIVED,
+      &CommandHandler::OnReceiveCommand, this);
 }
 
 CommandHandler::~CommandHandler()
@@ -52,4 +54,20 @@ void CommandHandler::OnReceiveCommand(AppCommandEvent &event)
       // Redraw the project
       ProjectWindow::Get( context.project ).RedrawProject();
    }
+}
+
+#include "ModuleConstants.h"
+
+DEFINE_VERSION_CHECK
+extern "C" DLL_API int ModuleDispatch(ModuleDispatchTypes type)
+{
+   switch (type) {
+   case ModuleInitialize: {
+      static CommandHandler handler;
+   }
+      break;
+   default:
+      break;
+   }
+   return 1;
 }

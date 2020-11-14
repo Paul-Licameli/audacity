@@ -35,7 +35,7 @@ SetTrackAudioCommand and SetTrackVisualsCommand.
 
 #include "SetTrackInfoCommand.h"
 
-#include "commands/LoadCommands.h"
+#include "LoadCommands.h"
 #include "Project.h"
 #include "TrackPanelAx.h"
 #include "TrackPanel.h"
