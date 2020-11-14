@@ -3,7 +3,6 @@
 #include "../CommonCommandFlags.h"
 #include "../EditUtilities.h"
 #include "../Menus.h"
-#include "../NoteTrack.h"
 #include "Prefs.h"
 #include "../Project.h"
 #include "../ProjectHistory.h"
@@ -180,23 +179,16 @@ void OnCut(const CommandContext &context)
    auto pNewClipboard = TrackList::Create( nullptr );
    auto &newClipboard = *pNewClipboard;
 
-   tracks.Selected().Visit(
-#if defined(USE_MIDI)
-      [&](NoteTrack *n) {
-         // Since portsmf has a built-in cut operator, we use that instead
-         auto dest = n->Cut(selectedRegion.t0(),
-                selectedRegion.t1());
-         FinishCopy(n, dest, newClipboard);
-      },
-#endif
-      [&](Track *n) {
-         if (n->SupportsBasicEditing()) {
-            auto dest = n->Copy(selectedRegion.t0(),
-                    selectedRegion.t1());
-            FinishCopy(n, dest, newClipboard);
-         }
-      }
-   );
+   // Proceed to change the project.  If this throws, the project will be
+   // rolled back by the top level handler.
+   for (auto pTrack: (tracks.Any() + &Track::SupportsBasicEditing
+      + &Track::IsSelectedOrSyncLockSelected)) {
+      std::shared_ptr<Track> dest;
+      pTrack->CutOrClear(selectedRegion.t0(), selectedRegion.t1(),
+         (pTrack->IsSelected() ? &dest: nullptr));
+      if (dest)
+         FinishCopy(pTrack, dest, newClipboard);
+   }
 
    // Survived possibility of exceptions.  Commit changes to the clipboard now.
    clipboard.Assign(
@@ -204,32 +196,6 @@ void OnCut(const CommandContext &context)
        selectedRegion.t0(),
        selectedRegion.t1(),
        project.shared_from_this()
-   );
-
-   // Proceed to change the project.  If this throws, the project will be
-   // rolled back by the top level handler.
-
-   (tracks.Any() + &Track::IsSelectedOrSyncLockSelected).Visit(
-#if defined(USE_MIDI)
-      [](NoteTrack*) {
-         //if NoteTrack, it was cut, so do not clear anything
-
-         // PRL:  But what if it was sync lock selected only, not selected?
-      },
-#endif
-      [&](WaveTrack *wt, const Track::Fallthrough &fallthrough) {
-         if (gPrefs->Read(wxT("/GUI/EnableCutLines"), (long)0)) {
-            wt->ClearAndAddCutLine(
-               selectedRegion.t0(),
-               selectedRegion.t1());
-         }
-         else
-            fallthrough();
-      },
-      [&](Track *n) {
-         if (n->SupportsBasicEditing())
-            n->Clear(selectedRegion.t0(), selectedRegion.t1());
-      }
    );
 
    selectedRegion.collapseToT0();

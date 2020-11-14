@@ -395,6 +395,17 @@ Track::Holder WaveTrack::Cut(double t0, double t1)
    return tmp;
 }
 
+void WaveTrack::CutOrClear(double t0, double t1, Track::Holder *pHolder)
+{
+   if (pHolder)
+      *pHolder = Copy(t0, t1);
+   if (gPrefs->Read(wxT("/GUI/EnableCutLines"), (long)0)) {
+      ClearAndAddCutLine(t0, t1);
+   }
+   else
+      Clear(t0, t1);
+}
+
 /*! @excsafety{Strong} */
 Track::Holder WaveTrack::SplitCut(double t0, double t1)
 {

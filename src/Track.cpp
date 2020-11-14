@@ -286,6 +286,14 @@ void Track::Notify( int code )
       pList->DataEvent( SharedPointer(), code );
 }
 
+void Track::CutOrClear(double t0, double t1, Holder *pHolder)
+{
+   if (pHolder)
+      *pHolder = Cut(t0, t1);
+   else
+      Clear(t0, t1);
+}
+
 void Track::PasteOver(double t0, double t1,
    const Track *src, double duration, bool)
 {

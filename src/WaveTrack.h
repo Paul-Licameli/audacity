@@ -149,6 +149,8 @@ private:
 
    Track::Holder Cut(double t0, double t1) override;
 
+   void CutOrClear(double t0, double t1, Track::Holder *pHolder) override;
+
    // Make another track copying format, rate, color, etc. but containing no
    // clips
    // It is important to pass the correct factory (that for the project

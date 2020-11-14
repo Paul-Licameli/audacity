@@ -452,6 +452,10 @@ public:
    // May assume precondition: t0 <= t1
    virtual Holder Cut(double WXUNUSED(t0), double WXUNUSED(t1)) = 0;
 
+   //! If pHolder is null, clear only (for sync-lock), else make new track that saves the contents
+   /*! @pre `t0 <= t1` */
+   virtual void CutOrClear(double t0, double t1, Holder *pHolder);
+
    // Create a NEW track and don't modify this track
    // Return non-NULL or else throw
    // Note that subclasses may want to distinguish tracks stored in a clipboard
