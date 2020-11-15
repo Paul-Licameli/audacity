@@ -19,8 +19,6 @@ KeyConfigPrefs and MousePrefs use.
 
 *//*********************************************************************/
 
-
-
 #include "KeyConfigPrefs.h"
 
 #include <wx/setup.h> // for wxUSE_* macros
@@ -34,20 +32,25 @@ KeyConfigPrefs and MousePrefs use.
 #include <wx/textctrl.h>
 
 #include "Prefs.h"
-#include "../Project.h"
-#include "../commands/CommandManager.h"
+#include "Project.h"
+#include "commands/CommandManager.h"
 #include "XMLFileReader.h"
 
-#include "../SelectFile.h"
-#include "../ShuttleGui.h"
+#include "SelectFile.h"
+#include "ShuttleGui.h"
 
 #include "FileNames.h"
 
-#include "../widgets/KeyView.h"
-#include "../widgets/AudacityMessageBox.h"
+#include "KeyView.h"
+#include "widgets/AudacityMessageBox.h"
 
 #if wxUSE_ACCESSIBILITY
-#include "../widgets/WindowAccessible.h"
+#include "widgets/WindowAccessible.h"
+#endif
+
+#ifdef EXPERIMENTAL_EASY_CHANGE_KEY_BINDINGS
+#include "prefs/PrefsDialog.h"
+#include <wx/frame.h>
 #endif
 
 //
@@ -948,3 +951,35 @@ PrefsPanel::Registration sAttachment{ "KeyConfig",
    KeyConfigPrefsFactory()
 };
 }
+
+#include "ModuleConstants.h"
+
+DEFINE_VERSION_CHECK
+extern "C" DLL_API int ModuleDispatch(ModuleDispatchTypes type)
+{
+   switch (type) {
+   case ModuleInitialize:
+#ifdef EXPERIMENTAL_EASY_CHANGE_KEY_BINDINGS
+      CommandManager::SetMenuHook( [](const CommandID &id){
+         if (::wxGetMouseState().ShiftDown()) {
+            // Only want one page of the preferences
+            PrefsPanel::Factories factories;
+            factories.push_back(KeyConfigPrefsFactory( id ));
+            const auto pProject = GetActiveProject();
+            auto pWindow = FindProjectFrame( pProject );
+            GlobalPrefsDialog dialog( pWindow, pProject, factories );
+            dialog.ShowModal();
+            MenuCreator::RebuildAllMenuBars();
+            return true;
+         }
+         else
+            return false;
+      } );
+#endif
+      break;
+   default:
+      break;
+   }
+   return 1;
+}
+

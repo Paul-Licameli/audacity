@@ -81,6 +81,7 @@ static const std::unordered_set<wxString> &autoEnabledModules()
       "mod-label-track",
       "mod-time-track",
       "mod-note-track",
+      "mod-keyboard-preferences",
    };
    return modules;
 }

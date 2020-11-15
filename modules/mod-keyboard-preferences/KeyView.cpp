@@ -11,7 +11,6 @@
 
 *//*********************************************************************/
 
-
 #include "KeyView.h"
 
 #include <wx/setup.h> // for wxUSE_* macros
@@ -19,15 +18,15 @@
 #include <wx/settings.h>
 #include <wx/vlbox.h>
 
-#include "../AColor.h"
-#include "../ShuttleGui.h"
-#include "../commands/CommandManager.h"
+#include "AColor.h"
+#include "ShuttleGui.h"
+#include "commands/CommandManager.h"
 
 #include <wx/dc.h>
 #include <wx/menu.h>
 
 #if wxUSE_ACCESSIBILITY
-#include "WindowAccessible.h"
+#include "widgets/WindowAccessible.h"
 
 // ----------------------------------------------------------------------------
 // KeyViewAx

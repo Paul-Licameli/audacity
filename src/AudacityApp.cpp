@@ -111,10 +111,6 @@ It handles initialization and termination by subclassing wxApp.
 #include "NetworkManager.h"
 #endif
 
-#ifdef EXPERIMENTAL_EASY_CHANGE_KEY_BINDINGS
-#include "prefs/KeyConfigPrefs.h"
-#endif
-
 //temporarily commented out till it is added to all projects
 //#include "Profiler.h"
 
@@ -1530,24 +1526,6 @@ bool AudacityApp::InitPart2()
 
    mTimer.SetOwner(this, kAudacityAppTimerID);
    mTimer.Start(200);
-
-#ifdef EXPERIMENTAL_EASY_CHANGE_KEY_BINDINGS
-   CommandManager::SetMenuHook( [](const CommandID &id){
-      if (::wxGetMouseState().ShiftDown()) {
-         // Only want one page of the preferences
-         PrefsPanel::Factories factories;
-         factories.push_back(KeyConfigPrefsFactory( id ));
-         const auto pProject = GetActiveProject();
-         auto pWindow = FindProjectFrame( pProject );
-         GlobalPrefsDialog dialog( pWindow, pProject, factories );
-         dialog.ShowModal();
-         MenuCreator::RebuildAllMenuBars();
-         return true;
-      }
-      else
-         return false;
-   } );
-#endif
 
 #if defined(__WXMAC__)
    // The first time this version of Audacity is run or when the preferences

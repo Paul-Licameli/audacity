@@ -293,8 +293,6 @@ list( APPEND SOURCES
       prefs/GUISettings.h
       prefs/ImportExportPrefs.cpp
       prefs/ImportExportPrefs.h
-      prefs/KeyConfigPrefs.cpp
-      prefs/KeyConfigPrefs.h
       prefs/LibraryPrefs.cpp
       prefs/LibraryPrefs.h
       prefs/ModulePrefs.cpp
@@ -396,8 +394,6 @@ list( APPEND SOURCES
       widgets/HtmlWindow.h
       widgets/ImageRoll.cpp
       widgets/ImageRoll.h
-      widgets/KeyView.cpp
-      widgets/KeyView.h
       widgets/Meter.cpp
       widgets/Meter.h
       widgets/MeterPanelBase.cpp
