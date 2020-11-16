@@ -115,4 +115,14 @@ public:
    double LongSamplesToTime(sampleCount pos) const;
 };
 
+class AUDACITY_DLL_API WritableSampleTrack /* not final */
+   : public SampleTrack
+{
+public:
+   ~WritableSampleTrack() override;
+
+   const TypeInfo &GetTypeInfo() const override;
+   static const TypeInfo &ClassTypeInfo();
+};
+
 #endif

@@ -42,3 +42,25 @@ double SampleTrack::LongSamplesToTime(sampleCount pos) const
 {
    return pos.as_double() / GetRate();
 }
+
+WritableSampleTrack::~WritableSampleTrack() = default;
+
+static const Track::TypeInfo &typeInfo2()
+{
+   static const Track::TypeInfo info{
+      { "writable-sample", "writable-sample", XO("Writable Sample Track") },
+      true, &SampleTrack::ClassTypeInfo() };
+   return info;
+}
+
+static TrackTypeRegistry::RegisteredType sType2{ "WritableSample", typeInfo2() };
+
+auto WritableSampleTrack::ClassTypeInfo() -> const TypeInfo &
+{
+   return typeInfo2();
+}
+
+auto WritableSampleTrack::GetTypeInfo() const -> const TypeInfo &
+{
+   return typeInfo2();
+}

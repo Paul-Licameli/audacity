@@ -102,7 +102,7 @@ WaveTrack *WaveTrack::New( AudacityProject &project )
 
 WaveTrack::WaveTrack( const SampleBlockFactoryPtr &pFactory,
    sampleFormat format, double rate )
-   : SampleTrack()
+   : WritableSampleTrack()
    , mpFactory(pFactory)
 {
    mLegacyProjectFileOffset = 0;
@@ -118,8 +118,8 @@ WaveTrack::WaveTrack( const SampleBlockFactoryPtr &pFactory,
    SetName(GetDefaultName());
 }
 
-WaveTrack::WaveTrack(const WaveTrack &orig):
-   SampleTrack(orig)
+WaveTrack::WaveTrack(const WaveTrack &orig)
+   : WritableSampleTrack(orig)
    , mpFactory( orig.mpFactory )
 {
    mLegacyProjectFileOffset = 0;
@@ -218,7 +218,7 @@ static const Track::TypeInfo &typeInfo()
 {
    static const Track::TypeInfo info{
       { "wave", "wave", XO("Wave Track") },
-      true, &SampleTrack::ClassTypeInfo() };
+      true, &WritableSampleTrack::ClassTypeInfo() };
    return info;
 }
 
