@@ -153,6 +153,8 @@ list( APPEND SOURCES
       SampleBlock.h
       SampleTrack.cpp
       SampleTrack.h
+      SampleTrackCache.cpp
+      SampleTrackCache.h
       SelectUtilities.cpp
       SelectUtilities.h
       SelectFile.cpp

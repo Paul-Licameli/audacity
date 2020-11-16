@@ -239,25 +239,6 @@ private:
    /// guaranteed that the same samples are affected.
    ///
 
-   //! Retrieve samples from a track in floating-point format, regardless of the storage format
-   /*!
-    @param buffer receives the samples
-    @param start starting sample, relative to absolute time zero (not to the track's offset value)
-    @param len how many samples to get.  buffer is assumed sufficiently large
-    @param fill how to assign values for sample positions between clips
-    @param mayThrow if false, fill buffer with zeros when there is failure to retrieve samples; else throw
-    @param[out] pNumWithinClips Report how many samples were copied from within clips, rather
-       than filled according to fillFormat; but these were not necessarily one contiguous range.
-    */
-   bool GetFloats(float *buffer, sampleCount start, size_t len,
-      fillFormat fill = fillZero, bool mayThrow = true,
-      sampleCount * pNumWithinClips = nullptr) const
-   {
-      //! Cast the pointer to pass it to Get() which handles multiple destination formats
-      return Get(reinterpret_cast<samplePtr>(buffer),
-         floatSample, start, len, fill, mayThrow, pNumWithinClips);
-   }
-
    //! Retrieve samples from a track in a specified format
    /*!
     @copydetails WaveTrack::GetFloats()
@@ -550,63 +531,6 @@ private:
 };
 
 ENUMERATE_TRACK_TYPE(WaveTrack);
-
-//! A short-lived object, during whose lifetime, the contents of the WaveTrack are assumed not to change.
-/*! It can replace repeated calls to WaveTrack::Get() (each of which opens and closes at least one block).
- */
-class AUDACITY_DLL_API WaveTrackCache {
-public:
-   WaveTrackCache()
-      : mBufferSize(0)
-      , mOverlapBuffer()
-      , mNValidBuffers(0)
-   {
-   }
-
-   explicit WaveTrackCache(const std::shared_ptr<const SampleTrack> &pTrack)
-      : mBufferSize(0)
-      , mOverlapBuffer()
-      , mNValidBuffers(0)
-   {
-      SetTrack(pTrack);
-   }
-   ~WaveTrackCache();
-
-   const std::shared_ptr<const SampleTrack>& GetTrack() const { return mPTrack; }
-   void SetTrack(const std::shared_ptr<const SampleTrack> &pTrack);
-
-   //! Retrieve samples as floats from the track or from the memory cache
-   /*! Uses fillZero always
-    @return null on failure; this object owns the memory; may be invalidated if GetFloats() is called again
-   */
-   const float *GetFloats(sampleCount start, size_t len, bool mayThrow);
-
-private:
-   void Free();
-
-   struct Buffer {
-      Floats data;
-      sampleCount start;
-      sampleCount len;
-
-      Buffer() : start(0), len(0) {}
-      void Free() { data.reset(); start = 0; len = 0; }
-      sampleCount end() const { return start + len; }
-
-      void swap ( Buffer &other )
-      {
-         data .swap ( other.data );
-         std::swap( start, other.start );
-         std::swap( len, other.len );
-      }
-   };
-
-   std::shared_ptr<const SampleTrack> mPTrack;
-   size_t mBufferSize;
-   Buffer mBuffers[2];
-   GrowableSampleBuffer mOverlapBuffer;
-   int mNValidBuffers;
-};
 
 #include <unordered_set>
 class SampleBlock;

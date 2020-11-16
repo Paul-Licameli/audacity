@@ -13,6 +13,7 @@ Paul Licameli split from WaveTrack.h
 #define __AUDACITY_SAMPLE_TRACK__
 
 #include "Prefs.h"
+#include "SampleCount.h"
 #include "SampleFormat.h"
 #include "Prefs.h" // for EnumSetting
 #include "Track.h"
@@ -72,6 +73,25 @@ public:
       // filled according to fillFormat; but these were not necessarily one
       // contiguous range.
       sampleCount * pNumWithinClips = nullptr) const = 0;
+
+   //! Retrieve samples from a track in floating-point format, regardless of the storage format
+   /*!
+    @param buffer receives the samples
+    @param start starting sample, relative to absolute time zero (not to the track's offset value)
+    @param len how many samples to get.  buffer is assumed sufficiently large
+    @param fill how to assign values for sample positions between clips
+    @param mayThrow if false, fill buffer with zeros when there is failure to retrieve samples; else throw
+    @param[out] pNumWithinClips Report how many samples were copied from within clips, rather
+       than filled according to fillFormat; but these were not necessarily one contiguous range.
+    */
+   bool GetFloats(float *buffer, sampleCount start, size_t len,
+      fillFormat fill = fillZero, bool mayThrow = true,
+      sampleCount * pNumWithinClips = nullptr) const
+   {
+      //! Cast the pointer to pass it to Get() which handles multiple destination formats
+      return Get(reinterpret_cast<samplePtr>(buffer),
+         floatSample, start, len, fill, mayThrow, pNumWithinClips);
+   }
 
    /** @brief Convert correctly between an (absolute) time in seconds and a number of samples.
     *

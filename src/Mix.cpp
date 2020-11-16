@@ -30,6 +30,7 @@
 
 #include "Envelope.h"
 #include "WaveTrack.h"
+#include "SampleTrackCache.h"
 #include "Prefs.h"
 #include "Resample.h"
 #include "float_cast.h"
@@ -423,7 +424,7 @@ double ComputeWarpFactor(const Envelope &env, double t0, double t1)
 
 }
 
-size_t Mixer::MixVariableRates(int *channelFlags, WaveTrackCache &cache,
+size_t Mixer::MixVariableRates(int *channelFlags, SampleTrackCache &cache,
                                     sampleCount *pos, float *queue,
                                     int *queueStart, int *queueLen,
                                     Resample * pResample)
@@ -578,7 +579,7 @@ size_t Mixer::MixVariableRates(int *channelFlags, WaveTrackCache &cache,
    return out;
 }
 
-size_t Mixer::MixSameRate(int *channelFlags, WaveTrackCache &cache,
+size_t Mixer::MixSameRate(int *channelFlags, SampleTrackCache &cache,
                                sampleCount *pos)
 {
    const auto track = cache.GetTrack().get();

@@ -30,6 +30,7 @@ Paul Licameli split from WaveTrackView.cpp
 #include "WaveTrackLocation.h"
 #include "SpectrogramSettings.h"
 #include "SpectralSelectHandle.h"
+#include "SampleTrackCache.h"
 
 #include <wx/dcmemory.h>
 #include <wx/graphics.h>
@@ -216,7 +217,7 @@ public:
    // Calculate one column of the spectrum
    bool CalculateOneSpectrum
       (const SpectrogramSettings &settings,
-       WaveTrackCache &waveTrackCache,
+       SampleTrackCache &waveTrackCache,
        const int xx, sampleCount numSamples,
        double offset, double rate, double pixelsPerSecond,
        int lowerBoundX, int upperBoundX,
@@ -230,7 +231,7 @@ public:
 
    // Calculate the dirty columns at the begin and end of the cache
    void Populate
-      (const SpectrogramSettings &settings, WaveTrackCache &waveTrackCache,
+      (const SpectrogramSettings &settings, SampleTrackCache &waveTrackCache,
        int copyBegin, int copyEnd, size_t numPixels,
        sampleCount numSamples,
        double offset, double rate, double pixelsPerSecond);
@@ -288,7 +289,7 @@ struct WaveClipSpectrumCache final : WaveClipListener
    void Invalidate() override; // NOFAIL-GUARANTEE
 
    /** Getting high-level data for screen display */
-   bool GetSpectrogram(const WaveClip &clip, WaveTrackCache &cache,
+   bool GetSpectrogram(const WaveClip &clip, SampleTrackCache &cache,
                        const float *& spectrogram,
                        const sampleCount *& where,
                        size_t numPixels,
@@ -402,7 +403,7 @@ static void ComputeSpectrumUsingRealFFTf
 
 bool SpecCache::CalculateOneSpectrum
    (const SpectrogramSettings &settings,
-    WaveTrackCache &waveTrackCache,
+    SampleTrackCache &waveTrackCache,
     const int xx, const sampleCount numSamples,
     double offset, double rate, double pixelsPerSecond,
     int lowerBoundX, int upperBoundX,
@@ -648,7 +649,7 @@ void SpecCache::Grow(size_t len_, const SpectrogramSettings& settings,
 }
 
 void SpecCache::Populate
-   (const SpectrogramSettings &settings, WaveTrackCache &waveTrackCache,
+   (const SpectrogramSettings &settings, SampleTrackCache &waveTrackCache,
     int copyBegin, int copyEnd, size_t numPixels,
     sampleCount numSamples,
     double offset, double rate, double pixelsPerSecond)
@@ -691,13 +692,13 @@ void SpecCache::Populate
          ThreadLocalStorage()  { }
          ~ThreadLocalStorage() { }
 
-         void init(WaveTrackCache &waveTrackCache, size_t scratchSize) {
+         void init(SampleTrackCache &waveTrackCache, size_t scratchSize) {
             if (!cache) {
-               cache = std::make_unique<WaveTrackCache>(waveTrackCache.GetTrack());
+               cache = std::make_unique<SampleTrackCache>(waveTrackCache.GetTrack());
                scratch.resize(scratchSize);
             }
          }
-         std::unique_ptr<WaveTrackCache> cache;
+         std::unique_ptr<SampleTrackCache> cache;
          std::vector<float> scratch;
       } tls;
 
@@ -707,10 +708,10 @@ void SpecCache::Populate
       {
 #ifdef _OPENMP
          tls.init(waveTrackCache, scratchSize);
-         WaveTrackCache& cache = *tls.cache;
+         SampleTrackCache& cache = *tls.cache;
          float* buffer = &tls.scratch[0];
 #else
-         WaveTrackCache& cache = waveTrackCache;
+         SampleTrackCache& cache = waveTrackCache;
          float* buffer = &scratch[0];
 #endif
          CalculateOneSpectrum(
@@ -777,7 +778,7 @@ void SpecCache::Populate
 }
 
 bool WaveClipSpectrumCache::GetSpectrogram(const WaveClip &clip,
-                              WaveTrackCache &waveTrackCache,
+                              SampleTrackCache &waveTrackCache,
                               const float *& spectrogram,
                               const sampleCount *& where,
                               size_t numPixels,
@@ -890,7 +891,7 @@ bool WaveClipSpectrumCache::GetSpectrogram(const WaveClip &clip,
 }
 
 void DrawClipSpectrum(TrackPanelDrawingContext &context,
-                                   WaveTrackCache &waveTrackCache,
+                                   SampleTrackCache &waveTrackCache,
                                    const WaveClip *clip,
                                    const wxRect & rect,
                                    bool selected)
@@ -1353,7 +1354,7 @@ void SpectrumView::DoDraw(TrackPanelDrawingContext& context,
    TrackArt::DrawBackgroundWithSelection(
       context, rect, track, blankSelectedBrush, blankBrush );
 
-   WaveTrackCache cache(track->SharedPointer<const WaveTrack>());
+   SampleTrackCache cache(track->SharedPointer<const WaveTrack>());
    for (const auto &clip: track->GetClips())
       DrawClipSpectrum( context, cache, clip.get(), rect, clip.get() == selectedClip );
 
