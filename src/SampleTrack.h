@@ -123,6 +123,19 @@ public:
 
    const TypeInfo &GetTypeInfo() const override;
    static const TypeInfo &ClassTypeInfo();
+
+   virtual void SetOldChannelGain(int channel, float gain) = 0;
+
+   /** @brief Append the sample data to the track. You must call Flush()
+    * after the last Append.
+    *
+    * @return true if at least one complete block was created
+    */
+   virtual bool Append(constSamplePtr buffer, sampleFormat format,
+               size_t len, unsigned int stride=1) = 0;
+
+   //! Flush must be called after last Append
+   virtual void Flush() = 0;
 };
 
 #endif
