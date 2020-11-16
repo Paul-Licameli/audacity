@@ -19,7 +19,10 @@ class AudacityProject;
 struct AudioIOStartStreamOptions;
 struct TransportTracks;
 class WaveTrack;
-using WaveTrackArray = std::vector < std::shared_ptr < WaveTrack > >;
+
+class WritableSampleTrack;
+using WritableSampleTrackArray =
+   std::vector < std::shared_ptr < WritableSampleTrack > >;
 
 namespace RecordUtilities {
 
@@ -28,7 +31,7 @@ bool UseDuplex();
 constexpr int RATE_NOT_SELECTED{ -1 };
 
 // Find suitable tracks to record into, or return an empty array.
-AUDACITY_DLL_API WaveTrackArray ChooseExistingRecordingTracks(
+AUDACITY_DLL_API WritableSampleTrackArray ChooseExistingRecordingTracks(
    AudacityProject &proj, bool selectedOnly,
    double targetRate = RATE_NOT_SELECTED);
 

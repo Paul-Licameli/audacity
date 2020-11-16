@@ -498,7 +498,8 @@ void ProjectAudioManager::OnAudioIOStopRecording()
    }
 }
 
-void ProjectAudioManager::OnAudioIONewBlocks(const WaveTrackArray *tracks)
+void ProjectAudioManager::OnAudioIONewBlocks(
+   const WritableSampleTrackArray *tracks)
 {
    auto &project = mProject;
    auto &projectFileIO = ProjectFileIO::Get( project );

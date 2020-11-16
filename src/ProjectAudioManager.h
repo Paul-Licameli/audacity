@@ -23,9 +23,6 @@ struct AudioIOStartStreamOptions;
 class TrackList;
 class SelectedRegion;
 
-class WaveTrack;
-using WaveTrackArray = std::vector < std::shared_ptr < WaveTrack > >;
-
 enum class PlayMode : int {
    normalPlay,
    oneSecondPlay, // Disables auto-scrolling
@@ -146,7 +143,7 @@ private:
    void OnAudioIORate(int rate) override;
    void OnAudioIOStartRecording() override;
    void OnAudioIOStopRecording() override;
-   void OnAudioIONewBlocks(const WaveTrackArray *tracks) override;
+   void OnAudioIONewBlocks(const WritableSampleTrackArray *tracks) override;
    void OnCommitRecording() override;
    void OnSoundActivationThreshold() override;
 

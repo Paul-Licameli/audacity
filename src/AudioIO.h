@@ -44,9 +44,15 @@ class PlayableTrack;
 using PlayableTrackConstArray =
    std::vector < std::shared_ptr < const PlayableTrack > >;
 
-class WaveTrack;
-using WaveTrackArray = std::vector < std::shared_ptr < WaveTrack > >;
-using WaveTrackConstArray = std::vector < std::shared_ptr < const WaveTrack > >;
+class SampleTrack;
+using SampleTrackArray = std::vector < std::shared_ptr < SampleTrack > >;
+using SampleTrackConstArray = std::vector < std::shared_ptr < const SampleTrack > >;
+
+class WritableSampleTrack;
+using WritableSampleTrackArray =
+   std::vector < std::shared_ptr < WritableSampleTrack > >;
+using WritableSampleTrackConstArray =
+   std::vector < std::shared_ptr < const WritableSampleTrack > >;
 
 struct PaStreamCallbackTimeInfo;
 typedef unsigned long PaStreamCallbackFlags;
@@ -65,12 +71,12 @@ wxDECLARE_EXPORTED_EVENT(AUDACITY_DLL_API,
                          EVT_AUDIOIO_MONITOR, wxCommandEvent);
 
 struct TransportTracks {
-   WaveTrackArray playbackTracks;
-   WaveTrackArray captureTracks;
+   WritableSampleTrackArray playbackTracks;
+   WritableSampleTrackArray captureTracks;
    PlayableTrackConstArray otherPlayableTracks;
 
    // This is a subset of playbackTracks
-   WaveTrackConstArray prerollTracks;
+   SampleTrackConstArray prerollTracks;
 };
 
 /** brief The function which is called from PortAudio's callback thread
@@ -233,8 +239,8 @@ public:
    int mCallbackReturn;
    // Helpers to determine if tracks have already been faded out.
    unsigned  CountSoloingTracks();
-   bool TrackShouldBeSilent( const WaveTrack &wt );
-   bool TrackHasBeenFadedOut( const WaveTrack &wt );
+   bool TrackShouldBeSilent( const SampleTrack &wt );
+   bool TrackHasBeenFadedOut( const SampleTrack &wt );
    bool AllTracksAlreadySilent();
 
    void CheckSoundActivatedRecordingLevel(
@@ -247,7 +253,7 @@ public:
       const float * tempBuf,
       bool drop,
       unsigned long len,
-      WaveTrack *vt
+      WritableSampleTrack *vt
       );
    bool FillOutputBuffers(
       float *outputBuffer,
@@ -309,9 +315,9 @@ public:
 
    ArrayOf<std::unique_ptr<Resample>> mResample;
    ArrayOf<std::unique_ptr<RingBuffer>> mCaptureBuffers;
-   WaveTrackArray      mCaptureTracks;
+   WritableSampleTrackArray      mCaptureTracks;
    ArrayOf<std::unique_ptr<RingBuffer>> mPlaybackBuffers;
-   WaveTrackArray      mPlaybackTracks;
+   WritableSampleTrackArray      mPlaybackTracks;
 
    ArrayOf<std::unique_ptr<Mixer>> mPlaybackMixers;
    static int          mNextStreamToken;

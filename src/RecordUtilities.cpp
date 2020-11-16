@@ -41,7 +41,7 @@ bool UseDuplex()
    return duplex;
 }
 
-WaveTrackArray ChooseExistingRecordingTracks(
+WritableSampleTrackArray ChooseExistingRecordingTracks(
    AudacityProject &proj, bool selectedOnly, double targetRate)
 {
    auto p = &proj;
@@ -70,7 +70,7 @@ WaveTrackArray ChooseExistingRecordingTracks(
 
    auto &trackList = TrackList::Get( *p );
    std::vector<unsigned> channelCounts;
-   WaveTrackArray candidates;
+   WritableSampleTrackArray candidates;
    const auto range = trackList.Leaders<WaveTrack>();
    for ( auto candidate : selectedOnly ? range + &Track::IsSelected : range ) {
       if (targetRate != RATE_NOT_SELECTED && candidate->GetRate() != targetRate)
@@ -324,7 +324,7 @@ void OnRecord(AudacityProject &project, bool altAppearance)
          t1 = DBL_MAX;
 
       auto options = DefaultPlayOptions(*p);
-      WaveTrackArray existingTracks;
+      WritableSampleTrackArray existingTracks;
 
       // Checking the selected tracks: counting them and
       // making sure they all have the same rate
