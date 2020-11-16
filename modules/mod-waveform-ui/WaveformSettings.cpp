@@ -46,7 +46,7 @@ WaveformSettings::Globals
 }
 
 static WaveTrack::Caches::RegisteredFactory key1{
-   [](WaveTrack&){
+   [](SampleTrack&){
       return std::make_unique<WaveformSettings>(WaveformSettings::defaults());
    }
 };
@@ -246,7 +246,7 @@ auto WaveformSettings::Clone() const -> PointerType
 }
 
 static WaveTrack::Caches::RegisteredFactory key2{
-   [](WaveTrack&){
+   [](SampleTrack&){
       return std::make_unique<WaveformSettingsCache>();
    }
 };

@@ -9,6 +9,7 @@ Paul Licameli split from WaveTrack.cpp
 **********************************************************************/
 
 #include "SampleTrack.h"
+#include "audacity/Types.h"
 
 SampleTrack::~SampleTrack() = default;
 
@@ -28,4 +29,14 @@ auto SampleTrack::ClassTypeInfo() -> const TypeInfo &
 auto SampleTrack::GetTypeInfo() const -> const TypeInfo &
 {
    return typeInfo();
+}
+
+sampleCount SampleTrack::TimeToLongSamples(double t0) const
+{
+   return sampleCount( floor(t0 * GetRate() + 0.5) );
+}
+
+double SampleTrack::LongSamplesToTime(sampleCount pos) const
+{
+   return pos.as_double() / GetRate();
 }

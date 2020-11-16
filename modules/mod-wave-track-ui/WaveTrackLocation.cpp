@@ -86,7 +86,7 @@ void WaveTrackLocationsCache::Update( const WaveTrack &track )
    wxASSERT(curpos == num);
 }
 
-static WaveTrack::Caches::RegisteredFactory sKey{ []( WaveTrack& ){
+static WaveTrack::Caches::RegisteredFactory sKey{ []( SampleTrack& ){
    return std::make_unique< WaveTrackLocationsCache >();
 } };
 

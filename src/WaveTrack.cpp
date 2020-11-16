@@ -1605,16 +1605,6 @@ bool WaveTrack::CloseLock()
    return true;
 }
 
-AUDACITY_DLL_API sampleCount WaveTrack::TimeToLongSamples(double t0) const
-{
-   return sampleCount( floor(t0 * mRate + 0.5) );
-}
-
-double WaveTrack::LongSamplesToTime(sampleCount pos) const
-{
-   return pos.as_double() / mRate;
-}
-
 double WaveTrack::GetStartTime() const
 {
    bool found = false;

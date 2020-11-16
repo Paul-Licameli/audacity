@@ -56,7 +56,7 @@ SpectrogramSettings::Globals
 }
 
 static WaveTrack::Caches::RegisteredFactory key1{
-   [](WaveTrack&){
+   [](SampleTrack&){
       return nullptr;
    }
 };
@@ -692,7 +692,7 @@ bool SpectrogramSettings::SpectralSelectionEnabled() const
 }
 
 static WaveTrack::Caches::RegisteredFactory key2{
-   [](WaveTrack&){
+   [](SampleTrack&){
       return std::make_unique<SpectrogramSettingsCache>();
    }
 };
