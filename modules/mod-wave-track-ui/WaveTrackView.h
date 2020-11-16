@@ -18,6 +18,7 @@ struct WaveTrackSubViewType;
 
 class CutlineHandle;
 class TranslatableString;
+class SampleTrack;
 class WaveTrack;
 class WaveTrackView;
 class WaveClip;
@@ -160,8 +161,9 @@ class ZoomInfo;
 struct WAVE_TRACK_UI_API ClipParameters
 {
    // Do a bunch of calculations common to waveform and spectrum drawing.
-   ClipParameters
-      (bool spectrum, const WaveTrack *track, const WaveClip *clip, const wxRect &rect,
+   ClipParameters(
+      bool spectrum, const SampleTrack *track,
+      const WaveClip *clip, const wxRect &rect,
       const SelectedRegion &selectedRegion, const ZoomInfo &zoomInfo);
 
    double tOffset;

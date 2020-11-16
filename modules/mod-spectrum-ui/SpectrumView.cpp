@@ -783,7 +783,7 @@ bool WaveClipSpectrumCache::GetSpectrogram(const WaveClip &clip,
                               size_t numPixels,
                               double t0, double pixelsPerSecond)
 {
-   const WaveTrack *const track = waveTrackCache.GetTrack().get();
+   const auto track = waveTrackCache.GetTrack().get();
    const auto &settings = SpectrogramSettings::Get(*track);
    const auto rate = clip.GetRate();
 
@@ -904,7 +904,7 @@ void DrawClipSpectrum(TrackPanelDrawingContext &context,
    Profiler profiler;
 #endif
 
-   const WaveTrack *const track = waveTrackCache.GetTrack().get();
+   const auto track = waveTrackCache.GetTrack().get();
    const auto &settings = SpectrogramSettings::Get(*track);
    const bool autocorrelation = (settings.algorithm == SpectrogramSettings::algPitchEAC);
 
