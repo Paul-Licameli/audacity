@@ -1464,7 +1464,7 @@ bool AudioIO::AllocateBuffers(
                mTimeQueue.mSize = timeQueueSize;
 
                // use track time for the end time, not real time!
-               WaveTrackConstArray mixTracks;
+               SampleTrackConstArray mixTracks;
                mixTracks.push_back(mPlaybackTracks[i]);
 
                double endTime;

@@ -29,7 +29,7 @@
 #include <wx/textctrl.h>
 
 #include "Envelope.h"
-#include "WaveTrack.h"
+#include "SampleTrack.h"
 #include "SampleTrackCache.h"
 #include "Prefs.h"
 #include "Resample.h"
@@ -85,7 +85,7 @@ Mixer::WarpOptions::WarpOptions(double min, double max)
    }
 }
 
-Mixer::Mixer(const WaveTrackConstArray &inputTracks,
+Mixer::Mixer(const SampleTrackConstArray &inputTracks,
              bool mayThrow,
              const WarpOptions &warpOptions,
              double startTime, double stopTime,
@@ -98,7 +98,7 @@ Mixer::Mixer(const WaveTrackConstArray &inputTracks,
 
    // This is the number of samples grabbed in one go from a track
    // and placed in a queue, when mixing with resampling.
-   // (Should we use WaveTrack::GetBestBlockSize instead?)
+   // (Should we use SampleTrack::GetBestBlockSize instead?)
    , mQueueMaxLen{ 65536 }
    , mSampleQueue{ mNumInputTracks, mQueueMaxLen }
 
