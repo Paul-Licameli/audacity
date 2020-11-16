@@ -15,6 +15,7 @@
 #include <functional>
 #include "CommandFlag.h"
 
+class CommandContext;
 class CommandManager;
 
 AUDACITY_DLL_API bool HandleTextualCommand( CommandManager &commandManager,

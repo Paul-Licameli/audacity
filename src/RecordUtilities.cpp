@@ -13,6 +13,7 @@
 #include "AudioIO.h"
 #include "BasicUI.h"
 #include "CommonCommandFlags.h"
+#include "Menus.h"
 #include "Project.h"
 #include "ProjectAudioIO.h"
 #include "ProjectAudioManager.h"

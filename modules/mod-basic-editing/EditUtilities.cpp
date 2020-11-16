@@ -12,6 +12,7 @@
 #include "EditUtilities.h"
 #include "Clipboard.h"
 #include "CommonCommandFlags.h"
+#include "Menus.h"
 #include "Project.h"
 #include "ProjectHistory.h"
 #include "ProjectSettings.h"

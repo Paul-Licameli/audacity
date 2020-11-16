@@ -549,43 +549,6 @@ void MenuManager::OnUndoRedo( wxCommandEvent &evt )
    UpdateMenus();
 }
 
-namespace{
-   using Predicates = std::vector< ReservedCommandFlag::Predicate >;
-   Predicates &RegisteredPredicates()
-   {
-      static Predicates thePredicates;
-      return thePredicates;
-   }
-   std::vector< CommandFlagOptions > &Options()
-   {
-      static std::vector< CommandFlagOptions > options;
-      return options;
-   }
-}
-
-ReservedCommandFlag::ReservedCommandFlag(
-   const Predicate &predicate, const CommandFlagOptions &options )
-{
-   static size_t sNextReservedFlag = 0;
-   // This will throw std::out_of_range if the constant NCommandFlags is too
-   // small
-   set( sNextReservedFlag++ );
-   RegisteredPredicates().emplace_back( predicate );
-   Options().emplace_back( options );
-}
-
-ReservedCommandFlag::~ReservedCommandFlag()
-{
-   RegisteredPredicates().pop_back();
-   Options().pop_back();
-}
-
-ReservedCommandFlag::Init::Init()
-{
-   RegisteredPredicates();
-   Options();
-}
-
 CommandFlag MenuManager::GetUpdateFlags( bool checkActive ) const
 {
    // This method determines all of the flags that determine whether
@@ -598,9 +561,9 @@ CommandFlag MenuManager::GetUpdateFlags( bool checkActive ) const
 
    CommandFlag flags, quickFlags;
 
-   const auto &options = Options();
+   const auto &options = ReservedCommandFlag::Options();
    size_t ii = 0;
-   for ( const auto &predicate : RegisteredPredicates() ) {
+   for ( const auto &predicate : ReservedCommandFlag::RegisteredPredicates() ) {
       if ( options[ii].quickTest ) {
          quickFlags[ii] = true;
          if( predicate( mProject ) )
@@ -614,7 +577,8 @@ CommandFlag MenuManager::GetUpdateFlags( bool checkActive ) const
       flags = (lastFlags & ~quickFlags) | flags;
    else {
       ii = 0;
-      for ( const auto &predicate : RegisteredPredicates() ) {
+      for ( const auto &predicate
+           : ReservedCommandFlag::RegisteredPredicates() ) {
          if ( !options[ii].quickTest && predicate( mProject ) )
             flags[ii] = true;
          ++ii;
@@ -623,22 +587,6 @@ CommandFlag MenuManager::GetUpdateFlags( bool checkActive ) const
 
    lastFlags = flags;
    return flags;
-}
-
-namespace
-{
-   using MenuItemEnablers = std::vector<MenuItemEnabler>;
-   MenuItemEnablers &Enablers()
-   {
-      static MenuItemEnablers enablers;
-      return enablers;
-   }
-}
-
-RegisteredMenuItemEnabler::RegisteredMenuItemEnabler(
-   const MenuItemEnabler &enabler )
-{
-   Enablers().emplace_back( enabler );
 }
 
 // checkActive is a temporary hack that should be removed as soon as we
@@ -662,7 +610,7 @@ void MenuManager::UpdateMenus( bool checkActive )
    //The effect still needs flags to determine whether it will need
    //to actually do the 'select all' to make the command valid.
 
-   for ( const auto &enabler : Enablers() ) {
+   for ( const auto &enabler : RegisteredMenuItemEnabler::Enablers() ) {
       auto actual = enabler.actualFlags();
       if (
          enabler.applicable( project ) && (flags & actual) == actual
@@ -730,7 +678,7 @@ bool MenuManager::TryToMakeActionAllowed(
       flags = GetUpdateFlags();
 
    // Visit the table of recovery actions
-   auto &enablers = Enablers();
+   auto &enablers = RegisteredMenuItemEnabler::Enablers();
    auto iter = enablers.begin(), end = enablers.end();
    while ((flags & flagsRqd) != flagsRqd && iter != end) {
       const auto &enabler = *iter;
@@ -781,7 +729,7 @@ void MenuManager::TellUserWhyDisallowed(
       }
    };
 
-   const auto &alloptions = Options();
+   const auto &alloptions = ReservedCommandFlag::Options();
    auto missingFlags = flagsRequired & ~flagsGot;
 
    // Find greatest priority

@@ -16,6 +16,7 @@ Paul Licameli split from ProjectManager.cpp
 #include "AudioIO.h"
 #include "BasicUI.h"
 #include "CommonCommandFlags.h"
+#include "Menus.h"
 #include "Mix.h"
 #include "ProjectAudioIO.h"
 #include "ProjectFileIO.h"
@@ -690,8 +691,6 @@ void ProjectAudioManager::DoPlayStopSelect()
       PlayCurrentRegion(false);
    }
 }
-
-//#include "CommonCommandFlags.h"
 
 static RegisteredMenuItemEnabler stopIfPaused{{
    PausedFlag,
