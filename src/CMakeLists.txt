@@ -179,6 +179,8 @@ list( APPEND SOURCES
       RingBuffer.h
       SampleBlock.cpp
       SampleBlock.h
+      SampleTrack.cpp
+      SampleTrack.h
       SelectUtilities.cpp
       SelectUtilities.h
       SelectFile.cpp

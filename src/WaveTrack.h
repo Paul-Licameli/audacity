@@ -11,8 +11,8 @@
 #ifndef __AUDACITY_WAVETRACK__
 #define __AUDACITY_WAVETRACK__
 
-#include "Track.h"
 #include "SampleCount.h"
+#include "SampleTrack.h"
 
 #include <vector>
 #include <functional>
@@ -70,7 +70,7 @@ using WaveTrackCaches = ClientData::Site<
    ClientData::DeepCopying
 >;
 
-class AUDACITY_DLL_API WaveTrack final : public PlayableTrack
+class AUDACITY_DLL_API WaveTrack final : public SampleTrack
    , public WaveTrackCaches
 {
 public:

@@ -90,7 +90,7 @@ WaveTrack::Holder WaveTrackFactory::NewWaveTrack(sampleFormat format, double rat
 
 WaveTrack::WaveTrack( const SampleBlockFactoryPtr &pFactory,
    sampleFormat format, double rate )
-   : PlayableTrack()
+   : SampleTrack()
    , mpFactory(pFactory)
 {
    mLegacyProjectFileOffset = 0;
@@ -107,7 +107,7 @@ WaveTrack::WaveTrack( const SampleBlockFactoryPtr &pFactory,
 }
 
 WaveTrack::WaveTrack(const WaveTrack &orig):
-   PlayableTrack(orig)
+   SampleTrack(orig)
    , mpFactory( orig.mpFactory )
 {
    mLegacyProjectFileOffset = 0;
@@ -206,7 +206,7 @@ static const Track::TypeInfo &typeInfo()
 {
    static const Track::TypeInfo info{ TrackKind::Wave,
       { "wave", "wave", XO("Wave Track") },
-      true, &PlayableTrack::ClassTypeInfo() };
+      true, &SampleTrack::ClassTypeInfo() };
    return info;
 }
 

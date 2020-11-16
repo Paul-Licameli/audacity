@@ -37,6 +37,7 @@ class AudioTrack;
 class PlayableTrack;
 class ProjectSettings;
 class LabelTrack;
+class SampleTrack;
 class TimeTrack;
 class WaveTrack;
 class NoteTrack;
@@ -74,6 +75,7 @@ enum class TrackKind
    Time,
    Audio, //!< nonleaf
    Playable, //!< nonleaf
+   Sample, //!< nonleaf
    All //!< the root class
 };
 
@@ -86,6 +88,8 @@ constexpr bool CompatibleTrackKinds( TrackKind desired, TrackKind actual )
       (desired == actual)
       ||
       (desired == TrackKind::All)
+      ||
+      (desired == TrackKind::Sample    && actual == TrackKind::Wave)
       ||
       (desired == TrackKind::Audio    && actual == TrackKind::Wave)
 #ifdef USE_MIDI
@@ -112,6 +116,7 @@ namespace TrackTyper {
      Pair<LabelTrack,    TrackKind::Label>,
      Pair<NoteTrack,     TrackKind::Note>,
      Pair<TimeTrack,     TrackKind::Time>,
+     Pair<SampleTrack,   TrackKind::Sample>,
      Pair<WaveTrack,     TrackKind::Wave>
      // New classes can be added easily to this list
    >;
