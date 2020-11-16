@@ -61,7 +61,7 @@ static WaveTrack::Caches::RegisteredFactory key1{
    }
 };
 
-SpectrogramSettings &SpectrogramSettings::Get(WaveTrack &track)
+SpectrogramSettings &SpectrogramSettings::Get(SampleTrack &track)
 {
    auto pSettings =
       static_cast<SpectrogramSettings*>(track.WaveTrack::Caches::Find(key1));
@@ -71,12 +71,12 @@ SpectrogramSettings &SpectrogramSettings::Get(WaveTrack &track)
       return SpectrogramSettings::defaults();
 }
 
-const SpectrogramSettings &SpectrogramSettings::Get(const WaveTrack &track)
+const SpectrogramSettings &SpectrogramSettings::Get(const SampleTrack &track)
 {
-   return Get(const_cast<WaveTrack&>(track));
+   return Get(const_cast<SampleTrack&>(track));
 }
 
-SpectrogramSettings &SpectrogramSettings::Own(WaveTrack &track)
+SpectrogramSettings &SpectrogramSettings::Own(SampleTrack &track)
 {
    auto pSettings =
       static_cast<SpectrogramSettings*>(track.WaveTrack::Caches::Find(key1));
@@ -88,7 +88,7 @@ SpectrogramSettings &SpectrogramSettings::Own(WaveTrack &track)
    return *pSettings;
 }
 
-void SpectrogramSettings::Reset(WaveTrack &track)
+void SpectrogramSettings::Reset(SampleTrack &track)
 {
    track.WaveTrack::Caches::Assign(key1, nullptr);
 }
@@ -697,16 +697,16 @@ static WaveTrack::Caches::RegisteredFactory key2{
    }
 };
 
-SpectrogramSettingsCache &SpectrogramSettingsCache::Get( WaveTrack &track )
+SpectrogramSettingsCache &SpectrogramSettingsCache::Get( SampleTrack &track )
 {
    return static_cast<SpectrogramSettingsCache&>(
       track.WaveTrack::Caches::Get(key2));
 }
 
 const SpectrogramSettingsCache &SpectrogramSettingsCache::Get(
-   const WaveTrack &track )
+   const SampleTrack &track )
 {
-   return Get(const_cast<WaveTrack&>(track));
+   return Get(const_cast<SampleTrack&>(track));
 }
 
 SpectrogramSettingsCache::~SpectrogramSettingsCache() = default;
@@ -717,7 +717,7 @@ auto SpectrogramSettingsCache::Clone() const -> PointerType
 }
 
 void SpectrogramSettingsCache::GetBounds(
-   const WaveTrack &wt, float &min, float &max) const
+   const SampleTrack &wt, float &min, float &max) const
 {
    const double rate = wt.GetRate();
 

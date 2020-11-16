@@ -23,7 +23,7 @@ struct FFTParam;
 class NumberScale;
 class SpectrumPrefs;
 class wxArrayStringEx;
-class WaveTrack;
+class SampleTrack;
 
 class SPECTRUM_UI_API SpectrogramSettings
    : public PrefsListener
@@ -75,14 +75,14 @@ public:
    static const TranslatableStrings &GetAlgorithmNames();
 
    // Return either the track's independent settings or global defaults
-   static SpectrogramSettings &Get(WaveTrack &track);
-   static const SpectrogramSettings &Get(const WaveTrack &track);
+   static SpectrogramSettings &Get(SampleTrack &track);
+   static const SpectrogramSettings &Get(const SampleTrack &track);
 
    // Force creation of track's independent settings
-   static SpectrogramSettings &Own(WaveTrack &track);
+   static SpectrogramSettings &Own(SampleTrack &track);
 
    //! Make track lose indpendent settings and use defaults
-   static void Reset(WaveTrack &track);
+   static void Reset(SampleTrack &track);
 
    static SpectrogramSettings &defaults();
    SpectrogramSettings();
@@ -206,15 +206,15 @@ class SPECTRUM_UI_API SpectrogramSettingsCache
 public:
 
    //! Get either the global default settings, or the track's own if previously created
-   static SpectrogramSettingsCache &Get( WaveTrack &track );
+   static SpectrogramSettingsCache &Get( SampleTrack &track );
 
    //! @copydoc Get
-   static const SpectrogramSettingsCache &Get( const WaveTrack &track );
+   static const SpectrogramSettingsCache &Get( const SampleTrack &track );
 
    ~SpectrogramSettingsCache() override;
    PointerType Clone() const override;
 
-   void GetBounds(const WaveTrack &wt, float &min, float &max) const;
+   void GetBounds(const SampleTrack &wt, float &min, float &max) const;
 
    void SetBounds(float min, float max)
    { mSpectrumMin = min, mSpectrumMax = max; }
