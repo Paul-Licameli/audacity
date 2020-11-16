@@ -30,7 +30,7 @@
 #include "Project.h"
 #include "SyncLock.h"
 #include "Track.h"
-#include "WaveTrack.h"
+#include "SampleTrack.h"
 
 
 wxDEFINE_EVENT(EVT_TRACK_FOCUS_CHANGE, wxCommandEvent);
@@ -369,7 +369,7 @@ wxAccStatus TrackPanelAx::GetName( int childId, wxString* name )
                name->Printf(_("Track %d"), TrackNum( t ) );
             }
 
-            if (!track_cast<const WaveTrack*>(t.get()))
+            if (!track_cast<const SampleTrack*>(t.get()))
                name->Append(wxT(" ") +
                   t->GetTypeNames().name.Translation());
 
