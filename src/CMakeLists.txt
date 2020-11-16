@@ -109,6 +109,8 @@ list( APPEND SOURCES
       LogWindow.h
       Mix.cpp
       Mix.h
+      MixAndRender.cpp
+      MixAndRender.h
       ModuleManager.cpp
       ModuleManager.h
       ModuleSettings.cpp
