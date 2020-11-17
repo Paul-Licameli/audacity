@@ -39,6 +39,8 @@ wxDEFINE_EVENT(EVT_UNDO_RENAMED, wxCommandEvent);
 wxDEFINE_EVENT(EVT_UNDO_OR_REDO, wxCommandEvent);
 wxDEFINE_EVENT(EVT_UNDO_RESET, wxCommandEvent);
 wxDEFINE_EVENT(EVT_UNDO_PURGE, wxCommandEvent);
+wxDEFINE_EVENT(EVT_UNDO_BEGIN_PURGE, UndoPurgeEvent);
+wxDEFINE_EVENT(EVT_UNDO_END_PURGE, wxCommandEvent);
 
 UndoStateExtension::~UndoStateExtension() = default;
 
@@ -165,6 +167,13 @@ void UndoManager::RemoveStates(size_t begin, size_t end)
       nDeleted = 0;
    auto dialog =
       MakeProgress(XO("Progress"), XO("Discarding undo/redo history"), 0);
+   UndoPurgeEvent evt1{EVT_UNDO_BEGIN_PURGE, begin, end};
+   mProject.ProcessEvent(evt1);
+   auto cleanup = finally([&]{
+      wxCommandEvent evt2{EVT_UNDO_END_PURGE};
+      mProject.SafelyProcessEvent(evt1);
+   });
+
    auto callback = [&](const SampleBlock &){
       dialog->Poll(++nDeleted, nToDelete);
    };
@@ -172,7 +181,7 @@ void UndoManager::RemoveStates(size_t begin, size_t end)
    auto &pSampleBlockFactory = trackFactory.GetSampleBlockFactory();
    auto prevCallback =
       pSampleBlockFactory->SetBlockDeletionCallback(callback);
-   auto cleanup = finally([&]{ pSampleBlockFactory->SetBlockDeletionCallback( prevCallback ); });
+   auto cleanup1 = finally([&]{ pSampleBlockFactory->SetBlockDeletionCallback( prevCallback ); });
 
    // Wrap the whole in a savepoint for better performance
    TransactionScope trans{mProject, "DiscardingUndoStates"};
@@ -191,7 +200,7 @@ void UndoManager::RemoveStates(size_t begin, size_t end)
    
    if (begin != end)
       // wxWidgets will own the event object
-      mProject.QueueEvent( safenew wxCommandEvent{ EVT_UNDO_PURGE } );
+      mProject.QueueEvent( safenew wxCommandEvent{ EVT_UNDO_PURGE } ); //?
 
    // Check sanity
    wxASSERT_MSG(
@@ -437,3 +446,10 @@ int UndoManager::GetSavedState() const
 //   }
 //}
 
+UndoPurgeEvent::~UndoPurgeEvent() = default;
+
+wxEvent *UndoPurgeEvent::Clone() const
+{
+   // wxWidgets will own the event object
+   return safenew UndoPurgeEvent(*this);
+}

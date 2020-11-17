@@ -79,6 +79,26 @@ wxDECLARE_EXPORTED_EVENT(AUDACITY_DLL_API, EVT_UNDO_RESET, wxCommandEvent);
 // Undo or redo states discarded
 wxDECLARE_EXPORTED_EVENT(AUDACITY_DLL_API, EVT_UNDO_PURGE, wxCommandEvent);
 
+struct UndoPurgeEvent : public wxCommandEvent
+{
+   UndoPurgeEvent(wxEventType commandType, size_t begin, size_t end)
+   : wxCommandEvent{ commandType }
+   , begin{begin}, end{end}
+   {}
+   ~UndoPurgeEvent() override;
+
+   UndoPurgeEvent( const UndoPurgeEvent& ) = default;
+
+   wxEvent *Clone() const override;
+   const size_t begin, end;
+};
+
+// Begin elimination of old undo states
+wxDECLARE_EXPORTED_EVENT(AUDACITY_DLL_API, EVT_UNDO_BEGIN_PURGE, UndoPurgeEvent);
+
+// End elimination of old undo states
+wxDECLARE_EXPORTED_EVENT(AUDACITY_DLL_API, EVT_UNDO_END_PURGE, wxCommandEvent);
+
 class AudacityProject;
 class Track;
 class TrackList;
