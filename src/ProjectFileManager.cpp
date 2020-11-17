@@ -24,7 +24,6 @@ Paul Licameli split from AudacityProject.cpp
 #include "PlatformCompatibility.h"
 #include "Project.h"
 #include "ProjectFileIO.h"
-#include "ProjectFSCK.h"
 #include "ProjectHistory.h"
 #include "ProjectWindows.h"
 #include "ProjectSettings.h"
