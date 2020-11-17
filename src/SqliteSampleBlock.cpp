@@ -12,11 +12,13 @@ Paul Licameli -- split from SampleBlock.cpp and SampleBlock.h
 #include <sqlite3.h>
 
 #include "DBConnection.h"
+#include "Project.h"
 #include "ProjectFileIO.h"
 #include "SampleFormat.h"
 #include "XMLTagHandler.h"
 
 #include "SampleBlock.h" // to inherit
+#include "UndoManager.h"
 
 #include "SentryHelper.h"
 #include <wx/log.h>
@@ -130,8 +132,10 @@ static std::map< SampleBlockID, std::shared_ptr<SqliteSampleBlock> >
 
 ///\brief Implementation of @ref SampleBlockFactory using Sqlite database
 class SqliteSampleBlockFactory final
-   : public SampleBlockFactory
+   : public wxEvtHandler
+   , public SampleBlockFactory
    , public std::enable_shared_from_this<SqliteSampleBlockFactory>
+
 {
 public:
    explicit SqliteSampleBlockFactory( AudacityProject &project );
@@ -152,10 +156,10 @@ public:
       sampleFormat srcformat,
       const wxChar **attrs) override;
 
-   BlockDeletionCallback SetBlockDeletionCallback(
-      BlockDeletionCallback callback ) override;
-
 private:
+   void OnBeginPurge(wxEvent &e);
+   void OnEndPurge(wxEvent &e);
+
    friend SqliteSampleBlock;
 
    const std::shared_ptr<ConnectionPtr> mppConnection;
@@ -167,14 +171,15 @@ private:
    using AllBlocksMap =
       std::map< SampleBlockID, std::weak_ptr< SqliteSampleBlock > >;
    AllBlocksMap mAllBlocks;
-
-   BlockDeletionCallback mCallback;
 };
 
 SqliteSampleBlockFactory::SqliteSampleBlockFactory( AudacityProject &project )
    : mppConnection{ ConnectionPtr::Get(project).shared_from_this() }
 {
-   
+   project.Bind(EVT_UNDO_BEGIN_PURGE,
+      &SqliteSampleBlockFactory::OnBeginPurge, this);
+   project.Bind(EVT_UNDO_END_PURGE,
+      &SqliteSampleBlockFactory::OnEndPurge, this);
 }
 
 SqliteSampleBlockFactory::~SqliteSampleBlockFactory() = default;
@@ -282,14 +287,6 @@ SampleBlockPtr SqliteSampleBlockFactory::DoCreateFromXML(
    return sb;
 }
 
-auto SqliteSampleBlockFactory::SetBlockDeletionCallback(
-   BlockDeletionCallback callback ) -> BlockDeletionCallback
-{
-   auto result = mCallback;
-   mCallback = std::move( callback );
-   return result;
-}
-
 SqliteSampleBlock::SqliteSampleBlock(
    const std::shared_ptr<SqliteSampleBlockFactory> &pFactory)
 :  mpFactory(pFactory)
@@ -306,9 +303,9 @@ SqliteSampleBlock::SqliteSampleBlock(
 SqliteSampleBlock::~SqliteSampleBlock()
 {
    if (mpFactory) {
-      auto &callback = mpFactory->mCallback;
-      if (callback)
-         GuardedCall( [&]{ callback( *this ); } );
+//      auto &callback = mpFactory->mCallback;
+  //    if (callback)
+    //     GuardedCall( [&]{ callback( *this ); } );
    }
 
    if (IsSilent()) {
@@ -1014,6 +1011,65 @@ void SqliteSampleBlock::CalcSummary(Sizes sizes)
 
    mSumMin = min;
    mSumMax = max;
+}
+
+void SqliteSampleBlockFactory::OnBeginPurge(wxEvent &e)
+{
+   e.Skip();
+#if 0
+   //! Just to find a denominator for a progress indicator.
+   /*! This estimate procedure should in fact be exact */
+   size_t EstimateRemovedBlocks(size_t begin, size_t end)
+   {
+      // Collect ids that survive
+      SampleBlockIDSet wontDelete;
+      auto f = [&](const auto &p){
+         InspectBlocks(*p->state.tracks, {}, &wontDelete);
+      };
+      auto first = stack.begin(), last = stack.end();
+      std::for_each( first, first + begin, f );
+      std::for_each( first + end, last, f );
+      InspectBlocks(TrackList::Get(mProject), {}, &wontDelete);
+
+      // Collect ids that won't survive (and are not negative pseudo ids)
+      SampleBlockIDSet seen, mayDelete;
+      std::for_each( first + begin, first + end, [&](const auto &p){
+         auto &tracks = *p->state.tracks;
+         InspectBlocks(tracks, [&]( const SampleBlock &block ){
+            auto id = block.GetBlockID();
+            if ( id > 0 && !wontDelete.count( id ) )
+               mayDelete.insert( id );
+         },
+         &seen);
+      } );
+      return mayDelete.size();
+   }
+   // Install a callback function that updates a progress indicator
+   unsigned long long nToDelete = EstimateRemovedBlocks(begin, end),
+      nDeleted = 0;
+   ProgressDialog dialog{ XO("Progress"), XO("Discarding undo/redo history"),
+      pdlgHideStopButton | pdlgHideCancelButton
+   };
+   auto &trackFactory = WaveTrackFactory::Get( mProject );
+   auto &pSampleBlockFactory = trackFactory.GetSampleBlockFactory();
+   auto prevCallback =
+      pSampleBlockFactory->SetBlockDeletionCallback(callback);
+   auto cleanup = finally([&]{ pSampleBlockFactory->SetBlockDeletionCallback( prevCallback ); });
+
+   auto callback = [&](const SampleBlock &){
+      dialog.Update(++nDeleted, nToDelete);
+   };
+
+   // Check sanity
+   wxASSERT_MSG(
+      nDeleted == 0 || // maybe bypassing all deletions
+      nDeleted == nToDelete, "Block count was misestimated");
+#endif
+}
+
+void SqliteSampleBlockFactory::OnEndPurge(wxEvent &e)
+{
+   e.Skip();
 }
 
 // Inject our database implementation at startup
