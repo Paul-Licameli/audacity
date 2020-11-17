@@ -48,7 +48,6 @@
 #include "Mix.h"
 #include "Prefs.h"
 #include "Project.h"
-#include "Sequence.h"
 #include "UndoManager.h"
 #include "ASlider.h"
 #include "widgets/ProgressDialog.h"
