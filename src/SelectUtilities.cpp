@@ -21,7 +21,7 @@
 #include "SyncLock.h"
 #include "TrackPanelAx.h"
 #include "ViewInfo.h"
-#include "WaveTrack.h"
+#include "SampleTrack.h"
 
 namespace {
 
@@ -41,7 +41,7 @@ void DoSelectTimeAndAudioTracks
       // Unselect all tracks before selecting audio.
       for (auto t : tracks.Any())
          t->SetSelected(false);
-      for (auto t : tracks.Any<WaveTrack>())
+      for (auto t : tracks.Any<SampleTrack>())
          t->SetSelected(true);
 
       ProjectHistory::Get( project ).ModifyState(false);

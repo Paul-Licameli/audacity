@@ -23,7 +23,7 @@ Paul Licameli split from Menus.cpp
 #include "SyncLock.h"
 //#include "UndoManager.h"
 #include "ViewInfo.h"
-#include "WaveTrack.h"
+#include "SampleTrack.h"
 #include "CommandManagerWindowClasses.h"
 
 /*
@@ -146,7 +146,7 @@ const ReservedCommandFlag&
 const ReservedCommandFlag&
    WaveTracksSelectedFlag() { static ReservedCommandFlag flag{
       [](const AudacityProject &project){
-         return !TrackList::Get( project ).Selected<const WaveTrack>().empty();
+         return !TrackList::Get( project ).Selected<const SampleTrack>().empty();
       },
       { []( const TranslatableString& ) { return
          XO("You must first select some audio to perform this action.\n(Selecting other kinds of track won't work.)");
@@ -251,7 +251,7 @@ const ReservedCommandFlag&
 const ReservedCommandFlag&
    WaveTracksExistFlag() { static ReservedCommandFlag flag{
       [](const AudacityProject &project){
-         return !TrackList::Get( project ).Any<const WaveTrack>().empty();
+         return !TrackList::Get( project ).Any<const SampleTrack>().empty();
       }
    }; return flag; }
 const ReservedCommandFlag&

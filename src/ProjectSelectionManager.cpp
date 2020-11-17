@@ -20,7 +20,7 @@ Paul Licameli split from ProjectManager.cpp
 #include "ProjectWindow.h"
 #include "Snap.h"
 #include "ViewInfo.h"
-#include "WaveTrack.h"
+#include "SampleTrack.h"
 
 static AudacityProject::AttachedObjects::RegisteredFactory
 sProjectSelectionManagerKey {
@@ -182,7 +182,7 @@ void ProjectSelectionManager::SSBL_ModifySpectralSelection(
 
    auto &tracks = TrackList::Get(mProject);
       auto nyq = std::max( ProjectRate::Get(project).GetRate(),
-         tracks.Any<const WaveTrack>().max( &WaveTrack::GetRate ) )
+         tracks.Any<const SampleTrack>().max( &SampleTrack::GetRate ) )
          / 2.0;
    if (bottom >= 0.0)
       bottom = std::min(nyq, bottom);
