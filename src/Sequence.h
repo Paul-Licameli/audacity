@@ -90,12 +90,16 @@ class PROFILE_DLL_API Sequence final : public XMLTagHandler{
    bool Get(samplePtr buffer, sampleFormat format,
             sampleCount start, size_t len, bool mayThrow) const;
 
-   //! Pass NULL to set silence
+   //! Pass nullptr to set silence
    /*! Note that len is not size_t, because nullptr may be passed for buffer, in
       which case, silence is inserted, possibly a large amount. */
    /*! @excsafety{Strong} */
    void SetSamples(constSamplePtr buffer, sampleFormat format,
-                   sampleCount start, sampleCount len);
+      sampleCount start, sampleCount len,
+      sampleFormat effectiveFormat /*!<
+         New samples, if later narrowed, but to min(effectiveFormat, format) or more, need no dithering
+      */
+   );
 
    // where is input, assumed to be nondecreasing, and its size is len + 1.
    // min, max, rms, bl are outputs, and their lengths are len.
@@ -123,12 +127,16 @@ class PROFILE_DLL_API Sequence final : public XMLTagHandler{
        @return true if at least one sample block was added
        @excsafety{Strong}
     */
-   bool Append( constSamplePtr buffer, sampleFormat format, size_t len,
-      size_t stride = 1);
+   bool Append(
+      constSamplePtr buffer, sampleFormat format, size_t len, size_t stride,
+      sampleFormat effectiveFormat /*!<
+         New samples, if later narrowed, but to min(effectiveFormat, format) or more, need no dithering
+      */
+   );
 
    void Flush();
 
-   //! Append data, not coalescing blocks, returning a pointer to the new block.
+   //! Append data, not coalescing blocks, returning a pointer to the new block.  No dithering applied.
    /*! @excsafety{Strong} */
    SeqBlock::SampleBlockPtr AppendNewBlock(
       constSamplePtr buffer, sampleFormat format, size_t len);
@@ -230,6 +238,7 @@ class PROFILE_DLL_API Sequence final : public XMLTagHandler{
 
    SampleBuffer  mAppendBuffer {};
    size_t        mAppendBufferLen { 0 };
+   sampleFormat  mAppendEffectiveFormat{ narrowestSampleFormat };
 
    bool          mErrorOpening{ false };
 
