@@ -353,6 +353,10 @@ public:
    // used by commands which interact with clips using the keyboard
    bool SharesBoundaryWithNextClip(const WaveClip* next) const;
 
+private:
+   size_t GetAppendBufferLen() const;
+   constSamplePtr GetAppendBuffer() const;
+
 public:
    // Cache of values to colour pixels of Spectrogram - used by TrackArtist
    mutable std::unique_ptr<SpecPxCache> mSpecPxCache;
@@ -368,8 +372,6 @@ protected:
 
    mutable std::unique_ptr<WaveCache> mWaveCache;
    mutable std::unique_ptr<SpecCache> mSpecCache;
-   SampleBuffer  mAppendBuffer {};
-   size_t        mAppendBufferLen { 0 };
 
    // Cut Lines are nothing more than ordinary wave clips, with the
    // offset relative to the start of the clip.
