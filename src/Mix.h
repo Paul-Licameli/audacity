@@ -157,6 +157,8 @@ class AUDACITY_DLL_API Mixer {
 
    void MakeResamplers();
 
+   bool NeedsDither(const WaveTrackConstArray &inputTracks) const;
+
  private:
 
     // Input
@@ -195,6 +197,7 @@ class AUDACITY_DLL_API Mixer {
    std::vector<double> mMinFactor, mMaxFactor;
 
    const bool       mMayThrow;
+   bool             mNeedsDither;
 };
 
 #endif
