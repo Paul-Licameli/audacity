@@ -50,7 +50,7 @@ void AUDACITY_DLL_API MixAndRender(TrackList * tracks, WaveTrackFactory *factory
                   std::shared_ptr<WaveTrack> &uRight);
 
 void MixBuffers(unsigned numChannels, int *channelFlags, float *gains,
-                samplePtr src,
+                const float *src,
                 samplePtr *dests, int len, bool interleaved);
 
 class AUDACITY_DLL_API MixerSpec
@@ -139,10 +139,10 @@ class AUDACITY_DLL_API Mixer {
    double MixGetCurrentTime();
 
    /// Retrieve the main buffer or the interleaved buffer
-   samplePtr GetBuffer();
+   constSamplePtr GetBuffer();
 
    /// Retrieve one of the non-interleaved buffers
-   samplePtr GetBuffer(int channel);
+   constSamplePtr GetBuffer(int channel);
 
  private:
 
@@ -187,7 +187,8 @@ class AUDACITY_DLL_API Mixer {
    size_t              mInterleavedBufferSize;
    const sampleFormat mFormat;
    bool             mInterleaved;
-   ArrayOf<SampleBuffer> mBuffer, mTemp;
+   ArrayOf<SampleBuffer> mBuffer;
+   ArrayOf<Floats>  mTemp;
    Floats           mFloatBuffer;
    const double     mRate;
    double           mSpeed;
