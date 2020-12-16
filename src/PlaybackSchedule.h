@@ -11,12 +11,15 @@
 #ifndef __AUDACITY_PLAYBACK_SCHEDULE__
 #define __AUDACITY_PLAYBACK_SCHEDULE__
 
+#include "MemoryX.h"
 #include <atomic>
 #include <vector>
 
 struct AudioIOStartStreamOptions;
 class BoundedEnvelope;
 using PRCrossfadeData = std::vector< std::vector < float > >;
+
+constexpr size_t TimeQueueGrainSize = 2000;
 
 struct RecordingSchedule {
    double mPreRoll{};
@@ -66,7 +69,28 @@ struct AUDACITY_DLL_API PlaybackSchedule {
    // (ignoring accumulated rounding errors during playback) which fixes the 'missing sound at the end' bug
    
    const BoundedEnvelope *mEnvelope;
-   
+
+   // A circular buffer
+   // Holds track time values corresponding to every nth sample in the
+   // playback buffers, for some large n
+   struct TimeQueue {
+      ArrayOf<double> mData;
+      size_t mSize{ 0 };
+      double mLastTime {};
+      // These need not be updated atomically, because we rely on the atomics
+      // in the playback ring buffers to supply the synchronization.  Still,
+      // align them to avoid false sharing.
+      alignas(64) struct Cursor {
+         size_t mIndex {};
+         size_t mRemainder {};
+      } mHead, mTail;
+
+      void Producer(
+         const PlaybackSchedule &schedule, double rate, double scrubSpeed,
+         size_t nSamples );
+      double Consumer( size_t nSamples, double rate );
+   } mTimeQueue;
+
    volatile enum {
       PLAY_STRAIGHT,
       PLAY_LOOPED,
