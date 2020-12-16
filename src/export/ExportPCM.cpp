@@ -639,7 +639,8 @@ ProgressResult ExportPCM::Export(AudacityProject *project,
             if (numSamples == 0)
                break;
 
-            samplePtr mixed = mixer->GetBuffer();
+            // Fix me
+            auto mixed = const_cast<char*>(mixer->GetBuffer());
 
             // Bug 1572: Not ideal, but it does add the desired dither
             if ((info.format & SF_FORMAT_SUBMASK) == SF_FORMAT_PCM_24) {
@@ -658,9 +659,9 @@ ProgressResult ExportPCM::Export(AudacityProject *project,
             }
 
             if (format == int16Sample)
-               samplesWritten = SFCall<sf_count_t>(sf_writef_short, sf.get(), (short *)mixed, numSamples);
+               samplesWritten = SFCall<sf_count_t>(sf_writef_short, sf.get(), (const short *)mixed, numSamples);
             else
-               samplesWritten = SFCall<sf_count_t>(sf_writef_float, sf.get(), (float *)mixed, numSamples);
+               samplesWritten = SFCall<sf_count_t>(sf_writef_float, sf.get(), (const float *)mixed, numSamples);
 
             if (static_cast<size_t>(samplesWritten) != numSamples) {
                char buffer2[1000];
