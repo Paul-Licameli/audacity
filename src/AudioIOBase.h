@@ -72,6 +72,8 @@ struct ScrubbingOptions {
    { return 0.01; } // Mixer needs a lower bound speed.  Scrub no slower than this.
 };
 
+class PlaybackPolicy;
+
 // To avoid growing the argument list of StartStream, add fields here
 struct AudioIOStartStreamOptions
 {
@@ -114,6 +116,11 @@ struct AudioIOStartStreamOptions
    // we can't use a separate polling thread.
    // The return value is a number of milliseconds to sleep before calling again
    std::function< unsigned long() > playbackStreamPrimer;
+
+   using PolicyFactory = std::function<
+      std::unique_ptr<PlaybackPolicy>(const AudioIOStartStreamOptions &)
+   >;
+   PolicyFactory policyFactory;
 };
 
 //! Abstract interface to alternative, concurrent playback with the main audio (such as MIDI events)

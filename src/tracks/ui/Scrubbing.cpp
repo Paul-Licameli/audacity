@@ -21,6 +21,7 @@ Paul Licameli split from TrackPanel.cpp
 #include "../../ProjectHistory.h"
 #include "../../ProjectSettings.h"
 #include "../../ProjectStatus.h"
+#include "../../ScrubState.h"
 #include "../../Track.h"
 #include "../../ViewInfo.h"
 #include "../../WaveTrack.h"
@@ -342,6 +343,18 @@ void Scrubber::MarkScrubStart(
    mCancelled = false;
 }
 
+static AudioIOStartStreamOptions::PolicyFactory
+ScrubbingPlaybackPolicyFactory()
+{
+   return [](const AudioIOStartStreamOptions &options)
+      -> std::unique_ptr<PlaybackPolicy>
+   {
+      return
+         std::make_unique<ScrubbingPlaybackPolicy>(*options.pScrubbingOptions);
+   };
+}
+
+
 #ifdef EXPERIMENTAL_SCRUBBING_SUPPORT
 // Assume xx is relative to the left edge of TrackPanel!
 bool Scrubber::MaybeStartScrubbing(wxCoord xx)
@@ -459,6 +472,7 @@ bool Scrubber::MaybeStartScrubbing(wxCoord xx)
                   StopPolling();
             });
 
+            options.policyFactory = ScrubbingPlaybackPolicyFactory();
             mScrubToken =
                projectAudioManager.PlayPlayRegion(
                   SelectedRegion(time0, time1), options,
@@ -562,6 +576,7 @@ bool Scrubber::StartSpeedPlay(double speed, double time0, double time1)
    mScrubSpeedDisplayCountdown = 0;
    // Aim to stop within 20 samples of correct position.
    double stopTolerance = 20.0 / options.rate;
+   options.policyFactory = ScrubbingPlaybackPolicyFactory();
    mScrubToken =
       // Reduce time by 'stopTolerance' fudge factor, so that the Play will stop.
       projectAudioManager.PlayPlayRegion(
@@ -629,6 +644,7 @@ bool Scrubber::StartKeyboardScrubbing(double time0, bool backwards)
          StopPolling();
    });
 
+   options.policyFactory = ScrubbingPlaybackPolicyFactory();
    mScrubToken =
       ProjectAudioManager::Get(*mProject).PlayPlayRegion(
          SelectedRegion(time0, backwards ? mOptions.minTime : mOptions.maxTime),
