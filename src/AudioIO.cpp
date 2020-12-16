@@ -1949,7 +1949,7 @@ double AudioIO::GetStreamTime()
    if( !IsStreamActive() )
       return BAD_STREAM_TIME;
 
-   return mPlaybackSchedule.NormalizeTrackTime();
+   return mPlaybackSchedule.GetPolicy().NormalizeTrackTime(mPlaybackSchedule);
 }
 
 
