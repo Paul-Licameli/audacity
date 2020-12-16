@@ -552,6 +552,4 @@ private:
    void StartStreamCleanup(bool bOnlyBuffers = false);
 };
 
-static constexpr unsigned ScrubPollInterval_ms = 50;
-
 #endif
