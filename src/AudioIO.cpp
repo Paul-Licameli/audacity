@@ -2971,7 +2971,7 @@ void AudioIoCallback::DrainInputBuffers(
 
    // If there are no playback tracks, and we are recording, then the
    // earlier checks for being past the end won't happen, so do it here.
-   if (mPlaybackSchedule.PassIsComplete()) {
+   if (mPlaybackSchedule.GetPolicy().Done(mPlaybackSchedule, 0)) {
       mCallbackReturn = paComplete;
    }
 
@@ -3456,14 +3456,9 @@ void AudioIoCallback::CallbackCheckCompletion(
    if (mPaused)
       return;
 
-   bool done = mPlaybackSchedule.PassIsComplete();
+   bool done =
+      mPlaybackSchedule.GetPolicy().Done(mPlaybackSchedule, len);
    if (!done)
-      return;
-
-   done =  mPlaybackSchedule.PlayingAtSpeed()
-      // some leftover length allowed in this case
-      || (mPlaybackSchedule.PlayingStraight() && len == 0);
-   if(!done) 
       return;
 
    ForEachExt([](auto &ext){
