@@ -2047,6 +2047,8 @@ void AudioIO::FillPlayBuffers()
    if (nAvailable < mPlaybackSamplesToCopy)
       return;
 
+   auto &policy = mPlaybackSchedule.GetPolicy();
+
    // More than mPlaybackSamplesToCopy might be copied:
    // May produce a larger amount when initially priming the buffer, or
    // perhaps again later in play to avoid underfilling the queue and falling
@@ -2069,7 +2071,7 @@ void AudioIO::FillPlayBuffers()
    // user interface.
    bool done = false;
    do {
-      const auto slice = GetPlaybackSlice(available);
+      const auto slice = policy.GetPlaybackSlice(mPlaybackSchedule, available);
       const auto frames = slice.frames;
       const auto toProduce = slice.toProduce;
       const auto progress = slice.progress;
@@ -2112,58 +2114,6 @@ void AudioIO::FillPlayBuffers()
 
       done = RepositionPlayback(frames, available, progress);
    } while (!done);
-}
-
-PlaybackSlice AudioIO::GetPlaybackSlice(const size_t available)
-{
-   // How many samples to produce for each channel.
-   auto frames = available;
-   bool progress = true;
-   auto toProduce = frames;
-#ifdef EXPERIMENTAL_SCRUBBING_SUPPORT
-   if (mPlaybackSchedule.Interactive())
-      // scrubbing and play-at-speed are not limited by the real time
-      // and length accumulators
-      toProduce =
-      frames = limitSampleBufferSize(frames, mScrubDuration);
-   else
-#endif
-   {
-      double deltat = frames / mRate;
-      const auto realTimeRemaining = mPlaybackSchedule.RealTimeRemaining();
-      if (deltat > realTimeRemaining)
-      {
-         // Produce some extra silence so that the time queue consumer can
-         // satisfy its end condition
-         double extraRealTime = mPlaybackSchedule.PlayingStraight()
-            ? (TimeQueueGrainSize + 1) / mRate
-            : 0;
-
-         auto extra =
-            std::min( extraRealTime, deltat - realTimeRemaining );
-         auto realTime = std::max( 0.0, realTimeRemaining + extra );
-         frames = realTime * mRate;
-         toProduce = std::max( 0.0, realTimeRemaining * mRate );
-
-         // Don't fall into an infinite loop, if loop-playing a selection
-         // that is so short, it has no samples: detect that case
-         progress =
-            !(mPlaybackSchedule.Looping() &&
-              mPlaybackSchedule.mWarpedTime == 0.0 && frames == 0);
-         mPlaybackSchedule.RealTimeAdvance( realTime );
-      }
-      else
-         mPlaybackSchedule.RealTimeAdvance( deltat );
-   }
-
-   if (!progress)
-      frames = available, toProduce = 0;
-#ifdef EXPERIMENTAL_SCRUBBING_SUPPORT
-   else if ( mPlaybackSchedule.Interactive() && mSilentScrub)
-      toProduce = 0;
-#endif
-
-   return { available, frames, toProduce, progress };
 }
 
 bool AudioIO::RepositionPlayback(size_t frames, size_t available, bool progress)
