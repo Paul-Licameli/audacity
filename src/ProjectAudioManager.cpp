@@ -26,6 +26,7 @@ Paul Licameli split from ProjectManager.cpp
 #include "ProjectHistory.h"
 #include "ProjectSettings.h"
 #include "ProjectStatus.h"
+#include "ScrubState.h"
 #include "TimeTrack.h"
 #include "TrackPanelAx.h"
 #include "UndoManager.h"
@@ -783,7 +784,7 @@ void ProjectAudioManager::OnPause()
    // Bug 1494 - Pausing a seek or scrub should just STOP as
    // it is confusing to be in a paused scrub state.
    bool bStopInstead = paused &&
-      gAudioIO->IsScrubbing() &&
+      ScrubState::IsScrubbing() &&
       !scrubber.IsSpeedPlaying() &&
       !scrubber.IsKeyboardScrubbing();
 
@@ -792,7 +793,7 @@ void ProjectAudioManager::OnPause()
       return;
    }
 
-   if (gAudioIO->IsScrubbing())
+   if (ScrubState::IsScrubbing())
       scrubber.Pause(paused);
    else
 #endif
