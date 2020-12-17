@@ -256,6 +256,8 @@ list( APPEND SOURCES
       SampleFormat.h
       Screenshot.cpp
       Screenshot.h
+      ScrubState.cpp
+      ScrubState.h
       SelectUtilities.cpp
       SelectUtilities.h
       SelectedRegion.cpp
