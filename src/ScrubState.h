@@ -36,6 +36,9 @@ public:
    PlaybackSlice GetPlaybackSlice(
       PlaybackSchedule &schedule, size_t available) override;
 
+   double AdvancedTrackTime( PlaybackSchedule &schedule,
+      double trackTime, double realDuration ) override;
+
    bool RepositionPlayback(
       PlaybackSchedule &schedule, const Mixers &playbackMixers,
       size_t frames,
@@ -44,6 +47,7 @@ public:
 
 private:
    sampleCount mScrubDuration{ 0 };
+   double mScrubSpeed{ 0 };
    bool mSilentScrub{ false };
 
    const ScrubbingOptions mOptions;
