@@ -344,13 +344,11 @@ void Scrubber::MarkScrubStart(
 }
 
 static AudioIOStartStreamOptions::PolicyFactory
-ScrubbingPlaybackPolicyFactory()
+ScrubbingPlaybackPolicyFactory(const ScrubbingOptions &options)
 {
-   return [](const AudioIOStartStreamOptions &options)
-      -> std::unique_ptr<PlaybackPolicy>
+   return [options]() -> std::unique_ptr<PlaybackPolicy>
    {
-      return
-         std::make_unique<ScrubbingPlaybackPolicy>(*options.pScrubbingOptions);
+      return std::make_unique<ScrubbingPlaybackPolicy>(options);
    };
 }
 
@@ -421,7 +419,6 @@ bool Scrubber::MaybeStartScrubbing(wxCoord xx)
             };
 #endif
             options.playNonWaveTracks = false;
-            options.pScrubbingOptions = &mOptions;
             options.envelope = nullptr;
             mOptions.delay = (ScrubPollInterval_ms / 1000.0);
             mOptions.isPlayingAtSpeed = false;
@@ -472,7 +469,7 @@ bool Scrubber::MaybeStartScrubbing(wxCoord xx)
                   StopPolling();
             });
 
-            options.policyFactory = ScrubbingPlaybackPolicyFactory();
+            options.policyFactory = ScrubbingPlaybackPolicyFactory(mOptions);
             mScrubToken =
                projectAudioManager.PlayPlayRegion(
                   SelectedRegion(time0, time1), options,
@@ -539,7 +536,6 @@ bool Scrubber::StartSpeedPlay(double speed, double time0, double time1)
 #endif
 
    options.playNonWaveTracks = false;
-   options.pScrubbingOptions = &mOptions;
    options.envelope = nullptr;
    mOptions.delay = (ScrubPollInterval_ms / 1000.0);
    mOptions.initSpeed = speed;
@@ -576,7 +572,7 @@ bool Scrubber::StartSpeedPlay(double speed, double time0, double time1)
    mScrubSpeedDisplayCountdown = 0;
    // Aim to stop within 20 samples of correct position.
    double stopTolerance = 20.0 / options.rate;
-   options.policyFactory = ScrubbingPlaybackPolicyFactory();
+   options.policyFactory = ScrubbingPlaybackPolicyFactory(mOptions);
    mScrubToken =
       // Reduce time by 'stopTolerance' fudge factor, so that the Play will stop.
       projectAudioManager.PlayPlayRegion(
@@ -616,7 +612,6 @@ bool Scrubber::StartKeyboardScrubbing(double time0, bool backwards)
 #endif
 
    options.playNonWaveTracks = false;
-   options.pScrubbingOptions = &mOptions;
    options.envelope = nullptr;
 
    // delay and minStutterTime are used in AudioIO::AllocateBuffers() for setting the
@@ -644,7 +639,7 @@ bool Scrubber::StartKeyboardScrubbing(double time0, bool backwards)
          StopPolling();
    });
 
-   options.policyFactory = ScrubbingPlaybackPolicyFactory();
+   options.policyFactory = ScrubbingPlaybackPolicyFactory(mOptions);
    mScrubToken =
       ProjectAudioManager::Get(*mProject).PlayPlayRegion(
          SelectedRegion(time0, backwards ? mOptions.minTime : mOptions.maxTime),
