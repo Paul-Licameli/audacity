@@ -392,8 +392,6 @@ struct AUDACITY_DLL_API PlaybackSchedule {
       mPolicyValid.store(false, std::memory_order_release);
    }
 
-   bool Scrubbing() const       { return mPlayMode == PLAY_SCRUB || mPlayMode == PLAY_KEYBOARD_SCRUB; }
-
    // Convert time between mT0 and argument to real duration, according to
    // time track if one is given; result is always nonnegative
    double RealDuration(double trackTime1) const;
