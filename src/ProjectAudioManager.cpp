@@ -119,7 +119,7 @@ int ProjectAudioManager::PlayPlayRegion(const SelectedRegion &selectedRegion,
    double t1 = selectedRegion.t1();
    // SelectedRegion guarantees t0 <= t1, so we need another boolean argument
    // to indicate backwards play.
-   const bool looped = options.playLooped;
+   const bool looped = (mode == PlayMode::loopedPlay);
 
    if (backwards)
       std::swap(t0, t1);
@@ -289,13 +289,12 @@ void ProjectAudioManager::PlayCurrentRegion(bool looped /* = false */,
 
       const auto &playRegion = ViewInfo::Get( *p ).playRegion;
 
-      auto options = DefaultPlayOptions( *p );
-      options.playLooped = looped;
+      auto options = DefaultPlayOptions( *p, looped );
       if (cutpreview)
          options.envelope = nullptr;
       auto mode =
          cutpreview ? PlayMode::cutPreviewPlay
-         : options.playLooped ? PlayMode::loopedPlay
+         : looped ? PlayMode::loopedPlay
          : PlayMode::normalPlay;
       PlayPlayRegion(SelectedRegion(playRegion.GetStart(), playRegion.GetEnd()),
                      options,
@@ -996,7 +995,7 @@ const ReservedCommandFlag&
    }; return flag; }
 
 AudioIOStartStreamOptions
-DefaultPlayOptions( AudacityProject &project )
+DefaultPlayOptions( AudacityProject &project, bool looped )
 {
    auto &projectAudioIO = ProjectAudioIO::Get( project );
    AudioIOStartStreamOptions options { &project,
@@ -1006,6 +1005,10 @@ DefaultPlayOptions( AudacityProject &project )
    auto timeTrack = *TrackList::Get( project ).Any<TimeTrack>().begin();
    options.envelope = timeTrack ? timeTrack->GetEnvelope() : nullptr;
    options.listener = ProjectAudioManager::Get( project ).shared_from_this();
+   
+   if (looped)
+      options.policyFactory = []() -> std::unique_ptr<PlaybackPolicy> {
+         return std::make_unique<LoopingPlaybackPolicy>(); };
    return options;
 }
 
