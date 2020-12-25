@@ -49,10 +49,6 @@ void AUDACITY_DLL_API MixAndRender(TrackList * tracks, WaveTrackFactory *factory
                   std::shared_ptr<WaveTrack> &uLeft,
                   std::shared_ptr<WaveTrack> &uRight);
 
-void MixBuffers(unsigned numChannels, int *channelFlags, float *gains,
-                const float *src,
-                samplePtr *dests, int len, bool interleaved);
-
 class AUDACITY_DLL_API MixerSpec
 {
    unsigned mNumTracks, mNumChannels, mMaxNumChannels;
