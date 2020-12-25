@@ -103,7 +103,7 @@ class AUDACITY_DLL_API Mixer {
          unsigned numOutChannels, size_t outBufferSize, bool outInterleaved,
          double outRate, sampleFormat outFormat,
          bool highQuality = true, MixerSpec *mixerSpec = nullptr,
-         bool applytTrackGains = true);
+         bool applyTrackGains = true);
 
    virtual ~ Mixer();
 
@@ -159,10 +159,9 @@ class AUDACITY_DLL_API Mixer {
    const size_t     mNumInputTracks;
    ArrayOf<WaveTrackCache> mInputTrack;
    bool             mbVariableRates;
-   const BoundedEnvelope *mEnvelope;
+   const BoundedEnvelope *const mEnvelope;
    ArrayOf<sampleCount> mSamplePos;
    const bool       mApplyTrackGains;
-   Doubles          mEnvValues;
    double           mT0; // Start time
    double           mT1; // Stop time (none if mT0==mT1)
    double           mTime;  // Current time (renamed from mT to mTime for consistency with AudioIO - mT represented warped time there)
@@ -171,18 +170,19 @@ class AUDACITY_DLL_API Mixer {
    FloatBuffers     mSampleQueue;
    ArrayOf<int>     mQueueStart;
    ArrayOf<int>     mQueueLen;
-   size_t           mProcessLen;
+   const size_t     mProcessLen;
    MixerSpec        *mMixerSpec;
 
    // Output
-   size_t              mMaxOut;
+   size_t           mMaxOut = 0;
    const unsigned   mNumChannels;
    Floats           mGains;
-   unsigned         mNumBuffers;
-   size_t              mBufferSize;
-   size_t              mInterleavedBufferSize;
+   const bool       mInterleaved;
+   const unsigned   mNumBuffers;
+   const size_t     mBufferSize;
+   const size_t     mInterleavedBufferSize;
+   Doubles          mEnvValues;
    const sampleFormat mFormat;
-   bool             mInterleaved;
    ArrayOf<SampleBuffer> mBuffer;
    ArrayOf<Floats>  mTemp;
    Floats           mFloatBuffer;

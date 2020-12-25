@@ -242,77 +242,70 @@ Mixer::Mixer(const WaveTrackConstArray &inputTracks,
              double outRate, sampleFormat outFormat,
              bool highQuality, MixerSpec *mixerSpec, bool applyTrackGains)
    : mNumInputTracks { inputTracks.size() }
+   , mInputTrack( mNumInputTracks )
+   , mEnvelope{ warpOptions.envelope }
+
+   // mSamplePos holds for each track the next sample position not
+   // yet processed.
+   , mSamplePos( mNumInputTracks )
 
    , mApplyTrackGains{ applyTrackGains }
+   , mT0{ startTime }
+   , mT1{ stopTime }
+   , mTime{ startTime }
+
+   , mResample( mNumInputTracks )
 
    // This is the number of samples grabbed in one go from a track
    // and placed in a queue, when mixing with resampling.
    // (Should we use WaveTrack::GetBestBlockSize instead?)
    , mQueueMaxLen{ 65536 }
-   , mSampleQueue{ mNumInputTracks, mQueueMaxLen }
+   , mSampleQueue( mNumInputTracks, mQueueMaxLen )
+   // Position in each queue of the start of the next block to resample.
+   , mQueueStart( mNumInputTracks )
+   // For each queue, the number of available samples after the queue start.
+   , mQueueLen( mNumInputTracks )
+
+   // Cut the queue into blocks of this finer size
+   // for variable rate resampling.  Each block is resampled at some
+   // constant rate.
+   , mProcessLen{ 1024 }
 
    , mNumChannels{ numOutChannels }
-   , mGains{ mNumChannels }
-
+   , mGains( mNumChannels )
+   , mInterleaved{ outInterleaved }
+   , mNumBuffers{ mInterleaved ? 1 : mNumChannels }
+   , mBufferSize{ outBufferSize }
+   , mInterleavedBufferSize{
+      mInterleaved ? mBufferSize * mNumChannels : mBufferSize }
+   , mEnvValues( std::max(mQueueMaxLen, mInterleavedBufferSize) )
    , mFormat{ outFormat }
+   , mBuffer( mNumBuffers )
+   , mTemp( mNumBuffers )
+   // PRL:  Bug2536: see other comments below
+   , mFloatBuffer( mInterleavedBufferSize + 1 )
    , mRate{ outRate }
-
+   , mSpeed{ 1.0 }
+   , mHighQuality{ highQuality }
+   , mMinFactor( mNumInputTracks )
+   , mMaxFactor( mNumInputTracks )
    , mMayThrow{ mayThrow }
 {
-   mHighQuality = highQuality;
-   mInputTrack.reinit(mNumInputTracks);
-
-   // mSamplePos holds for each track the next sample position not
-   // yet processed.
-   mSamplePos.reinit(mNumInputTracks);
    for(size_t i=0; i<mNumInputTracks; i++) {
       mInputTrack[i].SetTrack(inputTracks[i]);
       mSamplePos[i] = inputTracks[i]->TimeToLongSamples(startTime);
    }
-   mEnvelope = warpOptions.envelope;
-   mT0 = startTime;
-   mT1 = stopTime;
-   mTime = startTime;
-   mBufferSize = outBufferSize;
-   mInterleaved = outInterleaved;
-   mSpeed = 1.0;
    if( mixerSpec && mixerSpec->GetNumChannels() == mNumChannels &&
          mixerSpec->GetNumTracks() == mNumInputTracks )
       mMixerSpec = mixerSpec;
    else
       mMixerSpec = NULL;
 
-   if (mInterleaved) {
-      mNumBuffers = 1;
-      mInterleavedBufferSize = mBufferSize * mNumChannels;
-   }
-   else {
-      mNumBuffers = mNumChannels;
-      mInterleavedBufferSize = mBufferSize;
-   }
-
-   mBuffer.reinit(mNumBuffers);
-   mTemp.reinit(mNumBuffers);
    for (unsigned int c = 0; c < mNumBuffers; c++) {
       mBuffer[c].Allocate(mInterleavedBufferSize, mFormat);
       mTemp[c].reinit(mInterleavedBufferSize);
    }
-   // PRL:  Bug2536: see other comments below
-   mFloatBuffer = Floats{ mInterleavedBufferSize + 1 };
 
-   // But cut the queue into blocks of this finer size
-   // for variable rate resampling.  Each block is resampled at some
-   // constant rate.
-   mProcessLen = 1024;
-
-   // Position in each queue of the start of the next block to resample.
-   mQueueStart.reinit(mNumInputTracks);
-
-   // For each queue, the number of available samples after the queue start.
-   mQueueLen.reinit(mNumInputTracks);
-   mResample.reinit(mNumInputTracks);
-   mMinFactor.resize(mNumInputTracks);
-   mMaxFactor.resize(mNumInputTracks);
    for (size_t i = 0; i<mNumInputTracks; i++) {
       double factor = (mRate / mInputTrack[i].GetTrack()->GetRate());
       if (mEnvelope) {
@@ -338,9 +331,6 @@ Mixer::Mixer(const WaveTrackConstArray &inputTracks,
    }
 
    MakeResamplers();
-
-   const auto envLen = std::max(mQueueMaxLen, mInterleavedBufferSize);
-   mEnvValues.reinit(envLen);
 }
 
 Mixer::~Mixer()
