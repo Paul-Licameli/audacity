@@ -228,7 +228,7 @@ bool LoopingPlaybackPolicy::RepositionPlayback(
    if (schedule.RealTimeRemaining() <= 0)
    {
       for (auto &pMixer : playbackMixers)
-         pMixer->Restart();
+         pMixer->Reposition(schedule.mT0, true);
       schedule.RealTimeRestart();
    }
    return false;
