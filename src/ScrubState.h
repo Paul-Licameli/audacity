@@ -36,8 +36,9 @@ public:
    PlaybackSlice GetPlaybackSlice(
       PlaybackSchedule &schedule, size_t available) override;
 
-   double AdvancedTrackTime( PlaybackSchedule &schedule,
-      double trackTime, double realDuration ) override;
+   std::pair<double, double>
+      AdvancedTrackTime( PlaybackSchedule &schedule,
+         double trackTime, double realDuration ) override;
 
    bool RepositionPlayback(
       PlaybackSchedule &schedule, const Mixers &playbackMixers,
@@ -47,9 +48,11 @@ public:
 
 private:
    sampleCount mScrubDuration{ 0 }, mStartSample{ 0 }, mEndSample{ 0 };
+   double mOldEndTime{ 0 }, mNewStartTime{ 0 };
    double mScrubSpeed{ 0 };
    bool mSilentScrub{ false };
    bool mReplenish{ false };
+   bool mDiscontinuity{ false };
 
    const ScrubbingOptions mOptions;
 };
