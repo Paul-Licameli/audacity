@@ -305,8 +305,8 @@ struct AUDACITY_DLL_API PlaybackSchedule {
 
       //! @section Called by the AudioIO::TrackBufferExchange thread
 
-      //! Enqueue track time value advanced by `nSamples` according to `schedule`'s PlaybackPolicy
-      void Producer( PlaybackSchedule &schedule, size_t nSamples );
+      //! Enqueue track time value advanced by the slice according to `schedule`'s PlaybackPolicy
+      void Producer( PlaybackSchedule &schedule, PlaybackSlice slice );
 
       //! @section called by PortAudio callback thread
 

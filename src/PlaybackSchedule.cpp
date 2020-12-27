@@ -367,7 +367,7 @@ void PlaybackSchedule::TimeQueue::Resize(size_t size)
 }
 
 void PlaybackSchedule::TimeQueue::Producer(
-   PlaybackSchedule &schedule, size_t nSamples )
+   PlaybackSchedule &schedule, PlaybackSlice slice )
 {
    auto &policy = schedule.GetPolicy();
 
@@ -383,28 +383,41 @@ void PlaybackSchedule::TimeQueue::Producer(
    auto space = TimeQueueGrainSize - remainder;
    const auto size = mData.size();
 
-   while ( nSamples >= space ) {
+   // Produce advancing times
+   auto frames = slice.toProduce;
+   while ( frames >= space ) {
       auto times = policy.AdvancedTrackTime( schedule, time, space );
       time = times.second;
       if (!std::isfinite(time))
          time = times.first;
       index = (index + 1) % size;
       mData[ index ].timeValue = time;
-      nSamples -= space;
+      frames -= space;
+      remainder = 0;
+      space = TimeQueueGrainSize;
+   }
+   // Last odd lot
+   if ( frames > 0 ) {
+      auto times = policy.AdvancedTrackTime( schedule, time, frames );
+      time = times.second;
+      if (!std::isfinite(time))
+         time = times.first;
+      remainder += frames;
+      space -= frames;
+   }
+
+   // Produce constant times if there is also some silence in the slice
+   frames = slice.frames - slice.toProduce;
+   while ( frames >= space ) {
+      index = (index + 1) % size;
+      mData[ index ].timeValue = time;
+      frames -= space;
       remainder = 0;
       space = TimeQueueGrainSize;
    }
 
-   // Last odd lot
-   if ( nSamples > 0 ) {
-      auto times = policy.AdvancedTrackTime( schedule, time, nSamples );
-      time = times.second;
-      if (!std::isfinite(time))
-         time = times.first;
-   }
-
    mLastTime = time;
-   mTail.mRemainder = remainder + nSamples;
+   mTail.mRemainder = remainder + frames;
    mTail.mIndex = index;
 }
 

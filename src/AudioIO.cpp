@@ -1725,7 +1725,7 @@ void AudioIO::FillPlayBuffers()
       // consumer side in the PortAudio thread, which reads the time
       // queue after reading the sample queues.  The sample queues use
       // atomic variables, the time queue doesn't.
-      mPlaybackSchedule.mTimeQueue.Producer(mPlaybackSchedule, frames);
+      mPlaybackSchedule.mTimeQueue.Producer(mPlaybackSchedule, slice);
 
       for (size_t i = 0; i < mPlaybackTracks.size(); i++)
       {
