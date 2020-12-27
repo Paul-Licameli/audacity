@@ -407,6 +407,12 @@ double SystemTime(bool usingAlsa)
 // which seems not to implement the notes-off message correctly.
 #define AUDIO_IO_GB_MIDI_WORKAROUND
 
+struct Iterator {
+   Alg_iterator it{ nullptr, false };
+
+   ~Iterator() { it.end(); }
+};
+
 struct MIDIPlay : AudioIOExt
 {
    explicit MIDIPlay(const PlaybackSchedule &schedule);
@@ -479,7 +485,8 @@ struct MIDIPlay : AudioIOExt
    double mSystemMinusAudioTimePlusLatency;
 
    Alg_seq      *mSeq;
-   std::unique_ptr<Alg_iterator> mIterator;
+   using SharedIterator = std::shared_ptr<Iterator>;
+   SharedIterator mIterator;
    /// The next event to play (or null)
    Alg_event    *mNextEvent;
 
@@ -678,7 +685,7 @@ void MIDIPlay::StopOtherStream()
       }
       Pm_Close(mMidiStream);
       mMidiStream = NULL;
-      mIterator->end();
+      mIterator.reset();
 
       // set in_use flags to false
       int nTracks = mMidiPlaybackTracks.size();
@@ -687,8 +694,6 @@ void MIDIPlay::StopOtherStream()
          Alg_seq_ptr seq = &t->GetSeq();
          seq->set_in_use(false);
       }
-
-      mIterator.reset(); // just in case someone tries to reference it
    }
 
    mMidiPlaybackTracks.clear();
@@ -718,7 +723,7 @@ void MIDIPlay::PrepareMidiIterator(bool send, double offset)
    int nTracks = mMidiPlaybackTracks.size();
    // instead of initializing with an Alg_seq, we use begin_seq()
    // below to add ALL Alg_seq's.
-   mIterator = std::make_unique<Alg_iterator>(nullptr, false);
+   mIterator = std::make_shared<Iterator>();
    // Iterator not yet initialized, must add each track...
    for (i = 0; i < nTracks; i++) {
       const auto t = mMidiPlaybackTracks[i].get();
@@ -727,7 +732,7 @@ void MIDIPlay::PrepareMidiIterator(bool send, double offset)
       // off to another thread and want to make sure nothing happens
       // to the data until playback finishes. This is just a sanity check.
       seq->set_in_use(true);
-      mIterator->begin_seq(seq,
+      mIterator->it.begin_seq(seq,
          // casting away const, but allegro just uses the pointer as an opaque "cookie"
          (void*)t, t->GetOffset() + offset);
    }
@@ -894,7 +899,7 @@ void MIDIPlay::OutputEvent(double pauseTime)
             // clip velocity to insure a legal note-on value
             data2 = (data2 < 1 ? 1 : (data2 > 127 ? 127 : data2));
             // since we are going to play this note, we need to get a note_off
-            mIterator->request_note_off();
+            mIterator->it.request_note_off();
 
 #ifdef AUDIO_IO_GB_MIDI_WORKAROUND
             mPendingNotesOff.push_back(std::make_pair(channel, data1));
@@ -983,7 +988,7 @@ void MIDIPlay::GetNextEvent()
         return;
    }
    auto midiLoopOffset = MidiLoopOffset();
-   mNextEvent = mIterator->next(&mNextIsNoteOn,
+   mNextEvent = mIterator->it.next(&mNextIsNoteOn,
       (void **) &mNextEventTrack,
       &nextOffset, mPlaybackSchedule.mT1 + midiLoopOffset);
 
@@ -996,8 +1001,7 @@ void MIDIPlay::GetNextEvent()
       mNextEvent = &gAllNotesOff;
       mNextEventTime = mPlaybackSchedule.mT1 + midiLoopOffset - ALG_EPS;
       mNextIsNoteOn = true; // do not look at duration
-      mIterator->end();
-      mIterator.reset(); // debugging aid
+      mIterator.reset();
    }
 }
 
