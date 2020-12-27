@@ -501,9 +501,6 @@ struct MIDIPlay : AudioIOExt
    NoteTrack        *mNextEventTrack;
    /// Is the next event a note-on?
    bool             mNextIsNoteOn;
-   /// when true, mSendMidiState means send only updates, not note-on's,
-   /// used to send state changes that precede the selected notes
-   bool             mSendMidiState = false;
 
    void PrepareMidiIterator(bool send, double offset);
    bool StartPortMidiStream(double rate);
@@ -513,7 +510,9 @@ struct MIDIPlay : AudioIOExt
    double UncorrectedMidiEventTime(double pauseTime);
 
    // Returns true after outputting all-notes-off
-   bool OutputEvent(double pauseTime);
+   /// when true, midiStateOnly means send only updates, not note-on's,
+   /// used to send state changes that precede the selected notes
+   bool OutputEvent(double pauseTime, bool midiStateOnly);
    void GetNextEvent();
    double PauseTime(double rate, unsigned long pauseFrames);
    void AllNotesOff(bool looping = false);
@@ -740,14 +739,12 @@ void MIDIPlay::PrepareMidiIterator(bool send, double offset)
    GetNextEvent(); // prime the pump for FillOtherBuffers
 
    // Start MIDI from current cursor position
-   mSendMidiState = true;
    while (mNextEvent &&
           mNextEventTime < mPlaybackSchedule.mT0 + offset) {
       if (send)
-         OutputEvent(0);
+         OutputEvent(0, true);
       GetNextEvent();
    }
-   mSendMidiState = false;
 }
 
 bool MIDIPlay::StartPortMidiStream(double rate)
@@ -832,7 +829,7 @@ double MIDIPlay::UncorrectedMidiEventTime(double pauseTime)
    return time + pauseTime;
 }
 
-bool MIDIPlay::OutputEvent(double pauseTime)
+bool MIDIPlay::OutputEvent(double pauseTime, bool midiStateOnly)
 {
    int channel = (mNextEvent->chan) & 0xF; // must be in [0..15]
    int command = -1;
@@ -849,7 +846,7 @@ bool MIDIPlay::OutputEvent(double pauseTime)
    // state changes have to go out without delay because the
    // midi stream time gets reset when playback starts, and
    // we don't want to leave any control changes scheduled for later
-   if (time < 0 || mSendMidiState) time = 0;
+   if (time < 0 || midiStateOnly) time = 0;
    PmTimestamp timestamp = (PmTimestamp) (time * 1000); /* s to ms */
 
    // The special event gAllNotesOff means "end of playback, send
@@ -883,7 +880,7 @@ bool MIDIPlay::OutputEvent(double pauseTime)
           !mNextEventTrack->GetSolo())) ||
        (mNextEvent->is_note() && !mNextIsNoteOn)) {
       // Note event
-      if (mNextEvent->is_note() && !mSendMidiState) {
+      if (mNextEvent->is_note() && !midiStateOnly) {
          // Pitch and velocity
          data1 = mNextEvent->get_pitch();
          if (mNextIsNoteOn) {
@@ -1041,7 +1038,7 @@ void MIDIPlay::FillOtherBuffers(
    }
    while (mNextEvent &&
           UncorrectedMidiEventTime(PauseTime(rate, pauseFrames)) < time) {
-      if (OutputEvent(PauseTime(rate, pauseFrames))) {
+      if (OutputEvent(PauseTime(rate, pauseFrames), false)) {
          if (mPlaybackSchedule.GetPolicy().Looping(mPlaybackSchedule)) {
             // jump back to beginning of loop
             ++mMidiLoopPasses;
