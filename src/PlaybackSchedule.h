@@ -292,12 +292,39 @@ struct AUDACITY_DLL_API PlaybackSchedule {
    
    const BoundedEnvelope *mEnvelope;
 
-   // A circular buffer
-   // Holds track time values corresponding to every nth sample in the
-   // playback buffers, for some large n
-   struct TimeQueue {
-      ArrayOf<double> mData;
-      size_t mSize{ 0 };
+   //! A circular buffer
+   /*! Holds track time values corresponding to every nth sample in the playback buffers, for some large n
+    */
+   class TimeQueue {
+   public:
+
+      //! @section called by main thread
+
+      void Clear();
+      void Resize(size_t size);
+
+      //! @section Called by the AudioIO::TrackBufferExchange thread
+
+      //! Enqueue track time value advanced by `nSamples` according to `schedule`'s PlaybackPolicy
+      void Producer( PlaybackSchedule &schedule, size_t nSamples );
+
+      //! @section called by PortAudio callback thread
+
+      //! Find the track time value `nSamples` after the last consumed value
+      double Consumer( size_t nSamples, double rate );
+
+      //! @section called by any thread while producer and consumer are suspended
+
+      //! Empty the queue and reassign the last produced time
+      /*! Assumes producer and consumer are suspended */
+      void Prime( double time );
+
+   private:
+      struct Record {
+         double timeValue;
+      };
+      using Records = std::vector<Record>;
+      Records mData;
       double mLastTime {};
       // These need not be updated atomically, because we rely on the atomics
       // in the playback ring buffers to supply the synchronization.  Still,
@@ -306,13 +333,6 @@ struct AUDACITY_DLL_API PlaybackSchedule {
          size_t mIndex {};
          size_t mRemainder {};
       } mHead, mTail;
-
-      void Producer( PlaybackSchedule &schedule, size_t nSamples );
-      double Consumer( size_t nSamples, double rate );
-
-      //! Empty the queue and reassign the last produced time
-      /*! Assumes the producer and consumer are suspended */
-      void Prime(double time);
    } mTimeQueue;
 
    PlaybackPolicy &GetPolicy();
