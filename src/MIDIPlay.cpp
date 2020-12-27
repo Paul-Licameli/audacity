@@ -512,7 +512,8 @@ struct MIDIPlay : AudioIOExt
    // synth latency.
    double UncorrectedMidiEventTime(double pauseTime);
 
-   void OutputEvent(double pauseTime);
+   // Returns true after outputting all-notes-off
+   bool OutputEvent(double pauseTime);
    void GetNextEvent();
    double PauseTime(double rate, unsigned long pauseFrames);
    void AllNotesOff(bool looping = false);
@@ -831,7 +832,7 @@ double MIDIPlay::UncorrectedMidiEventTime(double pauseTime)
    return time + pauseTime;
 }
 
-void MIDIPlay::OutputEvent(double pauseTime)
+bool MIDIPlay::OutputEvent(double pauseTime)
 {
    int channel = (mNextEvent->chan) & 0xF; // must be in [0..15]
    int command = -1;
@@ -856,14 +857,7 @@ void MIDIPlay::OutputEvent(double pauseTime)
    if (mNextEvent == &gAllNotesOff) {
       bool looping = mPlaybackSchedule.GetPolicy().Looping(mPlaybackSchedule);
       AllNotesOff(looping);
-      if (looping) {
-         // jump back to beginning of loop
-         ++mMidiLoopPasses;
-         PrepareMidiIterator(false, MidiLoopOffset());
-      } else {
-         mNextEvent = NULL;
-      }
-      return;
+      return true;
    }
 
    // if mNextEvent's channel is visible, play it, visibility can
@@ -976,6 +970,7 @@ void MIDIPlay::OutputEvent(double pauseTime)
                            mNextEvent, timestamp, timestamp - Pt_Time()); */
       }
    }
+   return false;
 }
 
 void MIDIPlay::GetNextEvent()
@@ -1001,7 +996,6 @@ void MIDIPlay::GetNextEvent()
       mNextEvent = &gAllNotesOff;
       mNextEventTime = mPlaybackSchedule.mT1 + midiLoopOffset - ALG_EPS;
       mNextIsNoteOn = true; // do not look at duration
-      mIterator.reset();
    }
 }
 
@@ -1047,8 +1041,18 @@ void MIDIPlay::FillOtherBuffers(
    }
    while (mNextEvent &&
           UncorrectedMidiEventTime(PauseTime(rate, pauseFrames)) < time) {
-      OutputEvent(PauseTime(rate, pauseFrames));
-      GetNextEvent();
+      if (OutputEvent(PauseTime(rate, pauseFrames))) {
+         if (mPlaybackSchedule.GetPolicy().Looping(mPlaybackSchedule)) {
+            // jump back to beginning of loop
+            ++mMidiLoopPasses;
+            PrepareMidiIterator( false, MidiLoopOffset());
+         } else {
+            mIterator.reset();
+            mNextEvent = NULL;
+         }
+      }
+      else
+         GetNextEvent();
    }
 }
 
