@@ -15,6 +15,7 @@
 #include "Mix.h"
 #include <atomic>
 #include <chrono>
+#include <functional>
 #include <vector>
 
 struct AudioIOStartStreamOptions;
@@ -260,6 +261,8 @@ protected:
    double mRate = 0;
 };
 
+class AudioIOExt;
+
 struct AUDACITY_DLL_API PlaybackSchedule {
 
    /// Playback starts at offset of mT0, which is measured in seconds.
@@ -294,9 +297,11 @@ struct AUDACITY_DLL_API PlaybackSchedule {
 
    //! A circular buffer
    /*! Holds track time values corresponding to every nth sample in the playback buffers, for some large n
+       May also hold callbacks to be invoked by the consumer thread
     */
    class TimeQueue {
    public:
+      using AudioIOExts = std::vector<std::unique_ptr<AudioIOExt>>;
 
       //! @section called by main thread
 
@@ -305,21 +310,30 @@ struct AUDACITY_DLL_API PlaybackSchedule {
 
       //! @section Called by the AudioIO::TrackBufferExchange thread
 
-      //! Enqueue track time value advanced by the slice according to `schedule`'s PlaybackPolicy
-      void Producer( PlaybackSchedule &schedule, PlaybackSlice slice );
+      /*! Enqueue track time value advanced by `nSamples` according to `schedule`'s PlaybackPolicy
+          and optionally callbacks created by exts
+       */
+      void Producer(
+         PlaybackSchedule &schedule,
+         PlaybackSlice slice, const AudioIOExts &exts );
 
       //! @section called by PortAudio callback thread
 
-      //! Find the track time value `nSamples` after the last consumed value
-      double Consumer( size_t nSamples, double rate );
+      //! Find the track time value `nSamples` after the last consumed value and invoke callbacks
+      double Consumer( size_t nSamples, double rate,
+         unsigned long pauseFrames, bool hasSolo, const AudioIOExts &exts );
 
       //! @section called by any thread while producer and consumer are suspended
 
       //! Empty the queue and reassign the last produced time
       /*! Assumes producer and consumer are suspended */
-      void Prime( double time );
+      void Prime( double time, const AudioIOExts &exts );
 
    private:
+      void ProduceExt(const AudioIOExts &exts,
+         std::pair<double, double> newTrackTimes,
+         size_t nFrames);
+
       struct Record {
          double timeValue;
       };

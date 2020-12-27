@@ -932,7 +932,8 @@ int AudioIO::StartStream(const TransportTracks &tracks,
    }
    
    // Now that we are done with SetTrackTime():
-   mPlaybackSchedule.mTimeQueue.Prime(mPlaybackSchedule.GetTrackTime());
+   mPlaybackSchedule.mTimeQueue.Prime(
+      mPlaybackSchedule.GetTrackTime(), mAudioIOExt);
    // else recording only without overdub
 
    // We signal the audio thread to call TrackBufferExchange, to prime the RingBuffers
@@ -1725,7 +1726,8 @@ void AudioIO::FillPlayBuffers()
       // consumer side in the PortAudio thread, which reads the time
       // queue after reading the sample queues.  The sample queues use
       // atomic variables, the time queue doesn't.
-      mPlaybackSchedule.mTimeQueue.Producer(mPlaybackSchedule, slice);
+      mPlaybackSchedule.mTimeQueue.Producer(
+         mPlaybackSchedule, slice, mAudioIOExt );
 
       for (size_t i = 0; i < mPlaybackTracks.size(); i++)
       {
@@ -2461,7 +2463,9 @@ void AudioIoCallback::UpdateTimePosition(unsigned long framesPerBuffer)
 
    // Update the position seen by drawing code
    mPlaybackSchedule.SetTrackTime(
-      mPlaybackSchedule.mTimeQueue.Consumer( mMaxFramesOutput, mRate ) );
+      mPlaybackSchedule.mTimeQueue.Consumer(
+         mMaxFramesOutput, mRate, mNumPauseFrames, mbHasSoloTracks,
+         mAudioIOExt ) );
 }
 
 // return true, IFF we have fully handled the callback.
@@ -2953,7 +2957,7 @@ int AudioIoCallback::CallbackDoSeek()
       wxUnusedVar(discarded);
    }
 
-   mPlaybackSchedule.mTimeQueue.Prime(time);
+   mPlaybackSchedule.mTimeQueue.Prime(time, mAudioIOExt);
 
    // Reload the ring buffers
    mAudioThreadShouldCallTrackBufferExchangeOnce = true;

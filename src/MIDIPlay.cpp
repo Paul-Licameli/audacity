@@ -412,6 +412,14 @@ struct MIDIPlay : AudioIOExt
    explicit MIDIPlay(const PlaybackSchedule &schedule);
    ~MIDIPlay() override;
 
+   void Producer(std::pair<double, double> newTrackTimes,
+      size_t nFrames) override;
+
+   void Consumer(size_t nSamples, double rate, unsigned long pauseFrames,
+      bool hasSolo) override;
+
+   void Prime(double newTrackTime) override;
+
    double AudioTime(double rate) const
    { return mPlaybackSchedule.mT0 + mNumFrames / rate; }
 
@@ -575,6 +583,20 @@ MIDIPlay::MIDIPlay(const PlaybackSchedule &schedule)
 MIDIPlay::~MIDIPlay()
 {
    Pm_Terminate();
+}
+
+void MIDIPlay::Producer(
+   std::pair<double, double>, size_t)
+{
+}
+
+void MIDIPlay::Consumer(
+   size_t, double, unsigned long, bool)
+{
+}
+
+void MIDIPlay::Prime(double newTrackTime)
+{
 }
 
 bool MIDIPlay::StartOtherStream(const TransportTracks &tracks,
