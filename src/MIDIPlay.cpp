@@ -542,7 +542,7 @@ struct MIDIPlay : AudioIOExt
 
    bool IsOtherStreamActive() const override;
 
-   void ComputeOtherTimings(double rate,
+   void ComputeOtherTimings(double rate, bool paused,
       const PaStreamCallbackTimeInfo *timeInfo,
       unsigned long framesPerBuffer) override;
    void SignalOtherCompletion() override;
@@ -1010,18 +1010,9 @@ void MIDIPlay::FillOtherBuffers(
    if (!mMidiStream)
       return;
 
-   // Keep track of time paused. If not paused, fill buffers.
-   if (paused) {
-      if (!mMidiPaused) {
-         mMidiPaused = true;
-         AllNotesOff(); // to avoid hanging notes during pause
-      }
+   // If not paused, fill buffers.
+   if (paused)
       return;
-   }
-
-   if (mMidiPaused) {
-      mMidiPaused = false;
-   }
 
    SetHasSolo(hasSolo);
 
@@ -1140,7 +1131,7 @@ void MIDIPlay::AllNotesOff(bool looping)
    }
 }
 
-void MIDIPlay::ComputeOtherTimings(double rate,
+void MIDIPlay::ComputeOtherTimings(double rate, bool paused,
    const PaStreamCallbackTimeInfo *timeInfo,
    unsigned long framesPerBuffer
    )
@@ -1204,6 +1195,16 @@ void MIDIPlay::ComputeOtherTimings(double rate,
 
    mAudioFramesPerBuffer = framesPerBuffer;
    mNumFrames += framesPerBuffer;
+
+   // Keep track of time paused.
+   if (paused) {
+      if (!mMidiPaused) {
+         mMidiPaused = true;
+         AllNotesOff(); // to avoid hanging notes during pause
+      }
+   }
+   else if (mMidiPaused)
+      mMidiPaused = false;
 }
 
 unsigned MIDIPlay::CountOtherSoloTracks() const

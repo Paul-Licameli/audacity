@@ -2829,7 +2829,7 @@ int AudioIoCallback::AudioCallback(
       mNumPauseFrames += framesPerBuffer;
 
    ForEachExt([&](auto &ext){
-      ext.ComputeOtherTimings(mRate,
+      ext.ComputeOtherTimings(mRate, IsPaused(),
          timeInfo,
          framesPerBuffer);
       ext.FillOtherBuffers(
