@@ -407,10 +407,54 @@ double SystemTime(bool usingAlsa)
 // which seems not to implement the notes-off message correctly.
 #define AUDIO_IO_GB_MIDI_WORKAROUND
 
-struct Iterator {
-   Alg_iterator it{ nullptr, false };
+struct MIDIPlay;
 
+Alg_update gAllNotesOff; // special event for loop ending
+// the fields of this event are never used, only the address is important
+
+struct Iterator {
+   Iterator(
+      const PlaybackSchedule &schedule, MIDIPlay &midiPlay )
+      : mPlaybackSchedule{ schedule }, mMIDIPlay{ midiPlay }
+   {}
    ~Iterator() { it.end(); }
+
+   void Prime(bool send, double startTime);
+
+   double GetNextEventTime() const
+   {
+      if (mNextEvent == &gAllNotesOff)
+         return mNextEventTime - ALG_EPS;
+      return mNextEventTime;
+   }
+
+   // Compute nondecreasing real time stamps, accounting for pauses, but not the
+   // synth latency.
+   double UncorrectedMidiEventTime(double pauseTime);
+
+   // Returns true after outputting all-notes-off
+   bool OutputEvent(double pauseTime,
+      /// when true, sendMidiState means send only updates, not note-on's,
+      /// used to send state changes that precede the selected notes
+      bool sendMidiState);
+   void GetNextEvent();
+
+   const PlaybackSchedule &mPlaybackSchedule;
+   MIDIPlay &mMIDIPlay;
+   Alg_iterator it{ nullptr, false };
+   /// The next event to play (or null)
+   Alg_event    *mNextEvent = nullptr;
+
+   /// Track of next event
+   NoteTrack        *mNextEventTrack = nullptr;
+
+   /// Is the next event a note-on?
+   bool             mNextIsNoteOn = false;
+
+private:
+   /// Real time at which the next event should be output, measured in seconds.
+   /// Note that this could be a note's time+duration for note offs.
+   double           mNextEventTime = 0;
 };
 
 struct MIDIPlay : AudioIOExt
@@ -487,33 +531,13 @@ struct MIDIPlay : AudioIOExt
    Alg_seq      *mSeq;
    using SharedIterator = std::shared_ptr<Iterator>;
    SharedIterator mIterator;
-   /// The next event to play (or null)
-   Alg_event    *mNextEvent;
 
 #ifdef AUDIO_IO_GB_MIDI_WORKAROUND
    std::vector< std::pair< int, int > > mPendingNotesOff;
 #endif
 
-   /// Real time at which the next event should be output, measured in seconds.
-   /// Note that this could be a note's time+duration for note offs.
-   double           mNextEventTime;
-   /// Track of next event
-   NoteTrack        *mNextEventTrack;
-   /// Is the next event a note-on?
-   bool             mNextIsNoteOn;
-
    void PrepareMidiIterator(bool send, double offset);
    bool StartPortMidiStream(double rate);
-
-   // Compute nondecreasing real time stamps, accounting for pauses, but not the
-   // synth latency.
-   double UncorrectedMidiEventTime(double pauseTime);
-
-   // Returns true after outputting all-notes-off
-   /// when true, midiStateOnly means send only updates, not note-on's,
-   /// used to send state changes that precede the selected notes
-   bool OutputEvent(double pauseTime, bool midiStateOnly);
-   void GetNextEvent();
    double PauseTime(double rate, unsigned long pauseFrames);
    void AllNotesOff(bool looping = false);
 
@@ -532,9 +556,7 @@ struct MIDIPlay : AudioIOExt
    // going to do this polling in the FillMidiBuffer routine to localize
    // changes for midi to the midi code, but I'm declaring the variable
    // here so possibly in the future, Audio code can use it too. -RBD
- private:
    bool  mHasSolo; // is any playback solo button pressed?
- public:
    bool SetHasSolo(bool hasSolo);
    bool GetHasSolo() { return mHasSolo; }
 
@@ -723,7 +745,8 @@ void MIDIPlay::PrepareMidiIterator(bool send, double offset)
    int nTracks = mMidiPlaybackTracks.size();
    // instead of initializing with an Alg_seq, we use begin_seq()
    // below to add ALL Alg_seq's.
-   mIterator = std::make_shared<Iterator>();
+   mIterator =
+      std::make_shared<Iterator>(mPlaybackSchedule, *this);
    // Iterator not yet initialized, must add each track...
    for (i = 0; i < nTracks; i++) {
       const auto t = mMidiPlaybackTracks[i].get();
@@ -736,11 +759,16 @@ void MIDIPlay::PrepareMidiIterator(bool send, double offset)
          // casting away const, but allegro just uses the pointer as an opaque "cookie"
          (void*)t, t->GetOffset() + offset);
    }
+   mIterator->Prime(send, mPlaybackSchedule.mT0 + offset);
+}
+
+void Iterator::Prime(bool send, double startTime)
+{
    GetNextEvent(); // prime the pump for FillOtherBuffers
 
    // Start MIDI from current cursor position
    while (mNextEvent &&
-          mNextEventTime < mPlaybackSchedule.mT0 + offset) {
+          GetNextEventTime() < startTime) {
       if (send)
          OutputEvent(0, true);
       GetNextEvent();
@@ -812,24 +840,22 @@ bool MIDIPlay::StartPortMidiStream(double rate)
    return (mLastPmError == pmNoError);
 }
 
-Alg_update gAllNotesOff; // special event for loop ending
-// the fields of this event are never used, only the address is important
-
-double MIDIPlay::UncorrectedMidiEventTime(double pauseTime)
+double Iterator::UncorrectedMidiEventTime(double pauseTime)
 {
    double time;
    if (mPlaybackSchedule.mEnvelope)
       time =
-         mPlaybackSchedule.RealDuration(mNextEventTime - MidiLoopOffset())
-         + mPlaybackSchedule.mT0 + (mMidiLoopPasses *
-                                    mPlaybackSchedule.mWarpedLength);
+         mPlaybackSchedule.RealDuration(
+            GetNextEventTime() - mMIDIPlay.MidiLoopOffset())
+         + mPlaybackSchedule.mT0 +
+           (mMIDIPlay.mMidiLoopPasses * mPlaybackSchedule.mWarpedLength);
    else
-      time = mNextEventTime;
+      time = GetNextEventTime();
 
    return time + pauseTime;
 }
 
-bool MIDIPlay::OutputEvent(double pauseTime, bool midiStateOnly)
+bool Iterator::OutputEvent(double pauseTime, bool midiStateOnly)
 {
    int channel = (mNextEvent->chan) & 0xF; // must be in [0..15]
    int command = -1;
@@ -840,7 +866,7 @@ bool MIDIPlay::OutputEvent(double pauseTime, bool midiStateOnly)
 
    // 0.0005 is for rounding
    double time = eventTime + 0.0005 -
-                 (mSynthLatency * 0.001);
+                 (mMIDIPlay.mSynthLatency * 0.001);
 
    time += 1; // MidiTime() has a 1s offset
    // state changes have to go out without delay because the
@@ -853,7 +879,7 @@ bool MIDIPlay::OutputEvent(double pauseTime, bool midiStateOnly)
    // all notes off on all channels"
    if (mNextEvent == &gAllNotesOff) {
       bool looping = mPlaybackSchedule.GetPolicy().Looping(mPlaybackSchedule);
-      AllNotesOff(looping);
+      mMIDIPlay.AllNotesOff(looping);
       return true;
    }
 
@@ -876,7 +902,7 @@ bool MIDIPlay::OutputEvent(double pauseTime, bool midiStateOnly)
    // in the non-pause case.
    if (((mNextEventTrack->IsVisibleChan(channel)) &&
         // only play if note is not muted:
-        !((mHasSolo || mNextEventTrack->GetMute()) &&
+        !((mMIDIPlay.mHasSolo || mNextEventTrack->GetMute()) &&
           !mNextEventTrack->GetSolo())) ||
        (mNextEvent->is_note() && !mNextIsNoteOn)) {
       // Note event
@@ -890,20 +916,20 @@ bool MIDIPlay::OutputEvent(double pauseTime, bool midiStateOnly)
             // clip velocity to insure a legal note-on value
             data2 = (data2 < 1 ? 1 : (data2 > 127 ? 127 : data2));
             // since we are going to play this note, we need to get a note_off
-            mIterator->it.request_note_off();
+            it.request_note_off();
 
 #ifdef AUDIO_IO_GB_MIDI_WORKAROUND
-            mPendingNotesOff.push_back(std::make_pair(channel, data1));
+            mMIDIPlay.mPendingNotesOff.push_back(std::make_pair(channel, data1));
 #endif
          }
          else {
             data2 = 0; // 0 velocity means "note off"
 #ifdef AUDIO_IO_GB_MIDI_WORKAROUND
-            auto end = mPendingNotesOff.end();
+            auto end = mMIDIPlay.mPendingNotesOff.end();
             auto iter = std::find(
-               mPendingNotesOff.begin(), end, std::make_pair(channel, data1) );
+               mMIDIPlay.mPendingNotesOff.begin(), end, std::make_pair(channel, data1) );
             if (iter != end)
-               mPendingNotesOff.erase(iter);
+               mMIDIPlay.mPendingNotesOff.erase(iter);
 #endif
          }
          command = 0x90; // MIDI NOTE ON (or OFF when velocity == 0)
@@ -955,10 +981,10 @@ bool MIDIPlay::OutputEvent(double pauseTime, bool midiStateOnly)
       }
       if (command != -1) {
          // keep track of greatest timestamp used
-         if (timestamp > mMaxMidiTimestamp) {
-            mMaxMidiTimestamp = timestamp;
+         if (timestamp > mMIDIPlay.mMaxMidiTimestamp) {
+            mMIDIPlay.mMaxMidiTimestamp = timestamp;
          }
-         Pm_WriteShort(mMidiStream, timestamp,
+         Pm_WriteShort(mMIDIPlay.mMidiStream, timestamp,
                     Pm_Message((int) (command + channel),
                                   (long) data1, (long) data2));
          /* wxPrintf("Pm_WriteShort %lx (%p) @ %d, advance %d\n",
@@ -970,17 +996,13 @@ bool MIDIPlay::OutputEvent(double pauseTime, bool midiStateOnly)
    return false;
 }
 
-void MIDIPlay::GetNextEvent()
+void Iterator::GetNextEvent()
 {
    mNextEventTrack = NULL; // clear it just to be safe
    // now get the next event and the track from which it came
    double nextOffset;
-   if (!mIterator) {
-        mNextEvent = NULL;
-        return;
-   }
-   auto midiLoopOffset = MidiLoopOffset();
-   mNextEvent = mIterator->it.next(&mNextIsNoteOn,
+   auto midiLoopOffset = mMIDIPlay.MidiLoopOffset();
+   mNextEvent = it.next(&mNextIsNoteOn,
       (void **) &mNextEventTrack,
       &nextOffset, mPlaybackSchedule.mT1 + midiLoopOffset);
 
@@ -991,7 +1013,7 @@ void MIDIPlay::GetNextEvent()
    }
    if (mNextEventTime > (mPlaybackSchedule.mT1 + midiLoopOffset)){ // terminate playback at mT1
       mNextEvent = &gAllNotesOff;
-      mNextEventTime = mPlaybackSchedule.mT1 + midiLoopOffset - ALG_EPS;
+      mNextEventTime = mPlaybackSchedule.mT1 + midiLoopOffset;
       mNextIsNoteOn = true; // do not look at duration
    }
 }
@@ -1016,7 +1038,7 @@ void MIDIPlay::FillOtherBuffers(
 
    SetHasSolo(hasSolo);
 
-   // If we compute until mNextEventTime > current audio time,
+   // If we compute until GetNextEventTime() > current audio time,
    // we would have a built-in compute-ahead of mAudioOutLatency, and
    // it's probably good to compute MIDI when we compute audio (so when
    // we stop, both stop about the same time).
@@ -1027,20 +1049,20 @@ void MIDIPlay::FillOtherBuffers(
    if (actual_latency > mAudioOutLatency) {
        time += actual_latency - mAudioOutLatency;
    }
-   while (mNextEvent &&
-          UncorrectedMidiEventTime(PauseTime(rate, pauseFrames)) < time) {
-      if (OutputEvent(PauseTime(rate, pauseFrames), false)) {
+   while (mIterator &&
+          mIterator->mNextEvent &&
+          mIterator->UncorrectedMidiEventTime(PauseTime(rate, pauseFrames)) < time) {
+      if (mIterator->OutputEvent(PauseTime(rate, pauseFrames), false)) {
          if (mPlaybackSchedule.GetPolicy().Looping(mPlaybackSchedule)) {
             // jump back to beginning of loop
             ++mMidiLoopPasses;
-            PrepareMidiIterator( false, MidiLoopOffset());
-         } else {
-            mIterator.reset();
-            mNextEvent = NULL;
+            PrepareMidiIterator(false, MidiLoopOffset());
          }
+         else
+            mIterator.reset();
       }
-      else
-         GetNextEvent();
+      else if (mIterator)
+         mIterator->GetNextEvent();
    }
 }
 
