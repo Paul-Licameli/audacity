@@ -116,10 +116,6 @@ struct AudioIOStartStreamOptions
    std::function< unsigned long() > playbackStreamPrimer;
 };
 
-struct PaStreamInfo;
-struct PaStreamCallbackTimeInfo;
-struct TransportTracks;
-
 //! Abstract interface to alternative, concurrent playback with the main audio (such as MIDI events)
 class AudioIOExt;
 
@@ -343,43 +339,6 @@ protected:
 
 public:
    void ForEachExt(const std::function<void(AudioIOExt&)> &fn);
-};
-
-struct PlaybackSchedule;
-
-class AUDACITY_DLL_API AudioIOExt
-{
-public:
-   using Factory = std::function<std::unique_ptr<AudioIOExt>(
-      const PlaybackSchedule&)>;
-   using Factories = std::vector<AudioIOExt::Factory>;
-   static Factories &GetFactories();
-
-   //! Typically statically constructed
-   struct AUDACITY_DLL_API RegisteredFactory{
-      RegisteredFactory(Factory factory);
-      ~RegisteredFactory();
-   };
-
-   virtual ~AudioIOExt();
-
-   // Formerly in AudioIOBase
-   virtual bool IsOtherStreamActive() const = 0;
-
-   // Formerly in AudioIoCallback
-   virtual void ComputeOtherTimings(double rate,
-      const PaStreamCallbackTimeInfo *timeInfo,
-      unsigned long framesPerBuffer) = 0;
-   virtual void SignalOtherCompletion() = 0;
-   virtual unsigned CountOtherSoloTracks() const = 0;
-
-   // Formerly in AudioIO
-   virtual bool StartOtherStream(const TransportTracks &tracks,
-      const PaStreamInfo* info, double startTime, double rate) = 0;
-   virtual void AbortOtherStream() = 0;
-   virtual void FillOtherBuffers(
-      double rate, unsigned long pauseFrames, bool paused, bool hasSolo) = 0;
-   virtual void StopOtherStream() = 0;
 };
 
 #endif
