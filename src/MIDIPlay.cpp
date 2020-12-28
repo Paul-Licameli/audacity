@@ -355,6 +355,8 @@ Time (in seconds, = total_sample_count / sample_rate)
 **********************************************************************/
 
 #include "AudioIO.h"
+
+#include "AudioIOExt.h"
 #include "Prefs.h"
 #include "../lib-src/portmidi/pm_common/portmidi.h"
 #include "../lib-src/portmidi/porttime/porttime.h"

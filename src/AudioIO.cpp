@@ -71,6 +71,7 @@ time warp info and AudioIOListener and whether the playback is looped.
 
 
 
+#include "AudioIOExt.h"
 #include "AudioIOListener.h"
 
 #include "float_cast.h"
