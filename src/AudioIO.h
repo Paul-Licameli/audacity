@@ -349,6 +349,9 @@ public:
    * they are different. */
    size_t GetCommonlyReadyPlayback();
 
+   /// How many frames of zeros were output due to pauses?
+   long    mNumPauseFrames;
+
 #ifdef EXPERIMENTAL_MIDI_OUT
    //   MIDI_PLAYBACK:
    PmStream        *mMidiStream;
@@ -361,9 +364,6 @@ public:
 
    /// Number of frames output, including pauses
    long    mNumFrames;
-   /// How many frames of zeros were output due to pauses?
-   long    mNumPauseFrames;
-   /// total of backward jumps
    int     mMidiLoopPasses;
    inline double MidiLoopOffset() {
       return mMidiLoopPasses * (mPlaybackSchedule.mT1 - mPlaybackSchedule.mT0);
