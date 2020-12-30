@@ -65,8 +65,6 @@ public:
    virtual bool StartOtherStream(const TransportTracks &tracks,
       const PaStreamInfo* info, double startTime, double rate) = 0;
    virtual void AbortOtherStream() = 0;
-   virtual void FillOtherBuffers(
-      double rate, unsigned long pauseFrames, bool paused, bool hasSolo) = 0;
    virtual void StopOtherStream() = 0;
 };
 #endif

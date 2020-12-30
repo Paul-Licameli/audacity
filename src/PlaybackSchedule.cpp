@@ -137,11 +137,6 @@ bool PlaybackPolicy::RepositionPlayback(
    return true;
 }
 
-bool PlaybackPolicy::Looping(const PlaybackSchedule &) const
-{
-   return false;
-}
-
 namespace {
 struct DefaultPlaybackPolicy final : PlaybackPolicy {
    ~DefaultPlaybackPolicy() override = default;
@@ -237,11 +232,6 @@ bool LoopingPlaybackPolicy::RepositionPlayback(
       schedule.RealTimeRestart();
    }
    return false;
-}
-
-bool LoopingPlaybackPolicy::Looping( const PlaybackSchedule & ) const
-{
-   return true;
 }
 
 void PlaybackSchedule::Init(

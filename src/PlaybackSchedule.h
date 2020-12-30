@@ -253,10 +253,6 @@ public:
       size_t available //!< how many more samples may be buffered
    );
 
-   //! @section To be removed
-
-   virtual bool Looping( const PlaybackSchedule &schedule ) const;
-
 protected:
    double mRate = 0;
 };
@@ -449,8 +445,6 @@ public:
    bool RepositionPlayback(
       PlaybackSchedule &schedule, const Mixers &playbackMixers,
       size_t frames, size_t available ) override;
-
-   bool Looping( const PlaybackSchedule & ) const override;
 
 private:
    size_t mRemaining{ 0 };
