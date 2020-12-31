@@ -457,6 +457,19 @@ struct Iterator {
       bool hasSolo);
    void GetNextEvent();
 
+   // These may update future ending behavior of an iterator that is being used
+   // in another thread, so they use atomics to do that properly.
+   void SetNotesOffTime(double notesOffTime)
+   { mNotesOffTime.store(notesOffTime, std::memory_order_relaxed); }
+   void SetSkipping()
+   { mSkipping.store(true, std::memory_order_relaxed); }
+
+   // And, the corresponding accessors.
+   double GetNotesOffTime() const
+   { return mNotesOffTime.load(std::memory_order_relaxed); }
+   bool GetSkipping() const
+   { return mSkipping.load(std::memory_order_relaxed); }
+
    const PlaybackSchedule &mPlaybackSchedule;
    MIDIPlay &mMIDIPlay;
    Alg_iterator it{ nullptr, false };
@@ -468,6 +481,9 @@ struct Iterator {
 
    /// Is the next event a note-on?
    bool             mNextIsNoteOn = false;
+
+   std::atomic<double> mNotesOffTime{ std::numeric_limits<double>::infinity() };
+   std::atomic<bool> mSkipping{ false };
 
 private:
    /// Real time at which the next event should be output, measured in seconds.
@@ -752,7 +768,7 @@ void MIDIPlay::PrepareMidiIterator(bool send, double startTime, double offset)
 
 void Iterator::Prime(bool send, double startTime)
 {
-   GetNextEvent(); // prime the pump for FillOtherBuffers
+   GetNextEvent();
 
    // Start MIDI from current cursor position
    while (mNextEvent &&
@@ -818,6 +834,9 @@ bool MIDIPlay::StartPortMidiStream(double rate)
       mMidiOutputComplete = false;
       mMaxMidiTimestamp = 0;
       PrepareMidiIterator(true, mPlaybackSchedule.mT0, 0);
+      mIterator->SetNotesOffTime(mPlaybackSchedule.mT1);
+      if (mPlaybackSchedule.GetPolicy().Looping(mPlaybackSchedule))
+         mIterator->SetSkipping();
 
       // It is ok to call this now, but do not send timestamped midi
       // until after the first audio callback, which provides necessary
@@ -866,8 +885,7 @@ bool Iterator::OutputEvent(double pauseTime, bool midiStateOnly, bool hasSolo)
    // The special event gAllNotesOff means "end of playback, send
    // all notes off on all channels"
    if (mNextEvent == &gAllNotesOff) {
-      bool looping = mPlaybackSchedule.GetPolicy().Looping(mPlaybackSchedule);
-      mMIDIPlay.AllNotesOff(looping);
+      mMIDIPlay.AllNotesOff(GetSkipping());
       return true;
    }
 
@@ -986,22 +1004,21 @@ bool Iterator::OutputEvent(double pauseTime, bool midiStateOnly, bool hasSolo)
 
 void Iterator::GetNextEvent()
 {
+   auto limitTime = GetNotesOffTime();
    mNextEventTrack = NULL; // clear it just to be safe
    // now get the next event and the track from which it came
    double nextOffset;
-   auto midiLoopOffset = mMIDIPlay.MidiLoopOffset();
    mNextEvent = it.next(&mNextIsNoteOn,
       (void **) &mNextEventTrack,
-      &nextOffset, mPlaybackSchedule.mT1 + midiLoopOffset);
+      &nextOffset, limitTime);
 
-   mNextEventTime  = mPlaybackSchedule.mT1 + midiLoopOffset + 1;
    if (mNextEvent) {
       mNextEventTime = (mNextIsNoteOn ? mNextEvent->time :
-                              mNextEvent->get_end_time()) + nextOffset;;
+                              mNextEvent->get_end_time()) + nextOffset;
    }
-   if (mNextEventTime > (mPlaybackSchedule.mT1 + midiLoopOffset)){ // terminate playback at mT1
+   if (!mNextEvent || mNextEventTime > limitTime) {
       mNextEvent = &gAllNotesOff;
-      mNextEventTime = mPlaybackSchedule.mT1 + midiLoopOffset;
+      mNextEventTime = limitTime;
       mNextIsNoteOn = true; // do not look at duration
    }
 }
@@ -1034,7 +1051,11 @@ void MIDIPlay::FillOtherBuffers(
          if (mPlaybackSchedule.GetPolicy().Looping(mPlaybackSchedule)) {
             // jump back to beginning of loop
             ++mMidiLoopPasses;
-            PrepareMidiIterator(false, mPlaybackSchedule.mT0, MidiLoopOffset());
+            auto midiLoopOffset = MidiLoopOffset();
+            auto limit = mPlaybackSchedule.mT1 + midiLoopOffset;
+            PrepareMidiIterator(false, mPlaybackSchedule.mT0, midiLoopOffset);
+            mIterator->SetNotesOffTime(limit);
+            mIterator->SetSkipping();
          }
          else
             mIterator.reset();
