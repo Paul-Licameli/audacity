@@ -453,7 +453,8 @@ struct Iterator {
    bool OutputEvent(double pauseTime,
       /// when true, sendMidiState means send only updates, not note-on's,
       /// used to send state changes that precede the selected notes
-      bool sendMidiState);
+      bool sendMidiState,
+      bool hasSolo);
    void GetNextEvent();
 
    const PlaybackSchedule &mPlaybackSchedule;
@@ -563,19 +564,6 @@ struct MIDIPlay : AudioIOExt
     * This is used by PortMidi to synchronize midi time to audio samples
     */
    PmTimestamp MidiTime();
-
-   // Note: audio code solves the problem of soloing/muting tracks by scanning
-   // all playback tracks on every call to the audio buffer fill routine.
-   // We do the same for Midi, but it seems wasteful for at least two
-   // threads to be frequently polling to update status. This could be
-   // eliminated (also with a reduction in code I think) by updating mHasSolo
-   // each time a solo button is activated or deactivated. For now, I'm
-   // going to do this polling in the FillMidiBuffer routine to localize
-   // changes for midi to the midi code, but I'm declaring the variable
-   // here so possibly in the future, Audio code can use it too. -RBD
-   bool  mHasSolo; // is any playback solo button pressed?
-   bool SetHasSolo(bool hasSolo);
-   bool GetHasSolo() { return mHasSolo; }
 
    bool mUsingAlsa = false;
 
@@ -770,7 +758,7 @@ void Iterator::Prime(bool send, double startTime)
    while (mNextEvent &&
           GetNextEventTime() < startTime) {
       if (send)
-         OutputEvent(0, true);
+         OutputEvent(0, true, false);
       GetNextEvent();
    }
 }
@@ -855,7 +843,7 @@ double Iterator::UncorrectedMidiEventTime(double pauseTime)
    return time + pauseTime;
 }
 
-bool Iterator::OutputEvent(double pauseTime, bool midiStateOnly)
+bool Iterator::OutputEvent(double pauseTime, bool midiStateOnly, bool hasSolo)
 {
    int channel = (mNextEvent->chan) & 0xF; // must be in [0..15]
    int command = -1;
@@ -902,7 +890,7 @@ bool Iterator::OutputEvent(double pauseTime, bool midiStateOnly)
    // in the non-pause case.
    if (((mNextEventTrack->IsVisibleChan(channel)) &&
         // only play if note is not muted:
-        !((mMIDIPlay.mHasSolo || mNextEventTrack->GetMute()) &&
+        !((hasSolo || mNextEventTrack->GetMute()) &&
           !mNextEventTrack->GetSolo())) ||
        (mNextEvent->is_note() && !mNextIsNoteOn)) {
       // Note event
@@ -1018,14 +1006,6 @@ void Iterator::GetNextEvent()
    }
 }
 
-
-bool MIDIPlay::SetHasSolo(bool hasSolo)
-{
-   mHasSolo = hasSolo;
-   return mHasSolo;
-}
-
-
 void MIDIPlay::FillOtherBuffers(
    double rate, unsigned long pauseFrames, bool paused, bool hasSolo)
 {
@@ -1035,8 +1015,6 @@ void MIDIPlay::FillOtherBuffers(
    // If not paused, fill buffers.
    if (paused)
       return;
-
-   SetHasSolo(hasSolo);
 
    // If we compute until GetNextEventTime() > current audio time,
    // we would have a built-in compute-ahead of mAudioOutLatency, and
@@ -1052,7 +1030,7 @@ void MIDIPlay::FillOtherBuffers(
    while (mIterator &&
           mIterator->mNextEvent &&
           mIterator->UncorrectedMidiEventTime(PauseTime(rate, pauseFrames)) < time) {
-      if (mIterator->OutputEvent(PauseTime(rate, pauseFrames), false)) {
+      if (mIterator->OutputEvent(PauseTime(rate, pauseFrames), false, hasSolo)) {
          if (mPlaybackSchedule.GetPolicy().Looping(mPlaybackSchedule)) {
             // jump back to beginning of loop
             ++mMidiLoopPasses;
