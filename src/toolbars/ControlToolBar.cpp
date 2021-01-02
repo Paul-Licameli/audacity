@@ -492,7 +492,9 @@ void ControlToolBar::EnableDisableButtons()
       !(busy && !recording && !paused) &&
       !(playing && !paused)
    );
-   mStop->SetEnabled(canStop && (playing || recording));
+   bool enableStop = canStop && (playing || recording);
+   if (enableStop != mStop->IsEnabled())
+      mStop->SetEnabled(enableStop);
    mRewind->SetEnabled(paused || (!playing && !recording));
    mFF->SetEnabled(tracks && (paused || (!playing && !recording)));
 
@@ -651,11 +653,15 @@ void ControlToolBar::OnIdle(wxIdleEvent & event)
    else
       StopScrolling();
 
-   if ( projectAudioManager.Stopping() )
-      mStop->PushDown();
-   else
+   if ( projectAudioManager.Stopping() ) {
+      if (!mStop->IsDown())
+         mStop->PushDown();
+   }
+   else {
+      if (mStop->IsDown())
       // push-downs of the stop button are only momentary and always pop up now
-      mStop->PopUp();
+         mStop->PopUp();
+   }
    
    UpdateStatusBar();
    EnableDisableButtons();
