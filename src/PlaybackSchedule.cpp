@@ -101,8 +101,8 @@ PlaybackPolicy::GetPlaybackSlice(PlaybackSchedule &schedule, size_t available)
       auto extra =
          std::min( extraRealTime, deltat - realTimeRemaining );
       auto realTime = std::max( 0.0, realTimeRemaining + extra );
-      frames = realTime * mRate;
-      toProduce = std::max( 0.0, realTimeRemaining * mRate );
+      frames = realTime * mRate + 0.5;
+      toProduce = std::max( 0.0, realTimeRemaining * mRate + 0.5 );
       schedule.RealTimeAdvance( realTime );
    }
    else
