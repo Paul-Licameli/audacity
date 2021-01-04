@@ -36,21 +36,7 @@ PlaybackPolicy::SuggestedBufferTimes(PlaybackSchedule &)
 
 double PlaybackPolicy::NormalizeTrackTime( PlaybackSchedule &schedule )
 {
-   // Track time readout for the main thread
-
-   // dmazzoni: This function is needed for two reasons:
-   // One is for looped-play mode - this function makes sure that the
-   // position indicator keeps wrapping around.  The other reason is
-   // more subtle - it's because PortAudio can query the hardware for
-   // the current stream time, and this query is not always accurate.
-   // Sometimes it's a little behind or ahead, and so this function
-   // makes sure that at least we clip it to the selection.
-
-   // Limit the time between t0 and t1 if not scrubbing.
-   // Should the limiting be necessary in any play mode if there are no bugs?
-   double absoluteTime = schedule.LimitTrackTime();
-
-   return absoluteTime;
+   return schedule.GetTrackTime();
 }
 
 bool PlaybackPolicy::AllowSeek(PlaybackSchedule &)
@@ -159,6 +145,14 @@ const PlaybackPolicy &PlaybackSchedule::GetPolicy() const
 
 LoopingPlaybackPolicy::~LoopingPlaybackPolicy() = default;
 
+PlaybackPolicy::BufferTimes
+LoopingPlaybackPolicy::SuggestedBufferTimes(PlaybackSchedule &)
+{
+   // Shorter times than in the default policy so that responses to changes of
+   // seletion don't lag too much
+   return { 0.5, 0.5, 1.0 };
+}
+
 bool LoopingPlaybackPolicy::Done( PlaybackSchedule &, unsigned long )
 {
    return false;
@@ -169,7 +163,7 @@ LoopingPlaybackPolicy::GetPlaybackSlice(
    PlaybackSchedule &schedule, size_t available)
 {
    // How many samples to produce for each channel.
-   const auto realTimeRemaining = schedule.RealTimeRemaining();
+   const auto realTimeRemaining = std::max(0.0, schedule.RealTimeRemaining());
    auto frames = available;
    auto toProduce = frames;
    double deltat = frames / mRate;
@@ -486,8 +480,13 @@ void PlaybackSchedule::MessageProducer( SelectedRegionEvent &evt)
 
 void PlaybackSchedule::MessageConsumer()
 {
-   // This executes in the AudioThread and is the consumer
-
+   // This executes in the AudioThread
    auto data = mMessageChannel.Read();
-   // TODO use data
+   auto mine = std::tie(mT0, mT1);
+   auto theirs = std::tie(data.mT0, data.mT1);
+   if (mine != theirs) {
+      mine = theirs;
+      mWarpedLength = RealDuration(mT1);
+      RealTimeInit(mTimeQueue.GetLastTime());
+   }
 }

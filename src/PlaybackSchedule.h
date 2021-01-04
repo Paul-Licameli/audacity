@@ -314,6 +314,9 @@ struct AUDACITY_DLL_API PlaybackSchedule {
          PlaybackSchedule &schedule,
          PlaybackSlice slice, const AudioIOExts &exts );
 
+      //! Return the last time saved by Producer
+      double GetLastTime() const { return mLastTime; }
+
       //! @section called by PortAudio callback thread
 
       //! Find the track time value `nSamples` after the last consumed value and invoke callbacks
@@ -445,6 +448,8 @@ private:
 class LoopingPlaybackPolicy final : public PlaybackPolicy {
 public:
    ~LoopingPlaybackPolicy() override;
+
+   BufferTimes SuggestedBufferTimes(PlaybackSchedule &schedule) override;
 
    bool Done( PlaybackSchedule &schedule, unsigned long ) override;
    PlaybackSlice GetPlaybackSlice(
