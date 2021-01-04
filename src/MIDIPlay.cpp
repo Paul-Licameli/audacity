@@ -523,10 +523,12 @@ struct MIDIPlay : AudioIOExt
    void Prime(double newTrackTime) override;
 
    double AudioTime(double rate) const
-   { return mPlaybackSchedule.mT0 + mNumFrames / rate; }
+   { return mT0 + mNumFrames / rate; }
 
    const PlaybackSchedule &mPlaybackSchedule;
    NoteTrackConstArray mMidiPlaybackTracks;
+
+   double           mT0 = 0;
 
    /// Zero when the queue of events is inactive
    std::atomic<unsigned> mMidiOutputInProgress{ 0 };
@@ -872,8 +874,10 @@ MIDIPlay::~MIDIPlay()
 }
 
 bool MIDIPlay::StartOtherStream(const TransportTracks &tracks,
-   const PaStreamInfo* info, double, double rate)
+   const PaStreamInfo* info, double startTime, double rate)
 {
+   mT0 = startTime;
+
    mMidiPlaybackTracks.clear();
    for (const auto &pTrack : tracks.otherPlayableTracks) {
       pTrack->TypeSwitch( [&](const NoteTrack *pNoteTrack){
@@ -1422,7 +1426,7 @@ void MIDIPlay::ComputeOtherTimings(double rate, bool paused,
 
    if (mCallbackCount++ == 0) {
        // This is effectively mSystemMinusAudioTime when the buffer is empty:
-       mStartTime = SystemTime(mUsingAlsa) - mPlaybackSchedule.mT0;
+       mStartTime = SystemTime(mUsingAlsa) - mT0;
        // later, mStartTime - mSystemMinusAudioTime will tell us latency
    }
 
