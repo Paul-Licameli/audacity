@@ -434,11 +434,11 @@ struct Iterator {
             // casting away const, but allegro just uses the pointer as an opaque "cookie"
             (void*)t.get(), t->GetOffset());
       }
-      Prime(send, startTime);
+      Prime(send, startTime, endTime);
    }
    ~Iterator() { it.end(); }
 
-   void Prime(bool send, double startTime);
+   void Prime(bool send, double startTime, double endTime);
 
    double GetNextEventTime() const
    {
@@ -452,13 +452,18 @@ struct Iterator {
          return mNextEventTime;
    }
 
+   bool Unmuted(bool hasSolo) const;
+
+   void RequestNoteOff(bool midiStateOnly, bool hasSolo, bool reversed,
+      double *pThresholdTime = nullptr);
+
    // Returns true after outputting all-notes-off
    bool OutputEvent(double rawTime,
       /// when true, sendMidiState means send only updates, not note-on's,
       /// used to send state changes that precede the selected notes
       bool sendMidiState,
       bool hasSolo, bool reversed);
-   void GetNextEvent(
+   void GetNextEvent( bool priming,
       double limitTime = std::numeric_limits<double>::infinity());
 
    // These may update future ending behavior of an iterator that is being used
@@ -479,6 +484,9 @@ struct Iterator {
    Alg_iterator it;
    /// The next event to play (or null)
    Alg_event    *mNextEvent = nullptr;
+
+   // Used when scrubbing backwards:
+   std::vector<std::tuple<Alg_event *, NoteTrack *, bool>> mEvents;
 
    /// Track of next event
    NoteTrack        *mNextEventTrack = nullptr;
@@ -698,7 +706,7 @@ void MIDIPlay::Producer(std::pair<double, double> times, size_t frames)
    entry.frames = frames;
 
    if (reversed)
-      // New reversed slice can't share.
+      // New reversed slice can't share with the previous.
       mIterator.reset();
 
    // Share an iterator if we can with earlier slices.  Only in
@@ -716,6 +724,10 @@ void MIDIPlay::Producer(std::pair<double, double> times, size_t frames)
          mIterator.reset();
       }
    }
+
+   if (reversed)
+      // New reversed slice won't share with next, whether reversed or not.
+      mIterator.reset();
 
    // Record new, incomplete slice.
    mToProduce = mEntries.insert_after(mToProduce,
@@ -787,7 +799,8 @@ void MIDIPlay::Consumer(
                   auto rawTime = audioTime +
                      (entry.frames * (time - tlast) / duration) / rate;
                   pIterator->OutputEvent(rawTime, false, hasSolo, reversed);
-                  pIterator->GetNextEvent(limitTime);
+                  pIterator->RequestNoteOff(false, hasSolo, reversed);
+                  pIterator->GetNextEvent(false, limitTime);
                }
             }
          }
@@ -1013,16 +1026,29 @@ void MIDIPlay::PrepareMidiIterator(double startTime, double endTime)
    mSentControls = true;
 }
 
-void Iterator::Prime(bool send, double startTime)
+void Iterator::Prime(bool send, double startTime, double endTime)
 {
-   GetNextEvent();
+   GetNextEvent(true);
 
    // Start MIDI from current cursor position
    while (mNextEvent &&
           GetNextEventTime() < startTime) {
       if (send)
          OutputEvent(0, true, false, false);
-      GetNextEvent();
+      RequestNoteOff(true, false, false, &startTime);
+      GetNextEvent(true);
+   }
+
+   if (mReversed) {
+      // Use up the iterator now, caching the results, which should cover not
+      // more than one time queue grain
+      while (mNextEvent &&
+             GetNextEventTime() < endTime) {
+         mEvents.emplace_back(mNextEvent, mNextEventTrack, mNextIsNoteOn);
+         GetNextEvent(true);
+      }
+      // Now pop the last pushed event if any
+      GetNextEvent(false);
    }
 }
 
@@ -1092,6 +1118,31 @@ bool MIDIPlay::StartPortMidiStream(double rate)
    return (mLastPmError == pmNoError);
 }
 
+bool Iterator::Unmuted(bool hasSolo) const
+{
+   int channel = (mNextEvent->chan) & 0xF; // must be in [0..15]
+   return (mNextEventTrack->IsVisibleChan(channel)) &&
+     // only play if note is not muted:
+     !((hasSolo || mNextEventTrack->GetMute()) &&
+       !mNextEventTrack->GetSolo());
+}
+
+void Iterator::RequestNoteOff(bool midiStateOnly, bool hasSolo, bool reversed,
+   double *pThresholdTime)
+{
+   if (mNextEvent->is_note() && mNextIsNoteOn && Unmuted(hasSolo)) {
+      if (
+          /// In this case sending the note-off may be needed when scrubbing switches from
+          /// backwards to forwards in the middle of a note, and we are priming an iterator
+          (pThresholdTime && mNextEvent->get_end_time() >= *pThresholdTime)
+          ||
+          /// The usual case during play
+          (!midiStateOnly && !reversed)
+      )
+         it.request_note_off();
+   }
+}
+
 bool Iterator::OutputEvent(
    double rawTime, bool midiStateOnly, bool hasSolo, bool reversed)
 {
@@ -1135,10 +1186,7 @@ bool Iterator::OutputEvent(
    // and if playback resumes, the pending note-off events WILL also
    // be sent (but if that is a problem, there would also be a problem
    // in the non-pause case.
-   if (((mNextEventTrack->IsVisibleChan(channel)) &&
-        // only play if note is not muted:
-        !((hasSolo || mNextEventTrack->GetMute()) &&
-          !mNextEventTrack->GetSolo())) ||
+   if (Unmuted(hasSolo) ||
        (mNextEvent->is_note() && mNextIsNoteOn == reversed)) {
       // Note event
       if (mNextEvent->is_note() && !midiStateOnly) {
@@ -1150,9 +1198,6 @@ bool Iterator::OutputEvent(
             data2 += offset; // offset comes from per-track slider
             // clip velocity to insure a legal note-on value
             data2 = (data2 < 1 ? 1 : (data2 > 127 ? 127 : data2));
-            // since we are going to play this note, we need to get a note_off
-            if (!reversed)
-               it.request_note_off();
 
 #ifdef AUDIO_IO_GB_MIDI_WORKAROUND
             mMIDIPlay.mPendingNotesOff.push_back(std::make_pair(channel, data1));
@@ -1232,20 +1277,31 @@ bool Iterator::OutputEvent(
    return false;
 }
 
-void Iterator::GetNextEvent(double limitTime)
+void Iterator::GetNextEvent(bool priming, double limitTime)
 {
-   mNextEventTrack = NULL; // clear it just to be safe
+   mNextEventTrack = nullptr; // clear it just to be safe
    // now get the next event and the track from which it came
-   double nextOffset;
-   mNextEvent = it.next(&mNextIsNoteOn,
-      (void **) &mNextEventTrack,
-      &nextOffset,
-      // Passing zero means Allegro does not limit the event time
-      0);
+   if (!priming && mReversed) {
+      if (mEvents.empty())
+         mNextEvent = nullptr;
+      else {
+         std::tie(mNextEvent, mNextEventTrack, mNextIsNoteOn) = mEvents.back();
+         mEvents.pop_back();
+      }
+   }
+   else {
+      double nextOffset;
+      mNextEvent = it.next(&mNextIsNoteOn,
+         (void **) &mNextEventTrack,
+         &nextOffset,
+         // Passing zero means Allegro does not limit the event time
+         0);
+      wxASSERT(nextOffset == 0);
+   }
 
    if (mNextEvent) {
       mNextEventTime = (mNextIsNoteOn ? mNextEvent->time :
-                              mNextEvent->get_end_time()) + nextOffset;
+                              mNextEvent->get_end_time());
    }
 
    if (mNextEvent && mNextEventTime < limitTime)
