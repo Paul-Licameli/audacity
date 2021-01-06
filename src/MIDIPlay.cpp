@@ -414,9 +414,26 @@ Alg_update gAllNotesOff; // special event for loop ending
 
 struct Iterator {
    Iterator(
-      const PlaybackSchedule &schedule, MIDIPlay &midiPlay )
+      const PlaybackSchedule &schedule, MIDIPlay &midiPlay,
+      NoteTrackConstArray &midiPlaybackTracks,
+      double startTime, double offset, bool send )
       : mPlaybackSchedule{ schedule }, mMIDIPlay{ midiPlay }
-   {}
+   {
+      // instead of initializing with an Alg_seq, we use begin_seq()
+      // below to add ALL Alg_seq's.
+      // Iterator not yet initialized, must add each track...
+      for (auto &t : midiPlaybackTracks) {
+         Alg_seq_ptr seq = &t->GetSeq();
+         // mark sequence tracks as "in use" since we're handing this
+         // off to another thread and want to make sure nothing happens
+         // to the data until playback finishes. This is just a sanity check.
+         seq->set_in_use(true);
+         it.begin_seq(seq,
+            // casting away const, but allegro just uses the pointer as an opaque "cookie"
+            (void*)t.get(), t->GetOffset() + offset);
+      }
+      Prime(send, startTime + offset);
+   }
    ~Iterator() { it.end(); }
 
    void Prime(bool send, double startTime);
@@ -536,7 +553,7 @@ struct MIDIPlay : AudioIOExt
    std::vector< std::pair< int, int > > mPendingNotesOff;
 #endif
 
-   void PrepareMidiIterator(bool send, double offset);
+   void PrepareMidiIterator(bool send, double startTime, double offset);
    bool StartPortMidiStream(double rate);
    double PauseTime(double rate, unsigned long pauseFrames);
    void AllNotesOff(bool looping = false);
@@ -739,27 +756,10 @@ PmTimestamp MidiTime(void *pInfo)
 // Sends MIDI control changes up to the starting point mT0
 // if send is true. Output is delayed by offset to facilitate
 // looping (each iteration is delayed more).
-void MIDIPlay::PrepareMidiIterator(bool send, double offset)
+void MIDIPlay::PrepareMidiIterator(bool send, double startTime, double offset)
 {
-   int i;
-   int nTracks = mMidiPlaybackTracks.size();
-   // instead of initializing with an Alg_seq, we use begin_seq()
-   // below to add ALL Alg_seq's.
-   mIterator =
-      std::make_shared<Iterator>(mPlaybackSchedule, *this);
-   // Iterator not yet initialized, must add each track...
-   for (i = 0; i < nTracks; i++) {
-      const auto t = mMidiPlaybackTracks[i].get();
-      Alg_seq_ptr seq = &t->GetSeq();
-      // mark sequence tracks as "in use" since we're handing this
-      // off to another thread and want to make sure nothing happens
-      // to the data until playback finishes. This is just a sanity check.
-      seq->set_in_use(true);
-      mIterator->it.begin_seq(seq,
-         // casting away const, but allegro just uses the pointer as an opaque "cookie"
-         (void*)t, t->GetOffset() + offset);
-   }
-   mIterator->Prime(send, mPlaybackSchedule.mT0 + offset);
+   mIterator = std::make_shared<Iterator>(mPlaybackSchedule, *this,
+      mMidiPlaybackTracks, startTime, offset, send);
 }
 
 void Iterator::Prime(bool send, double startTime)
@@ -829,7 +829,7 @@ bool MIDIPlay::StartPortMidiStream(double rate)
       mMidiLoopPasses = 0;
       mMidiOutputComplete = false;
       mMaxMidiTimestamp = 0;
-      PrepareMidiIterator(true, 0);
+      PrepareMidiIterator(true, mPlaybackSchedule.mT0, 0);
 
       // It is ok to call this now, but do not send timestamped midi
       // until after the first audio callback, which provides necessary
@@ -1056,7 +1056,7 @@ void MIDIPlay::FillOtherBuffers(
          if (mPlaybackSchedule.GetPolicy().Looping(mPlaybackSchedule)) {
             // jump back to beginning of loop
             ++mMidiLoopPasses;
-            PrepareMidiIterator(false, MidiLoopOffset());
+            PrepareMidiIterator(false, mPlaybackSchedule.mT0, MidiLoopOffset());
          }
          else
             mIterator.reset();
