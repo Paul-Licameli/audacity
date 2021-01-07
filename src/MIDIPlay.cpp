@@ -358,6 +358,7 @@ Time (in seconds, = total_sample_count / sample_rate)
 #include "../lib-src/header-substitutes/allegro.h"
 #include "widgets/AudacityMessageBox.h"
 
+#include <condition_variable>
 #include <forward_list>
 
    #define ROUND(x) (int) ((x)+0.5)
@@ -502,6 +503,9 @@ struct MIDIPlay : AudioIOExt
    explicit MIDIPlay(const PlaybackSchedule &schedule);
    ~MIDIPlay() override;
 
+   void ForceShutdown(unsigned bit);
+   bool Shutdown(unsigned bit);
+
    void Producer(std::pair<double, double> newTrackTimes,
       size_t nFrames) override;
 
@@ -516,11 +520,15 @@ struct MIDIPlay : AudioIOExt
    const PlaybackSchedule &mPlaybackSchedule;
    NoteTrackConstArray mMidiPlaybackTracks;
 
-   /// True when output reaches mT1
-   bool             mMidiOutputComplete{ true };
+   /// Zero when the queue of events is inactive
+   std::atomic<unsigned> mMidiOutputInProgress{ 0 };
 
-   /// mMidiStreamActive tells when mMidiStream is open for output
-   bool             mMidiStreamActive = false;
+   // Use a cv when changing the above
+   std::condition_variable mMidiOutputCompleteCV;
+   std::mutex mMidiOutputCompleteMutex;
+
+   /// mMidiStreamActive tells when mMidiStream is open for output and not in process of shutdown
+   std::atomic<bool> mMidiStreamActive{ false };
 
    PmStream        *mMidiStream = nullptr;
    int              mLastPmError;
@@ -625,12 +633,44 @@ struct MIDIPlay : AudioIOExt
       const PaStreamInfo* info, double startTime, double rate) override;
    void AbortOtherStream() override;
    void StopOtherStream() override;
+   void DestroyOtherStream() override;
 
    void ClearQueue();
 };
 
+enum : unsigned { ConsumerBit = 1u, ProducerBit = 2u };
+
+void MIDIPlay::ForceShutdown(unsigned bit)
+{
+   // May unblock the waiting main thread
+   std::unique_lock<std::mutex> lock{ mMidiOutputCompleteMutex };
+   auto oldValue = mMidiOutputInProgress.fetch_and(
+      ~bit, std::memory_order_relaxed);
+   if ((oldValue & bit))
+      // Kick the main thread on bit transition
+      mMidiOutputCompleteCV.notify_one();
+}
+
+bool MIDIPlay::Shutdown(unsigned bit)
+{
+   if (!mMidiStreamActive.load(std::memory_order_relaxed)) {
+      ForceShutdown(bit);
+      return true;
+   }
+   else
+      return false;
+}
+
 void MIDIPlay::Producer(std::pair<double, double> times, size_t frames)
 {
+   // If we get the shut-down signal from the main thread, don't produce more,
+   // and let the main thread destroy remaining list items
+   if (Shutdown(ProducerBit))
+      return;
+
+   if (frames == 0)
+      return;
+
    // Clean up for the consumer, so it can avoid memory management in the
    // low-latency thread
    auto nConsumed = mEntriesConsumed.load(std::memory_order_acquire);
@@ -690,6 +730,11 @@ void MIDIPlay::Consumer(
 {
    // This function may be visited multiple times during one invocation of
    // the Portaudio callback.
+
+   // If we get the shut-down signal from the main thread, don't send more
+   // events
+   if (Shutdown(ConsumerBit))
+      return;
 
    // See whether there is new production, after producer's side-effects
    auto nProduced = mEntriesProduced.load(std::memory_order_acquire);
@@ -871,15 +916,39 @@ void MIDIPlay::AbortOtherStream()
 
 void MIDIPlay::StopOtherStream()
 {
-   if (mMidiStream && mMidiStreamActive) {
+   if (mMidiStream && mMidiStreamActive.load(std::memory_order_relaxed)) {
       /* Stop Midi playback */
-      mMidiStreamActive = false;
+      mMidiStreamActive.store(false, std::memory_order_relaxed);
 
-      mMidiOutputComplete = true;
+      // Detect consumer shut-down
+      {
+         std::unique_lock<std::mutex> lock{ mMidiOutputCompleteMutex };
+         mMidiOutputCompleteCV.wait(lock, [this]{
+            return !(mMidiOutputInProgress.load(std::memory_order_relaxed)
+                     & ConsumerBit);
+         });
+      }
+
+      // Stop notes promptly now
+      AllNotesOff();
+   }
+}
+
+void MIDIPlay::DestroyOtherStream()
+{
+   if (mMidiStream) {
+      // Wait for producer shut-down
+      {
+         std::unique_lock<std::mutex> lock{ mMidiOutputCompleteMutex };
+         mMidiOutputCompleteCV.wait(lock, [this]{
+            return !(mMidiOutputInProgress.load(std::memory_order_relaxed)
+                     & ProducerBit);
+         });
+      }
+
+      /* Now it's safe to destroy the queue in AbortOtherStream() */
 
       // now we can assume "ownership" of the mMidiStream
-      // if output in progress, send all off, etc.
-      AllNotesOff();
       // AllNotesOff() should be sufficient to stop everything, but
       // in Linux, if you Pm_Close() immediately, it looks like
       // messages are dropped. ALSA then seems to send All Sound Off
@@ -921,7 +990,11 @@ void MIDIPlay::ClearQueue()
 
 bool MIDIPlay::IsOtherStreamActive() const
 {
-   return ( mMidiStreamActive && !mMidiOutputComplete );
+   // Called by main thread but the answer is affected by other threads.
+   // Main thread timer event detects the transition to false and then finishes
+   // playback or recording.
+   return ( mMidiStreamActive.load(std::memory_order_relaxed) &&
+           mMidiOutputInProgress.load(std::memory_order_relaxed) );
 }
 
 PmTimestamp MidiTime(void *pInfo)
@@ -1004,9 +1077,10 @@ bool MIDIPlay::StartPortMidiStream(double rate)
                                 this,
                                 MIDI_MINIMAL_LATENCY_MS);
    if (mLastPmError == pmNoError) {
-      mMidiStreamActive = true;
+      mMidiStreamActive.store(true, std::memory_order_relaxed);
       mMidiPaused = false;
-      mMidiOutputComplete = false;
+      mMidiOutputInProgress.store(
+         ProducerBit | ConsumerBit, std::memory_order_relaxed);
       mMaxMidiTimestamp = 0;
 
       // It is ok to call this now, but do not send timestamped midi
@@ -1370,7 +1444,10 @@ unsigned MIDIPlay::CountOtherSoloTracks() const
 
 void MIDIPlay::SignalOtherCompletion()
 {
-   mMidiOutputComplete = true;
+   // We're in the consumer's thread.  Shut down for consumer
+   ForceShutdown(ConsumerBit);
+   // Cause producer shutdown
+   mMidiStreamActive.store(false, std::memory_order_relaxed);
 }
 
 }

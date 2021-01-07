@@ -1283,6 +1283,10 @@ void AudioIO::StopStream()
       RealtimeEffectManager::Get().RealtimeFinalize();
    }
 
+   ForEachExt([](auto &ext){
+      ext.StopOtherStream();
+   });
+
    //
    // We got here in one of two ways:
    //
@@ -1340,10 +1344,6 @@ void AudioIO::StopStream()
       mPortStreamV19 = NULL;
    }
 
-   ForEachExt([](auto &ext){
-      ext.StopOtherStream();
-   });
-
    auto pListener = GetListener();
    
    // If there's no token, we were just monitoring, so we can
@@ -1367,6 +1367,10 @@ void AudioIO::StopStream()
       // Everything is taken care of.  Now, just free all the resources
       // we allocated in StartStream()
       //
+
+      ForEachExt([](auto &ext){
+         ext.DestroyOtherStream();
+      });
 
       if (mPlaybackTracks.size() > 0)
       {
@@ -1690,7 +1694,9 @@ void AudioIO::FillPlayBuffers()
    // full mMaxPlaybackSecsToCopy.  This improves performance
    // by not always trying to process tiny chunks, eating the
    // CPU unnecessarily.
-   if (nAvailable < mPlaybackSamplesToCopy)
+   // An exception is when we must force one loop pass.
+   if (!mAudioThreadShouldCallTrackBufferExchangeOnce &&
+       nAvailable < mPlaybackSamplesToCopy)
       return;
 
    auto &policy = mPlaybackSchedule.GetPolicy();

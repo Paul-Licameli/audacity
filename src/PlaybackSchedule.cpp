@@ -410,8 +410,7 @@ void PlaybackSchedule::TimeQueue::Producer(
       remainder = 0;
       space = TimeQueueGrainSize;
    }
-   if ( frames > 0 )
-      ProduceExt(exts, {time, time}, frames);
+   ProduceExt(exts, {time, time}, frames);
 
    mLastTime = time;
    mTail.mRemainder = remainder + frames;

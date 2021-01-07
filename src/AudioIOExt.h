@@ -66,5 +66,6 @@ public:
       const PaStreamInfo* info, double startTime, double rate) = 0;
    virtual void AbortOtherStream() = 0;
    virtual void StopOtherStream() = 0;
+   virtual void DestroyOtherStream() = 0;
 };
 #endif
