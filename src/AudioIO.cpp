@@ -1778,6 +1778,7 @@ int AudioIO::StartStream(const TransportTracks &tracks,
       // playback, since our ring buffers have been primed already with 4 sec
       // of audio, but then we might be scrubbing, so do it.
       mAudioThreadFillBuffersLoopRunning = true;
+      mForceFadeOut.store(false, std::memory_order_relaxed);
 
       // Now start the PortAudio stream!
       PaError err;
@@ -2186,10 +2187,10 @@ void AudioIO::StopStream()
    {
       // PortAudio callback can use the information that we are stopping to fade
       // out the audio.  Give PortAudio callback a chance to do so.
-      mAudioThreadFillBuffersLoopRunning = false;
+      mForceFadeOut.store(true, std::memory_order_relaxed);
       auto latency = static_cast<long>(AudioIOLatencyDuration.Read());
       // If we can gracefully fade out in 200ms, with the faded-out play buffers making it through
-      // the sound card, then do so.  If we can't, don't wait around.  Just stop quickly and accept 
+      // the sound card, then do so.  If we can't, don't wait around.  Just stop quickly and accept
       // there will be a click.
       if( mbMicroFades  && (latency < 150 ))
          wxMilliSleep( latency + 50);
@@ -3766,7 +3767,7 @@ void AudioIoCallback::AddToOutputChannel( unsigned int chan,
    const auto numPlaybackChannels = mNumPlaybackChannels;
 
    float gain = vt->GetChannelGain(chan);
-   if (drop || !mAudioThreadFillBuffersLoopRunning || mPaused)
+   if (drop || mForceFadeOut.load(std::memory_order_relaxed) || mPaused)
       gain = 0.0;
 
    // Output volume emulation: possibly copy meter samples, then
