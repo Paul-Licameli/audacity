@@ -263,7 +263,11 @@ std::pair<double, double> CutPreviewPlaybackPolicy::AdvancedTrackTime(
    if (mReversed)
       realDuration *= -1;
    const double time = schedule.SolveWarpedLength(trackTime, realDuration);
-   return {time, time};
+
+   if ( mReversed ? time <= mEnd : time >= mEnd )
+      return {mEnd, std::numeric_limits<double>::infinity()};
+   else
+      return {time, time};
 }
 
 bool CutPreviewPlaybackPolicy::RepositionPlayback( PlaybackSchedule &,
