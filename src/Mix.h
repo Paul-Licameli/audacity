@@ -159,16 +159,22 @@ class AUDACITY_DLL_API Mixer {
    /// Retrieve one of the non-interleaved buffers
    constSamplePtr GetBuffer(int channel);
 
+   /// Retrieve one of the pre-mixed per-track buffers
+   /// (post-envelope, post-resampling, post-gain)
+   const float *GetTrackBuffer(size_t track);
+
  private:
 
    void Clear();
-   size_t MixSameRate(int *channelFlags, WaveTrackCache &cache,
-                           sampleCount *pos);
+   size_t MixSameRate(int *channelFlags,
+      WaveTrackCache &cache, Floats &floatBuffer,
+      sampleCount *pos);
 
-   size_t MixVariableRates(int *channelFlags, WaveTrackCache &cache,
-                                sampleCount *pos, float *queue,
-                                int *queueStart, int *queueLen,
-                                Resample * pResample);
+   size_t MixVariableRates(int *channelFlags,
+      WaveTrackCache &cache, Floats &floatBuffer,
+      sampleCount *pos, float *queue,
+      int *queueStart, int *queueLen,
+      Resample * pResample);
 
    void MakeResamplers();
 
@@ -204,7 +210,7 @@ class AUDACITY_DLL_API Mixer {
    const sampleFormat mFormat;
    ArrayOf<SampleBuffer> mBuffer;
    ArrayOf<Floats>  mTemp;
-   Floats           mFloatBuffer;
+   ArrayOf<Floats>  mFloatBuffers;
    const double     mRate;
    double           mSpeed;
    bool             mHighQuality;
