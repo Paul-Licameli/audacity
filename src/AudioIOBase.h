@@ -14,6 +14,8 @@ Paul Licameli split from AudioIO.h
 
 
 
+#include "widgets/MeterPanelBase.h"
+
 #include <cfloat>
 #include <functional>
 #include <memory>
@@ -86,7 +88,10 @@ class AUDACITY_DLL_API AudioIOBase /* not final */
 public:
    static AudioIOBase *Get();
 
+   AudioIOBase();
    virtual ~AudioIOBase();
+   AudioIOBase(const AudioIOBase &) = delete;
+   AudioIOBase& operator=(const AudioIOBase &) = delete;
 
    void SetCaptureMeter(AudacityProject *project, MeterPanelBase *meter);
    void SetPlaybackMeter(AudacityProject *project, MeterPanelBase *meter);
