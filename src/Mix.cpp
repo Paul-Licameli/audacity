@@ -278,12 +278,12 @@ Mixer::Mixer(const WaveTrackConstArray &inputTracks,
    , mBufferSize{ outBufferSize }
    , mInterleavedBufferSize{
       mInterleaved ? mBufferSize * mNumChannels : mBufferSize }
-   , mEnvValues( std::max(mQueueMaxLen, mInterleavedBufferSize) )
+   , mEnvValues( std::max(mQueueMaxLen, mBufferSize) )
    , mFormat{ outFormat }
    , mBuffer( mNumBuffers )
-   , mTemp( mNumBuffers )
+   , mTemp( mNumChannels )
    // PRL:  Bug2536: see other comments below
-   , mFloatBuffer( mInterleavedBufferSize + 1 )
+   , mFloatBuffer( mBufferSize + 1 )
    , mRate{ outRate }
    , mSpeed{ 1.0 }
    , mHighQuality{ highQuality }
@@ -301,10 +301,10 @@ Mixer::Mixer(const WaveTrackConstArray &inputTracks,
    else
       mMixerSpec = NULL;
 
-   for (unsigned int c = 0; c < mNumBuffers; c++) {
+   for (unsigned int c = 0; c < mNumBuffers; c++)
       mBuffer[c].Allocate(mInterleavedBufferSize, mFormat);
+   for (unsigned int c = 0; c < mNumChannels; c++)
       mTemp[c].reinit(mInterleavedBufferSize);
-   }
 
    for (size_t i = 0; i<mNumInputTracks; i++) {
       double factor = (mRate / mInputTrack[i].GetTrack()->GetRate());
@@ -345,9 +345,8 @@ void Mixer::MakeResamplers()
 
 void Mixer::Clear()
 {
-   for (unsigned int c = 0; c < mNumBuffers; c++) {
+   for (unsigned int c = 0; c < mNumChannels; c++)
       memset(mTemp[c].get(), 0, mInterleavedBufferSize * sizeof(float));
-   }
 }
 
 namespace {
@@ -356,29 +355,16 @@ namespace {
 // in dests (except those for which corresponding channelFlags is false),
 // weighting by corresponding value in gains
 void MixBuffers(unsigned numChannels, int *channelFlags, float *gains,
-    const float *src, Floats *dests,
-    int len, bool interleaved)
+    const float *src, Floats *dests, int len)
 {
    for (unsigned int c = 0; c < numChannels; c++) {
       if (!channelFlags[c])
          continue;
 
-      float *dest;
-      unsigned skip;
-
-      if (interleaved) {
-         dest = dests[0].get() + c;
-         skip = numChannels;
-      } else {
-         dest = dests[c].get();
-         skip = 1;
-      }
-
+      float *dest = dests[c].get();
       float gain = gains[c];
-      for (int j = 0; j < len; j++) {
-         *dest += src[j] * gain;   // the actual mixing process
-         dest += skip;
-      }
+      for (int j = 0; j < len; j++)
+         *dest++ += src[j] * gain;   // the actual mixing process
    }
 }
 
@@ -550,8 +536,7 @@ size_t Mixer::MixVariableRates(int *channelFlags, WaveTrackCache &cache,
               mGains.get(),
               mFloatBuffer.get(),
               mTemp.get(),
-              out,
-              mInterleaved);
+              out);
 
    return out;
 }
@@ -613,7 +598,7 @@ size_t Mixer::MixSameRate(int *channelFlags, WaveTrackCache &cache,
          mGains[c] = 1.0;
 
    MixBuffers(mNumChannels, channelFlags, mGains.get(),
-              mFloatBuffer.get(), mTemp.get(), slen, mInterleaved);
+              mFloatBuffer.get(), mTemp.get(), slen);
 
    return slen;
 }
@@ -678,18 +663,18 @@ size_t Mixer::Process(size_t maxToProcess)
    }
    if(mInterleaved) {
       for(size_t c=0; c<mNumChannels; c++) {
-         CopySamples((constSamplePtr)(mTemp[0].get() + c),
+         CopySamples((constSamplePtr)mTemp[c].get(),
             floatSample,
             mBuffer[0].ptr() + (c * SAMPLE_SIZE(mFormat)),
             mFormat,
             maxOut,
             mHighQuality ? gHighQualityDither : gLowQualityDither,
-            mNumChannels,
+            1,
             mNumChannels);
       }
    }
    else {
-      for(size_t c=0; c<mNumBuffers; c++) {
+      for(size_t c=0; c<mNumChannels; c++) {
          CopySamples((constSamplePtr)mTemp[c].get(),
             floatSample,
             mBuffer[c].ptr(),
