@@ -241,7 +241,7 @@ std::unique_ptr<Mixer> ExportPlugin::CreateMixer(const TrackList &tracks,
                   // Throw, to stop exporting, if read fails:
                   true,
                   Mixer::WarpOptions{tracks},
-                  startTime, stopTime,
+                  Mixer::Times{ startTime, stopTime },
                   numOutChannels, outBufferSize, outInterleaved,
                   outRate, outFormat,
                   true, mixerSpec);

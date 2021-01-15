@@ -181,8 +181,7 @@ bool EffectStereoToMono::ProcessOne(sampleCount & curTime, sampleCount totalTime
    Mixer mixer(tracks,
                true,                // Throw to abort mix-and-render if read fails:
                Mixer::WarpOptions{*inputTracks()},
-               start,
-               end,
+               Mixer::Times{ start, end },
                1,
                idealBlockLen,
                false,               // Not interleaved

@@ -93,13 +93,35 @@ class AUDACITY_DLL_API Mixer {
        double minSpeed, maxSpeed;
     };
 
+   //! Bundles some parameters for the constructor of Mixer
+   struct Times {
+      double mT0; //!< Start of range of track times that may be fetched
+      double mT1; //!< End of range of track times; maybe less than start, for backwards play
+      double mTime; //!< Where to begin play; maybe not the same as mT0
+
+      //! Start, end, and explicit beginning point
+      explicit Times( double t0, double t1, double time )
+         : mT0{ t0 }, mT1{ t1 }, mTime{ time }
+      {}
+      //! Start and end, and beginning at the start
+      explicit Times( double t0, double t1 )
+         : Times{ t0, t1, t0 }
+      {}
+      //! Direction and beginning time; unbounded range
+      explicit Times( bool forward, double time )
+         : mT0{ std::numeric_limits<double>::max() * (forward ? -1 : 1) }
+         , mT1{ -mT0 }
+         , mTime{ time }
+      {}
+   };
+
     //
    // Constructor / Destructor
    //
 
    Mixer(const WaveTrackConstArray &inputTracks, bool mayThrow,
          const WarpOptions &warpOptions,
-         double startTime, double stopTime,
+         Times times,
          unsigned numOutChannels, size_t outBufferSize, bool outInterleaved,
          double outRate, sampleFormat outFormat,
          bool highQuality = true, MixerSpec *mixerSpec = nullptr,

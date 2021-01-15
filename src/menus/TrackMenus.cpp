@@ -997,8 +997,10 @@ void OnScoreAlign(const CommandContext &context)
          waveTracks,              // const WaveTrackConstArray &inputTracks
          false, // mayThrow -- is this right?
          Mixer::WarpOptions{ *tracks },
-         0.0,                     // double startTime
-         endTime,                 // double stopTime
+         Mixer::Times{
+            0.0,                     // double startTime
+            endTime                 // double stopTime
+         },
          2,                       // int numOutChannels
          44100u,                   // size_t outBufferSize
          true,                    // bool outInterleaved

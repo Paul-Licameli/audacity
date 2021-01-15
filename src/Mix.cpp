@@ -148,7 +148,7 @@ void MixAndRender(TrackList *tracks, WaveTrackFactory *trackFactory,
       // Throw to abort mix-and-render if read fails:
       true,
       Mixer::WarpOptions{*tracks},
-      startTime, endTime, mono ? 1 : 2, maxBlockLen, false,
+      Mixer::Times{ startTime, endTime }, mono ? 1 : 2, maxBlockLen, false,
       rate, format);
 
    ::wxSafeYield();
@@ -237,7 +237,7 @@ Mixer::WarpOptions::WarpOptions(double min, double max)
 Mixer::Mixer(const WaveTrackConstArray &inputTracks,
              bool mayThrow,
              const WarpOptions &warpOptions,
-             double startTime, double stopTime,
+             Times times,
              unsigned numOutChannels, size_t outBufferSize, bool outInterleaved,
              double outRate, sampleFormat outFormat,
              bool highQuality, MixerSpec *mixerSpec, bool applyTrackGains)
@@ -250,9 +250,9 @@ Mixer::Mixer(const WaveTrackConstArray &inputTracks,
    , mSamplePos( mNumInputTracks )
 
    , mApplyTrackGains{ applyTrackGains }
-   , mT0{ startTime }
-   , mT1{ stopTime }
-   , mTime{ startTime }
+   , mT0{ times.mT0 }
+   , mT1{ times.mT1 }
+   , mTime{ times.mTime }
 
    , mResample( mNumInputTracks )
 
@@ -293,7 +293,7 @@ Mixer::Mixer(const WaveTrackConstArray &inputTracks,
 {
    for(size_t i=0; i<mNumInputTracks; i++) {
       mInputTrack[i].SetTrack(inputTracks[i]);
-      mSamplePos[i] = inputTracks[i]->TimeToLongSamples(startTime);
+      mSamplePos[i] = inputTracks[i]->TimeToLongSamples(mTime);
    }
    if( mixerSpec && mixerSpec->GetNumChannels() == mNumChannels &&
          mixerSpec->GetNumTracks() == mNumInputTracks )
