@@ -628,7 +628,7 @@ size_t Mixer::Process(size_t maxToProcess)
    decltype(Process(0)) maxOut = 0;
    ArrayOf<int> channelFlags{ mNumChannels };
 
-   mMaxOut = maxToProcess;
+   mMaxOut = std::min(mBufferSize, maxToProcess);
 
    Clear();
    for(size_t i=0; i<mNumInputTracks; i++) {

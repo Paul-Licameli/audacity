@@ -137,6 +137,7 @@ class AUDACITY_DLL_API Mixer {
    /// a buffer which can be retrieved by calling GetBuffer().
    /// Returns number of output samples, or 0, if there are no
    /// more samples that must be processed.
+   /// Return value never exceeds outBufferSize value given to the constructor
    size_t Process(size_t maxSamples);
 
    /// Reposition processing to absolute time next time
