@@ -1731,7 +1731,7 @@ void AdornedRulerPanel::StartQPPlay(bool looped, bool cutPreview)
       Refresh();
 
       projectAudioManager.PlayPlayRegion((SelectedRegion(start, end)),
-                          options, mode,
+                          std::move(options), mode,
                           false,
                           true);
 

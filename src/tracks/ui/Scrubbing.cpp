@@ -471,7 +471,7 @@ bool Scrubber::MaybeStartScrubbing(wxCoord xx)
             options.policyFactory = ScrubbingPlaybackPolicyFactory(mOptions);
             mScrubToken =
                projectAudioManager.PlayPlayRegion(
-                  SelectedRegion(time0, time1), options,
+                  SelectedRegion(time0, time1), std::move(options),
                   PlayMode::normalPlay, backwards);
             if (mScrubToken <= 0) {
                // Bug1627 (part of it):
@@ -574,7 +574,7 @@ bool Scrubber::StartSpeedPlay(double speed, double time0, double time1)
    mScrubToken =
       // Reduce time by 'stopTolerance' fudge factor, so that the Play will stop.
       projectAudioManager.PlayPlayRegion(
-         SelectedRegion(time0, time1-stopTolerance), options,
+         SelectedRegion(time0, time1-stopTolerance), std::move(options),
          PlayMode::normalPlay, backwards);
 
    if (mScrubToken >= 0) {
@@ -640,7 +640,7 @@ bool Scrubber::StartKeyboardScrubbing(double time0, bool backwards)
    mScrubToken =
       ProjectAudioManager::Get(*mProject).PlayPlayRegion(
          SelectedRegion(time0, backwards ? mOptions.minTime : mOptions.maxTime),
-         options,
+         std::move(options),
          PlayMode::normalPlay,
          backwards);
 

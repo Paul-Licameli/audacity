@@ -285,7 +285,7 @@ bool CutPreviewPlaybackPolicy::RepositionPlayback( PlaybackSchedule &,
 }
 
 int ProjectAudioManager::PlayPlayRegion(const SelectedRegion &selectedRegion,
-                                   const AudioIOStartStreamOptions &options,
+                                   AudioIOStartStreamOptions &&options,
                                    PlayMode mode,
                                    bool backwards, /* = false */
                                    bool playWhiteSpace /* = false */)
@@ -414,12 +414,12 @@ int ProjectAudioManager::PlayPlayRegion(const SelectedRegion &selectedRegion,
             };
          token = gAudioIO->StartStream(
             GetAllPlaybackTracks(TrackList::Get(*p), true, nonWaveToo),
-            tcp0, tcp1, myOptions);
+            tcp0, tcp1, std::move(myOptions));
       }
       else {
          token = gAudioIO->StartStream(
             GetAllPlaybackTracks( tracks, false, nonWaveToo ),
-            t0, t1, options);
+            t0, t1, std::move(options));
       }
       if (token != 0) {
          success = true;
@@ -478,7 +478,7 @@ void ProjectAudioManager::PlayCurrentRegion(bool looped /* = false */,
          : looped ? PlayMode::loopedPlay
          : PlayMode::normalPlay;
       PlayPlayRegion(SelectedRegion(playRegion.GetStart(), playRegion.GetEnd()),
-                     options,
+                     std::move(options),
                      mode);
    }
 }
@@ -729,7 +729,7 @@ void ProjectAudioManager::OnRecord(bool altAppearance)
       if (rateOfSelected != RATE_NOT_SELECTED)
          options.rate = rateOfSelected;
 
-      DoRecord(*p, transportTracks, t0, t1, altAppearance, options);
+      DoRecord(*p, transportTracks, t0, t1, altAppearance, std::move(options));
    }
 }
 
@@ -750,7 +750,7 @@ bool ProjectAudioManager::DoRecord(AudacityProject &project,
    const TransportTracks &tracks,
    double t0, double t1,
    bool altAppearance,
-   const AudioIOStartStreamOptions &options)
+   AudioIOStartStreamOptions &&options)
 {
    auto &projectAudioManager = *this;
 
@@ -919,7 +919,8 @@ bool ProjectAudioManager::DoRecord(AudacityProject &project,
          gAudioIO->AILAInitialize();
       #endif
 
-      int token = gAudioIO->StartStream(transportTracks, t0, t1, options);
+      int token =
+         gAudioIO->StartStream(transportTracks, t0, t1, std::move(options));
 
       success = (token != 0);
 

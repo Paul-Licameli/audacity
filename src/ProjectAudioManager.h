@@ -92,10 +92,10 @@ public:
       const TransportTracks &transportTracks, // If captureTracks is empty, then tracks are created
       double t0, double t1,
       bool altAppearance,
-      const AudioIOStartStreamOptions &options);
+      AudioIOStartStreamOptions &&options);
 
    int PlayPlayRegion(const SelectedRegion &selectedRegion,
-                      const AudioIOStartStreamOptions &options,
+                      AudioIOStartStreamOptions &&options,
                       PlayMode playMode,
                       bool backwards = false,
                       // Allow t0 and t1 to be beyond end of tracks

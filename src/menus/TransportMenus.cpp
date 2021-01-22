@@ -80,7 +80,7 @@ void PlayCurrentRegionAndWait(const CommandContext &context,
 
 void PlayPlayRegionAndWait(const CommandContext &context,
                            const SelectedRegion &selectedRegion,
-                           const AudioIOStartStreamOptions &options,
+                           AudioIOStartStreamOptions &&options,
                            PlayMode mode)
 {
    auto &project = context.project;
@@ -89,7 +89,7 @@ void PlayPlayRegionAndWait(const CommandContext &context,
    double t0 = selectedRegion.t0();
    double t1 = selectedRegion.t1();
 
-   projectAudioManager.PlayPlayRegion(selectedRegion, options, mode);
+   projectAudioManager.PlayPlayRegion(selectedRegion, std::move(options), mode);
 
    if (project.mBatchMode > 0) {
       wxYieldIfNeeded();
@@ -630,7 +630,7 @@ void OnPunchAndRoll(const CommandContext &context)
       transportTracks,
       t1, DBL_MAX,
       false, // altAppearance
-      options);
+      std::move(options));
 
    if (success)
       // Undo state will get pushed elsewhere, when record finishes
@@ -725,11 +725,10 @@ void OnPlayOneSecond(const CommandContext &context)
       return;
 
    auto &trackPanel = TrackPanel::Get( project );
-   auto options = DefaultPlayOptions( project );
 
    double pos = trackPanel.GetMostRecentXPos();
    PlayPlayRegionAndWait(context, SelectedRegion(pos - 0.5, pos + 0.5),
-      options, PlayMode::oneSecondPlay);
+      DefaultPlayOptions(project), PlayMode::oneSecondPlay);
 }
 
 /// The idea for this function (and first implementation)
@@ -776,10 +775,8 @@ void OnPlayToSelection(const CommandContext &context)
    // only when playing a short region, less than or equal to a second.
 //   mLastPlayMode = ((t1-t0) > 1.0) ? normalPlay : oneSecondPlay;
 
-   auto playOptions = DefaultPlayOptions( project );
-
    PlayPlayRegionAndWait(context, SelectedRegion(t0, t1),
-      playOptions, PlayMode::oneSecondPlay);
+      DefaultPlayOptions(project), PlayMode::oneSecondPlay);
 }
 
 // The next 4 functions provide a limited version of the
@@ -799,10 +796,8 @@ void OnPlayBeforeSelectionStart(const CommandContext &context)
    double beforeLen;
    gPrefs->Read(wxT("/AudioIO/CutPreviewBeforeLen"), &beforeLen, 2.0);
 
-   auto playOptions = DefaultPlayOptions( project );
-
    PlayPlayRegionAndWait(context, SelectedRegion(t0 - beforeLen, t0),
-      playOptions, PlayMode::oneSecondPlay);
+      DefaultPlayOptions(project), PlayMode::oneSecondPlay);
 }
 
 void OnPlayAfterSelectionStart(const CommandContext &context)
@@ -824,10 +819,10 @@ void OnPlayAfterSelectionStart(const CommandContext &context)
 
    if ( t1 - t0 > 0.0 && t1 - t0 < afterLen )
       PlayPlayRegionAndWait(context, SelectedRegion(t0, t1),
-         playOptions, PlayMode::oneSecondPlay);
+         std::move(playOptions), PlayMode::oneSecondPlay);
    else
       PlayPlayRegionAndWait(context, SelectedRegion(t0, t0 + afterLen),
-         playOptions, PlayMode::oneSecondPlay);
+         std::move(playOptions), PlayMode::oneSecondPlay);
 }
 
 void OnPlayBeforeSelectionEnd(const CommandContext &context)
@@ -849,10 +844,10 @@ void OnPlayBeforeSelectionEnd(const CommandContext &context)
 
    if ( t1 - t0 > 0.0 && t1 - t0 < beforeLen )
       PlayPlayRegionAndWait(context, SelectedRegion(t0, t1),
-         playOptions, PlayMode::oneSecondPlay);
+         std::move(playOptions), PlayMode::oneSecondPlay);
    else
       PlayPlayRegionAndWait(context, SelectedRegion(t1 - beforeLen, t1),
-         playOptions, PlayMode::oneSecondPlay);
+         std::move(playOptions), PlayMode::oneSecondPlay);
 }
 
 void OnPlayAfterSelectionEnd(const CommandContext &context)
@@ -869,10 +864,8 @@ void OnPlayAfterSelectionEnd(const CommandContext &context)
    double afterLen;
    gPrefs->Read(wxT("/AudioIO/CutPreviewAfterLen"), &afterLen, 1.0);
 
-   auto playOptions = DefaultPlayOptions( project );
-
    PlayPlayRegionAndWait(context, SelectedRegion(t1, t1 + afterLen),
-      playOptions, PlayMode::oneSecondPlay);
+      DefaultPlayOptions(project), PlayMode::oneSecondPlay);
 }
 
 void OnPlayBeforeAndAfterSelectionStart
@@ -897,10 +890,10 @@ void OnPlayBeforeAndAfterSelectionStart
 
    if ( t1 - t0 > 0.0 && t1 - t0 < afterLen )
       PlayPlayRegionAndWait(context, SelectedRegion(t0 - beforeLen, t1),
-         playOptions, PlayMode::oneSecondPlay);
+         std::move(playOptions), PlayMode::oneSecondPlay);
    else
       PlayPlayRegionAndWait(context, SelectedRegion(t0 - beforeLen, t0 + afterLen),
-         playOptions, PlayMode::oneSecondPlay);
+         std::move(playOptions), PlayMode::oneSecondPlay);
 }
 
 void OnPlayBeforeAndAfterSelectionEnd
@@ -925,10 +918,10 @@ void OnPlayBeforeAndAfterSelectionEnd
 
    if ( t1 - t0 > 0.0 && t1 - t0 < beforeLen )
       PlayPlayRegionAndWait(context, SelectedRegion(t0, t1 + afterLen),
-         playOptions, PlayMode::oneSecondPlay);
+         std::move(playOptions), PlayMode::oneSecondPlay);
    else
       PlayPlayRegionAndWait(context, SelectedRegion(t1 - beforeLen, t1 + afterLen),
-         playOptions, PlayMode::oneSecondPlay);
+         std::move(playOptions), PlayMode::oneSecondPlay);
 }
 
 void OnPlayCutPreview(const CommandContext &context)

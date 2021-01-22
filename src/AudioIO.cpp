@@ -486,7 +486,7 @@ static PaSampleFormat AudacityToPortAudioSampleFormat(sampleFormat format)
    }
 }
 
-bool AudioIO::StartPortAudioStream(const AudioIOStartStreamOptions &options,
+bool AudioIO::StartPortAudioStream(AudioIOStartStreamOptions &&options,
                                    unsigned int numPlaybackChannels,
                                    unsigned int numCaptureChannels,
                                    sampleFormat captureFormat)
@@ -716,7 +716,7 @@ void AudioIO::LoopPlayUpdate( SelectedRegionEvent &evt )
    AudioIO::Get()->mPlaybackSchedule.MessageProducer( evt );
 }
 
-void AudioIO::StartMonitoring( const AudioIOStartStreamOptions &options )
+void AudioIO::StartMonitoring(AudioIOStartStreamOptions &&options)
 {
    if ( mPortStreamV19 || mStreamToken )
       return;
@@ -733,9 +733,9 @@ void AudioIO::StartMonitoring( const AudioIOStartStreamOptions &options )
    // FIXME: TRAP_ERR StartPortAudioStream (a PaError may be present)
    // but StartPortAudioStream function only returns true or false.
    mUsingAlsa = false;
-   success = StartPortAudioStream(options, (unsigned int)playbackChannels,
-                                  (unsigned int)captureChannels,
-                                  captureFormat);
+   success = StartPortAudioStream(std::move(options),
+      (unsigned int)playbackChannels, (unsigned int)captureChannels,
+      captureFormat);
 
    if (!success) {
       auto msg = XO("Error opening recording device.\nError code: %s")
@@ -766,7 +766,7 @@ void AudioIO::StartMonitoring( const AudioIOStartStreamOptions &options )
 
 int AudioIO::StartStream(const TransportTracks &tracks,
                          double t0, double t1,
-                         const AudioIOStartStreamOptions &options)
+                         AudioIOStartStreamOptions &&options)
 {
    mLostSamples = 0;
    mLostCaptureIntervals.clear();
@@ -904,8 +904,8 @@ int AudioIO::StartStream(const TransportTracks &tracks,
 
    bool successAudio;
 
-   successAudio = StartPortAudioStream(options, playbackChannels,
-                                       captureChannels, captureFormat);
+   successAudio = StartPortAudioStream(std::move(options), playbackChannels,
+      captureChannels, captureFormat);
 #ifdef EXPERIMENTAL_MIDI_OUT
    successAudio = successAudio &&
       std::all_of(mAudioIOExt.begin(), mAudioIOExt.end(),

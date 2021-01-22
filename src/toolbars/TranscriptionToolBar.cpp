@@ -531,7 +531,7 @@ void TranscriptionToolBar::PlayAtSpeed(bool looped, bool cutPreview)
          : PlayMode::normalPlay;
       projectAudioManager.PlayPlayRegion(
          SelectedRegion(playRegion.GetStart(), playRegion.GetEnd()),
-            options,
+            std::move(options),
             mode);
    }
    else

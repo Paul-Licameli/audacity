@@ -314,7 +314,7 @@ public:
     * selected number of input channels to open the recording device and start
     * reading input data. If software playthrough is enabled, it also opens
     * the output device in stereo to play the data through */
-   void StartMonitoring( const AudioIOStartStreamOptions &options );
+   void StartMonitoring(AudioIOStartStreamOptions &&options);
 
    /** \brief Start recording or playing back audio
     *
@@ -325,7 +325,7 @@ public:
 
    int StartStream(const TransportTracks &tracks,
                    double t0, double t1,
-                   const AudioIOStartStreamOptions &options);
+                   AudioIOStartStreamOptions &&options);
 
    /** \brief Stop recording, playback or input monitoring.
     *
@@ -448,7 +448,7 @@ private:
     * if necessary. The captureFormat is used for recording only, the playback
     * being floating point always. Returns true if the stream opened successfully
     * and false if it did not. */
-   bool StartPortAudioStream(const AudioIOStartStreamOptions &options,
+   bool StartPortAudioStream(AudioIOStartStreamOptions &&options,
                              unsigned int numPlaybackChannels,
                              unsigned int numCaptureChannels,
                              sampleFormat captureFormat);
