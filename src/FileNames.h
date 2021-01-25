@@ -47,6 +47,7 @@
 
 class wxFileName;
 class wxFileNameWrapper;
+struct StringSetting;
 
 namespace FileNames
 {
@@ -176,7 +177,13 @@ namespace FileNames
       LastUsed
    };
 
-   AUDACITY_DLL_API wxString PreferenceKey(FileNames::Operation op, FileNames::PathType type);
+   /*!
+    @return nullptr only in case op == _None
+    */
+   AUDACITY_DLL_API StringSetting *
+      PreferenceSetting(FileNames::Operation op, FileNames::PathType type);
+   AUDACITY_DLL_API wxString
+      PreferenceKey(FileNames::Operation op, FileNames::PathType type);
 
    AUDACITY_DLL_API FilePath FindDefaultPath(Operation op);
    AUDACITY_DLL_API void UpdateDefaultPath(Operation op, const FilePath &path);

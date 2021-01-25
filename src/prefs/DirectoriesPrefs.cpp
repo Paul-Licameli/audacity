@@ -263,8 +263,9 @@ void DirectoriesPrefs::PopulateOrExchange(ShuttleGui &S)
 
 void DirectoriesPrefs::OnTempBrowse()
 {
-   wxString oldTemp = gPrefs->Read(PreferenceKey(Operation::Open, PathType::_None),
-                                   DefaultTempDir());
+   auto oldTemp =
+      PreferenceSetting(Operation::Open, PathType::_None)
+         ->ReadWithDefault(DefaultTempDir());
 
    // Because we went through InitTemp() during initialisation,
    // the old temp directory name in prefs should already be OK.  Just in case there is 

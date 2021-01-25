@@ -49,6 +49,9 @@ used throughout Audacity into this one place.
 #include <windows.h>
 #endif
 
+#include <map>
+#include <mutex>
+
 static wxString gDataDir;
 
 const FileNames::FileType
@@ -502,40 +505,49 @@ wxFileNameWrapper FileNames::DefaultToDocumentsFolder(const wxString &preference
    return result;
 }
 
-wxString FileNames::PreferenceKey(FileNames::Operation op, FileNames::PathType type)
+StringSetting *
+FileNames::PreferenceSetting(Operation op, PathType type)
 {
-   wxString key;
-   switch (op) {
-      case FileNames::Operation::Temp:
-         key = L"/Directories/TempDir"; break;
-      case FileNames::Operation::Presets:
-         key = L"/Presets/Path"; break;
-      case FileNames::Operation::Open:
-         key = L"/Directories/Open"; break;
-      case FileNames::Operation::Save:
-         key = L"/Directories/Save"; break;
-      case FileNames::Operation::Import:
-         key = L"/Directories/Import"; break;
-      case FileNames::Operation::Export:
-         key = L"/Directories/Export"; break;
-      case FileNames::Operation::MacrosOut:
-         key = L"/Directories/MacrosOut"; break;
-      case FileNames::Operation::_None:
-      default:
-         break;
-   }
+   using Key = std::pair<Operation, PathType>;
+   using Map = std::map<Key, StringSetting>;
+   static Map settings;
+   static std::once_flag flag;
 
-   switch (type) {
-      case FileNames::PathType::User:
-         key += "/Default"; break;
-      case FileNames::PathType::LastUsed:
-         key += "/LastUsed"; break;
-      case FileNames::PathType::_None:
-      default:
-         break;
-   }
+   // Populate the map once
+   std::call_once(flag, []{
+      std::pair<Operation, const wxChar *> paths[] = {
+         {Operation::Temp, L"/Directories/TempDir"},
+         {Operation::Presets, L"/Presets/Path"},
+         {Operation::Open, L"/Directories/Open"},
+         {Operation::Save, L"/Directories/Save"},
+         {Operation::Import, L"/Directories/Import"},
+         {Operation::Export, L"/Directories/Export"},
+         {Operation::MacrosOut, L"/Directories/MacrosOut"},
+      };
+      std::pair<PathType, const wxChar *> suffixes[] = {
+         {PathType::_None, L""},
+         {PathType::User, L"/Default"},
+         {PathType::LastUsed, L"/LastUsed"},
+      };
+      for (auto path : paths) {
+         for (auto suffix : suffixes) {
+            settings.emplace(Key{path.first, suffix.first},
+               wxString{path.second} + suffix.second);
+         }
+      }
+   });
 
-   return key;
+   auto pIter = settings.find({op, type});
+   if (pIter == settings.end())
+      return nullptr;
+   return &pIter->second;
+}
+
+wxString
+FileNames::PreferenceKey(FileNames::Operation op, FileNames::PathType type)
+{
+   auto pSetting =  PreferenceSetting(op, type);
+   return pSetting ? pSetting->GetPath() : wxString{};
 }
 
 FilePath FileNames::FindDefaultPath(Operation op)
@@ -566,15 +578,10 @@ void FileNames::UpdateDefaultPath(Operation op, const FilePath &path)
 {
    if (path.empty())
       return;
-   wxString key;
-   if (op == Operation::Temp) {
-      key = PreferenceKey(op, PathType::_None);
-   }
-   else {
-      key = PreferenceKey(op, PathType::LastUsed);
-   }
-   if (!key.empty()) {
-      gPrefs->Write(key, path);
+   auto pSetting = PreferenceSetting(op,
+      op == Operation::Temp ? PathType::_None : PathType::LastUsed);
+   if (pSetting) {
+      pSetting->Write(path);
       gPrefs->Flush();
    }
 }
