@@ -50,9 +50,9 @@
 #define __AUDACITY_UNDOMANAGER__
 
 #include <vector>
-#include <wx/event.h> // to declare custom event types
 #include "ClientData.h"
 #include "SelectedRegion.h"
+#include <wx/event.h>
 
 // Events emitted by AudacityProject for the use of listeners
 

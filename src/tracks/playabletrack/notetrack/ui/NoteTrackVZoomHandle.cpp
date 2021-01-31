@@ -26,8 +26,6 @@ Paul Licameli split from TrackPanel.cpp
 #include "../../../../../images/Cursors.h"
 #include "Prefs.h"
 
-#include <wx/event.h>
-
 namespace
 {
 

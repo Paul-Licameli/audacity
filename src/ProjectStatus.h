@@ -14,7 +14,6 @@ Paul Licameli
 
 #include <utility>
 #include <vector>
-#include <wx/event.h> // to declare custom event type
 #include "ClientData.h" // to inherit
 #include "Prefs.h"
 

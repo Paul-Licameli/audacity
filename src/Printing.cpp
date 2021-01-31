@@ -19,7 +19,6 @@
 
 #include <wx/defs.h>
 #include <wx/dc.h>
-#include <wx/intl.h>
 #include <wx/print.h>
 #include <wx/printdlg.h>
 

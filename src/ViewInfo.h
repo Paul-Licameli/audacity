@@ -13,7 +13,6 @@
 
 #include <utility>
 #include <vector>
-#include <wx/event.h> // inherit wxEvtHandler
 #include <wx/weakref.h> // member variable
 #include "SelectedRegion.h"
 #include <memory>

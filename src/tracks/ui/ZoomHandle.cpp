@@ -14,7 +14,6 @@ Paul Licameli split from TrackPanel.cpp
 #include <algorithm>
 
 #include <wx/dc.h>
-#include <wx/event.h>
 #include <wx/gdicmn.h>
 
 #include "../../HitTestResult.h"

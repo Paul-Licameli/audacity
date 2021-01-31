@@ -13,9 +13,10 @@ Paul Licameli split from AudacityProject.h
 
 #include <memory>
 
-#include <wx/event.h> // to inherit
 #include "ClientData.h" // to inherit
 #include "Identifier.h"
+
+#include <wx/event.h>
 
 class wxTimer;
 class wxTimerEvent;

@@ -20,10 +20,8 @@ ODTask requests and internals.
 #include "ODTask.h"
 #include "ODWaveTrackTaskQueue.h"
 #include "../Project.h"
-#include <wx/utils.h>
 #include <wx/wx.h>
 #include <wx/thread.h>
-#include <wx/event.h>
 
 #ifdef __WXMAC__
 

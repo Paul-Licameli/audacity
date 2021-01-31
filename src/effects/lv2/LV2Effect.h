@@ -17,7 +17,6 @@ class wxArrayString;
 
 #include <vector>
 
-#include <wx/event.h> // to inherit
 #include <wx/msgqueue.h>
 #include <wx/thread.h>
 #include <wx/timer.h>

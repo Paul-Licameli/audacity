@@ -19,7 +19,6 @@
 #include <math.h>
 
 #include <wx/choice.h>
-#include <wx/intl.h>
 #include <wx/slider.h>
 
 #include "LabelTrack.h"

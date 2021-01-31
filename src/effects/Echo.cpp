@@ -25,8 +25,6 @@
 
 #include <float.h>
 
-#include <wx/intl.h>
-
 #include "../ShuttleGui.h"
 #include "../Shuttle.h"
 #include "../widgets/AudacityMessageBox.h"

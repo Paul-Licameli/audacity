@@ -25,10 +25,7 @@
 #ifndef WX_PRECOMP
 #include <wx/app.h>
 #include <wx/choice.h>
-#include <wx/event.h>
-#include <wx/intl.h>
 #include <wx/settings.h>
-#include <wx/sizer.h>
 #include <wx/statbmp.h>
 #include <wx/tooltip.h>
 #endif

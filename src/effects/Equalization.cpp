@@ -62,21 +62,15 @@
 #include <wx/setup.h> // for wxUSE_* macros
 
 #include <wx/bitmap.h>
-#include <wx/button.h>
 #include <wx/brush.h>
-#include <wx/button.h>  // not really needed here
 #include <wx/dcclient.h>
 #include <wx/dcmemory.h>
-#include <wx/event.h>
 #include <wx/listctrl.h>
 #include <wx/log.h>
-#include <wx/image.h>
-#include <wx/intl.h>
 #include <wx/choice.h>
 #include <wx/radiobut.h>
 #include <wx/slider.h>
 #include <wx/stattext.h>
-#include <wx/string.h>
 #include <wx/textdlg.h>
 #include <wx/ffile.h>
 #include <wx/filefn.h>

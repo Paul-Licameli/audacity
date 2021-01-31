@@ -19,7 +19,6 @@
 #include "../../TrackPanel.h"
 
 #include <wx/dcclient.h>
-#include <wx/event.h>
 #include <wx/windowptr.h>
 
 ///////////////////////////////////////////////////////////////////////////////

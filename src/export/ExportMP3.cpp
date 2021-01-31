@@ -62,21 +62,18 @@
 
 #include "ExportMP3.h"
 
-#include <wx/app.h>
 #include <wx/defs.h>
 
+#include <wx/app.h>
 #include <wx/choice.h>
 #include <wx/checkbox.h>
 #include <wx/dynlib.h>
 #include <wx/ffile.h>
-#include <wx/intl.h>
 #include <wx/log.h>
 #include <wx/mimetype.h>
 #include <wx/radiobut.h>
 #include <wx/stattext.h>
 #include <wx/textctrl.h>
-#include <wx/timer.h>
-#include <wx/utils.h>
 #include <wx/window.h>
 
 #include "FileNames.h"

@@ -25,7 +25,6 @@
 
 #include <math.h>
 
-#include <wx/intl.h>
 
 #include "../Shuttle.h"
 #include "../ShuttleGui.h"

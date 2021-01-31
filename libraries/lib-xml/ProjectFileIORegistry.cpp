@@ -12,7 +12,6 @@
 
 #include <wx/string.h>
 #include <unordered_map>
-#include <wx/string.h>
 
 
 namespace ProjectFileIORegistry {

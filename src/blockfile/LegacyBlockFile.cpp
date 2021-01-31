@@ -27,7 +27,6 @@
 #include <wx/filefn.h>
 #include <wx/file.h>
 #include <wx/ffile.h>
-#include <wx/utils.h>
 #include <wx/log.h>
 
 #include "../FileFormats.h"

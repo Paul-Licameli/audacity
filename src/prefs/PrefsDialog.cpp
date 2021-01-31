@@ -17,17 +17,12 @@
 
 #include "PrefsDialog.h"
 
-#include <wx/app.h>
 #include <wx/setup.h> // for wxUSE_* macros
+#include <wx/app.h>
 #include <wx/defs.h>
-#include <wx/button.h>
-#include <wx/dialog.h>
-#include <wx/event.h>
 #include <wx/font.h>
 #include <wx/gdicmn.h>
-#include <wx/intl.h>
 #include <wx/listbox.h>
-#include <wx/sizer.h>
 
 #include <wx/listbook.h>
 

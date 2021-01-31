@@ -11,8 +11,6 @@
 #include "ODDecodeFlacTask.h"
 
 #include "../Prefs.h"
-#include <wx/string.h>
-#include <wx/utils.h>
 #include <wx/file.h>
 #include <wx/ffile.h>
 #include <wx/wx.h>

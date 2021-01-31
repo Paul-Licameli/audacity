@@ -66,7 +66,6 @@ can't be.
 
 #include <wx/wxprec.h>
 #include <wx/dcclient.h>
-#include <wx/image.h>
 #include <wx/file.h>
 #include <wx/ffile.h>
 #include <wx/mstream.h>

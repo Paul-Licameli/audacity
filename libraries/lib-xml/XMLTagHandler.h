@@ -19,6 +19,7 @@
 #define __AUDACITY_XML_TAG_HANDLER__
 
 #include "XMLWriter.h"
+
 class XML_API XMLValueChecker
 {
 public:
