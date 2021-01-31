@@ -19,7 +19,6 @@
 
 #include "CommandHandler.h"
 
-#include <wx/event.h>
 #include "../Project.h"
 #include "../ProjectWindow.h"
 #include "AppCommandEvent.h"

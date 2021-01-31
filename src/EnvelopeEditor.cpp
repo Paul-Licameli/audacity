@@ -14,7 +14,6 @@
 
 
 #include <wx/dc.h>
-#include <wx/event.h>
 
 #include "AColor.h"
 #include "Envelope.h"

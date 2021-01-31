@@ -27,10 +27,12 @@ used throughout Audacity into this one place.
 
 #include <memory>
 
+#ifdef __WIN32__
 #include <wx/app.h>
+#endif
+
 #include <wx/defs.h>
 #include <wx/filename.h>
-#include <wx/intl.h>
 #include <wx/stdpaths.h>
 #include "Prefs.h"
 #include "Internat.h"

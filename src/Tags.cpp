@@ -53,17 +53,12 @@
 #include "widgets/HelpSystem.h"
 #include "xml/XMLFileReader.h"
 
-#include <wx/button.h>
 #include <wx/choice.h>
 #include <wx/filename.h>
-#include <wx/intl.h>
 #include <wx/listctrl.h>
 #include <wx/notebook.h>
-#include <wx/radiobut.h>
 #include <wx/scrolbar.h>
-#include <wx/sizer.h>
 #include <wx/stattext.h>
-#include <wx/string.h>
 #include <wx/textctrl.h>
 #include <wx/textfile.h>
 #include <wx/combobox.h>

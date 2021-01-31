@@ -27,14 +27,12 @@ for shared and private configs - which need to move out.
 
 #include <wx/setup.h> // for wxUSE_* macros
 #include <wx/defs.h>
-#include <wx/dialog.h>
 #include <wx/dir.h>
 #include <wx/dynlib.h>
 #include <wx/filename.h>
 #include <wx/listctrl.h>
 #include <wx/log.h>
 #include <wx/radiobut.h>
-#include <wx/string.h>
 #include <wx/tokenzr.h>
 #include <wx/wfstream.h>
 #include <wx/utils.h>

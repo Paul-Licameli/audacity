@@ -29,7 +29,6 @@
 #include <wx/checkbox.h>
 #include <wx/choice.h>
 #include <wx/dcbuffer.h>
-#include <wx/dialog.h>
 #include <wx/crt.h>
 #include <wx/log.h>
 #include <wx/msgqueue.h>
@@ -42,8 +41,6 @@
 #include <wx/slider.h>
 #include <wx/statbox.h>
 #include <wx/stattext.h>
-#include <wx/tokenzr.h>
-#include <wx/intl.h>
 #include <wx/scrolwin.h>
 
 #include "../../ShuttleGui.h"

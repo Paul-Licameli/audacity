@@ -28,15 +28,12 @@
 #include <wx/dcmemory.h>
 #include <wx/defs.h>
 #include <wx/bmpbuttn.h>
-#include <wx/button.h>
 #include <wx/frame.h>
-#include <wx/image.h>
 #include <wx/imaglist.h>
 #include <wx/settings.h>
 #include <wx/sizer.h>
 #include <wx/statline.h>
 #include <wx/stattext.h>
-#include <wx/timer.h>
 #include <wx/tglbtn.h>
 
 #include "../commands/CommandContext.h"

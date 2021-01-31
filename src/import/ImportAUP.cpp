@@ -60,7 +60,6 @@ static const auto exts = {L"aup"};
 #include <wx/file.h>
 #include <wx/frame.h>
 #include <wx/string.h>
-#include <wx/utils.h>
 
 class AUPImportFileHandle;
 using ImportHandle = std::unique_ptr<ImportFileHandle>;

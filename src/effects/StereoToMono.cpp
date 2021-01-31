@@ -17,8 +17,6 @@
 #include "StereoToMono.h"
 #include "LoadEffects.h"
 
-#include <wx/intl.h>
-
 #include "../Mix.h"
 #include "../Project.h"
 #include "../WaveTrack.h"

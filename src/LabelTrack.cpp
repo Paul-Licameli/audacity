@@ -36,7 +36,6 @@ for drawing different aspects of the label and its text box.
 
 
 
-#include <stdio.h>
 #include <algorithm>
 #include <limits.h>
 #include <float.h>

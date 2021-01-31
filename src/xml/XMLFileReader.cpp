@@ -17,7 +17,6 @@
 
 #include <wx/defs.h>
 #include <wx/ffile.h>
-#include <wx/intl.h>
 
 #include <string.h>
 

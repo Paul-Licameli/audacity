@@ -20,8 +20,6 @@
 
 
 
-#include <stdio.h>
-
 #include "Identifier.h"
 
 #include "XMLWriter.h"

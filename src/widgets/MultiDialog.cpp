@@ -24,9 +24,6 @@ for each problem encountered, since there can be many orphans.
 #include "../ShuttleGui.h"
 
 #include <wx/app.h>
-#include <wx/button.h>
-#include <wx/dialog.h>
-#include <wx/intl.h>
 #include <wx/icon.h>
 #include <wx/sizer.h>
 #include <wx/stattext.h>

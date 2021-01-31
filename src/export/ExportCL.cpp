@@ -15,8 +15,6 @@
 
 #include "../ProjectSettings.h"
 
-#include <wx/app.h>
-#include <wx/button.h>
 #include <wx/cmdline.h>
 #include <wx/combobox.h>
 #include <wx/log.h>

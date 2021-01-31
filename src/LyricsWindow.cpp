@@ -19,7 +19,6 @@
 #include "ProjectFileIO.h"
 #include "ViewInfo.h"
 
-#include <wx/radiobut.h>
 #include <wx/toolbar.h>
 #include <wx/settings.h>
 

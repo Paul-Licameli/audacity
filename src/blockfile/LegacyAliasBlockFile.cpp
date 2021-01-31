@@ -11,7 +11,6 @@
 #include "../Audacity.h"
 #include "LegacyAliasBlockFile.h"
 
-#include <wx/utils.h>
 #include <wx/wxcrtvararg.h>
 
 #include <sndfile.h>

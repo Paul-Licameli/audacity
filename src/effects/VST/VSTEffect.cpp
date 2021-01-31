@@ -43,15 +43,12 @@
 #if USE_VST
 
 #include <limits.h>
-#include <stdio.h>
 
 #include <wx/setup.h> // for wxUSE_* macros
 #include <wx/dynlib.h>
-#include <wx/app.h>
 #include <wx/defs.h>
 #include <wx/buffer.h>
 #include <wx/busyinfo.h>
-#include <wx/button.h>
 #include <wx/combobox.h>
 #include <wx/file.h>
 #include <wx/filename.h>
@@ -62,7 +59,6 @@
 #include <wx/process.h>
 #include <wx/recguard.h>
 #include <wx/sizer.h>
-#include <wx/slider.h>
 #include <wx/scrolwin.h>
 #include <wx/sstream.h>
 #include <wx/statbox.h>

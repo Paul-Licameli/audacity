@@ -22,7 +22,6 @@
 #if defined(HAVE_DEVICE_CHANGE)
 
 #include <wx/module.h>
-#include <wx/timer.h>
 #include <wx/thread.h>
 
 DECLARE_LOCAL_EVENT_TYPE(EVT_DEVICE_CHANGE, -1);
@@ -169,7 +168,6 @@ private:
 #elif defined(__WXGTK__)
 
 #include <libudev.h>
-#include <stdio.h>
 #include <stdlib.h>
 #include <locale.h>
 #include <unistd.h>

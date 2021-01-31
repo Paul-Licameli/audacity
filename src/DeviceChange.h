@@ -25,8 +25,6 @@
 
 #if defined(HAVE_DEVICE_CHANGE)
 
-#include <wx/timer.h> // member variable
-
 class DeviceChangeInterface /* not final */
 {
 public:

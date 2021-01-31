@@ -12,7 +12,6 @@
 
 #include "Identifier.h"
 #include <unordered_map>
-#include <wx/string.h>
 
 
 namespace ProjectFileIORegistry {

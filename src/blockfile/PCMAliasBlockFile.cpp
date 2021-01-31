@@ -12,7 +12,6 @@
 #include "PCMAliasBlockFile.h"
 
 #include <wx/file.h>
-#include <wx/utils.h>
 #include <wx/wxcrtvararg.h>
 #include <wx/log.h>
 

@@ -17,8 +17,6 @@
 
 
 
-#include <wx/string.h>
-#include <wx/intl.h>
 #include <wx/sstream.h>
 #include <wx/txtstrm.h>
 

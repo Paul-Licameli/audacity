@@ -23,7 +23,6 @@
 #include <math.h>
 #include <float.h>
 
-#include <wx/intl.h>
 #include <wx/valgen.h>
 
 #include "../Shuttle.h"
