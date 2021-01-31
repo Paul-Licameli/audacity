@@ -567,7 +567,7 @@ PrefsDialog::PrefsDialog(
    if( !mUniquePage ){
       int prefWidth, prefHeight;
       gPrefs->Read(L"/Prefs/Width", &prefWidth, sz.x);
-      gPrefs->Read(L"/Prefs/Height", &prefHeight, wxMax(480,sz.y));
+      gPrefs->Read(L"/Prefs/Height", &prefHeight, std::max(480,sz.y));
 
       wxSize prefSize = wxSize(prefWidth, prefHeight);
       prefSize.DecTo(screenRect.GetSize());

@@ -1010,7 +1010,7 @@ bool EffectUIHost::Initialize()
          RTL_WORKAROUND(uw.get());
 
          // Try to give the window a sensible default/minimum size
-         uw->SetMinSize(wxSize(wxMax(600, mParent->GetSize().GetWidth() * 2 / 3),
+         uw->SetMinSize(wxSize(std::max(600, mParent->GetSize().GetWidth() * 2 / 3),
             mParent->GetSize().GetHeight() / 2));
 
          ShuttleGui S1{ uw.get(), eIsCreating };

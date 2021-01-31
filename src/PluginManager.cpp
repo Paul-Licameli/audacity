@@ -35,7 +35,6 @@ for shared and private configs - which need to move out.
 #include <wx/radiobut.h>
 #include <wx/tokenzr.h>
 #include <wx/wfstream.h>
-#include <wx/utils.h>
 
 #include "audacity/EffectInterface.h"
 #include "audacity/ModuleInterface.h"
@@ -621,7 +620,7 @@ void PluginRegistrationDialog::PopulateOrExchange(ShuttleGui &S)
    {
       int x;
       mEffects->GetTextExtent(mStates[i], &x, NULL);
-      colWidths[COL_State] = wxMax(colWidths[COL_State], x + 4);  // 2 pixel margin on each side
+      colWidths[COL_State] = std::max(colWidths[COL_State], x + 4);  // 2 pixel margin on each side
    }
 
    PluginManager & pm = PluginManager::Get();
@@ -661,14 +660,14 @@ void PluginRegistrationDialog::PopulateOrExchange(ShuttleGui &S)
 
       int x;
       mEffects->GetTextExtent(item.name, &x, NULL);
-      colWidths[COL_Name] = wxMax(colWidths[COL_Name], x);
+      colWidths[COL_Name] = std::max(colWidths[COL_Name], x);
 
       mEffects->GetTextExtent(item.path, &x, NULL);
       if (x > colWidths[COL_Path])
       {
          mLongestPath = item.path;
       }
-      colWidths[COL_Path] = wxMax(colWidths[COL_Path], x);
+      colWidths[COL_Path] = std::max(colWidths[COL_Path], x);
    }
 
    wxRect r = wxGetClientDisplayRect();
@@ -692,8 +691,8 @@ void PluginRegistrationDialog::PopulateOrExchange(ShuttleGui &S)
    Fit();
 
    wxSize sz = GetSize();
-   sz.SetWidth(wxMin(sz.GetWidth(), r.GetWidth()));
-   sz.SetHeight(wxMin(sz.GetHeight(), r.GetHeight()));
+   sz.SetWidth(std::min(sz.GetWidth(), r.GetWidth()));
+   sz.SetHeight(std::min(sz.GetHeight(), r.GetHeight()));
    SetMinSize(sz);
 
    // Parent window is usually not there yet, so centre on screen rather than on parent.

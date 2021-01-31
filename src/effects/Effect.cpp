@@ -1606,7 +1606,7 @@ bool Effect::ProcessTrack(int count,
    {
       if (mIsPreview) {
          gPrefs->Read(L"/AudioIO/EffectsPreviewLen", &genDur, 6.0);
-         genDur = wxMin(mDuration, CalcPreviewInputLength(genDur));
+         genDur = std::min(mDuration, CalcPreviewInputLength(genDur));
       }
       else {
          genDur = mDuration;
@@ -2318,7 +2318,7 @@ void Effect::Preview(bool dryOnly)
       previewDuration = CalcPreviewInputLength(previewLen);
    }
    else {
-      previewDuration = wxMin(mDuration, CalcPreviewInputLength(previewLen));
+      previewDuration = std::min(mDuration, CalcPreviewInputLength(previewLen));
    }
 
    double t1 = mT0 + previewDuration;

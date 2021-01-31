@@ -117,8 +117,8 @@ bool EffectSoundTouch::ProcessWithTimeWarper(InitFunction initer,
 
          //Set the current bounds to whichever left marker is
          //greater and whichever right marker is less
-         mCurT0 = wxMax(mT0, mCurT0);
-         mCurT1 = wxMin(mT1, mCurT1);
+         mCurT0 = std::max(mT0, mCurT0);
+         mCurT1 = std::min(mT1, mCurT1);
 
          // Process only if the right marker is to the right of the left marker
          if (mCurT1 > mCurT0) {
@@ -135,11 +135,11 @@ bool EffectSoundTouch::ProcessWithTimeWarper(InitFunction initer,
 
                //Adjust bounds by the right tracks markers
                t = rightTrack->GetStartTime();
-               t = wxMax(mT0, t);
-               mCurT0 = wxMin(mCurT0, t);
+               t = std::max(mT0, t);
+               mCurT0 = std::min(mCurT0, t);
                t = rightTrack->GetEndTime();
-               t = wxMin(mT1, t);
-               mCurT1 = wxMax(mCurT1, t);
+               t = std::min(mT1, t);
+               mCurT1 = std::max(mCurT1, t);
 
                //Transform the marker timepoints to samples
                auto start = leftTrack->TimeToLongSamples(mCurT0);
@@ -256,7 +256,7 @@ bool EffectSoundTouch::ProcessOne(WaveTrack *track,
    Finalize(track, outputTrack.get(), warper);
 
    double newLength = outputTrack->GetEndTime();
-   m_maxNewLength = wxMax(m_maxNewLength, newLength);
+   m_maxNewLength = std::max(m_maxNewLength, newLength);
 
    //Return true because the effect processing succeeded.
    return true;
@@ -353,9 +353,9 @@ bool EffectSoundTouch::ProcessStereo(
 
    // Track the longest result length
    double newLength = outputLeftTrack->GetEndTime();
-   m_maxNewLength = wxMax(m_maxNewLength, newLength);
+   m_maxNewLength = std::max(m_maxNewLength, newLength);
    newLength = outputRightTrack->GetEndTime();
-   m_maxNewLength = wxMax(m_maxNewLength, newLength);
+   m_maxNewLength = std::max(m_maxNewLength, newLength);
 
    //Return true because the effect processing succeeded.
    return true;

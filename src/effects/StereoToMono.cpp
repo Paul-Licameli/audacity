@@ -111,9 +111,9 @@ bool EffectStereoToMono::Process()
             }
          }
          {
-            auto start = wxMin(left->TimeToLongSamples(left->GetStartTime()),
+            auto start = std::min(left->TimeToLongSamples(left->GetStartTime()),
                                right->TimeToLongSamples(right->GetStartTime()));
-            auto end = wxMax(left->TimeToLongSamples(left->GetEndTime()),
+            auto end = std::min(left->TimeToLongSamples(left->GetEndTime()),
                                right->TimeToLongSamples(right->GetEndTime()));
 
             totalTime += (end - start);
@@ -169,8 +169,8 @@ bool EffectStereoToMono::ProcessOne(sampleCount & curTime, sampleCount totalTime
    bool bResult = true;
    sampleCount processed = 0;
 
-   auto start = wxMin(left->GetStartTime(), right->GetStartTime());
-   auto end = wxMax(left->GetEndTime(), right->GetEndTime());
+   auto start = std::min(left->GetStartTime(), right->GetStartTime());
+   auto end = std::max(left->GetEndTime(), right->GetEndTime());
 
    WaveTrackConstArray tracks;
    tracks.push_back(left->SharedPointer< const WaveTrack >());
@@ -208,7 +208,7 @@ bool EffectStereoToMono::ProcessOne(sampleCount & curTime, sampleCount totalTime
    }
    outTrack->Flush();
 
-   double minStart = wxMin(left->GetStartTime(), right->GetStartTime());
+   double minStart = std::min(left->GetStartTime(), right->GetStartTime());
    left->Clear(left->GetStartTime(), left->GetEndTime());
    left->Paste(minStart, outTrack.get());
    mOutputTracks->GroupChannels(*left,  1);

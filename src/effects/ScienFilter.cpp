@@ -48,7 +48,6 @@ a graph for EffectScienFilter.
 #include <wx/settings.h>
 #include <wx/slider.h>
 #include <wx/stattext.h>
-#include <wx/utils.h>
 #include <wx/valgen.h>
 
 #include "../AColor.h"
@@ -299,26 +298,26 @@ bool EffectScienFilter::Startup()
    {
 	   double dTemp;
       gPrefs->Read(base + L"Order", &mOrder, 1);
-      mOrder = wxMax (1, mOrder);
-      mOrder = wxMin (MAX_Order, mOrder);
+      mOrder = std::max (1, mOrder);
+      mOrder = std::min (MAX_Order, mOrder);
       gPrefs->Read(base + L"FilterType", &mFilterType, 0);
-      mFilterType = wxMax (0, mFilterType);
-      mFilterType = wxMin (2, mFilterType);
+      mFilterType = std::max (0, mFilterType);
+      mFilterType = std::min (2, mFilterType);
       gPrefs->Read(base + L"FilterSubtype", &mFilterSubtype, 0);
-      mFilterSubtype = wxMax (0, mFilterSubtype);
-      mFilterSubtype = wxMin (1, mFilterSubtype);
+      mFilterSubtype = std::max (0, mFilterSubtype);
+      mFilterSubtype = std::min (1, mFilterSubtype);
       gPrefs->Read(base + L"Cutoff", &dTemp, 1000.0);
       mCutoff = (float)dTemp;
-      mCutoff = wxMax (1, mCutoff);
-      mCutoff = wxMin (100000, mCutoff);
+      mCutoff = std::max (1.0f, mCutoff);
+      mCutoff = std::min (1000000.0f, mCutoff);
       gPrefs->Read(base + L"Ripple", &dTemp, 1.0);
       mRipple = dTemp;
-      mRipple = wxMax (0, mRipple);
-      mRipple = wxMin (100, mRipple);
+      mRipple = std::max (0.0f, mRipple);
+      mRipple = std::min (100.0f, mRipple);
       gPrefs->Read(base + L"StopbandRipple", &dTemp, 30.0);
       mStopbandRipple = dTemp;
-      mStopbandRipple = wxMax (0, mStopbandRipple);
-      mStopbandRipple = wxMin (100, mStopbandRipple);
+      mStopbandRipple = std::max (0.0f, mStopbandRipple);
+      mStopbandRipple = std::min (100.0f, mStopbandRipple);
 
       SaveUserPreset(GetCurrentSettingsGroup());
 
@@ -676,7 +675,7 @@ float EffectScienFilter::FilterMagnAtFreq(float Freq)
       break;
 
    case kChebyshevTypeI:     // Chebyshev Type 1
-      double eps; eps = sqrt(pow (10.0, wxMax(0.001, mRipple)/10.0) - 1);
+      double eps; eps = sqrt(pow (10.0, std::max(0.001f, mRipple)/10.0) - 1);
       double chebyPolyVal;
       switch (mFilterSubtype)
       {
@@ -693,7 +692,7 @@ float EffectScienFilter::FilterMagnAtFreq(float Freq)
       break;
 
    case kChebyshevTypeII:     // Chebyshev Type 2
-      eps = 1 / sqrt(pow (10.0, wxMax(0.001, mStopbandRipple)/10.0) - 1);
+      eps = 1 / sqrt(pow (10.0, std::max(0.001f, mStopbandRipple)/10.0) - 1);
       switch (mFilterSubtype)
       {
       case kLowPass:	// lowpass

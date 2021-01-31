@@ -548,7 +548,7 @@ ProgressResult ExportCL::Export(AudacityProject *project,
          }
 
          // Don't write too much at once...pipes may not be able to handle it
-         size_t bytes = wxMin(numBytes, 4096);
+         size_t bytes = std::min<size_t>(numBytes, 4096);
          numBytes -= bytes;
 
          while (bytes > 0) {

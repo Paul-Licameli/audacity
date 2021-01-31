@@ -28,7 +28,6 @@ It is also a place to document colour usage policy in Audacity
 #include <wx/dcmemory.h>
 #include <wx/graphics.h>
 #include <wx/settings.h>
-#include <wx/utils.h>
 
 #include "AllThemeResources.h"
 #include "Theme.h"
@@ -230,7 +229,7 @@ void AColor::Bevel2
    wxBitmap & Bmp = theTheme.Bitmap( index );
    wxMemoryDC memDC;
    memDC.SelectObject(Bmp);
-   int h = wxMin( r.height, Bmp.GetHeight() );
+   int h = std::min( r.height, Bmp.GetHeight() );
 
 
    dc.Blit( r.x,r.y,r.width/2, h, &memDC, 0, 0, wxCOPY, true );

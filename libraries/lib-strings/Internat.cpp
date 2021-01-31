@@ -24,6 +24,7 @@ and on Mac OS X for the filesystem.
 
 #include <wx/log.h>
 #include <wx/filename.h>
+#include <wx/utils.h>
 
 #include <locale.h>
 #include <math.h> // for pow()

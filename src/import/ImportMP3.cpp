@@ -632,7 +632,10 @@ bool MP3ImportFileHandle::CheckMP3()
 bool MP3ImportFileHandle::FillBuffer()
 {
    // We either want enough to fill the input buffer or what's left in the file
-   auto want = wxMin(INPUT_BUFFER_SIZE - mInputBufferLen, mFileLen - mFilePos);
+   // Watch the widths
+   auto want = static_cast<decltype(mInputBufferLen)>(
+      std::min<decltype(mFileLen)>(
+         INPUT_BUFFER_SIZE - mInputBufferLen, mFileLen - mFilePos));
    if (want > 0)
    {
       // We should always get what we ask for

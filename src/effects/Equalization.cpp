@@ -78,7 +78,6 @@
 #include <wx/sizer.h>
 #include <wx/checkbox.h>
 #include <wx/tooltip.h>
-#include <wx/utils.h>
 
 #include "../AColor.h"
 #include "../Shuttle.h"
@@ -3445,7 +3444,7 @@ void EditCurvesDialog::PopulateList(int position)
    int curvesWidth = mList->GetColumnWidth(0);
    mList->SetColumnWidth(0, wxLIST_AUTOSIZE_USEHEADER);
    int headerWidth = mList->GetColumnWidth(0);
-   mList->SetColumnWidth(0, wxMax(headerWidth, curvesWidth));
+   mList->SetColumnWidth(0, std::max(headerWidth, curvesWidth));
    // use 'position' to set focus
    mList->EnsureVisible(position);
    mList->SetItemState(position, wxLIST_STATE_SELECTED|wxLIST_STATE_FOCUSED, wxLIST_STATE_SELECTED|wxLIST_STATE_FOCUSED);

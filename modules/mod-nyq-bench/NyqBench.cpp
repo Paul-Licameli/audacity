@@ -244,7 +244,7 @@ void NyqTextCtrl::OnKeyUp(wxKeyEvent & e)
    e.Skip();
 
    int pos = GetInsertionPoint();
-   int lpos = wxMax(0, pos - 1);
+   int lpos = std::max(0, pos - 1);
 
    wxString text = GetRange(lpos, pos);
 
@@ -267,7 +267,7 @@ void NyqTextCtrl::OnUpdate(wxUpdateUIEvent & e)
    int pos = GetInsertionPoint();
 
    if (pos != mLastCaretPos) {
-      int lpos = wxMax(0, pos - 1);
+      int lpos = std::max(0, pos - 1);
    
       wxString text = GetRange(lpos, pos);
       if (text.Length() > 0) {
@@ -381,7 +381,7 @@ void NyqTextCtrl::GoNext()
 void NyqTextCtrl::MoveCursor(long first, long second)
 {
    int pos = GetInsertionPoint();
-   int lpos = wxMax(0, pos - 1);
+   int lpos = std::max(0, pos - 1);
 
    wxString text = GetRange(lpos, pos);
 
