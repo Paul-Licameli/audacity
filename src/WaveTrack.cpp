@@ -65,7 +65,7 @@ from the project that will own the track.
 using std::max;
 
 static ProjectFileIORegistry::Entry registerFactory{
-   wxT( "wavetrack" ),
+   L"wavetrack",
    []( AudacityProject &project ){
       auto &trackFactory = WaveTrackFactory::Get( project );
       auto &tracks = TrackList::Get( project );
@@ -1146,7 +1146,7 @@ void WaveTrack::SyncLockAdjust(double oldT1, double newT1)
       {
          // Check if clips can move
          bool clipsCanMove = true;
-         gPrefs->Read(wxT("/GUI/EditClipCanMove"), &clipsCanMove);
+         gPrefs->Read(L"/GUI/EditClipCanMove", &clipsCanMove);
          if (clipsCanMove) {
             auto tmp = Cut (oldT1, GetEndTime() + 1.0/GetRate());
 
@@ -1618,7 +1618,7 @@ void WaveTrack::Flush()
 
 bool WaveTrack::HandleXMLTag(const wxChar *tag, const wxChar **attrs)
 {
-   if (!wxStrcmp(tag, wxT("wavetrack"))) {
+   if (!wxStrcmp(tag, L"wavetrack")) {
       double dblValue;
       long nValue;
       while(*attrs) {
@@ -1629,7 +1629,7 @@ bool WaveTrack::HandleXMLTag(const wxChar *tag, const wxChar **attrs)
             break;
 
          const wxString strValue = value;
-         if (!wxStrcmp(attr, wxT("rate")))
+         if (!wxStrcmp(attr, L"rate"))
          {
             // mRate is an int, but "rate" in the project file is a float.
             if (!XMLValueChecker::IsGoodString(strValue) ||
@@ -1638,7 +1638,7 @@ bool WaveTrack::HandleXMLTag(const wxChar *tag, const wxChar **attrs)
                return false;
             mRate = lrint(dblValue);
          }
-         else if (!wxStrcmp(attr, wxT("offset")) &&
+         else if (!wxStrcmp(attr, L"offset") &&
                   XMLValueChecker::IsGoodString(strValue) &&
                   Internat::CompatibleToDouble(strValue, &dblValue))
          {
@@ -1651,31 +1651,31 @@ bool WaveTrack::HandleXMLTag(const wxChar *tag, const wxChar **attrs)
          {}
          else if (this->Track::HandleCommonXMLAttribute(attr, strValue))
             ;
-         else if (!wxStrcmp(attr, wxT("gain")) &&
+         else if (!wxStrcmp(attr, L"gain") &&
                   XMLValueChecker::IsGoodString(strValue) &&
                   Internat::CompatibleToDouble(strValue, &dblValue))
             mGain = dblValue;
-         else if (!wxStrcmp(attr, wxT("pan")) &&
+         else if (!wxStrcmp(attr, L"pan") &&
                   XMLValueChecker::IsGoodString(strValue) &&
                   Internat::CompatibleToDouble(strValue, &dblValue) &&
                   (dblValue >= -1.0) && (dblValue <= 1.0))
             mPan = dblValue;
-         else if (!wxStrcmp(attr, wxT("channel")))
+         else if (!wxStrcmp(attr, L"channel"))
          {
             if (!XMLValueChecker::IsGoodInt(strValue) || !strValue.ToLong(&nValue) ||
                   !XMLValueChecker::IsValidChannel(nValue))
                return false;
             mChannel = static_cast<Track::ChannelType>( nValue );
          }
-         else if (!wxStrcmp(attr, wxT("linked")) &&
+         else if (!wxStrcmp(attr, L"linked") &&
                   XMLValueChecker::IsGoodInt(strValue) && strValue.ToLong(&nValue))
             SetLinked(nValue != 0);
-         else if (!wxStrcmp(attr, wxT("colorindex")) &&
+         else if (!wxStrcmp(attr, L"colorindex") &&
                   XMLValueChecker::IsGoodString(strValue) &&
                   strValue.ToLong(&nValue))
             // Don't use SetWaveColorIndex as it sets the clips too.
             mWaveColorIndex  = nValue;
-         else if (!wxStrcmp(attr, wxT("sampleformat")) &&
+         else if (!wxStrcmp(attr, L"sampleformat") &&
                   XMLValueChecker::IsGoodInt(strValue) &&
                   strValue.ToLong(&nValue) &&
                   XMLValueChecker::IsValidSampleFormat(nValue))
@@ -1691,7 +1691,7 @@ void WaveTrack::HandleXMLEndTag(const wxChar * WXUNUSED(tag))
 {
    // In case we opened a pre-multiclip project, we need to
    // simulate closing the waveclip tag.
-   NewestOrNewClip()->HandleXMLEndTag(wxT("waveclip"));
+   NewestOrNewClip()->HandleXMLEndTag(L"waveclip");
 }
 
 XMLTagHandler *WaveTrack::HandleXMLChild(const wxChar *tag)
@@ -1699,21 +1699,21 @@ XMLTagHandler *WaveTrack::HandleXMLChild(const wxChar *tag)
    //
    // This is legacy code (1.2 and previous) and is not called for NEW projects!
    //
-   if (!wxStrcmp(tag, wxT("sequence")) || !wxStrcmp(tag, wxT("envelope")))
+   if (!wxStrcmp(tag, L"sequence") || !wxStrcmp(tag, L"envelope"))
    {
       // This is a legacy project, so set the cached offset
       NewestOrNewClip()->SetOffset(mLegacyProjectFileOffset);
 
       // Legacy project file tracks are imported as one single wave clip
-      if (!wxStrcmp(tag, wxT("sequence")))
+      if (!wxStrcmp(tag, L"sequence"))
          return NewestOrNewClip()->GetSequence();
-      else if (!wxStrcmp(tag, wxT("envelope")))
+      else if (!wxStrcmp(tag, L"envelope"))
          return NewestOrNewClip()->GetEnvelope();
    }
 
    // JKC... for 1.1.0, one step better than what we had, but still badly broken.
    //If we see a waveblock at this level, we'd better generate a sequence.
-   if( !wxStrcmp( tag, wxT("waveblock" )))
+   if( !wxStrcmp( tag, L"waveblock"))
    {
       // This is a legacy project, so set the cached offset
       NewestOrNewClip()->SetOffset(mLegacyProjectFileOffset);
@@ -1724,7 +1724,7 @@ XMLTagHandler *WaveTrack::HandleXMLChild(const wxChar *tag)
    //
    // This is for the NEW file format (post-1.2)
    //
-   if (!wxStrcmp(tag, wxT("waveclip")))
+   if (!wxStrcmp(tag, L"waveclip"))
       return CreateClip();
    else
       return NULL;
@@ -1733,23 +1733,23 @@ XMLTagHandler *WaveTrack::HandleXMLChild(const wxChar *tag)
 void WaveTrack::WriteXML(XMLWriter &xmlFile) const
 // may throw
 {
-   xmlFile.StartTag(wxT("wavetrack"));
+   xmlFile.StartTag(L"wavetrack");
    this->Track::WriteCommonXMLAttributes( xmlFile );
-   xmlFile.WriteAttr(wxT("channel"), mChannel);
-   xmlFile.WriteAttr(wxT("linked"), mLinked);
+   xmlFile.WriteAttr(L"channel", mChannel);
+   xmlFile.WriteAttr(L"linked", mLinked);
    this->PlayableTrack::WriteXMLAttributes(xmlFile);
-   xmlFile.WriteAttr(wxT("rate"), mRate);
-   xmlFile.WriteAttr(wxT("gain"), (double)mGain);
-   xmlFile.WriteAttr(wxT("pan"), (double)mPan);
-   xmlFile.WriteAttr(wxT("colorindex"), mWaveColorIndex );
-   xmlFile.WriteAttr(wxT("sampleformat"), static_cast<long>(mFormat) );
+   xmlFile.WriteAttr(L"rate", mRate);
+   xmlFile.WriteAttr(L"gain", (double)mGain);
+   xmlFile.WriteAttr(L"pan", (double)mPan);
+   xmlFile.WriteAttr(L"colorindex", mWaveColorIndex );
+   xmlFile.WriteAttr(L"sampleformat", static_cast<long>(mFormat) );
 
    for (const auto &clip : mClips)
    {
       clip->WriteXML(xmlFile);
    }
 
-   xmlFile.EndTag(wxT("wavetrack"));
+   xmlFile.EndTag(L"wavetrack");
 }
 
 bool WaveTrack::GetErrorOpening()
@@ -1930,7 +1930,7 @@ bool WaveTrack::Get(samplePtr buffer, sampleFormat format,
       }
       else
       {
-         wxFAIL_MSG(wxT("Invalid fill format"));
+         wxFAIL_MSG(L"Invalid fill format");
       }
    }
 

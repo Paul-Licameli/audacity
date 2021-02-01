@@ -323,13 +323,13 @@ bool LabelDialog::TransferDataToWindow()
       mGrid->SetCellValue(i, Col_Track, TrackName(rd.index));
       mGrid->SetCellValue(i, Col_Label, rd.title);
       mGrid->SetCellValue(i, Col_Stime,
-         wxString::Format(wxT("%g"), rd.selectedRegion.t0()));
+         wxString::Format(L"%g", rd.selectedRegion.t0()));
       mGrid->SetCellValue(i, Col_Etime,
-         wxString::Format(wxT("%g"), rd.selectedRegion.t1()));
+         wxString::Format(L"%g", rd.selectedRegion.t1()));
       mGrid->SetCellValue(i, Col_Lfreq,
-         wxString::Format(wxT("%g"), rd.selectedRegion.f0()));
+         wxString::Format(L"%g", rd.selectedRegion.f0()));
       mGrid->SetCellValue(i, Col_Hfreq,
-         wxString::Format(wxT("%g"), rd.selectedRegion.f1()));
+         wxString::Format(L"%g", rd.selectedRegion.f1()));
    }
 
    // Autosize all the rows
@@ -447,7 +447,7 @@ wxString LabelDialog::TrackName(int & index, const wxString &dflt)
    // Generate a NEW track name if the passed index is out of range
    if (index < 1 || index >= (int)mTrackNames.size()) {
       index = mTrackNames.size();
-      mTrackNames.push_back(wxString::Format(wxT("%d - %s"), index, dflt));
+      mTrackNames.push_back(wxString::Format(L"%d - %s", index, dflt));
    }
 
    // Return the track name
@@ -577,7 +577,7 @@ void LabelDialog::OnInsert(wxCommandEvent &event)
    if (event.GetId() == ID_INSERTA && row < cnt) {
       row++;
    }
-   mData.insert(mData.begin() + row, RowData(index, wxT(""), SelectedRegion()));
+   mData.insert(mData.begin() + row, RowData(index, L"", SelectedRegion()));
 
    // Repopulate the grid
    TransferDataToWindow();
@@ -634,8 +634,8 @@ void LabelDialog::OnImport(wxCommandEvent & WXUNUSED(event))
        FileNames::SelectFile(FileNames::Operation::Open,
          XO("Select a text file containing labels"),
          wxEmptyString,     // Path
-         wxT(""),       // Name
-         wxT("txt"),   // Extension
+         L"",       // Name
+         L"txt",   // Extension
          { FileNames::TextFiles, FileNames::AllFiles },
          wxRESIZE_BORDER, // Flags
          this);    // Parent
@@ -684,7 +684,7 @@ void LabelDialog::OnExport(wxCommandEvent & WXUNUSED(event))
       XO("Export Labels As:"),
       wxEmptyString,
       fName,
-      wxT("txt"),
+      L"txt",
       { FileNames::TextFiles },
       wxFD_SAVE | wxFD_OVERWRITE_PROMPT | wxRESIZE_BORDER,
       this);
@@ -697,9 +697,9 @@ void LabelDialog::OnExport(wxCommandEvent & WXUNUSED(event))
 
    if (wxFileExists(fName)) {
 #ifdef __WXGTK__
-      wxString safetyFileName = fName + wxT("~");
+      wxString safetyFileName = fName + L"~";
 #else
-      wxString safetyFileName = fName + wxT(".bak");
+      wxString safetyFileName = fName + L".bak";
 #endif
 
       if (wxFileExists(safetyFileName))
@@ -857,7 +857,7 @@ void LabelDialog::OnChangeStime(wxGridEvent & WXUNUSED(event), int row, RowData 
    double t {};
    mGrid->GetCellValue(row, Col_Stime).ToDouble(&t);
    rd->selectedRegion.setT0(t, false);
-   mGrid->SetCellValue(row, Col_Etime, wxString::Format(wxT("%g"),
+   mGrid->SetCellValue(row, Col_Etime, wxString::Format(L"%g",
                        rd->selectedRegion.t1()));
 
    return;
@@ -869,7 +869,7 @@ void LabelDialog::OnChangeEtime(wxGridEvent & WXUNUSED(event), int row, RowData 
    double t {};
    mGrid->GetCellValue(row, Col_Etime).ToDouble(&t);
    rd->selectedRegion.setT1(t, false);
-   mGrid->SetCellValue(row, Col_Stime, wxString::Format(wxT("%g"),
+   mGrid->SetCellValue(row, Col_Stime, wxString::Format(L"%g",
                        rd->selectedRegion.t0()));
 
    return;
@@ -881,7 +881,7 @@ void LabelDialog::OnChangeLfreq(wxGridEvent & WXUNUSED(event), int row, RowData 
    double f;
    mGrid->GetCellValue(row, Col_Lfreq).ToDouble(&f);
    rd->selectedRegion.setF0(f, false);
-   mGrid->SetCellValue(row, Col_Hfreq, wxString::Format(wxT("%g"),
+   mGrid->SetCellValue(row, Col_Hfreq, wxString::Format(L"%g",
                                                         rd->selectedRegion.f1()));
 
    return;
@@ -893,7 +893,7 @@ void LabelDialog::OnChangeHfreq(wxGridEvent & WXUNUSED(event), int row, RowData 
    double f;
    mGrid->GetCellValue(row, Col_Hfreq).ToDouble(&f);
    rd->selectedRegion.setF1(f, false);
-   mGrid->SetCellValue(row, Col_Lfreq, wxString::Format(wxT("%g"),
+   mGrid->SetCellValue(row, Col_Lfreq, wxString::Format(L"%g",
                                                         rd->selectedRegion.f0()));
    
    return;
@@ -902,8 +902,8 @@ void LabelDialog::OnChangeHfreq(wxGridEvent & WXUNUSED(event), int row, RowData 
 void LabelDialog::ReadSize(){
    wxSize sz = GetSize();
    int prefWidth, prefHeight;
-   gPrefs->Read(wxT("/LabelEditor/Width"), &prefWidth, sz.x);
-   gPrefs->Read(wxT("/LabelEditor/Height"), &prefHeight, sz.y);
+   gPrefs->Read(L"/LabelEditor/Width", &prefWidth, sz.x);
+   gPrefs->Read(L"/LabelEditor/Height", &prefHeight, sz.y);
    
    wxRect screenRect(wxGetClientDisplayRect());
    wxSize prefSize = wxSize(prefWidth, prefHeight);
@@ -913,8 +913,8 @@ void LabelDialog::ReadSize(){
 
 void LabelDialog::WriteSize(){
    wxSize sz = GetSize();
-   gPrefs->Write(wxT("/LabelEditor/Width"), sz.x);
-   gPrefs->Write(wxT("/LabelEditor/Height"), sz.y);
+   gPrefs->Write(L"/LabelEditor/Width", sz.x);
+   gPrefs->Write(L"/LabelEditor/Height", sz.y);
    gPrefs->Flush();
 }
 

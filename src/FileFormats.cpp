@@ -261,12 +261,12 @@ FileExtensions sf_get_all_extensions()
    // but aren't included by libsndfile
 
    exts.insert( exts.end(), {
-      wxT("aif") , // AIFF file with a DOS-style extension
-      wxT("ircam") ,
-      wxT("snd") ,
-      wxT("svx") ,
-      wxT("svx8") ,
-      wxT("sv16") ,
+      L"aif" , // AIFF file with a DOS-style extension
+      L"ircam" ,
+      L"snd" ,
+      L"svx" ,
+      L"svx8" ,
+      L"sv16" ,
    } );
 
    return exts;
@@ -276,11 +276,11 @@ wxString sf_normalize_name(const char *name)
 {
    wxString n = LAT1CTOWX(name);
 
-   n.Replace(wxT("8 bit"), wxT("8-bit"));
-   n.Replace(wxT("16 bit"), wxT("16-bit"));
-   n.Replace(wxT("24 bit"), wxT("24-bit"));
-   n.Replace(wxT("32 bit"), wxT("32-bit"));
-   n.Replace(wxT("64 bit"), wxT("64-bit"));
+   n.Replace(L"8 bit", L"8-bit");
+   n.Replace(L"16 bit", L"16-bit");
+   n.Replace(L"24 bit", L"24-bit");
+   n.Replace(L"32 bit", L"32-bit");
+   n.Replace(L"64 bit", L"64-bit");
 
    return n;
 }
@@ -351,14 +351,14 @@ int SFFileCloser::operator() (SNDFILE *sf) const
 }
 
 ChoiceSetting FileFormatsCopyOrEditSetting{
-   wxT("/FileFormats/CopyOrEditUncompressedData"),
+   L"/FileFormats/CopyOrEditUncompressedData",
    {
       EnumValueSymbol{
-         wxT("copy"),
+         L"copy",
          XXO("&Copy uncompressed files into the project (safer)")
       },
       EnumValueSymbol{
-         wxT("edit"),
+         L"edit",
          XXO("&Read uncompressed files from original location (faster)")
       },
    },
@@ -366,11 +366,11 @@ ChoiceSetting FileFormatsCopyOrEditSetting{
 };
 
 ChoiceSetting FileFormatsSaveWithDependenciesSetting{
-   wxT("/FileFormats/SaveProjectWithDependencies"),
+   L"/FileFormats/SaveProjectWithDependencies",
    {
-      { wxT("copy"), XXO("&Copy all audio into project (safest)") },
-      { wxT("never"), XXO("Do &not copy any audio") },
-      { wxT("ask"), XXO("As&k") },
+      { L"copy", XXO("&Copy all audio into project (safest)") },
+      { L"never", XXO("Do &not copy any audio") },
+      { L"ask", XXO("As&k") },
    },
    2 // ask
 };

@@ -46,13 +46,13 @@ enum
 // Define keys, defaults, minimums, and maximums for the effect parameters
 //
 //     Name       Type     Key               Def   Min   Max         Scale
-Param( Stages,    int,     wxT("Stages"),     2,    2,    NUM_STAGES, 1  );
-Param( DryWet,    int,     wxT("DryWet"),     128,  0,    255,        1  );
-Param( Freq,      double,  wxT("Freq"),       0.4,  0.001,4.0,        10.0 );
-Param( Phase,     double,  wxT("Phase"),      0.0,  0.0,  360.0,      1  );
-Param( Depth,     int,     wxT("Depth"),      100,  0,    255,        1  );
-Param( Feedback,  int,     wxT("Feedback"),   0,    -100, 100,        1  );
-Param( OutGain,   double,  wxT("Gain"),      -6.0,    -30.0,    30.0,    1   );
+Param( Stages,    int,     L"Stages",     2,    2,    NUM_STAGES, 1  );
+Param( DryWet,    int,     L"DryWet",     128,  0,    255,        1  );
+Param( Freq,      double,  L"Freq",       0.4,  0.001,4.0,        10.0 );
+Param( Phase,     double,  L"Phase",      0.0,  0.0,  360.0,      1  );
+Param( Depth,     int,     L"Depth",      100,  0,    255,        1  );
+Param( Feedback,  int,     L"Feedback",   0,    -100, 100,        1  );
+Param( OutGain,   double,  L"Gain",      -6.0,    -30.0,    30.0,    1   );
 
 //
 #define phaserlfoshape 4.0
@@ -117,7 +117,7 @@ TranslatableString EffectPhaser::GetDescription()
 
 wxString EffectPhaser::ManualPage()
 {
-   return wxT("Phaser");
+   return L"Phaser";
 }
 
 // EffectDefinitionInterface implementation
@@ -263,7 +263,7 @@ void EffectPhaser::PopulateOrExchange(ShuttleGui & S)
       mStagesT = S.Id(ID_Stages)
          .Validator<IntegerValidator<int>>(
             &mStages, NumValidatorStyle::DEFAULT, MIN_Stages, MAX_Stages)
-         .AddTextBox(XXO("&Stages:"), wxT(""), 15);
+         .AddTextBox(XXO("&Stages:"), L"", 15);
 
       mStagesS = S.Id(ID_Stages)
          .Name(XO("Stages"))
@@ -275,7 +275,7 @@ void EffectPhaser::PopulateOrExchange(ShuttleGui & S)
       mDryWetT = S.Id(ID_DryWet)
          .Validator<IntegerValidator<int>>(
             &mDryWet, NumValidatorStyle::DEFAULT, MIN_DryWet, MAX_DryWet)
-         .AddTextBox(XXO("&Dry/Wet:"), wxT(""), 15);
+         .AddTextBox(XXO("&Dry/Wet:"), L"", 15);
 
       mDryWetS = S.Id(ID_DryWet)
          .Name(XO("Dry Wet"))
@@ -286,7 +286,7 @@ void EffectPhaser::PopulateOrExchange(ShuttleGui & S)
       mFreqT = S.Id(ID_Freq)
          .Validator<FloatingPointValidator<double>>(
             5, &mFreq, NumValidatorStyle::ONE_TRAILING_ZERO, MIN_Freq, MAX_Freq)
-         .AddTextBox(XXO("LFO Freq&uency (Hz):"), wxT(""), 15);
+         .AddTextBox(XXO("LFO Freq&uency (Hz):"), L"", 15);
 
       mFreqS = S.Id(ID_Freq)
          .Name(XO("LFO frequency in hertz"))
@@ -297,7 +297,7 @@ void EffectPhaser::PopulateOrExchange(ShuttleGui & S)
       mPhaseT = S.Id(ID_Phase)
          .Validator<FloatingPointValidator<double>>(
             1, &mPhase, NumValidatorStyle::DEFAULT, MIN_Phase, MAX_Phase)
-         .AddTextBox(XXO("LFO Sta&rt Phase (deg.):"), wxT(""), 15);
+         .AddTextBox(XXO("LFO Sta&rt Phase (deg.):"), L"", 15);
 
       mPhaseS = S.Id(ID_Phase)
          .Name(XO("LFO start phase in degrees"))
@@ -309,7 +309,7 @@ void EffectPhaser::PopulateOrExchange(ShuttleGui & S)
       mDepthT = S.Id(ID_Depth)
          .Validator<IntegerValidator<int>>(
             &mDepth, NumValidatorStyle::DEFAULT, MIN_Depth, MAX_Depth)
-         .AddTextBox(XXO("Dept&h:"), wxT(""), 15);
+         .AddTextBox(XXO("Dept&h:"), L"", 15);
 
       mDepthS = S.Id(ID_Depth)
          .Name(XO("Depth in percent"))
@@ -320,7 +320,7 @@ void EffectPhaser::PopulateOrExchange(ShuttleGui & S)
       mFeedbackT = S.Id(ID_Feedback)
          .Validator<IntegerValidator<int>>(
             &mFeedback, NumValidatorStyle::DEFAULT, MIN_Feedback, MAX_Feedback)
-         .AddTextBox(XXO("Feedbac&k (%):"), wxT(""), 15);
+         .AddTextBox(XXO("Feedbac&k (%):"), L"", 15);
 
       mFeedbackS = S.Id(ID_Feedback)
          .Name(XO("Feedback in percent"))
@@ -332,7 +332,7 @@ void EffectPhaser::PopulateOrExchange(ShuttleGui & S)
       mOutGainT = S.Id(ID_OutGain)
          .Validator<FloatingPointValidator<double>>(
             1, &mOutGain, NumValidatorStyle::DEFAULT, MIN_OutGain, MAX_OutGain)
-         .AddTextBox(XXO("&Output gain (dB):"), wxT(""), 12);
+         .AddTextBox(XXO("&Output gain (dB):"), L"", 12);
 
       mOutGainS = S.Id(ID_OutGain)
          .Name(XO("Output gain (dB)"))

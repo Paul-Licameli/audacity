@@ -528,7 +528,7 @@ void OnToggle(const CommandContext &context)
 void UpdatePrefs() override
 {
    mCircularTrackNavigation =
-      gPrefs->ReadBool(wxT("/GUI/CircularTrackNavigation"), false);
+      gPrefs->ReadBool(L"/GUI/CircularTrackNavigation", false);
 }
 Handler()
 {
@@ -564,19 +564,19 @@ BaseItemSharedPtr ExtraGlobalCommands()
 
    static BaseItemSharedPtr items{
    ( FinderScope{ findCommandHandler },
-   Items( wxT("Navigation"),
-      Command( wxT("PrevWindow"), XXO("Move Backward Through Active Windows"),
+   Items( L"Navigation",
+      Command( L"PrevWindow", XXO("Move Backward Through Active Windows"),
          FN(OnPrevWindow), AlwaysEnabledFlag,
-         Options{ wxT("Alt+Shift+F6") }.IsGlobal() ),
-      Command( wxT("NextWindow"), XXO("Move Forward Through Active Windows"),
+         Options{ L"Alt+Shift+F6" }.IsGlobal() ),
+      Command( L"NextWindow", XXO("Move Forward Through Active Windows"),
          FN(OnNextWindow), AlwaysEnabledFlag,
-         Options{ wxT("Alt+F6") }.IsGlobal() )
+         Options{ L"Alt+F6" }.IsGlobal() )
    ) ) };
    return items;
 }
 
 AttachedItem sAttachment2{
-   wxT("Optional/Extra/Part2"),
+   L"Optional/Extra/Part2",
    Shared( ExtraGlobalCommands() )
 };
 
@@ -586,35 +586,35 @@ BaseItemSharedPtr ExtraFocusMenu()
 
    static BaseItemSharedPtr menu{
    ( FinderScope{ findCommandHandler },
-   Menu( wxT("Focus"), XXO("Foc&us"),
-      Command( wxT("PrevFrame"),
+   Menu( L"Focus", XXO("Foc&us"),
+      Command( L"PrevFrame",
          XXO("Move &Backward from Toolbars to Tracks"), FN(OnPrevFrame),
-         AlwaysEnabledFlag, wxT("Ctrl+Shift+F6") ),
-      Command( wxT("NextFrame"),
+         AlwaysEnabledFlag, L"Ctrl+Shift+F6" ),
+      Command( L"NextFrame",
          XXO("Move F&orward from Toolbars to Tracks"), FN(OnNextFrame),
-         AlwaysEnabledFlag, wxT("Ctrl+F6") ),
-      Command( wxT("PrevTrack"), XXO("Move Focus to &Previous Track"),
-         FN(OnCursorUp), FocusedTracksFlags, wxT("Up") ),
-      Command( wxT("NextTrack"), XXO("Move Focus to &Next Track"),
-         FN(OnCursorDown), FocusedTracksFlags, wxT("Down") ),
-      Command( wxT("FirstTrack"), XXO("Move Focus to &First Track"),
-         FN(OnFirstTrack), FocusedTracksFlags, wxT("Ctrl+Home") ),
-      Command( wxT("LastTrack"), XXO("Move Focus to &Last Track"),
-         FN(OnLastTrack), FocusedTracksFlags, wxT("Ctrl+End") ),
-      Command( wxT("ShiftUp"), XXO("Move Focus to P&revious and Select"),
-         FN(OnShiftUp), FocusedTracksFlags, wxT("Shift+Up") ),
-      Command( wxT("ShiftDown"), XXO("Move Focus to N&ext and Select"),
-         FN(OnShiftDown), FocusedTracksFlags, wxT("Shift+Down") ),
-      Command( wxT("Toggle"), XXO("&Toggle Focused Track"), FN(OnToggle),
-         FocusedTracksFlags, wxT("Return") ),
-      Command( wxT("ToggleAlt"), XXO("Toggle Focuse&d Track"), FN(OnToggle),
-         FocusedTracksFlags, wxT("NUMPAD_ENTER") )
+         AlwaysEnabledFlag, L"Ctrl+F6" ),
+      Command( L"PrevTrack", XXO("Move Focus to &Previous Track"),
+         FN(OnCursorUp), FocusedTracksFlags, L"Up" ),
+      Command( L"NextTrack", XXO("Move Focus to &Next Track"),
+         FN(OnCursorDown), FocusedTracksFlags, L"Down" ),
+      Command( L"FirstTrack", XXO("Move Focus to &First Track"),
+         FN(OnFirstTrack), FocusedTracksFlags, L"Ctrl+Home" ),
+      Command( L"LastTrack", XXO("Move Focus to &Last Track"),
+         FN(OnLastTrack), FocusedTracksFlags, L"Ctrl+End" ),
+      Command( L"ShiftUp", XXO("Move Focus to P&revious and Select"),
+         FN(OnShiftUp), FocusedTracksFlags, L"Shift+Up" ),
+      Command( L"ShiftDown", XXO("Move Focus to N&ext and Select"),
+         FN(OnShiftDown), FocusedTracksFlags, L"Shift+Down" ),
+      Command( L"Toggle", XXO("&Toggle Focused Track"), FN(OnToggle),
+         FocusedTracksFlags, L"Return" ),
+      Command( L"ToggleAlt", XXO("Toggle Focuse&d Track"), FN(OnToggle),
+         FocusedTracksFlags, L"NUMPAD_ENTER" )
    ) ) };
    return menu;
 }
 
 AttachedItem sAttachment3{
-   wxT("Optional/Extra/Part2"),
+   L"Optional/Extra/Part2",
    Shared( ExtraFocusMenu() )
 };
 

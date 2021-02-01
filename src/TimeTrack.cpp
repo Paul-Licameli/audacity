@@ -38,7 +38,7 @@
 #define TIMETRACK_MAX 10.0
 
 static ProjectFileIORegistry::Entry registerFactory{
-   wxT( "timetrack" ),
+   L"timetrack",
    []( AudacityProject &project ){
       auto &tracks = TrackList::Get( project );
       auto &viewInfo = ViewInfo::Get( project );
@@ -218,7 +218,7 @@ void TimeTrack::SetInterpolateLog(bool interpolateLog) {
 
 bool TimeTrack::HandleXMLTag(const wxChar *tag, const wxChar **attrs)
 {
-   if (!wxStrcmp(tag, wxT("timetrack"))) {
+   if (!wxStrcmp(tag, L"timetrack")) {
       mRescaleXMLValues = true; // will be set to false if upper/lower is found
       long nValue;
       while(*attrs) {
@@ -231,24 +231,24 @@ bool TimeTrack::HandleXMLTag(const wxChar *tag, const wxChar **attrs)
          const wxString strValue = value;
          if (this->Track::HandleCommonXMLAttribute(attr, strValue))
             ;
-         else if (!wxStrcmp(attr, wxT("rangelower")))
+         else if (!wxStrcmp(attr, L"rangelower"))
          {
             SetRangeLower( Internat::CompatibleToDouble(value) );
             mRescaleXMLValues = false;
          }
-         else if (!wxStrcmp(attr, wxT("rangeupper")))
+         else if (!wxStrcmp(attr, L"rangeupper"))
          {
             SetRangeUpper( Internat::CompatibleToDouble(value) );
             mRescaleXMLValues = false;
          }
-         else if (!wxStrcmp(attr, wxT("displaylog")) &&
+         else if (!wxStrcmp(attr, L"displaylog") &&
                   XMLValueChecker::IsGoodInt(strValue) && strValue.ToLong(&nValue))
          {
             SetDisplayLog(nValue != 0);
             //TODO-MB: This causes a graphical glitch, TrackPanel should probably be Refresh()ed after loading.
             //         I don't know where to do this though.
          }
-         else if (!wxStrcmp(attr, wxT("interpolatelog")) &&
+         else if (!wxStrcmp(attr, L"interpolatelog") &&
                   XMLValueChecker::IsGoodInt(strValue) && strValue.ToLong(&nValue))
          {
             SetInterpolateLog(nValue != 0);
@@ -275,7 +275,7 @@ void TimeTrack::HandleXMLEndTag(const wxChar * WXUNUSED(tag))
 
 XMLTagHandler *TimeTrack::HandleXMLChild(const wxChar *tag)
 {
-   if (!wxStrcmp(tag, wxT("envelope")))
+   if (!wxStrcmp(tag, L"envelope"))
       return mEnvelope.get();
 
   return NULL;
@@ -284,19 +284,19 @@ XMLTagHandler *TimeTrack::HandleXMLChild(const wxChar *tag)
 void TimeTrack::WriteXML(XMLWriter &xmlFile) const
 // may throw
 {
-   xmlFile.StartTag(wxT("timetrack"));
+   xmlFile.StartTag(L"timetrack");
    this->Track::WriteCommonXMLAttributes( xmlFile );
 
-   //xmlFile.WriteAttr(wxT("channel"), mChannel);
-   //xmlFile.WriteAttr(wxT("offset"), mOffset, 8);
-   xmlFile.WriteAttr(wxT("rangelower"), GetRangeLower(), 12);
-   xmlFile.WriteAttr(wxT("rangeupper"), GetRangeUpper(), 12);
-   xmlFile.WriteAttr(wxT("displaylog"), GetDisplayLog());
-   xmlFile.WriteAttr(wxT("interpolatelog"), GetInterpolateLog());
+   //xmlFile.WriteAttr(L"channel", mChannel);
+   //xmlFile.WriteAttr(L"offset", mOffset, 8);
+   xmlFile.WriteAttr(L"rangelower", GetRangeLower(), 12);
+   xmlFile.WriteAttr(L"rangeupper", GetRangeUpper(), 12);
+   xmlFile.WriteAttr(L"displaylog", GetDisplayLog());
+   xmlFile.WriteAttr(L"interpolatelog", GetInterpolateLog());
 
    mEnvelope->WriteXML(xmlFile);
 
-   xmlFile.EndTag(wxT("timetrack"));
+   xmlFile.EndTag(L"timetrack");
 }
 
 void TimeTrack::testMe()

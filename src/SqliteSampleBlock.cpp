@@ -243,7 +243,7 @@ SampleBlockPtr SqliteSampleBlockFactory::DoCreateFromXML(
       double dblValue;
       long long nValue;
 
-      if (wxStrcmp(attr, wxT("blockid")) == 0 &&
+      if (wxStrcmp(attr, L"blockid") == 0 &&
          XMLValueChecker::IsGoodInt(strValue) && strValue.ToLongLong(&nValue))
       {
          if (nValue <= 0) {
@@ -563,7 +563,7 @@ size_t SqliteSampleBlock::GetBlob(void *dest,
          "sqlite3.rc", std::to_string(sqlite3_errcode(Conn()->DB())));
       ADD_EXCEPTION_CONTEXT("sqlite3.context", "SqliteSampleBlock::GetBlob::bind");
 
-      wxASSERT_MSG(false, wxT("Binding failed...bug!!!"));
+      wxASSERT_MSG(false, L"Binding failed...bug!!!");
    }
 
    // Execute the statement
@@ -573,7 +573,7 @@ size_t SqliteSampleBlock::GetBlob(void *dest,
       ADD_EXCEPTION_CONTEXT("sqlite3.rc", std::to_string(rc));
       ADD_EXCEPTION_CONTEXT("sqlite3.context", "SqliteSampleBlock::GetBlob::step");
 
-      wxLogDebug(wxT("SqliteSampleBlock::GetBlob - SQLITE error %s"), sqlite3_errmsg(db));
+      wxLogDebug(L"SqliteSampleBlock::GetBlob - SQLITE error %s", sqlite3_errmsg(db));
 
       // Clear statement bindings and rewind statement
       sqlite3_clear_bindings(stmt);
@@ -688,7 +688,7 @@ void SqliteSampleBlock::Load(SampleBlockID sbid)
       ADD_EXCEPTION_CONTEXT("sqlite3.rc", std::to_string(sqlite3_errcode(Conn()->DB())));
       ADD_EXCEPTION_CONTEXT("sqlite3.context", "SqliteSampleBlock::Load::bind");
 
-      wxASSERT_MSG(false, wxT("Binding failed...bug!!!"));
+      wxASSERT_MSG(false, L"Binding failed...bug!!!");
    }
 
    // Execute the statement
@@ -700,7 +700,7 @@ void SqliteSampleBlock::Load(SampleBlockID sbid)
       ADD_EXCEPTION_CONTEXT("sqlite3.context", "SqliteSampleBlock::Load::step");
 
 
-      wxLogDebug(wxT("SqliteSampleBlock::Load - SQLITE error %s"), sqlite3_errmsg(db));
+      wxLogDebug(L"SqliteSampleBlock::Load - SQLITE error %s", sqlite3_errmsg(db));
 
       // Clear statement bindings and rewind statement
       sqlite3_clear_bindings(stmt);
@@ -758,7 +758,7 @@ void SqliteSampleBlock::Commit(Sizes sizes)
       ADD_EXCEPTION_CONTEXT("sqlite3.context", "SqliteSampleBlock::Commit::bind");
 
 
-      wxASSERT_MSG(false, wxT("Binding failed...bug!!!"));
+      wxASSERT_MSG(false, L"Binding failed...bug!!!");
    }
  
    // Execute the statement
@@ -768,7 +768,7 @@ void SqliteSampleBlock::Commit(Sizes sizes)
       ADD_EXCEPTION_CONTEXT("sqlite3.rc", std::to_string(rc));
       ADD_EXCEPTION_CONTEXT("sqlite3.context", "SqliteSampleBlock::Commit::step");
 
-      wxLogDebug(wxT("SqliteSampleBlock::Commit - SQLITE error %s"), sqlite3_errmsg(db));
+      wxLogDebug(L"SqliteSampleBlock::Commit - SQLITE error %s", sqlite3_errmsg(db));
 
       // Clear statement bindings and rewind statement
       sqlite3_clear_bindings(stmt);
@@ -814,7 +814,7 @@ void SqliteSampleBlock::Delete()
          "sqlite3.rc", std::to_string(sqlite3_errcode(Conn()->DB())));
       ADD_EXCEPTION_CONTEXT("sqlite3.context", "SqliteSampleBlock::Delete::bind");
 
-      wxASSERT_MSG(false, wxT("Binding failed...bug!!!"));
+      wxASSERT_MSG(false, L"Binding failed...bug!!!");
    }
 
    // Execute the statement
@@ -824,7 +824,7 @@ void SqliteSampleBlock::Delete()
       ADD_EXCEPTION_CONTEXT("sqlite3.rc", std::to_string(rc));
       ADD_EXCEPTION_CONTEXT("sqlite3.context", "SqliteSampleBlock::Delete::step");
 
-      wxLogDebug(wxT("SqliteSampleBlock::Load - SQLITE error %s"), sqlite3_errmsg(db));
+      wxLogDebug(L"SqliteSampleBlock::Load - SQLITE error %s", sqlite3_errmsg(db));
 
       // Clear statement bindings and rewind statement
       sqlite3_clear_bindings(stmt);
@@ -842,7 +842,7 @@ void SqliteSampleBlock::Delete()
 
 void SqliteSampleBlock::SaveXML(XMLWriter &xmlFile)
 {
-   xmlFile.WriteAttr(wxT("blockid"), mBlockID);
+   xmlFile.WriteAttr(L"blockid", mBlockID);
 }
 
 auto SqliteSampleBlock::SetSizes(
@@ -987,7 +987,7 @@ void SqliteSampleBlock::CalcSummary(Sizes sizes)
    for (int i = sumLen, frames64k = mSummary64kBytes / bytesPerFrame;
         i < frames64k; ++i)
    {
-      wxASSERT_MSG(false, wxT("Out of data for mSummaryInfo"));   // Do we ever get here?
+      wxASSERT_MSG(false, L"Out of data for mSummaryInfo");   // Do we ever get here?
 
       summary64k[i * fields] = 0.0f;     // probably should be FLT_MAX, need a test case
       summary64k[i * fields + 1] = 0.0f; // probably should be -FLT_MAX, need a test case

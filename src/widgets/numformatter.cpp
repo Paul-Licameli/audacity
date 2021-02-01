@@ -62,7 +62,7 @@ wxChar NumberFormatter::GetDecimalSeparator()
    {
       // We really must have something for decimal separator, so fall
       // back to the C locale default.
-      s = wxT(".");
+      s = L".";
    }
 
    return s[0];
@@ -102,20 +102,20 @@ wxString NumberFormatter::PostProcessIntString(const wxString &sArg, int style)
         AddThousandsSeparators(s);
 
     wxASSERT_MSG( !(style & Style_NoTrailingZeroes),
-                  wxT("Style_NoTrailingZeroes can't be used with integer values") );
+                  L"Style_NoTrailingZeroes can't be used with integer values" );
     wxASSERT_MSG( !(style & Style_OneTrailingZero),
-                  wxT("Style_OneTrailingZero can't be used with integer values") );
+                  L"Style_OneTrailingZero can't be used with integer values" );
     wxASSERT_MSG( !(style & Style_TwoTrailingZeroes),
-                  wxT("Style_TwoTrailingZeroes can't be used with integer values") );
+                  L"Style_TwoTrailingZeroes can't be used with integer values" );
     wxASSERT_MSG( !(style & Style_ThreeTrailingZeroes),
-                  wxT("Style_ThreeTrailingZeroes can't be used with integer values") );
+                  L"Style_ThreeTrailingZeroes can't be used with integer values" );
 
     return s;
 }
 
 wxString NumberFormatter::ToString(long val, int style)
 {
-    return PostProcessIntString(wxString::Format(wxT("%ld"), val), style);
+    return PostProcessIntString(wxString::Format(L"%ld", val), style);
 }
 
 #ifdef HAS_LONG_LONG_T_DIFFERENT_FROM_LONG
@@ -133,11 +133,11 @@ wxString NumberFormatter::ToString(double val, int precision, int style)
     wxString format;
     if ( precision == -1 )
     {
-        format = wxT("%g");
+        format = L"%g";
     }
     else // Use fixed precision.
     {
-        format.Printf(wxT("%%.%df"), precision);
+        format.Printf(L"%%.%df", precision);
     }
 
     if (std::isnan(val))
@@ -192,7 +192,7 @@ void NumberFormatter::AddThousandsSeparators(wxString& s)
 
     // End grouping at the beginning of the digits -- there could be at a sign
     // before their start.
-    const size_t start = s.find_first_of(wxT("0123456789"));
+    const size_t start = s.find_first_of(L"0123456789");
 
     // We currently group digits by 3 independently of the locale. This is not
     // the right thing to do and we should use lconv::grouping (under POSIX)
@@ -212,11 +212,11 @@ void NumberFormatter::RemoveTrailingZeroes(wxString& s, size_t retain /* = 0 */)
 {
    const size_t posDecSep = s.find(GetDecimalSeparator());
    wxCHECK_RET( posDecSep != wxString::npos,
-               wxString::Format(wxT("No decimal separator in \"%s\""), s) );
-   wxCHECK_RET( posDecSep, wxT("Can't start with decimal separator" ));
+               wxString::Format(L"No decimal separator in \"%s\"", s) );
+   wxCHECK_RET( posDecSep, L"Can't start with decimal separator");
 
    // Find the last character to keep.
-   size_t posLastCharacterToKeep = s.find_last_not_of(wxT("0"));
+   size_t posLastCharacterToKeep = s.find_last_not_of(L"0");
 
    // If it's the decimal separator itself, remove it.
    if ((posLastCharacterToKeep == posDecSep) && (retain == 0)) {

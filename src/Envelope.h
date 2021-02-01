@@ -39,13 +39,13 @@ public:
 
    bool HandleXMLTag(const wxChar *tag, const wxChar **attrs) override
    {
-      if (!wxStrcmp(tag, wxT("controlpoint"))) {
+      if (!wxStrcmp(tag, L"controlpoint")) {
          while (*attrs) {
             const wxChar *attr = *attrs++;
             const wxChar *value = *attrs++;
-            if (!wxStrcmp(attr, wxT("t")))
+            if (!wxStrcmp(attr, L"t"))
                SetT(Internat::CompatibleToDouble(value));
-            else if (!wxStrcmp(attr, wxT("val")))
+            else if (!wxStrcmp(attr, L"val"))
                SetVal( nullptr, Internat::CompatibleToDouble(value) );
          }
          return true;

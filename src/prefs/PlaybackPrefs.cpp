@@ -88,7 +88,7 @@ void PlaybackPrefs::PopulateOrExchange(ShuttleGui & S)
       {
          S.NameSuffix(suffix)
             .TieNumericTextBox(XXO("&Length:"),
-                                 {wxT("/AudioIO/EffectsPreviewLen"),
+                                 {L"/AudioIO/EffectsPreviewLen",
                                   6.0},
                                  9);
          S.AddUnits(XO("seconds"));
@@ -104,14 +104,14 @@ void PlaybackPrefs::PopulateOrExchange(ShuttleGui & S)
       {
          S.NameSuffix(suffix)
             .TieNumericTextBox(XXO("&Before cut region:"),
-                                 {wxT("/AudioIO/CutPreviewBeforeLen"),
+                                 {L"/AudioIO/CutPreviewBeforeLen",
                                   2.0},
                                  9);
          S.AddUnits(XO("seconds"));
 
          S.NameSuffix(suffix)
             .TieNumericTextBox(XXO("&After cut region:"),
-                                 {wxT("/AudioIO/CutPreviewAfterLen"),
+                                 {L"/AudioIO/CutPreviewAfterLen",
                                   1.0},
                                  9);
          S.AddUnits(XO("seconds"));
@@ -126,14 +126,14 @@ void PlaybackPrefs::PopulateOrExchange(ShuttleGui & S)
       {
          S.NameSuffix(suffix)
             .TieNumericTextBox(XXO("&Short period:"),
-                                 {wxT("/AudioIO/SeekShortPeriod"),
+                                 {L"/AudioIO/SeekShortPeriod",
                                   1.0},
                                  9);
          S.AddUnits(XO("seconds"));
 
          S.NameSuffix(suffix)
             .TieNumericTextBox(XXO("Lo&ng period:"),
-                                 {wxT("/AudioIO/SeekLongPeriod"),
+                                 {L"/AudioIO/SeekLongPeriod",
                                   15.0},
                                  9);
          S.AddUnits(XO("seconds"));

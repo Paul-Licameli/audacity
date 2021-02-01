@@ -357,9 +357,9 @@ bool ProjectFileIO::OpenConnection(FilePath fileName /* = {}  */)
    {
       // If this project resides in the temporary directory, then we'll mark it
       // as temporary.
-      wxFileName temp(TempDirectory::TempDir(), wxT(""));
+      wxFileName temp(TempDirectory::TempDir(), L"");
       wxFileName file(fileName);
-      file.SetFullName(wxT(""));
+      file.SetFullName(L"");
       if (file == temp)
       {
          isTemp = true;
@@ -445,9 +445,9 @@ void ProjectFileIO::DiscardConnection()
       if (mPrevTemporary)
       {
          // This is just a safety check.
-         wxFileName temp(TempDirectory::TempDir(), wxT(""));
+         wxFileName temp(TempDirectory::TempDir(), L"");
          wxFileName file(mPrevFileName);
-         file.SetFullName(wxT(""));
+         file.SetFullName(L"");
          if (file == temp)
          {
             if (!RemoveProject(mPrevFileName))
@@ -1097,13 +1097,13 @@ bool ProjectFileIO::ShouldCompact(const std::vector<const TrackList *> &tracks)
    // Let's make a percentage...should be plenty of head room
    current *= 100;
 
-   wxLogDebug(wxT("used = %lld total = %lld %lld"), current, total, total ? current / total : 0);
+   wxLogDebug(L"used = %lld total = %lld %lld", current, total, total ? current / total : 0);
    if (!total || current / total > 80)
    {
-      wxLogDebug(wxT("not compacting"));
+      wxLogDebug(L"not compacting");
       return false;
    }
-   wxLogDebug(wxT("compacting"));
+   wxLogDebug(L"compacting");
 
    return true;
 }
@@ -1132,9 +1132,9 @@ FilePath ProjectFileIO::SafetyFileName(const FilePath &src)
    // Extra characters inserted into filename before extension
    wxString extra =
 #ifdef __WXGTK__
-      wxT("~")
+      L"~"
 #else
-      wxT(".bak")
+      L".bak"
 #endif
    ;
 
@@ -1368,7 +1368,7 @@ void ProjectFileIO::Compact(
                         // Just log the error, nothing can be done to correct it
                         // and WX should have logged another message showing the
                         // system error code.
-                        wxLogWarning(wxT("Compaction failed to delete backup %s"), backName);
+                        wxLogWarning(L"Compaction failed to delete backup %s", backName);
                      }
 
                      // Remember that we compacted
@@ -1378,37 +1378,37 @@ void ProjectFileIO::Compact(
                   }
                   else
                   {
-                     wxLogWarning(wxT("Compaction failed to open new project %s"), origName);
+                     wxLogWarning(L"Compaction failed to open new project %s", origName);
                   }
 
                   if (!wxRenameFile(origName, tempName))
                   {
-                     wxLogWarning(wxT("Compaction failed to rename orignal %s to temp %s"),
+                     wxLogWarning(L"Compaction failed to rename orignal %s to temp %s",
                                   origName, tempName);
                   }
                }
                else
                {
-                  wxLogWarning(wxT("Compaction failed to rename temp %s to orig %s"),
+                  wxLogWarning(L"Compaction failed to rename temp %s to orig %s",
                                  origName, tempName);
                }
 
                if (!wxRenameFile(backName, origName))
                {
-                  wxLogWarning(wxT("Compaction failed to rename back %s to orig %s"),
+                  wxLogWarning(L"Compaction failed to rename back %s to orig %s",
                                backName, origName);
                }
             }
             else
             {
-               wxLogWarning(wxT("Compaction failed to rename orig %s to back %s"),
+               wxLogWarning(L"Compaction failed to rename orig %s to back %s",
                               backName, origName);
             }
          }
 
          if (!OpenConnection(origName))
          {
-            wxLogWarning(wxT("Compaction failed to reopen %s"), origName);
+            wxLogWarning(L"Compaction failed to reopen %s", origName);
          }
       }
 
@@ -1419,7 +1419,7 @@ void ProjectFileIO::Compact(
          // Just log the error, nothing can be done to correct it
          // and WX should have logged another message showing the
          // system error code.
-         wxLogWarning(wxT("Failed to delete temporary file...ignoring"));
+         wxLogWarning(L"Failed to delete temporary file...ignoring");
       }
    }
 
@@ -1472,7 +1472,7 @@ void ProjectFileIO::SetProjectTitle(int number)
 
    if (mRecovered)
    {
-      name += wxT(" ");
+      name += L" ";
       /* i18n-hint: E.g this is recovered audio that had been lost.*/
       name += _("(Recovered)");
    }
@@ -1551,49 +1551,49 @@ bool ProjectFileIO::HandleXMLTag(const wxChar *tag, const wxChar **attrs)
          continue;
       }
 
-      else if (!wxStrcmp(attr, wxT("version")))
+      else if (!wxStrcmp(attr, L"version"))
       {
          fileVersion = value;
          requiredTags++;
       }
 
-      else if (!wxStrcmp(attr, wxT("audacityversion")))
+      else if (!wxStrcmp(attr, L"audacityversion"))
       {
          audacityVersion = value;
          requiredTags++;
       }
 
-      else if (!wxStrcmp(attr, wxT("rate")))
+      else if (!wxStrcmp(attr, L"rate"))
       {
          double rate;
          Internat::CompatibleToDouble(value, &rate);
          settings.SetRate( rate );
       }
 
-      else if (!wxStrcmp(attr, wxT("snapto")))
+      else if (!wxStrcmp(attr, L"snapto"))
       {
-         settings.SetSnapTo(wxString(value) == wxT("on") ? true : false);
+         settings.SetSnapTo(wxString(value) == L"on" ? true : false);
       }
 
-      else if (!wxStrcmp(attr, wxT("selectionformat")))
+      else if (!wxStrcmp(attr, L"selectionformat"))
       {
          settings.SetSelectionFormat(
             NumericConverter::LookupFormat( NumericConverter::TIME, value) );
       }
 
-      else if (!wxStrcmp(attr, wxT("audiotimeformat")))
+      else if (!wxStrcmp(attr, L"audiotimeformat"))
       {
          settings.SetAudioTimeFormat(
             NumericConverter::LookupFormat( NumericConverter::TIME, value) );
       }
 
-      else if (!wxStrcmp(attr, wxT("frequencyformat")))
+      else if (!wxStrcmp(attr, L"frequencyformat"))
       {
          settings.SetFrequencySelectionFormatName(
             NumericConverter::LookupFormat( NumericConverter::FREQUENCY, value ) );
       }
 
-      else if (!wxStrcmp(attr, wxT("bandwidthformat")))
+      else if (!wxStrcmp(attr, L"bandwidthformat"))
       {
          settings.SetBandwidthSelectionFormatName(
             NumericConverter::LookupFormat( NumericConverter::BANDWIDTH, value ) );
@@ -1615,7 +1615,7 @@ bool ProjectFileIO::HandleXMLTag(const wxChar *tag, const wxChar **attrs)
    int fver;
    int frel;
    int frev;
-   if (!wxSscanf(fileVersion, wxT("%i.%i.%i"), &fver, &frel, &frev))
+   if (!wxSscanf(fileVersion, L"%i.%i.%i", &fver, &frel, &frev))
    {
       return false;
    }
@@ -1624,7 +1624,7 @@ bool ProjectFileIO::HandleXMLTag(const wxChar *tag, const wxChar **attrs)
    int cver;
    int crel;
    int crev;
-   wxSscanf(wxT(AUDACITY_FILE_FORMAT_VERSION), wxT("%i.%i.%i"), &cver, &crel, &crev);
+   wxSscanf(wxT(AUDACITY_FILE_FORMAT_VERSION), L"%i.%i.%i", &cver, &crel, &crev);
 
    int fileVer = ((fver *100)+frel)*100+frev;
    int codeVer = ((cver *100)+crel)*100+crev;
@@ -1645,7 +1645,7 @@ bool ProjectFileIO::HandleXMLTag(const wxChar *tag, const wxChar **attrs)
       return false;
    }
 
-   if (wxStrcmp(tag, wxT("project")))
+   if (wxStrcmp(tag, L"project"))
    {
       return false;
    }
@@ -1674,17 +1674,17 @@ void ProjectFileIO::OnCheckpointFailure()
 
 void ProjectFileIO::WriteXMLHeader(XMLWriter &xmlFile) const
 {
-   xmlFile.Write(wxT("<?xml "));
-   xmlFile.Write(wxT("version=\"1.0\" "));
-   xmlFile.Write(wxT("standalone=\"no\" "));
-   xmlFile.Write(wxT("?>\n"));
+   xmlFile.Write(L"<?xml ");
+   xmlFile.Write(L"version=\"1.0\" ");
+   xmlFile.Write(L"standalone=\"no\" ");
+   xmlFile.Write(L"?>\n");
 
-   xmlFile.Write(wxT("<!DOCTYPE "));
-   xmlFile.Write(wxT("project "));
-   xmlFile.Write(wxT("PUBLIC "));
-   xmlFile.Write(wxT("\"-//audacityproject-1.3.0//DTD//EN\" "));
-   xmlFile.Write(wxT("\"http://audacity.sourceforge.net/xml/audacityproject-1.3.0.dtd\" "));
-   xmlFile.Write(wxT(">\n"));
+   xmlFile.Write(L"<!DOCTYPE ");
+   xmlFile.Write(L"project ");
+   xmlFile.Write(L"PUBLIC ");
+   xmlFile.Write(L"\"-//audacityproject-1.3.0//DTD//EN\" ");
+   xmlFile.Write(L"\"http://audacity.sourceforge.net/xml/audacityproject-1.3.0.dtd\" ");
+   xmlFile.Write(L">\n");
 }
 
 void ProjectFileIO::WriteXML(XMLWriter &xmlFile,
@@ -1700,20 +1700,20 @@ void ProjectFileIO::WriteXML(XMLWriter &xmlFile,
 
    //TIMER_START( "AudacityProject::WriteXML", xml_writer_timer );
 
-   xmlFile.StartTag(wxT("project"));
-   xmlFile.WriteAttr(wxT("xmlns"), wxT("http://audacity.sourceforge.net/xml/"));
+   xmlFile.StartTag(L"project");
+   xmlFile.WriteAttr(L"xmlns", L"http://audacity.sourceforge.net/xml/");
 
-   xmlFile.WriteAttr(wxT("version"), wxT(AUDACITY_FILE_FORMAT_VERSION));
-   xmlFile.WriteAttr(wxT("audacityversion"), AUDACITY_VERSION_STRING);
+   xmlFile.WriteAttr(L"version", wxT(AUDACITY_FILE_FORMAT_VERSION));
+   xmlFile.WriteAttr(L"audacityversion", AUDACITY_VERSION_STRING);
 
    viewInfo.WriteXMLAttributes(xmlFile);
-   xmlFile.WriteAttr(wxT("rate"), settings.GetRate());
-   xmlFile.WriteAttr(wxT("snapto"), settings.GetSnapTo() ? wxT("on") : wxT("off"));
-   xmlFile.WriteAttr(wxT("selectionformat"),
+   xmlFile.WriteAttr(L"rate", settings.GetRate());
+   xmlFile.WriteAttr(L"snapto", settings.GetSnapTo() ? L"on" : L"off");
+   xmlFile.WriteAttr(L"selectionformat",
                      settings.GetSelectionFormat().Internal());
-   xmlFile.WriteAttr(wxT("frequencyformat"),
+   xmlFile.WriteAttr(L"frequencyformat",
                      settings.GetFrequencySelectionFormatName().Internal());
-   xmlFile.WriteAttr(wxT("bandwidthformat"),
+   xmlFile.WriteAttr(L"bandwidthformat",
                      settings.GetBandwidthSelectionFormatName().Internal());
 
    tags.WriteXML(xmlFile);
@@ -1739,7 +1739,7 @@ void ProjectFileIO::WriteXML(XMLWriter &xmlFile,
       useTrack->WriteXML(xmlFile);
    });
 
-   xmlFile.EndTag(wxT("project"));
+   xmlFile.EndTag(L"project");
 
    //TIMER_STOP( xml_writer_timer );
 }
@@ -1970,7 +1970,7 @@ bool ProjectFileIO::LoadProject(const FilePath &fileName, bool ignoreAutosave)
       return false;
    }
 
-   mTemporary = !result.IsSameAs(wxT("1"));
+   mTemporary = !result.IsSameAs(L"1");
 
    SetFileName(fileName);
 
@@ -2247,9 +2247,9 @@ bool ProjectFileIO::CloseProject()
       if (IsTemporary())
       {
          // This is just a safety check.
-         wxFileName temp(TempDirectory::TempDir(), wxT(""));
+         wxFileName temp(TempDirectory::TempDir(), L"");
          wxFileName file(filename);
-         file.SetFullName(wxT(""));
+         file.SetFullName(L"");
          if (file == temp)
             RemoveProject(filename);
       }

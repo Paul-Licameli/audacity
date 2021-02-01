@@ -110,7 +110,7 @@ void ExtImportPrefs::PopulateOrExchange(ShuttleGui & S)
    S.StartScroller();
 
    S.TieCheckBox(XXO("A&ttempt to use filter in OpenFile dialog first"),
-         {wxT("/ExtendedImport/OverrideExtendedImportByOpenFileDialogChoice"),
+         {L"/ExtendedImport/OverrideExtendedImportByOpenFileDialogChoice",
           true});
    S.StartStatic(XO("Rules to choose import filters"), 1);
    {
@@ -144,7 +144,7 @@ void ExtImportPrefs::PopulateOrExchange(ShuttleGui & S)
             ExtImportPrefsDropTarget *dragtarget1 {};
             RuleTable->SetDropTarget (
                dragtarget1 = safenew ExtImportPrefsDropTarget(
-                  dragtext1 = safenew wxTextDataObject(wxT(""))
+                  dragtext1 = safenew wxTextDataObject(L"")
                )
             );
             dragtarget1->SetPrefs (this);
@@ -166,7 +166,7 @@ void ExtImportPrefs::PopulateOrExchange(ShuttleGui & S)
             ExtImportPrefsDropTarget *dragtarget2 {};
             PluginList->SetDropTarget (
                dragtarget2 = safenew ExtImportPrefsDropTarget(
-                  dragtext2 = safenew wxTextDataObject(wxT(""))
+                  dragtext2 = safenew wxTextDataObject(L"")
                )
             );
             dragtarget2->SetPrefs (this);
@@ -375,7 +375,7 @@ void ExtImportPrefs::SwapRows (int row1, int row2)
 void ExtImportPrefs::OnPluginBeginDrag(wxListEvent& WXUNUSED(event))
 {
    wxDropSource dragSource(this);
-   dragtext2->SetText(wxT(""));
+   dragtext2->SetText(L"");
    dragSource.SetData(*dragtext2);
    mDragFocus = PluginList;
    if( mDragFocus == NULL )
@@ -524,7 +524,7 @@ void ExtImportPrefs::OnRuleTableEdit (wxGridEvent& event)
    int fixSpaces = wxNO;
    bool askedAboutSpaces = false;
    wxArrayString vals;
-   wxString delims(wxT(":"));
+   wxString delims(L":");
    Importer::Get().StringToList (val, delims, vals);
    switch (col)
    {
@@ -580,7 +580,7 @@ Audacity to trim spaces for you?"),
       for (size_t i = 0; i < vals.size(); i++)
       {
          if (i > 0)
-            vals_as_string.Append (wxT(":"));
+            vals_as_string.Append (L":");
          vals_as_string.Append (vals[i]);
       }
       RuleTable->SetCellValue (row, col, vals_as_string);
@@ -597,7 +597,7 @@ void ExtImportPrefs::AddItemToTable (int index, const ExtImportItem *item)
       extensions.Append (item->extensions[0]);
       for (unsigned int i = 1; i < item->extensions.size(); i++)
       {
-         extensions.Append (wxT(":"));
+         extensions.Append (L":");
          extensions.Append (item->extensions[i]);
       }
    }
@@ -606,7 +606,7 @@ void ExtImportPrefs::AddItemToTable (int index, const ExtImportItem *item)
       mime_types.Append (item->mime_types[0]);
       for (unsigned int i = 1; i < item->mime_types.size(); i++)
       {
-         mime_types.Append (wxT(":"));
+         mime_types.Append (L":");
          mime_types.Append (item->mime_types[i]);
       }
    }
@@ -700,7 +700,7 @@ void ExtImportPrefs::OnRuleTableCellClick (wxGridEvent& event)
    RuleTable->SetGridCursor (row, 0);
 
    wxDropSource dragSource(this);
-   dragtext1->SetText(wxT(""));
+   dragtext1->SetText(L"");
    dragSource.SetData(*dragtext1);
    mDragFocus = RuleTable;
    wxDragResult result = dragSource.DoDragDrop(wxDrag_DefaultMove);

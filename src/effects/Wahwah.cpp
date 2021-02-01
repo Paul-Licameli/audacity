@@ -44,12 +44,12 @@ enum
 // Define keys, defaults, minimums, and maximums for the effect parameters
 //
 //     Name       Type     Key               Def      Min      Max      Scale
-Param( Freq,      double,  wxT("Freq"),       1.5,     0.1,     4.0,     10  );
-Param( Phase,     double,  wxT("Phase"),      0.0,     0.0,     360.0,   1   );
-Param( Depth,     int,     wxT("Depth"),      70,      0,       100,     1   ); // scaled to 0-1 before processing
-Param( Res,       double,  wxT("Resonance"),  2.5,     0.1,     10.0,    10  );
-Param( FreqOfs,   int,     wxT("Offset"),     30,      0,       100,     1   ); // scaled to 0-1 before processing
-Param( OutGain,   double,  wxT("Gain"),      -6.0,    -30.0,    30.0,    1   );
+Param( Freq,      double,  L"Freq",       1.5,     0.1,     4.0,     10  );
+Param( Phase,     double,  L"Phase",      0.0,     0.0,     360.0,   1   );
+Param( Depth,     int,     L"Depth",      70,      0,       100,     1   ); // scaled to 0-1 before processing
+Param( Res,       double,  L"Resonance",  2.5,     0.1,     10.0,    10  );
+Param( FreqOfs,   int,     L"Offset",     30,      0,       100,     1   ); // scaled to 0-1 before processing
+Param( OutGain,   double,  L"Gain",      -6.0,    -30.0,    30.0,    1   );
 
 // How many samples are processed before recomputing the lfo value again
 #define lfoskipsamples 30
@@ -108,7 +108,7 @@ TranslatableString EffectWahwah::GetDescription()
 
 wxString EffectWahwah::ManualPage()
 {
-   return wxT("Wahwah");
+   return L"Wahwah";
 }
 
 // EffectDefinitionInterface implementation
@@ -247,7 +247,7 @@ void EffectWahwah::PopulateOrExchange(ShuttleGui & S)
       mFreqT = S.Id(ID_Freq)
          .Validator<FloatingPointValidator<double>>(
             5, &mFreq, NumValidatorStyle::ONE_TRAILING_ZERO, MIN_Freq, MAX_Freq)
-         .AddTextBox(XXO("LFO Freq&uency (Hz):"), wxT(""), 12);
+         .AddTextBox(XXO("LFO Freq&uency (Hz):"), L"", 12);
 
       mFreqS = S.Id(ID_Freq)
          .Name(XO("LFO frequency in hertz"))
@@ -258,7 +258,7 @@ void EffectWahwah::PopulateOrExchange(ShuttleGui & S)
       mPhaseT = S.Id(ID_Phase)
          .Validator<FloatingPointValidator<double>>(
             1, &mPhase, NumValidatorStyle::DEFAULT, MIN_Phase, MAX_Phase)
-         .AddTextBox(XXO("LFO Sta&rt Phase (deg.):"), wxT(""), 12);
+         .AddTextBox(XXO("LFO Sta&rt Phase (deg.):"), L"", 12);
 
       mPhaseS = S.Id(ID_Phase)
          .Name(XO("LFO start phase in degrees"))
@@ -270,7 +270,7 @@ void EffectWahwah::PopulateOrExchange(ShuttleGui & S)
       mDepthT = S.Id(ID_Depth)
          .Validator<IntegerValidator<int>>(
             &mDepth, NumValidatorStyle::DEFAULT, MIN_Depth, MAX_Depth)
-         .AddTextBox(XXO("Dept&h (%):"), wxT(""), 12);
+         .AddTextBox(XXO("Dept&h (%):"), L"", 12);
 
       mDepthS = S.Id(ID_Depth)
          .Name(XO("Depth in percent"))
@@ -281,7 +281,7 @@ void EffectWahwah::PopulateOrExchange(ShuttleGui & S)
       mResT = S.Id(ID_Res)
          .Validator<FloatingPointValidator<double>>(
             1, &mRes, NumValidatorStyle::DEFAULT, MIN_Res, MAX_Res)
-         .AddTextBox(XXO("Reso&nance:"), wxT(""), 12);
+         .AddTextBox(XXO("Reso&nance:"), L"", 12);
 
       mResS = S.Id(ID_Res)
          .Name(XO("Resonance"))
@@ -292,7 +292,7 @@ void EffectWahwah::PopulateOrExchange(ShuttleGui & S)
       mFreqOfsT = S.Id(ID_FreqOfs)
          .Validator<IntegerValidator<int>>(
             &mFreqOfs, NumValidatorStyle::DEFAULT, MIN_FreqOfs, MAX_FreqOfs)
-         .AddTextBox(XXO("Wah Frequency Offse&t (%):"), wxT(""), 12);
+         .AddTextBox(XXO("Wah Frequency Offse&t (%):"), L"", 12);
 
       mFreqOfsS = S.Id(ID_FreqOfs)
          .Name(XO("Wah frequency offset in percent"))
@@ -303,7 +303,7 @@ void EffectWahwah::PopulateOrExchange(ShuttleGui & S)
       mOutGainT = S.Id(ID_OutGain)
          .Validator<FloatingPointValidator<double>>(
             1, &mOutGain, NumValidatorStyle::DEFAULT, MIN_OutGain, MAX_OutGain)
-         .AddTextBox(XXO("&Output gain (dB):"), wxT(""), 12);
+         .AddTextBox(XXO("&Output gain (dB):"), L"", 12);
 
       mOutGainS = S.Id(ID_OutGain)
          .Name(XO("Output gain (dB)"))

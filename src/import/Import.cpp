@@ -88,7 +88,7 @@ ImportPluginList &Importer::sImportPluginList()
 }
 
 namespace {
-static const auto PathStart = wxT("Importers");
+static const auto PathStart = L"Importers";
 
 static Registry::GroupItem &sRegistry()
 {
@@ -138,7 +138,7 @@ bool Importer::Initialize()
    using namespace Registry;
    static OrderingPreferenceInitializer init{
       PathStart,
-      { {wxT(""), wxT("AUP,PCM,OGG,FLAC,MP3,LOF,FFmpeg") } }
+      { {L"", L"AUP,PCM,OGG,FLAC,MP3,LOF,FFmpeg" } }
       // QT and GStreamer are only conditionally compiled and would get
       // placed at the end if present
    };
@@ -227,7 +227,7 @@ void Importer::SetLastOpenType( const FileNames::FileType &type )
    // string!
    // The bad consequences of a change of locale are not severe -- only that
    // a default choice of file type for an open dialog is not remembered
-   gPrefs->Write(wxT("/LastOpenType"), type.description.Translation());
+   gPrefs->Write(L"/LastOpenType", type.description.Translation());
    gPrefs->Flush();
 }
 
@@ -237,7 +237,7 @@ void Importer::SetDefaultOpenType( const FileNames::FileType &type )
    // string!
    // The bad consequences of a change of locale are not severe -- only that
    // a default choice of file type for an open dialog is not remembered
-   gPrefs->Write(wxT("/DefaultOpenType"), type.description.Translation());
+   gPrefs->Write(L"/DefaultOpenType", type.description.Translation());
    gPrefs->Flush();
 }
 
@@ -247,7 +247,7 @@ size_t Importer::SelectDefaultOpenType( const FileNames::FileTypes &fileTypes )
    if ( !fileTypes.empty() )
       defaultValue = fileTypes[0].description.Translation();
 
-   wxString type = gPrefs->Read(wxT("/DefaultOpenType"), defaultValue);
+   wxString type = gPrefs->Read(L"/DefaultOpenType", defaultValue);
    // Convert the type to the filter index
    auto begin = fileTypes.begin();
    auto index = std::distance(
@@ -281,12 +281,12 @@ void Importer::ReadImportItems()
    for (item_counter = 0; true; item_counter++)
    {
       wxString condition, filters, used_filters, unused_filters, extensions, mime_types;
-      item_name.Printf (wxT("/ExtImportItems/Item%d"), item_counter);
+      item_name.Printf (L"/ExtImportItems/Item%d", item_counter);
       /* Break at first non-existent item */
       if (!gPrefs->Read(item_name, &item_value))
         break;
 
-      toker.SetString(item_value, wxT("|"), wxTOKEN_RET_EMPTY_ALL);
+      toker.SetString(item_value, L"|", wxTOKEN_RET_EMPTY_ALL);
       /* Break at first broken item */
       if (toker.CountTokens() != 2)
         break;
@@ -299,19 +299,19 @@ void Importer::ReadImportItems()
 
       /* Condition token consists of extension list and mime type list
        * mime type list can be omitted entirely (complete with '\' separator)*/
-      toker.SetString(condition, wxT("\\"), wxTOKEN_RET_EMPTY_ALL);
+      toker.SetString(condition, L"\\", wxTOKEN_RET_EMPTY_ALL);
       extensions = toker.GetNextToken();
       if (toker.HasMoreTokens())
         mime_types = toker.GetNextToken();
 
-      wxString delims(wxT(":"));
+      wxString delims(L":");
       StringToList (extensions, delims, new_item->extensions);
 
       if (!mime_types.empty())
          StringToList (mime_types, delims, new_item->mime_types);
 
       /* Filter token consists of used and unused filter lists */
-      toker.SetString(filters, wxT("\\"), wxTOKEN_RET_EMPTY_ALL);
+      toker.SetString(filters, L"\\", wxTOKEN_RET_EMPTY_ALL);
       used_filters = toker.GetNextToken();
       if (toker.HasMoreTokens())
         unused_filters = toker.GetNextToken();
@@ -390,33 +390,33 @@ void Importer::WriteImportItems()
       {
          val.Append (item->extensions[j]);
          if (j < item->extensions.size() - 1)
-            val.Append (wxT(":"));
+            val.Append (L":");
       }
-      val.Append (wxT("\\"));
+      val.Append (L"\\");
       for (size_t j = 0; j < item->mime_types.size(); j++)
       {
          val.Append (item->mime_types[j]);
          if (j < item->mime_types.size() - 1)
-            val.Append (wxT(":"));
+            val.Append (L":");
       }
-      val.Append (wxT("|"));
+      val.Append (L"|");
       for (size_t j = 0; j < item->filters.size() && ((int) j < item->divider || item->divider < 0); j++)
       {
          val.Append (item->filters[j]);
          if (j < item->filters.size() - 1 && ((int) j < item->divider - 1 || item->divider < 0))
-            val.Append (wxT(":"));
+            val.Append (L":");
       }
       if (item->divider >= 0)
       {
-         val.Append (wxT("\\"));
+         val.Append (L"\\");
          for (size_t j = item->divider; j < item->filters.size(); j++)
          {
             val.Append (item->filters[j]);
             if (j < item->filters.size() - 1)
-               val.Append (wxT(":"));
+               val.Append (L":");
          }
       }
-      name.Printf (wxT("/ExtImportItems/Item%d"), (int)i);
+      name.Printf (L"/ExtImportItems/Item%d", (int)i);
       gPrefs->Write (name, val);
       gPrefs->Flush();
    }
@@ -425,7 +425,7 @@ void Importer::WriteImportItems()
    more to DELETE.*/
    i = this->mExtImportItems.size();
    do {
-     name.Printf (wxT("/ExtImportItems/Item%d"), (int)i);
+     name.Printf (L"/ExtImportItems/Item%d", (int)i);
      // No item to DELETE?  Then it's time to finish.
      if (!gPrefs->Read(name, &val))
         break;
@@ -441,8 +441,8 @@ void Importer::WriteImportItems()
 std::unique_ptr<ExtImportItem> Importer::CreateDefaultImportItem()
 {
    auto new_item = std::make_unique<ExtImportItem>();
-   new_item->extensions.push_back(wxT("*"));
-   new_item->mime_types.push_back(wxT("*"));
+   new_item->extensions.push_back(L"*");
+   new_item->mime_types.push_back(L"*");
 
    for (const auto &importPlugin : sImportPluginList())
    {
@@ -478,7 +478,7 @@ bool Importer::Import( AudacityProject &project,
 #endif
 
    // Bug #2647: Peter has a Word 2000 .doc file that is recognized and imported by FFmpeg.
-   if (wxFileName(fName).GetExt() == wxT("doc")) {
+   if (wxFileName(fName).GetExt() == L"doc") {
       errorMessage =
          XO("\"%s\" \nis a not an audio file. \nAudacity cannot open this type of file.")
          .Format( fName );
@@ -494,76 +494,76 @@ bool Importer::Import( AudacityProject &project,
    ImportPluginPtrs compatiblePlugins;
 
    // Not implemented (yet?)
-   wxString mime_type = wxT("*");
+   wxString mime_type = L"*";
 
    // First, add user-selected filter
    bool usersSelectionOverrides;
-   gPrefs->Read(wxT("/ExtendedImport/OverrideExtendedImportByOpenFileDialogChoice"), &usersSelectionOverrides, false);
+   gPrefs->Read(L"/ExtendedImport/OverrideExtendedImportByOpenFileDialogChoice", &usersSelectionOverrides, false);
 
    if (usersSelectionOverrides)
    {
       // If user explicitly selected a filter,
       // then we should try importing via corresponding plugin first
-      wxString type = gPrefs->Read(wxT("/LastOpenType"),wxT(""));
+      wxString type = gPrefs->Read(L"/LastOpenType",L"");
 
-      wxLogDebug(wxT("LastOpenType is %s"),type);
-      wxLogDebug(wxT("OverrideExtendedImportByOpenFileDialogChoice is %i"),usersSelectionOverrides);
+      wxLogDebug(L"LastOpenType is %s",type);
+      wxLogDebug(L"OverrideExtendedImportByOpenFileDialogChoice is %i",usersSelectionOverrides);
 
       for (const auto &plugin : sImportPluginList())
       {
          if (plugin->GetPluginFormatDescription().Translation() == type )
          {
             // This plugin corresponds to user-selected filter, try it first.
-            wxLogDebug(wxT("Inserting %s"),plugin->GetPluginStringID());
+            wxLogDebug(L"Inserting %s",plugin->GetPluginStringID());
             importPlugins.insert(importPlugins.begin(), plugin);
          }
       }
    }
 
-   wxLogMessage(wxT("File name is %s"), fName);
-   wxLogMessage(wxT("Mime type is %s"), mime_type.Lower());
+   wxLogMessage(L"File name is %s", fName);
+   wxLogMessage(L"Mime type is %s", mime_type.Lower());
 
    for (const auto &uItem : mExtImportItems)
    {
       ExtImportItem *item = uItem.get();
       bool matches_ext = false, matches_mime = false;
-      wxLogDebug(wxT("Testing extensions"));
+      wxLogDebug(L"Testing extensions");
       for (size_t j = 0; j < item->extensions.size(); j++)
       {
-         wxLogDebug(wxT("%s"), item->extensions[j].Lower());
+         wxLogDebug(L"%s", item->extensions[j].Lower());
          if (wxMatchWild (item->extensions[j].Lower(),fName.Lower(), false))
          {
-            wxLogDebug(wxT("Match!"));
+            wxLogDebug(L"Match!");
             matches_ext = true;
             break;
          }
       }
       if (item->extensions.size() == 0)
       {
-         wxLogDebug(wxT("Match! (empty list)"));
+         wxLogDebug(L"Match! (empty list)");
          matches_ext = true;
       }
       if (matches_ext)
-         wxLogDebug(wxT("Testing mime types"));
+         wxLogDebug(L"Testing mime types");
       else
-         wxLogDebug(wxT("Not testing mime types"));
+         wxLogDebug(L"Not testing mime types");
       for (size_t j = 0; matches_ext && j < item->mime_types.size(); j++)
       {
          if (wxMatchWild (item->mime_types[j].Lower(),mime_type.Lower(), false))
          {
-            wxLogDebug(wxT("Match!"));
+            wxLogDebug(L"Match!");
             matches_mime = true;
             break;
          }
       }
       if (item->mime_types.size() == 0)
       {
-         wxLogDebug(wxT("Match! (empty list)"));
+         wxLogDebug(L"Match! (empty list)");
          matches_mime = true;
       }
       if (matches_ext && matches_mime)
       {
-         wxLogDebug(wxT("Complete match!"));
+         wxLogDebug(L"Complete match!");
          for (size_t j = 0; j < item->filter_objects.size() && (item->divider < 0 || (int) j < item->divider); j++)
          {
             // the filter_object can be NULL if a suitable importer was not found
@@ -571,7 +571,7 @@ bool Importer::Import( AudacityProject &project,
             // is still ffmpeg in prefs from previous --with-ffmpeg builds
             if (!(item->filter_objects[j]))
                continue;
-            wxLogDebug(wxT("Inserting %s"),item->filter_objects[j]->GetPluginStringID());
+            wxLogDebug(L"Inserting %s",item->filter_objects[j]->GetPluginStringID());
             importPlugins.push_back(item->filter_objects[j]);
          }
       }
@@ -586,7 +586,7 @@ bool Importer::Import( AudacityProject &project,
       {
          if (plugin->SupportsExtension(extension))
          {
-            wxLogDebug(wxT("Appending %s"),plugin->GetPluginStringID());
+            wxLogDebug(L"Appending %s",plugin->GetPluginStringID());
             importPlugins.push_back(plugin);
          }
       }
@@ -599,7 +599,7 @@ bool Importer::Import( AudacityProject &project,
       if (importPlugins.end() ==
             std::find(importPlugins.begin(), importPlugins.end(), plugin))
       {
-         wxLogDebug(wxT("Appending %s"),plugin->GetPluginStringID());
+         wxLogDebug(L"Appending %s",plugin->GetPluginStringID());
          importPlugins.push_back(plugin);
       }
    }
@@ -608,11 +608,11 @@ bool Importer::Import( AudacityProject &project,
    for (const auto plugin : importPlugins)
    {
       // Try to open the file with this plugin (probe it)
-      wxLogMessage(wxT("Opening with %s"),plugin->GetPluginStringID());
+      wxLogMessage(L"Opening with %s",plugin->GetPluginStringID());
       auto inFile = plugin->Open(fName, pProj);
       if ( (inFile != NULL) && (inFile->GetStreamCount() > 0) )
       {
-         wxLogMessage(wxT("Open(%s) succeeded"), fName);
+         wxLogMessage(L"Open(%s) succeeded", fName);
          // File has more than one stream - display stream selector
          if (inFile->GetStreamCount() > 1)
          {
@@ -632,13 +632,13 @@ bool Importer::Import( AudacityProject &project,
          if (res == ProgressResult::Success || res == ProgressResult::Stopped)
          {
             // LOF ("list-of-files") has different semantics
-            if (extension.IsSameAs(wxT("lof"), false))
+            if (extension.IsSameAs(L"lof", false))
             {
                return true;
             }
 
             // AUP ("legacy projects") have different semantics
-            if (extension.IsSameAs(wxT("aup"), false))
+            if (extension.IsSameAs(L"aup", false))
             {
                return true;
             }
@@ -670,7 +670,7 @@ bool Importer::Import( AudacityProject &project,
          // continue.
       }
    }
-   wxLogError(wxT("Importer::Import: Opening failed."));
+   wxLogError(L"Importer::Import: Opening failed.");
 
    // None of our plugins can handle this file.  It might be that
    // Audacity supports this format, but support was not compiled in.
@@ -690,7 +690,7 @@ bool Importer::Import( AudacityProject &project,
    if (compatiblePlugins.empty())
    {
       // if someone has sent us a .cda file, send them away
-      if (extension.IsSameAs(wxT("cda"), false)) {
+      if (extension.IsSameAs(L"cda", false)) {
          errorMessage = XO(
 /* i18n-hint: %s will be the filename */
 "\"%s\" is an audio CD track. \nAudacity cannot open audio CDs directly. \nExtract (rip) the CD tracks to an audio format that \nAudacity can import, such as WAV or AIFF.")
@@ -699,7 +699,7 @@ bool Importer::Import( AudacityProject &project,
       }
 
       // playlist type files
-      if ((extension.IsSameAs(wxT("m3u"), false))||(extension.IsSameAs(wxT("ram"), false))||(extension.IsSameAs(wxT("pls"), false))) {
+      if ((extension.IsSameAs(L"m3u", false))||(extension.IsSameAs(L"ram", false))||(extension.IsSameAs(L"pls", false))) {
          errorMessage = XO(
 /* i18n-hint: %s will be the filename */
 "\"%s\" is a playlist file. \nAudacity cannot open this file because it only contains links to other files. \nYou may be able to open it in a text editor and download the actual audio files.")
@@ -707,7 +707,7 @@ bool Importer::Import( AudacityProject &project,
          return false;
       }
       //WMA files of various forms
-      if ((extension.IsSameAs(wxT("wma"), false))||(extension.IsSameAs(wxT("asf"), false))) {
+      if ((extension.IsSameAs(L"wma", false))||(extension.IsSameAs(L"asf", false))) {
          errorMessage = XO(
 /* i18n-hint: %s will be the filename */
 "\"%s\" is a Windows Media Audio file. \nAudacity cannot open this type of file due to patent restrictions. \nYou need to convert it to a supported audio format, such as WAV or AIFF.")
@@ -715,7 +715,7 @@ bool Importer::Import( AudacityProject &project,
          return false;
       }
       //AAC files of various forms (probably not encrypted)
-      if ((extension.IsSameAs(wxT("aac"), false))||(extension.IsSameAs(wxT("m4a"), false))||(extension.IsSameAs(wxT("m4r"), false))||(extension.IsSameAs(wxT("mp4"), false))) {
+      if ((extension.IsSameAs(L"aac", false))||(extension.IsSameAs(L"m4a", false))||(extension.IsSameAs(L"m4r", false))||(extension.IsSameAs(L"mp4", false))) {
          errorMessage = XO(
 /* i18n-hint: %s will be the filename */
 "\"%s\" is an Advanced Audio Coding file.\nWithout the optional FFmpeg library, Audacity cannot open this type of file.\nOtherwise, you need to convert it to a supported audio format, such as WAV or AIFF.")
@@ -723,7 +723,7 @@ bool Importer::Import( AudacityProject &project,
          return false;
       }
       // encrypted itunes files
-      if ((extension.IsSameAs(wxT("m4p"), false))) {
+      if ((extension.IsSameAs(L"m4p", false))) {
          errorMessage = XO(
 /* i18n-hint: %s will be the filename */
 "\"%s\" is an encrypted audio file. \nThese typically are from an online music store. \nAudacity cannot open this type of file due to the encryption. \nTry recording the file into Audacity, or burn it to audio CD then \nextract the CD track to a supported audio format such as WAV or AIFF.")
@@ -731,7 +731,7 @@ bool Importer::Import( AudacityProject &project,
          return false;
       }
       // Real Inc. files of various sorts
-      if ((extension.IsSameAs(wxT("ra"), false))||(extension.IsSameAs(wxT("rm"), false))||(extension.IsSameAs(wxT("rpm"), false))) {
+      if ((extension.IsSameAs(L"ra", false))||(extension.IsSameAs(L"rm", false))||(extension.IsSameAs(L"rpm", false))) {
          errorMessage = XO(
 /* i18n-hint: %s will be the filename */
 "\"%s\" is a RealPlayer media file. \nAudacity cannot open this proprietary format. \nYou need to convert it to a supported audio format, such as WAV or AIFF.")
@@ -740,7 +740,7 @@ bool Importer::Import( AudacityProject &project,
       }
 
       // Other notes-based formats
-      if ((extension.IsSameAs(wxT("kar"), false))||(extension.IsSameAs(wxT("mod"), false))||(extension.IsSameAs(wxT("rmi"), false))) {
+      if ((extension.IsSameAs(L"kar", false))||(extension.IsSameAs(L"mod", false))||(extension.IsSameAs(L"rmi", false))) {
          errorMessage = XO(
 /* i18n-hint: %s will be the filename */
 "\"%s\" is a notes-based file, not an audio file. \nAudacity cannot open this type of file. \nTry converting it to an audio file such as WAV or AIFF and \nthen import it, or record it into Audacity.")
@@ -749,7 +749,7 @@ bool Importer::Import( AudacityProject &project,
       }
 
       // MusePack files
-      if ((extension.IsSameAs(wxT("mp+"), false))||(extension.IsSameAs(wxT("mpc"), false))||(extension.IsSameAs(wxT("mpp"), false))) {
+      if ((extension.IsSameAs(L"mp+", false))||(extension.IsSameAs(L"mpc", false))||(extension.IsSameAs(L"mpp", false))) {
          errorMessage = XO(
 /* i18n-hint: %s will be the filename */
 "\"%s\" is a Musepack audio file. \nAudacity cannot open this type of file. \nIf you think it might be an mp3 file, rename it to end with \".mp3\" \nand try importing it again. Otherwise you need to convert it to a supported audio \nformat, such as WAV or AIFF.")
@@ -758,7 +758,7 @@ bool Importer::Import( AudacityProject &project,
       }
 
       // WavPack files
-      if ((extension.IsSameAs(wxT("wv"), false))||(extension.IsSameAs(wxT("wvc"), false))) {
+      if ((extension.IsSameAs(L"wv", false))||(extension.IsSameAs(L"wvc", false))) {
          errorMessage = XO(
 /* i18n-hint: %s will be the filename */
 "\"%s\" is a Wavpack audio file. \nAudacity cannot open this type of file. \nYou need to convert it to a supported audio format, such as WAV or AIFF.")
@@ -767,7 +767,7 @@ bool Importer::Import( AudacityProject &project,
       }
 
       // AC3 files
-      if ((extension.IsSameAs(wxT("ac3"), false))) {
+      if ((extension.IsSameAs(L"ac3", false))) {
          errorMessage = XO(
 /* i18n-hint: %s will be the filename */
 "\"%s\" is a Dolby Digital audio file. \nAudacity cannot currently open this type of file. \nYou need to convert it to a supported audio format, such as WAV or AIFF.")
@@ -776,7 +776,7 @@ bool Importer::Import( AudacityProject &project,
       }
 
       // Speex files
-      if ((extension.IsSameAs(wxT("spx"), false))) {
+      if ((extension.IsSameAs(L"spx", false))) {
          errorMessage = XO(
 /* i18n-hint: %s will be the filename */
 "\"%s\" is an Ogg Speex audio file. \nAudacity cannot currently open this type of file. \nYou need to convert it to a supported audio format, such as WAV or AIFF.")
@@ -785,7 +785,7 @@ bool Importer::Import( AudacityProject &project,
       }
 
       // Video files of various forms
-      if ((extension.IsSameAs(wxT("mpg"), false))||(extension.IsSameAs(wxT("mpeg"), false))||(extension.IsSameAs(wxT("avi"), false))||(extension.IsSameAs(wxT("wmv"), false))||(extension.IsSameAs(wxT("rv"), false))) {
+      if ((extension.IsSameAs(L"mpg", false))||(extension.IsSameAs(L"mpeg", false))||(extension.IsSameAs(L"avi", false))||(extension.IsSameAs(L"wmv", false))||(extension.IsSameAs(L"rv", false))) {
          errorMessage = XO(
 /* i18n-hint: %s will be the filename */
 "\"%s\" is a video file. \nAudacity cannot currently open this type of file. \nYou need to extract the audio to a supported format, such as WAV or AIFF.")

@@ -40,8 +40,8 @@ const ComponentInterfaceSymbol DemoCommand::Symbol
 //namespace{ BuiltinCommandsModule::Registration< DemoCommand > reg; }
 
 bool DemoCommand::DefineParams( ShuttleParams & S ){
-   S.Define( delay, wxT("Delay"), 1.0f, 0.001f,  FLT_MAX, 1.0f );
-   S.Define( decay, wxT("Decay"), 0.5f, 0.0f,    FLT_MAX, 1.0f  );
+   S.Define( delay, L"Delay", 1.0f, 0.001f,  FLT_MAX, 1.0f );
+   S.Define( decay, L"Decay", 0.5f, 0.0f,    FLT_MAX, 1.0f  );
    return true;
 }
 

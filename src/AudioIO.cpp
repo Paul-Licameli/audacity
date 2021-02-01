@@ -919,7 +919,7 @@ void AudioIO::Init()
 #endif
 
    // Make sure device prefs are initialized
-   if (gPrefs->Read(wxT("AudioIO/RecordingDevice"), wxT("")).empty()) {
+   if (gPrefs->Read(L"AudioIO/RecordingDevice", L"").empty()) {
       int i = getRecordDevIndex();
       const PaDeviceInfo *info = Pa_GetDeviceInfo(i);
       if (info) {
@@ -928,7 +928,7 @@ void AudioIO::Init()
       }
    }
 
-   if (gPrefs->Read(wxT("AudioIO/PlaybackDevice"), wxT("")).empty()) {
+   if (gPrefs->Read(L"AudioIO/PlaybackDevice", L"").empty()) {
       int i = getPlayDevIndex();
       const PaDeviceInfo *info = Pa_GetDeviceInfo(i);
       if (info) {
@@ -1191,7 +1191,7 @@ wxArrayString AudioIO::GetInputSourceNames()
    }
    else
    {
-      wxLogDebug(wxT("AudioIO::GetInputSourceNames(): PortMixer not initialised!"));
+      wxLogDebug(L"AudioIO::GetInputSourceNames(): PortMixer not initialised!");
    }
 
    return deviceNames;
@@ -1402,7 +1402,7 @@ bool AudioIO::StartPortAudioStream(const AudioIOStartStreamOptions &options,
             mPreviousHWPlaythrough = Px_GetPlaythrough(mPortMixer);
 
             // Bug 388.  Feature not supported.
-            //gPrefs->Read(wxT("/AudioIO/Playthrough"), &playthrough, false);
+            //gPrefs->Read(L"/AudioIO/Playthrough", &playthrough, false);
             if (playthrough)
                Px_SetPlaythrough(mPortMixer, 1.0);
             else
@@ -1436,7 +1436,7 @@ bool AudioIO::StartPortAudioStream(const AudioIOStartStreamOptions &options,
 
 wxString AudioIO::LastPaErrorString()
 {
-   return wxString::Format(wxT("%d %s."), (int) mLastPaError, Pa_GetErrorText(mLastPaError));
+   return wxString::Format(L"%d %s.", (int) mLastPaError, Pa_GetErrorText(mLastPaError));
 }
 
 void AudioIO::StartMonitoring( const AudioIOStartStreamOptions &options )
@@ -1447,7 +1447,7 @@ void AudioIO::StartMonitoring( const AudioIOStartStreamOptions &options )
    bool success;
    auto captureFormat = QualitySettings::SampleFormatChoice();
    auto captureChannels = AudioIORecordChannels.Read();
-   gPrefs->Read(wxT("/AudioIO/SWPlaythrough"), &mSoftwarePlaythrough, false);
+   gPrefs->Read(L"/AudioIO/SWPlaythrough", &mSoftwarePlaythrough, false);
    int playbackChannels = 0;
 
    if (mSoftwarePlaythrough)
@@ -1464,7 +1464,7 @@ void AudioIO::StartMonitoring( const AudioIOStartStreamOptions &options )
       auto msg = XO("Error opening recording device.\nError code: %s")
          .Format( Get()->LastPaErrorString() );
       ShowExceptionDialog( FindProjectFrame( mOwningProject ),
-         XO("Error"), msg, wxT("Error_opening_sound_device"));
+         XO("Error"), msg, L"Error_opening_sound_device");
       return;
    }
 
@@ -1494,7 +1494,7 @@ int AudioIO::StartStream(const TransportTracks &tracks,
    mLostSamples = 0;
    mLostCaptureIntervals.clear();
    mDetectDropouts =
-      gPrefs->Read( WarningDialogKey(wxT("DropoutDetected")), true ) != 0;
+      gPrefs->Read( WarningDialogKey(L"DropoutDetected"), true ) != 0;
    auto cleanup = finally ( [this] { ClearRecordingException(); } );
 
    if( IsBusy() )
@@ -1527,11 +1527,11 @@ int AudioIO::StartStream(const TransportTracks &tracks,
    mUsingAlsa = (AudioIOHost.Read() == L"ALSA");
 #endif
 
-   gPrefs->Read(wxT("/AudioIO/SWPlaythrough"), &mSoftwarePlaythrough, false);
-   gPrefs->Read(wxT("/AudioIO/SoundActivatedRecord"), &mPauseRec, false);
-   gPrefs->Read(wxT("/AudioIO/Microfades"), &mbMicroFades, false);
+   gPrefs->Read(L"/AudioIO/SWPlaythrough", &mSoftwarePlaythrough, false);
+   gPrefs->Read(L"/AudioIO/SoundActivatedRecord", &mPauseRec, false);
+   gPrefs->Read(L"/AudioIO/Microfades", &mbMicroFades, false);
    int silenceLevelDB;
-   gPrefs->Read(wxT("/AudioIO/SilenceLevel"), &silenceLevelDB, -50);
+   gPrefs->Read(L"/AudioIO/SilenceLevel", &silenceLevelDB, -50);
    int dBRange;
    dBRange = gPrefs->Read(ENV_DB_KEY, ENV_DB_RANGE);
    if(silenceLevelDB < -dBRange)
@@ -1544,7 +1544,7 @@ int AudioIO::StartStream(const TransportTracks &tracks,
       // The behavior (as of 2.3.1) was the latter, the code suggested that
       // the intent was the former;  I preserve the behavior, but uncomment
       // this if you disagree.
-      // gPrefs->Write(wxT("/AudioIO/SilenceLevel"), silenceLevelDB);
+      // gPrefs->Write(L"/AudioIO/SilenceLevel", silenceLevelDB);
       // gPrefs->Flush();
    }
    mSilenceLevel = DB_TO_LINEAR(silenceLevelDB);  // meter goes -dBRange dB -> 0dB
@@ -2093,18 +2093,18 @@ bool AudioIoCallback::StartPortMidiStream()
 
    /* get midi playback device */
    PmDeviceID playbackDevice = Pm_GetDefaultOutputDeviceID();
-   wxString playbackDeviceName = gPrefs->Read(wxT("/MidiIO/PlaybackDevice"),
-                                              wxT(""));
-   mSynthLatency = gPrefs->Read(wxT("/MidiIO/SynthLatency"),
+   wxString playbackDeviceName = gPrefs->Read(L"/MidiIO/PlaybackDevice",
+                                              L"");
+   mSynthLatency = gPrefs->Read(L"/MidiIO/SynthLatency",
                                 DEFAULT_SYNTH_LATENCY);
-   if (wxStrcmp(playbackDeviceName, wxT("")) != 0) {
+   if (wxStrcmp(playbackDeviceName, L"") != 0) {
       for (i = 0; i < Pm_CountDevices(); i++) {
          const PmDeviceInfo *info = Pm_GetDeviceInfo(i);
          if (!info) continue;
          if (!info->output) continue;
          wxString interf = wxSafeConvertMB2WX(info->interf);
          wxString name = wxSafeConvertMB2WX(info->name);
-         interf.Append(wxT(": ")).Append(name);
+         interf.Append(L": ").Append(name);
          if (wxStrcmp(interf, playbackDeviceName) == 0) {
             playbackDevice = i;
          }
@@ -2517,9 +2517,9 @@ double AudioIO::GetBestRate(bool capturing, bool playing, double sampleRate)
    double retval;
 
    std::vector<long> rates;
-   if (capturing) wxLogDebug(wxT("AudioIO::GetBestRate() for capture"));
-   if (playing) wxLogDebug(wxT("AudioIO::GetBestRate() for playback"));
-   wxLogDebug(wxT("GetBestRate() suggested rate %.0lf Hz"), sampleRate);
+   if (capturing) wxLogDebug(L"AudioIO::GetBestRate() for capture");
+   if (playing) wxLogDebug(L"AudioIO::GetBestRate() for playback");
+   wxLogDebug(L"GetBestRate() suggested rate %.0lf Hz", sampleRate);
 
    if (capturing && !playing) {
       rates = GetSupportedCaptureRates(-1, sampleRate);
@@ -2536,7 +2536,7 @@ double AudioIO::GetBestRate(bool capturing, bool playing, double sampleRate)
    long rate = (long)sampleRate;
 
    if (make_iterator_range(rates).contains(rate)) {
-      wxLogDebug(wxT("GetBestRate() Returning %.0ld Hz"), rate);
+      wxLogDebug(L"GetBestRate() Returning %.0ld Hz", rate);
       retval = rate;
       goto finished;
       /* the easy case - the suggested rate (project rate) is in the list, and
@@ -2555,7 +2555,7 @@ double AudioIO::GetBestRate(bool capturing, bool playing, double sampleRate)
 
    if (rates.empty()) {
       /* we're stuck - there are no supported rates with this hardware. Error */
-      wxLogDebug(wxT("GetBestRate() Error - no supported sample rates"));
+      wxLogDebug(L"GetBestRate() Error - no supported sample rates");
       retval = 0.0;
       goto finished;
    }
@@ -2564,13 +2564,13 @@ double AudioIO::GetBestRate(bool capturing, bool playing, double sampleRate)
          {
          if (rates[i] > rate) {
             // supported rate is greater than requested rate
-            wxLogDebug(wxT("GetBestRate() Returning next higher rate - %.0ld Hz"), rates[i]);
+            wxLogDebug(L"GetBestRate() Returning next higher rate - %.0ld Hz", rates[i]);
             retval = rates[i];
             goto finished;
          }
          }
 
-   wxLogDebug(wxT("GetBestRate() Returning highest rate - %.0ld Hz"), rates.back());
+   wxLogDebug(L"GetBestRate() Returning highest rate - %.0ld Hz", rates.back());
    retval = rates.back(); // the highest available rate
    goto finished;
 
@@ -3442,11 +3442,11 @@ void AudioIoCallback::AllNotesOff(bool looping)
 #include "ProjectStatus.h"
 
 void AudioIO::AILAInitialize() {
-   gPrefs->Read(wxT("/AudioIO/AutomatedInputLevelAdjustment"), &mAILAActive,         false);
-   gPrefs->Read(wxT("/AudioIO/TargetPeak"),            &mAILAGoalPoint,      AILA_DEF_TARGET_PEAK);
-   gPrefs->Read(wxT("/AudioIO/DeltaPeakVolume"),       &mAILAGoalDelta,      AILA_DEF_DELTA_PEAK);
-   gPrefs->Read(wxT("/AudioIO/AnalysisTime"),          &mAILAAnalysisTime,   AILA_DEF_ANALYSIS_TIME);
-   gPrefs->Read(wxT("/AudioIO/NumberAnalysis"),        &mAILATotalAnalysis,  AILA_DEF_NUMBER_ANALYSIS);
+   gPrefs->Read(L"/AudioIO/AutomatedInputLevelAdjustment", &mAILAActive,         false);
+   gPrefs->Read(L"/AudioIO/TargetPeak",            &mAILAGoalPoint,      AILA_DEF_TARGET_PEAK);
+   gPrefs->Read(L"/AudioIO/DeltaPeakVolume",       &mAILAGoalDelta,      AILA_DEF_DELTA_PEAK);
+   gPrefs->Read(L"/AudioIO/AnalysisTime",          &mAILAAnalysisTime,   AILA_DEF_ANALYSIS_TIME);
+   gPrefs->Read(L"/AudioIO/NumberAnalysis",        &mAILATotalAnalysis,  AILA_DEF_NUMBER_ANALYSIS);
    mAILAGoalDelta         /= 100.0;
    mAILAGoalPoint         /= 100.0;
    mAILAAnalysisTime      /= 1000.0;
@@ -4091,7 +4091,7 @@ void AudioIoCallback::FillInputBuffers(
    if (len < framesPerBuffer)
    {
       mLostSamples += (framesPerBuffer - len);
-      wxPrintf(wxT("lost %d samples\n"), (int)(framesPerBuffer - len));
+      wxPrintf(L"lost %d samples\n", (int)(framesPerBuffer - len));
    }
 
    if (len <= 0) 

@@ -26,17 +26,17 @@ static CommandDirectory::RegisterType sRegisterType{
 
 ComponentInterfaceSymbol BatchEvalCommandType::BuildName()
 {
-   return { wxT("BatchCommand"), XO("Batch Command") };
+   return { L"BatchCommand", XO("Batch Command") };
 }
 
 void BatchEvalCommandType::BuildSignature(CommandSignature &signature)
 {
    auto commandNameValidator = std::make_unique<DefaultValidator>();
-   signature.AddParameter(wxT("CommandName"), wxT(""), std::move(commandNameValidator));
+   signature.AddParameter(L"CommandName", L"", std::move(commandNameValidator));
    auto paramValidator = std::make_unique<DefaultValidator>();
-   signature.AddParameter(wxT("ParamString"), wxT(""), std::move(paramValidator));
+   signature.AddParameter(L"ParamString", L"", std::move(paramValidator));
    auto macroValidator = std::make_unique<DefaultValidator>();
-   signature.AddParameter(wxT("MacroName"), wxT(""), std::move(macroValidator));
+   signature.AddParameter(L"MacroName", L"", std::move(macroValidator));
 }
 
 OldStyleCommandPointer BatchEvalCommandType::Create( AudacityProject *project,
@@ -55,7 +55,7 @@ bool BatchEvalCommand::Apply(const CommandContext & context)
    // be refreshed after macros are added/deleted.
    MacroCommandsCatalog catalog(&context.project);
 
-   wxString macroName = GetString(wxT("MacroName"));
+   wxString macroName = GetString(L"MacroName");
    if (!macroName.empty())
    {
       MacroCommands batch{ context.project };
@@ -63,8 +63,8 @@ bool BatchEvalCommand::Apply(const CommandContext & context)
       return batch.ApplyMacro(catalog);
    }
 
-   auto cmdName = GetString(wxT("CommandName"));
-   wxString cmdParams = GetString(wxT("ParamString"));
+   auto cmdName = GetString(L"CommandName");
+   wxString cmdParams = GetString(L"ParamString");
    auto iter = catalog.ByCommandId(cmdName);
    const auto friendly = (iter == catalog.end())
       ? Verbatim( cmdName ) // Expose internal name to user, in default of a better one!

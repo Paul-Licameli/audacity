@@ -46,11 +46,11 @@ BaseItemSharedPtr ToolbarsMenu()
 
    static BaseItemSharedPtr menu{
    ( FinderScope{ findCommandHandler },
-   Section( wxT("Toolbars"),
-      Menu( wxT("Toolbars"), XXO("&Toolbars"),
+   Section( L"Toolbars",
+      Menu( L"Toolbars", XXO("&Toolbars"),
          Section( "Reset",
             /* i18n-hint: (verb)*/
-            Command( wxT("ResetToolbars"), XXO("Reset Toolb&ars"),
+            Command( L"ResetToolbars", XXO("Reset Toolb&ars"),
                FN(OnResetToolBars), AlwaysEnabledFlag )
          ),
 
@@ -61,7 +61,7 @@ BaseItemSharedPtr ToolbarsMenu()
 }
 
 AttachedItem sAttachment1{
-   Placement{ wxT("View/Other"), { OrderingHint::Begin } },
+   Placement{ L"View/Other", { OrderingHint::Begin } },
    Shared( ToolbarsMenu() )
 };
 }

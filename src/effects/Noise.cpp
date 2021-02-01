@@ -53,8 +53,8 @@ static const EnumValueSymbol kTypeStrings[nTypes] =
 // Define keys, defaults, minimums, and maximums for the effect parameters
 //
 //     Name    Type     Key               Def      Min   Max            Scale
-Param( Type,   int,     wxT("Type"),       kWhite,  0,    nTypes - 1, 1  );
-Param( Amp,    double,  wxT("Amplitude"),  0.8,     0.0,  1.0,           1  );
+Param( Type,   int,     L"Type",       kWhite,  0,    nTypes - 1, 1  );
+Param( Amp,    double,  L"Amplitude",  0.8,     0.0,  1.0,           1  );
 
 //
 // EffectNoise
@@ -93,7 +93,7 @@ TranslatableString EffectNoise::GetDescription()
 
 wxString EffectNoise::ManualPage()
 {
-   return wxT("Noise");
+   return L"Noise";
 }
 
 // EffectDefinitionInterface implementation
@@ -203,12 +203,12 @@ bool EffectNoise::SetAutomationParameters(CommandParameters & parms)
 
 bool EffectNoise::Startup()
 {
-   wxString base = wxT("/Effects/Noise/");
+   wxString base = L"/Effects/Noise/";
 
    // Migrate settings from 2.1.0 or before
 
    // Already migrated, so bail
-   if (gPrefs->Exists(base + wxT("Migrated")))
+   if (gPrefs->Exists(base + L"Migrated"))
    {
       return true;
    }
@@ -216,13 +216,13 @@ bool EffectNoise::Startup()
    // Load the old "current" settings
    if (gPrefs->Exists(base))
    {
-      gPrefs->Read(base + wxT("Type"), &mType, 0L);
-      gPrefs->Read(base + wxT("Amplitude"), &mAmp, 0.8f);
+      gPrefs->Read(base + L"Type", &mType, 0L);
+      gPrefs->Read(base + L"Amplitude", &mAmp, 0.8f);
 
       SaveUserPreset(GetCurrentSettingsGroup());
 
       // Do not migrate again
-      gPrefs->Write(base + wxT("Migrated"), true);
+      gPrefs->Write(base + L"Migrated", true);
       gPrefs->Flush();
    }
 
@@ -241,7 +241,7 @@ void EffectNoise::PopulateOrExchange(ShuttleGui & S)
       S.Validator<FloatingPointValidator<double>>(
             6, &mAmp, NumValidatorStyle::NO_TRAILING_ZEROES, MIN_Amp, MAX_Amp
          )
-         .AddTextBox(XXO("&Amplitude (0-1):"), wxT(""), 12);
+         .AddTextBox(XXO("&Amplitude (0-1):"), L"", 12);
 
       S.AddPrompt(XXO("&Duration:"));
       mNoiseDurationT = safenew

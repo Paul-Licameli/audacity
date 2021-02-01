@@ -80,13 +80,13 @@ static const EnumValueSymbol kTableTypeStrings[nTableTypes] =
 // (Note: 'Repeats' is the total number of times the effect is applied.)
 //
 //     Name             Type     Key                   Def     Min      Max                 Scale
-Param( TableTypeIndx,   int,     wxT("Type"),           0,       0,      nTableTypes-1,    1    );
-Param( DCBlock,         bool,    wxT("DC Block"),      false,   false,   true,                1    );
-Param( Threshold_dB,    double,  wxT("Threshold dB"),  -6.0,  -100.0,     0.0,             1000.0f );
-Param( NoiseFloor,      double,  wxT("Noise Floor"),   -70.0,  -80.0,   -20.0,                1    );
-Param( Param1,          double,  wxT("Parameter 1"),    50.0,    0.0,   100.0,                1    );
-Param( Param2,          double,  wxT("Parameter 2"),    50.0,    0.0,   100.0,                1    );
-Param( Repeats,         int,     wxT("Repeats"),        1,       0,       5,                  1    );
+Param( TableTypeIndx,   int,     L"Type",           0,       0,      nTableTypes-1,    1    );
+Param( DCBlock,         bool,    L"DC Block",      false,   false,   true,                1    );
+Param( Threshold_dB,    double,  L"Threshold dB",  -6.0,  -100.0,     0.0,             1000.0f );
+Param( NoiseFloor,      double,  L"Noise Floor",   -70.0,  -80.0,   -20.0,                1    );
+Param( Param1,          double,  L"Parameter 1",    50.0,    0.0,   100.0,                1    );
+Param( Param2,          double,  L"Parameter 2",    50.0,    0.0,   100.0,                1    );
+Param( Repeats,         int,     L"Repeats",        1,       0,       5,                  1    );
 
 // How many samples are processed before recomputing the lookup table again
 #define skipsamples 1000
@@ -200,7 +200,7 @@ TranslatableString EffectDistortion::GetDescription()
 
 wxString EffectDistortion::ManualPage()
 {
-   return wxT("Distortion");
+   return L"Distortion";
 }
 
 // EffectDefinitionInterface implementation
@@ -393,7 +393,7 @@ void EffectDistortion::PopulateOrExchange(ShuttleGui & S)
                .Validator<FloatingPointValidator<double>>(
                   2, &mParams.mThreshold_dB, NumValidatorStyle::DEFAULT,
                   MIN_Threshold_dB, MAX_Threshold_dB)
-               .AddTextBox( {}, wxT(""), 10);
+               .AddTextBox( {}, L"", 10);
 
             mThresholdS = S.Id(ID_Threshold)
                .Name(defaultLabel(0))
@@ -412,7 +412,7 @@ void EffectDistortion::PopulateOrExchange(ShuttleGui & S)
                   2, &mParams.mNoiseFloor, NumValidatorStyle::DEFAULT,
                   MIN_NoiseFloor, MAX_NoiseFloor
                )
-               .AddTextBox( {}, wxT(""), 10);
+               .AddTextBox( {}, L"", 10);
 
             mNoiseFloorS = S.Id(ID_NoiseFloor)
                .Name(defaultLabel(1))
@@ -441,7 +441,7 @@ void EffectDistortion::PopulateOrExchange(ShuttleGui & S)
                   2, &mParams.mParam1, NumValidatorStyle::DEFAULT,
                   MIN_Param1, MAX_Param1
                )
-               .AddTextBox( {}, wxT(""), 10);
+               .AddTextBox( {}, L"", 10);
 
             mParam1S = S.Id(ID_Param1)
                .Name(defaultLabel(2))
@@ -458,7 +458,7 @@ void EffectDistortion::PopulateOrExchange(ShuttleGui & S)
                   2, &mParams.mParam2, NumValidatorStyle::DEFAULT,
                   MIN_Param2, MAX_Param2
                )
-               .AddTextBox( {}, wxT(""), 10);
+               .AddTextBox( {}, L"", 10);
 
             mParam2S = S.Id(ID_Param2)
                .Name(defaultLabel(3))
@@ -475,7 +475,7 @@ void EffectDistortion::PopulateOrExchange(ShuttleGui & S)
                   &mParams.mRepeats, NumValidatorStyle::DEFAULT,
                   MIN_Repeats, MAX_Repeats
                )
-               .AddTextBox( {}, wxT(""), 10);
+               .AddTextBox( {}, L"", 10);
 
             mRepeatsS = S.Id(ID_Repeats)
                .Name(defaultLabel(4))
@@ -881,7 +881,7 @@ void EffectDistortion::UpdateControl(
       case ID_Threshold: {
          /* i18n-hint: Control range. */
          if (enabled) suffix = XO("(-100 to 0 dB):");
-         name.Join( suffix, wxT(" ") );
+         name.Join( suffix, L" " );
 
          // Logarithmic slider is set indirectly
          mThreshold = DB_TO_LINEAR(mParams.mThreshold_dB);
@@ -898,7 +898,7 @@ void EffectDistortion::UpdateControl(
       case ID_NoiseFloor: {
          /* i18n-hint: Control range. */
          if (enabled) suffix = XO("(-80 to -20 dB):");
-         name.Join( suffix, wxT(" ") );
+         name.Join( suffix, L" " );
 
          auto translated = name.Translation();
          mNoiseFloorTxt->SetLabel(translated);
@@ -911,7 +911,7 @@ void EffectDistortion::UpdateControl(
       case ID_Param1: {
          /* i18n-hint: Control range. */
          if (enabled) suffix = XO("(0 to 100):");
-         name.Join( suffix, wxT(" ") );
+         name.Join( suffix, L" " );
 
          auto translated = name.Translation();
          mParam1Txt->SetLabel(translated);
@@ -924,7 +924,7 @@ void EffectDistortion::UpdateControl(
       case ID_Param2: {
          /* i18n-hint: Control range. */
          if (enabled) suffix = XO("(0 to 100):");
-         name.Join( suffix, wxT(" ") );
+         name.Join( suffix, L" " );
 
          auto translated = name.Translation();
          mParam2Txt->SetLabel(translated);
@@ -937,7 +937,7 @@ void EffectDistortion::UpdateControl(
       case ID_Repeats: {
          /* i18n-hint: Control range. */
          if (enabled) suffix = XO("(0 to 5):");
-         name.Join( suffix, wxT(" ") );
+         name.Join( suffix, L" " );
 
          auto translated = name.Translation();
          mRepeatsTxt->SetLabel(translated);
@@ -976,7 +976,7 @@ void EffectDistortion::UpdateControlText(wxTextCtrl* textCtrl, wxString& string,
    else {
       if (!textCtrl->GetValue().empty())
          string = textCtrl->GetValue();
-      textCtrl->SetValue(wxT(""));
+      textCtrl->SetValue(L"");
    }
 }
 

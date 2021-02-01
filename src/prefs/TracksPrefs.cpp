@@ -32,7 +32,7 @@ int TracksPrefs::iPreferencePinned = -1;
 namespace {
    const wxChar *PinnedHeadPreferenceKey()
    {
-      return wxT("/AudioIO/PinnedHead");
+      return L"/AudioIO/PinnedHead";
    }
 
    bool PinnedHeadPreferenceDefault()
@@ -42,7 +42,7 @@ namespace {
    
    const wxChar *PinnedHeadPositionPreferenceKey()
    {
-      return wxT("/AudioIO/PinnedHeadPosition");
+      return L"/AudioIO/PinnedHeadPosition";
    }
 
    double PinnedHeadPositionPreferenceDefault()
@@ -53,8 +53,8 @@ namespace {
 
 
 namespace {
-   const auto waveformScaleKey = wxT("/GUI/DefaultWaveformScaleChoice");
-   const auto dbValueString = wxT("dB");
+   const auto waveformScaleKey = L"/GUI/DefaultWaveformScaleChoice";
+   const auto dbValueString = L"dB";
 }
 
 static EnumSetting< WaveformSettings::ScaleTypeValues > waveformScaleSetting{
@@ -75,12 +75,12 @@ static EnumSetting< WaveformSettings::ScaleTypeValues > waveformScaleSetting{
 //////////
 // There is a complicated migration history here!
 namespace {
-   const auto key0 = wxT("/GUI/DefaultViewMode");
-   const auto key1 = wxT("/GUI/DefaultViewModeNew");
-   const auto key2 = wxT("/GUI/DefaultViewModeChoice");
-   const auto key3 = wxT("/GUI/DefaultViewModeChoiceNew");
+   const auto key0 = L"/GUI/DefaultViewMode";
+   const auto key1 = L"/GUI/DefaultViewModeNew";
+   const auto key2 = L"/GUI/DefaultViewModeChoice";
+   const auto key3 = L"/GUI/DefaultViewModeChoiceNew";
 
-   const wxString obsoleteValue{ wxT("WaveformDB") };
+   const wxString obsoleteValue{ L"WaveformDB" };
 };
 
 class TracksViewModeEnumSetting
@@ -178,10 +178,10 @@ WaveformSettings::ScaleTypeValues TracksPrefs::WaveformScaleChoice()
 //////////
 static EnumSetting< WaveTrackViewConstants::SampleDisplay >
 sampleDisplaySetting{
-   wxT("/GUI/SampleViewChoice"),
+   L"/GUI/SampleViewChoice",
    {
-      { wxT("ConnectDots"), XO("Connect dots") },
-      { wxT("StemPlot"), XO("Stem plot") }
+      { L"ConnectDots", XO("Connect dots") },
+      { L"StemPlot", XO("Stem plot") }
    },
    1, // StemPlot
 
@@ -190,7 +190,7 @@ sampleDisplaySetting{
       WaveTrackViewConstants::LinearInterpolate,
       WaveTrackViewConstants::StemPlot
    },
-   wxT("/GUI/SampleView")
+   L"/GUI/SampleView"
 };
 
 WaveTrackViewConstants::SampleDisplay TracksPrefs::SampleViewChoice()
@@ -200,21 +200,21 @@ WaveTrackViewConstants::SampleDisplay TracksPrefs::SampleViewChoice()
 
 //////////
 static const std::initializer_list<EnumValueSymbol> choicesZoom{
-   { wxT("FitToWidth"), XO("Fit to Width") },
-   { wxT("ZoomToSelection"), XO("Zoom to Selection") },
-   { wxT("ZoomDefault"), XO("Zoom Default") },
+   { L"FitToWidth", XO("Fit to Width") },
+   { L"ZoomToSelection", XO("Zoom to Selection") },
+   { L"ZoomDefault", XO("Zoom Default") },
    { XO("Minutes") },
    { XO("Seconds") },
-   { wxT("FifthsOfSeconds"), XO("5ths of Seconds") },
-   { wxT("TenthsOfSeconds"), XO("10ths of Seconds") },
-   { wxT("TwentiethsOfSeconds"), XO("20ths of Seconds") },
-   { wxT("FiftiethsOfSeconds"), XO("50ths of Seconds") },
-   { wxT("HundredthsOfSeconds"), XO("100ths of Seconds") },
-   { wxT("FiveHundredthsOfSeconds"), XO("500ths of Seconds") },
+   { L"FifthsOfSeconds", XO("5ths of Seconds") },
+   { L"TenthsOfSeconds", XO("10ths of Seconds") },
+   { L"TwentiethsOfSeconds", XO("20ths of Seconds") },
+   { L"FiftiethsOfSeconds", XO("50ths of Seconds") },
+   { L"HundredthsOfSeconds", XO("100ths of Seconds") },
+   { L"FiveHundredthsOfSeconds", XO("500ths of Seconds") },
    { XO("MilliSeconds") },
    { XO("Samples") },
-   { wxT("FourPixelsPerSample"), XO("4 Pixels per Sample") },
-   { wxT("MaxZoom"), XO("Max Zoom") },
+   { L"FourPixelsPerSample", XO("4 Pixels per Sample") },
+   { L"MaxZoom", XO("Max Zoom") },
 };
 static auto enumChoicesZoom = {
    WaveTrackViewConstants::kZoomToFit,
@@ -235,23 +235,23 @@ static auto enumChoicesZoom = {
 };
 
 static EnumSetting< WaveTrackViewConstants::ZoomPresets > zoom1Setting{
-   wxT("/GUI/ZoomPreset1Choice"),
+   L"/GUI/ZoomPreset1Choice",
    choicesZoom,
    2, // kZoomDefault
 
    // for migrating old preferences:
    enumChoicesZoom,
-   wxT("/GUI/ZoomPreset1")
+   L"/GUI/ZoomPreset1"
 };
 
 static EnumSetting< WaveTrackViewConstants::ZoomPresets > zoom2Setting{
-   wxT("/GUI/ZoomPreset2Choice"),
+   L"/GUI/ZoomPreset2Choice",
    choicesZoom,
    13, // kZoom4To1
 
    // for migrating old preferences:
    enumChoicesZoom,
-   wxT("/GUI/ZoomPreset2")
+   L"/GUI/ZoomPreset2"
 };
 
 WaveTrackViewConstants::ZoomPresets TracksPrefs::Zoom1Choice()
@@ -319,14 +319,14 @@ void TracksPrefs::PopulateOrExchange(ShuttleGui & S)
    S.StartStatic(XO("Display"));
    {
       S.TieCheckBox(XXO("Auto-&fit track height"),
-                    {wxT("/GUI/TracksFitVerticallyZoomed"),
+                    {L"/GUI/TracksFitVerticallyZoomed",
                      false});
       S.TieCheckBox(XXO("Sho&w track name as overlay"),
-                  {wxT("/GUI/ShowTrackNameInWaveform"),
+                  {L"/GUI/ShowTrackNameInWaveform",
                    false});
 #ifdef EXPERIMENTAL_HALF_WAVE
       S.TieCheckBox(XXO("Use &half-wave display when collapsed"),
-                  {wxT("/GUI/CollapseToHalfWave"),
+                  {L"/GUI/CollapseToHalfWave",
                    false});
 #endif
 #ifdef SHOW_PINNED_UNPINNED_IN_PREFS
@@ -335,7 +335,7 @@ void TracksPrefs::PopulateOrExchange(ShuttleGui & S)
           PinnedHeadPreferenceDefault()});
 #endif
       S.TieCheckBox(XXO("A&uto-scroll if head unpinned"),
-         {wxT("/GUI/AutoScroll"),
+         {L"/GUI/AutoScroll",
           true});
 
       S.AddSpace(10);
@@ -361,7 +361,7 @@ void TracksPrefs::PopulateOrExchange(ShuttleGui & S)
                      sampleDisplaySetting );
 
          S.TieTextBox(XXO("Default audio track &name:"),
-                      {wxT("/GUI/TrackNames/DefaultTrackName"),
+                      {L"/GUI/TrackNames/DefaultTrackName",
                        _("Audio Track")},
                       30);
       }
@@ -422,7 +422,7 @@ void TracksPrefs::SetPinnedHeadPositionPreference(double value, bool flush)
 wxString TracksPrefs::GetDefaultAudioTrackNamePreference()
 {
    const auto name =
-      gPrefs->Read(wxT("/GUI/TrackNames/DefaultTrackName"), wxT(""));
+      gPrefs->Read(L"/GUI/TrackNames/DefaultTrackName", L"");
 
    if (name.empty() || ( name == "Audio Track" ))
       // When nothing was specified,
@@ -443,7 +443,7 @@ bool TracksPrefs::Commit()
    // Bug 1661: Don't store the name for new tracks if the name is the
    // default in that language.
    if (GetDefaultAudioTrackNamePreference() == _("Audio Track")) {
-      gPrefs->DeleteEntry(wxT("/GUI/TrackNames/DefaultTrackName"));
+      gPrefs->DeleteEntry(L"/GUI/TrackNames/DefaultTrackName");
       gPrefs->Flush();
    }
 

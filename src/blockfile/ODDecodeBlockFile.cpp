@@ -216,21 +216,21 @@ void ODDecodeBlockFile::SaveXML(XMLWriter &xmlFile)
    }
    else
    {
-      xmlFile.StartTag(wxT("oddecodeblockfile"));
+      xmlFile.StartTag(L"oddecodeblockfile");
       {
          //unlock to prevent deadlock and resume lock after.
          auto suspension = locker.Suspend();
          ODLocker locker2{ &mFileNameMutex };
-         xmlFile.WriteAttr(wxT("summaryfile"), mFileName.GetFullName());
+         xmlFile.WriteAttr(L"summaryfile", mFileName.GetFullName());
       }
-      xmlFile.WriteAttr(wxT("audiofile"), mAudioFileName.GetFullPath());
-      xmlFile.WriteAttr(wxT("aliasstart"),
+      xmlFile.WriteAttr(L"audiofile", mAudioFileName.GetFullPath());
+      xmlFile.WriteAttr(L"aliasstart",
                         mAliasStart.as_long_long());
-      xmlFile.WriteAttr(wxT("aliaslen"), mLen);
-      xmlFile.WriteAttr(wxT("aliaschannel"), mAliasChannel);
-      xmlFile.WriteAttr(wxT("decodetype"), (size_t)mType);
+      xmlFile.WriteAttr(L"aliaslen", mLen);
+      xmlFile.WriteAttr(L"aliaschannel", mAliasChannel);
+      xmlFile.WriteAttr(L"decodetype", (size_t)mType);
 
-      xmlFile.EndTag(wxT("oddecodeblockfile"));
+      xmlFile.EndTag(L"oddecodeblockfile");
    }
 }
 
@@ -258,7 +258,7 @@ BlockFilePtr ODDecodeBlockFile::BuildFromXML(DirManager &dm, const wxChar **attr
          break;
 
       const wxString strValue = value;
-      if (!wxStricmp(attr, wxT("summaryfile")) &&
+      if (!wxStricmp(attr, L"summaryfile") &&
             // Can't use XMLValueChecker::IsGoodFileName here, but do part of its test.
             XMLValueChecker::IsGoodFileString(strValue) &&
             (strValue.length() + 1 + dm.GetProjectDataDir().length() <= PLATFORM_MAX_PATH))
@@ -267,7 +267,7 @@ BlockFilePtr ODDecodeBlockFile::BuildFromXML(DirManager &dm, const wxChar **attr
             // Make sure summaryFileName is back to uninitialized state so we can detect problem later.
             summaryFileName.Clear();
       }
-      else if( !wxStricmp(attr, wxT("audiofile")) )
+      else if( !wxStricmp(attr, L"audiofile") )
       {
          if (XMLValueChecker::IsGoodPathName(strValue))
             audioFileName.Assign(strValue);
@@ -280,7 +280,7 @@ BlockFilePtr ODDecodeBlockFile::BuildFromXML(DirManager &dm, const wxChar **attr
             // but we want to keep the reference to the file because it's a good path string.
             audioFileName.Assign(strValue);
       }
-      else if ( !wxStricmp(attr, wxT("aliasstart")) )
+      else if ( !wxStricmp(attr, L"aliasstart") )
       {
          if (XMLValueChecker::IsGoodInt64(strValue) &&
              strValue.ToLongLong(&nnValue) && (nnValue >= 0))
@@ -288,11 +288,11 @@ BlockFilePtr ODDecodeBlockFile::BuildFromXML(DirManager &dm, const wxChar **attr
       }
       else if (XMLValueChecker::IsGoodInt(strValue) && strValue.ToLong(&nValue))
       {  // integer parameters
-         if (!wxStricmp(attr, wxT("aliaslen")) && (nValue >= 0))
+         if (!wxStricmp(attr, L"aliaslen") && (nValue >= 0))
             aliasLen = nValue;
-         else if (!wxStricmp(attr, wxT("aliaschannel")) && XMLValueChecker::IsValidChannel(aliasChannel))
+         else if (!wxStricmp(attr, L"aliaschannel") && XMLValueChecker::IsValidChannel(aliasChannel))
             aliasChannel = nValue;
-         else if( !wxStricmp(attr, wxT("decodetype")) )
+         else if( !wxStricmp(attr, L"decodetype") )
             decodeType = nValue;
       }
    }

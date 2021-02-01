@@ -127,7 +127,7 @@ void DoImport(const CommandContext &context, bool isRaw)
    // PRL:  This affects FFmpegImportPlugin::Open which resets the preference
    // to false.  Should it also be set to true on other paths that reach
    // AudacityProject::Import ?
-   gPrefs->Write(wxT("/NewImportingSession"), true);
+   gPrefs->Write(L"/NewImportingSession", true);
 
    selectedFiles.Sort(FileNames::CompareNoCase);
 
@@ -280,7 +280,7 @@ void OnExportLabels(const CommandContext &context)
       XO("Export Labels As:"),
       wxEmptyString,
       fName,
-      wxT("txt"),
+      L"txt",
       { FileNames::TextFiles },
       wxFD_SAVE | wxFD_OVERWRITE_PROMPT | wxRESIZE_BORDER,
       &window);
@@ -293,9 +293,9 @@ void OnExportLabels(const CommandContext &context)
 
    if (wxFileExists(fName)) {
 #ifdef __WXGTK__
-      wxString safetyFileName = fName + wxT("~");
+      wxString safetyFileName = fName + L"~";
 #else
-      wxString safetyFileName = fName + wxT(".bak");
+      wxString safetyFileName = fName + L".bak";
 #endif
 
       if (wxFileExists(safetyFileName))
@@ -365,10 +365,10 @@ void OnExportMIDI(const CommandContext &context)
          XO("Export MIDI As:"),
          wxEmptyString,
          fName,
-         wxT("mid"),
+         L"mid",
          {
-            { XO("MIDI file"),    { wxT("mid") }, true },
-            { XO("Allegro file"), { wxT("gro") }, true },
+            { XO("MIDI file"),    { L"mid" }, true },
+            { XO("Allegro file"), { L"gro" }, true },
          },
          wxFD_SAVE | wxFD_OVERWRITE_PROMPT | wxRESIZE_BORDER,
          &window);
@@ -376,8 +376,8 @@ void OnExportMIDI(const CommandContext &context)
       if (fName.empty())
          return;
 
-      if(!fName.Contains(wxT("."))) {
-         fName = fName + wxT(".mid");
+      if(!fName.Contains(L".")) {
+         fName = fName + L".mid";
       }
 
       // Move existing files out of the way.  Otherwise wxTextFile will
@@ -385,9 +385,9 @@ void OnExportMIDI(const CommandContext &context)
 
       if (wxFileExists(fName)) {
 #ifdef __WXGTK__
-         wxString safetyFileName = fName + wxT("~");
+         wxString safetyFileName = fName + L"~";
 #else
-         wxString safetyFileName = fName + wxT(".bak");
+         wxString safetyFileName = fName + L".bak";
 #endif
 
          if (wxFileExists(safetyFileName))
@@ -396,9 +396,9 @@ void OnExportMIDI(const CommandContext &context)
          wxRename(fName, safetyFileName);
       }
 
-      if(fName.EndsWith(wxT(".mid")) || fName.EndsWith(wxT(".midi"))) {
+      if(fName.EndsWith(L".mid") || fName.EndsWith(L".midi")) {
          nt->ExportMIDI(fName);
-      } else if(fName.EndsWith(wxT(".gro"))) {
+      } else if(fName.EndsWith(L".gro")) {
          nt->ExportAllegro(fName);
       } else {
          auto msg = XO(
@@ -432,8 +432,8 @@ void OnImportLabels(const CommandContext &context)
        FileNames::SelectFile(FileNames::Operation::Open,
          XO("Select a text file containing labels"),
          wxEmptyString,     // Path
-         wxT(""),       // Name
-         wxT("txt"),   // Extension
+         L"",       // Name
+         L"txt",   // Extension
          { FileNames::TextFiles, FileNames::AllFiles },
          wxRESIZE_BORDER,        // Flags
          &window);    // Parent
@@ -476,15 +476,15 @@ void OnImportMIDI(const CommandContext &context)
    wxString fileName = FileNames::SelectFile(FileNames::Operation::Open,
       XO("Select a MIDI file"),
       wxEmptyString,     // Path
-      wxT(""),       // Name
-      wxT(""),       // Extension
+      L"",       // Name
+      L"",       // Extension
       {
          { XO("MIDI and Allegro files"),
-           { wxT("mid"), wxT("midi"), wxT("gro"), }, true },
+           { L"mid", L"midi", L"gro", }, true },
          { XO("MIDI files"),
-           { wxT("mid"), wxT("midi"), }, true },
+           { L"mid", L"midi", }, true },
          { XO("Allegro files"),
-           { wxT("gro"), }, true },
+           { L"gro", }, true },
          FileNames::AllFiles
       },
       wxRESIZE_BORDER,        // Flags
@@ -552,28 +552,28 @@ BaseItemSharedPtr FileMenu()
 
    static BaseItemSharedPtr menu{
    ( FinderScope{ findCommandHandler },
-   Menu( wxT("File"), XXO("&File"),
+   Menu( L"File", XXO("&File"),
       Section( "Basic",
          /*i18n-hint: "New" is an action (verb) to create a NEW project*/
-         Command( wxT("New"), XXO("&New"), FN(OnNew),
-            AudioIONotBusyFlag(), wxT("Ctrl+N") ),
+         Command( L"New", XXO("&New"), FN(OnNew),
+            AudioIONotBusyFlag(), L"Ctrl+N" ),
 
          /*i18n-hint: (verb)*/
-         Command( wxT("Open"), XXO("&Open..."), FN(OnOpen),
-            AudioIONotBusyFlag(), wxT("Ctrl+O") ),
+         Command( L"Open", XXO("&Open..."), FN(OnOpen),
+            AudioIONotBusyFlag(), L"Ctrl+O" ),
 
    #ifdef EXPERIMENTAL_RESET
          // Empty the current project and forget its name and path.  DANGEROUS
          // It's just for developers.
          // Do not translate this menu item (no XXO).
          // It MUST not be shown to regular users.
-         Command( wxT("Reset"), XXO("&Dangerous Reset..."), FN(OnProjectReset),
+         Command( L"Reset", XXO("&Dangerous Reset..."), FN(OnProjectReset),
             AudioIONotBusyFlag() ),
    #endif
 
    /////////////////////////////////////////////////////////////////////////////
 
-         Menu( wxT("Recent"),
+         Menu( L"Recent",
    #ifdef __WXMAC__
             /* i18n-hint: This is the name of the menu item on Mac OS X only */
             XXO("Open Recent")
@@ -582,7 +582,7 @@ BaseItemSharedPtr FileMenu()
             XXO("Recent &Files")
    #endif
             ,
-            Special( wxT("PopulateRecentFilesStep"),
+            Special( L"PopulateRecentFilesStep",
             [](AudacityProject &, wxMenu &theMenu){
                // Recent Files and Recent Projects menus
                auto &history = FileHistory::Global();
@@ -606,17 +606,17 @@ BaseItemSharedPtr FileMenu()
 
    /////////////////////////////////////////////////////////////////////////////
 
-         Command( wxT("Close"), XXO("&Close"), FN(OnClose),
-            AudioIONotBusyFlag(), wxT("Ctrl+W") )
+         Command( L"Close", XXO("&Close"), FN(OnClose),
+            AudioIONotBusyFlag(), L"Ctrl+W" )
       ),
 
       Section( "Save",
-         Menu( wxT("Save"), XXO("&Save Project"),
-            Command( wxT("Save"), XXO("&Save Project"), FN(OnSave),
-               AudioIONotBusyFlag(), wxT("Ctrl+S") ),
-            Command( wxT("SaveAs"), XXO("Save Project &As..."), FN(OnSaveAs),
+         Menu( L"Save", XXO("&Save Project"),
+            Command( L"Save", XXO("&Save Project"), FN(OnSave),
+               AudioIONotBusyFlag(), L"Ctrl+S" ),
+            Command( L"SaveAs", XXO("Save Project &As..."), FN(OnSaveAs),
                AudioIONotBusyFlag() ),
-            Command( wxT("SaveCopy"), XXO("&Backup Project..."), FN(OnSaveCopy),
+            Command( L"SaveCopy", XXO("&Backup Project..."), FN(OnSaveCopy),
                AudioIONotBusyFlag() )
          )//,
 
@@ -625,63 +625,63 @@ BaseItemSharedPtr FileMenu()
          // of space and not confuse users using undo.
          // As additional space used by aup3 is 50% or so, perfectly valid
          // approach to this P1 bug is to not provide the 'Compact' menu item.
-         //Command( wxT("Compact"), XXO("Co&mpact Project"), FN(OnCompact),
-         //   AudioIONotBusyFlag(), wxT("Shift+A") )
+         //Command( L"Compact", XXO("Co&mpact Project"), FN(OnCompact),
+         //   AudioIONotBusyFlag(), L"Shift+A" )
       ),
 
       Section( "Import-Export",
-         Menu( wxT("Export"), XXO("&Export"),
+         Menu( L"Export", XXO("&Export"),
             // Enable Export audio commands only when there are audio tracks.
-            Command( wxT("ExportMp3"), XXO("Export as MP&3"), FN(OnExportMp3),
+            Command( L"ExportMp3", XXO("Export as MP&3"), FN(OnExportMp3),
                AudioIONotBusyFlag() | WaveTracksExistFlag() ),
 
-            Command( wxT("ExportWav"), XXO("Export as &WAV"), FN(OnExportWav),
+            Command( L"ExportWav", XXO("Export as &WAV"), FN(OnExportWav),
                AudioIONotBusyFlag() | WaveTracksExistFlag() ),
 
-            Command( wxT("ExportOgg"), XXO("Export as &OGG"), FN(OnExportOgg),
+            Command( L"ExportOgg", XXO("Export as &OGG"), FN(OnExportOgg),
                AudioIONotBusyFlag() | WaveTracksExistFlag() ),
 
-            Command( wxT("Export"), XXO("&Export Audio..."), FN(OnExportAudio),
-               AudioIONotBusyFlag() | WaveTracksExistFlag(), wxT("Ctrl+Shift+E") ),
+            Command( L"Export", XXO("&Export Audio..."), FN(OnExportAudio),
+               AudioIONotBusyFlag() | WaveTracksExistFlag(), L"Ctrl+Shift+E" ),
 
             // Enable Export Selection commands only when there's a selection.
-            Command( wxT("ExportSel"), XXO("Expo&rt Selected Audio..."),
+            Command( L"ExportSel", XXO("Expo&rt Selected Audio..."),
                FN(OnExportSelection),
                AudioIONotBusyFlag() | TimeSelectedFlag() | WaveTracksSelectedFlag() ),
 
-            Command( wxT("ExportLabels"), XXO("Export &Labels..."),
+            Command( L"ExportLabels", XXO("Export &Labels..."),
                FN(OnExportLabels),
                AudioIONotBusyFlag() | LabelTracksExistFlag() ),
             // Enable Export audio commands only when there are audio tracks.
-            Command( wxT("ExportMultiple"), XXO("Export &Multiple..."),
+            Command( L"ExportMultiple", XXO("Export &Multiple..."),
                FN(OnExportMultiple),
-               AudioIONotBusyFlag() | WaveTracksExistFlag(), wxT("Ctrl+Shift+L") )
+               AudioIONotBusyFlag() | WaveTracksExistFlag(), L"Ctrl+Shift+L" )
    #if defined(USE_MIDI)
             ,
-            Command( wxT("ExportMIDI"), XXO("Export MI&DI..."), FN(OnExportMIDI),
+            Command( L"ExportMIDI", XXO("Export MI&DI..."), FN(OnExportMIDI),
                AudioIONotBusyFlag() | NoteTracksExistFlag() )
    #endif
          ),
 
-         Menu( wxT("Import"), XXO("&Import"),
-            Command( wxT("ImportAudio"), XXO("&Audio..."), FN(OnImport),
-               AudioIONotBusyFlag(), wxT("Ctrl+Shift+I") ),
-            Command( wxT("ImportLabels"), XXO("&Labels..."), FN(OnImportLabels),
+         Menu( L"Import", XXO("&Import"),
+            Command( L"ImportAudio", XXO("&Audio..."), FN(OnImport),
+               AudioIONotBusyFlag(), L"Ctrl+Shift+I" ),
+            Command( L"ImportLabels", XXO("&Labels..."), FN(OnImportLabels),
                AudioIONotBusyFlag() ),
       #ifdef USE_MIDI
-            Command( wxT("ImportMIDI"), XXO("&MIDI..."), FN(OnImportMIDI),
+            Command( L"ImportMIDI", XXO("&MIDI..."), FN(OnImportMIDI),
                AudioIONotBusyFlag() ),
       #endif // USE_MIDI
-            Command( wxT("ImportRaw"), XXO("&Raw Data..."), FN(OnImportRaw),
+            Command( L"ImportRaw", XXO("&Raw Data..."), FN(OnImportRaw),
                AudioIONotBusyFlag() )
          )
       ),
 
       Section( "Print",
-         Command( wxT("PageSetup"), XXO("Pa&ge Setup..."), FN(OnPageSetup),
+         Command( L"PageSetup", XXO("Pa&ge Setup..."), FN(OnPageSetup),
             AudioIONotBusyFlag() | TracksExistFlag() ),
          /* i18n-hint: (verb) It's item on a menu. */
-         Command( wxT("Print"), XXO("&Print..."), FN(OnPrint),
+         Command( L"Print", XXO("&Print..."), FN(OnPrint),
             AudioIONotBusyFlag() | TracksExistFlag() )
       ),
 
@@ -690,15 +690,15 @@ BaseItemSharedPtr FileMenu()
          // pull it out
          // and put it in the Audacity menu for us based on its ID.
          /* i18n-hint: (verb) It's item on a menu. */
-         Command( wxT("Exit"), XXO("E&xit"), FN(OnExit),
-            AlwaysEnabledFlag, wxT("Ctrl+Q") )
+         Command( L"Exit", XXO("E&xit"), FN(OnExit),
+            AlwaysEnabledFlag, L"Ctrl+Q" )
       )
    ) ) };
    return menu;
 }
 
 AttachedItem sAttachment1{
-   wxT(""),
+   L"",
    Shared( FileMenu() )
 };
 
@@ -708,15 +708,15 @@ BaseItemSharedPtr HiddenFileMenu()
    {
       (
          FinderScope{ findCommandHandler },
-         ConditionalItems( wxT("HiddenFileItems"),
+         ConditionalItems( L"HiddenFileItems",
             []()
             {
                // Ensures that these items never appear in a menu, but
                // are still available to scripting
                return false;
             },
-            Menu( wxT("HiddenFileMenu"), XXO("Hidden File Menu"),
-               Command( wxT("ExportFLAC"), XXO("Export as FLAC"),
+            Menu( L"HiddenFileMenu", XXO("Hidden File Menu"),
+               Command( L"ExportFLAC", XXO("Export as FLAC"),
                   FN(OnExportFLAC),
                   AudioIONotBusyFlag() )
             )
@@ -727,7 +727,7 @@ BaseItemSharedPtr HiddenFileMenu()
 }
 
 AttachedItem sAttachment2{
-   wxT(""),
+   L"",
    Shared( HiddenFileMenu() )
 };
 

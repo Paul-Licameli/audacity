@@ -85,21 +85,21 @@ void MacroCommands::RestoreMacro(const wxString & name)
 // Commands (at least currently) don't.  Messy.
    ResetMacro();
    if (name == MP3Conversion.Translation() ){
-        AddToMacro( wxT("Normalize") );
-        AddToMacro( wxT("ExportMP3") );
+        AddToMacro( L"Normalize" );
+        AddToMacro( L"ExportMP3" );
    } else if (name == FadeEnds.Translation() ){
-        AddToMacro( wxT("Select"), wxT("Start=\"0\" End=\"1\"") );
-        AddToMacro( wxT("FadeIn") );
-        AddToMacro( wxT("Select"), wxT("Start=\"0\" End=\"1\" RelativeTo=\"ProjectEnd\"") );
-        AddToMacro( wxT("FadeOut") );
-        AddToMacro( wxT("Select"), wxT("Start=\"0\" End=\"0\"") );
+        AddToMacro( L"Select", L"Start=\"0\" End=\"1\"" );
+        AddToMacro( L"FadeIn" );
+        AddToMacro( L"Select", L"Start=\"0\" End=\"1\" RelativeTo=\"ProjectEnd\"" );
+        AddToMacro( L"FadeOut" );
+        AddToMacro( L"Select", L"Start=\"0\" End=\"0\"" );
    }
 }
 
 CommandID MacroCommands::GetCommand(int index)
 {
    if (index < 0 || index >= (int)mCommandMacro.size()) {
-      return wxT("");
+      return L"";
    }
 
    return mCommandMacro[index];
@@ -108,7 +108,7 @@ CommandID MacroCommands::GetCommand(int index)
 wxString MacroCommands::GetParams(int index)
 {
    if (index < 0 || index >= (int)mParamsMacro.size()) {
-      return wxT("");
+      return L"";
    }
 
    return mParamsMacro[index];
@@ -125,7 +125,7 @@ wxString MacroCommands::ReadMacro(const wxString & macro, wxWindow *parent)
    ResetMacro();
 
    // Build the filename
-   wxFileName name(FileNames::MacroDir(), macro, wxT("txt"));
+   wxFileName name(FileNames::MacroDir(), macro, L"txt");
 
    // But, ask the user for the real name if we're importing
    if (parent) {
@@ -133,7 +133,7 @@ wxString MacroCommands::ReadMacro(const wxString & macro, wxWindow *parent)
          XO("Import Macro"),
          wxEmptyString,
          name.GetName(),
-         wxT("txt"),
+         L"txt",
          { FileNames::TextFiles },
          wxFD_OPEN | wxRESIZE_BORDER,
          parent);
@@ -204,7 +204,7 @@ wxString MacroCommands::ReadMacro(const wxString & macro, wxWindow *parent)
 wxString MacroCommands::WriteMacro(const wxString & macro, wxWindow *parent)
 {
    // Build the default filename
-   wxFileName name(FileNames::MacroDir(), macro, wxT("txt"));
+   wxFileName name(FileNames::MacroDir(), macro, L"txt");
 
    // But, ask the user for the real name if we're exporting
    if (parent) {
@@ -212,7 +212,7 @@ wxString MacroCommands::WriteMacro(const wxString & macro, wxWindow *parent)
          XO("Export Macro"),
          wxEmptyString,
          name.GetName(),
-         wxT("txt"),
+         L"txt",
          { FileNames::TextFiles },
          wxFD_SAVE | wxFD_OVERWRITE_PROMPT | wxRESIZE_BORDER,
          parent);
@@ -248,7 +248,7 @@ wxString MacroCommands::WriteMacro(const wxString & macro, wxWindow *parent)
    int lines = mCommandMacro.size();
    for (int i = 0; i < lines; i++) {
       // using GET to serialize macro definition to a text file
-      tf.AddLine(mCommandMacro[i].GET() + wxT(":") + mParamsMacro[ i ]);
+      tf.AddLine(mCommandMacro[i].GET() + L":" + mParamsMacro[ i ]);
    }
 
    // Write the macro
@@ -263,7 +263,7 @@ wxString MacroCommands::WriteMacro(const wxString & macro, wxWindow *parent)
 bool MacroCommands::AddMacro(const wxString & macro)
 {
    // Build the filename
-   wxFileName name(FileNames::MacroDir(), macro, wxT("txt"));
+   wxFileName name(FileNames::MacroDir(), macro, L"txt");
 
    // Set the file name
    wxTextFile tf(name.GetFullPath());
@@ -275,13 +275,13 @@ bool MacroCommands::AddMacro(const wxString & macro)
 bool MacroCommands::DeleteMacro(const wxString & macro)
 {
    // Build the filename
-   wxFileName name(FileNames::MacroDir(), macro, wxT("txt"));
+   wxFileName name(FileNames::MacroDir(), macro, L"txt");
 
    // Delete it...wxRemoveFile will display errors
    auto result = wxRemoveFile(name.GetFullPath());
 
    // Delete any legacy chain that it shadowed
-   auto oldPath = wxFileName{ FileNames::LegacyChainDir(), macro, wxT("txt") };
+   auto oldPath = wxFileName{ FileNames::LegacyChainDir(), macro, L"txt" };
    wxRemoveFile(oldPath.GetFullPath()); // Don't care about this return value
 
    return result;
@@ -290,8 +290,8 @@ bool MacroCommands::DeleteMacro(const wxString & macro)
 bool MacroCommands::RenameMacro(const wxString & oldmacro, const wxString & newmacro)
 {
    // Build the filenames
-   wxFileName oname(FileNames::MacroDir(), oldmacro, wxT("txt"));
-   wxFileName nname(FileNames::MacroDir(), newmacro, wxT("txt"));
+   wxFileName oname(FileNames::MacroDir(), oldmacro, L"txt");
+   wxFileName nname(FileNames::MacroDir(), newmacro, L"txt");
 
    // Rename it...wxRenameFile will display errors
    return wxRenameFile(oname.GetFullPath(), nname.GetFullPath());
@@ -331,7 +331,7 @@ MacroCommandsCatalog::MacroCommandsCatalog( const AudacityProject *project )
    manager.GetAllCommandLabels(mLabels, vExcludeFromMacros, true);
    manager.GetAllCommandNames(mNames, true);
 
-   const bool english = wxGetLocale()->GetCanonicalName().StartsWith(wxT("en"));
+   const bool english = wxGetLocale()->GetCanonicalName().StartsWith(L"en");
 
    for(size_t i=0; i<mNames.size(); i++) {
       if( !vExcludeFromMacros[i] ){
@@ -364,7 +364,7 @@ MacroCommandsCatalog::MacroCommandsCatalog( const AudacityProject *project )
             // PRL:  In case this logic does get fixed for other locales,
             // localize even this punctuation format.  I'm told Chinese actually
             // prefers slightly different parenthesis characters
-            label.Join( XO("(%s)").Format( mNames[i].GET() ), wxT(" ") );
+            label.Join( XO("(%s)").Format( mNames[i].GET() ), L" " );
 
          // Bug 2294.  The Close command pulls the rug out from under
          // batch processing, because it destroys the project.
@@ -715,7 +715,7 @@ bool MacroCommands::ApplyMacro(
       mFileName = filename;
 
       TranslatableString longDesc, shortDesc;
-      wxString name = gPrefs->Read(wxT("/Batch/ActiveMacro"), wxEmptyString);
+      wxString name = gPrefs->Read(L"/Batch/ActiveMacro", wxEmptyString);
       if (name.empty()) {
          /* i18n-hint: active verb in past tense */
          longDesc = XO("Applied Macro");
@@ -759,7 +759,7 @@ bool MacroCommands::ApplyMacro(
 
    // Is tracing enabled?
    bool trace;
-   gPrefs->Read(wxT("/EnableMacroTracing"), &trace, false);
+   gPrefs->Read(L"/EnableMacroTracing", &trace, false);
 
    // If so, then block most other messages while running the macro
    wxLogLevel prevLevel = wxLog::GetComponentLevel("");
@@ -788,9 +788,9 @@ bool MacroCommands::ApplyMacro(
 
       if (trace) {
          auto after = wxTimeSpan(0, 0, 0, wxGetUTCTimeMillis());
-         wxLogMessage(wxT("Macro line #%ld took %s : %s:%s"),
+         wxLogMessage(L"Macro line #%ld took %s : %s:%s",
             i + 1,
-            (after - before).Format(wxT("%H:%M:%S.%l")),
+            (after - before).Format(L"%H:%M:%S.%l"),
             command.GET(),
             mParamsMacro[i]);
       }
@@ -861,7 +861,7 @@ bool MacroCommands::ReportAndSkip(
    const TranslatableString & friendlyCommand, const wxString & params)
 {
    int bDebug;
-   gPrefs->Read(wxT("/Batch/Debug"), &bDebug, false);
+   gPrefs->Read(L"/Batch/Debug", &bDebug, false);
    if( bDebug == 0 )
       return false;
 
@@ -898,10 +898,10 @@ void MacroCommands::MigrateLegacyChains()
 
       const auto oldDir = FileNames::LegacyChainDir();
       FilePaths files;
-      wxDir::GetAllFiles(oldDir, &files, wxT("*.txt"), wxDIR_FILES);
+      wxDir::GetAllFiles(oldDir, &files, L"*.txt", wxDIR_FILES);
 
       // add a dummy path component to be overwritten by SetFullName
-      wxFileName newDir{ FileNames::MacroDir(), wxT("x") };
+      wxFileName newDir{ FileNames::MacroDir(), L"x" };
 
       for (const auto &file : files) {
          auto name = wxFileName{file}.GetFullName();
@@ -921,7 +921,7 @@ wxArrayString MacroCommands::GetNames()
 
    wxArrayString names;
    FilePaths files;
-   wxDir::GetAllFiles(FileNames::MacroDir(), &files, wxT("*.txt"), wxDIR_FILES);
+   wxDir::GetAllFiles(FileNames::MacroDir(), &files, L"*.txt", wxDIR_FILES);
    size_t i;
 
    wxFileName ff;
@@ -967,5 +967,5 @@ void MacroCommands::Split(const wxString & str, wxString & command, wxString & p
 
 wxString MacroCommands::Join(const wxString & command, const wxString & param)
 {
-   return command + wxT(": ") + param;
+   return command + L": " + param;
 }

@@ -96,7 +96,7 @@ classes derived from it.
 bool OldStyleCommand::SetParameter(const wxString & WXUNUSED(paramName),
                            const wxVariant & WXUNUSED(paramValue))
 {
-   wxASSERT_MSG(false, wxT("Tried to set parameter for command which doesn't support parameters!"));
+   wxASSERT_MSG(false, L"Tried to set parameter for command which doesn't support parameters!");
    return false;
 }
 
@@ -148,7 +148,7 @@ bool ApplyAndSendResponse::Apply()
       bool bResult = mCommand->Apply(*( mCtx.get()));
       return bResult; }
    );
-   wxString response = wxT( "\n" );
+   wxString response = L"\n";
 
    // PRL: it's all right to send untranslated strings to this channel
    // I don't see _("") used with literal strings.
@@ -156,14 +156,14 @@ bool ApplyAndSendResponse::Apply()
 
    // These three strings are deliberately not localised.
    // They are used in script responses and always happen in English.
-   response += wxT(" finished: ");
+   response += L" finished: ";
    if (result)
    {
-      response += wxT("OK");
+      response += L"OK";
    }
    else
    {
-      response += wxT("Failed!");
+      response += L"Failed!";
    }
    mCtx->Status(response, true);
    return result;
@@ -189,11 +189,11 @@ void CommandImplementation::TypeCheck(const wxString &typeName,
    // this macro is empty if wxWidgets is not compiled in debug mode
    wxASSERT_MSG(param.IsType(typeName),
                 GetSymbol().Internal()
-                + wxT("command tried to get '")
+                + L"command tried to get '"
                 + paramName
-                + wxT("' parameter as a ")
+                + L"' parameter as a "
                 + typeName
-                + wxT(", but that wasn't enforced by the command signature."));
+                + L", but that wasn't enforced by the command signature.");
 }
 
 void CommandImplementation::CheckParam(const wxString &paramName)
@@ -201,9 +201,9 @@ void CommandImplementation::CheckParam(const wxString &paramName)
    // this macro is empty if wxWidgets is not compiled in debug mode
    wxASSERT_MSG(mParams.find(paramName) != mParams.end(),
                 GetSymbol().Internal()
-                + wxT("command tried to get '")
+                + L"command tried to get '"
                 + paramName
-                + wxT("' parameter, but that parameter doesn't exist in the command signature!"));
+                + L"' parameter, but that parameter doesn't exist in the command signature!");
 }
 
 bool CommandImplementation::HasParam( const wxString &paramName) 
@@ -218,7 +218,7 @@ bool CommandImplementation::GetBool(const wxString &paramName)
 {
    CheckParam(paramName);
    const wxVariant &v = mParams[paramName];
-   TypeCheck(wxT("bool"), paramName, v);
+   TypeCheck(L"bool", paramName, v);
    return v.GetBool();
 }
 
@@ -226,7 +226,7 @@ long CommandImplementation::GetLong(const wxString &paramName)
 {
    CheckParam(paramName);
    const wxVariant &v = mParams[paramName];
-   TypeCheck(wxT("double"), paramName, v);
+   TypeCheck(L"double", paramName, v);
    return (long)v.GetDouble();
 }
 
@@ -234,7 +234,7 @@ double CommandImplementation::GetDouble(const wxString &paramName)
 {
    CheckParam(paramName);
    const wxVariant &v = mParams[paramName];
-   TypeCheck(wxT("double"), paramName, v);
+   TypeCheck(L"double", paramName, v);
    return v.GetDouble();
 }
 
@@ -242,7 +242,7 @@ wxString CommandImplementation::GetString(const wxString &paramName)
 {
    CheckParam(paramName);
    const wxVariant &v = mParams[paramName];
-   TypeCheck(wxT("string"), paramName, v);
+   TypeCheck(L"string", paramName, v);
    return v.GetString();
 }
 
@@ -260,7 +260,7 @@ CommandSignature &CommandImplementation::GetSignature()
 
 bool CommandImplementation::SetParameter(const wxString &paramName, const wxVariant &paramValue)
 {
-   wxASSERT(!paramValue.IsType(wxT("null")));
+   wxASSERT(!paramValue.IsType(L"null"));
    CommandContext context( mProject );
    ParamValueMap::iterator iter = mParams.find(paramName);
    if (iter == mParams.end())
@@ -286,7 +286,7 @@ bool CommandImplementation::SetParameter(const wxString &paramName, const wxVari
    mSetParams[ paramName ] = true;
 
    // (debug)
-   // context.Status(wxT("Set parameter ") + paramName + wxT(" to type ") + mParams[paramName].GetType() + wxT(", value ") + mParams[paramName].MakeString());
+   // context.Status(L"Set parameter " + paramName + L" to type " + mParams[paramName].GetType() + L", value " + mParams[paramName].MakeString());
 
    return true;
 }

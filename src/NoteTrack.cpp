@@ -110,7 +110,7 @@ SONFNS(AutoSave)
 
 
 static ProjectFileIORegistry::Entry registerFactory{
-   wxT( "notetrack" ),
+   L"notetrack",
    []( AudacityProject &project ){
       auto &tracks = TrackList::Get( project );
       auto result = tracks.Add( std::make_shared<NoteTrack>());
@@ -343,7 +343,7 @@ void NoteTrack::DrawLabelControls
          wxCoord w;
          wxCoord h;
 
-         text.Printf(wxT("%d"), chanName);
+         text.Printf(L"%d", chanName);
          dc.GetTextExtent(text, &w, &h);
 
          dc.DrawText(text, box.x + (box.width - w) / 2, box.y + (box.height - h) / 2);
@@ -887,7 +887,7 @@ bool NoteTrack::ExportAllegro(const wxString &f) const
 
 bool NoteTrack::HandleXMLTag(const wxChar *tag, const wxChar **attrs)
 {
-   if (!wxStrcmp(tag, wxT("notetrack"))) {
+   if (!wxStrcmp(tag, L"notetrack")) {
       while (*attrs) {
          const wxChar *attr = *attrs++;
          const wxChar *value = *attrs++;
@@ -900,11 +900,11 @@ bool NoteTrack::HandleXMLTag(const wxChar *tag, const wxChar **attrs)
             ;
          else if (this->NoteTrackBase::HandleXMLAttribute(attr, value))
          {}
-         else if (!wxStrcmp(attr, wxT("offset")) &&
+         else if (!wxStrcmp(attr, L"offset") &&
                   XMLValueChecker::IsGoodString(strValue) &&
                   Internat::CompatibleToDouble(strValue, &dblValue))
             SetOffset(dblValue);
-         else if (!wxStrcmp(attr, wxT("visiblechannels"))) {
+         else if (!wxStrcmp(attr, L"visiblechannels")) {
              if (!XMLValueChecker::IsGoodInt(strValue) ||
                  !strValue.ToLong(&nValue) ||
                  !XMLValueChecker::IsValidVisibleChannels(nValue))
@@ -912,18 +912,18 @@ bool NoteTrack::HandleXMLTag(const wxChar *tag, const wxChar **attrs)
              mVisibleChannels = nValue;
          }
 #ifdef EXPERIMENTAL_MIDI_OUT
-         else if (!wxStrcmp(attr, wxT("velocity")) &&
+         else if (!wxStrcmp(attr, L"velocity") &&
                   XMLValueChecker::IsGoodString(strValue) &&
                   Internat::CompatibleToDouble(strValue, &dblValue))
             mVelocity = (float) dblValue;
 #endif
-         else if (!wxStrcmp(attr, wxT("bottomnote")) &&
+         else if (!wxStrcmp(attr, L"bottomnote") &&
                   XMLValueChecker::IsGoodInt(strValue) && strValue.ToLong(&nValue))
             SetBottomNote(nValue);
-         else if (!wxStrcmp(attr, wxT("topnote")) &&
+         else if (!wxStrcmp(attr, L"topnote") &&
                   XMLValueChecker::IsGoodInt(strValue) && strValue.ToLong(&nValue))
             SetTopNote(nValue);
-         else if (!wxStrcmp(attr, wxT("data"))) {
+         else if (!wxStrcmp(attr, L"data")) {
              std::string s(strValue.mb_str(wxConvUTF8));
              std::istringstream data(s);
              mSeq = std::make_unique<Alg_seq>(data, false);
@@ -952,19 +952,19 @@ void NoteTrack::WriteXML(XMLWriter &xmlFile) const
       saveme = static_cast<NoteTrack*>(holder.get());
    }
    saveme->GetSeq().write(data, true);
-   xmlFile.StartTag(wxT("notetrack"));
+   xmlFile.StartTag(L"notetrack");
    saveme->Track::WriteCommonXMLAttributes( xmlFile );
    this->NoteTrackBase::WriteXMLAttributes(xmlFile);
-   xmlFile.WriteAttr(wxT("offset"), saveme->GetOffset());
-   xmlFile.WriteAttr(wxT("visiblechannels"), saveme->mVisibleChannels);
+   xmlFile.WriteAttr(L"offset", saveme->GetOffset());
+   xmlFile.WriteAttr(L"visiblechannels", saveme->mVisibleChannels);
 
 #ifdef EXPERIMENTAL_MIDI_OUT
-   xmlFile.WriteAttr(wxT("velocity"), (double) saveme->mVelocity);
+   xmlFile.WriteAttr(L"velocity", (double) saveme->mVelocity);
 #endif
-   xmlFile.WriteAttr(wxT("bottomnote"), saveme->mBottomNote);
-   xmlFile.WriteAttr(wxT("topnote"), saveme->mTopNote);
-   xmlFile.WriteAttr(wxT("data"), wxString(data.str().c_str(), wxConvUTF8));
-   xmlFile.EndTag(wxT("notetrack"));
+   xmlFile.WriteAttr(L"bottomnote", saveme->mBottomNote);
+   xmlFile.WriteAttr(L"topnote", saveme->mTopNote);
+   xmlFile.WriteAttr(L"data", wxString(data.str().c_str(), wxConvUTF8));
+   xmlFile.EndTag(L"notetrack");
 }
 
 void NoteTrack::SetBottomNote(int note)

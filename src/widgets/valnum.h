@@ -294,13 +294,13 @@ protected:
         : NumValidatorBase(style)
     {
         wxASSERT_MSG( !(style & NumValidatorStyle::NO_TRAILING_ZEROES),
-                      wxT("This style doesn't make sense for integers.") );
+                      L"This style doesn't make sense for integers." );
         wxASSERT_MSG( !(style & NumValidatorStyle::ONE_TRAILING_ZERO),
-                      wxT("This style doesn't make sense for integers.") );
+                      L"This style doesn't make sense for integers." );
         wxASSERT_MSG( !(style & NumValidatorStyle::TWO_TRAILING_ZEROES),
-                      wxT("This style doesn't make sense for integers.") );
+                      L"This style doesn't make sense for integers." );
         wxASSERT_MSG( !(style & NumValidatorStyle::THREE_TRAILING_ZEROES),
-                      wxT("This style doesn't make sense for integers.") );
+                      L"This style doesn't make sense for integers." );
     }
 
     IntegerValidatorBase(const IntegerValidatorBase& other)

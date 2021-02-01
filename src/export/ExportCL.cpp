@@ -83,16 +83,16 @@ END_EVENT_TABLE()
 ExportCLOptions::ExportCLOptions(wxWindow *parent, int WXUNUSED(format))
 :  wxPanelWrapper(parent, wxID_ANY)
 {
-   mHistory.Load(*gPrefs, wxT("/FileFormats/ExternalProgramHistory"));
+   mHistory.Load(*gPrefs, L"/FileFormats/ExternalProgramHistory");
 
    if (mHistory.empty()) {
-      mHistory.Append(wxT("ffmpeg -i - \"%f.opus\""));
-      mHistory.Append(wxT("ffmpeg -i - \"%f.wav\""));
-      mHistory.Append(wxT("ffmpeg -i - \"%f\""));
-      mHistory.Append(wxT("lame - \"%f\""));
+      mHistory.Append(L"ffmpeg -i - \"%f.opus\"");
+      mHistory.Append(L"ffmpeg -i - \"%f.wav\"");
+      mHistory.Append(L"ffmpeg -i - \"%f\"");
+      mHistory.Append(L"lame - \"%f\"");
    }
 
-   mHistory.Append(gPrefs->Read(wxT("/FileFormats/ExternalProgramExportCommand"),
+   mHistory.Append(gPrefs->Read(L"/FileFormats/ExternalProgramExportCommand",
                                           mHistory[ 0 ]));
 
    ShuttleGui S(this, eIsCreatingFromPrefs);
@@ -130,7 +130,7 @@ void ExportCLOptions::PopulateOrExchange(ShuttleGui & S)
                                       wxALIGN_CENTER_VERTICAL);
             S.AddFixedText( {} );
             S.TieCheckBox(XXO("Show output"),
-                          {wxT("/FileFormats/ExternalProgramShowOutput"),
+                          {L"/FileFormats/ExternalProgramShowOutput",
                            false});
          }
          S.EndMultiColumn();
@@ -167,7 +167,7 @@ bool ExportCLOptions::TransferDataFromWindow()
    mHistory.Append(cmd);
    mHistory.Save(*gPrefs);
 
-   gPrefs->Write(wxT("/FileFormats/ExternalProgramExportCommand"), cmd);
+   gPrefs->Write(L"/FileFormats/ExternalProgramExportCommand", cmd);
    gPrefs->Flush();
 
    return true;
@@ -182,7 +182,7 @@ void ExportCLOptions::OnBrowse(wxCommandEvent& WXUNUSED(event))
    FileNames::FileType type = FileNames::AllFiles;
 
 #if defined(__WXMSW__)
-   ext = wxT("exe");
+   ext = L"exe";
    /* i18n-hint files that can be run as programs */
    type = { XO("Executables"), { ext } };
 #endif
@@ -309,12 +309,12 @@ private:
       ExtendPath()
       {
          // Give Windows a chance at finding lame command in the default location.
-         wxString paths[] = {wxT("HKEY_LOCAL_MACHINE\\Software\\Lame for Audacity"),
-                             wxT("HKEY_LOCAL_MACHINE\\Software\\FFmpeg for Audacity")};
+         wxString paths[] = {L"HKEY_LOCAL_MACHINE\\Software\\Lame for Audacity",
+                             L"HKEY_LOCAL_MACHINE\\Software\\FFmpeg for Audacity"};
          wxString npath;
          wxRegKey reg;
 
-         wxGetEnv(wxT("PATH"), &opath);
+         wxGetEnv(L"PATH", &opath);
          npath = opath;
 
          for (int i = 0; i < WXSIZEOF(paths); i++) {
@@ -322,21 +322,21 @@ private:
 
             if (reg.Exists()) {
                wxString ipath;
-               reg.QueryValue(wxT("InstallPath"), ipath);
+               reg.QueryValue(L"InstallPath", ipath);
                if (!ipath.empty()) {
                   npath += wxPATH_SEP + ipath;
                }
             }
          }
 
-         wxSetEnv(wxT("PATH"),npath);
+         wxSetEnv(L"PATH",npath);
       };
 
       ~ExtendPath()
       {
          if (!opath.empty())
          {
-            wxSetEnv(wxT("PATH"),opath);
+            wxSetEnv(L"PATH",opath);
          }
       }
 #endif
@@ -347,8 +347,8 @@ ExportCL::ExportCL()
 :  ExportPlugin()
 {
    AddFormat();
-   SetFormat(wxT("CL"),0);
-   AddExtension(wxT(""),0);
+   SetFormat(L"CL",0);
+   AddExtension(L"",0);
    SetMaxChannels(255,0);
    SetCanMetaData(false,0);
    SetDescription(XO("(external program)"),0);
@@ -376,9 +376,9 @@ ProgressResult ExportCL::Export(AudacityProject *project,
    // Bug 2178 - users who don't know what they are doing will 
    // now get a file extension of .wav appended to their ffmpeg filename
    // and therefore ffmpeg will be able to choose a file type.
-   if( mCmd == wxT("ffmpeg -i - \"%f\"") && !fName.HasExt())
+   if( mCmd == L"ffmpeg -i - \"%f\"" && !fName.HasExt())
       mCmd.Replace( "%f", "%f.wav" );
-   mCmd.Replace(wxT("%f"), path);
+   mCmd.Replace(L"%f", path);
 
    // Kick off the command
    ExportCLProcess process(&output);
@@ -589,7 +589,7 @@ ProgressResult ExportCL::Export(AudacityProject *project,
       ShuttleGui S(&dlg, eIsCreating);
       S
          .Style( wxTE_MULTILINE | wxTE_READONLY | wxTE_RICH )
-         .AddTextWindow(mCmd + wxT("\n\n") + output);
+         .AddTextWindow(mCmd + L"\n\n" + output);
       S.StartHorizontalLay(wxALIGN_CENTER, false);
       {
          S.Id(wxID_OK).AddButton(XXO("&OK"), wxALIGN_CENTER, true);
@@ -645,7 +645,7 @@ std::vector<char> ExportCL::GetMetaChunk(const Tags *tags)
       else if (n.CmpNoCase(TAG_TRACK) == 0) {
          name = ID3_FRAME_TRACK;
       }
-      else if (n.CmpNoCase(wxT("composer")) == 0) {
+      else if (n.CmpNoCase(L"composer") == 0) {
          name = "TCOM";
       }
 
@@ -722,7 +722,7 @@ bool ExportCL::CheckFileName(wxFileName &filename, int WXUNUSED(format))
 
    if (filename.GetExt().empty()) {
       if (ShowWarningDialog(NULL,
-                            wxT("MissingExtension"),
+                            L"MissingExtension",
                             XO("You've specified a file name without an extension. Are you sure?"),
                             true) == wxID_CANCEL) {
          return false;
@@ -766,12 +766,12 @@ bool ExportCL::CheckFileName(wxFileName &filename, int WXUNUSED(format))
  
    // Search for the command in the PATH list
    wxPathList pathlist;
-   pathlist.AddEnvList(wxT("PATH"));
+   pathlist.AddEnvList(L"PATH");
    wxString path = pathlist.FindAbsoluteValidPath(argv[0]);
 
 #if defined(__WXMSW__)
    if (path.empty()) {
-      path = pathlist.FindAbsoluteValidPath(argv[0] + wxT(".exe"));
+      path = pathlist.FindAbsoluteValidPath(argv[0] + L".exe");
    }
 #endif
 
@@ -790,8 +790,8 @@ bool ExportCL::CheckFileName(wxFileName &filename, int WXUNUSED(format))
 void ExportCL::GetSettings()
 {
    // Retrieve settings
-   gPrefs->Read(wxT("/FileFormats/ExternalProgramShowOutput"), &mShow, false);
-   mCmd = gPrefs->Read(wxT("/FileFormats/ExternalProgramExportCommand"), wxT("lame - \"%f.mp3\""));
+   gPrefs->Read(L"/FileFormats/ExternalProgramShowOutput", &mShow, false);
+   mCmd = gPrefs->Read(L"/FileFormats/ExternalProgramExportCommand", L"lame - \"%f.mp3\"");
 }
 
 static Exporter::RegisteredExportPlugin sRegisteredPlugin{ "CommandLine",

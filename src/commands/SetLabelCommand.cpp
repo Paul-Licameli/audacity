@@ -40,11 +40,11 @@ SetLabelCommand::SetLabelCommand()
 
 
 bool SetLabelCommand::DefineParams( ShuttleParams & S ){ 
-   S.Define(    mLabelIndex,                            wxT("Label"), 0, 0, 100 );
-   S.OptionalY( bHasText       ).Define(  mText,        wxT("Text"),       wxT("empty") );
-   S.OptionalY( bHasT0         ).Define(  mT0,          wxT("Start"),      0.0, 0.0, 100000.0);
-   S.OptionalY( bHasT1         ).Define(  mT1,          wxT("End"),        0.0, 0.0, 100000.0);
-   S.OptionalN( bHasSelected   ).Define(  mbSelected,   wxT("Selected"),   false );
+   S.Define(    mLabelIndex,                            L"Label", 0, 0, 100 );
+   S.OptionalY( bHasText       ).Define(  mText,        L"Text",       L"empty" );
+   S.OptionalY( bHasT0         ).Define(  mT0,          L"Start",      0.0, 0.0, 100000.0);
+   S.OptionalY( bHasT1         ).Define(  mT1,          L"End",        0.0, 0.0, 100000.0);
+   S.OptionalN( bHasSelected   ).Define(  mbSelected,   L"Selected",   false );
    return true;
 };
 
@@ -72,7 +72,7 @@ bool SetLabelCommand::Apply(const CommandContext & context)
    // \todo we have similar code for finding the nth Label, Clip, Track etc.
    // this code could be put in subroutines/reduced.
 
-   //wxString mode = GetString(wxT("Type"));
+   //wxString mode = GetString(L"Type");
    AudacityProject * p = &context.project;
    auto &tracks = TrackList::Get( *p );
    auto &selectedRegion = ViewInfo::Get( *p ).selectedRegion;
@@ -95,7 +95,7 @@ bool SetLabelCommand::Apply(const CommandContext & context)
 
    if ( !pLabel )
    {
-      context.Error(wxT("LabelIndex was invalid."));
+      context.Error(L"LabelIndex was invalid.");
       return false;
    }
    auto newLabel = *pLabel;

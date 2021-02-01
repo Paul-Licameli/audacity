@@ -164,9 +164,9 @@ void ScrubbingOverlay::OnTimer(wxCommandEvent &event)
       const wxChar *format =
          scrubber.IsScrollScrubbing()
          ? seeking
-            ? wxT("%+.2fX")
-            : wxT("%+.2f")
-         : wxT("%.2f");
+            ? L"%+.2fX"
+            : L"%+.2f"
+         : L"%.2f";
 
       mNextScrubSpeedText = wxString::Format(format, speed);
 

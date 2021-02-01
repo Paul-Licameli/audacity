@@ -51,8 +51,8 @@ enum
 // Define keys, defaults, minimums, and maximums for the effect parameters
 //
 //     Name       Type     Key               Def      Min      Max      Scale
-Param( Threshold, int,     wxT("Threshold"),  200,     0,       900,     1  );
-Param( Width,     int,     wxT("Width"),      20,      0,       40,      1  );
+Param( Threshold, int,     L"Threshold",  200,     0,       900,     1  );
+Param( Width,     int,     L"Width",      20,      0,       40,      1  );
 
 const ComponentInterfaceSymbol EffectClickRemoval::Symbol
 { XO("Click Removal") };
@@ -95,7 +95,7 @@ TranslatableString EffectClickRemoval::GetDescription()
 
 wxString EffectClickRemoval::ManualPage()
 {
-   return wxT("Click_Removal");
+   return L"Click_Removal";
 }
 
 // EffectDefinitionInterface implementation
@@ -140,12 +140,12 @@ bool EffectClickRemoval::CheckWhetherSkipEffect()
 
 bool EffectClickRemoval::Startup()
 {
-   wxString base = wxT("/Effects/ClickRemoval/");
+   wxString base = L"/Effects/ClickRemoval/";
 
    // Migrate settings from 2.1.0 or before
 
    // Already migrated, so bail
-   if (gPrefs->Exists(base + wxT("Migrated")))
+   if (gPrefs->Exists(base + L"Migrated"))
    {
       return true;
    }
@@ -153,12 +153,12 @@ bool EffectClickRemoval::Startup()
    // Load the old "current" settings
    if (gPrefs->Exists(base))
    {
-      mThresholdLevel = gPrefs->Read(base + wxT("ClickThresholdLevel"), 200);
+      mThresholdLevel = gPrefs->Read(base + L"ClickThresholdLevel", 200);
       if ((mThresholdLevel < MIN_Threshold) || (mThresholdLevel > MAX_Threshold))
       {  // corrupted Prefs?
          mThresholdLevel = 0;  //Off-skip
       }
-      mClickWidth = gPrefs->Read(base + wxT("ClickWidth"), 20);
+      mClickWidth = gPrefs->Read(base + L"ClickWidth", 20);
       if ((mClickWidth < MIN_Width) || (mClickWidth > MAX_Width))
       {  // corrupted Prefs?
          mClickWidth = 0;  //Off-skip
@@ -167,7 +167,7 @@ bool EffectClickRemoval::Startup()
       SaveUserPreset(GetCurrentSettingsGroup());
 
       // Do not migrate again
-      gPrefs->Write(base + wxT("Migrated"), true);
+      gPrefs->Write(base + L"Migrated", true);
       gPrefs->Flush();
    }
 
@@ -350,7 +350,7 @@ void EffectClickRemoval::PopulateOrExchange(ShuttleGui & S)
             MIN_Threshold, MAX_Threshold
          )
          .AddTextBox(XXO("&Threshold (lower is more sensitive):"),
-                     wxT(""),
+                     L"",
                      10);
 
       mThreshS = S.Id(ID_Thresh)
@@ -365,7 +365,7 @@ void EffectClickRemoval::PopulateOrExchange(ShuttleGui & S)
          .Validator<IntegerValidator<int>>(
             &mClickWidth, NumValidatorStyle::DEFAULT, MIN_Width, MAX_Width)
          .AddTextBox(XXO("Max &Spike Width (higher is more sensitive):"),
-                     wxT(""),
+                     L"",
                      10);
 
       mWidthS = S.Id(ID_Width)

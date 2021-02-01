@@ -91,11 +91,11 @@ BEGIN_EVENT_TABLE(SpectralSelectionBar, ToolBar)
 END_EVENT_TABLE()
 
 static const wxString preferencePath
-(wxT("/GUI/Toolbars/SpectralSelection/CenterAndWidthChoice"));
+(L"/GUI/Toolbars/SpectralSelection/CenterAndWidthChoice");
 
 SpectralSelectionBar::SpectralSelectionBar( AudacityProject &project )
 : ToolBar( project,
-   SpectralSelectionBarID, XO("Spectral Selection"), wxT("SpectralSelection") )
+   SpectralSelectionBarID, XO("Spectral Selection"), L"SpectralSelection" )
 , mListener(NULL), mbCenterAndWidth(true)
 , mCenter(0.0), mWidth(0.0), mLow(0.0), mHigh(0.0)
 , mCenterCtrl(NULL), mWidthCtrl(NULL), mLowCtrl(NULL), mHighCtrl(NULL)
@@ -494,7 +494,7 @@ AttachedToolBarMenuItem sAttachment{
    SpectralSelectionBarID,
       /* i18n-hint: Clicking this menu item shows the toolbar
       for selecting a frequency range of audio */
-   wxT("ShowSpectralSelectionTB"), XXO("Spe&ctral Selection Toolbar")
+   L"ShowSpectralSelectionTB", XXO("Spe&ctral Selection Toolbar")
 };
 }
 

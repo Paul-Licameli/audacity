@@ -243,7 +243,7 @@ void Theme::RegisterImages()
    mbInitialised = true;
 
 // This initialises the variables e.g
-// RegisterImage( bmpRecordButton, some image, wxT("RecordButton"));
+// RegisterImage( bmpRecordButton, some image, L"RecordButton");
 #define THEME_INITS
 #include "AllThemeResources.h"
 
@@ -383,7 +383,7 @@ wxImage ThemeBase::MaskedImage( char const ** pXpm, char const ** pMask )
    wxBitmap Bmp1( pXpm );
    wxBitmap Bmp2( pMask );
 
-//   wxLogDebug( wxT("Image 1: %i Image 2: %i"),
+//   wxLogDebug( L"Image 1: %i Image 2: %i",
 //      Bmp1.GetDepth(), Bmp2.GetDepth() );
 
    // We want a 24-bit-depth bitmap if all is working, but on some
@@ -584,14 +584,14 @@ int SourceOutputStream::OpenFile(const FilePath & Filename)
    {
 // DA: Naming of output sourcery
 #ifdef EXPERIMENTAL_DA
-      File.Write( wxT("///   @file DarkThemeAsCeeCode.h\r\n") );
+      File.Write( L"///   @file DarkThemeAsCeeCode.h\r\n" );
 #else
-      File.Write( wxT("///   @file ThemeAsCeeCode.h\r\n") );
+      File.Write( L"///   @file ThemeAsCeeCode.h\r\n" );
 #endif
-      File.Write( wxT("///   @brief This file was Auto-Generated.\r\n") );
-      File.Write( wxT("///\r\n") );
-      File.Write( wxT("///   It is included by Theme.cpp.\r\n") );
-      File.Write( wxT("///   Only check this into Git if you've read and understood the guidelines!\r\n\r\n   ") );
+      File.Write( L"///   @brief This file was Auto-Generated.\r\n" );
+      File.Write( L"///\r\n" );
+      File.Write( L"///   It is included by Theme.cpp.\r\n" );
+      File.Write( L"///   Only check this into Git if you've read and understood the guidelines!\r\n\r\n   " );
    }
    return bOk;
 }
@@ -604,13 +604,13 @@ size_t SourceOutputStream::OnSysWrite(const void *buffer, size_t bufsize)
    for(int i=0;i<(int)bufsize;i++)
    {
       // Write one byte with a comma
-      Temp = wxString::Format( wxT("%i,"),(int)(((unsigned char*)buffer)[i]) );
+      Temp = wxString::Format( L"%i,",(int)(((unsigned char*)buffer)[i]) );
       File.Write( Temp );
       nBytes++;
       // New line if more than 20 bytes written since last time.
       if( (nBytes %20)==0 )
       {
-         File.Write( wxT("\r\n   "));
+         File.Write( L"\r\n   ");
       }
    }
    return bufsize;
@@ -619,7 +619,7 @@ size_t SourceOutputStream::OnSysWrite(const void *buffer, size_t bufsize)
 /// Destructor.  We close our text stream in here.
 SourceOutputStream::~SourceOutputStream()
 {
-   File.Write( wxT("\r\n") );
+   File.Write( L"\r\n" );
    File.Close();
 }
 
@@ -650,8 +650,8 @@ void ThemeBase::CreateImageCache( bool bBinarySave )
 
 //#define IMAGE_MAP
 #ifdef IMAGE_MAP
-   wxLogDebug( wxT("<img src=\"ImageCache.png\" usemap=\"#map1\">" ));
-   wxLogDebug( wxT("<map name=\"map1\">") );
+   wxLogDebug( L"<img src=\"ImageCache.png\" usemap=\"#map1\">");
+   wxLogDebug( L"<map name=\"map1\">" );
 #endif
 
    // Save the bitmaps
@@ -672,7 +672,7 @@ void ThemeBase::CreateImageCache( bool bBinarySave )
 #ifdef IMAGE_MAP
          // No href in html.  Uses title not alt.
          wxRect R( mFlow.Rect() );
-         wxLogDebug( wxT("<area title=\"Bitmap:%s\" shape=rect coords=\"%i,%i,%i,%i\">"),
+         wxLogDebug( L"<area title=\"Bitmap:%s\" shape=rect coords=\"%i,%i,%i,%i\">",
             mBitmapNames[i],
             R.GetLeft(), R.GetTop(), R.GetRight(), R.GetBottom() );
 #endif
@@ -702,7 +702,7 @@ void ThemeBase::CreateImageCache( bool bBinarySave )
 #ifdef IMAGE_MAP
       // No href in html.  Uses title not alt.
       wxRect R( mFlow.Rect() );
-      wxLogDebug( wxT("<area title=\"Colour:%s\" shape=rect coords=\"%i,%i,%i,%i\">"),
+      wxLogDebug( L"<area title=\"Colour:%s\" shape=rect coords=\"%i,%i,%i,%i\">",
          mColourNames[i],
          R.GetLeft(), R.GetTop(), R.GetRight(), R.GetBottom() );
 #endif
@@ -803,15 +803,15 @@ void ThemeBase::WriteImageMap( )
    mFlow.Init( ImageCacheWidth );
    mFlow.mBorderWidth = 1;
 
-   wxFFile File( FileNames::ThemeCacheHtm(), wxT("wb") );// I'll put in NEW lines explicitly.
+   wxFFile File( FileNames::ThemeCacheHtm(), L"wb" );// I'll put in NEW lines explicitly.
    if( !File.IsOpened() )
       return;
 
-   File.Write( wxT("<html>\r\n"));
-   File.Write( wxT("<body bgcolor=\"303030\">\r\n"));
-   wxString Temp = wxString::Format( wxT("<img src=\"ImageCache.png\" width=\"%i\" usemap=\"#map1\">\r\n" ), ImageCacheWidth );
+   File.Write( L"<html>\r\n");
+   File.Write( L"<body bgcolor=\"303030\">\r\n");
+   wxString Temp = wxString::Format( L"<img src=\"ImageCache.png\" width=\"%i\" usemap=\"#map1\">\r\n", ImageCacheWidth );
    File.Write( Temp );
-   File.Write( wxT("<map name=\"map1\">\r\n") );
+   File.Write( L"<map name=\"map1\">\r\n" );
 
    for(i = 0; i < (int)mImages.size(); i++)
    {
@@ -823,7 +823,7 @@ void ThemeBase::WriteImageMap( )
          // No href in html.  Uses title not alt.
          wxRect R( mFlow.RectInner() );
          File.Write( wxString::Format(
-            wxT("<area title=\"Bitmap:%s\" shape=rect coords=\"%i,%i,%i,%i\">\r\n"),
+            L"<area title=\"Bitmap:%s\" shape=rect coords=\"%i,%i,%i,%i\">\r\n",
             mBitmapNames[i],
             R.GetLeft(), R.GetTop(), R.GetRight(), R.GetBottom()) );
       }
@@ -836,13 +836,13 @@ void ThemeBase::WriteImageMap( )
       mFlow.GetNextPosition( iColSize, iColSize );
       // No href in html.  Uses title not alt.
       wxRect R( mFlow.RectInner() );
-      File.Write( wxString::Format( wxT("<area title=\"Colour:%s\" shape=rect coords=\"%i,%i,%i,%i\">\r\n"),
+      File.Write( wxString::Format( L"<area title=\"Colour:%s\" shape=rect coords=\"%i,%i,%i,%i\">\r\n",
          mColourNames[i],
          R.GetLeft(), R.GetTop(), R.GetRight(), R.GetBottom()) );
    }
-   File.Write( wxT("</map>\r\n") );
-   File.Write( wxT("</body>\r\n"));
-   File.Write( wxT("</html>\r\n"));
+   File.Write( L"</map>\r\n" );
+   File.Write( L"</body>\r\n");
+   File.Write( L"</html>\r\n");
    // File will be closed automatically.
 }
 
@@ -853,7 +853,7 @@ void ThemeBase::WriteImageDefs( )
    wxBusyCursor busy;
 
    int i;
-   wxFFile File( FileNames::ThemeImageDefsAsCee(), wxT("wb") );
+   wxFFile File( FileNames::ThemeImageDefsAsCee(), L"wb" );
    if( !File.IsOpened() )
       return;
    teResourceFlags PrevFlags = (teResourceFlags)-1;
@@ -866,18 +866,18 @@ void ThemeBase::WriteImageDefs( )
          PrevFlags = (teResourceFlags)mBitmapFlags[i];
          int t = (int)PrevFlags;
          wxString Temp;
-         if( t==0 ) Temp = wxT(" resFlagNone ");
-         if( t & resFlagPaired )   Temp += wxT(" resFlagPaired ");
-         if( t & resFlagCursor )   Temp += wxT(" resFlagCursor ");
-         if( t & resFlagNewLine )  Temp += wxT(" resFlagNewLine ");
-         if( t & resFlagInternal ) Temp += wxT(" resFlagInternal ");
-         Temp.Replace( wxT("  "), wxT(" | ") );
+         if( t==0 ) Temp = L" resFlagNone ";
+         if( t & resFlagPaired )   Temp += L" resFlagPaired ";
+         if( t & resFlagCursor )   Temp += L" resFlagCursor ";
+         if( t & resFlagNewLine )  Temp += L" resFlagNewLine ";
+         if( t & resFlagInternal ) Temp += L" resFlagInternal ";
+         Temp.Replace( L"  ", L" | " );
 
-         File.Write( wxString::Format( wxT("\r\n   SET_THEME_FLAGS( %s );\r\n"),
+         File.Write( wxString::Format( L"\r\n   SET_THEME_FLAGS( %s );\r\n",
             Temp ));
       }
       File.Write( wxString::Format(
-         wxT("   DEFINE_IMAGE( bmp%s, wxImage( %i, %i ), wxT(\"%s\"));\r\n"),
+         L"   DEFINE_IMAGE( bmp%s, wxImage( %i, %i ), wxT(\"%s\"));\r\n",
          mBitmapNames[i],
          SrcImage.GetWidth(),
          SrcImage.GetHeight(),
@@ -931,7 +931,7 @@ bool ThemeBase::ReadImageCache( teThemeType type, bool bOkIfNotFound)
 //      ImageCache.InitAlpha();
 //   }
 
-   gPrefs->Read(wxT("/GUI/BlendThemes"), &bRecolourOnLoad, true);
+   gPrefs->Read(L"/GUI/BlendThemes", &bRecolourOnLoad, true);
 
    if(  type == themeFromFile )
    {
@@ -1084,7 +1084,7 @@ void ThemeBase::LoadComponents( bool bOkIfNotFound )
             /// and that transfers the mask into the alpha channel, and we're done.
             if( ! mImages[i].HasAlpha() )
             {
-               // wxLogDebug( wxT("File %s lacked alpha"), mBitmapNames[i] );
+               // wxLogDebug( L"File %s lacked alpha", mBitmapNames[i] );
                mImages[i].InitAlpha();
             }
             mBitmaps[i] = wxBitmap( mImages[i] );
@@ -1308,7 +1308,7 @@ constexpr int defaultTheme =
 ;
 
 ChoiceSetting GUITheme{
-   wxT("/GUI/Theme"),
+   L"/GUI/Theme",
    {
       ByColumns,
       {
@@ -1325,11 +1325,11 @@ ChoiceSetting GUITheme{
          XO("Custom")  ,
       },
       {
-         wxT("classic")  ,
-         wxT("light")  ,
-         wxT("dark")  ,
-         wxT("high-contrast")  ,
-         wxT("custom")  ,
+         L"classic"  ,
+         L"light"  ,
+         L"dark"  ,
+         L"high-contrast"  ,
+         L"custom"  ,
       }
    },
    defaultTheme

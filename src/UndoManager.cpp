@@ -484,8 +484,8 @@ int UndoManager::GetSavedState() const
 //{
 //   for (unsigned int i = 0; i < stack.size(); i++) {
 //      for (auto t : stack[i]->tracks->Any())
-//         wxPrintf(wxT("*%d* %s %f\n"),
-//                  i, (i == (unsigned int)current) ? wxT("-->") : wxT("   "),
+//         wxPrintf(L"*%d* %s %f\n",
+//                  i, (i == (unsigned int)current) ? L"-->" : L"   ",
 //                t ? t->GetEndTime()-t->GetStartTime() : 0);
 //   }
 //}

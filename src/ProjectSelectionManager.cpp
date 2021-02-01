@@ -116,8 +116,8 @@ void ProjectSelectionManager::AS_SetSnapTo(int snap)
    settings.SetSnapTo( snap );
 
 // LLL: TODO - what should this be changed to???
-// GetCommandManager()->Check(wxT("Snap"), mSnapTo);
-   gPrefs->Write(wxT("/SnapTo"), snap);
+// GetCommandManager()->Check(L"Snap", mSnapTo);
+   gPrefs->Write(L"/SnapTo", snap);
    gPrefs->Flush();
 
    SnapSelection();
@@ -141,7 +141,7 @@ void ProjectSelectionManager::AS_SetSelectionFormat(
    auto &settings = ProjectSettings::Get( project );
    settings.SetSelectionFormat( format );
 
-   gPrefs->Write(wxT("/SelectionFormat"), format.Internal());
+   gPrefs->Write(L"/SelectionFormat", format.Internal());
    gPrefs->Flush();
 
    if (SnapSelection())
@@ -164,7 +164,7 @@ void ProjectSelectionManager::TT_SetAudioTimeFormat(
    auto &settings = ProjectSettings::Get( project );
    settings.SetAudioTimeFormat( format );
 
-   gPrefs->Write(wxT("/AudioTimeFormat"), format.Internal());
+   gPrefs->Write(L"/AudioTimeFormat", format.Internal());
    gPrefs->Flush();
 
    TimeToolBar::Get( project ).SetAudioTimeFormat(format);
@@ -210,7 +210,7 @@ void ProjectSelectionManager::SSBL_SetFrequencySelectionFormatName(
 
    settings.SetFrequencySelectionFormatName( formatName );
 
-   gPrefs->Write(wxT("/FrequencySelectionFormatName"),
+   gPrefs->Write(L"/FrequencySelectionFormatName",
                  formatName.Internal());
    gPrefs->Flush();
 
@@ -235,7 +235,7 @@ void ProjectSelectionManager::SSBL_SetBandwidthSelectionFormatName(
 
    settings.SetBandwidthSelectionFormatName( formatName );
 
-   gPrefs->Write(wxT("/BandwidthSelectionFormatName"),
+   gPrefs->Write(L"/BandwidthSelectionFormatName",
       formatName.Internal());
    gPrefs->Flush();
 

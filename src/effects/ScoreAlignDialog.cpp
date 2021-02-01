@@ -60,21 +60,21 @@ ScoreAlignDialog::ScoreAlignDialog(ScoreAlignParams &params)
 {
    gScoreAlignDialog.reset(this); // Allows anyone to close dialog by calling
                              // CloseScoreAlignDialog()
-   gPrefs->Read(wxT("/Tracks/Synchronize/FramePeriod"), &p.mFramePeriod,
+   gPrefs->Read(L"/Tracks/Synchronize/FramePeriod", &p.mFramePeriod,
                 float(SA_DFT_FRAME_PERIOD));
-   gPrefs->Read(wxT("/Tracks/Synchronize/WindowSize"), &p.mWindowSize,
+   gPrefs->Read(L"/Tracks/Synchronize/WindowSize", &p.mWindowSize,
                 float(SA_DFT_WINDOW_SIZE));
-   gPrefs->Read(wxT("/Tracks/Synchronize/SilenceThreshold"),
+   gPrefs->Read(L"/Tracks/Synchronize/SilenceThreshold",
                 &p.mSilenceThreshold, float(SA_DFT_SILENCE_THRESHOLD));
-   gPrefs->Read(wxT("/Tracks/Synchronize/ForceFinalAlignment"),
+   gPrefs->Read(L"/Tracks/Synchronize/ForceFinalAlignment",
                 &p.mForceFinalAlignment, float(SA_DFT_FORCE_FINAL_ALIGNMENT));
-   gPrefs->Read(wxT("/Tracks/Synchronize/IgnoreSilence"),
+   gPrefs->Read(L"/Tracks/Synchronize/IgnoreSilence",
                 &p.mIgnoreSilence, float(SA_DFT_IGNORE_SILENCE));
-   gPrefs->Read(wxT("/Tracks/Synchronize/PresmoothTime"), &p.mPresmoothTime,
+   gPrefs->Read(L"/Tracks/Synchronize/PresmoothTime", &p.mPresmoothTime,
                 float(SA_DFT_PRESMOOTH_TIME));
-   gPrefs->Read(wxT("/Tracks/Synchronize/LineTime"), &p.mLineTime,
+   gPrefs->Read(L"/Tracks/Synchronize/LineTime", &p.mLineTime,
                 float(SA_DFT_LINE_TIME));
-   gPrefs->Read(wxT("/Tracks/Synchronize/SmoothTime"), &p.mSmoothTime,
+   gPrefs->Read(L"/Tracks/Synchronize/SmoothTime", &p.mSmoothTime,
                 float(SA_DFT_SMOOTH_TIME));
 
    //wxButton *ok = safenew wxButton(this, wxID_OK, _("OK"));
@@ -209,18 +209,18 @@ ScoreAlignDialog::ScoreAlignDialog(ScoreAlignParams &params)
 
    if (p.mStatus == wxID_OK) {
        // Retain the settings
-       gPrefs->Write(wxT("/Tracks/Synchronize/FramePeriod"), p.mFramePeriod);
-       gPrefs->Write(wxT("/Tracks/Synchronize/WindowSize"), p.mWindowSize);
-       gPrefs->Write(wxT("/Tracks/Synchronize/SilenceThreshold"),
+       gPrefs->Write(L"/Tracks/Synchronize/FramePeriod", p.mFramePeriod);
+       gPrefs->Write(L"/Tracks/Synchronize/WindowSize", p.mWindowSize);
+       gPrefs->Write(L"/Tracks/Synchronize/SilenceThreshold",
                      p.mSilenceThreshold);
-       gPrefs->Write(wxT("/Tracks/Synchronize/ForceFinalAlignment"),
+       gPrefs->Write(L"/Tracks/Synchronize/ForceFinalAlignment",
                      p.mForceFinalAlignment);
-       gPrefs->Write(wxT("/Tracks/Synchronize/IgnoreSilence"),
+       gPrefs->Write(L"/Tracks/Synchronize/IgnoreSilence",
                      p.mIgnoreSilence);
-       gPrefs->Write(wxT("/Tracks/Synchronize/PresmoothTime"),
+       gPrefs->Write(L"/Tracks/Synchronize/PresmoothTime",
                      p.mPresmoothTime);
-       gPrefs->Write(wxT("/Tracks/Synchronize/LineTime"), p.mLineTime);
-       gPrefs->Write(wxT("/Tracks/Synchronize/SmoothTime"), p.mSmoothTime);
+       gPrefs->Write(L"/Tracks/Synchronize/LineTime", p.mLineTime);
+       gPrefs->Write(L"/Tracks/Synchronize/SmoothTime", p.mSmoothTime);
        gPrefs->Flush();
 
        params = p; // return all parameters through params
@@ -282,10 +282,10 @@ bool ScoreAlignDialog::TransferDataFromWindow()
                                                     p.mSilenceThreshold));
    mPresmoothText->SetLabel(p.mPresmoothTime > 0 ?
                             wxString::Format(_("%.2f secs"),
-                                             p.mPresmoothTime) : wxT("(off)"));
+                                             p.mPresmoothTime) : L"(off)");
    mLineTimeText->SetLabel(p.mLineTime > 0 ?
                            wxString::Format(_("%.2f secs"), p.mLineTime) :
-                           wxT("(off)"));
+                           L"(off)");
    mSmoothTimeText->SetLabel(wxString::Format(_("%.2f secs"), p.mSmoothTime));
    return true;
 }

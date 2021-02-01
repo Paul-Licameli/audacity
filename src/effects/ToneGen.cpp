@@ -70,14 +70,14 @@ static const EnumValueSymbol kWaveStrings[nWaveforms] =
 // Define keys, defaults, minimums, and maximums for the effect parameters
 //
 //     Name       Type     Key                  Def      Min      Max                     Scale
-Param( StartFreq, double,  wxT("StartFreq"),     440.0,   1.0,     DBL_MAX,                1  );
-Param( EndFreq,   double,  wxT("EndFreq"),       1320.0,  1.0,     DBL_MAX,                1  );
-Param( StartAmp,  double,  wxT("StartAmp"),      0.8,     0.0,     1.0,                    1  );
-Param( EndAmp,    double,  wxT("EndAmp"),        0.1,     0.0,     1.0,                    1  );
-Param( Frequency, double,  wxT("Frequency"),     440.0,   1.0,     DBL_MAX,                1  );
-Param( Amplitude, double,  wxT("Amplitude"),     0.8,     0.0,     1.0,                    1  );
-Param( Waveform,  int,     wxT("Waveform"),      0,       0,       nWaveforms - 1,      1  );
-Param( Interp,    int,     wxT("Interpolation"), 0,       0,       nInterpolations - 1, 1  );
+Param( StartFreq, double,  L"StartFreq",     440.0,   1.0,     DBL_MAX,                1  );
+Param( EndFreq,   double,  L"EndFreq",       1320.0,  1.0,     DBL_MAX,                1  );
+Param( StartAmp,  double,  L"StartAmp",      0.8,     0.0,     1.0,                    1  );
+Param( EndAmp,    double,  L"EndAmp",        0.1,     0.0,     1.0,                    1  );
+Param( Frequency, double,  L"Frequency",     440.0,   1.0,     DBL_MAX,                1  );
+Param( Amplitude, double,  L"Amplitude",     0.8,     0.0,     1.0,                    1  );
+Param( Waveform,  int,     L"Waveform",      0,       0,       nWaveforms - 1,      1  );
+Param( Interp,    int,     L"Interpolation", 0,       0,       nInterpolations - 1, 1  );
 
 //
 // EffectToneGen
@@ -142,8 +142,8 @@ TranslatableString EffectToneGen::GetDescription()
 wxString EffectToneGen::ManualPage()
 {
    return mChirp
-      ? wxT("Chirp")
-      : wxT("Tone");
+      ? L"Chirp"
+      : L"Tone";
 }
 
 // EffectDefinitionInterface implementation
@@ -386,7 +386,7 @@ void EffectToneGen::PopulateOrExchange(ShuttleGui & S)
                      MIN_StartFreq,
                      mProjectRate / 2.0
                   )
-                  .AddTextBox( {}, wxT(""), 12);
+                  .AddTextBox( {}, L"", 12);
             }
             S.EndHorizontalLay();
 
@@ -399,7 +399,7 @@ void EffectToneGen::PopulateOrExchange(ShuttleGui & S)
                      MIN_EndFreq,
                      mProjectRate / 2.0
                   )
-                  .AddTextBox( {}, wxT(""), 12);
+                  .AddTextBox( {}, L"", 12);
             }
             S.EndHorizontalLay();
          }
@@ -415,7 +415,7 @@ void EffectToneGen::PopulateOrExchange(ShuttleGui & S)
                      6, &mAmplitude[0], NumValidatorStyle::NO_TRAILING_ZEROES,
                      MIN_StartAmp, MAX_StartAmp
                   )
-                  .AddTextBox( {}, wxT(""), 12);
+                  .AddTextBox( {}, L"", 12);
             }
             S.EndHorizontalLay();
 
@@ -426,7 +426,7 @@ void EffectToneGen::PopulateOrExchange(ShuttleGui & S)
                      6, &mAmplitude[1], NumValidatorStyle::NO_TRAILING_ZEROES,
                      MIN_EndAmp, MAX_EndAmp
                   )
-                  .AddTextBox( {}, wxT(""), 12);
+                  .AddTextBox( {}, L"", 12);
             }
             S.EndHorizontalLay();
          }
@@ -443,13 +443,13 @@ void EffectToneGen::PopulateOrExchange(ShuttleGui & S)
                MIN_Frequency,
                mProjectRate / 2.0
             )
-            .AddTextBox(XXO("&Frequency (Hz):"), wxT(""), 12);
+            .AddTextBox(XXO("&Frequency (Hz):"), L"", 12);
 
          t = S.Validator<FloatingPointValidator<double>>(
                6, &mAmplitude[0], NumValidatorStyle::NO_TRAILING_ZEROES,
                MIN_Amplitude, MAX_Amplitude
             )
-            .AddTextBox(XXO("&Amplitude (0-1):"), wxT(""), 12);
+            .AddTextBox(XXO("&Amplitude (0-1):"), L"", 12);
       }
 
       S.AddPrompt(XXO("&Duration:"));

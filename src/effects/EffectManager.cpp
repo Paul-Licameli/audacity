@@ -279,9 +279,9 @@ bool EffectManager::SetEffectParameters(const PluginID & ID, const wxString & pa
    {
       CommandParameters eap(params);
 
-      if (eap.HasEntry(wxT("Use Preset")))
+      if (eap.HasEntry(L"Use Preset"))
       {
-         return effect->SetAutomationParameters(eap.Read(wxT("Use Preset")));
+         return effect->SetAutomationParameters(eap.Read(L"Use Preset"));
       }
 
       return effect->SetAutomationParameters(params);
@@ -294,9 +294,9 @@ bool EffectManager::SetEffectParameters(const PluginID & ID, const wxString & pa
       command->Init(); 
       CommandParameters eap(params);
 
-      if (eap.HasEntry(wxT("Use Preset")))
+      if (eap.HasEntry(L"Use Preset"))
       {
-         return command->SetAutomationParameters(eap.Read(wxT("Use Preset")));
+         return command->SetAutomationParameters(eap.Read(L"Use Preset"));
       }
 
       return command->SetAutomationParameters(params);
@@ -623,9 +623,9 @@ wxString EffectManager::GetPreset(const PluginID & ID, const wxString & params, 
    CommandParameters eap(params);
 
    wxString preset;
-   if (eap.HasEntry(wxT("Use Preset")))
+   if (eap.HasEntry(L"Use Preset"))
    {
-      preset = eap.Read(wxT("Use Preset"));
+      preset = eap.Read(L"Use Preset");
    }
 
    {
@@ -649,7 +649,7 @@ wxString EffectManager::GetPreset(const PluginID & ID, const wxString & params, 
 
    eap.DeleteAll();
    
-   eap.Write(wxT("Use Preset"), preset);
+   eap.Write(L"Use Preset", preset);
    eap.GetParameters(preset);
 
    return preset;
@@ -678,7 +678,7 @@ wxString EffectManager::GetDefaultPreset(const PluginID & ID)
    {
       CommandParameters eap;
 
-      eap.Write(wxT("Use Preset"), preset);
+      eap.Write(L"Use Preset", preset);
       eap.GetParameters(preset);
    }
 
@@ -819,7 +819,7 @@ AudacityCommand *EffectManager::GetAudacityCommand(const PluginID & ID)
 const PluginID & EffectManager::GetEffectByIdentifier(const CommandID & strTarget)
 {
    static PluginID empty;
-   if (strTarget.empty()) // set GetCommandIdentifier to wxT("") to not show an effect in Batch mode
+   if (strTarget.empty()) // set GetCommandIdentifier to L"" to not show an effect in Batch mode
    {
       return empty;
    }

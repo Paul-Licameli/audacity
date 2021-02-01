@@ -411,23 +411,23 @@ static auto intChoicesDither = {
 };
 
 EnumSetting< DitherType > Dither::FastSetting{
-   wxT("Quality/DitherAlgorithmChoice"),
+   L"Quality/DitherAlgorithmChoice",
    choicesDither,
    0, // none
 
    // for migrating old preferences:
    intChoicesDither,
-   wxT("Quality/DitherAlgorithm")
+   L"Quality/DitherAlgorithm"
 };
 
 EnumSetting< DitherType > Dither::BestSetting{
-   wxT("Quality/HQDitherAlgorithmChoice"),
+   L"Quality/HQDitherAlgorithmChoice",
    choicesDither,
    3, // shaped
 
    // for migrating old preferences:
    intChoicesDither,
-   wxT("Quality/HQDitherAlgorithm")
+   L"Quality/HQDitherAlgorithm"
 };
 
 DitherType Dither::FastDitherChoice()

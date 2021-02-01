@@ -385,7 +385,7 @@ void RateMenuTable::SetRate(WaveTrack * pTrack, double rate)
       channel->SetRate(rate);
 
    // Separate conversion of "rate" enables changing the decimals without affecting i18n
-   wxString rateString = wxString::Format(wxT("%.3f"), rate);
+   wxString rateString = wxString::Format(L"%.3f", rate);
    ProjectHistory::Get( *project )
    /* i18n-hint: The string names a track */
       .PushState(XO("Changed '%s' to %s Hz")
@@ -423,21 +423,21 @@ void RateMenuTable::OnRateOther(wxCommandEvent &)
       wxString rate;
       wxComboBox *cb;
 
-      rate.Printf(wxT("%ld"), lrint(pTrack->GetRate()));
+      rate.Printf(L"%ld", lrint(pTrack->GetRate()));
 
       wxArrayStringEx rates{
-         wxT("8000") ,
-         wxT("11025") ,
-         wxT("16000") ,
-         wxT("22050") ,
-         wxT("44100") ,
-         wxT("48000") ,
-         wxT("88200") ,
-         wxT("96000") ,
-         wxT("176400") ,
-         wxT("192000") ,
-         wxT("352800") ,
-         wxT("384000") ,
+         L"8000" ,
+         L"11025" ,
+         L"16000" ,
+         L"22050" ,
+         L"44100" ,
+         L"48000" ,
+         L"88200" ,
+         L"96000" ,
+         L"176400" ,
+         L"192000" ,
+         L"352800" ,
+         L"384000" ,
       };
 
       S.StartVerticalLay(true);
@@ -487,7 +487,7 @@ void RateMenuTable::OnRateOther(wxCommandEvent &)
    mpData->result = RefreshAll | FixScrollbars;
 }
 
-static const auto MenuPathStart = wxT("WaveTrackMenu");
+static const auto MenuPathStart = L"WaveTrackMenu";
 
 //=============================================================================
 // Class defining common command handlers for mono and stereo tracks
@@ -961,7 +961,7 @@ PopupMenuTable *WaveTrackControls::GetMenuExtension(Track * pTrack)
    static Registry::OrderingPreferenceInitializer init{
       MenuPathStart,
       {
-         {wxT("/SubViews/Extra"), wxT("WaveColor,SpectrogramSettings")},
+         {L"/SubViews/Extra", L"WaveColor,SpectrogramSettings"},
       }
    };
 

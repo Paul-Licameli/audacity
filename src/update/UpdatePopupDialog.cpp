@@ -89,30 +89,30 @@ HtmlWindow* UpdatePopupDialog::AddHtmlContent (wxWindow* parent)
     wxTextOutputStream informationStr (o);
 
     informationStr
-        << wxT("<html><body><h3>")
+        << L"<html><body><h3>"
         // i18n-hint Substitution of version number for %s.
         << XC("Audacity %s is available!", "update dialog").Format(mVersionPatch.version.GetString()).Translation()
-        << wxT("</h3><h5>")
+        << L"</h3><h5>"
         << XC("Changelog", "update dialog")
-        << wxT("</h5><p>");
+        << L"</h5><p>";
 
-    informationStr << wxT("<ul>");
+    informationStr << L"<ul>";
     for (auto& logLine : mVersionPatch.changelog)
     {
-        informationStr << wxT("<li>");
+        informationStr << L"<li>";
         // We won't to translate downloaded text.
         informationStr << logLine;
-        informationStr << wxT("</li>");
+        informationStr << L"</li>";
     }
-    informationStr << wxT("</ul></p>");
+    informationStr << L"</ul></p>";
 
-    informationStr << wxT("<p>");
-    informationStr << wxT("<a href = \"https://github.com/audacity/audacity/releases\">");
+    informationStr << L"<p>";
+    informationStr << L"<a href = \"https://github.com/audacity/audacity/releases\">";
     informationStr << XC("Read more on GitHub", "update dialog");
-    informationStr << wxT("</a>");
-    informationStr << wxT("</p>");
+    informationStr << L"</a>";
+    informationStr << L"</p>";
 
-    informationStr << wxT("</body></html>");
+    informationStr << L"</body></html>";
 
     HtmlWindow* html = safenew LinkingHtmlWindow (parent, -1,
         wxDefaultPosition,

@@ -39,9 +39,9 @@
 
 static const auto exts =
 {
-   wxT("mp3"),
-   wxT("mp2"),
-   wxT("mpa")
+   L"mp3",
+   L"mp2",
+   L"mpa"
 };
 
 #ifndef USE_LIBMAD
@@ -186,7 +186,7 @@ MP3ImportPlugin::~MP3ImportPlugin()
 
 wxString MP3ImportPlugin::GetPluginStringID()
 {
-   return wxT("libmad");
+   return L"libmad";
 }
 
 TranslatableString MP3ImportPlugin::GetPluginFormatDescription()

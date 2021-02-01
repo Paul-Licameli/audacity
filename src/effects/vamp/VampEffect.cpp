@@ -104,7 +104,7 @@ VendorSymbol VampEffect::GetVendor()
 
 wxString VampEffect::GetVersion()
 {
-   return wxString::Format(wxT("%d"), mPlugin->getPluginVersion());
+   return wxString::Format(L"%d", mPlugin->getPluginVersion());
 }
 
 TranslatableString VampEffect::GetDescription()
@@ -596,7 +596,7 @@ void VampEffect::PopulateOrExchange(ShuttleGui & S)
                wxString labelText = wxString::FromUTF8(mParameters[p].name.c_str());
                if (!unit.empty())
                {
-                  labelText += wxT(" (") + unit + wxT(")");
+                  labelText += L" (" + unit + L")";
                }
                /* i18n-hint: An item name introducing a value, which is not part of the string but
                appears in a following text box window; translate with appropriate punctuation */
@@ -665,7 +665,7 @@ void VampEffect::PopulateOrExchange(ShuttleGui & S)
                               ? NumValidatorStyle::TWO_TRAILING_ZEROES
                               : NumValidatorStyle::ONE_TRAILING_ZERO),
                         mParameters[p].minValue, mParameters[p].maxValue)
-                     .AddTextBox( {}, wxT(""), 12);
+                     .AddTextBox( {}, L"", 12);
 
                   wxString str = Internat::ToDisplayString(mParameters[p].minValue);
                   S.AddPrompt( Verbatim( str ) );

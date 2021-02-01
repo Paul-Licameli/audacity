@@ -104,9 +104,9 @@ void RegisterMenuItems()
 {
   // Get here only after the module version check passes
    using namespace MenuTable;
-   static AttachedItem sAttachment{ wxT("Tools"),
-      ( FinderScope( findme ), Section( wxT("NyquistWorkBench"),
-         Command( wxT("NyqBench"), XXO("&Nyquist Workbench..."),
+   static AttachedItem sAttachment{ L"Tools",
+      ( FinderScope( findme ), Section( L"NyquistWorkBench",
+         Command( L"NyqBench", XXO("&Nyquist Workbench..."),
             static_cast<CommandFunctorPointer>(&NyqBench::ShowNyqBench),
             AudioIONotBusyFlag())
       ) )
@@ -663,13 +663,13 @@ NyqBench::NyqBench(wxWindow * parent)
    mScript = NULL;
    mOutput = NULL;
 
-   mPath = gPrefs->Read(wxT("NyqBench/Path"), wxEmptyString);
-   mAutoLoad = (gPrefs->Read(wxT("NyqBench/AutoLoad"), 0L) != 0);
-   mAutoWrap = (gPrefs->Read(wxT("NyqBench/AutoWrap"), true) != 0);
-   mLargeIcons = (gPrefs->Read(wxT("NyqBench/LargeIcons"), 0L) != 0);
-   mSplitMode = gPrefs->Read(wxT("NyqBench/SplitMode"), wxSPLIT_VERTICAL);
-   mShowCode = (gPrefs->Read(wxT("NyqBench/ShowScript"), true) != 0);
-   mShowOutput = (gPrefs->Read(wxT("NyqBench/ShowOutput"), true) != 0);
+   mPath = gPrefs->Read(L"NyqBench/Path", wxEmptyString);
+   mAutoLoad = (gPrefs->Read(L"NyqBench/AutoLoad", 0L) != 0);
+   mAutoWrap = (gPrefs->Read(L"NyqBench/AutoWrap", true) != 0);
+   mLargeIcons = (gPrefs->Read(L"NyqBench/LargeIcons", 0L) != 0);
+   mSplitMode = gPrefs->Read(L"NyqBench/SplitMode", wxSPLIT_VERTICAL);
+   mShowCode = (gPrefs->Read(L"NyqBench/ShowScript", true) != 0);
+   mShowOutput = (gPrefs->Read(L"NyqBench/ShowOutput", true) != 0);
 
    SetIcon(wxICON(AudacityLogo));
    SetBackgroundColour(wxSystemSettings::GetColour(wxSYS_COLOUR_3DFACE));
@@ -678,17 +678,17 @@ NyqBench::NyqBench(wxWindow * parent)
    wxMenuBar *bar = new wxMenuBar();
 
    wxMenu *menu = new wxMenu();
-   menu->Append(wxID_NEW, wxT("&New\tCtrl+N"));
-   menu->Append(wxID_OPEN, wxT("&Open...\tCtrl+O"));
-   menu->Append(wxID_SAVE, wxT("&Save...\tCtrl+S"));
-   menu->Append(wxID_SAVEAS, wxT("Save &As...\tCtrl+Shift+S"));
+   menu->Append(wxID_NEW, L"&New\tCtrl+N");
+   menu->Append(wxID_OPEN, L"&Open...\tCtrl+O");
+   menu->Append(wxID_SAVE, L"&Save...\tCtrl+S");
+   menu->Append(wxID_SAVEAS, L"Save &As...\tCtrl+Shift+S");
    menu->AppendSeparator();
    menu->Append(wxID_REVERT_TO_SAVED, _T("&Revert to Saved"));
    menu->AppendSeparator();
    menu->AppendCheckItem(ID_AUTOLOAD, _T("Auto &Load Last File"))->Check(mAutoLoad);
    menu->AppendSeparator();
-   menu->Append(wxID_CLOSE, wxT("&Close Window\tCtrl+W"));
-   bar->Append(menu, wxT("&File"));
+   menu->Append(wxID_CLOSE, L"&Close Window\tCtrl+W");
+   bar->Append(menu, L"&File");
 
    menu = new wxMenu();
    menu->Append(wxID_UNDO, _("&Undo\tCtrl+Z"));
@@ -712,7 +712,7 @@ NyqBench::NyqBench(wxWindow * parent)
    menu->AppendSubMenu(sub, _("&Go to"));
    menu->AppendSeparator();
    menu->AppendCheckItem(ID_AUTOWRAP, _T("Auto &Wrap"))->Check(mAutoWrap);
-   bar->Append(menu, wxT("&Edit"));
+   bar->Append(menu, L"&Edit");
 
    menu = new wxMenu();
    menu->Append(ID_FONT, _("Select &Font..."));
@@ -727,19 +727,19 @@ NyqBench::NyqBench(wxWindow * parent)
    sub->AppendRadioItem(ID_LARGEICONS, _("&Large Icons"));
    sub->AppendRadioItem(ID_SMALLICONS, _("&Small Icons"));
    menu->AppendSubMenu(sub, _("Toolbar"));
-   bar->Append(menu, wxT("&View"));
+   bar->Append(menu, L"&View");
 
    menu = new wxMenu();
    menu->Append(ID_GO, _("&Go\tF5"));
    menu->Append(ID_STOP, _("&Stop\tF6"));
-   bar->Append(menu, wxT("&Run"));
+   bar->Append(menu, L"&Run");
 
 #if defined(__WXMAC__)
    menu->Append(wxID_ABOUT, _("&About"));
 #else
    menu = new wxMenu();
    menu->Append(wxID_ABOUT, _("&About"));
-   bar->Append(menu, wxT("Help"));
+   bar->Append(menu, L"Help");
 #endif
 
    SetMenuBar(bar);
@@ -747,10 +747,10 @@ NyqBench::NyqBench(wxWindow * parent)
    RecreateToolbar(mLargeIcons);
 
    wxRect r;
-   r.SetX(gPrefs->Read(wxT("NyqBench/Window/X"), -1));
-   r.SetY(gPrefs->Read(wxT("NyqBench/Window/Y"), -1));
-   r.SetWidth(gPrefs->Read(wxT("NyqBench/Window/Width"), -1));
-   r.SetHeight(gPrefs->Read(wxT("NyqBench/Window/Height"), -1));
+   r.SetX(gPrefs->Read(L"NyqBench/Window/X", -1));
+   r.SetY(gPrefs->Read(L"NyqBench/Window/Y", -1));
+   r.SetWidth(gPrefs->Read(L"NyqBench/Window/Width", -1));
+   r.SetHeight(gPrefs->Read(L"NyqBench/Window/Height", -1));
    if (r == wxRect(-1, -1, -1, -1)) {
       Center();
    }
@@ -759,13 +759,13 @@ NyqBench::NyqBench(wxWindow * parent)
    }
 
    bool maximized = false;
-   gPrefs->Read(wxT("NyqBench/Window/Maximized"), maximized);
+   gPrefs->Read(L"NyqBench/Window/Maximized", maximized);
    if (maximized) {
       Maximize();
    }
 
    long sashpos;
-   sashpos = gPrefs->Read(wxT("NyqBench/SplitX"), 0l);
+   sashpos = gPrefs->Read(L"NyqBench/SplitX", 0l);
    if (sashpos > 0) {
       mSplitter->SetSashPosition(sashpos);
    }
@@ -774,7 +774,7 @@ NyqBench::NyqBench(wxWindow * parent)
    wxString desc;
    wxTextAttr attr;
 
-   desc = gPrefs->Read(wxT("NyqBench/ScriptFont"), dflt);
+   desc = gPrefs->Read(L"NyqBench/ScriptFont", dflt);
    mScriptFont.SetNativeFontInfo(desc);
 #if defined(__WXMSW__)
    // Force SYSTEM encoding to prevent conversion to Unicode in wxTextCtrl::DoWriteText().
@@ -785,7 +785,7 @@ NyqBench::NyqBench(wxWindow * parent)
    attr.SetFont(mScriptFont);
    mScript->SetDefaultStyle(attr);
 
-   desc = gPrefs->Read(wxT("NyqBench/OutputFont"), dflt);
+   desc = gPrefs->Read(L"NyqBench/OutputFont", dflt);
    mOutputFont.SetNativeFontInfo(desc);
 #if defined(__WXMSW__)
    // Force SYSTEM encoding to prevent conversion to Unicode in wxTextCtrl::DoWriteText().
@@ -809,7 +809,7 @@ NyqBench::~NyqBench()
 
 void NyqBench::SavePrefs()
 {
-   gPrefs->Write(wxT("NyqBench/Window/Maximized"), IsMaximized());
+   gPrefs->Write(L"NyqBench/Window/Maximized", IsMaximized());
    if (!IsMaximized()) {
       wxRect r = GetRect();
 
@@ -819,21 +819,21 @@ void NyqBench::SavePrefs()
       }
 #endif
 
-      gPrefs->Write(wxT("NyqBench/Window/X"), r.GetX());
-      gPrefs->Write(wxT("NyqBench/Window/Y"), r.GetY());
-      gPrefs->Write(wxT("NyqBench/Window/Width"), r.GetWidth());
-      gPrefs->Write(wxT("NyqBench/Window/Height"), r.GetHeight());
+      gPrefs->Write(L"NyqBench/Window/X", r.GetX());
+      gPrefs->Write(L"NyqBench/Window/Y", r.GetY());
+      gPrefs->Write(L"NyqBench/Window/Width", r.GetWidth());
+      gPrefs->Write(L"NyqBench/Window/Height", r.GetHeight());
    }
 
-   gPrefs->Write(wxT("NyqBench/AutoLoad"), mAutoLoad);
-   gPrefs->Write(wxT("NyqBench/AutoWrap"), mAutoWrap);
-   gPrefs->Write(wxT("NyqBench/ScriptFont"), mScriptFont.GetNativeFontInfoDesc());
-   gPrefs->Write(wxT("NyqBench/OutputFont"), mOutputFont.GetNativeFontInfoDesc());
-   gPrefs->Write(wxT("NyqBench/LargeIcons"), mLargeIcons);
-   gPrefs->Write(wxT("NyqBench/SplitX"), mSplitter->IsSplit() ? mSplitter->GetSashPosition() : 0);
-   gPrefs->Write(wxT("NyqBench/SplitMode"), mSplitter->IsSplit() ? mSplitter->GetSplitMode() : 0);
-   gPrefs->Write(wxT("NyqBench/ShowCode"), mScript->IsShown());
-   gPrefs->Write(wxT("NyqBench/ShowOutput"), mOutput->IsShown());
+   gPrefs->Write(L"NyqBench/AutoLoad", mAutoLoad);
+   gPrefs->Write(L"NyqBench/AutoWrap", mAutoWrap);
+   gPrefs->Write(L"NyqBench/ScriptFont", mScriptFont.GetNativeFontInfoDesc());
+   gPrefs->Write(L"NyqBench/OutputFont", mOutputFont.GetNativeFontInfoDesc());
+   gPrefs->Write(L"NyqBench/LargeIcons", mLargeIcons);
+   gPrefs->Write(L"NyqBench/SplitX", mSplitter->IsSplit() ? mSplitter->GetSashPosition() : 0);
+   gPrefs->Write(L"NyqBench/SplitMode", mSplitter->IsSplit() ? mSplitter->GetSplitMode() : 0);
+   gPrefs->Write(L"NyqBench/ShowCode", mScript->IsShown());
+   gPrefs->Write(L"NyqBench/ShowOutput", mOutput->IsShown());
 }
 
 void NyqBench::PopulateOrExchange(ShuttleGui & S)
@@ -1012,7 +1012,7 @@ void NyqBench::OnOpen(wxCommandEvent & e)
    }
 
    mPath = dlog.GetPath();
-   gPrefs->Write(wxT("NyqBench/Path"), mPath.GetFullPath());
+   gPrefs->Write(L"NyqBench/Path", mPath.GetFullPath());
 
    LoadFile();
 
@@ -1058,7 +1058,7 @@ void NyqBench::OnSaveAs(wxCommandEvent & e)
    }
 
    mPath = dlog.GetPath();
-   gPrefs->Write(wxT("NyqBench/Path"), mPath.GetFullPath());
+   gPrefs->Write(L"NyqBench/Path", mPath.GetFullPath());
 
    if (!mScript->SaveFile(mPath.GetFullPath()))
    {
@@ -1138,9 +1138,9 @@ void NyqBench::OnFind(wxCommandEvent & e)
 
          int flags = 0;
 
-         flags |= (gPrefs->Read(wxT("NyqBench/Find/Down"), 0L) ? wxFR_DOWN : 0);
-         flags |= (gPrefs->Read(wxT("NyqBench/Find/Word"), 0L) ? wxFR_WHOLEWORD : 0);
-         flags |= (gPrefs->Read(wxT("NyqBench/Find/Case"), 0L) ? wxFR_MATCHCASE : 0);
+         flags |= (gPrefs->Read(L"NyqBench/Find/Down", 0L) ? wxFR_DOWN : 0);
+         flags |= (gPrefs->Read(L"NyqBench/Find/Word", 0L) ? wxFR_WHOLEWORD : 0);
+         flags |= (gPrefs->Read(L"NyqBench/Find/Case", 0L) ? wxFR_MATCHCASE : 0);
 
          mFindData.SetFlags(flags);
 
@@ -1328,7 +1328,7 @@ void NyqBench::OnLargeIcons(wxCommandEvent & e)
 void NyqBench::OnGo(wxCommandEvent & e)
 {
    // No need to delete...EffectManager will do it
-   mEffect = new NyquistEffect(wxT("Nyquist Effect Workbench"));
+   mEffect = new NyquistEffect(L"Nyquist Effect Workbench");
    const PluginID & ID = EffectManager::Get().RegisterEffect(mEffect);
 
    mEffect->SetCommand(mScript->GetValue());
@@ -1387,9 +1387,9 @@ void NyqBench::OnFindDialog(wxFindDialogEvent & e)
 
       int flags = mFindData.GetFlags();
 
-      gPrefs->Write(wxT("NyqBench/Find/Down"), (flags & wxFR_DOWN) != 0);
-      gPrefs->Write(wxT("NyqBench/Find/Word"), (flags & wxFR_WHOLEWORD) != 0);
-      gPrefs->Write(wxT("NyqBench/Find/Case"), (flags & wxFR_MATCHCASE) != 0);
+      gPrefs->Write(L"NyqBench/Find/Down", (flags & wxFR_DOWN) != 0);
+      gPrefs->Write(L"NyqBench/Find/Word", (flags & wxFR_WHOLEWORD) != 0);
+      gPrefs->Write(L"NyqBench/Find/Case", (flags & wxFR_MATCHCASE) != 0);
 
       mFindDlg = NULL;
       mFindText = NULL;
@@ -1407,7 +1407,7 @@ void NyqBench::OnFindDialog(wxFindDialogEvent & e)
    // Not sure why I thought I needed this, but it appears not to
    // be.  Leaving just in case.
    //
-   // text.Replace(wxT("\n"), wxT("\r\n"));
+   // text.Replace(L"\n", L"\r\n");
 #endif
 
    size_t startpos = mFindText->GetInsertionPoint();
@@ -1552,7 +1552,7 @@ void NyqBench::OnScriptUpdate(wxUpdateUIEvent & e)
    if (mScriptBox && mScript && FindFocus() == mScript) {
       wxString label = mScriptBox->GetLabel();
       if (label == _("Script")) {
-         label += wxT("*");
+         label += L"*";
          mScriptBox->SetLabel(label);
          mOutputBox->SetLabel(_("Output"));
       }
@@ -1564,7 +1564,7 @@ void NyqBench::OnOutputUpdate(wxUpdateUIEvent & e)
    if (mOutputBox && mOutput && FindFocus() == mOutput) {
       wxString label = mOutputBox->GetLabel();
       if (label == _("Output")) {
-         label += wxT("*");
+         label += L"*";
          mOutputBox->SetLabel(label);
          mScriptBox->SetLabel(_("Script"));
       }
@@ -1704,8 +1704,8 @@ void NyqBench::LoadFile()
       wxString t;
       if (f.ReadAll(&t)) {
 //#if defined(__WXGTK__) || defined(__WXMAC__)
-         t.Replace(wxT("\r\n"), wxT("\n"));
-         t.Replace(wxT("\r"), wxT("\n"));
+         t.Replace(L"\r\n", L"\n");
+         t.Replace(L"\r", L"\n");
 //#elif defined(__WXMSW__)
 //         t.Replace("\r\n", "\n");
 //#endif

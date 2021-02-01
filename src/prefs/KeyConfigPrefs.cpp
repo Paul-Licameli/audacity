@@ -187,11 +187,11 @@ void KeyConfigPrefs::PopulateOrExchange(ShuttleGui & S)
             S.StartHorizontalLay();
             {
                S.StartRadioButtonGroup({
-                  wxT("/Prefs/KeyConfig/ViewBy"),
+                  L"/Prefs/KeyConfig/ViewBy",
                   {
-                     { wxT("tree"), XXO("&Tree") },
-                     { wxT("name"), XXO("&Name") },
-                     { wxT("key"), XXO("&Key") },
+                     { L"tree", XXO("&Tree") },
+                     { L"name", XXO("&Name") },
+                     { L"key", XXO("&Key") },
                   },
                   0 // tree
                });
@@ -227,7 +227,7 @@ void KeyConfigPrefs::PopulateOrExchange(ShuttleGui & S)
             if (!mFilter) {
                mFilter = safenew wxTextCtrl(S.GetParent(),
                                         FilterID,
-                                        wxT(""),
+                                        L"",
                                         wxDefaultPosition,
 #if defined(__WXMAC__)
                                         wxSize(300, -1),
@@ -267,7 +267,7 @@ void KeyConfigPrefs::PopulateOrExchange(ShuttleGui & S)
          if (!mKey) {
             mKey = safenew wxTextCtrl(S.GetParent(),
                                   CurrentComboID,
-                                  wxT(""),
+                                  L"",
                                   wxDefaultPosition,
 #if defined(__WXMAC__)
                                   wxSize(300, -1),
@@ -483,13 +483,13 @@ void KeyConfigPrefs::OnShow(wxShowEvent & event)
 
 void KeyConfigPrefs::OnImport(wxCommandEvent & WXUNUSED(event))
 {
-   wxString file = wxT("Audacity-keys.xml");
+   wxString file = L"Audacity-keys.xml";
 
    file = FileNames::SelectFile(FileNames::Operation::Open,
       XO("Select an XML file containing Audacity keyboard shortcuts..."),
       wxEmptyString,
       file,
-      wxT(""),
+      L"",
       { FileNames::XMLFiles, FileNames::AllFiles },
       wxRESIZE_BORDER,
       this);
@@ -562,13 +562,13 @@ void KeyConfigPrefs::OnImport(wxCommandEvent & WXUNUSED(event))
 
 void KeyConfigPrefs::OnExport(wxCommandEvent & WXUNUSED(event))
 {
-   wxString file = wxT("Audacity-keys.xml");
+   wxString file = L"Audacity-keys.xml";
 
    file = FileNames::SelectFile(FileNames::Operation::Export,
       XO("Export Keyboard Shortcuts As:"),
       wxEmptyString,
       file,
-      wxT("xml"),
+      L"xml",
       { FileNames::XMLFiles, FileNames::AllFiles },
       wxFD_SAVE | wxFD_OVERWRITE_PROMPT | wxRESIZE_BORDER,
       this);
@@ -611,7 +611,7 @@ void KeyConfigPrefs::FilterKeys( std::vector<NormalizedKeyString> & arr )
 
 void KeyConfigPrefs::OnImportDefaults(wxCommandEvent & event)
 {
-   gPrefs->DeleteEntry(wxT("/GUI/Shortcuts/FullDefaults"));
+   gPrefs->DeleteEntry(L"/GUI/Shortcuts/FullDefaults");
    gPrefs->Flush();
 
    mNewKeys = mDefaultKeys;
@@ -791,18 +791,18 @@ void KeyConfigPrefs::OnSet(wxCommandEvent & WXUNUSED(event))
 
    // Prevent same hotkey combination being used twice.
    if (!oldCommands.empty()) {
-      auto newlabel = Verbatim( wxT("'%s - %s'") )
+      auto newlabel = Verbatim( L"'%s - %s'" )
          .Format(
             mManager->GetCategoryFromName(newCommand),
             mManager->GetPrefixedLabelFromName(newCommand) );
-      auto oldlabel = Verbatim(wxT("'%s - %s'"))
+      auto oldlabel = Verbatim(L"'%s - %s'")
          .Format(
             mManager->GetCategoryFromName(oldCommands[0]),
             mManager->GetPrefixedLabelFromName(oldCommands[0]));
 
       for (size_t i{ 1 }; i < oldCommands.size(); i++)
          oldlabel += XO("\n\n\t and\n\n\t") +
-         Verbatim(wxT("'%s - %s'")).Format(
+         Verbatim(L"'%s - %s'").Format(
             mManager->GetCategoryFromName(oldCommands[i]),
             mManager->GetPrefixedLabelFromName(oldCommands[i]));
       
@@ -896,11 +896,11 @@ bool KeyConfigPrefs::Commit()
    ShuttleGui S(this, eIsSavingToPrefs);
    PopulateOrExchange(S);
 
-   bool bFull = gPrefs->ReadBool(wxT("/GUI/Shortcuts/FullDefaults"), false);
+   bool bFull = gPrefs->ReadBool(L"/GUI/Shortcuts/FullDefaults", false);
    for (size_t i = 0; i < mNames.size(); i++) {
       const auto &dkey = bFull ? mDefaultKeys[i] : mStandardDefaultKeys[i];
       // using GET to interpret CommandID as a config path component
-      auto name = wxT("/NewKeys/") + mNames[i].GET();
+      auto name = L"/NewKeys/" + mNames[i].GET();
       const auto &key = mNewKeys[i];
 
       if (gPrefs->HasEntry(name)) {

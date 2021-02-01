@@ -47,7 +47,7 @@
 #define DESC XO("Ogg Vorbis files")
 
 static const auto exts = {
-   wxT("ogg")
+   L"ogg"
 };
 
 #ifndef USE_LIBVORBIS
@@ -88,7 +88,7 @@ public:
 
    ~OggImportPlugin() { }
 
-   wxString GetPluginStringID() override { return wxT("liboggvorbis"); }
+   wxString GetPluginStringID() override { return L"liboggvorbis"; }
    TranslatableString GetPluginFormatDescription() override;
    std::unique_ptr<ImportFileHandle> Open(
       const FilePath &Filename, AudacityProject*) override;
@@ -173,7 +173,7 @@ std::unique_ptr<ImportFileHandle> OggImportPlugin::Open(
    wxUnusedVar(OV_CALLBACKS_STREAMONLY_NOCLOSE);
 
    auto vorbisFile = std::make_unique<OggVorbis_File>();
-   auto file = std::make_unique<wxFFile>(filename, wxT("rb"));
+   auto file = std::make_unique<wxFFile>(filename, L"rb");
 
    if (!file->IsOpened()) {
       // No need for a message box, it's done automatically (but how?)
@@ -304,7 +304,7 @@ ProgressResult OggImportFileHandle::Import(
 
          if (bytesRead == OV_HOLE) {
             wxFileName ff(mFilename);
-            wxLogError(wxT("Ogg Vorbis importer: file %s is malformed, ov_read() reported a hole"),
+            wxLogError(L"Ogg Vorbis importer: file %s is malformed, ov_read() reported a hole",
                ff.GetFullName());
             /* http://lists.xiph.org/pipermail/vorbis-dev/2001-February/003223.html
              * is the justification for doing this - best effort for malformed file,
@@ -315,7 +315,7 @@ ProgressResult OggImportFileHandle::Import(
          else if (bytesRead < 0) {
             /* Malformed Ogg Vorbis file. */
             /* TODO: Return some sort of meaningful error. */
-            wxLogError(wxT("Ogg Vorbis importer: ov_read() returned error %i"),
+            wxLogError(L"Ogg Vorbis importer: ov_read() returned error %i",
                bytesRead);
             break;
          }
@@ -366,7 +366,7 @@ ProgressResult OggImportFileHandle::Import(
          wxString comment = UTF8CTOWX(mVorbisFile->vc[0].user_comments[c]);
          wxString name = comment.BeforeFirst(L'=');
          wxString value = comment.AfterFirst(L'=');
-         if (name.Upper() == wxT("DATE") && !tags->HasTag(TAG_YEAR)) {
+         if (name.Upper() == L"DATE" && !tags->HasTag(TAG_YEAR)) {
             long val;
             if (value.length() == 4 && value.ToLong(&val)) {
                name = TAG_YEAR;

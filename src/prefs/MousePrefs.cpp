@@ -123,7 +123,7 @@ void MousePrefs::CreateList()
 {
    //A dummy first column, which is then deleted, is a workaround - under Windows the first column
    //can't be right aligned.
-   mList->InsertColumn(0,             wxT(""),              wxLIST_FORMAT_LEFT);
+   mList->InsertColumn(0,             L"",              wxLIST_FORMAT_LEFT);
    mList->InsertColumn(ToolColumn + 1,    _("Tool"),            wxLIST_FORMAT_RIGHT);
    mList->InsertColumn(ActionColumn + 1,  _("Command Action"),  wxLIST_FORMAT_RIGHT);
    mList->InsertColumn(ButtonsColumn + 1, _("Buttons"),         wxLIST_FORMAT_LEFT);
@@ -211,7 +211,7 @@ void MousePrefs::AddItem(
 
    // Add a space before the text to work around a minor bug in the
    // list control when showing narrow columns.
-   mList->SetItem(i, CommentColumn, wxT(" ") + comment.Translation());
+   mList->SetItem(i, CommentColumn, L" " + comment.Translation());
 }
 
 // See bug #2315 for discussion. This should be reviewed

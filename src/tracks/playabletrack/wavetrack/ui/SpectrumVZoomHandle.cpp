@@ -140,7 +140,7 @@ void SpectrumVZoomHandle::DoZoom(
       scale = (specSettings.GetScale(min, max));
       const auto fftLength = specSettings.GetFFTLength();
       const float binSize = rate / fftLength;
-      maxFreq = gPrefs->Read(wxT("/Spectrum/MaxFreq"), 8000L);
+      maxFreq = gPrefs->Read(L"/Spectrum/MaxFreq", 8000L);
       // JKC:  Following discussions of Bug 1208 I'm allowing zooming in
       // down to one bin.
       //      const int minBins =
@@ -290,7 +290,7 @@ EndSection();
 BeginSection( "Zoom" );
    // Accelerators only if zooming enabled.
    bool bVZoom;
-   gPrefs->Read(wxT("/GUI/VerticalZooming"), &bVZoom, false);
+   gPrefs->Read(L"/GUI/VerticalZooming", &bVZoom, false);
 
    AppendItem( "Reset", OnZoomResetID,         XXO("Zoom Reset"),
               POPUP_MENU_FN( OnZoomReset ) );

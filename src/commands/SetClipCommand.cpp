@@ -45,19 +45,19 @@ enum kColours
 
 static const EnumValueSymbol kColourStrings[nColours] =
 {
-   { wxT("Color0"), XO("Color 0") },
-   { wxT("Color1"), XO("Color 1") },
-   { wxT("Color2"), XO("Color 2") },
-   { wxT("Color3"), XO("Color 3") },
+   { L"Color0", XO("Color 0") },
+   { L"Color1", XO("Color 1") },
+   { L"Color2", XO("Color 2") },
+   { L"Color3", XO("Color 3") },
 };
 
 
 bool SetClipCommand::DefineParams( ShuttleParams & S ){ 
-   S.OptionalY( bHasContainsTime   ).Define(     mContainsTime,   wxT("At"),         0.0, 0.0, 100000.0 );
-   S.OptionalN( bHasColour         ).DefineEnum( mColour,         wxT("Color"),      kColour0, kColourStrings, nColours );
+   S.OptionalY( bHasContainsTime   ).Define(     mContainsTime,   L"At",         0.0, 0.0, 100000.0 );
+   S.OptionalN( bHasColour         ).DefineEnum( mColour,         L"Color",      kColour0, kColourStrings, nColours );
    // Allowing a negative start time is not a mistake.
    // It will be used in demonstrating time before zero.
-   S.OptionalN( bHasT0             ).Define(     mT0,             wxT("Start"),      0.0, -5.0, 1000000.0);
+   S.OptionalN( bHasT0             ).Define(     mT0,             L"Start",      0.0, -5.0, 1000000.0);
    return true;
 };
 

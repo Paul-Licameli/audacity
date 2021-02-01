@@ -190,7 +190,7 @@ public:
    }
    void Update(double completed) override
    {
-      mTarget->Update(wxString::Format(wxT("%.2f%%"), completed*100));
+      mTarget->Update(wxString::Format(L"%.2f%%", completed*100));
    }
 };
 

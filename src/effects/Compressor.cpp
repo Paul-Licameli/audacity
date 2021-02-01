@@ -60,13 +60,13 @@ enum
 // Define keys, defaults, minimums, and maximums for the effect parameters
 //
 //     Name          Type     Key                  Def      Min      Max      Scale
-Param( Threshold,    double,  wxT("Threshold"),     -12.0,   -60.0,   -1.0,    1   );
-Param( NoiseFloor,   double,  wxT("NoiseFloor"),    -40.0,   -80.0,   -20.0,   0.2   );
-Param( Ratio,        double,  wxT("Ratio"),         2.0,     1.1,     10.0,    10  );
-Param( AttackTime,   double,  wxT("AttackTime"),    0.2,     0.1,     5.0,     100 );
-Param( ReleaseTime,  double,  wxT("ReleaseTime"),   1.0,     1.0,     30.0,    10  );
-Param( Normalize,    bool,    wxT("Normalize"),     true,    false,   true,    1   );
-Param( UsePeak,      bool,    wxT("UsePeak"),       false,   false,   true,    1   );
+Param( Threshold,    double,  L"Threshold",     -12.0,   -60.0,   -1.0,    1   );
+Param( NoiseFloor,   double,  L"NoiseFloor",    -40.0,   -80.0,   -20.0,   0.2   );
+Param( Ratio,        double,  L"Ratio",         2.0,     1.1,     10.0,    10  );
+Param( AttackTime,   double,  L"AttackTime",    0.2,     0.1,     5.0,     100 );
+Param( ReleaseTime,  double,  L"ReleaseTime",   1.0,     1.0,     30.0,    10  );
+Param( Normalize,    bool,    L"Normalize",     true,    false,   true,    1   );
+Param( UsePeak,      bool,    L"UsePeak",       false,   false,   true,    1   );
 
 //----------------------------------------------------------------------------
 // EffectCompressor
@@ -117,7 +117,7 @@ TranslatableString EffectCompressor::GetDescription()
 
 wxString EffectCompressor::ManualPage()
 {
-   return wxT("Compressor");
+   return L"Compressor";
 }
 
 // EffectDefinitionInterface implementation
@@ -177,12 +177,12 @@ bool EffectCompressor::SetAutomationParameters(CommandParameters & parms)
 
 bool EffectCompressor::Startup()
 {
-   wxString base = wxT("/Effects/Compressor/");
+   wxString base = L"/Effects/Compressor/";
 
    // Migrate settings from 2.1.0 or before
 
    // Already migrated, so bail
-   if (gPrefs->Exists(base + wxT("Migrated")))
+   if (gPrefs->Exists(base + L"Migrated"))
    {
       return true;
    }
@@ -190,18 +190,18 @@ bool EffectCompressor::Startup()
    // Load the old "current" settings
    if (gPrefs->Exists(base))
    {
-      gPrefs->Read(base + wxT("ThresholdDB"), &mThresholdDB, -12.0f );
-      gPrefs->Read(base + wxT("NoiseFloorDB"), &mNoiseFloorDB, -40.0f );
-      gPrefs->Read(base + wxT("Ratio"), &mRatio, 2.0f );
-      gPrefs->Read(base + wxT("AttackTime"), &mAttackTime, 0.2f );
-      gPrefs->Read(base + wxT("DecayTime"), &mDecayTime, 1.0f );
-      gPrefs->Read(base + wxT("Normalize"), &mNormalize, true );
-      gPrefs->Read(base + wxT("UsePeak"), &mUsePeak, false );
+      gPrefs->Read(base + L"ThresholdDB", &mThresholdDB, -12.0f );
+      gPrefs->Read(base + L"NoiseFloorDB", &mNoiseFloorDB, -40.0f );
+      gPrefs->Read(base + L"Ratio", &mRatio, 2.0f );
+      gPrefs->Read(base + L"AttackTime", &mAttackTime, 0.2f );
+      gPrefs->Read(base + L"DecayTime", &mDecayTime, 1.0f );
+      gPrefs->Read(base + L"Normalize", &mNormalize, true );
+      gPrefs->Read(base + L"UsePeak", &mUsePeak, false );
 
       SaveUserPreset(GetCurrentSettingsGroup());
 
       // Do not migrate again
-      gPrefs->Write(base + wxT("Migrated"), true);
+      gPrefs->Write(base + L"Migrated", true);
       gPrefs->Flush();
    }
 

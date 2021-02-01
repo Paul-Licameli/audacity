@@ -214,7 +214,7 @@ namespace Registry {
 
    // The /-separated path is relative to the GroupItem supplied to
    // RegisterItem.
-   // For instance, wxT("Transport/Cursor") to locate an item under a sub-menu
+   // For instance, L"Transport/Cursor" to locate an item under a sub-menu
    // of a main menu
    struct Placement {
       wxString path;

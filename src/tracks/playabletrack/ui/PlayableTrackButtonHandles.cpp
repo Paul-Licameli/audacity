@@ -51,7 +51,7 @@ TranslatableString MuteButtonHandle::Tip(
       return name;
 
    auto &commandManager = CommandManager::Get( project );
-   ComponentInterfaceSymbol command{ wxT("TrackMute"), name };
+   ComponentInterfaceSymbol command{ L"TrackMute", name };
    return commandManager.DescribeCommandsAndShortcuts(&command, 1u);
 }
 
@@ -107,7 +107,7 @@ TranslatableString SoloButtonHandle::Tip(
       return name;
 
    auto &commandManager = CommandManager::Get( project );
-   ComponentInterfaceSymbol command{ wxT("TrackSolo"), name };
+   ComponentInterfaceSymbol command{ L"TrackSolo", name };
    return commandManager.DescribeCommandsAndShortcuts( &command, 1u );
 }
 

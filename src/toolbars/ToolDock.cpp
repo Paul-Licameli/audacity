@@ -260,11 +260,11 @@ bool ToolBarConfiguration::Read
 
    // Future: might remember visibility in the configuration, not forgetting
    // positions of hidden bars.
-   gPrefs->Read( wxT("Show"), &visible, defaultVisible);
+   gPrefs->Read( L"Show", &visible, defaultVisible);
 
    if (pConfiguration && visible) {
       int ord;
-      gPrefs->Read( wxT("Order"), &ord, -1 );
+      gPrefs->Read( L"Order", &ord, -1 );
       // Index was written 1-based
       --ord;
       if (ord >= ToolBarCount)
@@ -278,9 +278,9 @@ bool ToolBarConfiguration::Read
       }
       else {
          wxString strPath;
-         gPrefs->Read( wxT("Path"), &strPath );
+         gPrefs->Read( L"Path", &strPath );
          if (!strPath.empty()) {
-            wxStringTokenizer toker { strPath, wxT(",") };
+            wxStringTokenizer toker { strPath, L"," };
             std::vector<int> path;
             while(toker.HasMoreTokens()) {
                auto token = toker.GetNextToken();
@@ -338,19 +338,19 @@ void ToolBarConfiguration::Write
       const auto path = cIter.GetPath();
       if (!path.empty()) {
          auto iter = path.begin(), end = path.end();
-         strPath += wxString::Format(wxT("%d"), *iter++);
+         strPath += wxString::Format(L"%d", *iter++);
          while (iter != end)
-            strPath += wxString::Format(wxT(",%d"), *iter++);
+            strPath += wxString::Format(L",%d", *iter++);
       }
-      gPrefs->Write(wxT("Path"), strPath);
+      gPrefs->Write(L"Path", strPath);
 
       // Remove any legacy configuration info.
       // Note:  this causes Audacity 2.1.2 and earlier to create toolbars
       // always in default position when reading a .cfg saved by Audacity
       // 2.1.3 or later
-      gPrefs->DeleteEntry(wxT("Order"));
+      gPrefs->DeleteEntry(L"Order");
    }
-   gPrefs->Write( wxT("Show"), bar->IsVisible() );
+   gPrefs->Write( L"Show", bar->IsVisible() );
 }
 
 IMPLEMENT_CLASS( ToolDock, wxPanelWrapper );

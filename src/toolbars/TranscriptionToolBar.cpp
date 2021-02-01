@@ -95,7 +95,7 @@ END_EVENT_TABLE()
 ////Standard Constructor
 TranscriptionToolBar::TranscriptionToolBar( AudacityProject &project )
 : ToolBar( project,
-   TranscriptionBarID, XO("Play-at-Speed"), wxT("Transcription"), true )
+   TranscriptionBarID, XO("Play-at-Speed"), L"Transcription", true )
 {
    SetPlaySpeed( 1.0 * 100.0 );
 #ifdef EXPERIMENTAL_VOICE_DETECTION
@@ -341,8 +341,8 @@ void TranscriptionToolBar::RegenerateTooltips()
       CommandID commandName2;
       TranslatableString untranslatedLabel2;
    } table[] = {
-      { TTB_PlaySpeed,   wxT("PlayAtSpeed"),    XO("Play-at-Speed"),
-      wxT("PlayAtSpeedLooped"),    XO("Looped-Play-at-Speed")
+      { TTB_PlaySpeed,   L"PlayAtSpeed",    XO("Play-at-Speed"),
+      L"PlayAtSpeedLooped",    XO("Looped-Play-at-Speed")
       },
    };
 
@@ -483,7 +483,7 @@ void TranscriptionToolBar::PlayAtSpeed(bool looped, bool cutPreview)
 
    // Fixed speed play is the old method, that uses a time track.
    // VariSpeed play reuses Scrubbing.
-   bool bFixedSpeedPlay = !gPrefs->ReadBool(wxT("/AudioIO/VariSpeedPlay"), true);
+   bool bFixedSpeedPlay = !gPrefs->ReadBool(L"/AudioIO/VariSpeedPlay", true);
    // Scrubbing doesn't support note tracks, but the fixed-speed method using time tracks does.
    if ( TrackList::Get( *p ).Any< NoteTrack >() )
       bFixedSpeedPlay = true;
@@ -1062,7 +1062,7 @@ namespace {
 AttachedToolBarMenuItem sAttachment{
    /* i18n-hint: Clicking this menu item shows the toolbar
       for transcription (currently just vary play speed) */
-   TranscriptionBarID, wxT("ShowTranscriptionTB"), XXO("Pla&y-at-Speed Toolbar")
+   TranscriptionBarID, L"ShowTranscriptionTB", XXO("Pla&y-at-Speed Toolbar")
 };
 }
 

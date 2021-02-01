@@ -29,7 +29,7 @@ wxString TempDirectory::TempDir()
    if (gPrefs && path.empty())
       path =
          gPrefs->Read(PreferenceKey(FileNames::Operation::Temp,
-            FileNames::PathType::_None), wxT(""));
+            FileNames::PathType::_None), L"");
 
    if (FileNames::IsOnFATFileSystem(path))
    {
@@ -74,7 +74,7 @@ bool TempDirectory::IsTempDirectoryNameOK( const FilePath & Name )
       return false;
 
    wxFileName tmpFile;
-   tmpFile.AssignTempFileName(wxT("nn"));
+   tmpFile.AssignTempFileName(L"nn");
    // use Long Path to expand out any abbreviated long substrings.
    wxString BadPath = tmpFile.GetLongPath();
    ::wxRemoveFile(tmpFile.GetFullPath());
@@ -108,7 +108,7 @@ bool TempDirectory::IsTempDirectoryNameOK( const FilePath & Name )
 wxString TempDirectory::UnsavedProjectFileName()
 {
    wxFileName fn(TempDir(),
-                 FileNames::CreateUniqueName(wxT("New Project"), FileNames::UnsavedProjectExtension()));
+                 FileNames::CreateUniqueName(L"New Project", FileNames::UnsavedProjectExtension()));
 
    return fn.GetFullPath();
 }

@@ -1111,7 +1111,7 @@ void ProgressDialog::AddMessageAsColumn(wxBoxSizer * pSizer,
    auto sText = column[0];
    std::for_each( column.begin() + 1, column.end(),
       [&](const TranslatableString &text)
-         { sText.Join( text, wxT("\n") ); });
+         { sText.Join( text, L"\n" ); });
 
    // Create a statictext object and add to the sizer
    wxStaticText* oText = safenew wxStaticText(this,
@@ -1239,7 +1239,7 @@ bool ProgressDialog::Create(const TranslatableString & title,
 
             mElapsed = safenew wxStaticText(this,
                                             wxID_ANY,
-                                            wxT("00:00:00"),
+                                            L"00:00:00",
                                             wxDefaultPosition,
                                             wxDefaultSize,
                                             wxALIGN_LEFT);
@@ -1265,7 +1265,7 @@ bool ProgressDialog::Create(const TranslatableString & title,
 
          mRemaining = safenew wxStaticText(this,
                                            wxID_ANY,
-                                           wxT("00:00:00"),
+                                           L"00:00:00",
                                            wxDefaultPosition,
                                            wxDefaultSize,
                                            wxALIGN_LEFT);
@@ -1378,13 +1378,13 @@ ProgressResult ProgressDialog::Update(
    {
       if (m_bShowElapsedTime) {
          wxTimeSpan tsElapsed(0, 0, 0, elapsed);
-         mElapsed->SetLabel(tsElapsed.Format(wxT("%H:%M:%S")));
+         mElapsed->SetLabel(tsElapsed.Format(L"%H:%M:%S"));
          mElapsed->SetName(mElapsed->GetLabel()); // fix for bug 577 (NVDA/Narrator screen readers do not read static text in dialogs)
          mElapsed->Update();
       }
 
       wxTimeSpan tsRemains(0, 0, 0, remains);
-      mRemaining->SetLabel(tsRemains.Format(wxT("%H:%M:%S")));
+      mRemaining->SetLabel(tsRemains.Format(L"%H:%M:%S"));
       mRemaining->SetName(mRemaining->GetLabel()); // fix for bug 577 (NVDA/Narrator screen readers do not read static text in dialogs)
       mRemaining->Update();
 
@@ -1604,9 +1604,9 @@ void ProgressDialog::Beep() const
    bool should;
    wxString name;
 
-   gPrefs->Read(wxT("/GUI/BeepOnCompletion"), &should, false);
-   gPrefs->Read(wxT("/GUI/BeepAfterDuration"), &after, 60);
-   gPrefs->Read(wxT("/GUI/BeepFileName"), &name, wxEmptyString);
+   gPrefs->Read(L"/GUI/BeepOnCompletion", &should, false);
+   gPrefs->Read(L"/GUI/BeepAfterDuration", &after, 60);
+   gPrefs->Read(L"/GUI/BeepFileName", &name, wxEmptyString);
 
    if (should && wxGetUTCTimeMillis().GetValue() - mStartTime > after * 1000)
    {
@@ -1727,12 +1727,12 @@ ProgressResult TimerProgressDialog::UpdateProgress()
       const wxLongLong_t wrapTime = 24 * 60 * 60 * 1000;
       if (m_bShowElapsedTime) {
          wxTimeSpan tsElapsed(0, 0, 0, elapsed % wrapTime);
-         mElapsed->SetLabel(tsElapsed.Format(wxT("%H:%M:%S")) + ((elapsed >= wrapTime) ? " +":""));
+         mElapsed->SetLabel(tsElapsed.Format(L"%H:%M:%S") + ((elapsed >= wrapTime) ? " +":""));
          mElapsed->Update();
       }
 
       wxTimeSpan tsRemains(0, 0, 0, remains % wrapTime);
-      mRemaining->SetLabel(tsRemains.Format(wxT("%H:%M:%S")) + ((remains >= wrapTime) ? " +":""));
+      mRemaining->SetLabel(tsRemains.Format(L"%H:%M:%S") + ((remains >= wrapTime) ? " +":""));
       mRemaining->Update();
 
       mLastUpdate = now;

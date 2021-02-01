@@ -120,9 +120,9 @@ public:
    // of this object.
    // Acceptable values:
    // - a null variant (IsNull() returns TRUE)
-   // - a list variant (GetType() == wxT("list"))
+   // - a list variant (GetType() == L"list")
    // - an integer representing the selected child element,
-   //   or 0 if this object is selected (GetType() == wxT("long"))
+   //   or 0 if this object is selected (GetType() == L"long")
    // - a "void*" pointer to a wxAccessible child object
    wxAccStatus GetSelections(wxVariant *selections) override;
 
@@ -1934,9 +1934,9 @@ wxAccStatus ASliderAx::GetRole(int childId, wxAccRole* role)
 // of this object.
 // Acceptable values:
 // - a null variant (IsNull() returns TRUE)
-// - a list variant (GetType() == wxT("list"))
+// - a list variant (GetType() == L"list")
 // - an integer representing the selected child element,
-//   or 0 if this object is selected (GetType() == wxT("long"))
+//   or 0 if this object is selected (GetType() == L"long")
 // - a "void*" pointer to a wxAccessible child object
 wxAccStatus ASliderAx::GetSelections( wxVariant * WXUNUSED(selections) )
 {
@@ -1987,23 +1987,23 @@ wxAccStatus ASliderAx::GetValue(int childId, wxString* strValue)
       switch( as->mLWSlider->mStyle )
       {
          case FRAC_SLIDER:
-            strValue->Printf( wxT("%.0f"), as->mLWSlider->mCurrentValue * 100 );
+            strValue->Printf( L"%.0f", as->mLWSlider->mCurrentValue * 100 );
             break;
 
          case DB_SLIDER:
-            strValue->Printf( wxT("%.0f"), as->mLWSlider->mCurrentValue );
+            strValue->Printf( L"%.0f", as->mLWSlider->mCurrentValue );
             break;
 
          case PAN_SLIDER:
-            strValue->Printf( wxT("%.0f"), as->mLWSlider->mCurrentValue * 100 );
+            strValue->Printf( L"%.0f", as->mLWSlider->mCurrentValue * 100 );
             break;
 
          case SPEED_SLIDER:
-            strValue->Printf( wxT("%.0f"), as->mLWSlider->mCurrentValue * 100 );
+            strValue->Printf( L"%.0f", as->mLWSlider->mCurrentValue * 100 );
             break;
 #ifdef EXPERIMENTAL_MIDI_OUT
          case VEL_SLIDER:
-            strValue->Printf( wxT("%.0f"), as->mLWSlider->mCurrentValue);
+            strValue->Printf( L"%.0f", as->mLWSlider->mCurrentValue);
             break;
 #endif
       }

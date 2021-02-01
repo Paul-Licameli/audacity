@@ -182,7 +182,7 @@ TranslatableString CloseButtonHandle::Tip(
       return name;
 
    auto &commandManager = CommandManager::Get( project );
-   ComponentInterfaceSymbol command{ wxT("TrackClose"), name };
+   ComponentInterfaceSymbol command{ L"TrackClose", name };
    return commandManager.DescribeCommandsAndShortcuts( &command, 1u );
 }
 
@@ -242,7 +242,7 @@ TranslatableString MenuButtonHandle::Tip(
       return name;
 
    auto &commandManager = CommandManager::Get( project );
-   ComponentInterfaceSymbol command{ wxT("TrackMenu"), name };
+   ComponentInterfaceSymbol command{ L"TrackMenu", name };
    return commandManager.DescribeCommandsAndShortcuts( &command, 1u );
 }
 

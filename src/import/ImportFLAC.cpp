@@ -47,8 +47,8 @@
 #define DESC XO("FLAC files")
 
 static const auto exts = {
-   wxT("flac"),
-   wxT("flc")
+   L"flac",
+   L"flc"
 };
 
 #ifndef USE_LIBFLAC
@@ -126,7 +126,7 @@ class FLACImportPlugin final : public ImportPlugin
 
    ~FLACImportPlugin() { }
 
-   wxString GetPluginStringID() override { return wxT("libflac"); }
+   wxString GetPluginStringID() override { return L"libflac"; }
    TranslatableString GetPluginFormatDescription() override;
    std::unique_ptr<ImportFileHandle> Open(
       const FilePath &Filename, AudacityProject*)  override;
@@ -222,16 +222,16 @@ void MyFLACFile::error_callback(FLAC__StreamDecoderErrorStatus WXUNUSED(status))
    switch (status)
    {
    case FLAC__STREAM_DECODER_ERROR_STATUS_LOST_SYNC:
-      wxPrintf(wxT("Flac Error: Lost sync\n"));
+      wxPrintf(L"Flac Error: Lost sync\n");
       break;
    case FLAC__STREAM_DECODER_ERROR_STATUS_FRAME_CRC_MISMATCH:
-      wxPrintf(wxT("Flac Error: Crc mismatch\n"));
+      wxPrintf(L"Flac Error: Crc mismatch\n");
       break;
    case FLAC__STREAM_DECODER_ERROR_STATUS_BAD_HEADER:
-      wxPrintf(wxT("Flac Error: Bad Header\n"));
+      wxPrintf(L"Flac Error: Bad Header\n");
       break;
    default:
-      wxPrintf(wxT("Flac Error: Unknown error code\n"));
+      wxPrintf(L"Flac Error: Unknown error code\n");
       break;
    }*/
 }
@@ -350,7 +350,7 @@ bool FLACImportFileHandle::Init()
       return false;
    }
 #else
-   if (!mHandle.Open(mFilename, wxT("rb"))) {
+   if (!mHandle.Open(mFilename, L"rb")) {
       return false;
    }
 
@@ -448,17 +448,17 @@ ProgressResult FLACImportFileHandle::Import(WaveTrackFactory *trackFactory,
          wxString name = mFile->mComments[c].BeforeFirst(L'=');
          wxString value = mFile->mComments[c].AfterFirst(L'=');
          wxString upper = name.Upper();
-         if (upper == wxT("DATE") && !tags->HasTag(TAG_YEAR)) {
+         if (upper == L"DATE" && !tags->HasTag(TAG_YEAR)) {
             long val;
             if (value.length() == 4 && value.ToLong(&val)) {
                name = TAG_YEAR;
             }
          }
-         else if (upper == wxT("COMMENT") || upper == wxT("COMMENTS")) {
+         else if (upper == L"COMMENT" || upper == L"COMMENTS") {
             comment = value;
             continue;
          }
-         else if (upper == wxT("DESCRIPTION")) {
+         else if (upper == L"DESCRIPTION") {
             description = value;
             continue;
          }

@@ -1206,7 +1206,7 @@ and no content already flushed to disk is lost. */
 bool WaveClip::Append(constSamplePtr buffer, sampleFormat format,
                       size_t len, unsigned int stride)
 {
-   //wxLogDebug(wxT("Append: len=%lli"), (long long) len);
+   //wxLogDebug(L"Append: len=%lli", (long long) len);
    bool result = false;
 
    auto maxBlockSize = mSequence->GetMaxBlockSize();
@@ -1266,9 +1266,9 @@ bool WaveClip::Append(constSamplePtr buffer, sampleFormat format,
 clip gets appended; no previously flushed contents are lost. */
 void WaveClip::Flush()
 {
-   //wxLogDebug(wxT("WaveClip::Flush"));
-   //wxLogDebug(wxT("   mAppendBufferLen=%lli"), (long long) mAppendBufferLen);
-   //wxLogDebug(wxT("   previous sample count %lli"), (long long) mSequence->GetNumSamples());
+   //wxLogDebug(L"WaveClip::Flush");
+   //wxLogDebug(L"   mAppendBufferLen=%lli", (long long) mAppendBufferLen);
+   //wxLogDebug(L"   previous sample count %lli", (long long) mSequence->GetNumSamples());
 
    if (mAppendBufferLen > 0) {
 
@@ -1286,12 +1286,12 @@ void WaveClip::Flush()
          mAppendBufferLen);
    }
 
-   //wxLogDebug(wxT("now sample count %lli"), (long long) mSequence->GetNumSamples());
+   //wxLogDebug(L"now sample count %lli", (long long) mSequence->GetNumSamples());
 }
 
 bool WaveClip::HandleXMLTag(const wxChar *tag, const wxChar **attrs)
 {
-   if (!wxStrcmp(tag, wxT("waveclip")))
+   if (!wxStrcmp(tag, L"waveclip"))
    {
       double dblValue;
       long longValue;
@@ -1304,14 +1304,14 @@ bool WaveClip::HandleXMLTag(const wxChar *tag, const wxChar **attrs)
             break;
 
          const wxString strValue = value;
-         if (!wxStrcmp(attr, wxT("offset")))
+         if (!wxStrcmp(attr, L"offset"))
          {
             if (!XMLValueChecker::IsGoodString(strValue) ||
                   !Internat::CompatibleToDouble(strValue, &dblValue))
                return false;
             SetOffset(dblValue);
          }
-         if (!wxStrcmp(attr, wxT("colorindex")))
+         if (!wxStrcmp(attr, L"colorindex"))
          {
             if (!XMLValueChecker::IsGoodString(strValue) ||
                   !strValue.ToLong( &longValue))
@@ -1327,17 +1327,17 @@ bool WaveClip::HandleXMLTag(const wxChar *tag, const wxChar **attrs)
 
 void WaveClip::HandleXMLEndTag(const wxChar *tag)
 {
-   if (!wxStrcmp(tag, wxT("waveclip")))
+   if (!wxStrcmp(tag, L"waveclip"))
       UpdateEnvelopeTrackLen();
 }
 
 XMLTagHandler *WaveClip::HandleXMLChild(const wxChar *tag)
 {
-   if (!wxStrcmp(tag, wxT("sequence")))
+   if (!wxStrcmp(tag, L"sequence"))
       return mSequence.get();
-   else if (!wxStrcmp(tag, wxT("envelope")))
+   else if (!wxStrcmp(tag, L"envelope"))
       return mEnvelope.get();
-   else if (!wxStrcmp(tag, wxT("waveclip")))
+   else if (!wxStrcmp(tag, L"waveclip"))
    {
       // Nested wave clips are cut lines
       mCutLines.push_back(
@@ -1352,9 +1352,9 @@ XMLTagHandler *WaveClip::HandleXMLChild(const wxChar *tag)
 void WaveClip::WriteXML(XMLWriter &xmlFile) const
 // may throw
 {
-   xmlFile.StartTag(wxT("waveclip"));
-   xmlFile.WriteAttr(wxT("offset"), mOffset, 8);
-   xmlFile.WriteAttr(wxT("colorindex"), mColourIndex );
+   xmlFile.StartTag(L"waveclip");
+   xmlFile.WriteAttr(L"offset", mOffset, 8);
+   xmlFile.WriteAttr(L"colorindex", mColourIndex );
 
    mSequence->WriteXML(xmlFile);
    mEnvelope->WriteXML(xmlFile);
@@ -1362,7 +1362,7 @@ void WaveClip::WriteXML(XMLWriter &xmlFile) const
    for (const auto &clip: mCutLines)
       clip->WriteXML(xmlFile);
 
-   xmlFile.EndTag(wxT("waveclip"));
+   xmlFile.EndTag(L"waveclip");
 }
 
 /*! @excsafety{Strong} */

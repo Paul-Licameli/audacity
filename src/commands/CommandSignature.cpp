@@ -27,14 +27,14 @@ void CommandSignature::AddParameter(const wxString &name,
       std::unique_ptr<Validator> &&valid)
 {
    wxASSERT_MSG(valid->Validate(dft),
-         wxT("Invalid command signature: the default value of '")
+         L"Invalid command signature: the default value of '"
          + dft.MakeString()
-         + wxT("' for the '")
+         + L"' for the '"
          + name
-         + wxT("' parameter doesn't satisfy the provided validator.")
-         + wxT(" It should be ")
+         + L"' parameter doesn't satisfy the provided validator."
+         + L" It should be "
          + valid->GetDescription()
-         + wxT("."));
+         + L".");
    mDefaults.insert(std::pair<wxString, wxVariant>(name, dft));
    mValidators.insert(ValidatorMap::value_type(name, std::move(valid)));
 }

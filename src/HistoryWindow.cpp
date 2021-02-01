@@ -130,18 +130,18 @@ void HistoryDialog::Populate(ShuttleGui & S)
          S.StartMultiColumn(3, wxCENTRE);
          {
             S.AddPrompt(XXO("&Total space used"));
-            mTotal = S.Id(ID_TOTAL).Style(wxTE_READONLY).AddTextBox({}, wxT(""), 10);
+            mTotal = S.Id(ID_TOTAL).Style(wxTE_READONLY).AddTextBox({}, L"", 10);
             S.AddVariableText( {} )->Hide();
 
 #if defined(ALLOW_DISCARD)
             S.AddPrompt(XXO("&Undo levels available"));
-            mAvail = S.Id(ID_AVAIL).Style(wxTE_READONLY).AddTextBox({}, wxT(""), 10);
+            mAvail = S.Id(ID_AVAIL).Style(wxTE_READONLY).AddTextBox({}, L"", 10);
             S.AddVariableText( {} )->Hide();
 
             S.AddPrompt(XXO("&Levels to discard"));
             mLevels = safenew wxSpinCtrl(S.GetParent(),
                                      ID_LEVELS,
-                                     wxT("1"),
+                                     L"1",
                                      wxDefaultPosition,
                                      wxDefaultSize,
                                      wxSP_ARROW_KEYS,
@@ -153,7 +153,7 @@ void HistoryDialog::Populate(ShuttleGui & S)
             mDiscard = S.Id(ID_DISCARD).AddButton(XXO("&Discard"));
 #endif
             S.AddPrompt(XXO("Clip&board space used"));
-            mClipboard = S.Style(wxTE_READONLY).AddTextBox({}, wxT(""), 10);
+            mClipboard = S.Style(wxTE_READONLY).AddTextBox({}, L"", 10);
 
 #if defined(ALLOW_DISCARD)
             S.Id(ID_DISCARD_CLIPBOARD).AddButton(XXO("D&iscard"));
@@ -260,7 +260,7 @@ void HistoryDialog::UpdateLevels()
    mLevels->SetValue(value);
    mLevels->SetRange(1, mSelected);
 
-   mAvail->SetValue(wxString::Format(wxT("%d"), mSelected));
+   mAvail->SetValue(wxString::Format(L"%d", mSelected));
 
    focus = FindFocus();
    if ((focus == mDiscard || focus == mLevels) && mSelected == 0) {
@@ -298,7 +298,7 @@ void HistoryDialog::OnCompact(wxCommandEvent & WXUNUSED(event))
    projectFileIO.ReopenProject();
 
    auto baseFile = wxFileName(projectFileIO.GetFileName());
-   auto walFile = wxFileName(projectFileIO.GetFileName() + wxT("-wal"));
+   auto walFile = wxFileName(projectFileIO.GetFileName() + L"-wal");
    auto before = baseFile.GetSize() + walFile.GetSize();
 
    projectFileIO.Compact({}, true);
@@ -313,7 +313,7 @@ void HistoryDialog::OnCompact(wxCommandEvent & WXUNUSED(event))
 
 void HistoryDialog::OnGetURL(wxCommandEvent & WXUNUSED(event))
 {
-   HelpSystem::ShowHelp(this, wxT("Undo,_Redo_and_History"));
+   HelpSystem::ShowHelp(this, L"Undo,_Redo_and_History");
 }
 
 void HistoryDialog::OnItemSelected(wxListEvent &event)
@@ -441,7 +441,7 @@ CommandHandlerObject &findCommandHandler(AudacityProject &) {
 // Register that menu item
 
 using namespace MenuTable;
-AttachedItem sAttachment{ wxT("View/Windows"),
+AttachedItem sAttachment{ L"View/Windows",
    // History window should be available either for UndoAvailableFlag
    // or RedoAvailableFlag,
    // but we can't make the AddItem flags and mask have both,
@@ -472,7 +472,7 @@ AttachedItem sAttachment{ wxT("View/Windows"),
    //    // "UndoHistory" might already be enabled,
    //    // but add this check for RedoAvailableFlag.
    //    if (flags & RedoAvailableFlag)
-   //       GetCommandManager()->Enable(wxT("UndoHistory"), true);
+   //       GetCommandManager()->Enable(L"UndoHistory", true);
    // So for now, enable the command regardless of stack.
    // It will just show empty sometimes.
    // FOR REDESIGN,
@@ -481,7 +481,7 @@ AttachedItem sAttachment{ wxT("View/Windows"),
    ( FinderScope{ findCommandHandler },
    /* i18n-hint: Clicking this menu item shows the various editing steps
       that have been taken.*/
-      Command( wxT("UndoHistory"), XXO("&History..."), &Handler::OnHistory,
+      Command( L"UndoHistory", XXO("&History..."), &Handler::OnHistory,
          AudioIONotBusyFlag() ) )
 };
 

@@ -25,12 +25,12 @@ FilePaths ActiveProjects::GetAll()
    long ndx;
 
    wxString configPath = gPrefs->GetPath();
-   gPrefs->SetPath(wxT("/ActiveProjects"));
+   gPrefs->SetPath(L"/ActiveProjects");
 
    bool more = gPrefs->GetFirstEntry(key, ndx);
    while (more)
    {
-      wxFileName path = gPrefs->Read(key, wxT(""));
+      wxFileName path = gPrefs->Read(key, L"");
 
       files.Add(path.GetFullPath());
 
@@ -50,7 +50,7 @@ void ActiveProjects::Add(const FilePath &path)
       int i = 0;
       do
       {
-         key.Printf(wxT("/ActiveProjects/%d"), ++i);
+         key.Printf(L"/ActiveProjects/%d", ++i);
       } while (gPrefs->HasEntry(key));
 
       gPrefs->Write(key, path);
@@ -77,12 +77,12 @@ wxString ActiveProjects::Find(const FilePath &path)
    long ndx;
 
    wxString configPath = gPrefs->GetPath();
-   gPrefs->SetPath(wxT("/ActiveProjects"));
+   gPrefs->SetPath(L"/ActiveProjects");
 
    bool more = gPrefs->GetFirstEntry(key, ndx);
    while (more)
    {
-      if (gPrefs->Read(key, wxT("")).IsSameAs(path))
+      if (gPrefs->Read(key, L"").IsSameAs(path))
       {
          found = true;
          break;

@@ -35,8 +35,8 @@ const ComponentInterfaceSymbol OpenProjectCommand::Symbol
 namespace{ BuiltinCommandsModule::Registration< OpenProjectCommand > reg; }
 
 bool OpenProjectCommand::DefineParams( ShuttleParams & S ){
-   S.Define( mFileName, wxT("Filename"),  "test.aup3" );
-   S.OptionalN(bHasAddToHistory).Define( mbAddToHistory, wxT("AddToHistory"),  false );
+   S.Define( mFileName, L"Filename",  "test.aup3" );
+   S.OptionalN(bHasAddToHistory).Define( mbAddToHistory, L"AddToHistory",  false );
    return true;
 }
 
@@ -84,8 +84,8 @@ const ComponentInterfaceSymbol SaveProjectCommand::Symbol
 namespace{ BuiltinCommandsModule::Registration< SaveProjectCommand > reg2; }
 
 bool SaveProjectCommand::DefineParams( ShuttleParams & S ){
-   S.Define( mFileName, wxT("Filename"),  "name.aup3" );
-   S.Define( mbAddToHistory, wxT("AddToHistory"),  false );
+   S.Define( mFileName, L"Filename",  "name.aup3" );
+   S.Define( mbAddToHistory, L"AddToHistory",  false );
    return true;
 }
 
@@ -116,7 +116,7 @@ const ComponentInterfaceSymbol SaveCopyCommand::Symbol
 namespace{ BuiltinCommandsModule::Registration< SaveCopyCommand > reg3; }
 
 bool SaveCopyCommand::DefineParams( ShuttleParams & S ){
-   S.Define( mFileName, wxT("Filename"),  "name.aup3" );
+   S.Define( mFileName, L"Filename",  "name.aup3" );
    return true;
 }
 
@@ -144,7 +144,7 @@ namespace{ BuiltinCommandsModule::Registration< SaveLogCommand > reg4; }
 
 bool SaveLogCommand::DefineParams(ShuttleParams & S)
 {
-   S.Define( mFileName, wxT("Filename"),  "log.txt" );
+   S.Define( mFileName, L"Filename",  "log.txt" );
    return true;
 }
 

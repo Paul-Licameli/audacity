@@ -102,7 +102,7 @@ LyricsPanel::LyricsPanel(wxWindow* parent, wxWindowID id,
 
    mHighlightTextCtrl =
       safenew HighlightTextCtrl(this, -1, // wxWindow* parent, wxWindowID id,
-                              wxT(""), // const wxString& value = {},
+                              L"", // const wxString& value = {},
                               wxPoint(0, 0), // const wxPoint& pos = wxDefaultPosition,
                               size); // const wxSize& size = wxDefaultSize
    this->SetHighlightFont();
@@ -139,7 +139,7 @@ LyricsPanel::~LyricsPanel()
 void LyricsPanel::Clear()
 {
    mSyllables.clear();
-   mText = wxT("");
+   mText = L"";
 
    // Add two dummy syllables at the beginning
    mSyllables.push_back(Syllable());
@@ -190,8 +190,8 @@ void LyricsPanel::Add(double t, const wxString &syllable, wxString &highlightTex
    // ended in a hyphen
    if (i > 0 &&
          // mSyllables[i-1].text.length() > 0 &&
-         mSyllables[i - 1].text.Right(1) != wxT("-"))
-      thisSyllable.textWithSpace = wxT(" ") + syllable;
+         mSyllables[i - 1].text.Right(1) != L"-")
+      thisSyllable.textWithSpace = L" " + syllable;
    else
       thisSyllable.textWithSpace = syllable;
 
@@ -199,8 +199,8 @@ void LyricsPanel::Add(double t, const wxString &syllable, wxString &highlightTex
    thisSyllable.char1 = mText.length();
 
    int nTextLen = thisSyllable.textWithSpace.length();
-   if ((nTextLen > 0) && (thisSyllable.textWithSpace.Right(1) == wxT("_")))
-      highlightText += (thisSyllable.textWithSpace.Left(nTextLen - 1) + wxT("\n"));
+   if ((nTextLen > 0) && (thisSyllable.textWithSpace.Right(1) == L"_"))
+      highlightText += (thisSyllable.textWithSpace.Left(nTextLen - 1) + L"\n");
    else
       highlightText += thisSyllable.textWithSpace;
 }
@@ -289,7 +289,7 @@ void LyricsPanel::Measure(wxDC *dc) // only for drawn text
       if ((i < I_FIRST_REAL_SYLLABLE) || // Clear() starts the list with I_FIRST_REAL_SYLLABLE dummies.
             (i >= mSyllables.size() - 3)) // Finish() ends with 3 dummies.
       {
-         dc->GetTextExtent(wxT("DUMMY"), &width, &height); // Get the correct height even if we're at i=0.
+         dc->GetTextExtent(L"DUMMY", &width, &height); // Get the correct height even if we're at i=0.
          width = 0;
       }
       else {
@@ -641,7 +641,7 @@ void LyricsPanel::HandlePaint_BouncingBall(wxDC &dc)
       }
 
       wxString text = mSyllables[i].text;
-      if (text.length() > 0 && text.Right(1) == wxT("_")) {
+      if (text.length() > 0 && text.Right(1) == L"_") {
          text = text.Left(text.length() - 1);
       }
 

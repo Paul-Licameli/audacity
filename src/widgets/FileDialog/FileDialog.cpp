@@ -80,7 +80,7 @@ wxString FileSelector(const wxString& title,
 
     wxString filter2;
     if ( !defaultExtension.empty() && filter.empty() )
-        filter2 = wxString(wxT("*.")) + defaultExtension;
+        filter2 = wxString(L"*.") + defaultExtension;
     else if ( !filter.empty() )
         filter2 = filter;
 

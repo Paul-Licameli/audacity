@@ -33,9 +33,9 @@ int ModuleSettings::GetModuleStatus(const FilePath &fname)
    wxFileName FileName( fname );
    wxString ShortName = FileName.GetName().Lower();
 
-   wxString PathPref = wxString( wxT("/ModulePath/") ) + ShortName;
-   wxString StatusPref = wxString( wxT("/Module/") ) + ShortName;
-   wxString DateTimePref = wxString( wxT("/ModuleDateTime/") ) + ShortName;
+   wxString PathPref = wxString( L"/ModulePath/" ) + ShortName;
+   wxString StatusPref = wxString( L"/Module/" ) + ShortName;
+   wxString DateTimePref = wxString( L"/ModuleDateTime/" ) + ShortName;
 
    wxString ModulePath = gPrefs->Read( PathPref, wxEmptyString );
    if( ModulePath.IsSameAs( fname ) )
@@ -78,13 +78,13 @@ void ModuleSettings::SetModuleStatus(const FilePath &fname, int iStatus)
    wxDateTime DateTime = FileName.GetModificationTime();
    wxString ShortName = FileName.GetName().Lower();
 
-   wxString PrefName = wxString( wxT("/Module/") ) + ShortName;
+   wxString PrefName = wxString( L"/Module/" ) + ShortName;
    gPrefs->Write( PrefName, iStatus );
 
-   PrefName = wxString( wxT("/ModulePath/") ) + ShortName;
+   PrefName = wxString( L"/ModulePath/" ) + ShortName;
    gPrefs->Write( PrefName, fname );
 
-   PrefName = wxString( wxT("/ModuleDateTime/") ) + ShortName;
+   PrefName = wxString( L"/ModuleDateTime/" ) + ShortName;
    gPrefs->Write( PrefName, DateTime.FormatISOCombined() );
 
    gPrefs->Flush();

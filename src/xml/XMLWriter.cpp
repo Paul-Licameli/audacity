@@ -80,15 +80,15 @@ void XMLWriter::StartTag(const wxString &name)
    int i;
 
    if (mInTag) {
-      Write(wxT(">\n"));
+      Write(L">\n");
       mInTag = false;
    }
 
    for (i = 0; i < mDepth; i++) {
-      Write(wxT("\t"));
+      Write(L"\t");
    }
 
-   Write(wxString::Format(wxT("<%s"), name));
+   Write(wxString::Format(L"<%s", name));
 
    mTagstack.insert(mTagstack.begin(), name);
    mHasKids[0] = true;
@@ -106,17 +106,17 @@ void XMLWriter::EndTag(const wxString &name)
       if (mTagstack[0] == name) {
          if (mHasKids[1]) {  // There will always be at least 2 at this point
             if (mInTag) {
-               Write(wxT("/>\n"));
+               Write(L"/>\n");
             }
             else {
                for (i = 0; i < mDepth - 1; i++) {
-                  Write(wxT("\t"));
+                  Write(L"\t");
                }
-               Write(wxString::Format(wxT("</%s>\n"), name));
+               Write(wxString::Format(L"</%s>\n", name));
             }
          }
          else {
-            Write(wxT(">\n"));
+            Write(L">\n");
          }
          mTagstack.erase( mTagstack.begin() );
          mHasKids.erase(mHasKids.begin());
@@ -130,7 +130,7 @@ void XMLWriter::EndTag(const wxString &name)
 void XMLWriter::WriteAttr(const wxString &name, const wxString &value)
 // may throw from Write()
 {
-   Write(wxString::Format(wxT(" %s=\"%s\""),
+   Write(wxString::Format(L" %s=\"%s\"",
       name,
       XMLEsc(value)));
 }
@@ -144,7 +144,7 @@ void XMLWriter::WriteAttr(const wxString &name, const wxChar *value)
 void XMLWriter::WriteAttr(const wxString &name, int value)
 // may throw from Write()
 {
-   Write(wxString::Format(wxT(" %s=\"%d\""),
+   Write(wxString::Format(L" %s=\"%d\"",
       name,
       value));
 }
@@ -152,7 +152,7 @@ void XMLWriter::WriteAttr(const wxString &name, int value)
 void XMLWriter::WriteAttr(const wxString &name, bool value)
 // may throw from Write()
 {
-   Write(wxString::Format(wxT(" %s=\"%d\""),
+   Write(wxString::Format(L" %s=\"%d\"",
       name,
       value));
 }
@@ -160,7 +160,7 @@ void XMLWriter::WriteAttr(const wxString &name, bool value)
 void XMLWriter::WriteAttr(const wxString &name, long value)
 // may throw from Write()
 {
-   Write(wxString::Format(wxT(" %s=\"%ld\""),
+   Write(wxString::Format(L" %s=\"%ld\"",
       name,
       value));
 }
@@ -168,7 +168,7 @@ void XMLWriter::WriteAttr(const wxString &name, long value)
 void XMLWriter::WriteAttr(const wxString &name, long long value)
 // may throw from Write()
 {
-   Write(wxString::Format(wxT(" %s=\"%lld\""),
+   Write(wxString::Format(L" %s=\"%lld\"",
       name,
       value));
 }
@@ -176,7 +176,7 @@ void XMLWriter::WriteAttr(const wxString &name, long long value)
 void XMLWriter::WriteAttr(const wxString &name, size_t value)
 // may throw from Write()
 {
-   Write(wxString::Format(wxT(" %s=\"%lld\""),
+   Write(wxString::Format(L" %s=\"%lld\"",
       name,
       (long long) value));
 }
@@ -184,7 +184,7 @@ void XMLWriter::WriteAttr(const wxString &name, size_t value)
 void XMLWriter::WriteAttr(const wxString &name, float value, int digits)
 // may throw from Write()
 {
-   Write(wxString::Format(wxT(" %s=\"%s\""),
+   Write(wxString::Format(L" %s=\"%s\"",
       name,
       Internat::ToString(value, digits)));
 }
@@ -192,7 +192,7 @@ void XMLWriter::WriteAttr(const wxString &name, float value, int digits)
 void XMLWriter::WriteAttr(const wxString &name, double value, int digits)
 // may throw from Write()
 {
-   Write(wxString::Format(wxT(" %s=\"%s\""),
+   Write(wxString::Format(L" %s=\"%s\"",
       name,
       Internat::ToString(value, digits)));
 }
@@ -203,7 +203,7 @@ void XMLWriter::WriteData(const wxString &value)
    int i;
 
    for (i = 0; i < mDepth; i++) {
-      Write(wxT("\t"));
+      Write(L"\t");
    }
 
    Write(XMLEsc(value));
@@ -213,7 +213,7 @@ void XMLWriter::WriteSubTree(const wxString &value)
 // may throw from Write()
 {
    if (mInTag) {
-      Write(wxT(">\n"));
+      Write(L">\n");
       mInTag = false;
       mHasKids[0] = true;
    }
@@ -232,23 +232,23 @@ wxString XMLWriter::XMLEsc(const wxString & s)
 
       switch (c) {
          case L'\'':
-            result += wxT("&apos;");
+            result += L"&apos;";
          break;
 
          case L'"':
-            result += wxT("&quot;");
+            result += L"&quot;";
          break;
 
          case L'&':
-            result += wxT("&amp;");
+            result += L"&amp;";
          break;
 
          case L'<':
-            result += wxT("&lt;");
+            result += L"&lt;";
          break;
 
          case L'>':
-            result += wxT("&gt;");
+            result += L"&gt;";
          break;
 
          default:
@@ -277,7 +277,7 @@ wxString XMLWriter::XMLEsc(const wxString & s)
                if((c> 0x1F || charXMLCompatiblity[c]!=0) &&
                      (c < MIN_HIGH_SURROGATE || c > MAX_LOW_SURROGATE) &&
                      c != NONCHARACTER_FFFE && c != NONCHARACTER_FFFF)
-                  result += wxString::Format(wxT("&#x%04x;"), c);
+                  result += wxString::Format(L"&#x%04x;", c);
             }
             else {
                result += c;
@@ -300,7 +300,7 @@ XMLFileWriter::XMLFileWriter(
 // may throw
 {
    auto tempPath = wxFileName::CreateTempFileName( outputPath );
-   if (!wxFFile::Open(tempPath, wxT("wb")) || !IsOpened())
+   if (!wxFFile::Open(tempPath, L"wb") || !IsOpened())
       ThrowException( outputPath, mCaption );
 
    if (mKeepBackup) {
@@ -312,8 +312,8 @@ XMLFileWriter::XMLFileWriter(
          index++;
          mBackupName =
          outputFn.GetPath() + wxFILE_SEP_PATH +
-         outputFn.GetName() + wxT("_bak") +
-         wxString::Format(wxT("%d"), index) + wxT(".") +
+         outputFn.GetName() + L"_bak" +
+         wxString::Format(L"%d", index) + L"." +
          outputFn.GetExt();
       } while( ::wxFileExists( mBackupName ) );
 

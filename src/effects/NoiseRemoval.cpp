@@ -85,15 +85,15 @@ EffectNoiseRemoval::EffectNoiseRemoval()
    mWindowSize = 2048;
    mSpectrumSize = 1 + mWindowSize / 2;
 
-   gPrefs->Read(wxT("/Effects/NoiseRemoval/NoiseSensitivity"),
+   gPrefs->Read(L"/Effects/NoiseRemoval/NoiseSensitivity",
                 &mSensitivity, 0.0);
-   gPrefs->Read(wxT("/Effects/NoiseRemoval/NoiseGain"),
+   gPrefs->Read(L"/Effects/NoiseRemoval/NoiseGain",
                 &mNoiseGain, -24.0);
-   gPrefs->Read(wxT("/Effects/NoiseRemoval/NoiseFreqSmoothing"),
+   gPrefs->Read(L"/Effects/NoiseRemoval/NoiseFreqSmoothing",
                 &mFreqSmoothingHz, 150.0);
-   gPrefs->Read(wxT("/Effects/NoiseRemoval/NoiseAttackDecayTime"),
+   gPrefs->Read(L"/Effects/NoiseRemoval/NoiseAttackDecayTime",
                 &mAttackDecayTime, 0.15);
-   gPrefs->Read(wxT("/Effects/NoiseRemoval/NoiseLeaveNoise"),
+   gPrefs->Read(L"/Effects/NoiseRemoval/NoiseLeaveNoise",
                 &mbLeaveNoise, false);
 //   mbLeaveNoise = false;
 
@@ -140,10 +140,10 @@ bool EffectNoiseRemoval::SupportsAutomation()
 #define MAX_NOISE_LEVEL  30
 bool EffectNoiseRemoval::Init()
 {
-   mLevel = gPrefs->Read(wxT("/Effects/NoiseRemoval/Noise_Level"), 3L);
+   mLevel = gPrefs->Read(L"/Effects/NoiseRemoval/Noise_Level", 3L);
    if ((mLevel < 0) || (mLevel > MAX_NOISE_LEVEL)) {  // corrupted Prefs?
       mLevel = 0;  //Off-skip
-      gPrefs->Write(wxT("/Effects/NoiseRemoval/Noise_Level"), mLevel);
+      gPrefs->Write(L"/Effects/NoiseRemoval/Noise_Level", mLevel);
    }
    return gPrefs->Flush();
 }
@@ -193,11 +193,11 @@ bool EffectNoiseRemoval::ShowInterface(
    mAttackDecayTime = dlog.mTime;
    mbLeaveNoise = dlog.mbLeaveNoise;
 
-   gPrefs->Write(wxT("/Effects/NoiseRemoval/NoiseSensitivity"), mSensitivity);
-   gPrefs->Write(wxT("/Effects/NoiseRemoval/NoiseGain"), mNoiseGain);
-   gPrefs->Write(wxT("/Effects/NoiseRemoval/NoiseFreqSmoothing"), mFreqSmoothingHz);
-   gPrefs->Write(wxT("/Effects/NoiseRemoval/NoiseAttackDecayTime"), mAttackDecayTime);
-   gPrefs->Write(wxT("/Effects/NoiseRemoval/NoiseLeaveNoise"), mbLeaveNoise);
+   gPrefs->Write(L"/Effects/NoiseRemoval/NoiseSensitivity", mSensitivity);
+   gPrefs->Write(L"/Effects/NoiseRemoval/NoiseGain", mNoiseGain);
+   gPrefs->Write(L"/Effects/NoiseRemoval/NoiseFreqSmoothing", mFreqSmoothingHz);
+   gPrefs->Write(L"/Effects/NoiseRemoval/NoiseAttackDecayTime", mAttackDecayTime);
+   gPrefs->Write(L"/Effects/NoiseRemoval/NoiseLeaveNoise", mbLeaveNoise);
 
    mDoProfile = (dlog.GetReturnCode() == 1);
    return gPrefs->Flush();
@@ -725,7 +725,7 @@ void NoiseRemovalDialog::PopulateOrExchange(ShuttleGui & S)
       {
          mGainT = S.Id(ID_GAIN_TEXT)
             .Validator<wxTextValidator>(wxFILTER_NUMERIC)
-            .AddTextBox(XXO("Noise re&duction (dB):"), wxT(""), 0);
+            .AddTextBox(XXO("Noise re&duction (dB):"), L"", 0);
 
          mGainS = S.Id(ID_GAIN_SLIDER)
             .Name(XO("Noise reduction"))
@@ -735,7 +735,7 @@ void NoiseRemovalDialog::PopulateOrExchange(ShuttleGui & S)
 
          mSensitivityT = S.Id(ID_SENSITIVITY_TEXT)
             .Validator<wxTextValidator>(wxFILTER_NUMERIC)
-            .AddTextBox(XXO("&Sensitivity (dB):"), wxT(""), 0);
+            .AddTextBox(XXO("&Sensitivity (dB):"), L"", 0);
          mSensitivityS = S.Id(ID_SENSITIVITY_SLIDER)
             .Name(XO("Sensitivity"))
             .Style(wxSL_HORIZONTAL)
@@ -744,7 +744,7 @@ void NoiseRemovalDialog::PopulateOrExchange(ShuttleGui & S)
 
          mFreqT = S.Id(ID_FREQ_TEXT)
             .Validator<wxTextValidator>(wxFILTER_NUMERIC)
-            .AddTextBox(XXO("Fr&equency smoothing (Hz):"), wxT(""), 0);
+            .AddTextBox(XXO("Fr&equency smoothing (Hz):"), L"", 0);
          mFreqS = S.Id(ID_FREQ_SLIDER)
             .Name(XO("Frequency smoothing"))
             .Style(wxSL_HORIZONTAL)
@@ -753,7 +753,7 @@ void NoiseRemovalDialog::PopulateOrExchange(ShuttleGui & S)
 
          mTimeT = S.Id(ID_TIME_TEXT)
             .Validator<wxTextValidator>(wxFILTER_NUMERIC)
-            .AddTextBox(XXO("Attac&k/decay time (secs):"), wxT(""), 0);
+            .AddTextBox(XXO("Attac&k/decay time (secs):"), L"", 0);
          mTimeS = S.Id(ID_TIME_SLIDER)
             .Name(XO("Attack/decay time"))
             .Style(wxSL_HORIZONTAL)
@@ -773,10 +773,10 @@ void NoiseRemovalDialog::PopulateOrExchange(ShuttleGui & S)
 
 bool NoiseRemovalDialog::TransferDataToWindow()
 {
-   mSensitivityT->SetValue(wxString::Format(wxT("%.2f"), mSensitivity));
-   mGainT->SetValue(wxString::Format(wxT("%d"), (int)mGain));
-   mFreqT->SetValue(wxString::Format(wxT("%d"), (int)mFreq));
-   mTimeT->SetValue(wxString::Format(wxT("%.2f"), mTime));
+   mSensitivityT->SetValue(wxString::Format(L"%.2f", mSensitivity));
+   mGainT->SetValue(wxString::Format(L"%d", (int)mGain));
+   mFreqT->SetValue(wxString::Format(L"%d", (int)mFreq));
+   mTimeT->SetValue(wxString::Format(L"%.2f", mTime));
    mKeepNoise->SetValue(mbLeaveNoise);
    mKeepSignal->SetValue(!mbLeaveNoise);
 
@@ -821,25 +821,25 @@ void NoiseRemovalDialog::OnTimeText(wxCommandEvent & WXUNUSED(event))
 void NoiseRemovalDialog::OnSensitivitySlider(wxCommandEvent & WXUNUSED(event))
 {
    mSensitivity = mSensitivityS->GetValue()/100.0 - 20.0;
-   mSensitivityT->SetValue(wxString::Format(wxT("%.2f"), mSensitivity));
+   mSensitivityT->SetValue(wxString::Format(L"%.2f", mSensitivity));
 }
 
 void NoiseRemovalDialog::OnGainSlider(wxCommandEvent & WXUNUSED(event))
 {
    mGain = mGainS->GetValue();
-   mGainT->SetValue(wxString::Format(wxT("%d"), (int)mGain));
+   mGainT->SetValue(wxString::Format(L"%d", (int)mGain));
 }
 
 void NoiseRemovalDialog::OnFreqSlider(wxCommandEvent & WXUNUSED(event))
 {
    mFreq = mFreqS->GetValue() * 10;
-   mFreqT->SetValue(wxString::Format(wxT("%d"), (int)mFreq));
+   mFreqT->SetValue(wxString::Format(L"%d", (int)mFreq));
 }
 
 void NoiseRemovalDialog::OnTimeSlider(wxCommandEvent & WXUNUSED(event))
 {
    mTime = mTimeS->GetValue() / (TIME_MAX*1.0);
-   mTimeT->SetValue(wxString::Format(wxT("%.2f"), mTime));
+   mTimeT->SetValue(wxString::Format(L"%.2f", mTime));
 }
 
 #endif

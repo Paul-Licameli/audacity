@@ -822,27 +822,27 @@ BaseItemSharedPtr ClipSelectMenu()
 
    static BaseItemSharedPtr menu {
    ( FinderScope{ findCommandHandler },
-   Menu( wxT("Clip"), XXO("Clip B&oundaries"),
-      Command( wxT("SelPrevClipBoundaryToCursor"),
+   Menu( L"Clip", XXO("Clip B&oundaries"),
+      Command( L"SelPrevClipBoundaryToCursor",
          XXO("Pre&vious Clip Boundary to Cursor"),
          FN(OnSelectPrevClipBoundaryToCursor),
          WaveTracksExistFlag() ),
-      Command( wxT("SelCursorToNextClipBoundary"),
+      Command( L"SelCursorToNextClipBoundary",
          XXO("Cursor to Ne&xt Clip Boundary"),
          FN(OnSelectCursorToNextClipBoundary),
          WaveTracksExistFlag() ),
-      Command( wxT("SelPrevClip"), XXO("Previo&us Clip"),
+      Command( L"SelPrevClip", XXO("Previo&us Clip"),
          FN(OnSelectPrevClip), WaveTracksExistFlag(),
-         Options{ wxT("Alt+,"), XO("Select Previous Clip") } ),
-      Command( wxT("SelNextClip"), XXO("N&ext Clip"), FN(OnSelectNextClip),
+         Options{ L"Alt+,", XO("Select Previous Clip") } ),
+      Command( L"SelNextClip", XXO("N&ext Clip"), FN(OnSelectNextClip),
          WaveTracksExistFlag(),
-         Options{ wxT("Alt+."), XO("Select Next Clip") } )
+         Options{ L"Alt+.", XO("Select Next Clip") } )
    ) ) };
    return menu;
 }
 
 AttachedItem sAttachment1{
-   wxT("Select/Basic"),
+   L"Select/Basic",
    Shared( ClipSelectMenu() )
 };
 
@@ -852,12 +852,12 @@ BaseItemSharedPtr ClipCursorItems()
 
    static BaseItemSharedPtr items{
    ( FinderScope{ findCommandHandler },
-   Items( wxT("Clip"),
-      Command( wxT("CursPrevClipBoundary"), XXO("Pre&vious Clip Boundary"),
+   Items( L"Clip",
+      Command( L"CursPrevClipBoundary", XXO("Pre&vious Clip Boundary"),
          FN(OnCursorPrevClipBoundary),
          WaveTracksExistFlag(),
          Options{}.LongName( XO("Cursor to Prev Clip Boundary") ) ),
-      Command( wxT("CursNextClipBoundary"), XXO("Ne&xt Clip Boundary"),
+      Command( L"CursNextClipBoundary", XXO("Ne&xt Clip Boundary"),
          FN(OnCursorNextClipBoundary),
          WaveTracksExistFlag(),
          Options{}.LongName( XO("Cursor to Next Clip Boundary") ) )
@@ -866,8 +866,8 @@ BaseItemSharedPtr ClipCursorItems()
 }
 
 AttachedItem sAttachment2{
-   { wxT("Transport/Basic/Cursor"),
-     { OrderingHint::Before, wxT("CursProjectStart") } },
+   { L"Transport/Basic/Cursor",
+     { OrderingHint::Before, L"CursProjectStart" } },
    Shared( ClipCursorItems() )
 };
 
@@ -876,17 +876,17 @@ BaseItemSharedPtr ExtraTimeShiftItems()
    using Options = CommandManager::Options;
    static BaseItemSharedPtr items{
    ( FinderScope{ findCommandHandler },
-   Items( wxT("TimeShift"),
-      Command( wxT("ClipLeft"), XXO("Time Shift &Left"), FN(OnClipLeft),
+   Items( L"TimeShift",
+      Command( L"ClipLeft", XXO("Time Shift &Left"), FN(OnClipLeft),
          TracksExistFlag() | TrackPanelHasFocus(), Options{}.WantKeyUp() ),
-      Command( wxT("ClipRight"), XXO("Time Shift &Right"), FN(OnClipRight),
+      Command( L"ClipRight", XXO("Time Shift &Right"), FN(OnClipRight),
          TracksExistFlag() | TrackPanelHasFocus(), Options{}.WantKeyUp() )
    ) ) };
    return items;
 }
 
 AttachedItem sAttachment3{
-  { wxT("Optional/Extra/Part1/Edit"), { OrderingHint::End, {} } },
+  { L"Optional/Extra/Part1/Edit", { OrderingHint::End, {} } },
   Shared( ExtraTimeShiftItems() )
 };
 

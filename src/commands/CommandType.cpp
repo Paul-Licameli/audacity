@@ -51,16 +51,16 @@ wxString OldStyleCommandType::Describe()
 {
    // PRL: Is this intended for end-user visibility or just debugging?  It did not
    // use _(""), so I assume it is meant to use internal strings
-   wxString desc = GetSymbol().Internal() + wxT("\nParameters:");
+   wxString desc = GetSymbol().Internal() + L"\nParameters:";
    GetSignature();
    ParamValueMap::iterator iter;
    ParamValueMap defaults = mSignature->GetDefaults();
    for (iter = defaults.begin(); iter != defaults.end(); ++iter)
    {
-      desc += wxT("\n") + iter->first + wxT(": ")
+      desc += L"\n" + iter->first + L": "
          + mSignature->GetValidator(iter->first).GetDescription()
-         + wxT(" (default: ")
-         + iter->second.MakeString() + wxT(")");
+         + L" (default: "
+         + iter->second.MakeString() + L")";
    }
    return desc;
 }

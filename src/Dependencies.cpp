@@ -587,9 +587,9 @@ void DependencyDialog::SaveFutureActionChoice()
       int sel = mFutureActionChoice->GetSelection();
       switch (sel)
       {
-      case 1: savePref = wxT("copy"); break;
-      case 2: savePref = wxT("never"); break;
-      default: savePref = wxT("ask");
+      case 1: savePref = L"copy"; break;
+      case 2: savePref = L"never"; break;
+      default: savePref = L"ask";
       }
       FileFormatsSaveWithDependenciesSetting.Write( savePref );
       gPrefs->Flush();

@@ -12,7 +12,7 @@ Paul Licameli split from PrefsDialog.cpp
 #include <mutex>
 
 namespace {
-const auto PathStart = wxT("Preferences");
+const auto PathStart = L"Preferences";
 
 static Registry::GroupItem &sRegistry()
 {
@@ -114,10 +114,10 @@ PrefsPanel::Factories
    static Registry::OrderingPreferenceInitializer init{
       PathStart,
       {
-         {wxT(""),
-       wxT("Device,Playback,Recording,Quality,GUI,Tracks,ImportExport,Directories,Warnings,Effects,KeyConfig,Mouse")
+         {L"",
+       L"Device,Playback,Recording,Quality,GUI,Tracks,ImportExport,Directories,Warnings,Effects,KeyConfig,Mouse"
          },
-         {wxT("/Tracks"), wxT("TracksBehaviors,Spectrum")},
+         {L"/Tracks", L"TracksBehaviors,Spectrum"},
       }
    };
 

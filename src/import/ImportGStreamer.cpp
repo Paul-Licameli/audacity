@@ -279,7 +279,7 @@ Importer::RegisteredImportPlugin{ "GStreamer",
    }
    if ( initError )
    {
-      wxLogMessage(wxT("Failed to initialize GStreamer. Error %d: %s"),
+      wxLogMessage(L"Failed to initialize GStreamer. Error %d: %s",
                    error.get()->code,
                    wxString::FromUTF8(error.get()->message));
       return {};
@@ -287,7 +287,7 @@ Importer::RegisteredImportPlugin{ "GStreamer",
 
    guint major, minor, micro, nano;
    gst_version(&major, &minor, &micro, &nano);
-   wxLogMessage(wxT("Linked to GStreamer version %d.%d.%d-%d"),
+   wxLogMessage(L"Linked to GStreamer version %d.%d.%d-%d",
                 major,
                 minor,
                 micro,
@@ -334,7 +334,7 @@ GStreamerImportPlugin::GetPluginFormatDescription()
 wxString
 GStreamerImportPlugin::GetPluginStringID()
 {
-   return wxT("gstreamer");
+   return L"gstreamer";
 }
 
 // Obtains a list of supported extensions from typefind factories
@@ -397,12 +397,12 @@ GStreamerImportPlugin::GetSupportedExtensions()
    mExtensions.Sort();
 
    // Log it for debugging
-   wxString extensions = wxT("Extensions:");
+   wxString extensions = L"Extensions:";
    for (size_t i = 0; i < mExtensions.size(); i++)
    {
-      extensions = extensions + wxT(" ") + mExtensions[i];
+      extensions = extensions + L" " + mExtensions[i];
    }
-   wxLogMessage(wxT("%s"), extensions);
+   wxLogMessage(L"%s", extensions);
 
    return mExtensions;
 }
@@ -921,7 +921,7 @@ GStreamerImportFileHandle::Init()
    mUri.reset(g_strdup_printf("file:///%s", mFilename.ToUTF8().data()));
    if (!mUri)
    {
-      wxLogMessage(wxT("GStreamerImport couldn't create URI"));
+      wxLogMessage(L"GStreamerImport couldn't create URI");
       return false;
    }
 
@@ -1185,10 +1185,10 @@ GStreamerImportFileHandle::ProcessBusMessage(bool & success)
          objname.reset(gst_object_get_name(msg->src));
       }
 
-      wxLogMessage(wxT("GStreamer: Got %s%s%s"),
+      wxLogMessage(L"GStreamer: Got %s%s%s",
          wxString::FromUTF8(GST_MESSAGE_TYPE_NAME(msg.get())),
-         objname ? wxT(" from ") : wxT(""),
-         objname ? wxString::FromUTF8(objname.get()) : wxT(""));
+         objname ? L" from " : L"",
+         objname ? wxString::FromUTF8(objname.get()) : L"");
    }
 #endif
 
@@ -1206,10 +1206,10 @@ GStreamerImportFileHandle::ProcessBusMessage(bool & success)
          {
             wxString m;
 
-            m.Printf(wxT("%s%s%s"),
+            m.Printf(L"%s%s%s",
                wxString::FromUTF8(err.get()->message),
-               debug ? wxT("\n") : wxT(""),
-               debug ? wxString::FromUTF8(debug.get()) : wxT(""));
+               debug ? L"\n" : L"",
+               debug ? wxString::FromUTF8(debug.get()) : L"");
             auto msg = XO("GStreamer Error: %s").Format( m );
 #if defined(_DEBUG)
             AudacityMessageBox( msg );
@@ -1232,10 +1232,10 @@ GStreamerImportFileHandle::ProcessBusMessage(bool & success)
 
          if (err)
          {
-            wxLogMessage(wxT("GStreamer Warning: %s%s%s"),
+            wxLogMessage(L"GStreamer Warning: %s%s%s",
                          wxString::FromUTF8(err.get()->message),
-                         debug ? wxT("\n") : wxT(""),
-                         debug ? wxString::FromUTF8(debug.get()) : wxT(""));
+                         debug ? L"\n" : L"",
+                         debug ? wxString::FromUTF8(debug.get()) : L"");
          }
       }
       break;
@@ -1249,10 +1249,10 @@ GStreamerImportFileHandle::ProcessBusMessage(bool & success)
          GstMessageParse(gst_message_parse_info, msg.get(), err, debug);
          if (err)
          {
-            wxLogMessage(wxT("GStreamer Info: %s%s%s"),
+            wxLogMessage(L"GStreamer Info: %s%s%s",
                          wxString::FromUTF8(err.get()->message),
-                         debug ? wxT("\n") : wxT(""),
-                         debug ? wxString::FromUTF8(debug.get()) : wxT(""));
+                         debug ? L"\n" : L"",
+                         debug ? wxString::FromUTF8(debug.get()) : L"");
          }
       }
       break;
@@ -1338,15 +1338,15 @@ GStreamerImportFileHandle::OnTag(GstAppSink * WXUNUSED(appsink), GstTagList *tag
          }
          else if (G_VALUE_HOLDS_UINT(val))
          {
-            string.Printf(wxT("%u"), (unsigned int) g_value_get_uint(val));
+            string.Printf(L"%u", (unsigned int) g_value_get_uint(val));
          }
          else if (G_VALUE_HOLDS_DOUBLE(val))
          {
-            string.Printf(wxT("%g"), g_value_get_double(val));
+            string.Printf(L"%g", g_value_get_double(val));
          }
          else if (G_VALUE_HOLDS_BOOLEAN(val))
          {
-            string = g_value_get_boolean(val) ? wxT("true") : wxT("false");
+            string = g_value_get_boolean(val) ? L"true" : L"false";
          }
          else if (GST_VALUE_HOLDS_DATE_TIME(val))
          {
@@ -1361,7 +1361,7 @@ GStreamerImportFileHandle::OnTag(GstAppSink * WXUNUSED(appsink), GstTagList *tag
          }
          else
          {
-            wxLogMessage(wxT("Tag %s has unhandled type: %s"),
+            wxLogMessage(L"Tag %s has unhandled type: %s",
                          wxString::FromUTF8(name),
                          wxString::FromUTF8(G_VALUE_TYPE_NAME(val)));
             continue;
@@ -1404,7 +1404,7 @@ GStreamerImportFileHandle::OnTag(GstAppSink * WXUNUSED(appsink), GstTagList *tag
 
          if (jcnt > 1)
          {
-            tag.Printf(wxT("%s:%d"), tag, j);
+            tag.Printf(L"%s:%d", tag, j);
          }
 
          // Store the tag

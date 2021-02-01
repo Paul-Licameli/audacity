@@ -149,10 +149,10 @@ BenchmarkDialog::BenchmarkDialog(
 {
    SetName();
 
-   mBlockSizeStr = wxT("64");
-   mNumEditsStr = wxT("100");
-   mDataSizeStr = wxT("32");
-   mRandSeedStr = wxT("234657");
+   mBlockSizeStr = L"64";
+   mNumEditsStr = L"100";
+   mDataSizeStr = L"32";
+   mRandSeedStr = L"234657";
 
    mBlockDetail = false;
    mEditDetail = false;
@@ -185,21 +185,21 @@ void BenchmarkDialog::MakeBenchmarkDialog()
          S.Id(BlockSizeID)
             .Validator<wxTextValidator>(wxFILTER_NUMERIC, &mBlockSizeStr)
             .AddTextBox(XXO("Disk Block Size (KB):"),
-                                             wxT(""),
+                                             L"",
                                              12);
 
          //
          S.Id(NumEditsID)
             .Validator<wxTextValidator>(wxFILTER_NUMERIC, &mNumEditsStr)
             .AddTextBox(XXO("Number of Edits:"),
-                                            wxT(""),
+                                            L"",
                                             12);
 
          //
          S.Id(DataSizeID)
             .Validator<wxTextValidator>(wxFILTER_NUMERIC, &mDataSizeStr)
             .AddTextBox(XXO("Test Data Size (MB):"),
-                                            wxT(""),
+                                            L"",
                                             12);
 
          ///
@@ -208,7 +208,7 @@ void BenchmarkDialog::MakeBenchmarkDialog()
             /* i18n-hint: A "seed" is a number that initializes a
                pseudorandom number generating algorithm */
             .AddTextBox(XXO("Random Seed:"),
-                                            wxT(""),
+                                            L"",
                                             12);
 
       }
@@ -230,7 +230,7 @@ void BenchmarkDialog::MakeBenchmarkDialog()
          .Name(XO("Output"))
          .Style( wxTE_MULTILINE | wxTE_READONLY | wxTE_RICH )
          .MinSize( { 500, 200 } )
-         .AddTextWindow(wxT(""));
+         .AddTextWindow(L"");
 
       //
       S.SetBorder(10);
@@ -276,7 +276,7 @@ void BenchmarkDialog::OnSave( wxCommandEvent & WXUNUSED(event))
       XO("Export Benchmark Data as:"),
       wxEmptyString,
       fName,
-      wxT("txt"),
+      L"txt",
       { FileNames::TextFiles },
       wxFD_SAVE | wxRESIZE_BORDER,
       this);
@@ -316,7 +316,7 @@ void BenchmarkDialog::FlushPrint()
    }
    if (mToPrint.length() > 0)
       mText->AppendText(mToPrint);
-   mToPrint = wxT("");
+   mToPrint = L"";
 }
 
 void BenchmarkDialog::OnRun( wxCommandEvent & WXUNUSED(event))
@@ -354,8 +354,8 @@ void BenchmarkDialog::OnRun( wxCommandEvent & WXUNUSED(event))
    }
 
    bool editClipCanMove = true;
-   gPrefs->Read(wxT("/GUI/EditClipCanMove"), &editClipCanMove);
-   gPrefs->Write(wxT("/GUI/EditClipCanMove"), false);
+   gPrefs->Read(L"/GUI/EditClipCanMove", &editClipCanMove);
+   gPrefs->Write(L"/GUI/EditClipCanMove", false);
    gPrefs->Flush();
 
    // Remember the old blocksize, so that we can restore it later.
@@ -364,7 +364,7 @@ void BenchmarkDialog::OnRun( wxCommandEvent & WXUNUSED(event))
 
    const auto cleanup = finally( [&] {
       Sequence::SetMaxDiskBlockSize(oldBlockSize);
-      gPrefs->Write(wxT("/GUI/EditClipCanMove"), editClipCanMove);
+      gPrefs->Write(L"/GUI/EditClipCanMove", editClipCanMove);
       gPrefs->Flush();
    } );
 

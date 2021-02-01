@@ -95,7 +95,7 @@ void SplashDialog::OnChar(wxMouseEvent &event)
 void SplashDialog::Populate( ShuttleGui & S )
 {
    bool bShow;
-   gPrefs->Read(wxT("/GUI/ShowSplashScreen"), &bShow, true );
+   gPrefs->Read(L"/GUI/ShowSplashScreen", &bShow, true );
    S.StartVerticalLay(1);
 
    //v For now, change to AudacityLogoWithName via old-fashioned ways, not Theme.
@@ -133,7 +133,7 @@ void SplashDialog::Populate( ShuttleGui & S )
                                          wxDefaultPosition,
                                          wxSize(506, 280),
                                          wxHW_SCROLLBAR_AUTO | wxSUNKEN_BORDER );
-   mpHtml->SetPage(HelpText( wxT("welcome") ));
+   mpHtml->SetPage(HelpText( L"welcome" ));
    S.Prop(1)
       .Position( wxEXPAND )
       .AddWindow( mpHtml );
@@ -158,7 +158,7 @@ SplashDialog::~SplashDialog()
 void SplashDialog::OnDontShow( wxCommandEvent & Evt )
 {
    bool bShow = !Evt.IsChecked();
-   gPrefs->Write(wxT("/GUI/ShowSplashScreen"), bShow );
+   gPrefs->Write(L"/GUI/ShowSplashScreen", bShow );
    gPrefs->Flush();
 }
 
@@ -176,6 +176,6 @@ void SplashDialog::Show2( wxWindow * pParent )
       wxASSERT(pParent);
       pSelf = safenew SplashDialog( pParent );
    }
-   pSelf->mpHtml->SetPage(HelpText( wxT("welcome") ));
+   pSelf->mpHtml->SetPage(HelpText( L"welcome" ));
    pSelf->Show( true );
 }

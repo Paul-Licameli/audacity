@@ -145,8 +145,8 @@ BEGIN_POPUP_MENU(TrackMenuTable)
             Verbatim(
                CommandManager::Get( mpData->project ).
                    // using GET to compose menu item name for wxWidgets
-                   GetKeyFromName(wxT("TrackMoveUp")).GET() ),
-             wxT("\t")
+                   GetKeyFromName(L"TrackMoveUp").GET() ),
+             L"\t"
          ),
          POPUP_MENU_FN( OnMoveTrack ), enableIfCanMove(true) );
       AppendItem( "Down",
@@ -155,8 +155,8 @@ BEGIN_POPUP_MENU(TrackMenuTable)
             Verbatim(
                CommandManager::Get( mpData->project ).
                   // using GET to compose menu item name for wxWidgets
-                  GetKeyFromName(wxT("TrackMoveDown")).GET() ),
-             wxT("\t")
+                  GetKeyFromName(L"TrackMoveDown").GET() ),
+             L"\t"
          ),
          POPUP_MENU_FN( OnMoveTrack ), enableIfCanMove(false) );
       AppendItem( "Top",
@@ -165,8 +165,8 @@ BEGIN_POPUP_MENU(TrackMenuTable)
             Verbatim(
                CommandManager::Get( mpData->project ).
                    // using GET to compose menu item name for wxWidgets
-                   GetKeyFromName(wxT("TrackMoveTop")).GET() ),
-             wxT("\t")
+                   GetKeyFromName(L"TrackMoveTop").GET() ),
+             L"\t"
          ),
          POPUP_MENU_FN( OnMoveTrack ), enableIfCanMove(true) );
       AppendItem( "Bottom",
@@ -175,8 +175,8 @@ BEGIN_POPUP_MENU(TrackMenuTable)
             Verbatim(
                CommandManager::Get( mpData->project ).
                   // using GET to compose menu item name for wxWidgets
-                  GetKeyFromName(wxT("TrackMoveBottom")).GET() ),
-             wxT("\t")
+                  GetKeyFromName(L"TrackMoveBottom").GET() ),
+             L"\t"
          ),
          POPUP_MENU_FN( OnMoveTrack ), enableIfCanMove(false) );
    EndSection();
@@ -203,7 +203,7 @@ public:
    //bool Apply(const CommandContext & context) override;
 
    // Provide an override, if we want the help button.
-   // wxString ManualPage() override {return wxT("");};
+   // wxString ManualPage() override {return L"";};
 public:
    wxString mName;
 };

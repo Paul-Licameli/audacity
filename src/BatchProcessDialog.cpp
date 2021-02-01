@@ -117,7 +117,7 @@ void ApplyMacroDialog::Populate()
    PopulateOrExchange(S);
    // ----------------------- End of main section --------------
    // Get and validate the currently active macro
-   mActiveMacro = gPrefs->Read(wxT("/Batch/ActiveMacro"), wxT(""));
+   mActiveMacro = gPrefs->Read(L"/Batch/ActiveMacro", L"");
    // Go populate the macros list.
    PopulateMacros();
 
@@ -302,7 +302,7 @@ void ApplyMacroDialog::ApplyMacroToProject( int iMacro, bool bHasGui )
    //if( bHasGui )
    //   Hide();
 
-   gPrefs->Write(wxT("/Batch/ActiveMacro"), name);
+   gPrefs->Write(L"/Batch/ActiveMacro", name);
    gPrefs->Flush();
 
    mMacroCommands.ReadMacro(name);
@@ -336,7 +336,7 @@ void ApplyMacroDialog::OnApplyToFiles(wxCommandEvent & WXUNUSED(event))
    }
 
    wxString name = mMacros->GetItemText(item);
-   gPrefs->Write(wxT("/Batch/ActiveMacro"), name);
+   gPrefs->Write(L"/Batch/ActiveMacro", name);
    gPrefs->Flush();
 
    AudacityProject *project = &mProject;
@@ -358,7 +358,7 @@ void ApplyMacroDialog::OnApplyToFiles(wxCommandEvent & WXUNUSED(event))
    FileDialogWrapper dlog(this,
       prompt,
       path,
-      wxT(""),
+      L"",
       fileTypes,
       wxFD_OPEN | wxFD_MULTIPLE | wxRESIZE_BORDER);
 
@@ -591,7 +591,7 @@ void MacrosWindow::Populate()
    // ----------------------- End of main section --------------
 
    // Get and validate the currently active macro
-   mActiveMacro = gPrefs->Read(wxT("/Batch/ActiveMacro"), wxT(""));
+   mActiveMacro = gPrefs->Read(L"/Batch/ActiveMacro", L"");
    // Go populate the macros list.
    PopulateMacros();
 
@@ -725,7 +725,7 @@ void MacrosWindow::PopulateList()
               mMacroCommands.GetParams(i));
    }
    /*i18n-hint: This is the last item in a list.*/
-   AddItem(_("- END -"), wxT(""));
+   AddItem(_("- END -"), L"");
 
    // Select the name in the list...this will fire an event.
    if (mSelectedCommand >= (int)mList->GetItemCount()) {
@@ -760,7 +760,7 @@ void MacrosWindow::AddItem(const CommandID &Action, const wxString &Params)
 
    int i = mList->GetItemCount();
 
-   mList->InsertItem(i, wxString::Format(wxT(" %02i"), i + 1));
+   mList->InsertItem(i, wxString::Format(L" %02i", i + 1));
    mList->SetItem(i, ActionColumn, friendlyName );
    mList->SetItem(i, ParamsColumn, Params );
 }
@@ -1315,7 +1315,7 @@ void MacrosWindow::OnApplyToFiles(wxCommandEvent & event)
 }
 
 bool MacrosWindow::SaveChanges(){
-   gPrefs->Write(wxT("/Batch/ActiveMacro"), mActiveMacro);
+   gPrefs->Write(L"/Batch/ActiveMacro", mActiveMacro);
    gPrefs->Flush();
 
    if (mChanged) {
@@ -1360,7 +1360,7 @@ void MacrosWindow::OnCancel(wxCommandEvent &WXUNUSED(event))
 void MacrosWindow::OnKeyDown(wxKeyEvent &event)
 {
    if (event.GetKeyCode() == WXK_DELETE) {
-      wxLogDebug(wxT("wxKeyEvent"));
+      wxLogDebug(L"wxKeyEvent");
    }
 
    event.Skip();

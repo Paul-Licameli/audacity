@@ -228,7 +228,7 @@ bool ODFlacDecoder::ReadHeader()
    mFile = std::make_unique<ODFLACFile>(this);
 
 
-   if (!mHandle.Open(mFName, wxT("rb"))) {
+   if (!mHandle.Open(mFName, L"rb")) {
       return false;
    }
 

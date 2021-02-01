@@ -96,7 +96,7 @@ MenuManager::~MenuManager()
 void MenuManager::UpdatePrefs()
 {
    bool bSelectAllIfNone;
-   gPrefs->Read(wxT("/GUI/SelectAllOnNone"), &bSelectAllIfNone, false);
+   gPrefs->Read(L"/GUI/SelectAllOnNone", &bSelectAllIfNone, false);
    // 0 is grey out, 1 is Autoselect, 2 is Give warnings.
 #ifdef EXPERIMENTAL_DA
    // DA warns or greys out.
@@ -252,7 +252,7 @@ namespace {
 
 using namespace Registry;
 
-const auto MenuPathStart = wxT("MenuBar");
+const auto MenuPathStart = L"MenuBar";
 
 static Registry::GroupItem &sRegistry()
 {
@@ -391,19 +391,19 @@ void MenuCreator::CreateMenusAndCommands(AudacityProject &project)
    static Registry::OrderingPreferenceInitializer init{
       MenuPathStart,
       {
-         {wxT(""), wxT(
+         {L"", wxT(
    "File,Edit,Select,View,Transport,Tracks,Generate,Effect,Analyze,Tools,Window,Optional,Help"
           )},
-         {wxT("/Optional/Extra/Part1"), wxT(
+         {L"/Optional/Extra/Part1", wxT(
    "Transport,Tools,Mixer,Edit,PlayAtSpeed,Seek,Device,Select"
           )},
-         {wxT("/Optional/Extra/Part2"), wxT(
+         {L"/Optional/Extra/Part2", wxT(
    "Navigation,Focus,Cursor,Track,Scriptables1,Scriptables2"
           )},
-         {wxT("/View/Windows"), wxT("UndoHistory,Karaoke,MixerBoard")},
-         {wxT("/Analyze/Analyzers/Windows"), wxT("ContrastAnalyser,PlotSpectrum")},
-         {wxT("/Transport/Basic"), wxT("Play,Record,Scrubbing,Cursor")},
-         {wxT("/View/Other/Toolbars/Toolbars/Other"), wxT(
+         {L"/View/Windows", L"UndoHistory,Karaoke,MixerBoard"},
+         {L"/Analyze/Analyzers/Windows", L"ContrastAnalyser,PlotSpectrum"},
+         {L"/Transport/Basic", L"Play,Record,Scrubbing,Cursor"},
+         {L"/View/Other/Toolbars/Toolbars/Other", wxT(
 "ShowTransportTB,ShowToolsTB,ShowRecordMeterTB,ShowPlayMeterTB,"
 //"ShowMeterTB,"
 "ShowMixerTB,"
@@ -415,10 +415,10 @@ void MenuCreator::CreateMenusAndCommands(AudacityProject &project)
    auto &commandManager = CommandManager::Get( project );
 
    // The list of defaults to exclude depends on
-   // preference wxT("/GUI/Shortcuts/FullDefaults"), which may have changed.
+   // preference L"/GUI/Shortcuts/FullDefaults", which may have changed.
    commandManager.SetMaxList();
 
-   auto menubar = commandManager.AddMenuBar(wxT("appmenu"));
+   auto menubar = commandManager.AddMenuBar(L"appmenu");
    wxASSERT(menubar);
 
    MenuItemVisitor visitor{ project, commandManager };
@@ -449,29 +449,29 @@ void MenuManager::ModifyUndoMenuItems(AudacityProject &project)
 
    if (undoManager.UndoAvailable()) {
       undoManager.GetShortDescription(cur, &desc);
-      commandManager.Modify(wxT("Undo"),
+      commandManager.Modify(L"Undo",
          XXO("&Undo %s")
             .Format( desc ));
-      commandManager.Enable(wxT("Undo"),
+      commandManager.Enable(L"Undo",
          ProjectHistory::Get( project ).UndoAvailable());
    }
    else {
-      commandManager.Modify(wxT("Undo"),
+      commandManager.Modify(L"Undo",
                             XXO("&Undo"));
    }
 
    if (undoManager.RedoAvailable()) {
       undoManager.GetShortDescription(cur+1, &desc);
-      commandManager.Modify(wxT("Redo"),
+      commandManager.Modify(L"Redo",
          XXO("&Redo %s")
             .Format( desc ));
-      commandManager.Enable(wxT("Redo"),
+      commandManager.Enable(L"Redo",
          ProjectHistory::Get( project ).RedoAvailable());
    }
    else {
-      commandManager.Modify(wxT("Redo"),
+      commandManager.Modify(L"Redo",
                             XXO("&Redo"));
-      commandManager.Enable(wxT("Redo"), false);
+      commandManager.Enable(L"Redo", false);
    }
 }
 
@@ -607,7 +607,7 @@ void MenuManager::ModifyToolbarMenus(AudacityProject &project)
    // the Edit toolbar and the sync-lock menu item.
    bool active;
 
-   gPrefs->Read(wxT("/GUI/SyncLockTracks"), &active, false);
+   gPrefs->Read(L"/GUI/SyncLockTracks", &active, false);
    settings.SetSyncLock(active);
 
    CommandManager::Get( project ).UpdateCheckmarks( project );

@@ -54,22 +54,22 @@ static const EnumValueSymbol
 kCaptureWhatStrings[ ScreenshotCommand::nCaptureWhats ] =
 {
    { XO("Window") },
-   { wxT("FullWindow"), XO("Full Window") },
-   { wxT("WindowPlus"), XO("Window Plus") },
+   { L"FullWindow", XO("Full Window") },
+   { L"WindowPlus", XO("Window Plus") },
    { XO("Fullscreen") },
    { XO("Toolbars") },
    { XO("Effects") },
    { XO("Scriptables") },
    { XO("Preferences") },
    { XO("Selectionbar") },
-   { wxT("SpectralSelection"), XO("Spectral Selection") },
+   { L"SpectralSelection", XO("Spectral Selection") },
    { XO("Timer") },
    { XO("Tools") },
    { XO("Transport") },
    { XO("Mixer") },
    { XO("Meter") },
-   { wxT("PlayMeter"), XO("Play Meter") },
-   { wxT("RecordMeter"), XO("Record Meter") },
+   { L"PlayMeter", XO("Play Meter") },
+   { L"RecordMeter", XO("Record Meter") },
    { XO("Edit") },
    { XO("Device") },
    { XO("Scrub") },
@@ -77,15 +77,15 @@ kCaptureWhatStrings[ ScreenshotCommand::nCaptureWhats ] =
    { XO("Trackpanel") },
    { XO("Ruler") },
    { XO("Tracks") },
-   { wxT("FirstTrack"),       XO("First Track") },
-   { wxT("FirstTwoTracks"),   XO("First Two Tracks") },
-   { wxT("FirstThreeTracks"), XO("First Three Tracks") },
-   { wxT("FirstFourTracks"),  XO("First Four Tracks") },
-   { wxT("SecondTrack"),      XO("Second Track") },
-   { wxT("TracksPlus"),       XO("Tracks Plus") },
-   { wxT("FirstTrackPlus"),   XO("First Track Plus") },
-   { wxT("AllTracks"),        XO("All Tracks") },
-   { wxT("AllTracksPlus"),    XO("All Tracks Plus") },
+   { L"FirstTrack",       XO("First Track") },
+   { L"FirstTwoTracks",   XO("First Two Tracks") },
+   { L"FirstThreeTracks", XO("First Three Tracks") },
+   { L"FirstFourTracks",  XO("First Four Tracks") },
+   { L"SecondTrack",      XO("Second Track") },
+   { L"TracksPlus",       XO("Tracks Plus") },
+   { L"FirstTrackPlus",   XO("First Track Plus") },
+   { L"AllTracks",        XO("All Tracks") },
+   { L"AllTracksPlus",    XO("All Tracks Plus") },
 };
 
 
@@ -113,10 +113,10 @@ ScreenshotCommand::ScreenshotCommand()
 }
 
 bool ScreenshotCommand::DefineParams( ShuttleParams & S ){
-   S.Define(                               mPath,        wxT("Path"),         wxT(""));
-   S.DefineEnum(                           mWhat,        wxT("CaptureWhat"),  kwindow,kCaptureWhatStrings, nCaptureWhats );
-   S.DefineEnum(                           mBack,        wxT("Background"),   kNone, kBackgroundStrings, nBackgrounds );
-   S.Define(                               mbBringToTop, wxT("ToTop"), true );
+   S.Define(                               mPath,        L"Path",         L"");
+   S.DefineEnum(                           mWhat,        L"CaptureWhat",  kwindow,kCaptureWhatStrings, nCaptureWhats );
+   S.DefineEnum(                           mBack,        L"Background",   kNone, kBackgroundStrings, nBackgrounds );
+   S.Define(                               mbBringToTop, L"ToTop", true );
    return true;
 };
 
@@ -404,9 +404,9 @@ void ScreenshotCommand::CapturePreferences(
    for( int i=0;i<nPrefsPages;i++){
       // The handler is cleared each time it is used.
       SetIdleHandler( context.project );
-      gPrefs->Write(wxT("/Prefs/PrefsCategory"), (long)i);
+      gPrefs->Write(L"/Prefs/PrefsCategory", (long)i);
       gPrefs->Flush();
-      CommandID Command{ wxT("Preferences") };
+      CommandID Command{ L"Preferences" };
       const CommandContext projectContext( *pProject );
       if( !MacroCommands::HandleTextualCommand( commandManager,
          Command, projectContext, AlwaysEnabledFlag, true ) )
@@ -595,7 +595,7 @@ wxString ScreenshotCommand::MakeFileName(const wxString &path, const wxString &b
    wxString filename;
    int i = 0;
    do {
-      filename.Printf(wxT("%s%s%03d.png"),
+      filename.Printf(L"%s%s%03d.png",
                       prefix, basename, i);
       i++;
    } while (::wxFileExists(filename));
@@ -756,7 +756,7 @@ wxString ScreenshotCommand::WindowFileName(AudacityProject * proj, wxTopLevelWin
    if (w != ProjectWindow::Find( proj ) && !w->GetTitle().empty()) {
       mFileName = MakeFileName(mFilePath,
          kCaptureWhatStrings[ mCaptureMode ].Translation() +
-            (wxT("-") + w->GetTitle() + wxT("-")));
+            (L"-" + w->GetTitle() + L"-"));
    }
    return mFileName;
 }

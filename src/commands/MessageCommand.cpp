@@ -27,7 +27,7 @@ const ComponentInterfaceSymbol MessageCommand::Symbol
 namespace{ BuiltinCommandsModule::Registration< MessageCommand > reg; }
 
 bool MessageCommand::DefineParams( ShuttleParams & S ){
-   S.Define( mMessage, wxT("Text"),  "Some message" );
+   S.Define( mMessage, L"Text",  "Some message" );
    return true;
 }
 

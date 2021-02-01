@@ -198,7 +198,7 @@ void ErrorReportDialog::OnDontSend(wxCommandEvent& event)
 
 void ErrorReportDialog::OnHelp(wxCommandEvent& event)
 {
-   if (mHelpUrl.StartsWith(wxT("innerlink:")))
+   if (mHelpUrl.StartsWith(L"innerlink:"))
    {
       HelpSystem::ShowHtmlText(
          this, TitleText(mHelpUrl.Mid(10)), HelpText(mHelpUrl.Mid(10)), false,

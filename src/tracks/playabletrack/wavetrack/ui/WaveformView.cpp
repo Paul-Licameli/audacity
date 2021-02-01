@@ -36,7 +36,7 @@ Paul Licameli split from WaveTrackView.cpp
 
 static WaveTrackSubView::Type sType{
    WaveTrackViewConstants::Waveform,
-   { wxT("Waveform"), XXO("Wa&veform") }
+   { L"Waveform", XXO("Wa&veform") }
 };
 
 static WaveTrackSubViewType::RegisteredType reg{ sType };
@@ -112,7 +112,7 @@ void WaveformView::DoSetMinimized( bool minimized )
 
 #ifdef EXPERIMENTAL_HALF_WAVE
    bool bHalfWave;
-   gPrefs->Read(wxT("/GUI/CollapseToHalfWave"), &bHalfWave, false);
+   gPrefs->Read(L"/GUI/CollapseToHalfWave", &bHalfWave, false);
    if( bHalfWave )
    {
       if (minimized)

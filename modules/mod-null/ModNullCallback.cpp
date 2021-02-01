@@ -76,8 +76,8 @@ void RegisterMenuItems()
    // Get here only after the module version check passes
    using namespace MenuTable;
    // We add two new commands into the Analyze menu.
-   static AttachedItem sAttachment{ wxT("Analyze"),
-      ( FinderScope( ident ), Section( wxT("NullModule"),
+   static AttachedItem sAttachment{ L"Analyze",
+      ( FinderScope( ident ), Section( L"NullModule",
          Command(
             _T("A New Command"), // internal name
             XXO("1st Experimental Command..."), //displayed name

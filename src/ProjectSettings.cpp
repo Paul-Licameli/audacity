@@ -52,21 +52,21 @@ ProjectSettings::ProjectSettings(AudacityProject &project)
    : mProject{ project }
    , mSelectionFormat{ NumericTextCtrl::LookupFormat(
       NumericConverter::TIME,
-      gPrefs->Read(wxT("/SelectionFormat"), wxT("")))
+      gPrefs->Read(L"/SelectionFormat", L""))
 }
 , mAudioTimeFormat{ NumericTextCtrl::LookupFormat(
    NumericConverter::TIME,
-   gPrefs->Read(wxT("/AudioTimeFormat"), wxT("hh:mm:ss")))
+   gPrefs->Read(L"/AudioTimeFormat", L"hh:mm:ss"))
 }
 , mFrequencySelectionFormatName{ NumericTextCtrl::LookupFormat(
    NumericConverter::FREQUENCY,
-   gPrefs->Read(wxT("/FrequencySelectionFormatName"), wxT("")) )
+   gPrefs->Read(L"/FrequencySelectionFormatName", L"") )
 }
 , mBandwidthSelectionFormatName{ NumericTextCtrl::LookupFormat(
    NumericConverter::BANDWIDTH,
-   gPrefs->Read(wxT("/BandwidthSelectionFormatName"), wxT("")) )
+   gPrefs->Read(L"/BandwidthSelectionFormatName", L"") )
 }
-, mSnapTo( gPrefs->Read(wxT("/SnapTo"), SNAP_OFF) )
+, mSnapTo( gPrefs->Read(L"/SnapTo", SNAP_OFF) )
 {
    int intRate = 0;
    bool wasDefined = QualitySettings::DefaultSampleRate.Read( &intRate );
@@ -79,10 +79,10 @@ ProjectSettings::ProjectSettings(AudacityProject &project)
       QualitySettings::DefaultSampleRate.Write( mRate );
       gPrefs->Flush();
    }
-   gPrefs->Read(wxT("/GUI/SyncLockTracks"), &mIsSyncLocked, false);
+   gPrefs->Read(L"/GUI/SyncLockTracks", &mIsSyncLocked, false);
 
    bool multiToolActive = false;
-   gPrefs->Read(wxT("/GUI/ToolBars/Tools/MultiToolActive"), &multiToolActive);
+   gPrefs->Read(L"/GUI/ToolBars/Tools/MultiToolActive", &multiToolActive);
 
    if (multiToolActive)
       mCurrentTool = ToolCodes::multiTool;
@@ -94,16 +94,16 @@ ProjectSettings::ProjectSettings(AudacityProject &project)
 
 void ProjectSettings::UpdatePrefs()
 {
-   gPrefs->Read(wxT("/AudioFiles/ShowId3Dialog"), &mShowId3Dialog, true);
-   gPrefs->Read(wxT("/GUI/EmptyCanBeDirty"), &mEmptyCanBeDirty, true);
-   gPrefs->Read(wxT("/GUI/ShowSplashScreen"), &mShowSplashScreen, true);
+   gPrefs->Read(L"/AudioFiles/ShowId3Dialog", &mShowId3Dialog, true);
+   gPrefs->Read(L"/GUI/EmptyCanBeDirty", &mEmptyCanBeDirty, true);
+   gPrefs->Read(L"/GUI/ShowSplashScreen", &mShowSplashScreen, true);
    mSoloPref = TracksBehaviorsSolo.Read();
    // Update the old default to the NEW default.
-   if (mSoloPref == wxT("Standard"))
-      mSoloPref = wxT("Simple");
-   gPrefs->Read(wxT("/GUI/TracksFitVerticallyZoomed"),
+   if (mSoloPref == L"Standard")
+      mSoloPref = L"Simple";
+   gPrefs->Read(L"/GUI/TracksFitVerticallyZoomed",
       &mTracksFitVerticallyZoomed, false);
-   //   gPrefs->Read(wxT("/GUI/UpdateSpectrogram"),
+   //   gPrefs->Read(L"/GUI/UpdateSpectrogram",
    //     &mViewInfo.bUpdateSpectrogram, true);
 
    // This code to change an empty projects rate is currently disabled, after

@@ -25,33 +25,33 @@
 // ============================================================================
 const static wxChar *kShippedEffects[] =
 {
-   wxT("adjustable-fade.ny"),
-   wxT("beat.ny"),
-   wxT("clipfix.ny"),
-   wxT("crossfadeclips.ny"),
-   wxT("crossfadetracks.ny"),
-   wxT("delay.ny"),
-   wxT("equalabel.ny"),
-   wxT("highpass.ny"),
-   wxT("label-sounds.ny"),
-   wxT("limiter.ny"),
-   wxT("lowpass.ny"),
-   wxT("noisegate.ny"),
-   wxT("notch.ny"),
-   wxT("nyquist-plug-in-installer.ny"),
-   wxT("pluck.ny"),
-   wxT("rhythmtrack.ny"),
-   wxT("rissetdrum.ny"),
-   wxT("sample-data-export.ny"),
-   wxT("sample-data-import.ny"),
-   wxT("spectral-delete.ny"),
-   wxT("SpectralEditMulti.ny"),
-   wxT("SpectralEditParametricEQ.ny"),
-   wxT("SpectralEditShelves.ny"),
-   wxT("StudioFadeOut.ny"),
-   wxT("tremolo.ny"),
-   wxT("vocalrediso.ny"),
-   wxT("vocoder.ny"),
+   L"adjustable-fade.ny",
+   L"beat.ny",
+   L"clipfix.ny",
+   L"crossfadeclips.ny",
+   L"crossfadetracks.ny",
+   L"delay.ny",
+   L"equalabel.ny",
+   L"highpass.ny",
+   L"label-sounds.ny",
+   L"limiter.ny",
+   L"lowpass.ny",
+   L"noisegate.ny",
+   L"notch.ny",
+   L"nyquist-plug-in-installer.ny",
+   L"pluck.ny",
+   L"rhythmtrack.ny",
+   L"rissetdrum.ny",
+   L"sample-data-export.ny",
+   L"sample-data-import.ny",
+   L"spectral-delete.ny",
+   L"SpectralEditMulti.ny",
+   L"SpectralEditParametricEQ.ny",
+   L"SpectralEditShelves.ny",
+   L"StudioFadeOut.ny",
+   L"tremolo.ny",
+   L"vocalrediso.ny",
+   L"vocoder.ny",
 };
 
 // ============================================================================
@@ -129,9 +129,9 @@ bool NyquistEffectsModule::Initialize()
 
    for (size_t i = 0, cnt = audacityPathList.size(); i < cnt; i++)
    {
-      wxFileName name(audacityPathList[i], wxT(""));
-      name.AppendDir(wxT("nyquist"));
-      name.SetFullName(wxT("nyquist.lsp"));
+      wxFileName name(audacityPathList[i], L"");
+      name.AppendDir(L"nyquist");
+      name.SetFullName(L"nyquist.lsp");
       if (name.FileExists())
       {
          // set_xlisp_path doesn't handle fn_Str() in Unicode build. May or may not actually work.
@@ -140,7 +140,7 @@ bool NyquistEffectsModule::Initialize()
       }
    }
 
-   wxLogWarning(wxT("Critical Nyquist files could not be found. Nyquist effects will not work."));
+   wxLogWarning(L"Critical Nyquist files could not be found. Nyquist effects will not work.");
 
    return false;
 }
@@ -229,9 +229,9 @@ PluginPaths NyquistEffectsModule::FindPluginPaths(PluginManagerInterface & pm)
    files.push_back(NYQUIST_PROMPT_ID);
 
    // Load .ny plug-ins
-   pm.FindFilesInPathList(wxT("*.ny"), pathList, files);
+   pm.FindFilesInPathList(L"*.ny", pathList, files);
    // LLL:  Works for all platform with NEW plugin support (dups are removed)
-   pm.FindFilesInPathList(wxT("*.NY"), pathList, files); // Ed's fix for bug 179
+   pm.FindFilesInPathList(L"*.NY", pathList, files); // Ed's fix for bug 179
 
    return { files.begin(), files.end() };
 }

@@ -61,10 +61,10 @@ void ImportExportPrefs::Populate()
 }
 
 EnumSetting< bool > ImportExportPrefs::ExportDownMixSetting{
-   wxT("/FileFormats/ExportDownMixChoice"),
+   L"/FileFormats/ExportDownMixChoice",
    {
-      EnumValueSymbol{ wxT("MixDown"), XXO("&Mix down to Stereo or Mono") },
-      EnumValueSymbol{ wxT("Custom"), XXO("&Use Advanced Mixing Options") },
+      EnumValueSymbol{ L"MixDown", XXO("&Mix down to Stereo or Mono") },
+      EnumValueSymbol{ L"Custom", XXO("&Use Advanced Mixing Options") },
    },
    0, // true
 
@@ -72,14 +72,14 @@ EnumSetting< bool > ImportExportPrefs::ExportDownMixSetting{
    {
       true, false,
    },
-   wxT("/FileFormats/ExportDownMix"),
+   L"/FileFormats/ExportDownMix",
 };
 
 EnumSetting< bool > ImportExportPrefs::LabelStyleSetting{
-   wxT("/FileFormats/LabelStyleChoice"),
+   L"/FileFormats/LabelStyleChoice",
    {
-      EnumValueSymbol{ wxT("Standard"), XXO("S&tandard") },
-      EnumValueSymbol{ wxT("Extended"), XXO("E&xtended (with frequency ranges)") },
+      EnumValueSymbol{ L"Standard", XXO("S&tandard") },
+      EnumValueSymbol{ L"Extended", XXO("E&xtended (with frequency ranges)") },
    },
    0, // true
 
@@ -89,10 +89,10 @@ EnumSetting< bool > ImportExportPrefs::LabelStyleSetting{
 };
 
 EnumSetting< bool > ImportExportPrefs::AllegroStyleSetting{
-   wxT("/FileFormats/AllegroStyleChoice"),
+   L"/FileFormats/AllegroStyleChoice",
    {
-      EnumValueSymbol{ wxT("Seconds"), XXO("&Seconds") },
-      EnumValueSymbol{ wxT("Beats"), XXO("&Beats") },
+      EnumValueSymbol{ L"Seconds", XXO("&Seconds") },
+      EnumValueSymbol{ L"Beats", XXO("&Beats") },
    },
    0, // true
 
@@ -100,7 +100,7 @@ EnumSetting< bool > ImportExportPrefs::AllegroStyleSetting{
    {
       true, false,
    },
-   wxT("/FileFormats/AllegroStyle"),
+   L"/FileFormats/AllegroStyle",
 };
 
 void ImportExportPrefs::PopulateOrExchange(ShuttleGui & S)
@@ -124,11 +124,11 @@ void ImportExportPrefs::PopulateOrExchange(ShuttleGui & S)
       S.EndPanel();
 
       S.TieCheckBox(XXO("S&how Metadata Tags editor before export"),
-                    {wxT("/AudioFiles/ShowId3Dialog"),
+                    {L"/AudioFiles/ShowId3Dialog",
                      true});
       /* i18n-hint 'blank space' is space on the tracks with no audio in it*/
       S.TieCheckBox(XXO("&Ignore blank space at the beginning"),
-                    {wxT("/AudioFiles/SkipSilenceAtBeginning"),
+                    {L"/AudioFiles/SkipSilenceAtBeginning",
                      false});
    }
    S.EndStatic();

@@ -49,11 +49,11 @@ static const EnumValueSymbol kNormalizeTargetStrings[nAlgos] =
 // Define keys, defaults, minimums, and maximums for the effect parameters
 //
 //     Name         Type     Key                        Def         Min      Max       Scale
-Param( StereoInd,   bool,    wxT("StereoIndependent"),   false,      false,   true,     1  );
-Param( LUFSLevel,   double,  wxT("LUFSLevel"),           -23.0,      -145.0,  0.0,      1  );
-Param( RMSLevel,    double,  wxT("RMSLevel"),            -20.0,      -145.0,  0.0,      1  );
-Param( DualMono,    bool,    wxT("DualMono"),            true,       false,   true,     1  );
-Param( NormalizeTo, int,     wxT("NormalizeTo"),         kLoudness , 0    ,   nAlgos-1, 1  );
+Param( StereoInd,   bool,    L"StereoIndependent",   false,      false,   true,     1  );
+Param( LUFSLevel,   double,  L"LUFSLevel",           -23.0,      -145.0,  0.0,      1  );
+Param( RMSLevel,    double,  L"RMSLevel",            -20.0,      -145.0,  0.0,      1  );
+Param( DualMono,    bool,    L"DualMono",            true,       false,   true,     1  );
+Param( NormalizeTo, int,     L"NormalizeTo",         kLoudness , 0    ,   nAlgos-1, 1  );
 
 BEGIN_EVENT_TABLE(EffectLoudness, wxEvtHandler)
    EVT_CHOICE(wxID_ANY, EffectLoudness::OnChoice)
@@ -95,7 +95,7 @@ TranslatableString EffectLoudness::GetDescription()
 
 wxString EffectLoudness::ManualPage()
 {
-   return wxT("Loudness_Normalization");
+   return L"Loudness_Normalization";
 }
 
 // EffectDefinitionInterface implementation
@@ -153,7 +153,7 @@ bool EffectLoudness::CheckWhetherSkipEffect()
 
 bool EffectLoudness::Startup()
 {
-   wxString base = wxT("/Effects/Loudness/");
+   wxString base = L"/Effects/Loudness/";
    // Load the old "current" settings
    if (gPrefs->Exists(base))
    {
@@ -327,7 +327,7 @@ void EffectLoudness::PopulateOrExchange(ShuttleGui & S)
                               2, &mLUFSLevel,
                               NumValidatorStyle::ONE_TRAILING_ZERO,
                               MIN_LUFSLevel, MAX_LUFSLevel )
-                           .AddTextBox( {}, wxT(""), 10);
+                           .AddTextBox( {}, L"", 10);
 
                         /* i18n-hint: LUFS is a particular method for measuring loudnesss */
                         S
@@ -348,7 +348,7 @@ void EffectLoudness::PopulateOrExchange(ShuttleGui & S)
                               2, &mRMSLevel,
                               NumValidatorStyle::ONE_TRAILING_ZERO,
                               MIN_RMSLevel, MAX_RMSLevel )
-                           .AddTextBox( {}, wxT(""), 10);
+                           .AddTextBox( {}, L"", 10);
 
                         S
                            .AddVariableText(XO("dB"), false,
@@ -593,6 +593,6 @@ void EffectLoudness::UpdateUI()
       EnableApply(false);
       return;
    }
-   mWarning->SetLabel(wxT(""));
+   mWarning->SetLabel(L"");
    EnableApply(true);
 }

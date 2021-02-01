@@ -14,12 +14,12 @@ Paul Licameli
 
 #include "xml/XMLWriter.h"
 
-const wxChar *SelectedRegion::sDefaultT0Name = wxT("selStart");
-const wxChar *SelectedRegion::sDefaultT1Name = wxT("selEnd");
+const wxChar *SelectedRegion::sDefaultT0Name = L"selStart";
+const wxChar *SelectedRegion::sDefaultT1Name = L"selEnd";
 
 namespace {
-const wxChar *sDefaultF0Name = wxT("selLow");
-const wxChar *sDefaultF1Name = wxT("selHigh");
+const wxChar *sDefaultF0Name = L"selLow";
+const wxChar *sDefaultF1Name = L"selHigh";
 }
 
 void SelectedRegion::WriteXMLAttributes

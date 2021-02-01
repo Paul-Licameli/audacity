@@ -188,12 +188,12 @@ PluginPaths VampEffectsModule::FindPluginPaths(PluginManagerInterface & WXUNUSED
             wxString outputName = wxString::FromUTF8(j->name.c_str());
             if (outputName != name)
             {
-               name = wxString::Format(wxT("%s: %s"),
+               name = wxString::Format(L"%s: %s",
                                        name, outputName);
             }
          }
 
-         wxString path = wxString::FromUTF8(i->c_str()) + wxT("/") + name;
+         wxString path = wxString::FromUTF8(i->c_str()) + L"/" + name;
          names.push_back(path);
 
          ++output;
@@ -321,12 +321,12 @@ std::unique_ptr<Vamp::Plugin> VampEffectsModule::FindPlugin(const PluginPath & p
          wxString outputName = wxString::FromUTF8(j->name.c_str());
          if (outputName != name)
          {
-            name = wxString::Format(wxT("%s: %s"),
+            name = wxString::Format(L"%s: %s",
                                     name, outputName);
          }
       }
 
-      if (wxString::FromUTF8(key.c_str()) + wxT("/") + name == path)
+      if (wxString::FromUTF8(key.c_str()) + L"/" + name == path)
       {
          return vp;
       }

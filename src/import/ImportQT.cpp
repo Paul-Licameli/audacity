@@ -23,13 +23,13 @@
 #define DESC XO("QuickTime files")
 
 static const auto exts = {
-   wxT("aif"),
-   wxT("aifc"),
-   wxT("aiff"),
-   wxT("mov"),
-   wxT("aac"),
-   wxT("m4a"),
-   wxT("mp4")
+   L"aif",
+   L"aifc",
+   L"aiff",
+   L"mov",
+   L"aac",
+   L"m4a",
+   L"mp4"
 };
 
 #if defined(__WXMAC__)
@@ -119,7 +119,7 @@ class QTImportPlugin final : public ImportPlugin
       mInitialized = false;
    }
 
-   wxString GetPluginStringID() override { return wxT("quicktime"); }
+   wxString GetPluginStringID() override { return L"quicktime"; }
 
    TranslatableString GetPluginFormatDescription() override;
    std::unique_ptr<ImportFileHandle> Open(
@@ -416,25 +416,25 @@ static const struct
 }
 names[] =
 {
-   {  kQTMetaDataCommonKeyAuthor,         wxT("Author")           },
+   {  kQTMetaDataCommonKeyAuthor,         L"Author"           },
    {  kQTMetaDataCommonKeyComment,        TAG_COMMENTS            },
    {  kQTMetaDataCommonKeyCopyright,      TAG_COPYRIGHT           },
-   {  kQTMetaDataCommonKeyDirector,       wxT("Director")         },
-   {  kQTMetaDataCommonKeyDisplayName,    wxT("Full Name")        },
-   {  kQTMetaDataCommonKeyInformation,    wxT("Information")      },
-   {  kQTMetaDataCommonKeyKeywords,       wxT("Keywords")         },
-   {  kQTMetaDataCommonKeyProducer,       wxT("Producer")         },
+   {  kQTMetaDataCommonKeyDirector,       L"Director"         },
+   {  kQTMetaDataCommonKeyDisplayName,    L"Full Name"        },
+   {  kQTMetaDataCommonKeyInformation,    L"Information"      },
+   {  kQTMetaDataCommonKeyKeywords,       L"Keywords"         },
+   {  kQTMetaDataCommonKeyProducer,       L"Producer"         },
    {  kQTMetaDataCommonKeyAlbum,          TAG_ALBUM               },
    {  kQTMetaDataCommonKeyArtist,         TAG_ARTIST              },
-   {  kQTMetaDataCommonKeyChapterName,    wxT("Chapter")          },
-   {  kQTMetaDataCommonKeyComposer,       wxT("Composer")         },
-   {  kQTMetaDataCommonKeyDescription,    wxT("Description")      },
+   {  kQTMetaDataCommonKeyChapterName,    L"Chapter"          },
+   {  kQTMetaDataCommonKeyComposer,       L"Composer"         },
+   {  kQTMetaDataCommonKeyDescription,    L"Description"      },
    {  kQTMetaDataCommonKeyGenre,          TAG_GENRE               },
-   {  kQTMetaDataCommonKeyOriginalFormat, wxT("Original Format")  },
-   {  kQTMetaDataCommonKeyOriginalSource, wxT("Original Source")  },
-   {  kQTMetaDataCommonKeyPerformers,     wxT("Performers")       },
+   {  kQTMetaDataCommonKeyOriginalFormat, L"Original Format"  },
+   {  kQTMetaDataCommonKeyOriginalSource, L"Original Source"  },
+   {  kQTMetaDataCommonKeyPerformers,     L"Performers"       },
    {  kQTMetaDataCommonKeySoftware,       TAG_SOFTWARE            },
-   {  kQTMetaDataCommonKeyWriter,         wxT("Writer")           },
+   {  kQTMetaDataCommonKeyWriter,         L"Writer"           },
 };
 
 void QTImportFileHandle::AddMetadata(Tags *tags)

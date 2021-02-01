@@ -116,7 +116,7 @@ wxString GetSystemLanguageCode(const FilePaths &pathList)
    if (info) {
       wxString fullCode = info->CanonicalName;
       if (fullCode.length() < 2)
-         return wxT("en");
+         return L"en";
 
       wxString code = fullCode.Left(2);
       unsigned int i;
@@ -130,7 +130,7 @@ wxString GetSystemLanguageCode(const FilePaths &pathList)
       }
    }
 
-   return wxT("en");
+   return L"en";
 }
 
 void GetLanguages( FilePaths pathList,
@@ -276,7 +276,7 @@ void GetLanguages( FilePaths pathList,
          tempNames.push_back(name);
          tempHash[code] = name;
 
-/*         wxLogDebug(wxT("code=%s name=%s fullCode=%s name=%s -> %s"),
+/*         wxLogDebug(L"code=%s name=%s fullCode=%s name=%s -> %s",
                       code, localLanguageName[code],
                       fullCode, localLanguageName[fullCode],
                       name);*/
@@ -286,7 +286,7 @@ void GetLanguages( FilePaths pathList,
    // JKC: Adding language for simplified audacity.
    {
       wxString code;
-      code = wxT("en-simple");
+      code = L"en-simple";
       auto name = XO("Simplified");
       if (TranslationExists(pathList, code) ) {
          tempCodes.push_back(code);
@@ -309,7 +309,7 @@ void GetLanguages( FilePaths pathList,
 
    // Add system language
    langNames.push_back(XO("System"));
-   langCodes.push_back(wxT("System"));
+   langCodes.push_back(L"System");
 
    for(j=0; j<tempNames.size(); j++) {
       langNames.push_back(tempNames[j]);

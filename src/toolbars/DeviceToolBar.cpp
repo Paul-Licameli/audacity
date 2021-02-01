@@ -72,7 +72,7 @@ static int DeviceToolbarPrefsID()
 
 //Standard constructor
 DeviceToolBar::DeviceToolBar( AudacityProject &project )
-: ToolBar( project, DeviceBarID, XO("Device"), wxT("Device"), true )
+: ToolBar( project, DeviceBarID, XO("Device"), L"Device", true )
 {
    wxTheApp->Bind( EVT_RESCANNED_DEVICES,
       &DeviceToolBar::OnRescannedDevices, this );
@@ -257,7 +257,7 @@ void DeviceToolBar::UpdatePrefs()
    if (sourceName.empty())
       desc = devName;
    else
-      desc = devName + wxT(": ") + sourceName;
+      desc = devName + L": " + sourceName;
 
    if (mInput->GetStringSelection() != desc &&
        mInput->FindString(desc) != wxNOT_FOUND) {
@@ -283,11 +283,11 @@ void DeviceToolBar::UpdatePrefs()
    }
 
    devName = AudioIOPlaybackDevice.Read();
-   sourceName = gPrefs->Read(wxT("/AudioIO/PlaybackSource"), wxT(""));
+   sourceName = gPrefs->Read(L"/AudioIO/PlaybackSource", L"");
    if (sourceName.empty())
       desc = devName;
    else
-      desc = devName + wxT(": ") + sourceName;
+      desc = devName + L": " + sourceName;
 
    if (mOutput->GetStringSelection() != desc &&
        mOutput->FindString(desc) != wxNOT_FOUND) {
@@ -376,10 +376,10 @@ void DeviceToolBar::RegenerateTooltips()
 {
 #if wxUSE_TOOLTIPS
    SetNames();
-   mOutput->SetToolTip(mOutput->GetName() + wxT(" - ") + mOutput->GetStringSelection());
-   mInput->SetToolTip(mInput->GetName() + wxT(" - ") + mInput->GetStringSelection());
-   mHost->SetToolTip(mHost->GetName() + wxT(" - ") + mHost->GetStringSelection());
-   mInputChannels->SetToolTip(mInputChannels->GetName() + wxT(" - ") + mInputChannels->GetStringSelection());
+   mOutput->SetToolTip(mOutput->GetName() + L" - " + mOutput->GetStringSelection());
+   mInput->SetToolTip(mInput->GetName() + L" - " + mInput->GetStringSelection());
+   mHost->SetToolTip(mHost->GetName() + L" - " + mHost->GetStringSelection());
+   mInputChannels->SetToolTip(mInputChannels->GetName() + L" - " + mInputChannels->GetStringSelection());
 #endif
 }
 
@@ -435,7 +435,7 @@ void DeviceToolBar::FillHostDevices()
    // if the host is not in the hosts combo then we rescanned.
    // set it to blank so we search for another host.
    if (mHost->FindString(host) == wxNOT_FOUND) {
-      host = wxT("");
+      host = L"";
    }
 
    for (auto & device : outMaps) {
@@ -532,7 +532,7 @@ void DeviceToolBar::FillInputChannels()
                name = _("2 (Stereo) Recording Channels");
             }
             else {
-               name = wxString::Format(wxT("%d"), (int) j + 1);
+               name = wxString::Format(L"%d", (int) j + 1);
             }
             mInputChannels->Append(name);
          }
@@ -599,9 +599,9 @@ void DeviceToolBar::SetDevices(const DeviceSourceMap *in, const DeviceSourceMap 
    if (out) {
       AudioIOPlaybackDevice.Write(out->deviceString);
       if (out->totalSources >= 1) {
-         gPrefs->Write(wxT("/AudioIO/PlaybackSource"), out->sourceString);
+         gPrefs->Write(L"/AudioIO/PlaybackSource", out->sourceString);
       } else {
-         gPrefs->Write(wxT("/AudioIO/PlaybackSource"), wxT(""));
+         gPrefs->Write(L"/AudioIO/PlaybackSource", L"");
       }
       gPrefs->Flush();
    }
@@ -631,7 +631,7 @@ void DeviceToolBar::ChangeDevice(bool isInput)
    }
 
    if (newIndex < 0) {
-      wxLogDebug(wxT("DeviceToolBar::OnChoice(): couldn't find device indices"));
+      wxLogDebug(L"DeviceToolBar::OnChoice(): couldn't find device indices");
       return;
    }
 
@@ -753,7 +753,7 @@ namespace {
 AttachedToolBarMenuItem sAttachment{
    /* i18n-hint: Clicking this menu item shows the toolbar
       that manages devices */
-   DeviceBarID, wxT("ShowDeviceTB"), XXO("&Device Toolbar")
+   DeviceBarID, L"ShowDeviceTB", XXO("&Device Toolbar")
 };
 }
 

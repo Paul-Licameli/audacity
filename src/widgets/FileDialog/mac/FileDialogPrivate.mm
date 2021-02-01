@@ -162,7 +162,7 @@ NSArray* GetTypesFromExtension( const wxString extensiongroup, wxArrayString& ex
     NSMutableArray* types = nil;
     extensions.Clear();
 
-    wxStringTokenizer tokenizer( extensiongroup, wxT(";") ) ;
+    wxStringTokenizer tokenizer( extensiongroup, L";" ) ;
     while ( tokenizer.HasMoreTokens() )
     {
         wxString extension = tokenizer.GetNextToken() ;
@@ -208,7 +208,7 @@ NSArray* GetTypesFromFilter( const wxString& filter, wxArrayString& names, wxArr
 
     if ( !filter.empty() )
     {
-        wxStringTokenizer tokenizer( filter, wxT("|") );
+        wxStringTokenizer tokenizer( filter, L"|" );
         int numtokens = (int)tokenizer.CountTokens();
         if(numtokens == 1)
         {

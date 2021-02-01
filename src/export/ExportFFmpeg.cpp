@@ -212,13 +212,13 @@ ExportFFmpeg::ExportFFmpeg()
       switch(newfmt)
       {
       case FMT_M4A:
-         AddExtension(wxT("3gp"),fmtindex);
-         AddExtension(wxT("m4r"),fmtindex);
-         AddExtension(wxT("mp4"),fmtindex);
+         AddExtension(L"3gp",fmtindex);
+         AddExtension(L"m4r",fmtindex);
+         AddExtension(L"mp4",fmtindex);
          break;
       case FMT_WMA2:
-         AddExtension(wxT("asf"),fmtindex);
-         AddExtension(wxT("wmv"),fmtindex);
+         AddExtension(L"asf",fmtindex);
+         AddExtension(L"wmv",fmtindex);
          break;
       default:
          break;
@@ -441,7 +441,7 @@ bool ExportFFmpeg::InitCodecs(AudacityProject *project)
    {
    case FMT_M4A:
    {
-      int q = gPrefs->Read(wxT("/FileFormats/AACQuality"),-99999);
+      int q = gPrefs->Read(L"/FileFormats/AACQuality",-99999);
       mEncAudioCodecCtx->global_quality = q;
       q = wxClip( q, 98 * mChannels, 160 * mChannels);
       // Set bit rate to between 98 kbps and 320 kbps (if two channels)
@@ -451,53 +451,53 @@ bool ExportFFmpeg::InitCodecs(AudacityProject *project)
       break;
    }
    case FMT_AC3:
-      mEncAudioCodecCtx->bit_rate = gPrefs->Read(wxT("/FileFormats/AC3BitRate"), 192000);
+      mEncAudioCodecCtx->bit_rate = gPrefs->Read(L"/FileFormats/AC3BitRate", 192000);
       if (!CheckSampleRate(mSampleRate,ExportFFmpegAC3Options::iAC3SampleRates[0], ExportFFmpegAC3Options::iAC3SampleRates[2], &ExportFFmpegAC3Options::iAC3SampleRates[0]))
          mSampleRate = AskResample(mEncAudioCodecCtx->bit_rate,mSampleRate, ExportFFmpegAC3Options::iAC3SampleRates[0], ExportFFmpegAC3Options::iAC3SampleRates[2], &ExportFFmpegAC3Options::iAC3SampleRates[0]);
       break;
    case FMT_AMRNB:
       mSampleRate = 8000;
-      mEncAudioCodecCtx->bit_rate = gPrefs->Read(wxT("/FileFormats/AMRNBBitRate"), 12200);
+      mEncAudioCodecCtx->bit_rate = gPrefs->Read(L"/FileFormats/AMRNBBitRate", 12200);
       break;
    case FMT_OPUS:
-      av_dict_set(&options, "b", gPrefs->Read(wxT("/FileFormats/OPUSBitRate"), wxT("128000")).ToUTF8(), 0);
-      av_dict_set(&options, "vbr", gPrefs->Read(wxT("/FileFormats/OPUSVbrMode"), wxT("on")).ToUTF8(), 0);
-      av_dict_set(&options, "compression_level", gPrefs->Read(wxT("/FileFormats/OPUSCompression"), wxT("10")).ToUTF8(), 0);
-      av_dict_set(&options, "frame_duration", gPrefs->Read(wxT("/FileFormats/OPUSFrameDuration"), wxT("20")).ToUTF8(), 0);
-      av_dict_set(&options, "application", gPrefs->Read(wxT("/FileFormats/OPUSApplication"), wxT("audio")).ToUTF8(), 0);
-      av_dict_set(&options, "cutoff", gPrefs->Read(wxT("/FileFormats/OPUSCutoff"), wxT("0")).ToUTF8(), 0);
+      av_dict_set(&options, "b", gPrefs->Read(L"/FileFormats/OPUSBitRate", L"128000").ToUTF8(), 0);
+      av_dict_set(&options, "vbr", gPrefs->Read(L"/FileFormats/OPUSVbrMode", L"on").ToUTF8(), 0);
+      av_dict_set(&options, "compression_level", gPrefs->Read(L"/FileFormats/OPUSCompression", L"10").ToUTF8(), 0);
+      av_dict_set(&options, "frame_duration", gPrefs->Read(L"/FileFormats/OPUSFrameDuration", L"20").ToUTF8(), 0);
+      av_dict_set(&options, "application", gPrefs->Read(L"/FileFormats/OPUSApplication", L"audio").ToUTF8(), 0);
+      av_dict_set(&options, "cutoff", gPrefs->Read(L"/FileFormats/OPUSCutoff", L"0").ToUTF8(), 0);
       av_dict_set(&options, "mapping_family", mChannels <= 2 ? "0" : "255", 0);
       break;
    case FMT_WMA2:
-      mEncAudioCodecCtx->bit_rate = gPrefs->Read(wxT("/FileFormats/WMABitRate"), 198000);
+      mEncAudioCodecCtx->bit_rate = gPrefs->Read(L"/FileFormats/WMABitRate", 198000);
       if (!CheckSampleRate(mSampleRate,ExportFFmpegWMAOptions::iWMASampleRates[0], ExportFFmpegWMAOptions::iWMASampleRates[4], &ExportFFmpegWMAOptions::iWMASampleRates[0]))
          mSampleRate = AskResample(mEncAudioCodecCtx->bit_rate,mSampleRate, ExportFFmpegWMAOptions::iWMASampleRates[0], ExportFFmpegWMAOptions::iWMASampleRates[4], &ExportFFmpegWMAOptions::iWMASampleRates[0]);
       break;
    case FMT_OTHER:
-      av_dict_set(&mEncAudioStream->metadata, "language", gPrefs->Read(wxT("/FileFormats/FFmpegLanguage"),wxT("")).ToUTF8(), 0);
-      mEncAudioCodecCtx->sample_rate = gPrefs->Read(wxT("/FileFormats/FFmpegSampleRate"),(long)0);
+      av_dict_set(&mEncAudioStream->metadata, "language", gPrefs->Read(L"/FileFormats/FFmpegLanguage",L"").ToUTF8(), 0);
+      mEncAudioCodecCtx->sample_rate = gPrefs->Read(L"/FileFormats/FFmpegSampleRate",(long)0);
       if (mEncAudioCodecCtx->sample_rate != 0) mSampleRate = mEncAudioCodecCtx->sample_rate;
-      mEncAudioCodecCtx->bit_rate = gPrefs->Read(wxT("/FileFormats/FFmpegBitRate"), (long)0);
-      strncpy((char *)&mEncAudioCodecCtx->codec_tag,gPrefs->Read(wxT("/FileFormats/FFmpegTag"),wxT("")).mb_str(wxConvUTF8),4);
-      mEncAudioCodecCtx->global_quality = gPrefs->Read(wxT("/FileFormats/FFmpegQuality"),(long)-99999);
-      mEncAudioCodecCtx->cutoff = gPrefs->Read(wxT("/FileFormats/FFmpegCutOff"),(long)0);
+      mEncAudioCodecCtx->bit_rate = gPrefs->Read(L"/FileFormats/FFmpegBitRate", (long)0);
+      strncpy((char *)&mEncAudioCodecCtx->codec_tag,gPrefs->Read(L"/FileFormats/FFmpegTag",L"").mb_str(wxConvUTF8),4);
+      mEncAudioCodecCtx->global_quality = gPrefs->Read(L"/FileFormats/FFmpegQuality",(long)-99999);
+      mEncAudioCodecCtx->cutoff = gPrefs->Read(L"/FileFormats/FFmpegCutOff",(long)0);
       mEncAudioCodecCtx->flags2 = 0;
-      if (gPrefs->Read(wxT("/FileFormats/FFmpegBitReservoir"),true))
+      if (gPrefs->Read(L"/FileFormats/FFmpegBitReservoir",true))
          av_dict_set(&options, "reservoir", "1", 0);
-      if (gPrefs->Read(wxT("/FileFormats/FFmpegVariableBlockLen"),true)) mEncAudioCodecCtx->flags2 |= 0x0004; //WMA only?
-      mEncAudioCodecCtx->compression_level = gPrefs->Read(wxT("/FileFormats/FFmpegCompLevel"),-1);
-      mEncAudioCodecCtx->frame_size = gPrefs->Read(wxT("/FileFormats/FFmpegFrameSize"),(long)0);
+      if (gPrefs->Read(L"/FileFormats/FFmpegVariableBlockLen",true)) mEncAudioCodecCtx->flags2 |= 0x0004; //WMA only?
+      mEncAudioCodecCtx->compression_level = gPrefs->Read(L"/FileFormats/FFmpegCompLevel",-1);
+      mEncAudioCodecCtx->frame_size = gPrefs->Read(L"/FileFormats/FFmpegFrameSize",(long)0);
 
 //FIXME The list of supported options for the selected encoder should be extracted instead of a few hardcoded
-      set_dict_int(&options, "lpc_coeff_precision",     gPrefs->Read(wxT("/FileFormats/FFmpegLPCCoefPrec"),(long)0));
-      set_dict_int(&options, "min_prediction_order",    gPrefs->Read(wxT("/FileFormats/FFmpegMinPredOrder"),(long)-1));
-      set_dict_int(&options, "max_prediction_order",    gPrefs->Read(wxT("/FileFormats/FFmpegMaxPredOrder"),(long)-1));
-      set_dict_int(&options, "min_partition_order",     gPrefs->Read(wxT("/FileFormats/FFmpegMinPartOrder"),(long)-1));
-      set_dict_int(&options, "max_partition_order",     gPrefs->Read(wxT("/FileFormats/FFmpegMaxPartOrder"),(long)-1));
-      set_dict_int(&options, "prediction_order_method", gPrefs->Read(wxT("/FileFormats/FFmpegPredOrderMethod"),(long)0));
-      set_dict_int(&options, "muxrate",                 gPrefs->Read(wxT("/FileFormats/FFmpegMuxRate"),(long)0));
-      mEncFormatCtx->packet_size = gPrefs->Read(wxT("/FileFormats/FFmpegPacketSize"),(long)0);
-      codec = avcodec_find_encoder_by_name(gPrefs->Read(wxT("/FileFormats/FFmpegCodec")).ToUTF8());
+      set_dict_int(&options, "lpc_coeff_precision",     gPrefs->Read(L"/FileFormats/FFmpegLPCCoefPrec",(long)0));
+      set_dict_int(&options, "min_prediction_order",    gPrefs->Read(L"/FileFormats/FFmpegMinPredOrder",(long)-1));
+      set_dict_int(&options, "max_prediction_order",    gPrefs->Read(L"/FileFormats/FFmpegMaxPredOrder",(long)-1));
+      set_dict_int(&options, "min_partition_order",     gPrefs->Read(L"/FileFormats/FFmpegMinPartOrder",(long)-1));
+      set_dict_int(&options, "max_partition_order",     gPrefs->Read(L"/FileFormats/FFmpegMaxPartOrder",(long)-1));
+      set_dict_int(&options, "prediction_order_method", gPrefs->Read(L"/FileFormats/FFmpegPredOrderMethod",(long)0));
+      set_dict_int(&options, "muxrate",                 gPrefs->Read(L"/FileFormats/FFmpegMuxRate",(long)0));
+      mEncFormatCtx->packet_size = gPrefs->Read(L"/FileFormats/FFmpegPacketSize",(long)0);
+      codec = avcodec_find_encoder_by_name(gPrefs->Read(L"/FileFormats/FFmpegCodec").ToUTF8());
       if (!codec)
          mEncAudioCodecCtx->codec_id = mEncFormatDesc->audio_codec;
       break;
@@ -641,7 +641,7 @@ bool ExportFFmpeg::InitCodecs(AudacityProject *project)
    if (default_frame_size == 0)
       default_frame_size = 1024; // arbitrary non zero value;
 
-   wxLogDebug(wxT("FFmpeg : Audio Output Codec Frame Size: %d samples."), mEncAudioCodecCtx->frame_size);
+   wxLogDebug(L"FFmpeg : Audio Output Codec Frame Size: %d samples.", mEncAudioCodecCtx->frame_size);
 
    // The encoder may require a minimum number of raw audio samples for each encoding but we can't
    // guarantee we'll get this minimum each time an audio frame is decoded from the input file so
@@ -805,7 +805,7 @@ bool ExportFFmpeg::Finalize()
              frame_size == 1)
             frame_size = nFifoBytes / (mEncAudioCodecCtx->channels * sizeof(int16_t));
 
-         wxLogDebug(wxT("FFmpeg : Audio FIFO still contains %d bytes, writing %d sample frame ..."),
+         wxLogDebug(L"FFmpeg : Audio FIFO still contains %d bytes, writing %d sample frame ...",
             nFifoBytes, frame_size);
 
          // Fill audio buffer with zeroes. If codec tries to read the whole buffer,
@@ -820,7 +820,7 @@ bool ExportFFmpeg::Finalize()
          }
          else
          {
-            wxLogDebug(wxT("FFmpeg : Reading from Audio FIFO failed, aborting"));
+            wxLogDebug(L"FFmpeg : Reading from Audio FIFO failed, aborting");
             // TODO: more precise message
             ShowExportErrorDialog("FFmpeg:825");
             return false;
@@ -951,7 +951,7 @@ bool ExportFFmpeg::EncodeAudioFrame(int16_t *pFrame, size_t frameSize)
          pkt.pts = av_rescale_q(pkt.pts, mEncAudioCodecCtx->time_base, mEncAudioStream->time_base);
       if (pkt.dts != int64_t(AV_NOPTS_VALUE))
          pkt.dts = av_rescale_q(pkt.dts, mEncAudioCodecCtx->time_base, mEncAudioStream->time_base);
-      //wxLogDebug(wxT("FFmpeg : (%d) Writing audio frame with PTS: %lld."), mEncAudioCodecCtx->frame_number, (long long) pkt.pts);
+      //wxLogDebug(L"FFmpeg : (%d) Writing audio frame with PTS: %lld.", mEncAudioCodecCtx->frame_number, (long long) pkt.pts);
 
       pkt.stream_index = mEncAudioStream->index;
 
@@ -1000,7 +1000,7 @@ ProgressResult ExportFFmpeg::Export(AudacityProject *project,
 
    wxString shortname(ExportFFmpegOptions::fmts[mSubFormat].shortname);
    if (mSubFormat == FMT_OTHER)
-      shortname = gPrefs->Read(wxT("/FileFormats/FFmpegFormat"),wxT("matroska"));
+      shortname = gPrefs->Read(L"/FileFormats/FFmpegFormat",L"matroska");
    ret = Init(shortname.mb_str(),project, metadata, subformat);
    auto cleanup = finally ( [&] { FreeResources(); } );
 
@@ -1176,7 +1176,7 @@ int ExportFFmpeg::AskResample(int bitrate, int rate, int lowrate, int highrate, 
                      int label = sampRates[i];
                      if ((!lowrate || label >= lowrate) && (!highrate || label <= highrate))
                      {
-                        wxString name = wxString::Format(wxT("%d"),label);
+                        wxString name = wxString::Format(L"%d",label);
                         choices.push_back( Verbatim( name ) );
                         if (label <= rate)
                            selected = i;

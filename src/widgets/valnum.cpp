@@ -85,7 +85,7 @@ wxTextEntry *NumValidatorBase::GetTextEntry() const
         return combo;
 #endif // wxUSE_COMBOBOX
 
-   wxFAIL_MSG(wxT("Can only be used with wxTextCtrl or wxComboBox"));
+   wxFAIL_MSG(L"Can only be used with wxTextCtrl or wxComboBox");
 
    return NULL;
 }
@@ -513,8 +513,8 @@ bool FloatingPointValidatorBase::DoValidateNumber(TranslatableString * errMsg) c
          res = IsInRange(value);
          if ( !res )
          {
-            wxString strMin = wxString::Format(wxT("%f"), m_min);
-            wxString strMax = wxString::Format(wxT("%f"), m_max);
+            wxString strMin = wxString::Format(L"%f", m_min);
+            wxString strMax = wxString::Format(L"%f", m_max);
             NumberFormatter::RemoveTrailingZeroes(strMin);
             NumberFormatter::RemoveTrailingZeroes(strMax);
 

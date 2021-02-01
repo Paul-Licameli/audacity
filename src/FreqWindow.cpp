@@ -199,15 +199,15 @@ FrequencyPlotDialog::FrequencyPlotDialog(wxWindow * parent, wxWindowID id,
    mRate = 0;
    mDataLen = 0;
 
-   gPrefs->Read(wxT("/FrequencyPlotDialog/DrawGrid"), &mDrawGrid, true);
-   gPrefs->Read(wxT("/FrequencyPlotDialog/SizeChoice"), &mSize, 3);
+   gPrefs->Read(L"/FrequencyPlotDialog/DrawGrid", &mDrawGrid, true);
+   gPrefs->Read(L"/FrequencyPlotDialog/SizeChoice", &mSize, 3);
 
    int alg;
-   gPrefs->Read(wxT("/FrequencyPlotDialog/AlgChoice"), &alg, 0);
+   gPrefs->Read(L"/FrequencyPlotDialog/AlgChoice", &alg, 0);
    mAlg = static_cast<SpectrumAnalyst::Algorithm>(alg);
 
-   gPrefs->Read(wxT("/FrequencyPlotDialog/FuncChoice"), &mFunc, 3);
-   gPrefs->Read(wxT("/FrequencyPlotDialog/AxisChoice"), &mAxis, 1);
+   gPrefs->Read(L"/FrequencyPlotDialog/FuncChoice", &mFunc, 3);
+   gPrefs->Read(L"/FrequencyPlotDialog/AxisChoice", &mAxis, 1);
 
    Populate();
 }
@@ -268,7 +268,6 @@ void FrequencyPlotDialog::Populate()
    sizeChoices[mSize].MSGID().GET().ToLong(&size);
    mWindowSize = size;
 
-   gPrefs->Read(ENV_DB_KEY, &dBRange, ENV_DB_RANGE);
    if(dBRange < 90.)
       dBRange = 90.;
 
@@ -419,12 +418,12 @@ void FrequencyPlotDialog::Populate()
             S.AddPrompt(XXO("Cursor:"));
 
             mCursorText = S.Style(wxTE_READONLY)
-               .AddTextBox( {}, wxT(""), 10);
+               .AddTextBox( {}, L"", 10);
 
             S.AddPrompt(XXO("Peak:"));
 
             mPeakText = S.Style(wxTE_READONLY)
-               .AddTextBox( {}, wxT(""), 10);
+               .AddTextBox( {}, L"", 10);
             S.AddSpace(5);
 
             mGridOnOff = S.Id(GridOnOffID).AddCheckBox(XXO("&Grids"), mDrawGrid);
@@ -550,7 +549,7 @@ void FrequencyPlotDialog::OnGetURL(wxCommandEvent & WXUNUSED(event))
 {
    // Original help page is back on-line (March 2016), but the manual should be more reliable.
    // http://www.eramp.com/WCAG_2_audio_contrast_tool_help.htm
-   HelpSystem::ShowHelp(this, wxT("Plot Spectrum"));
+   HelpSystem::ShowHelp(this, L"Plot Spectrum");
 }
 
 bool FrequencyPlotDialog::Show(bool show)
@@ -973,8 +972,8 @@ void FrequencyPlotDialog::PlotPaint(wxPaintEvent & event)
       mPeakText->SetValue( peak.Translation() );
    }
    else {
-      mCursorText->SetValue(wxT(""));
-      mPeakText->SetValue(wxT(""));
+      mCursorText->SetValue(L"");
+      mPeakText->SetValue(L"");
    }
 
 
@@ -991,11 +990,11 @@ void FrequencyPlotDialog::OnCloseWindow(wxCloseEvent & WXUNUSED(event))
 
 void FrequencyPlotDialog::OnCloseButton(wxCommandEvent & WXUNUSED(event))
 {
-   gPrefs->Write(wxT("/FrequencyPlotDialog/DrawGrid"), mDrawGrid);
-   gPrefs->Write(wxT("/FrequencyPlotDialog/SizeChoice"), mSizeChoice->GetSelection());
-   gPrefs->Write(wxT("/FrequencyPlotDialog/AlgChoice"), mAlgChoice->GetSelection());
-   gPrefs->Write(wxT("/FrequencyPlotDialog/FuncChoice"), mFuncChoice->GetSelection());
-   gPrefs->Write(wxT("/FrequencyPlotDialog/AxisChoice"), mAxisChoice->GetSelection());
+   gPrefs->Write(L"/FrequencyPlotDialog/DrawGrid", mDrawGrid);
+   gPrefs->Write(L"/FrequencyPlotDialog/SizeChoice", mSizeChoice->GetSelection());
+   gPrefs->Write(L"/FrequencyPlotDialog/AlgChoice", mAlgChoice->GetSelection());
+   gPrefs->Write(L"/FrequencyPlotDialog/FuncChoice", mFuncChoice->GetSelection());
+   gPrefs->Write(L"/FrequencyPlotDialog/AxisChoice", mAxisChoice->GetSelection());
    gPrefs->Flush();
    Show(false);
 }
@@ -1059,7 +1058,7 @@ void FrequencyPlotDialog::OnExport(wxCommandEvent & WXUNUSED(event))
       XO("Export Spectral Data As:"),
       wxEmptyString,
       fName,
-      wxT("txt"),
+      L"txt",
       { FileNames::TextFiles, FileNames::AllFiles },
       wxFD_SAVE | wxRESIZE_BORDER,
       this);
@@ -1082,7 +1081,7 @@ void FrequencyPlotDialog::OnExport(wxCommandEvent & WXUNUSED(event))
          << XO("Frequency (Hz)\tLevel (dB)") << '\n';
       for (int i = 1; i < processedSize; i++)
          ss
-            << wxString::Format(wxT("%f\t%f\n"),
+            << wxString::Format(L"%f\t%f\n",
                i * mRate / mWindowSize, processed[i] );
    }
    else {
@@ -1090,7 +1089,7 @@ void FrequencyPlotDialog::OnExport(wxCommandEvent & WXUNUSED(event))
          << XO("Lag (seconds)\tFrequency (Hz)\tLevel") << '\n';
       for (int i = 1; i < processedSize; i++)
          ss
-            << wxString::Format(wxT("%f\t%f\t%f\n"),
+            << wxString::Format(L"%f\t%f\t%f\n",
                i / mRate, mRate / i, processed[i] );
    }
 }
@@ -1235,9 +1234,9 @@ CommandHandlerObject &findCommandHandler(AudacityProject &) {
 // Register that menu item
 
 using namespace MenuTable;
-AttachedItem sAttachment{ wxT("Analyze/Analyzers/Windows"),
+AttachedItem sAttachment{ L"Analyze/Analyzers/Windows",
    ( FinderScope{ findCommandHandler },
-      Command( wxT("PlotSpectrum"), XXO("Plot Spectrum..."),
+      Command( L"PlotSpectrum", XXO("Plot Spectrum..."),
          &Handler::OnPlotSpectrum,
          AudioIONotBusyFlag() | WaveTracksSelectedFlag() | TimeSelectedFlag() ) )
 };

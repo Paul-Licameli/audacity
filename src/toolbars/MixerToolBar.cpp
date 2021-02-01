@@ -56,7 +56,7 @@ END_EVENT_TABLE()
 
 //Standard constructor
 MixerToolBar::MixerToolBar( AudacityProject &project )
-: ToolBar(project, MixerBarID, XO("Mixer"), wxT("Mixer"), true)
+: ToolBar(project, MixerBarID, XO("Mixer"), L"Mixer", true)
 {
    mInputSliderVolume = 0.0;
    mOutputSliderVolume = 0.0;
@@ -340,6 +340,6 @@ namespace {
 AttachedToolBarMenuItem sAttachment{
    /* i18n-hint: Clicking this menu item shows the toolbar
       with the mixer */
-   MixerBarID, wxT("ShowMixerTB"), XXO("Mi&xer Toolbar")
+   MixerBarID, L"ShowMixerTB", XXO("Mi&xer Toolbar")
 };
 }

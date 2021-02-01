@@ -41,7 +41,7 @@ public:
               const wxPoint& pos = wxDefaultPosition,
               const wxSize& size = wxDefaultSize,
               long style = wxHW_DEFAULT_STYLE,
-              const wxString& name = wxT("htmlWindow"));
+              const wxString& name = L"htmlWindow");
    virtual ~HtmlWindow();
 };
 

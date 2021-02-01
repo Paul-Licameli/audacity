@@ -1276,27 +1276,27 @@ int MixerBoard::FindMixerTrackCluster(const PlayableTrack* pTrack,
 void MixerBoard::LoadMusicalInstruments()
 {
    const struct Data { const char * const *bitmap; wxString name; } table[] = {
-      {acoustic_guitar_gtr_xpm, wxT("acoustic_guitar_gtr")},
-      {acoustic_piano_pno_xpm, wxT("acoustic_piano_pno")},
-      {back_vocal_bg_vox_xpm, wxT("back_vocal_bg_vox")},
-      {clap_xpm, wxT("clap")},
-      {drums_dr_xpm, wxT("drums_dr")},
-      {electric_bass_guitar_bs_gtr_xpm, wxT("electric_bass_guitar_bs_gtr")},
-      {electric_guitar_gtr_xpm, wxT("electric_guitar_gtr")},
-      {electric_piano_pno_key_xpm, wxT("electric_piano_pno_key")},
-      {kick_xpm, wxT("kick")},
-      {loop_xpm, wxT("loop")},
-      {organ_org_xpm, wxT("organ_org")},
-      {perc_xpm, wxT("perc")},
-      {sax_xpm, wxT("sax")},
-      {snare_xpm, wxT("snare")},
-      {string_violin_cello_xpm, wxT("string_violin_cello")},
-      {synth_xpm, wxT("synth")},
-      {tambo_xpm, wxT("tambo")},
-      {trumpet_horn_xpm, wxT("trumpet_horn")},
-      {turntable_xpm, wxT("turntable")},
-      {vibraphone_vibes_xpm, wxT("vibraphone_vibes")},
-      {vocal_vox_xpm, wxT("vocal_vox")},
+      {acoustic_guitar_gtr_xpm, L"acoustic_guitar_gtr"},
+      {acoustic_piano_pno_xpm, L"acoustic_piano_pno"},
+      {back_vocal_bg_vox_xpm, L"back_vocal_bg_vox"},
+      {clap_xpm, L"clap"},
+      {drums_dr_xpm, L"drums_dr"},
+      {electric_bass_guitar_bs_gtr_xpm, L"electric_bass_guitar_bs_gtr"},
+      {electric_guitar_gtr_xpm, L"electric_guitar_gtr"},
+      {electric_piano_pno_key_xpm, L"electric_piano_pno_key"},
+      {kick_xpm, L"kick"},
+      {loop_xpm, L"loop"},
+      {organ_org_xpm, L"organ_org"},
+      {perc_xpm, L"perc"},
+      {sax_xpm, L"sax"},
+      {snare_xpm, L"snare"},
+      {string_violin_cello_xpm, L"string_violin_cello"},
+      {synth_xpm, L"synth"},
+      {tambo_xpm, L"tambo"},
+      {trumpet_horn_xpm, L"trumpet_horn"},
+      {turntable_xpm, L"turntable"},
+      {vibraphone_vibes_xpm, L"vibraphone_vibes"},
+      {vocal_vox_xpm, L"vocal_vox"},
 
       // This one must be last, so it wins when best score is 0.
       {_default_instrument_xpm, wxEmptyString},
@@ -1502,7 +1502,7 @@ void MixerBoardFrame::SetWindowTitle()
    wxString name = mProject->GetProjectName();
    if (!name.empty())
    {
-      name.Prepend(wxT(" - "));
+      name.Prepend(L" - ");
    }
 
    SetTitle(AudacityMixerBoardTitle.Format(name).Translation());
@@ -1543,9 +1543,9 @@ CommandHandlerObject &findCommandHandler(AudacityProject &) {
 // Register that menu item
 
 using namespace MenuTable;
-AttachedItem sAttachment{ wxT("View/Windows"),
+AttachedItem sAttachment{ L"View/Windows",
    ( FinderScope{ findCommandHandler },
-      Command( wxT("MixerBoard"), XXO("&Mixer Board..."), &Handler::OnMixerBoard,
+      Command( L"MixerBoard", XXO("&Mixer Board..."), &Handler::OnMixerBoard,
          PlayableTracksExistFlag()) )
 };
 

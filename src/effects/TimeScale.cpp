@@ -41,19 +41,19 @@ enum
 // Define keys, defaults, minimums, and maximums for the effect parameters
 //
 //     Name                Type    Key                            Def   Min      Max    Scale
-Param( RatePercentStart,   double, wxT("RatePercentChangeStart"),  0.0,  -90.0,   500,   1  );
-Param( RatePercentEnd,     double, wxT("RatePercentChangeEnd"),    0.0,  -90.0,   500,   1  );
-Param( HalfStepsStart,     double, wxT("PitchHalfStepsStart"),     0.0,  -12.0,   12.0,  1  );
-Param( HalfStepsEnd,       double, wxT("PitchHalfStepsEnd"),       0.0,  -12.0,   12.0,  1  );
-Param( PitchPercentStart,  double, wxT("PitchPercentChangeStart"), 0.0,  -50.0,   100.0, 1  );
-Param( PitchPercentEnd,    double, wxT("PitchPercentChangeEnd"),   0.0,  -50.0,   100.0, 1  );
+Param( RatePercentStart,   double, L"RatePercentChangeStart",  0.0,  -90.0,   500,   1  );
+Param( RatePercentEnd,     double, L"RatePercentChangeEnd",    0.0,  -90.0,   500,   1  );
+Param( HalfStepsStart,     double, L"PitchHalfStepsStart",     0.0,  -12.0,   12.0,  1  );
+Param( HalfStepsEnd,       double, L"PitchHalfStepsEnd",       0.0,  -12.0,   12.0,  1  );
+Param( PitchPercentStart,  double, L"PitchPercentChangeStart", 0.0,  -50.0,   100.0, 1  );
+Param( PitchPercentEnd,    double, L"PitchPercentChangeEnd",   0.0,  -50.0,   100.0, 1  );
 
 //
 // EffectTimeScale
 //
 
 const ComponentInterfaceSymbol EffectTimeScale::Symbol
-{ wxT("Sliding Stretch"), XO("Sliding Stretch") };
+{ L"Sliding Stretch", XO("Sliding Stretch") };
 
 namespace{ BuiltinEffectsModule::Registration< EffectTimeScale > reg; }
 
@@ -103,7 +103,7 @@ TranslatableString EffectTimeScale::GetDescription()
 
 wxString EffectTimeScale::ManualPage()
 {
-   return wxT("Sliding_Stretch");
+   return L"Sliding_Stretch";
 }
 
 // EffectDefinitionInterface implementation
@@ -218,7 +218,7 @@ void EffectTimeScale::PopulateOrExchange(ShuttleGui & S)
                   NumValidatorStyle::NO_TRAILING_ZEROES,
                   MIN_RatePercentStart, MAX_RatePercentStart
                )
-               .AddTextBox( {}, wxT(""), 12);
+               .AddTextBox( {}, L"", 12);
          }
          S.EndMultiColumn();
          S.StartHorizontalLay(wxEXPAND, 0);
@@ -241,7 +241,7 @@ void EffectTimeScale::PopulateOrExchange(ShuttleGui & S)
                   NumValidatorStyle::NO_TRAILING_ZEROES,
                   MIN_RatePercentEnd, MAX_RatePercentEnd
                )
-               .AddTextBox( {}, wxT(""), 12);
+               .AddTextBox( {}, L"", 12);
          }
          S.EndMultiColumn();
          S.StartHorizontalLay(wxEXPAND, 0);
@@ -265,7 +265,7 @@ void EffectTimeScale::PopulateOrExchange(ShuttleGui & S)
                   NumValidatorStyle::NO_TRAILING_ZEROES,
                   MIN_HalfStepsStart, MAX_HalfStepsStart
                )
-               .AddTextBox(XXO("(&semitones) [-12 to 12]:"), wxT(""), 12);
+               .AddTextBox(XXO("(&semitones) [-12 to 12]:"), L"", 12);
 
 
             m_pTextCtrl_PitchPercentChangeStart = S.Id(ID_PitchPercentChangeStart)
@@ -274,7 +274,7 @@ void EffectTimeScale::PopulateOrExchange(ShuttleGui & S)
                   NumValidatorStyle::NO_TRAILING_ZEROES,
                   MIN_PitchPercentStart, MAX_PitchPercentStart
                )
-               .AddTextBox(XXO("(%) [-50 to 100]:"), wxT(""), 12);
+               .AddTextBox(XXO("(%) [-50 to 100]:"), L"", 12);
          }
          S.EndMultiColumn();
       }
@@ -291,14 +291,14 @@ void EffectTimeScale::PopulateOrExchange(ShuttleGui & S)
                   NumValidatorStyle::NO_TRAILING_ZEROES,
                   MIN_HalfStepsEnd, MAX_HalfStepsEnd
                )
-               .AddTextBox(XXO("(s&emitones) [-12 to 12]:"), wxT(""), 12);
+               .AddTextBox(XXO("(s&emitones) [-12 to 12]:"), L"", 12);
 
             m_pTextCtrl_PitchPercentChangeEnd = S.Id(ID_PitchPercentChangeEnd)
                .Validator<FloatingPointValidator<double>>(
                   3, &m_PitchPercentChangeEnd,
                   NumValidatorStyle::NO_TRAILING_ZEROES,
                   MIN_PitchPercentStart, MAX_PitchPercentStart)
-               .AddTextBox(XXO("(%) [-50 to 100]:"), wxT(""), 12);
+               .AddTextBox(XXO("(%) [-50 to 100]:"), L"", 12);
          }
          S.EndMultiColumn();
       }

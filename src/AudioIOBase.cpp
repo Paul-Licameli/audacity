@@ -402,7 +402,7 @@ std::vector<long> AudioIOBase::GetSupportedPlaybackRates(int devIndex, double ra
 
    if (!devInfo)
    {
-      wxLogDebug(wxT("GetSupportedPlaybackRates() Could not get device info!"));
+      wxLogDebug(L"GetSupportedPlaybackRates() Could not get device info!");
       return supported;
    }
 
@@ -467,7 +467,7 @@ std::vector<long> AudioIOBase::GetSupportedCaptureRates(int devIndex, double rat
 
    if (!devInfo)
    {
-      wxLogDebug(wxT("GetSupportedCaptureRates() Could not get device info!"));
+      wxLogDebug(L"GetSupportedCaptureRates() Could not get device info!");
       return supported;
    }
 
@@ -721,9 +721,9 @@ wxString AudioIOBase::GetDeviceInfo()
    int cnt = Pa_GetDeviceCount();
 
    // PRL:  why only into the log?
-   wxLogDebug(wxT("Portaudio reports %d audio devices"),cnt);
+   wxLogDebug(L"Portaudio reports %d audio devices",cnt);
    
-   s << wxT("==============================\n");
+   s << L"==============================\n";
    s << XO("Default recording device number: %d\n").Format( recDeviceNum );
    s << XO("Default playback device number: %d\n").Format( playDeviceNum);
 
@@ -740,7 +740,7 @@ wxString AudioIOBase::GetDeviceInfo()
    const PaDeviceInfo* info;
 
    for (j = 0; j < cnt; j++) {
-      s << wxT("==============================\n");
+      s << L"==============================\n";
 
       info = Pa_GetDeviceInfo(j);
       if (!info) {
@@ -764,7 +764,7 @@ wxString AudioIOBase::GetDeviceInfo()
       /* i18n-hint: Supported, meaning made available by the system */
       s << XO("Supported Rates:\n");
       for (int k = 0; k < (int) rates.size(); k++) {
-         s << wxT("    ") << (int)rates[k] << wxT("\n");
+         s << L"    " << (int)rates[k] << L"\n";
       }
 
       if (name == playDevice && info->maxOutputChannels > 0)
@@ -786,7 +786,7 @@ wxString AudioIOBase::GetDeviceInfo()
    bool haveRecDevice = (recDeviceNum >= 0);
    bool havePlayDevice = (playDeviceNum >= 0);
 
-   s << wxT("==============================\n");
+   s << L"==============================\n";
    if (haveRecDevice)
       s << XO("Selected recording device: %d - %s\n").Format( recDeviceNum, recDevice );
    else
@@ -804,7 +804,7 @@ wxString AudioIOBase::GetDeviceInfo()
 
       s << XO("Supported Rates:\n");
       for (int k = 0; k < (int) supportedSampleRates.size(); k++) {
-         s << wxT("    ") << (int)supportedSampleRates[k] << wxT("\n");
+         s << L"    " << (int)supportedSampleRates[k] << L"\n";
       }
    }
    else {
@@ -881,7 +881,7 @@ wxString AudioIOBase::GetDeviceInfo()
          return o.GetString();
       }
 
-      s << wxT("==============================\n");
+      s << L"==============================\n";
       s << XO("Available mixers:\n");
 
       // FIXME: ? PortMixer errors on query not reported in GetDeviceInfo
@@ -891,7 +891,7 @@ wxString AudioIOBase::GetDeviceInfo()
          s << XO("%d - %s\n").Format( i, name );
       }
 
-      s << wxT("==============================\n");
+      s << L"==============================\n";
       s << XO("Available recording sources:\n");
       cnt = Px_GetNumInputSources(PortMixer);
       for (int i = 0; i < cnt; i++) {
@@ -899,7 +899,7 @@ wxString AudioIOBase::GetDeviceInfo()
          s << XO("%d - %s\n").Format( i, name );
       }
 
-      s << wxT("==============================\n");
+      s << L"==============================\n";
       s << XO("Available playback volumes:\n");
       cnt = Px_GetNumOutputVolumes(PortMixer);
       for (int i = 0; i < cnt; i++) {
@@ -935,7 +935,7 @@ wxString AudioIOBase::GetDeviceInfo()
 
       Pa_CloseStream(stream);
 
-      s << wxT("==============================\n");
+      s << L"==============================\n";
       s << ( EmulateMixerInputVol
          ? XO("Recording volume is emulated\n")
          : XO("Recording volume is native\n") );
@@ -969,14 +969,14 @@ wxString AudioIOBase::GetMidiDeviceInfo()
    int cnt = Pm_CountDevices();
 
    // PRL:  why only into the log?
-   wxLogDebug(wxT("PortMidi reports %d MIDI devices"), cnt);
+   wxLogDebug(L"PortMidi reports %d MIDI devices", cnt);
 
-   s << wxT("==============================\n");
+   s << L"==============================\n";
    s << XO("Default recording device number: %d\n").Format( recDeviceNum );
    s << XO("Default playback device number: %d\n").Format( playDeviceNum );
 
-   wxString recDevice = gPrefs->Read(wxT("/MidiIO/RecordingDevice"), wxT(""));
-   wxString playDevice = gPrefs->Read(wxT("/MidiIO/PlaybackDevice"), wxT(""));
+   wxString recDevice = gPrefs->Read(L"/MidiIO/RecordingDevice", L"");
+   wxString playDevice = gPrefs->Read(L"/MidiIO/PlaybackDevice", L"");
 
    // This gets info on all available audio devices (input and output)
    if (cnt <= 0) {
@@ -985,7 +985,7 @@ wxString AudioIOBase::GetMidiDeviceInfo()
    }
 
    for (int i = 0; i < cnt; i++) {
-      s << wxT("==============================\n");
+      s << L"==============================\n";
 
       const PmDeviceInfo* info = Pm_GetDeviceInfo(i);
       if (!info) {
@@ -1024,7 +1024,7 @@ wxString AudioIOBase::GetMidiDeviceInfo()
    bool haveRecDevice = (recDeviceNum >= 0);
    bool havePlayDevice = (playDeviceNum >= 0);
 
-   s << wxT("==============================\n");
+   s << L"==============================\n";
    if (haveRecDevice)
       s << XO("Selected MIDI recording device: %d - %s\n").Format( recDeviceNum, recDevice );
    else
@@ -1039,16 +1039,16 @@ wxString AudioIOBase::GetMidiDeviceInfo()
 #ifdef IS_ALPHA
 
    // Not internationalizing these alpha-only messages
-   s << wxT("==============================\n");
+   s << L"==============================\n";
 #ifdef EXPERIMENTAL_MIDI_OUT
-   s << wxT("EXPERIMENTAL_MIDI_OUT is enabled\n");
+   s << L"EXPERIMENTAL_MIDI_OUT is enabled\n";
 #else
-   s << wxT("EXPERIMENTAL_MIDI_OUT is NOT enabled\n");
+   s << L"EXPERIMENTAL_MIDI_OUT is NOT enabled\n";
 #endif
 #ifdef EXPERIMENTAL_MIDI_IN
-   s << wxT("EXPERIMENTAL_MIDI_IN is enabled\n");
+   s << L"EXPERIMENTAL_MIDI_IN is enabled\n";
 #else
-   s << wxT("EXPERIMENTAL_MIDI_IN is NOT enabled\n");
+   s << L"EXPERIMENTAL_MIDI_IN is NOT enabled\n";
 #endif
 
 #endif

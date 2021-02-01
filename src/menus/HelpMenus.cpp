@@ -67,7 +67,7 @@ void ShowDiagnostics(
          fileDialogTitle,
          wxEmptyString,
          defaultPath,
-         wxT("txt"),
+         L"txt",
          { FileNames::TextFiles },
          wxFD_SAVE | wxFD_OVERWRITE_PROMPT | wxRESIZE_BORDER,
          &window);
@@ -133,9 +133,9 @@ QuickFixDialog::QuickFixDialog(wxWindow * pParent, AudacityProject &project) :
 {
    const long SNAP_OFF = 0;
 
-   gPrefs->Read(wxT("/GUI/SyncLockTracks"), &mbSyncLocked, false);
-   mbInSnapTo = gPrefs->Read(wxT("/SnapTo"), SNAP_OFF) !=0;
-   gPrefs->Read(wxT("/AudioIO/SoundActivatedRecord"), &mbSoundActivated, false);
+   gPrefs->Read(L"/GUI/SyncLockTracks", &mbSyncLocked, false);
+   mbInSnapTo = gPrefs->Read(L"/SnapTo", SNAP_OFF) !=0;
+   gPrefs->Read(L"/AudioIO/SoundActivatedRecord", &mbSoundActivated, false);
 
    ShuttleGui S(this, eIsCreating);
    PopulateOrExchange(S);
@@ -309,7 +309,7 @@ void OnQuickHelp(const CommandContext &context)
    auto &project = context.project;
    HelpSystem::ShowHelp(
       &GetProjectFrame( project ),
-      wxT("Quick_Help"));
+      L"Quick_Help");
 }
 
 void OnManual(const CommandContext &context)
@@ -317,7 +317,7 @@ void OnManual(const CommandContext &context)
    auto &project = context.project;
    HelpSystem::ShowHelp(
       &GetProjectFrame( project ),
-      wxT("Main_Page"));
+      L"Main_Page");
 }
 
 void OnAudioDeviceInfo(const CommandContext &context)
@@ -326,7 +326,7 @@ void OnAudioDeviceInfo(const CommandContext &context)
    auto gAudioIO = AudioIOBase::Get();
    wxString info = gAudioIO->GetDeviceInfo();
    ShowDiagnostics( project, info,
-      XO("Audio Device Info"), wxT("deviceinfo.txt") );
+      XO("Audio Device Info"), L"deviceinfo.txt" );
 }
 
 #ifdef EXPERIMENTAL_MIDI_OUT
@@ -336,7 +336,7 @@ void OnMidiDeviceInfo(const CommandContext &context)
    auto gAudioIO = AudioIOBase::Get();
    wxString info = gAudioIO->GetMidiDeviceInfo();
    ShowDiagnostics( project, info,
-      XO("MIDI Device Info"), wxT("midideviceinfo.txt") );
+      XO("MIDI Device Info"), L"midideviceinfo.txt" );
 }
 #endif
 
@@ -439,7 +439,7 @@ void OnMenuTree(const CommandContext &context)
    MenuManager::Visit( visitor );
 
    ShowDiagnostics( project, visitor.info,
-      Verbatim("Menu Tree"), wxT("menutree.txt"), true );
+      Verbatim("Menu Tree"), L"menutree.txt", true );
 }
 
 void OnCheckForUpdates(const CommandContext &WXUNUSED(context))
@@ -504,24 +504,24 @@ BaseItemSharedPtr HelpMenu()
 {
    static BaseItemSharedPtr menu{
    ( FinderScope{ findCommandHandler },
-   Menu( wxT("Help"), XXO("&Help"),
+   Menu( L"Help", XXO("&Help"),
       Section( "Basic",
          // QuickFix menu item not in Audacity 2.3.1 whilst we discuss further.
    #ifdef EXPERIMENTAL_DA
          // DA: Has QuickFix menu item.
-         Command( wxT("QuickFix"), XXO("&Quick Fix..."), FN(OnQuickFix),
+         Command( L"QuickFix", XXO("&Quick Fix..."), FN(OnQuickFix),
             AlwaysEnabledFlag ),
          // DA: 'Getting Started' rather than 'Quick Help'.
-         Command( wxT("QuickHelp"), XXO("&Getting Started"), FN(OnQuickHelp),
+         Command( L"QuickHelp", XXO("&Getting Started"), FN(OnQuickHelp),
             AlwaysEnabledFlag ),
          // DA: Emphasise it is the Audacity Manual (No separate DA manual).
-         Command( wxT("Manual"), XXO("Audacity &Manual"), FN(OnManual),
+         Command( L"Manual", XXO("Audacity &Manual"), FN(OnManual),
             AlwaysEnabledFlag )
 
    #else
-         Command( wxT("QuickHelp"), XXO("&Quick Help..."), FN(OnQuickHelp),
+         Command( L"QuickHelp", XXO("&Quick Help..."), FN(OnQuickHelp),
             AlwaysEnabledFlag ),
-         Command( wxT("Manual"), XXO("&Manual..."), FN(OnManual),
+         Command( L"Manual", XXO("&Manual..."), FN(OnManual),
             AlwaysEnabledFlag )
    #endif
       ),
@@ -532,19 +532,19 @@ BaseItemSharedPtr HelpMenu()
       Section
    #endif
       ( "Other",
-         Menu( wxT("Diagnostics"), XXO("&Diagnostics"),
-            Command( wxT("DeviceInfo"), XXO("Au&dio Device Info..."),
+         Menu( L"Diagnostics", XXO("&Diagnostics"),
+            Command( L"DeviceInfo", XXO("Au&dio Device Info..."),
                FN(OnAudioDeviceInfo),
                AudioIONotBusyFlag() ),
       #ifdef EXPERIMENTAL_MIDI_OUT
-            Command( wxT("MidiDeviceInfo"), XXO("&MIDI Device Info..."),
+            Command( L"MidiDeviceInfo", XXO("&MIDI Device Info..."),
                FN(OnMidiDeviceInfo),
                AudioIONotBusyFlag() ),
       #endif
-            Command( wxT("Log"), XXO("Show &Log..."), FN(OnShowLog),
+            Command( L"Log", XXO("Show &Log..."), FN(OnShowLog),
                AlwaysEnabledFlag ),
       #if defined(HAS_CRASH_REPORT)
-            Command( wxT("CrashReport"), XXO("&Generate Support Data..."),
+            Command( L"CrashReport", XXO("&Generate Support Data..."),
                FN(OnCrashReport), AlwaysEnabledFlag )
       #endif
 
@@ -553,17 +553,17 @@ BaseItemSharedPtr HelpMenu()
             // alpha-only items don't need to internationalize, so use
             // Verbatim for labels
 
-            Command( wxT("RaiseSegfault"), Verbatim("Test segfault report"),
+            Command( L"RaiseSegfault", Verbatim("Test segfault report"),
                FN(OnSegfault), AlwaysEnabledFlag ),
 
-            Command( wxT("ThrowException"), Verbatim("Test exception report"),
+            Command( L"ThrowException", Verbatim("Test exception report"),
                FN(OnException), AlwaysEnabledFlag ),
 
-            Command( wxT("ViolateAssertion"), Verbatim("Test assertion report"),
+            Command( L"ViolateAssertion", Verbatim("Test assertion report"),
                FN(OnAssertion), AlwaysEnabledFlag ),
 
             // Menu explorer.  Perhaps this should become a macro command
-            Command( wxT("MenuTree"), Verbatim("Menu Tree..."),
+            Command( L"MenuTree", Verbatim("Menu Tree..."),
                FN(OnMenuTree),
                AlwaysEnabledFlag )
       #endif
@@ -578,11 +578,11 @@ BaseItemSharedPtr HelpMenu()
 
          // DA: Does not fully support update checking.
    #ifndef EXPERIMENTAL_DA
-         Command( wxT("Updates"), XXO("&Check for Updates..."),
+         Command( L"Updates", XXO("&Check for Updates..."),
             FN(OnCheckForUpdates),
             AlwaysEnabledFlag ),
    #endif
-         Command( wxT("About"), XXO("&About Audacity..."), FN(OnAbout),
+         Command( L"About", XXO("&About Audacity..."), FN(OnAbout),
             AlwaysEnabledFlag )
       )
    ) ) };
@@ -590,7 +590,7 @@ BaseItemSharedPtr HelpMenu()
 }
 
 AttachedItem sAttachment1{
-   wxT(""),
+   L"",
    Shared( HelpMenu() )
 };
 

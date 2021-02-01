@@ -96,9 +96,9 @@ class GridAx final : public WindowAccessible
    // of this object.
    // Acceptable values:
    // - a null variant (IsNull() returns TRUE)
-   // - a list variant (GetType() == wxT("list"))
+   // - a list variant (GetType() == L"list")
    // - an integer representing the selected child element,
-   //   or 0 if this object is selected (GetType() == wxT("long"))
+   //   or 0 if this object is selected (GetType() == L"long")
    // - a "void*" pointer to a wxAccessible child object
    wxAccStatus GetSelections(wxVariant *selections) override;
 
@@ -184,7 +184,7 @@ bool NumericEditor::EndEdit(int WXUNUSED(row), int WXUNUSED(col), const wxGrid *
    bool changed = newtime != mOld;
 
    if (changed) {
-      mValueAsString = wxString::Format(wxT("%g"), newtime);
+      mValueAsString = wxString::Format(L"%g", newtime);
       *newval = mValueAsString;
    }
 
@@ -220,7 +220,7 @@ wxGridCellEditor *NumericEditor::Clone() const
 
 wxString NumericEditor::GetValue() const
 {
-   return wxString::Format(wxT("%g"), GetNumericTextControl()->GetValue());
+   return wxString::Format(L"%g", GetNumericTextControl()->GetValue());
 }
 
 NumericFormatSymbol NumericEditor::GetFormat() const
@@ -984,7 +984,7 @@ wxAccStatus GridAx::GetName(int childId, wxString *name)
       if (df)
          df->DecRef();
 
-      *name = n + wxT(" ") + v;
+      *name = n + L" " + v;
    }
 
    return wxACC_OK;
@@ -1018,9 +1018,9 @@ wxAccStatus GridAx::GetRole(int childId, wxAccRole *role)
 // of this object.
 // Acceptable values:
 // - a null variant (IsNull() returns TRUE)
-// - a list variant (GetType() == wxT("list"))
+// - a list variant (GetType() == L"list")
 // - an integer representing the selected child element,
-//   or 0 if this object is selected (GetType() == wxT("long"))
+//   or 0 if this object is selected (GetType() == L"long")
 // - a "void*" pointer to a wxAccessible child object
 wxAccStatus GridAx::GetSelections(wxVariant * WXUNUSED(selections))
 {

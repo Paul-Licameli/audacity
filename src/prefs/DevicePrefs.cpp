@@ -228,7 +228,7 @@ void DevicePrefs::OnHost(wxCommandEvent & e)
    }
    // We should always find the host!
    if (index < 0) {
-      wxLogDebug(wxT("DevicePrefs::OnHost(): API index not found"));
+      wxLogDebug(L"DevicePrefs::OnHost(): API index not found");
       return;
    }
 
@@ -253,7 +253,7 @@ void DevicePrefs::OnHost(wxCommandEvent & e)
 
    recDevice = mRecordDevice;
    if (!this->mRecordSource.empty())
-      recDevice += wxT(": ") + mRecordSource;
+      recDevice += L": " + mRecordSource;
 
    mRecord->Clear();
    for (i = 0; i < inMaps.size(); i++) {
@@ -367,7 +367,7 @@ void DevicePrefs::OnDevice(wxCommandEvent & WXUNUSED(event))
          name = _("2 (Stereo)");
       }
       else {
-         name = wxString::Format(wxT("%d"), i + 1);
+         name = wxString::Format(L"%d", i + 1);
       }
 
       channelnames.push_back(name);

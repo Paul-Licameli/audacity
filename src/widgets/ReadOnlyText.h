@@ -15,6 +15,8 @@
 
 
 #include "WindowAccessible.h"
+#include <wx/settings.h>
+#include <wx/dcclient.h>
 
 #if wxUSE_ACCESSIBILITY
 

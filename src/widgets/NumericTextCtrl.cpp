@@ -251,9 +251,9 @@ public:
    // of this object.
    // Acceptable values:
    // - a null variant (IsNull() returns TRUE)
-   // - a list variant (GetType() == wxT("list"))
+   // - a list variant (GetType() == L"list")
    // - an integer representing the selected child element,
-   //   or 0 if this object is selected (GetType() == wxT("long"))
+   //   or 0 if this object is selected (GetType() == L"long")
    // - a "void*" pointer to a wxAccessible child object
    wxAccStatus GetSelections(wxVariant *selections) override;
 
@@ -319,9 +319,9 @@ public:
       else
          digits = 5; // hack: default
       if (zeropad && range>1)
-         formatStr.Printf(wxT("%%0%dd"), digits); // ex. "%03d" if digits is 3
+         formatStr.Printf(L"%%0%dd", digits); // ex. "%03d" if digits is 3
       else {
-         formatStr.Printf(wxT("%%0%dd"), digits);
+         formatStr.Printf(L"%%0%dd", digits);
       }
    }
    bool frac; // is it a fractional field
@@ -753,7 +753,7 @@ void NumericConverter::ParseFormatString(
 {
    auto format = untranslatedFormat.Translation();
 
-   mPrefix = wxT("");
+   mPrefix = L"";
    mFields.clear();
    mDigits.clear();
    mScalingFactor = 1.0;
@@ -775,11 +775,11 @@ void NumericConverter::ParseFormatString(
       if (format[i] == '|') {
          wxString remainder = format.Right(format.length() - i - 1);
          // For languages which use , as a separator.
-         remainder.Replace(wxT(","), wxT("."));
+         remainder.Replace(L",", L".");
 
-         if (remainder == wxT("#"))
+         if (remainder == L"#")
             mScalingFactor = mSampleRate;
-         else if (remainder == wxT("N")) {
+         else if (remainder == L"N") {
             mNtscDrop = true;
          }
          else
@@ -817,9 +817,9 @@ void NumericConverter::ParseFormatString(
          bool zeropad = false;
          long range = 0;
 
-         if (numStr.Right(1) == wxT("#"))
+         if (numStr.Right(1) == L"#")
             range = (long int)mSampleRate;
-         else if (numStr.Right(1) != wxT("*")) {
+         else if (numStr.Right(1) != L"*") {
             numStr.ToLong(&range);
          }
          if (numStr.GetChar(0)=='0' && numStr.length()>1)
@@ -841,7 +841,7 @@ void NumericConverter::ParseFormatString(
             mFields.push_back(NumericField(inFrac, 1, range, zeropad));
             numWholeFields++;
          }
-         numStr = wxT("");
+         numStr = L"";
       }
 
       if (handleDelim) {
@@ -870,15 +870,15 @@ void NumericConverter::ParseFormatString(
             if (numWholeFields == 0)
                mPrefix = delimStr;
             else {
-               delimStr.Replace(wxT("<"), wxT(","));
-               delimStr.Replace(wxT(">"), wxT("."));
+               delimStr.Replace(L"<", L",");
+               delimStr.Replace(L">", L".");
                mFields[numWholeFields-1].label = delimStr;
             }
          }
 
          if (goToFrac)
             inFrac = true;
-         delimStr = wxT("");
+         delimStr = L"";
       }
    }
 
@@ -888,12 +888,12 @@ void NumericConverter::ParseFormatString(
 
    int pos = 0;
    int j;
-   mValueMask = wxT("");
-   mValueTemplate = wxT("");
+   mValueMask = L"";
+   mValueTemplate = L"";
 
    mValueTemplate += mPrefix;
    for(j=0; j<(int)mPrefix.length(); j++)
-      mValueMask += wxT(".");
+      mValueMask += L".";
    pos += mPrefix.length();
 
    for(i = 0; i < mFields.size(); i++) {
@@ -901,15 +901,15 @@ void NumericConverter::ParseFormatString(
 
       for(j=0; j<mFields[i].digits; j++) {
          mDigits.push_back(DigitInfo(i, j, pos, wxRect()));
-         mValueTemplate += wxT("0");
-         mValueMask += wxT("0");
+         mValueTemplate += L"0";
+         mValueMask += L"0";
          pos++;
       }
 
       pos += mFields[i].label.length();
       mValueTemplate += mFields[i].label;
       for(j=0; j<(int)mFields[i].label.length(); j++)
-         mValueMask += wxT(".");
+         mValueMask += L".";
    }
 }
 
@@ -1046,7 +1046,7 @@ void NumericConverter::ValueToControls(double rawValue, bool nearest /* = true *
       wxString field;
       if (value < 0) {
          for (int ii = 0; ii < mFields[i].digits; ++ii)
-            field += wxT("-");
+            field += L"-";
       }
       else
          field = wxString::Format(mFields[i].formatStr, (int) value);
@@ -1397,7 +1397,7 @@ NumericTextCtrl::NumericTextCtrl(wxWindow *parent, wxWindowID id,
    mScrollRemainder = 0.0;
 
 #if wxUSE_ACCESSIBILITY
-   SetLabel(wxT(""));
+   SetLabel(L"");
    SetName( {} );
    SetAccessible(safenew NumericTextCtrlAx(this));
 #endif
@@ -1539,10 +1539,10 @@ wxSize NumericTextCtrl::ComputeSizing(bool update, wxCoord boxW, wxCoord boxH)
 
    // Now decrease it until we fit within our digit box
    dc.SetFont(pf);
-   dc.GetTextExtent(wxT("0"), &strW, &strH);
+   dc.GetTextExtent(L"0", &strW, &strH);
    while (strW > boxW || strH > boxH) {
       dc.SetFont(wxFont(--fontSize, wxFONTFAMILY_DEFAULT, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_NORMAL));
-      dc.GetTextExtent(wxT("0"), &strW, &strH);
+      dc.GetTextExtent(L"0", &strW, &strH);
    }
    fontSize--;
 
@@ -1552,7 +1552,7 @@ wxSize NumericTextCtrl::ComputeSizing(bool update, wxCoord boxW, wxCoord boxH)
       dc.SetFont(*mDigitFont);
 
       // Remember the actual digit width and height using the new font
-      dc.GetTextExtent(wxT("0"), &mDigitW, &mDigitH);
+      dc.GetTextExtent(L"0", &mDigitW, &mDigitH);
    }
 
    // The label font should be a little smaller
@@ -1656,7 +1656,7 @@ bool NumericTextCtrl::Layout()
 
    int numberBottom = mBorderTop + (mDigitBoxH - mDigitH)/2 + mDigitH;
 
-   memDC.GetTextExtent(wxT("0"), &strW, &strH);
+   memDC.GetTextExtent(L"0", &strW, &strH);
    int labelTop = numberBottom - strH;
 
    memDC.SetTextForeground(theTheme.Colour( clrTimeFont ));
@@ -2279,7 +2279,7 @@ wxAccStatus NumericTextCtrlAx::GetName(int childId, wxString *name)
          *name = mCtrl->GetLabel();
       }
 
-      *name += wxT(" ") +
+      *name += L" " +
                mCtrl->GetString();
    }
    // This case is needed because of the behaviour of Narrator, which
@@ -2319,9 +2319,9 @@ wxAccStatus NumericTextCtrlAx::GetName(int childId, wxString *name)
          }
 
          *name = mFields[field - 1].str +
-                 wxT(" ") +
+                 L" " +
                  label +
-                 wxT(", ") +     // comma inserts a slight pause
+                 L", " +     // comma inserts a slight pause
                  mCtrl->GetString().at(mCtrl->mDigits[childId - 1].pos);
          mLastField = field;
          mLastDigit = childId;
@@ -2357,9 +2357,9 @@ wxAccStatus NumericTextCtrlAx::GetRole(int WXUNUSED(childId), wxAccRole *role)
 // of this object.
 // Acceptable values:
 // - a null variant (IsNull() returns TRUE)
-// - a list variant (GetType() == wxT("list"))
+// - a list variant (GetType() == L"list")
 // - an integer representing the selected child element,
-//   or 0 if this object is selected (GetType() == wxT("long"))
+//   or 0 if this object is selected (GetType() == L"long")
 // - a "void*" pointer to a wxAccessible child object
 wxAccStatus NumericTextCtrlAx::GetSelections(wxVariant * WXUNUSED(selections))
 {

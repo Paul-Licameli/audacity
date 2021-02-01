@@ -94,7 +94,7 @@ static Settings &settings()
 
 bool TrackInfo::HasSoloButton()
 {
-   return settings().gSoloPref != wxT("None");
+   return settings().gSoloPref != L"None";
 }
 
 #define RANGE(array) (array), (array) + sizeof(array)/sizeof(*(array))

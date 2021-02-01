@@ -78,7 +78,7 @@ SimpleBlockFile::SimpleBlockFile(wxFileNameWrapper &&baseFileName,
                                  samplePtr sampleData, size_t sampleLen,
                                  sampleFormat format):
    BlockFile {
-      (baseFileName.SetExt(wxT("au")), std::move(baseFileName)),
+      (baseFileName.SetExt(L"au"), std::move(baseFileName)),
       sampleLen
    }
 {
@@ -116,7 +116,7 @@ bool SimpleBlockFile::WriteSimpleBlockFile(
     sampleFormat format,
     void* summaryData)
 {
-   wxFFile file(mFileName.GetFullPath(), wxT("wb"));
+   wxFFile file(mFileName.GetFullPath(), L"wb");
    if( !file.IsOpened() ){
       // Can't do anything else.
       return false;
@@ -168,7 +168,7 @@ bool SimpleBlockFile::WriteSimpleBlockFile(
    size_t nBytesWritten = file.Write(&header, nBytesToWrite);
    if (nBytesWritten != nBytesToWrite)
    {
-      wxLogDebug(wxT("Wrote %lld bytes, expected %lld."), (long long) nBytesWritten, (long long) nBytesToWrite);
+      wxLogDebug(L"Wrote %lld bytes, expected %lld.", (long long) nBytesWritten, (long long) nBytesToWrite);
       return false;
    }
 
@@ -176,7 +176,7 @@ bool SimpleBlockFile::WriteSimpleBlockFile(
    nBytesWritten = file.Write(summaryData, nBytesToWrite);
    if (nBytesWritten != nBytesToWrite)
    {
-      wxLogDebug(wxT("Wrote %lld bytes, expected %lld."), (long long) nBytesWritten, (long long) nBytesToWrite);
+      wxLogDebug(L"Wrote %lld bytes, expected %lld.", (long long) nBytesWritten, (long long) nBytesToWrite);
       return false;
    }
 
@@ -198,7 +198,7 @@ bool SimpleBlockFile::WriteSimpleBlockFile(
             #endif
          if (nBytesWritten != nBytesToWrite)
          {
-            wxLogDebug(wxT("Wrote %lld bytes, expected %lld."), (long long) nBytesWritten, (long long) nBytesToWrite);
+            wxLogDebug(L"Wrote %lld bytes, expected %lld.", (long long) nBytesWritten, (long long) nBytesToWrite);
             return false;
          }
       }
@@ -211,7 +211,7 @@ bool SimpleBlockFile::WriteSimpleBlockFile(
       nBytesWritten = file.Write(sampleData, nBytesToWrite);
       if (nBytesWritten != nBytesToWrite)
       {
-         wxLogDebug(wxT("Wrote %lld bytes, expected %lld."), (long long) nBytesWritten, (long long) nBytesToWrite);
+         wxLogDebug(L"Wrote %lld bytes, expected %lld.", (long long) nBytesWritten, (long long) nBytesToWrite);
          return false;
       }
    }
@@ -228,7 +228,7 @@ bool SimpleBlockFile::ReadSummary(ArrayOf<char> &data)
    data.reinit( mSummaryInfo.totalSummaryBytes );
    //wxLogDebug("SimpleBlockFile::ReadSummary(): Reading summary from disk.");
 
-   wxFFile file(mFileName.GetFullPath(), wxT("rb"));
+   wxFFile file(mFileName.GetFullPath(), L"rb");
 
    {
       Optional<wxLogNull> silence{};
@@ -274,15 +274,15 @@ size_t SimpleBlockFile::ReadData(samplePtr data, sampleFormat format,
 void SimpleBlockFile::SaveXML(XMLWriter &xmlFile)
 // may throw
 {
-   xmlFile.StartTag(wxT("simpleblockfile"));
+   xmlFile.StartTag(L"simpleblockfile");
 
-   xmlFile.WriteAttr(wxT("filename"), mFileName.GetFullName());
-   xmlFile.WriteAttr(wxT("len"), mLen);
-   xmlFile.WriteAttr(wxT("min"), mMin);
-   xmlFile.WriteAttr(wxT("max"), mMax);
-   xmlFile.WriteAttr(wxT("rms"), mRMS);
+   xmlFile.WriteAttr(L"filename", mFileName.GetFullName());
+   xmlFile.WriteAttr(L"len", mLen);
+   xmlFile.WriteAttr(L"min", mMin);
+   xmlFile.WriteAttr(L"max", mMax);
+   xmlFile.WriteAttr(L"rms", mRMS);
 
-   xmlFile.EndTag(wxT("simpleblockfile"));
+   xmlFile.EndTag(L"simpleblockfile");
 }
 
 // BuildFromXML methods should always return a BlockFile, not NULL,
@@ -305,7 +305,7 @@ BlockFilePtr SimpleBlockFile::BuildFromXML(DirManager &dm, const wxChar **attrs)
          break;
 
       const wxString strValue = value;
-      if (!wxStricmp(attr, wxT("filename")) &&
+      if (!wxStricmp(attr, L"filename") &&
             // Can't use XMLValueChecker::IsGoodFileName here, but do part of its test.
             XMLValueChecker::IsGoodFileString(strValue) &&
             (strValue.length() + 1 + dm.GetProjectDataDir().length() <= PLATFORM_MAX_PATH))
@@ -314,17 +314,17 @@ BlockFilePtr SimpleBlockFile::BuildFromXML(DirManager &dm, const wxChar **attrs)
             // Make sure fileName is back to uninitialized state so we can detect problem later.
             fileName.Clear();
       }
-      else if (!wxStrcmp(attr, wxT("len")) &&
+      else if (!wxStrcmp(attr, L"len") &&
                XMLValueChecker::IsGoodInt(strValue) && strValue.ToLong(&nValue) &&
                nValue > 0)
          len = nValue;
       else if (XMLValueChecker::IsGoodString(strValue) && Internat::CompatibleToDouble(strValue, &dblValue))
       {  // double parameters
-         if (!wxStricmp(attr, wxT("min")))
+         if (!wxStricmp(attr, L"min"))
             min = dblValue;
-         else if (!wxStricmp(attr, wxT("max")))
+         else if (!wxStricmp(attr, L"max"))
             max = dblValue;
-         else if (!wxStricmp(attr, wxT("rms")) && (dblValue >= 0.0))
+         else if (!wxStricmp(attr, L"rms") && (dblValue >= 0.0))
             rms = dblValue;
       }
    }
@@ -350,7 +350,7 @@ auto SimpleBlockFile::GetSpaceUsage() const -> DiskByteCount
    if (mFormat == (sampleFormat) 0)
    {
       // Check sample format
-      wxFFile file(mFileName.GetFullPath(), wxT("rb"));
+      wxFFile file(mFileName.GetFullPath(), L"rb");
       if (!file.IsOpened())
       {
          return 0;
@@ -396,7 +396,7 @@ auto SimpleBlockFile::GetSpaceUsage() const -> DiskByteCount
 }
 
 void SimpleBlockFile::Recover(){
-   wxFFile file(mFileName.GetFullPath(), wxT("wb"));
+   wxFFile file(mFileName.GetFullPath(), L"wb");
 
    if( !file.IsOpened() ){
       // Can't do anything else.
@@ -416,10 +416,10 @@ void SimpleBlockFile::Recover(){
 
    for(decltype(mSummaryInfo.totalSummaryBytes) i = 0;
        i < mSummaryInfo.totalSummaryBytes; i++)
-      file.Write(wxT("\0"),1);
+      file.Write(L"\0",1);
 
    for(decltype(mLen) i = 0; i < mLen * 2; i++)
-      file.Write(wxT("\0"),1);
+      file.Write(L"\0",1);
 
 }
 

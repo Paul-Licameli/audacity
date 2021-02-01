@@ -41,7 +41,7 @@ FileHistory &FileHistory::Global()
       ID_RECENT_LAST - ID_RECENT_FIRST + 1, ID_RECENT_CLEAR };
    static std::once_flag flag;
    std::call_once( flag, [&]{
-      history.Load(*gPrefs, wxT("RecentFiles"));
+      history.Load(*gPrefs, L"RecentFiles");
    });
 
    return history;
@@ -128,24 +128,24 @@ void FileHistory::Load(wxConfigBase & config, const wxString & group)
       got = config.GetNextEntry(file, ndx);
    }
 
-   config.SetPath(wxT(".."));
+   config.SetPath(L"..");
 
    NotifyMenus();
 }
 
 void FileHistory::Save(wxConfigBase & config)
 {
-   config.SetPath(wxT(""));
+   config.SetPath(L"");
    config.DeleteGroup(mGroup);
    config.SetPath(mGroup);
 
    // Stored in reverse order
    int n = mHistory.size() - 1;
    for (size_t i = 1; i <= mHistory.size(); i++) {
-      config.Write(wxString::Format(wxT("file%02d"), (int)i), mHistory[n--]);
+      config.Write(wxString::Format(L"file%02d", (int)i), mHistory[n--]);
    }
 
-   config.SetPath(wxT(""));
+   config.SetPath(L"");
 
    config.Flush();
 }

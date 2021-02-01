@@ -94,7 +94,7 @@ void SelectAllIfNone( AudacityProject &project )
 // selecting is allowed. Returns "false" selecting not allowed.
 bool SelectAllIfNoneAndAllowed( AudacityProject &project )
 {
-   auto allowed = gPrefs->ReadBool(wxT("/GUI/SelectAllOnNone"), false);
+   auto allowed = gPrefs->ReadBool(L"/GUI/SelectAllOnNone", false);
    auto &viewInfo = ViewInfo::Get( project );
    auto flags = MenuManager::Get( project ).GetUpdateFlags();
 

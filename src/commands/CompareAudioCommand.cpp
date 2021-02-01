@@ -48,7 +48,7 @@ extern void RegisterCompareAudio( Registrar & R){
 }
 
 bool CompareAudioCommand::DefineParams( ShuttleParams & S ){
-   S.Define( errorThreshold,  wxT("Threshold"),   0.0f,  0.0f,    0.01f,    1.0f );
+   S.Define( errorThreshold,  L"Threshold",   0.0f,  0.0f,    0.01f,    1.0f );
    return true;
 }
 
@@ -72,7 +72,7 @@ bool CompareAudioCommand::GetSelection(const CommandContext &context, AudacityPr
    mT1 = selectedRegion.t1();
    if (mT0 >= mT1)
    {
-      context.Error(wxT("There is no selection!"));
+      context.Error(L"There is no selection!");
       return false;
    }
 
@@ -82,18 +82,18 @@ bool CompareAudioCommand::GetSelection(const CommandContext &context, AudacityPr
    mTrack0 = *trackRange.first;
    if (mTrack0 == NULL)
    {
-      context.Error(wxT("No tracks selected! Select two tracks to compare."));
+      context.Error(L"No tracks selected! Select two tracks to compare.");
       return false;
    }
    mTrack1 = * ++ trackRange.first;
    if (mTrack1 == NULL)
    {
-      context.Error(wxT("Only one track selected! Select two tracks to compare."));
+      context.Error(L"Only one track selected! Select two tracks to compare.");
       return false;
    }
    if ( * ++ trackRange.first )
    {
-      context.Status(wxT("More than two tracks selected - only the first two will be compared."));
+      context.Status(L"More than two tracks selected - only the first two will be compared.");
    }
    return true;
 }
@@ -115,9 +115,9 @@ bool CompareAudioCommand::Apply(const CommandContext & context)
       return false;
    }
 
-   wxString msg = wxT("Comparing tracks '");
-   msg += mTrack0->GetName() + wxT("' and '")
-      + mTrack1->GetName() + wxT("'.");
+   wxString msg = L"Comparing tracks '";
+   msg += mTrack0->GetName() + L"' and '"
+      + mTrack1->GetName() + L"'.";
    context.Status(msg);
 
    long errorCount = 0;
@@ -158,9 +158,9 @@ bool CompareAudioCommand::Apply(const CommandContext & context)
 
    // Output the results
    double errorSeconds = mTrack0->LongSamplesToTime(errorCount);
-   context.Status(wxString::Format(wxT("%li"), errorCount));
-   context.Status(wxString::Format(wxT("%.4f"), errorSeconds));
-   context.Status(wxString::Format(wxT("Finished comparison: %li samples (%.3f seconds) exceeded the error threshold of %f."), errorCount, errorSeconds, errorThreshold));
+   context.Status(wxString::Format(L"%li", errorCount));
+   context.Status(wxString::Format(L"%.4f", errorSeconds));
+   context.Status(wxString::Format(L"Finished comparison: %li samples (%.3f seconds) exceeded the error threshold of %f.", errorCount, errorSeconds, errorThreshold));
    return true;
 }
 

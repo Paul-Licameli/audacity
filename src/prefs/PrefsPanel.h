@@ -35,7 +35,7 @@ MousePrefs, QualityPrefs, SpectrumPrefs and ThemePrefs.
 /* A few constants for an attempt at semi-uniformity */
 #define PREFS_FONT_SIZE     8
 
-#define BUILTIN_PREFS_PANEL_PREFIX wxT("Built-in PrefsPanel: ")
+#define BUILTIN_PREFS_PANEL_PREFIX L"Built-in PrefsPanel: "
 
 /* these are spacing guidelines: ie. radio buttons should have a 5 pixel
  * border on each side */

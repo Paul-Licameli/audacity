@@ -38,8 +38,8 @@
 // Define keys, defaults, minimums, and maximums for the effect parameters
 //
 //     Name    Type     Key                     Def      Min      Max      Scale
-Param( Amount, float,   wxT("Stretch Factor"),   10.0,    1.0,     FLT_MAX, 1   );
-Param( Time,   float,   wxT("Time Resolution"),  0.25f,   0.00099f,  FLT_MAX, 1   );
+Param( Amount, float,   L"Stretch Factor",   10.0,    1.0,     FLT_MAX, 1   );
+Param( Time,   float,   L"Time Resolution",  0.25f,   0.00099f,  FLT_MAX, 1   );
 
 /// \brief Class that helps EffectPaulStretch.  It does the FFTs and inner loop 
 /// of the effect.
@@ -119,7 +119,7 @@ TranslatableString EffectPaulstretch::GetDescription()
 
 wxString EffectPaulstretch::ManualPage()
 {
-   return wxT("Paulstretch");
+   return L"Paulstretch";
 }
 
 // EffectDefinitionInterface implementation
@@ -206,11 +206,11 @@ void EffectPaulstretch::PopulateOrExchange(ShuttleGui & S)
           * the effect to a 1-second sample, with the default Stretch Factor of 10.0
           * will give an (approximately) 10 second sound
           */
-         .AddTextBox(XXO("&Stretch Factor:"), wxT(""), 10);
+         .AddTextBox(XXO("&Stretch Factor:"), L"", 10);
 
       S.Validator<FloatingPointValidator<float>>(
             3, &mTime_resolution, NumValidatorStyle::ONE_TRAILING_ZERO, MIN_Time)
-         .AddTextBox(XXO("&Time Resolution (seconds):"), wxT(""), 10);
+         .AddTextBox(XXO("&Time Resolution (seconds):"), L"", 10);
    }
    S.EndMultiColumn();
 };
@@ -292,7 +292,7 @@ bool EffectPaulstretch::ProcessOne(WaveTrack *track,double t0,double t1,int coun
 
       if (this->IsPreviewing()) {
          double defaultPreviewLen;
-         gPrefs->Read(wxT("/AudioIO/EffectsPreviewLen"), &defaultPreviewLen, 6.0);
+         gPrefs->Read(L"/AudioIO/EffectsPreviewLen", &defaultPreviewLen, 6.0);
 
          if ((minDuration / mProjectRate) < defaultPreviewLen) {
             ::Effect::MessageBox(

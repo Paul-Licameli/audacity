@@ -111,8 +111,8 @@ public:
    void SetBandwidthSelectionFormatName(const NumericFormatSymbol & format);
    const NumericFormatSymbol & GetBandwidthSelectionFormatName() const;
 
-   bool IsSoloSimple() const { return mSoloPref == wxT("Simple"); }
-   bool IsSoloNone() const { return mSoloPref == wxT("None"); }
+   bool IsSoloSimple() const { return mSoloPref == L"Simple"; }
+   bool IsSoloNone() const { return mSoloPref == L"None"; }
 
    bool EmptyCanBeDirty() const { return mEmptyCanBeDirty; }
 

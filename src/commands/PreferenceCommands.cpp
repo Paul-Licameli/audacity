@@ -31,7 +31,7 @@ const ComponentInterfaceSymbol GetPreferenceCommand::Symbol
 namespace{ BuiltinCommandsModule::Registration< GetPreferenceCommand > reg; }
 
 bool GetPreferenceCommand::DefineParams( ShuttleParams & S ){
-   S.Define( mName, wxT("Name"),   wxT("") );
+   S.Define( mName, L"Name",   L"" );
    return true;
 }
 
@@ -63,9 +63,9 @@ const ComponentInterfaceSymbol SetPreferenceCommand::Symbol
 namespace{ BuiltinCommandsModule::Registration< SetPreferenceCommand > reg2; }
 
 bool SetPreferenceCommand::DefineParams( ShuttleParams & S ){
-   S.Define(    mName,   wxT("Name"),    wxT("") );
-   S.Define(   mValue,   wxT("Value"),   wxT("") );
-   S.Define( mbReload,   wxT("Reload"),  false );
+   S.Define(    mName,   L"Name",    L"" );
+   S.Define(   mValue,   L"Value",   L"" );
+   S.Define( mbReload,   L"Reload",  false );
    return true;
 }
 

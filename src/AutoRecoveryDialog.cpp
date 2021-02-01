@@ -147,7 +147,7 @@ void AutoRecoveryDialog::PopulateOrExchange(ShuttleGui &S)
 void AutoRecoveryDialog::PopulateList()
 {
    wxString tempdir = TempDirectory::TempDir();
-   wxString pattern = wxT("*.") + FileNames::UnsavedProjectExtension();
+   wxString pattern = L"*." + FileNames::UnsavedProjectExtension();
    FilePaths files;
 
    wxDir::GetAllFiles(tempdir, &files, pattern, wxDIR_FILES);
@@ -188,7 +188,7 @@ void AutoRecoveryDialog::PopulateList()
       if (fn != activeFile)
       {
          mFiles.push_back(fn.GetFullPath());
-         mFileList->InsertItem(item, wxT(""));
+         mFileList->InsertItem(item, L"");
          mFileList->SetItem(item, 1, fn.GetName());
          mFileList->CheckItem(item, true);
          item++;
@@ -289,9 +289,9 @@ void AutoRecoveryDialog::OnDiscardSelected(wxCommandEvent &WXUNUSED(evt))
       wxFileName file(fileName);
       if (file.GetExt().IsSameAs(FileNames::UnsavedProjectExtension()))
       {
-         file.SetFullName(wxT(""));
+         file.SetFullName(L"");
 
-         wxFileName temp(TempDirectory::TempDir(), wxT(""));
+         wxFileName temp(TempDirectory::TempDir(), L"");
          if (file == temp)
             ProjectFileIO::RemoveProject(fileName);
       }

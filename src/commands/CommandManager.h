@@ -145,7 +145,7 @@ class AUDACITY_DLL_API CommandManager final
          return std::move(*this);
       }
 
-      const wxChar *accel{ wxT("") };
+      const wxChar *accel{ L"" };
       CheckFn checker; // default value means it's not a check item
       bool bIsEffect{ false };
       CommandParameter parameter{};

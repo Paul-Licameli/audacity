@@ -265,7 +265,7 @@ PopupMenuTable &WaveformVRulerMenuTable::Instance()
 BEGIN_POPUP_MENU(WaveformVRulerMenuTable)
    // Accelerators only if zooming enabled.
    bool bVZoom;
-   gPrefs->Read(wxT("/GUI/VerticalZooming"), &bVZoom, false);
+   gPrefs->Read(L"/GUI/VerticalZooming", &bVZoom, false);
 
    BeginSection( "Scales" );
    {

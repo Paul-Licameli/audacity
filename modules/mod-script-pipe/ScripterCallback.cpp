@@ -70,8 +70,8 @@ int DoSrv(char *pIn)
    // Scripts must send unicode strings (if going beyond 7-bit ASCII).
    // Important for filenames in commands.
    wxString Str1(pIn, wxConvUTF8); 
-   Str1.Replace( wxT("\r"), wxT(""));
-   Str1.Replace( wxT("\n"), wxT(""));
+   Str1.Replace( L"\r", L"");
+   Str1.Replace( L"\n", L"");
    Str2 = wxEmptyString;
    (*pScriptServerFn)( &Str1 , &Str2);
 
@@ -84,7 +84,7 @@ int DoSrv(char *pIn)
    {
       if( Str2[i] == L'\n' )
       {
-         aStr.Add( Str2.Mid( iStart, i-iStart) + wxT("\n") );
+         aStr.Add( Str2.Mid( iStart, i-iStart) + L"\n" );
          iStart = i+1;
       }
    }

@@ -179,7 +179,7 @@ void LyricsWindow::SetWindowTitle()
    wxString name = mProject->GetProjectName();
    if (!name.empty())
    {
-      name.Prepend(wxT(" - "));
+      name.Prepend(L" - ");
    }
 
    SetTitle(AudacityKaraokeTitle.Format(name).Translation());
@@ -225,9 +225,9 @@ CommandHandlerObject &findCommandHandler(AudacityProject &) {
 // Register that menu item
 
 using namespace MenuTable;
-AttachedItem sAttachment{ wxT("View/Windows"),
+AttachedItem sAttachment{ L"View/Windows",
    ( FinderScope{ findCommandHandler },
-      Command( wxT("Karaoke"), XXO("&Karaoke..."), &Handler::OnKaraoke,
+      Command( L"Karaoke", XXO("&Karaoke..."), &Handler::OnKaraoke,
          LabelTracksExistFlag() ) )
 };
 

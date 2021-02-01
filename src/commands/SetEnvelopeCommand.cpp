@@ -41,9 +41,9 @@ SetEnvelopeCommand::SetEnvelopeCommand()
 
 
 bool SetEnvelopeCommand::DefineParams( ShuttleParams & S ){ 
-   S.OptionalY( bHasT              ).Define(  mT,              wxT("Time"),     0.0, 0.0, 100000.0);
-   S.OptionalY( bHasV              ).Define(  mV,              wxT("Value"),    1.0, 0.0, 2.0);
-   S.OptionalN( bHasDelete         ).Define(  mbDelete,        wxT("Delete"),   false );
+   S.OptionalY( bHasT              ).Define(  mT,              L"Time",     0.0, 0.0, 100000.0);
+   S.OptionalY( bHasV              ).Define(  mV,              L"Value",    1.0, 0.0, 2.0);
+   S.OptionalN( bHasDelete         ).Define(  mbDelete,        L"Delete",   false );
    return true;
 };
 

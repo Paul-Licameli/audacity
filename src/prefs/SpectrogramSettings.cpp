@@ -36,7 +36,7 @@ SpectrogramSettings::Globals::Globals()
 void SpectrogramSettings::Globals::SavePrefs()
 {
 #ifdef SPECTRAL_SELECTION_GLOBAL_SWITCH
-   gPrefs->Write(wxT("/Spectrum/EnableSpectralSelection"), spectralSelection);
+   gPrefs->Write(L"/Spectrum/EnableSpectralSelection", spectralSelection);
 #endif
 }
 
@@ -44,7 +44,7 @@ void SpectrogramSettings::Globals::LoadPrefs()
 {
 #ifdef SPECTRAL_SELECTION_GLOBAL_SWITCH
    spectralSelection
-      = (gPrefs->Read(wxT("/Spectrum/EnableSpectralSelection"), 1L) != 0);
+      = (gPrefs->Read(L"/Spectrum/EnableSpectralSelection", 1L) != 0);
 #endif
 }
 
@@ -161,13 +161,13 @@ const EnumValueSymbols &SpectrogramSettings::GetColorSchemeNames()
    static const EnumValueSymbols result{
       // Keep in correspondence with enum SpectrogramSettings::ColorScheme:
       /* i18n-hint: New color scheme for spectrograms */
-      { wxT("SpecColorNew"),     XC("Color (default)",   "spectrum prefs") },
+      { L"SpecColorNew",     XC("Color (default)",   "spectrum prefs") },
       /* i18n-hint: Classic color scheme(from theme) for spectrograms */
-      { wxT("SpecColorTheme"),   XC("Color (classic)",   "spectrum prefs") },
+      { L"SpecColorTheme",   XC("Color (classic)",   "spectrum prefs") },
       /* i18n-hint: Grayscale color scheme for spectrograms */
-      { wxT("SpecGrayscale"),    XC("Grayscale",         "spectrum prefs") },
+      { L"SpecGrayscale",    XC("Grayscale",         "spectrum prefs") },
       /* i18n-hint: Inverse grayscale color scheme for spectrograms */
-      { wxT("SpecInvGrayscale"), XC("Inverse grayscale", "spectrum prefs") },
+      { L"SpecInvGrayscale", XC("Inverse grayscale", "spectrum prefs") },
    };
 
    wxASSERT(csNumColorScheme == result.size());
@@ -180,8 +180,8 @@ const EnumValueSymbols &SpectrogramSettings::GetColorSchemeNames()
 void SpectrogramSettings::ColorSchemeEnumSetting::Migrate(wxString &value)
 {
    // Migrate old grayscale option to Color scheme choice
-   bool isGrayscale = (gPrefs->Read(wxT("/Spectrum/Grayscale"), 0L) != 0);
-   if (isGrayscale && !gPrefs->Read(wxT("/Spectrum/ColorScheme"), &value)) {
+   bool isGrayscale = (gPrefs->Read(L"/Spectrum/Grayscale", 0L) != 0);
+   if (isGrayscale && !gPrefs->Read(L"/Spectrum/ColorScheme", &value)) {
       value = GetColorSchemeNames().at(csInvGrayscale).Internal();
       Write(value);
       gPrefs->Flush();
@@ -189,7 +189,7 @@ void SpectrogramSettings::ColorSchemeEnumSetting::Migrate(wxString &value)
 }
 
 SpectrogramSettings::ColorSchemeEnumSetting SpectrogramSettings::colorSchemeSetting{
-   wxT("/Spectrum/ColorScheme"),
+   L"/Spectrum/ColorScheme",
    GetColorSchemeNames(),
    csColorNew, // default to Color(New)
    { csColorNew, csColorTheme, csGrayscale, csInvGrayscale },
@@ -283,41 +283,41 @@ bool SpectrogramSettings::Validate(bool quiet)
 
 void SpectrogramSettings::LoadPrefs()
 {
-   minFreq = gPrefs->Read(wxT("/Spectrum/MinFreq"), 0L);
+   minFreq = gPrefs->Read(L"/Spectrum/MinFreq", 0L);
 
-   maxFreq = gPrefs->Read(wxT("/Spectrum/MaxFreq"), 8000L);
+   maxFreq = gPrefs->Read(L"/Spectrum/MaxFreq", 8000L);
 
-   range = gPrefs->Read(wxT("/Spectrum/Range"), 80L);
-   gain = gPrefs->Read(wxT("/Spectrum/Gain"), 20L);
-   frequencyGain = gPrefs->Read(wxT("/Spectrum/FrequencyGain"), 0L);
+   range = gPrefs->Read(L"/Spectrum/Range", 80L);
+   gain = gPrefs->Read(L"/Spectrum/Gain", 20L);
+   frequencyGain = gPrefs->Read(L"/Spectrum/FrequencyGain", 0L);
 
-   windowSize = gPrefs->Read(wxT("/Spectrum/FFTSize"), 1024);
+   windowSize = gPrefs->Read(L"/Spectrum/FFTSize", 1024);
 
 #ifdef EXPERIMENTAL_ZERO_PADDED_SPECTROGRAMS
-   zeroPaddingFactor = gPrefs->Read(wxT("/Spectrum/ZeroPaddingFactor"), 1);
+   zeroPaddingFactor = gPrefs->Read(L"/Spectrum/ZeroPaddingFactor", 1);
 #endif
 
-   gPrefs->Read(wxT("/Spectrum/WindowType"), &windowType, eWinFuncHann);
+   gPrefs->Read(L"/Spectrum/WindowType", &windowType, eWinFuncHann);
 
    colorScheme = colorSchemeSetting.ReadEnum();
 
-   scaleType = ScaleType(gPrefs->Read(wxT("/Spectrum/ScaleType"), 0L));
+   scaleType = ScaleType(gPrefs->Read(L"/Spectrum/ScaleType", 0L));
 
 #ifndef SPECTRAL_SELECTION_GLOBAL_SWITCH
-   spectralSelection = (gPrefs->Read(wxT("/Spectrum/EnableSpectralSelection"), 1L) != 0);
+   spectralSelection = (gPrefs->Read(L"/Spectrum/EnableSpectralSelection", 1L) != 0);
 #endif
 
-   algorithm = Algorithm(gPrefs->Read(wxT("/Spectrum/Algorithm"), 0L));
+   algorithm = Algorithm(gPrefs->Read(L"/Spectrum/Algorithm", 0L));
 
 #ifdef EXPERIMENTAL_FFT_Y_GRID
-   fftYGrid = (gPrefs->Read(wxT("/Spectrum/FFTYGrid"), 0L) != 0);
+   fftYGrid = (gPrefs->Read(L"/Spectrum/FFTYGrid", 0L) != 0);
 #endif //EXPERIMENTAL_FFT_Y_GRID
 
 #ifdef EXPERIMENTAL_FIND_NOTES
-   fftFindNotes = (gPrefs->Read(wxT("/Spectrum/FFTFindNotes"), 0L) != 0);
-   findNotesMinA = gPrefs->Read(wxT("/Spectrum/FindNotesMinA"), -30.0);
-   numberOfMaxima = gPrefs->Read(wxT("/Spectrum/FindNotesN"), 5L);
-   findNotesQuantize = (gPrefs->Read(wxT("/Spectrum/FindNotesQuantize"), 0L) != 0);
+   fftFindNotes = (gPrefs->Read(L"/Spectrum/FFTFindNotes", 0L) != 0);
+   findNotesMinA = gPrefs->Read(L"/Spectrum/FindNotesMinA", -30.0);
+   numberOfMaxima = gPrefs->Read(L"/Spectrum/FindNotesN", 5L);
+   findNotesQuantize = (gPrefs->Read(L"/Spectrum/FindNotesQuantize", 0L) != 0);
 #endif //EXPERIMENTAL_FIND_NOTES
 
    // Enforce legal values
@@ -328,44 +328,44 @@ void SpectrogramSettings::LoadPrefs()
 
 void SpectrogramSettings::SavePrefs()
 {
-   gPrefs->Write(wxT("/Spectrum/MinFreq"), minFreq);
-   gPrefs->Write(wxT("/Spectrum/MaxFreq"), maxFreq);
+   gPrefs->Write(L"/Spectrum/MinFreq", minFreq);
+   gPrefs->Write(L"/Spectrum/MaxFreq", maxFreq);
 
    // Nothing wrote these.  They only varied from the linear scale bounds in-session. -- PRL
-   // gPrefs->Write(wxT("/SpectrumLog/MaxFreq"), logMinFreq);
-   // gPrefs->Write(wxT("/SpectrumLog/MinFreq"), logMaxFreq);
+   // gPrefs->Write(L"/SpectrumLog/MaxFreq", logMinFreq);
+   // gPrefs->Write(L"/SpectrumLog/MinFreq", logMaxFreq);
 
-   gPrefs->Write(wxT("/Spectrum/Range"), range);
-   gPrefs->Write(wxT("/Spectrum/Gain"), gain);
-   gPrefs->Write(wxT("/Spectrum/FrequencyGain"), frequencyGain);
+   gPrefs->Write(L"/Spectrum/Range", range);
+   gPrefs->Write(L"/Spectrum/Gain", gain);
+   gPrefs->Write(L"/Spectrum/FrequencyGain", frequencyGain);
 
-   gPrefs->Write(wxT("/Spectrum/FFTSize"), windowSize);
+   gPrefs->Write(L"/Spectrum/FFTSize", windowSize);
 
 #ifdef EXPERIMENTAL_ZERO_PADDED_SPECTROGRAMS
-   gPrefs->Write(wxT("/Spectrum/ZeroPaddingFactor"), zeroPaddingFactor);
+   gPrefs->Write(L"/Spectrum/ZeroPaddingFactor", zeroPaddingFactor);
 #endif
 
-   gPrefs->Write(wxT("/Spectrum/WindowType"), windowType);
+   gPrefs->Write(L"/Spectrum/WindowType", windowType);
 
    colorSchemeSetting.WriteEnum(colorScheme);
 
-   gPrefs->Write(wxT("/Spectrum/ScaleType"), (int) scaleType);
+   gPrefs->Write(L"/Spectrum/ScaleType", (int) scaleType);
 
 #ifndef SPECTRAL_SELECTION_GLOBAL_SWITCH
-   gPrefs->Write(wxT("/Spectrum/EnableSpectralSelection"), spectralSelection);
+   gPrefs->Write(L"/Spectrum/EnableSpectralSelection", spectralSelection);
 #endif
 
-   gPrefs->Write(wxT("/Spectrum/Algorithm"), (int) algorithm);
+   gPrefs->Write(L"/Spectrum/Algorithm", (int) algorithm);
 
 #ifdef EXPERIMENTAL_FFT_Y_GRID
-   gPrefs->Write(wxT("/Spectrum/FFTYGrid"), fftYGrid);
+   gPrefs->Write(L"/Spectrum/FFTYGrid", fftYGrid);
 #endif //EXPERIMENTAL_FFT_Y_GRID
 
 #ifdef EXPERIMENTAL_FIND_NOTES
-   gPrefs->Write(wxT("/Spectrum/FFTFindNotes"), fftFindNotes);
-   gPrefs->Write(wxT("/Spectrum/FindNotesMinA"), findNotesMinA);
-   gPrefs->Write(wxT("/Spectrum/FindNotesN"), numberOfMaxima);
-   gPrefs->Write(wxT("/Spectrum/FindNotesQuantize"), findNotesQuantize);
+   gPrefs->Write(L"/Spectrum/FFTFindNotes", fftFindNotes);
+   gPrefs->Write(L"/Spectrum/FindNotesMinA", findNotesMinA);
+   gPrefs->Write(L"/Spectrum/FindNotesN", numberOfMaxima);
+   gPrefs->Write(L"/Spectrum/FindNotesQuantize", findNotesQuantize);
 #endif //EXPERIMENTAL_FIND_NOTES
 }
 
@@ -373,37 +373,37 @@ void SpectrogramSettings::SavePrefs()
 void SpectrogramSettings::UpdatePrefs()
 {
    if (minFreq == defaults().minFreq) {
-      gPrefs->Read(wxT("/Spectrum/MinFreq"), &minFreq, 0L);
+      gPrefs->Read(L"/Spectrum/MinFreq", &minFreq, 0L);
    }
 
    if (maxFreq == defaults().maxFreq) {
-      gPrefs->Read(wxT("/Spectrum/MaxFreq"), &maxFreq, 8000L);
+      gPrefs->Read(L"/Spectrum/MaxFreq", &maxFreq, 8000L);
    }
 
    if (range == defaults().range) {
-      gPrefs->Read(wxT("/Spectrum/Range"), &range, 80L);
+      gPrefs->Read(L"/Spectrum/Range", &range, 80L);
    }
 
    if (gain == defaults().gain) {
-      gPrefs->Read(wxT("/Spectrum/Gain"), &gain, 20L);
+      gPrefs->Read(L"/Spectrum/Gain", &gain, 20L);
    }
 
    if (frequencyGain == defaults().frequencyGain) {
-      gPrefs->Read(wxT("/Spectrum/FrequencyGain"), &frequencyGain, 0L);
+      gPrefs->Read(L"/Spectrum/FrequencyGain", &frequencyGain, 0L);
    }
 
    if (windowSize == defaults().windowSize) {
-      gPrefs->Read(wxT("/Spectrum/FFTSize"), &windowSize, 1024);
+      gPrefs->Read(L"/Spectrum/FFTSize", &windowSize, 1024);
    }
 
 #ifdef EXPERIMENTAL_ZERO_PADDED_SPECTROGRAMS
    if (zeroPaddingFactor == defaults().zeroPaddingFactor) {
-      gPrefs->Read(wxT("/Spectrum/ZeroPaddingFactor"), &zeroPaddingFactor, 1);
+      gPrefs->Read(L"/Spectrum/ZeroPaddingFactor", &zeroPaddingFactor, 1);
    }
 #endif
 
    if (windowType == defaults().windowType) {
-      gPrefs->Read(wxT("/Spectrum/WindowType"), &windowType, eWinFuncHann);
+      gPrefs->Read(L"/Spectrum/WindowType", &windowType, eWinFuncHann);
    }
 
    if (colorScheme == defaults().colorScheme) {
@@ -412,28 +412,28 @@ void SpectrogramSettings::UpdatePrefs()
 
    if (scaleType == defaults().scaleType) {
       int temp;
-      gPrefs->Read(wxT("/Spectrum/ScaleType"), &temp, 0L);
+      gPrefs->Read(L"/Spectrum/ScaleType", &temp, 0L);
       scaleType = ScaleType(temp);
    }
 
 #ifndef SPECTRAL_SELECTION_GLOBAL_SWITCH
    if (spectralSelection == defaults().spectralSelection) {
       int temp;
-      gPrefs->Read(wxT("/Spectrum/EnableSpectralSelection"), &temp, 1L);
+      gPrefs->Read(L"/Spectrum/EnableSpectralSelection", &temp, 1L);
       spectralSelection = (temp != 0);
    }
 #endif
 
    if (algorithm == defaults().algorithm) {
       int temp;
-      gPrefs->Read(wxT("/Spectrum/Algorithm"), &temp, 0L);
+      gPrefs->Read(L"/Spectrum/Algorithm", &temp, 0L);
       algorithm = Algorithm(temp);
    }
 
 #ifdef EXPERIMENTAL_FFT_Y_GRID
    if (fftYGrid == defaults().fftYGrid) {
       int temp;
-      gPrefs->Read(wxT("/Spectrum/FFTYGrid"), &temp, 0L);
+      gPrefs->Read(L"/Spectrum/FFTYGrid", &temp, 0L);
       fftYGrid = (temp != 0);
    }
 #endif //EXPERIMENTAL_FFT_Y_GRID
@@ -441,21 +441,21 @@ void SpectrogramSettings::UpdatePrefs()
 #ifdef EXPERIMENTAL_FIND_NOTES
    if (fftFindNotes == defaults().fftFindNotes) {
       int temp;
-      gPrefs->Read(wxT("/Spectrum/FFTFindNotes"), &temp, 0L);
+      gPrefs->Read(L"/Spectrum/FFTFindNotes", &temp, 0L);
       fftFindNotes = (temp != 0);
    }
 
    if (findNotesMinA == defaults().findNotesMinA) {
-      gPrefs->Read(wxT("/Spectrum/FindNotesMinA"), &findNotesMinA, -30.0);
+      gPrefs->Read(L"/Spectrum/FindNotesMinA", &findNotesMinA, -30.0);
    }
 
    if (numberOfMaxima == defaults().numberOfMaxima) {
-      numberOfMaxima = gPrefs->Read(wxT("/Spectrum/FindNotesN"), &numberOfMaxima, 5L);
+      numberOfMaxima = gPrefs->Read(L"/Spectrum/FindNotesN", &numberOfMaxima, 5L);
    }
 
    if (findNotesQuantize == defaults().findNotesQuantize) {
       int temp;
-      gPrefs->Read(wxT("/Spectrum/FindNotesQuantize"), &temp, 0L);
+      gPrefs->Read(L"/Spectrum/FindNotesQuantize", &temp, 0L);
       findNotesQuantize = (temp != 0);
    }
 #endif //EXPERIMENTAL_FIND_NOTES

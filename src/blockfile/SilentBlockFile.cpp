@@ -45,11 +45,11 @@ size_t SilentBlockFile::ReadData(samplePtr data, sampleFormat format,
 void SilentBlockFile::SaveXML(XMLWriter &xmlFile)
 // may throw
 {
-   xmlFile.StartTag(wxT("silentblockfile"));
+   xmlFile.StartTag(L"silentblockfile");
 
-   xmlFile.WriteAttr(wxT("len"), mLen);
+   xmlFile.WriteAttr(L"len", mLen);
 
-   xmlFile.EndTag(wxT("silentblockfile"));
+   xmlFile.EndTag(L"silentblockfile");
 }
 
 // BuildFromXML methods should always return a BlockFile, not NULL,
@@ -69,7 +69,7 @@ BlockFilePtr SilentBlockFile::BuildFromXML(DirManager & WXUNUSED(dm), const wxCh
          break;
 
        const wxString strValue = value;
-       if (!wxStrcmp(attr, wxT("len")) &&
+       if (!wxStrcmp(attr, L"len") &&
             XMLValueChecker::IsGoodInt(strValue) &&
             strValue.ToLong(&nValue) &&
             nValue > 0)

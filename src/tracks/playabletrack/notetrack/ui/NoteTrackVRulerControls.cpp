@@ -185,7 +185,7 @@ void NoteTrackVRulerControls::Draw(
             wxString s;
             // ISO standard: A440 is in the 4th octave, denoted
             // A4 <- the "4" should be a subscript.
-            s.Printf(wxT("C%d"), octave - 1);
+            s.Printf(L"C%d", octave - 1);
             wxCoord width, height;
             dc->GetTextExtent(s, &width, &height);
             if (obottom - height + 4 > rect.y &&

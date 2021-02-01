@@ -27,7 +27,7 @@
 
 class ShuttleGui;
 
-#define BUILTIN_GENERIC_COMMAND_PREFIX wxT("Built-in AudacityCommand: ")
+#define BUILTIN_GENERIC_COMMAND_PREFIX L"Built-in AudacityCommand: "
 
 class AudacityCommand;
 class AudacityProject;

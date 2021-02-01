@@ -86,11 +86,11 @@ void MidiIOPrefs::Populate()
    GetNamesAndLabels();
 
    // Get current setting for devices
-   mPlayDevice = gPrefs->Read(wxT("/MidiIO/PlaybackDevice"), wxT(""));
+   mPlayDevice = gPrefs->Read(L"/MidiIO/PlaybackDevice", L"");
 #ifdef EXPERIMENTAL_MIDI_IN
-   mRecordDevice = gPrefs->Read(wxT("/MidiIO/RecordingDevice"), wxT(""));
+   mRecordDevice = gPrefs->Read(L"/MidiIO/RecordingDevice", L"");
 #endif
-//   mRecordChannels = gPrefs->Read(wxT("/MidiIO/RecordChannels"), 2L);
+//   mRecordChannels = gPrefs->Read(L"/MidiIO/RecordChannels", 2L);
 
    //------------------------- Main section --------------------
    // Now construct the GUI itself.
@@ -127,7 +127,7 @@ void MidiIOPrefs::GetNamesAndLabels() {
 
    if (nDevices == 0) {
       mHostNames.push_back(XO("No MIDI interfaces"));
-      mHostLabels.push_back(wxT("No MIDI interfaces"));
+      mHostLabels.push_back(L"No MIDI interfaces");
    }
 }
 
@@ -145,7 +145,7 @@ void MidiIOPrefs::PopulateOrExchange( ShuttleGui & S ) {
          /* i18n-hint: (noun) */
          mHost = S.TieChoice( XXO("&Host:"),
             {
-               wxT("/MidiIO/Host"),
+               L"/MidiIO/Host",
                { ByColumns, mHostNames, mHostLabels }
             }
          );
@@ -164,7 +164,7 @@ void MidiIOPrefs::PopulateOrExchange( ShuttleGui & S ) {
          mPlay = S.AddChoice(XXO("&Device:"),
                              {} );
          mLatency = S.TieIntegerTextBox(XXO("MIDI Synth L&atency (ms):"),
-                                        {wxT("/MidiIO/SynthLatency"),
+                                        {L"/MidiIO/SynthLatency",
                                          DEFAULT_SYNTH_LATENCY}, 3);
       }
       S.EndMultiColumn();
@@ -215,7 +215,7 @@ void MidiIOPrefs::OnHost(wxCommandEvent & WXUNUSED(e))
       wxString interf = wxSafeConvertMB2WX(info->interf);
       if (itemAtIndex == interf) {
          wxString name = wxSafeConvertMB2WX(info->name);
-         wxString device = wxString::Format(wxT("%s: %s"),
+         wxString device = wxString::Format(L"%s: %s",
                                             interf,
                                             name);
          if (info->output) {
@@ -271,16 +271,16 @@ bool MidiIOPrefs::Commit()
 
    info = (const PmDeviceInfo *) mPlay->GetClientData(mPlay->GetSelection());
    if (info) {
-      gPrefs->Write(wxT("/MidiIO/PlaybackDevice"),
-                    wxString::Format(wxT("%s: %s"),
+      gPrefs->Write(L"/MidiIO/PlaybackDevice",
+                    wxString::Format(L"%s: %s",
                                      wxString(wxSafeConvertMB2WX(info->interf)),
                                      wxString(wxSafeConvertMB2WX(info->name))));
    }
 #ifdef EXPERIMENTAL_MIDI_IN
    info = (const PmDeviceInfo *) mRecord->GetClientData(mRecord->GetSelection());
    if (info) {
-      gPrefs->Write(wxT("/MidiIO/RecordingDevice"),
-                    wxString::Format(wxT("%s: %s"),
+      gPrefs->Write(L"/MidiIO/RecordingDevice",
+                    wxString::Format(L"%s: %s",
                                      wxString(wxSafeConvertMB2WX(info->interf)),
                                      wxString(wxSafeConvertMB2WX(info->name))));
    }

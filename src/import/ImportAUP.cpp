@@ -53,7 +53,7 @@
 
 #define DESC XO("AUP project files (*.aup)")
 
-static const auto exts = {wxT("aup")};
+static const auto exts = {L"aup"};
 
 #include <wx/dir.h>
 #include <wx/ffile.h>
@@ -233,7 +233,7 @@ AUPImportPlugin::~AUPImportPlugin()
 
 wxString AUPImportPlugin::GetPluginStringID()
 {
-   return wxT("legacyaup");
+   return L"legacyaup";
 }
    
 TranslatableString AUPImportPlugin::GetPluginFormatDescription()
@@ -472,7 +472,7 @@ void AUPImportFileHandle::SetStreamUsage(wxInt32 WXUNUSED(StreamID), bool WXUNUS
 
 bool AUPImportFileHandle::Open()
 {
-   wxFFile ff(mFilename, wxT("rb"));
+   wxFFile ff(mFilename, L"rb");
    if (ff.IsOpened())
    {
       char buf[256];
@@ -483,7 +483,7 @@ bool AUPImportFileHandle::Open()
 
       buf[sizeof(buf) - 1] = '\0';
 
-      if (!wxStrncmp(buf, wxT("AudacityProject"), 15))
+      if (!wxStrncmp(buf, L"AudacityProject", 15))
       {
          AudacityMessageBox(
             XO("This project was saved by Audacity version 1.0 or earlier. The format has\n"
@@ -522,7 +522,7 @@ void AUPImportFileHandle::HandleXMLEndTag(const wxChar *tag)
 
    struct node node = mHandlers.back();
 
-   if (wxStrcmp(tag, wxT("waveclip")) == 0)
+   if (wxStrcmp(tag, L"waveclip") == 0)
    {
       mClip = nullptr;
    }
@@ -556,72 +556,72 @@ bool AUPImportFileHandle::HandleXMLTag(const wxChar *tag, const wxChar **attrs)
    XMLTagHandler *handler = nullptr;
    bool success = false;
 
-   if (mCurrentTag.IsSameAs(wxT("project")) ||
-       mCurrentTag.IsSameAs(wxT("audacityproject")))
+   if (mCurrentTag.IsSameAs(L"project") ||
+       mCurrentTag.IsSameAs(L"audacityproject"))
    {
       success = HandleProject(handler);
    }
-   else if (mCurrentTag.IsSameAs(wxT("labeltrack")))
+   else if (mCurrentTag.IsSameAs(L"labeltrack"))
    {
       success = HandleLabelTrack(handler);
    }
-   else if (mCurrentTag.IsSameAs(wxT("notetrack")))
+   else if (mCurrentTag.IsSameAs(L"notetrack"))
    {
       success = HandleNoteTrack(handler);
    }
-   else if (mCurrentTag.IsSameAs(wxT("timetrack")))
+   else if (mCurrentTag.IsSameAs(L"timetrack"))
    {
       success = HandleTimeTrack(handler);
    }
-   else if (mCurrentTag.IsSameAs(wxT("wavetrack")))
+   else if (mCurrentTag.IsSameAs(L"wavetrack"))
    {
       success = HandleWaveTrack(handler);
    }
-   else if (mCurrentTag.IsSameAs(wxT("tags")))
+   else if (mCurrentTag.IsSameAs(L"tags"))
    {
       success = HandleTags(handler);
    }
-   else if (mCurrentTag.IsSameAs(wxT("tag")))
+   else if (mCurrentTag.IsSameAs(L"tag"))
    {
       success = HandleTag(handler);
    }
-   else if (mCurrentTag.IsSameAs(wxT("label")))
+   else if (mCurrentTag.IsSameAs(L"label"))
    {
       success = HandleLabel(handler);
    }
-   else if (mCurrentTag.IsSameAs(wxT("waveclip")))
+   else if (mCurrentTag.IsSameAs(L"waveclip"))
    {
       success = HandleWaveClip(handler);
    }
-   else if (mCurrentTag.IsSameAs(wxT("sequence")))
+   else if (mCurrentTag.IsSameAs(L"sequence"))
    {
       success = HandleSequence(handler);
    }
-   else if (mCurrentTag.IsSameAs(wxT("waveblock")))
+   else if (mCurrentTag.IsSameAs(L"waveblock"))
    {
       success = HandleWaveBlock(handler);
    }
-   else if (mCurrentTag.IsSameAs(wxT("envelope")))
+   else if (mCurrentTag.IsSameAs(L"envelope"))
    {
       success = HandleEnvelope(handler);
    }
-   else if (mCurrentTag.IsSameAs(wxT("controlpoint")))
+   else if (mCurrentTag.IsSameAs(L"controlpoint"))
    {
       success = HandleControlPoint(handler);
    }
-   else if (mCurrentTag.IsSameAs(wxT("simpleblockfile")))
+   else if (mCurrentTag.IsSameAs(L"simpleblockfile"))
    {
       success = HandleSimpleBlockFile(handler);
    }
-   else if (mCurrentTag.IsSameAs(wxT("silentblockfile")))
+   else if (mCurrentTag.IsSameAs(L"silentblockfile"))
    {
       success = HandleSilentBlockFile(handler);
    }
-   else if (mCurrentTag.IsSameAs(wxT("pcmaliasblockfile")))
+   else if (mCurrentTag.IsSameAs(L"pcmaliasblockfile"))
    {
       success = HandlePCMAliasBlockFile(handler);
    }
-   else if (mCurrentTag.IsSameAs(wxT("import")))
+   else if (mCurrentTag.IsSameAs(L"import"))
    {
       success = HandleImport(handler);
    }
@@ -664,7 +664,7 @@ bool AUPImportFileHandle::HandleProject(XMLTagHandler *&handler)
 #define set(f, v) (mProjectAttrs.have ## f = true, mProjectAttrs.f = v)
 
       // ViewInfo
-      if (!wxStrcmp(attr, wxT("vpos")))
+      if (!wxStrcmp(attr, L"vpos"))
       {
          long lValue;
          if (!XMLValueChecker::IsGoodInt(strValue) || !strValue.ToLong(&lValue) || (lValue < 0))
@@ -674,7 +674,7 @@ bool AUPImportFileHandle::HandleProject(XMLTagHandler *&handler)
 
          set(vpos, (int) lValue);
       }
-      else if (!wxStrcmp(attr, wxT("h")))
+      else if (!wxStrcmp(attr, L"h"))
       {
          if (!Internat::CompatibleToDouble(value, &dValue))
          {
@@ -683,7 +683,7 @@ bool AUPImportFileHandle::HandleProject(XMLTagHandler *&handler)
 
          set(h, dValue);
       }
-      else if (!wxStrcmp(attr, wxT("zoom")))
+      else if (!wxStrcmp(attr, L"zoom"))
       {
          if (!Internat::CompatibleToDouble(value, &dValue) || (dValue < 0.0))
          {
@@ -693,7 +693,7 @@ bool AUPImportFileHandle::HandleProject(XMLTagHandler *&handler)
          set(zoom, dValue);
       }
       // Viewinfo.SelectedRegion
-      else if (!wxStrcmp(attr, wxT("sel0")))
+      else if (!wxStrcmp(attr, L"sel0"))
       {
          if (!Internat::CompatibleToDouble(value, &dValue) || (dValue < 0.0))
          {
@@ -702,7 +702,7 @@ bool AUPImportFileHandle::HandleProject(XMLTagHandler *&handler)
 
          set(sel0, dValue);
       }
-      else if (!wxStrcmp(attr, wxT("sel1")))
+      else if (!wxStrcmp(attr, L"sel1"))
       {
          if (!Internat::CompatibleToDouble(value, &dValue) || (dValue < 0.0))
          {
@@ -712,7 +712,7 @@ bool AUPImportFileHandle::HandleProject(XMLTagHandler *&handler)
          set(sel1, dValue);
       }
 #ifdef EXPERIMENTAL_SPECTRAL_EDITING
-      else if (!wxStrcmp(attr, wxT("selLow")))
+      else if (!wxStrcmp(attr, L"selLow"))
       {
          if (!Internat::CompatibleToDouble(value, &dValue) || (dValue < 0.0))
          {
@@ -721,7 +721,7 @@ bool AUPImportFileHandle::HandleProject(XMLTagHandler *&handler)
 
          set(selLow, dValue);
       }
-      else if (!wxStrcmp(attr, wxT("selHigh")))
+      else if (!wxStrcmp(attr, L"selHigh"))
       {
          if (!Internat::CompatibleToDouble(value, &dValue) || (dValue < 0.0))
          {
@@ -731,21 +731,21 @@ bool AUPImportFileHandle::HandleProject(XMLTagHandler *&handler)
          set(selHigh, dValue);
       }
 #endif
-      else if (!wxStrcmp(attr, wxT("version")))
+      else if (!wxStrcmp(attr, L"version"))
       {
          requiredTags++;
       }
 
-      else if (!wxStrcmp(attr, wxT("audacityversion")))
+      else if (!wxStrcmp(attr, L"audacityversion"))
       {
          requiredTags++;
       }
-      else if (!wxStrcmp(attr, wxT("projname")))
+      else if (!wxStrcmp(attr, L"projname"))
       {
          requiredTags++;
 
          mProjDir = mFilename;
-         wxString altname = mProjDir.GetName() + wxT("_data");
+         wxString altname = mProjDir.GetName() + L"_data";
          mProjDir.SetFullName(wxEmptyString);
 
          wxString projName = value;
@@ -799,7 +799,7 @@ bool AUPImportFileHandle::HandleProject(XMLTagHandler *&handler)
             mFileMap[wxFileNameFromPath(fn)] = {fn, {}};
          }
       }
-      else if (!wxStrcmp(attr, wxT("rate")))
+      else if (!wxStrcmp(attr, L"rate"))
       {
          if (!Internat::CompatibleToDouble(value, &dValue) || (dValue < 0.0))
          {
@@ -809,27 +809,27 @@ bool AUPImportFileHandle::HandleProject(XMLTagHandler *&handler)
          set(rate, dValue);
       }
 
-      else if (!wxStrcmp(attr, wxT("snapto")))
+      else if (!wxStrcmp(attr, L"snapto"))
       {
-         set(snapto, (strValue == wxT("on") ? true : false));
+         set(snapto, (strValue == L"on" ? true : false));
       }
 
-      else if (!wxStrcmp(attr, wxT("selectionformat")))
+      else if (!wxStrcmp(attr, L"selectionformat"))
       {
          set(selectionformat, strValue);
       }
 
-      else if (!wxStrcmp(attr, wxT("audiotimeformat")))
+      else if (!wxStrcmp(attr, L"audiotimeformat"))
       {
          set(audiotimeformat, strValue);
       }
 
-      else if (!wxStrcmp(attr, wxT("frequencyformat")))
+      else if (!wxStrcmp(attr, L"frequencyformat"))
       {
          set(frequencyformat, strValue);
       }
 
-      else if (!wxStrcmp(attr, wxT("bandwidthformat")))
+      else if (!wxStrcmp(attr, L"bandwidthformat"))
       {
          set(bandwidthformat, strValue);
       }
@@ -942,7 +942,7 @@ bool AUPImportFileHandle::HandleTags(XMLTagHandler *&handler)
       }
       else if (!wxStrcmp(attr, "track"))
       {
-         n = wxT("TRACKNUMBER");
+         n = L"TRACKNUMBER";
       }
       else
       {
@@ -960,7 +960,7 @@ bool AUPImportFileHandle::HandleTags(XMLTagHandler *&handler)
 
 bool AUPImportFileHandle::HandleTag(XMLTagHandler *&handler)
 {
-   if (!mParentTag.IsSameAs(wxT("tags")))
+   if (!mParentTag.IsSameAs(L"tags"))
    {
       return false;
    }
@@ -981,17 +981,17 @@ bool AUPImportFileHandle::HandleTag(XMLTagHandler *&handler)
          break;
       }
 
-      if (attr == wxT("name"))
+      if (attr == L"name")
       {
          n = value;
       }
-      else if (attr == wxT("value"))
+      else if (attr == L"value")
       {
          v = value;
       }
    }
 
-   if (n == wxT("id3v2"))
+   if (n == L"id3v2")
    {
       // LLL:  This is obsolete, but it must be handled and ignored.
    }
@@ -1007,7 +1007,7 @@ bool AUPImportFileHandle::HandleTag(XMLTagHandler *&handler)
 
 bool AUPImportFileHandle::HandleLabel(XMLTagHandler *&handler)
 {
-   if (!mParentTag.IsSameAs(wxT("labeltrack")))
+   if (!mParentTag.IsSameAs(L"labeltrack"))
    {
       return false;
    }
@@ -1022,13 +1022,13 @@ bool AUPImportFileHandle::HandleWaveClip(XMLTagHandler *&handler)
 {
    struct node node = mHandlers.back();
 
-   if (mParentTag.IsSameAs(wxT("wavetrack")))
+   if (mParentTag.IsSameAs(L"wavetrack"))
    {
       WaveTrack *wavetrack = static_cast<WaveTrack *>(node.handler);
 
       handler = wavetrack->CreateClip();
    }
-   else if (mParentTag.IsSameAs(wxT("waveclip")))
+   else if (mParentTag.IsSameAs(L"waveclip"))
    {
       // Nested wave clips are cut lines
       WaveClip *waveclip = static_cast<WaveClip *>(node.handler);
@@ -1046,7 +1046,7 @@ bool AUPImportFileHandle::HandleEnvelope(XMLTagHandler *&handler)
 {
    struct node node = mHandlers.back();
 
-   if (mParentTag.IsSameAs(wxT("timetrack")))
+   if (mParentTag.IsSameAs(L"timetrack"))
    {
       // If an imported timetrack was bypassed, then we want to bypass the
       // envelope as well.  (See HandleTimeTrack and HandleControlPoint)
@@ -1059,12 +1059,12 @@ bool AUPImportFileHandle::HandleEnvelope(XMLTagHandler *&handler)
    }
    // Earlier versions of Audacity had a single implied waveclip, so for
    // these versions, we get or create the only clip in the track.
-   else if (mParentTag.IsSameAs(wxT("wavetrack")))
+   else if (mParentTag.IsSameAs(L"wavetrack"))
    {
       handler = mWaveTrack->RightmostOrNewClip()->GetEnvelope();
    }
    // Nested wave clips are cut lines
-   else if (mParentTag.IsSameAs(wxT("waveclip")))
+   else if (mParentTag.IsSameAs(L"waveclip"))
    {
       WaveClip *waveclip = static_cast<WaveClip *>(node.handler);
 
@@ -1078,7 +1078,7 @@ bool AUPImportFileHandle::HandleControlPoint(XMLTagHandler *&handler)
 {
    struct node node = mHandlers.back();
 
-   if (mParentTag.IsSameAs(wxT("envelope")))
+   if (mParentTag.IsSameAs(L"envelope"))
    {
       // If an imported timetrack was bypassed, then we want to bypass the
       // control points as well.  (See HandleTimeTrack and HandleEnvelope)
@@ -1101,7 +1101,7 @@ bool AUPImportFileHandle::HandleSequence(XMLTagHandler *&handler)
 
    // Earlier versions of Audacity had a single implied waveclip, so for
    // these versions, we get or create the only clip in the track.
-   if (mParentTag.IsSameAs(wxT("wavetrack")))
+   if (mParentTag.IsSameAs(L"wavetrack"))
    {
       XMLTagHandler *dummy;
       HandleWaveClip(dummy);
@@ -1120,7 +1120,7 @@ bool AUPImportFileHandle::HandleSequence(XMLTagHandler *&handler)
 
       const wxString strValue = value;	// promote string, we need this for all
 
-      if (!wxStrcmp(attr, wxT("maxsamples")))
+      if (!wxStrcmp(attr, L"maxsamples"))
       {
          // This attribute is a sample count, so can be 64bit
          long long llvalue;
@@ -1137,7 +1137,7 @@ bool AUPImportFileHandle::HandleSequence(XMLTagHandler *&handler)
             return SetError(XO("Invalid sequence 'maxsamples' attribute."));
          }
       }
-      else if (!wxStrcmp(attr, wxT("sampleformat")))
+      else if (!wxStrcmp(attr, L"sampleformat"))
       {
          // This attribute is a sample format, normal int
          long fValue;
@@ -1149,7 +1149,7 @@ bool AUPImportFileHandle::HandleSequence(XMLTagHandler *&handler)
          mFormat = (sampleFormat) fValue;
          waveclip->GetSequence()->ConvertToSampleFormat( mFormat );
       }
-      else if (!wxStrcmp(attr, wxT("numsamples")))
+      else if (!wxStrcmp(attr, L"numsamples"))
       {
          // This attribute is a sample count, so can be 64bit
          long long llvalue;
@@ -1179,7 +1179,7 @@ bool AUPImportFileHandle::HandleWaveBlock(XMLTagHandler *&handler)
 
       const wxString strValue = value;
 
-      if (!wxStrcmp(attr, wxT("start")))
+      if (!wxStrcmp(attr, L"start"))
       {
          // making sure that values > 2^31 are OK because long clips will need them.
          long long llvalue;
@@ -1213,7 +1213,7 @@ bool AUPImportFileHandle::HandleSimpleBlockFile(XMLTagHandler *&handler)
       const wxString strValue = value;
 
       // Can't use XMLValueChecker::IsGoodFileName here, but do part of its test.
-      if (!wxStricmp(attr, wxT("filename")))
+      if (!wxStricmp(attr, L"filename"))
       {
          if (XMLValueChecker::IsGoodFileString(strValue))
          {
@@ -1228,7 +1228,7 @@ bool AUPImportFileHandle::HandleSimpleBlockFile(XMLTagHandler *&handler)
             }
          }
       }
-      else if (!wxStrcmp(attr, wxT("len")))
+      else if (!wxStrcmp(attr, L"len"))
       {
          long lValue;
          if (!XMLValueChecker::IsGoodInt(strValue) || !strValue.ToLong(&lValue) || (lValue <= 0))
@@ -1264,7 +1264,7 @@ bool AUPImportFileHandle::HandleSilentBlockFile(XMLTagHandler *&handler)
 
       const wxString strValue = value;
 
-      if (!wxStrcmp(attr, wxT("len")))
+      if (!wxStrcmp(attr, L"len"))
       {
          long lValue;
          if (!XMLValueChecker::IsGoodInt(value) || !strValue.ToLong(&lValue) || !(lValue > 0))
@@ -1304,7 +1304,7 @@ bool AUPImportFileHandle::HandlePCMAliasBlockFile(XMLTagHandler *&handler)
 
       const wxString strValue = value;
 
-      if (!wxStricmp(attr, wxT("aliasfile")))
+      if (!wxStricmp(attr, L"aliasfile"))
       {
          if (XMLValueChecker::IsGoodPathName(strValue))
          {
@@ -1323,11 +1323,11 @@ bool AUPImportFileHandle::HandlePCMAliasBlockFile(XMLTagHandler *&handler)
                .Format(strValue));
          }
       }
-      else if (!wxStricmp(attr, wxT("summaryfile")))
+      else if (!wxStricmp(attr, L"summaryfile"))
       {
          summaryFilename = strValue;
       }
-      else if (!wxStricmp(attr, wxT("aliasstart")))
+      else if (!wxStricmp(attr, L"aliasstart"))
       {
          long long llValue;
          if (!XMLValueChecker::IsGoodInt64(strValue) || !strValue.ToLongLong(&llValue) || (llValue < 0))
@@ -1337,7 +1337,7 @@ bool AUPImportFileHandle::HandlePCMAliasBlockFile(XMLTagHandler *&handler)
 
          start = llValue;
       }
-      else if (!wxStricmp(attr, wxT("aliaslen")))
+      else if (!wxStricmp(attr, L"aliaslen"))
       {
          long lValue;
          if (!XMLValueChecker::IsGoodInt(strValue) || !strValue.ToLong(&lValue) || (lValue <= 0))
@@ -1347,7 +1347,7 @@ bool AUPImportFileHandle::HandlePCMAliasBlockFile(XMLTagHandler *&handler)
 
          len = lValue;
       }
-      else if (!wxStricmp(attr, wxT("aliaschannel")))
+      else if (!wxStricmp(attr, L"aliaschannel"))
       {
          long lValue;
          if (!XMLValueChecker::IsGoodInt(strValue) || !strValue.ToLong(&lValue) || (lValue < 0))
@@ -1374,7 +1374,7 @@ bool AUPImportFileHandle::HandlePCMAliasBlockFile(XMLTagHandler *&handler)
 bool AUPImportFileHandle::HandleImport(XMLTagHandler *&handler)
 {
    // Adapted from ImportXMLTagHandler::HandleXMLTag as in version 2.4.2
-   if (!mAttrs || !(*mAttrs) || wxStrcmp(*mAttrs++, wxT("filename")))
+   if (!mAttrs || !(*mAttrs) || wxStrcmp(*mAttrs++, L"filename"))
        return false;
 
    wxString strAttr = *mAttrs;
@@ -1384,12 +1384,12 @@ bool AUPImportFileHandle::HandleImport(XMLTagHandler *&handler)
       wxFileNameWrapper fileName0{ mFilename };
       fileName0.SetExt({});
       wxFileNameWrapper fileName{
-         fileName0.GetFullPath() + wxT("_data"), strAttr };
+         fileName0.GetFullPath() + L"_data", strAttr };
       if (XMLValueChecker::IsGoodFileName(strAttr, fileName.GetPath(wxPATH_GET_VOLUME)))
          strAttr = fileName.GetFullPath();
       else
       {
-         wxLogWarning(wxT("Could not import file: %s"), strAttr);
+         wxLogWarning(L"Could not import file: %s", strAttr);
          return false;
       }
    }
@@ -1426,7 +1426,7 @@ bool AUPImportFileHandle::HandleImport(XMLTagHandler *&handler)
    {
       // Most of the "import" tag attributes are the same as for "wavetrack" tags,
       // so apply them via WaveTrack::HandleXMLTag().
-      bSuccess = pTrack->HandleXMLTag(wxT("wavetrack"), mAttrs);
+      bSuccess = pTrack->HandleXMLTag(L"wavetrack", mAttrs);
 
       // "offset" tag is ignored in WaveTrack::HandleXMLTag except for legacy projects,
       // so handle it here.
@@ -1437,7 +1437,7 @@ bool AUPImportFileHandle::HandleImport(XMLTagHandler *&handler)
          const wxChar *attr = *pAttr++;
          const wxChar *value = *pAttr++;
          const wxString strValue = value;
-         if (!wxStrcmp(attr, wxT("offset")) &&
+         if (!wxStrcmp(attr, L"offset") &&
                XMLValueChecker::IsGoodString(strValue) &&
                Internat::CompatibleToDouble(strValue, &dblValue))
             pTrack->SetOffset(dblValue);

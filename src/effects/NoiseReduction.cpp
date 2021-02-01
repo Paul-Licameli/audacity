@@ -535,29 +535,29 @@ bool EffectNoiseReduction::Settings::PrefsIO(bool read)
    static const double DEFAULT_OLD_SENSITIVITY = 0.0;
 
    static const PrefsTableEntry<Settings, double> doubleTable[] = {
-         { &Settings::mNewSensitivity, wxT("Sensitivity"), 6.0 },
-         { &Settings::mNoiseGain, wxT("Gain"), 12.0 },
-         { &Settings::mAttackTime, wxT("AttackTime"), 0.02 },
-         { &Settings::mReleaseTime, wxT("ReleaseTime"), 0.10 },
-         { &Settings::mFreqSmoothingBands, wxT("FreqSmoothing"), 3.0 },
+         { &Settings::mNewSensitivity, L"Sensitivity", 6.0 },
+         { &Settings::mNoiseGain, L"Gain", 12.0 },
+         { &Settings::mAttackTime, L"AttackTime", 0.02 },
+         { &Settings::mReleaseTime, L"ReleaseTime", 0.10 },
+         { &Settings::mFreqSmoothingBands, L"FreqSmoothing", 3.0 },
 
          // Advanced settings
-         { &Settings::mOldSensitivity, wxT("OldSensitivity"), DEFAULT_OLD_SENSITIVITY },
+         { &Settings::mOldSensitivity, L"OldSensitivity", DEFAULT_OLD_SENSITIVITY },
    };
    static int doubleTableSize = sizeof(doubleTable) / sizeof(doubleTable[0]);
 
    static const PrefsTableEntry<Settings, int> intTable[] = {
-         { &Settings::mNoiseReductionChoice, wxT("ReductionChoice"), NRC_REDUCE_NOISE },
+         { &Settings::mNoiseReductionChoice, L"ReductionChoice", NRC_REDUCE_NOISE },
 
          // Advanced settings
-         { &Settings::mWindowTypes, wxT("WindowTypes"), WT_DEFAULT_WINDOW_TYPES },
-         { &Settings::mWindowSizeChoice, wxT("WindowSize"), DEFAULT_WINDOW_SIZE_CHOICE },
-         { &Settings::mStepsPerWindowChoice, wxT("StepsPerWindow"), DEFAULT_STEPS_PER_WINDOW_CHOICE },
-         { &Settings::mMethod, wxT("Method"), DM_DEFAULT_METHOD },
+         { &Settings::mWindowTypes, L"WindowTypes", WT_DEFAULT_WINDOW_TYPES },
+         { &Settings::mWindowSizeChoice, L"WindowSize", DEFAULT_WINDOW_SIZE_CHOICE },
+         { &Settings::mStepsPerWindowChoice, L"StepsPerWindow", DEFAULT_STEPS_PER_WINDOW_CHOICE },
+         { &Settings::mMethod, L"Method", DM_DEFAULT_METHOD },
    };
    static int intTableSize = sizeof(intTable) / sizeof(intTable[0]);
 
-   static const wxString prefix(wxT("/Effects/NoiseReduction/"));
+   static const wxString prefix(L"/Effects/NoiseReduction/");
 
    if (read) {
       readPrefs(this, prefix, doubleTable, doubleTableSize);
@@ -1453,7 +1453,7 @@ struct ControlInfo {
             NumValidatorStyle::DEFAULT,
             valueMin, valueMax
          )
-         .AddTextBox(textBoxCaption, wxT(""), 0);
+         .AddTextBox(textBoxCaption, L"", 0);
 
       wxSlider *const slider =
          S.Id(id)
@@ -1484,26 +1484,26 @@ struct ControlInfo {
 const ControlInfo *controlInfo() {
    static const ControlInfo table[] = {
          ControlInfo(&EffectNoiseReduction::Settings::mNoiseGain,
-         0.0, 48.0, 48, wxT("%d"), true,
+         0.0, 48.0, 48, L"%d", true,
          XXO("&Noise reduction (dB):"), XO("Noise reduction")),
          ControlInfo(&EffectNoiseReduction::Settings::mNewSensitivity,
-         0.0, 24.0, 48, wxT("%.2f"), false,
+         0.0, 24.0, 48, L"%.2f", false,
          XXO("&Sensitivity:"), XO("Sensitivity")),
 #ifdef ATTACK_AND_RELEASE
          ControlInfo(&EffectNoiseReduction::Settings::mAttackTime,
-         0, 1.0, 100, wxT("%.2f"), false,
+         0, 1.0, 100, L"%.2f", false,
          XXO("Attac&k time (secs):"), XO("Attack time")),
          ControlInfo(&EffectNoiseReduction::Settings::mReleaseTime,
-         0, 1.0, 100, wxT("%.2f"), false,
+         0, 1.0, 100, L"%.2f", false,
          XXO("R&elease time (secs):"), XO("Release time")),
 #endif
          ControlInfo(&EffectNoiseReduction::Settings::mFreqSmoothingBands,
-         0, 12, 12, wxT("%d"), true,
+         0, 12, 12, L"%d", true,
          XXO("&Frequency smoothing (bands):"), XO("Frequency smoothing")),
 
 #ifdef ADVANCED_SETTINGS
          ControlInfo(&EffectNoiseReduction::Settings::mOldSensitivity,
-         -20.0, 20.0, 4000, wxT("%.2f"), false,
+         -20.0, 20.0, 4000, L"%.2f", false,
          XXO("Sensiti&vity (dB):"), XO("Old Sensitivity")),
          // add here
 #endif

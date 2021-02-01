@@ -48,16 +48,16 @@ enum
 // Define keys, defaults, minimums, and maximums for the effect parameters
 //
 //     Name          Type     Key                  Def      Min      Max   Scale
-Param( RoomSize,     double,  wxT("RoomSize"),      75,      0,       100,  1  );
-Param( PreDelay,     double,  wxT("Delay"),         10,      0,       200,  1  );
-Param( Reverberance, double,  wxT("Reverberance"),  50,      0,       100,  1  );
-Param( HfDamping,    double,  wxT("HfDamping"),     50,      0,       100,  1  );
-Param( ToneLow,      double,  wxT("ToneLow"),       100,     0,       100,  1  );
-Param( ToneHigh,     double,  wxT("ToneHigh"),      100,     0,       100,  1  );
-Param( WetGain,      double,  wxT("WetGain"),       -1,      -20,     10,   1  );
-Param( DryGain,      double,  wxT("DryGain"),       -1,      -20,     10,   1  );
-Param( StereoWidth,  double,  wxT("StereoWidth"),   100,     0,       100,  1  );
-Param( WetOnly,      bool,    wxT("WetOnly"),       false,   false,   true, 1  );
+Param( RoomSize,     double,  L"RoomSize",      75,      0,       100,  1  );
+Param( PreDelay,     double,  L"Delay",         10,      0,       200,  1  );
+Param( Reverberance, double,  L"Reverberance",  50,      0,       100,  1  );
+Param( HfDamping,    double,  L"HfDamping",     50,      0,       100,  1  );
+Param( ToneLow,      double,  L"ToneLow",       100,     0,       100,  1  );
+Param( ToneHigh,     double,  L"ToneHigh",      100,     0,       100,  1  );
+Param( WetGain,      double,  L"WetGain",       -1,      -20,     10,   1  );
+Param( DryGain,      double,  L"DryGain",       -1,      -20,     10,   1  );
+Param( StereoWidth,  double,  L"StereoWidth",   100,     0,       100,  1  );
+Param( WetOnly,      bool,    L"WetOnly",       false,   false,   true, 1  );
 
 static const struct
 {
@@ -151,7 +151,7 @@ TranslatableString EffectReverb::GetDescription()
 
 wxString EffectReverb::ManualPage()
 {
-   return wxT("Reverb");
+   return L"Reverb";
 }
 
 // EffectDefinitionInterface implementation
@@ -368,12 +368,12 @@ bool EffectReverb::LoadFactoryPreset(int id)
 
 bool EffectReverb::Startup()
 {
-   wxString base = wxT("/Effects/Reverb/");
+   wxString base = L"/Effects/Reverb/";
 
    // Migrate settings from 2.1.0 or before
 
    // Already migrated, so bail
-   if (gPrefs->Exists(base + wxT("Migrated")))
+   if (gPrefs->Exists(base + L"Migrated"))
    {
       return true;
    }
@@ -381,49 +381,49 @@ bool EffectReverb::Startup()
    // Load the old "current" settings
    if (gPrefs->Exists(base))
    {
-      gPrefs->Read(base + wxT("RoomSize"), &mParams.mRoomSize, DEF_RoomSize);
-      gPrefs->Read(base + wxT("Delay"), &mParams.mPreDelay, DEF_PreDelay);
-      gPrefs->Read(base + wxT("Reverberance"), &mParams.mReverberance, DEF_Reverberance);
-      gPrefs->Read(base + wxT("HfDamping"), &mParams.mHfDamping, DEF_HfDamping);
-      gPrefs->Read(base + wxT("ToneLow"), &mParams.mToneLow, DEF_ToneLow);
-      gPrefs->Read(base + wxT("ToneHigh"), &mParams.mToneHigh, DEF_ToneHigh);
-      gPrefs->Read(base + wxT("WetGain"), &mParams.mWetGain, DEF_WetGain);
-      gPrefs->Read(base + wxT("DryGain"), &mParams.mDryGain, DEF_DryGain);
-      gPrefs->Read(base + wxT("StereoWidth"), &mParams.mStereoWidth, DEF_StereoWidth);
-      gPrefs->Read(base + wxT("WetOnly"), &mParams.mWetOnly, DEF_WetOnly);
+      gPrefs->Read(base + L"RoomSize", &mParams.mRoomSize, DEF_RoomSize);
+      gPrefs->Read(base + L"Delay", &mParams.mPreDelay, DEF_PreDelay);
+      gPrefs->Read(base + L"Reverberance", &mParams.mReverberance, DEF_Reverberance);
+      gPrefs->Read(base + L"HfDamping", &mParams.mHfDamping, DEF_HfDamping);
+      gPrefs->Read(base + L"ToneLow", &mParams.mToneLow, DEF_ToneLow);
+      gPrefs->Read(base + L"ToneHigh", &mParams.mToneHigh, DEF_ToneHigh);
+      gPrefs->Read(base + L"WetGain", &mParams.mWetGain, DEF_WetGain);
+      gPrefs->Read(base + L"DryGain", &mParams.mDryGain, DEF_DryGain);
+      gPrefs->Read(base + L"StereoWidth", &mParams.mStereoWidth, DEF_StereoWidth);
+      gPrefs->Read(base + L"WetOnly", &mParams.mWetOnly, DEF_WetOnly);
 
       SaveUserPreset(GetCurrentSettingsGroup());
 
       // Do not migrate again
-      gPrefs->Write(base + wxT("Migrated"), true);
+      gPrefs->Write(base + L"Migrated", true);
    }
 
    // Load the previous user presets
    for (int i = 0; i < 10; i++)
    {
-      wxString path = base + wxString::Format(wxT("%d/"), i);
+      wxString path = base + wxString::Format(L"%d/", i);
       if (gPrefs->Exists(path))
       {
          Params save = mParams;
          wxString name;
 
-         gPrefs->Read(path + wxT("RoomSize"), &mParams.mRoomSize, DEF_RoomSize);
-         gPrefs->Read(path + wxT("Delay"), &mParams.mPreDelay, DEF_PreDelay);
-         gPrefs->Read(path + wxT("Reverberance"), &mParams.mReverberance, DEF_Reverberance);
-         gPrefs->Read(path + wxT("HfDamping"), &mParams.mHfDamping, DEF_HfDamping);
-         gPrefs->Read(path + wxT("ToneLow"), &mParams.mToneLow, DEF_ToneLow);
-         gPrefs->Read(path + wxT("ToneHigh"), &mParams.mToneHigh, DEF_ToneHigh);
-         gPrefs->Read(path + wxT("WetGain"), &mParams.mWetGain, DEF_WetGain);
-         gPrefs->Read(path + wxT("DryGain"), &mParams.mDryGain, DEF_DryGain);
-         gPrefs->Read(path + wxT("StereoWidth"), &mParams.mStereoWidth, DEF_StereoWidth);
-         gPrefs->Read(path + wxT("WetOnly"), &mParams.mWetOnly, DEF_WetOnly);
-         gPrefs->Read(path + wxT("name"), &name, wxEmptyString);
+         gPrefs->Read(path + L"RoomSize", &mParams.mRoomSize, DEF_RoomSize);
+         gPrefs->Read(path + L"Delay", &mParams.mPreDelay, DEF_PreDelay);
+         gPrefs->Read(path + L"Reverberance", &mParams.mReverberance, DEF_Reverberance);
+         gPrefs->Read(path + L"HfDamping", &mParams.mHfDamping, DEF_HfDamping);
+         gPrefs->Read(path + L"ToneLow", &mParams.mToneLow, DEF_ToneLow);
+         gPrefs->Read(path + L"ToneHigh", &mParams.mToneHigh, DEF_ToneHigh);
+         gPrefs->Read(path + L"WetGain", &mParams.mWetGain, DEF_WetGain);
+         gPrefs->Read(path + L"DryGain", &mParams.mDryGain, DEF_DryGain);
+         gPrefs->Read(path + L"StereoWidth", &mParams.mStereoWidth, DEF_StereoWidth);
+         gPrefs->Read(path + L"WetOnly", &mParams.mWetOnly, DEF_WetOnly);
+         gPrefs->Read(path + L"name", &name, wxEmptyString);
       
          if (!name.empty())
          {
-            name.Prepend(wxT(" - "));
+            name.Prepend(L" - ");
          }
-         name.Prepend(wxString::Format(wxT("Settings%d"), i));
+         name.Prepend(wxString::Format(L"Settings%d", i));
 
          SaveUserPreset(GetUserPresetsGroup(name));
 
@@ -479,7 +479,7 @@ bool EffectReverb::TransferDataToWindow()
 {
 #define SetSpinSlider(n) \
    m ## n ## S->SetValue((int) mParams.m ## n); \
-   m ## n ## T->SetValue(wxString::Format(wxT("%d"), (int) mParams.m ## n));
+   m ## n ## T->SetValue(wxString::Format(L"%d", (int) mParams.m ## n));
 
    SetSpinSlider(RoomSize);
    SetSpinSlider(PreDelay);
@@ -524,7 +524,7 @@ bool EffectReverb::TransferDataFromWindow()
    { \
       if (mProcessingEvent) return; \
       mProcessingEvent = true; \
-      m ## n ## T->SetValue(wxString::Format(wxT("%d"), evt.GetInt())); \
+      m ## n ## T->SetValue(wxString::Format(L"%d", evt.GetInt())); \
       mProcessingEvent = false; \
    } \
    void EffectReverb::On ## n ## Text(wxCommandEvent & evt) \

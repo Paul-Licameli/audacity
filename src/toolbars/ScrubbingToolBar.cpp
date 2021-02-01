@@ -57,7 +57,7 @@ END_EVENT_TABLE()
 
 //Standard constructor
 ScrubbingToolBar::ScrubbingToolBar( AudacityProject &project )
-: ToolBar(project, ScrubbingBarID, XO("Scrub"), wxT("Scrub"))
+: ToolBar(project, ScrubbingBarID, XO("Scrub"), L"Scrub")
 {
 }
 
@@ -179,7 +179,7 @@ void ScrubbingToolBar::DoRegenerateTooltips( bool force )
                    */
                   : XO("Start Scrubbing")
                   );
-         fn(*scrubButton, label, wxT("Scrub"));
+         fn(*scrubButton, label, L"Scrub");
       }
       mLastScrub = scrubs;
 
@@ -198,7 +198,7 @@ void ScrubbingToolBar::DoRegenerateTooltips( bool force )
                    */
                   : XO("Start Seeking")
                   );
-         fn(*seekButton, label, wxT("Seek"));
+         fn(*seekButton, label, L"Seek");
       }
       mLastSeek = seeks;
 
@@ -209,7 +209,7 @@ void ScrubbingToolBar::DoRegenerateTooltips( bool force )
                   ? XO("Hide Scrub Ruler")
                   : XO("Show Scrub Ruler")
                   );
-         fn(*mButtons[STBRulerID], label, wxT("ToggleScrubRuler"));
+         fn(*mButtons[STBRulerID], label, L"ToggleScrubRuler");
       }
       mLastRuler = showingRuler;
    }
@@ -300,7 +300,7 @@ namespace {
 AttachedToolBarMenuItem sAttachment{
    /* i18n-hint: Clicking this menu item shows the toolbar
       that enables Scrub or Seek playback and Scrub Ruler */
-   ScrubbingBarID, wxT("ShowScrubbingTB"), XXO("Scru&b Toolbar")
+   ScrubbingBarID, L"ShowScrubbingTB", XXO("Scru&b Toolbar")
 };
 }
 

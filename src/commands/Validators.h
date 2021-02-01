@@ -77,7 +77,7 @@ public:
    /// should be of the form 'v must be $description'
    virtual wxString GetDescription() const
    {
-      return wxT("any value");
+      return L"any value";
    }
 
    /// This MUST be overridden, to avoid slicing!
@@ -115,12 +115,12 @@ public:
    }
    wxString GetDescription() const override
    {
-      wxString desc = wxT("one of: ");
+      wxString desc = L"one of: ";
       int optionCount = mOptions.size();
       int i = 0;
       for (i = 0; i+1 < optionCount; ++i)
       {
-         desc += mOptions[i] + wxT(", ");
+         desc += mOptions[i] + L", ";
       }
       desc += mOptions[optionCount-1];
       return desc;
@@ -142,11 +142,11 @@ public:
       bool val;
       if (!v.Convert(&val)) return false;
       SetConverted(val);
-      return GetConverted().IsType(wxT("bool"));
+      return GetConverted().IsType(L"bool");
    }
    wxString GetDescription() const override
    {
-      return wxT("true/false or 1/0 or yes/no");
+      return L"true/false or 1/0 or yes/no";
    }
    Holder GetClone() const override
    {
@@ -170,7 +170,7 @@ public:
    }
    wxString GetDescription() const override
    {
-      return wxT("0X101XX101...etc. where 0=false, 1=true, and X=don't care. Numbering starts at leftmost = track 0");
+      return L"0X101XX101...etc. where 0=false, 1=true, and X=don't care. Numbering starts at leftmost = track 0";
    }
    Holder GetClone() const override
    {
@@ -186,11 +186,11 @@ public:
       double val;
       if (!v.Convert(&val)) return false;
       SetConverted(val);
-      return GetConverted().IsType(wxT("double"));
+      return GetConverted().IsType(L"double");
    }
    wxString GetDescription() const override
    {
-      return wxT("a floating-point number");
+      return L"a floating-point number";
    }
    Holder GetClone() const override
    {
@@ -215,7 +215,7 @@ public:
    }
    wxString GetDescription() const override
    {
-      return wxString::Format(wxT("between %f and %f"), mLower, mUpper);
+      return wxString::Format(L"between %f and %f", mLower, mUpper);
    }
    Holder GetClone() const override
    {
@@ -231,12 +231,12 @@ public:
       double val;
       if (!v.Convert(&val)) return false;
       SetConverted(val);
-      if (!GetConverted().IsType(wxT("double"))) return false;
+      if (!GetConverted().IsType(L"double")) return false;
       return ((long)val == val);
    }
    wxString GetDescription() const override
    {
-      return wxT("an integer");
+      return L"an integer";
    }
    Holder GetClone() const override
    {
@@ -259,7 +259,7 @@ public:
    }
    wxString GetDescription() const override
    {
-      return v1->GetDescription() + wxT(" and ") + v2->GetDescription();
+      return v1->GetDescription() + L" and " + v2->GetDescription();
    }
    Validator *GetClone() const override
    {

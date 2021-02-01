@@ -135,9 +135,9 @@ public:
    // of this object.
    // Acceptable values:
    // - a null variant (IsNull() returns TRUE)
-   // - a list variant (GetType() == wxT("list"))
+   // - a list variant (GetType() == L"list")
    // - an integer representing the selected child element,
-   //   or 0 if this object is selected (GetType() == wxT("long"))
+   //   or 0 if this object is selected (GetType() == L"long")
    // - a "void*" pointer to a wxAccessible child object
    wxAccStatus GetSelections(wxVariant *selections) override;
 
@@ -160,16 +160,16 @@ static const long MAX_REFRESH_RATE = 100;
 wxString MeterUpdateMsg::toString()
 {
 wxString output;  // somewhere to build up a string in
-output = wxString::Format(wxT("Meter update msg: %i channels, %i samples\n"), \
+output = wxString::Format(L"Meter update msg: %i channels, %i samples\n", \
       kMaxMeterBars, numFrames);
 for (int i = 0; i<kMaxMeterBars; i++)
    {  // for each channel of the meters
-   output += wxString::Format(wxT("%f peak, %f rms "), peak[i], rms[i]);
+   output += wxString::Format(L"%f peak, %f rms ", peak[i], rms[i]);
    if (clipping[i])
-      output += wxString::Format(wxT("clipped "));
+      output += wxString::Format(L"clipped ");
    else
-      output += wxString::Format(wxT("no clip "));
-   output += wxString::Format(wxT("%i head, %i tail\n"), headPeakCount[i], tailPeakCount[i]);
+      output += wxString::Format(L"no clip ");
+   output += wxString::Format(L"%i head, %i tail\n", headPeakCount[i], tailPeakCount[i]);
    }
 return output;
 }
@@ -181,7 +181,7 @@ wxString MeterUpdateMsg::toStringIfClipped()
       if (clipping[i] || (headPeakCount[i] > 0) || (tailPeakCount[i] > 0))
          return toString();
    }
-   return wxT("");
+   return L"";
 }
 
 //
@@ -221,7 +221,7 @@ bool MeterUpdateQueue::Put(MeterUpdateMsg &msg)
    if (len + 1 >= (int)(mBufferSize))
       return false;
 
-   //wxLogDebug(wxT("Put: %s"), msg.toString());
+   //wxLogDebug(L"Put: %s", msg.toString());
 
    mBuffer[mEnd] = msg;
    mEnd = (mEnd+1)%mBufferSize;
@@ -256,9 +256,9 @@ const static int gap = 2;
 
 const static wxChar *PrefStyles[] =
 {
-   wxT("AutomaticStereo"),
-   wxT("HorizontalStereo"),
-   wxT("VerticalStereo")
+   L"AutomaticStereo",
+   L"HorizontalStereo",
+   L"VerticalStereo"
 };
 
 enum {
@@ -414,23 +414,23 @@ void MeterPanel::UpdatePrefs()
 
    mMeterRefreshRate =
       std::max(MIN_REFRESH_RATE, std::min(MAX_REFRESH_RATE,
-         gPrefs->Read(Key(wxT("RefreshRate")), 30)));
-   mGradient = gPrefs->Read(Key(wxT("Bars")), wxT("Gradient")) == wxT("Gradient");
-   mDB = gPrefs->Read(Key(wxT("Type")), wxT("dB")) == wxT("dB");
-   mMeterDisabled = gPrefs->Read(Key(wxT("Disabled")), (long)0);
+         gPrefs->Read(Key(L"RefreshRate"), 30)));
+   mGradient = gPrefs->Read(Key(L"Bars"), L"Gradient") == L"Gradient";
+   mDB = gPrefs->Read(Key(L"Type"), L"dB") == L"dB";
+   mMeterDisabled = gPrefs->Read(Key(L"Disabled"), (long)0);
 
    if (mDesiredStyle != MixerTrackCluster)
    {
-      wxString style = gPrefs->Read(Key(wxT("Style")));
-      if (style == wxT("AutomaticStereo"))
+      wxString style = gPrefs->Read(Key(L"Style"));
+      if (style == L"AutomaticStereo")
       {
          mDesiredStyle = AutomaticStereo;
       }
-      else if (style == wxT("HorizontalStereo"))
+      else if (style == L"HorizontalStereo")
       {
          mDesiredStyle = HorizontalStereo;
       }
-      else if (style == wxT("VerticalStereo"))
+      else if (style == L"VerticalStereo")
       {
          mDesiredStyle = VerticalStereo;
       }
@@ -690,7 +690,7 @@ void MeterPanel::OnPaint(wxPaintEvent & WXUNUSED(event))
 
       for( size_t i = 0, cnt = texts.size(); i < cnt; i++ )
       {
-         wxString Text = wxT(" ") + texts[i] + wxT(" ");
+         wxString Text = L" " + texts[i] + L" ";
          wxSize Siz = destDC.GetTextExtent( Text );
          Siz.SetWidth( Siz.GetWidth() + gap );
          Siz.SetHeight( Siz.GetHeight() + gap );
@@ -1346,7 +1346,7 @@ void MeterPanel::HandleLayout(wxDC &dc)
    switch (mStyle)
    {
    default:
-      wxPrintf(wxT("Style not handled yet!\n"));
+      wxPrintf(L"Style not handled yet!\n");
       break;
    case MixerTrackCluster:
       // width is now the entire width of the meter canvas
@@ -2025,7 +2025,7 @@ void MeterPanel::OnPreferences(wxCommandEvent & WXUNUSED(event))
                   &mMeterRefreshRate, NumValidatorStyle::DEFAULT,
                   MIN_REFRESH_RATE, MAX_REFRESH_RATE)
                .AddTextBox(XXO("Meter refresh rate per second [1-100]: "),
-                                wxString::Format(wxT("%d"), meterRefreshRate),
+                                wxString::Format(L"%d", meterRefreshRate),
                                 10);
          }
          S.EndHorizontalLay();
@@ -2083,9 +2083,9 @@ void MeterPanel::OnPreferences(wxCommandEvent & WXUNUSED(event))
    if (dlg.ShowModal() == wxID_OK)
    {
       wxArrayStringEx style{
-         wxT("AutomaticStereo") ,
-         wxT("HorizontalStereo") ,
-         wxT("VerticalStereo") ,
+         L"AutomaticStereo" ,
+         L"HorizontalStereo" ,
+         L"VerticalStereo" ,
       };
 
       int s = 0;
@@ -2093,10 +2093,10 @@ void MeterPanel::OnPreferences(wxCommandEvent & WXUNUSED(event))
       s = horizontal->GetValue() ? 1 : s;
       s = vertical->GetValue() ? 2 : s;
 
-      gPrefs->Write(Key(wxT("Style")), style[s]);
-      gPrefs->Write(Key(wxT("Bars")), gradient->GetValue() ? wxT("Gradient") : wxT("RMS"));
-      gPrefs->Write(Key(wxT("Type")), db->GetValue() ? wxT("dB") : wxT("Linear"));
-      gPrefs->Write(Key(wxT("RefreshRate")), rate->GetValue());
+      gPrefs->Write(Key(L"Style"), style[s]);
+      gPrefs->Write(Key(L"Bars"), gradient->GetValue() ? L"Gradient" : L"RMS");
+      gPrefs->Write(Key(L"Type"), db->GetValue() ? L"dB" : L"Linear");
+      gPrefs->Write(Key(L"RefreshRate"), rate->GetValue());
 
       gPrefs->Flush();
 
@@ -2112,15 +2112,15 @@ wxString MeterPanel::Key(const wxString & key) const
 {
    if (mStyle == MixerTrackCluster)
    {
-      return wxT("/Meter/Mixerboard/") + key;
+      return L"/Meter/Mixerboard/" + key;
    }
 
    if (mIsInput)
    {
-      return wxT("/Meter/Input/") + key;
+      return L"/Meter/Input/" + key;
    }
 
-   return wxT("/Meter/Output/") + key;
+   return L"/Meter/Output/" + key;
 }
 
 // This compensates for a but in wxWidgets 3.0.2 for mac:
@@ -2241,7 +2241,7 @@ wxAccStatus MeterAx::GetName(int WXUNUSED(childId), wxString* name)
 
    if (m->mAccSilent)
    {
-      *name = wxT("");     // Jaws reads nothing, and nvda reads "unknown"
+      *name = L"";     // Jaws reads nothing, and nvda reads "unknown"
    }
    else
    {
@@ -2257,9 +2257,9 @@ wxAccStatus MeterAx::GetName(int WXUNUSED(childId), wxString* name)
          // always retain the leading space. Therefore a space has
          // been added to ensure at least one space, and stop
          // words from being merged
-         *name += wxT(" ") + _(" Monitoring ");
+         *name += L" " + _(" Monitoring ");
       else if (m->mActive)
-         *name += wxT(" ") + _(" Active ");
+         *name += L" " + _(" Active ");
 
       float peak = 0.;
       bool clipped = false;
@@ -2271,12 +2271,12 @@ wxAccStatus MeterAx::GetName(int WXUNUSED(childId), wxString* name)
       }
 
       if (m->mDB)
-         *name += wxT(" ") + wxString::Format(_(" Peak %2.f dB"), (peak * m->mDBRange) - m->mDBRange);
+         *name += L" " + wxString::Format(_(" Peak %2.f dB"), (peak * m->mDBRange) - m->mDBRange);
       else
-         *name += wxT(" ") + wxString::Format(_(" Peak %.2f "), peak);
+         *name += L" " + wxString::Format(_(" Peak %.2f "), peak);
 
       if (clipped)
-         *name += wxT(" ") + _(" Clipped ");
+         *name += L" " + _(" Clipped ");
    }
 
    return wxACC_OK;
@@ -2299,9 +2299,9 @@ wxAccStatus MeterAx::GetRole(int WXUNUSED(childId), wxAccRole* role)
 // of this object.
 // Acceptable values:
 // - a null variant (IsNull() returns TRUE)
-// - a list variant (GetType() == wxT("list"))
+// - a list variant (GetType() == L"list")
 // - an integer representing the selected child element,
-//   or 0 if this object is selected (GetType() == wxT("long"))
+//   or 0 if this object is selected (GetType() == L"long")
 // - a "void*" pointer to a wxAccessible child object
 wxAccStatus MeterAx::GetSelections(wxVariant * WXUNUSED(selections))
 {

@@ -12,7 +12,7 @@ Paul Licameli
 #ifndef __AUDACITY_GUI_SETTINGS__
 #define __AUDACITY_GUI_SETTINGS__
 
-#define ENV_DB_KEY (wxT("/GUI/EnvdBRange"))
+#define ENV_DB_KEY (L"/GUI/EnvdBRange")
 #define ENV_DB_RANGE 60
 
 // Right to left languages fail in many wx3 dialogs with missing buttons.

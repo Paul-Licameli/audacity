@@ -55,20 +55,20 @@ namespace{ BuiltinCommandsModule::Registration< SelectTimeCommand > reg; }
 const int nRelativeTos =6;
 static const EnumValueSymbol kRelativeTo[nRelativeTos] =
 {
-   { wxT("ProjectStart"), XO("Project Start") },
+   { L"ProjectStart", XO("Project Start") },
    { XO("Project") },
-   { wxT("ProjectEnd"), XO("Project End") },
-   { wxT("SelectionStart"), XO("Selection Start") },
+   { L"ProjectEnd", XO("Project End") },
+   { L"SelectionStart", XO("Selection Start") },
    { XO("Selection") },
-   { wxT("SelectionEnd"), XO("Selection End") }
+   { L"SelectionEnd", XO("Selection End") }
 };
 
 bool SelectTimeCommand::DefineParams( ShuttleParams & S ){
    // Allow selection down to -ve 100seconds.
    // Typically used to expand/contract selections by a small amount.
-   S.OptionalY( bHasT0           ).Define( mT0, wxT("Start"), 0.0, -100.0, (double)FLT_MAX);
-   S.OptionalY( bHasT1           ).Define( mT1, wxT("End"), 0.0, -100.0, (double)FLT_MAX);
-   S.OptionalN( bHasRelativeSpec ).DefineEnum( mRelativeTo,   wxT("RelativeTo"), 0, kRelativeTo, nRelativeTos );
+   S.OptionalY( bHasT0           ).Define( mT0, L"Start", 0.0, -100.0, (double)FLT_MAX);
+   S.OptionalY( bHasT1           ).Define( mT1, L"End", 0.0, -100.0, (double)FLT_MAX);
+   S.OptionalN( bHasRelativeSpec ).DefineEnum( mRelativeTo,   L"RelativeTo", 0, kRelativeTo, nRelativeTos );
    return true;
 }
 
@@ -148,8 +148,8 @@ const ComponentInterfaceSymbol SelectFrequenciesCommand::Symbol
 namespace{ BuiltinCommandsModule::Registration< SelectFrequenciesCommand > reg2; }
 
 bool SelectFrequenciesCommand::DefineParams( ShuttleParams & S ){
-   S.OptionalN( bHasTop ).Define(    mTop,    wxT("High"), 0.0, 0.0, (double)FLT_MAX);
-   S.OptionalN( bHasBottom ).Define( mBottom, wxT("Low"),  0.0, 0.0, (double)FLT_MAX);
+   S.OptionalN( bHasTop ).Define(    mTop,    L"High", 0.0, 0.0, (double)FLT_MAX);
+   S.OptionalN( bHasBottom ).Define( mBottom, L"Low",  0.0, 0.0, (double)FLT_MAX);
    return true;
 }
 
@@ -198,9 +198,9 @@ static const EnumValueSymbol kModes[nModes] =
 };
 
 bool SelectTracksCommand::DefineParams( ShuttleParams & S ){
-   S.OptionalN( bHasFirstTrack).Define( mFirstTrack, wxT("Track"), 0.0, 0.0, 100.0);
-   S.OptionalN( bHasNumTracks ).Define( mNumTracks,  wxT("TrackCount"),  1.0, 0.0, 100.0);
-   S.OptionalY( bHasMode      ).DefineEnum( mMode,   wxT("Mode"), 0, kModes, nModes );
+   S.OptionalN( bHasFirstTrack).Define( mFirstTrack, L"Track", 0.0, 0.0, 100.0);
+   S.OptionalN( bHasNumTracks ).Define( mNumTracks,  L"TrackCount",  1.0, 0.0, 100.0);
+   S.OptionalY( bHasMode      ).DefineEnum( mMode,   L"Mode", 0, kModes, nModes );
    
    return true;
 }

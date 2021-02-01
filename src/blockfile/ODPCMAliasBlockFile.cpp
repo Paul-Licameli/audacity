@@ -245,22 +245,22 @@ void ODPCMAliasBlockFile::SaveXML(XMLWriter &xmlFile)
    }
    else
    {
-      xmlFile.StartTag(wxT("odpcmaliasblockfile"));
+      xmlFile.StartTag(L"odpcmaliasblockfile");
 
       //unlock to prevent deadlock and resume lock after.
       {
          auto suspension = locker.Suspend();
          ODLocker locker2 { &mFileNameMutex };
-         xmlFile.WriteAttr(wxT("summaryfile"), mFileName.GetFullName());
+         xmlFile.WriteAttr(L"summaryfile", mFileName.GetFullName());
       }
 
-      xmlFile.WriteAttr(wxT("aliasfile"), mAliasedFileName.GetFullPath());
-      xmlFile.WriteAttr(wxT("aliasstart"),
+      xmlFile.WriteAttr(L"aliasfile", mAliasedFileName.GetFullPath());
+      xmlFile.WriteAttr(L"aliasstart",
                         mAliasStart.as_long_long());
-      xmlFile.WriteAttr(wxT("aliaslen"), mLen);
-      xmlFile.WriteAttr(wxT("aliaschannel"), mAliasChannel);
+      xmlFile.WriteAttr(L"aliaslen", mLen);
+      xmlFile.WriteAttr(L"aliaschannel", mAliasChannel);
 
-      xmlFile.EndTag(wxT("odpcmaliasblockfile"));
+      xmlFile.EndTag(L"odpcmaliasblockfile");
    }
 }
 
@@ -287,7 +287,7 @@ BlockFilePtr ODPCMAliasBlockFile::BuildFromXML(DirManager &dm, const wxChar **at
          break;
 
       const wxString strValue = value;
-      if (!wxStricmp(attr, wxT("summaryfile")) &&
+      if (!wxStricmp(attr, L"summaryfile") &&
             // Can't use XMLValueChecker::IsGoodFileName here, but do part of its test.
             XMLValueChecker::IsGoodFileString(strValue) &&
             (strValue.length() + 1 + dm.GetProjectDataDir().length() <= PLATFORM_MAX_PATH))
@@ -296,7 +296,7 @@ BlockFilePtr ODPCMAliasBlockFile::BuildFromXML(DirManager &dm, const wxChar **at
             // Make sure summaryFileName is back to uninitialized state so we can detect problem later.
             summaryFileName.Clear();
       }
-      else if( !wxStricmp(attr, wxT("aliasfile")) )
+      else if( !wxStricmp(attr, L"aliasfile") )
       {
          if (XMLValueChecker::IsGoodPathName(strValue))
             aliasFileName.Assign(strValue);
@@ -309,7 +309,7 @@ BlockFilePtr ODPCMAliasBlockFile::BuildFromXML(DirManager &dm, const wxChar **at
             // but we want to keep the reference to the missing file because it's a good path string.
             aliasFileName.Assign(strValue);
       }
-      else if ( !wxStricmp(attr, wxT("aliasstart")) )
+      else if ( !wxStricmp(attr, L"aliasstart") )
       {
          if (XMLValueChecker::IsGoodInt64(strValue) &&
              strValue.ToLongLong(&nnValue) && (nnValue >= 0))
@@ -317,9 +317,9 @@ BlockFilePtr ODPCMAliasBlockFile::BuildFromXML(DirManager &dm, const wxChar **at
       }
       else if (XMLValueChecker::IsGoodInt(strValue) && strValue.ToLong(&nValue))
       {  // integer parameters
-         if (!wxStricmp(attr, wxT("aliaslen")) && (nValue >= 0))
+         if (!wxStricmp(attr, L"aliaslen") && (nValue >= 0))
             aliasLen = nValue;
-         else if (!wxStricmp(attr, wxT("aliaschannel")) && XMLValueChecker::IsValidChannel(aliasChannel))
+         else if (!wxStricmp(attr, L"aliaschannel") && XMLValueChecker::IsValidChannel(aliasChannel))
             aliasChannel = nValue;
       }
    }
@@ -391,7 +391,7 @@ void ODPCMAliasBlockFile::WriteSummary()
       // it posts a wxlog message which WILL crash
       // Audacity because it goes into the wx GUI.
       // For this reason I left the wxFFile method commented out. (mchinen)
-      //    wxFFile summaryFile(mFileName.GetFullPath(), wxT("wb"));
+      //    wxFFile summaryFile(mFileName.GetFullPath(), L"wb");
 
       // ...and we use fopen instead.
       wxString sFullPath = mFileName.GetFullPath();
@@ -517,7 +517,7 @@ bool ODPCMAliasBlockFile::ReadSummary(ArrayOf<char> &data)
    data.reinit( mSummaryInfo.totalSummaryBytes );
 
    ODLocker locker{ &mFileNameMutex };
-   wxFFile summaryFile(mFileName.GetFullPath(), wxT("rb"));
+   wxFFile summaryFile(mFileName.GetFullPath(), L"rb");
 
    if( !summaryFile.IsOpened() ) {
 

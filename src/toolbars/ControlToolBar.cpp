@@ -111,10 +111,10 @@ static const TranslatableString
 // gets written to prefs and cannot be changed in prefs to maintain backwards
 // compatibility
 ControlToolBar::ControlToolBar( AudacityProject &project )
-: ToolBar(project, TransportBarID, XO("Transport"), wxT("Control"))
+: ToolBar(project, TransportBarID, XO("Transport"), L"Control")
 {
-   gPrefs->Read(wxT("/GUI/ErgonomicTransportButtons"), &mErgonomicTransportButtons, true);
-   mStrLocale = gPrefs->Read(wxT("/Locale/Language"), wxT(""));
+   gPrefs->Read(L"/GUI/ErgonomicTransportButtons", &mErgonomicTransportButtons, true);
+   mStrLocale = gPrefs->Read(L"/Locale/Language", L"");
 
    mSizer = NULL;
 }
@@ -251,24 +251,24 @@ void ControlToolBar::RegenerateTooltips()
       {
          case ID_PLAY_BUTTON:
             // Without shift
-            name = wxT("PlayStop");
+            name = L"PlayStop";
             break;
          case ID_RECORD_BUTTON:
             // Without shift
-            //name = wxT("Record");
-            name = wxT("Record1stChoice");
+            //name = L"Record";
+            name = L"Record1stChoice";
             break;
          case ID_PAUSE_BUTTON:
-            name = wxT("Pause");
+            name = L"Pause";
             break;
          case ID_STOP_BUTTON:
-            name = wxT("Stop");
+            name = L"Stop";
             break;
          case ID_FF_BUTTON:
-            name = wxT("CursProjectEnd");
+            name = L"CursProjectEnd";
             break;
          case ID_REW_BUTTON:
-            name = wxT("CursProjectStart");
+            name = L"CursProjectStart";
             break;
       }
       std::vector<ComponentInterfaceSymbol> commands(
@@ -279,7 +279,7 @@ void ControlToolBar::RegenerateTooltips()
       {
          case ID_PLAY_BUTTON:
             // With shift
-            commands.push_back( { wxT("PlayLooped"), XO("Loop Play") } );
+            commands.push_back( { L"PlayLooped", XO("Loop Play") } );
             break;
          case ID_RECORD_BUTTON:
             // With shift
@@ -287,7 +287,7 @@ void ControlToolBar::RegenerateTooltips()
                gPrefs->Read("/GUI/PreferNewTrackRecord",&bPreferNewTrack, false);
                // For the shortcut tooltip.
                commands.push_back( {
-                  wxT("Record2ndChoice"),
+                  L"Record2ndChoice",
                   !bPreferNewTrack
                      ? XO("Record New Track")
                      : XO("Append Record")
@@ -301,12 +301,12 @@ void ControlToolBar::RegenerateTooltips()
          case ID_FF_BUTTON:
             // With shift
             commands.push_back( {
-               wxT("SelEnd"), XO("Select to End") } );
+               L"SelEnd", XO("Select to End") } );
             break;
          case ID_REW_BUTTON:
             // With shift
             commands.push_back( {
-               wxT("SelStart"), XO("Select to Start") } );
+               L"SelStart", XO("Select to Start") } );
             break;
       }
       ToolBar::SetButtonToolTip(
@@ -320,13 +320,13 @@ void ControlToolBar::UpdatePrefs()
    bool updated = false;
    bool active;
 
-   gPrefs->Read( wxT("/GUI/ErgonomicTransportButtons"), &active, true );
+   gPrefs->Read( L"/GUI/ErgonomicTransportButtons", &active, true );
    if( mErgonomicTransportButtons != active )
    {
       mErgonomicTransportButtons = active;
       updated = true;
    }
-   wxString strLocale = gPrefs->Read(wxT("/Locale/Language"), wxT(""));
+   wxString strLocale = gPrefs->Read(L"/Locale/Language", L"");
    if (mStrLocale != strLocale)
    {
       mStrLocale = strLocale;
@@ -776,9 +776,9 @@ void ControlToolBar::StartScrolling()
          // so center the head.  If not, put it rightmost to display as much wave as we can.
          bool duplex;
 #ifdef EXPERIMENTAL_DA
-         gPrefs->Read(wxT("/AudioIO/Duplex"), &duplex, false);
+         gPrefs->Read(L"/AudioIO/Duplex", &duplex, false);
 #else
-         gPrefs->Read(wxT("/AudioIO/Duplex"), &duplex, true);
+         gPrefs->Read(L"/AudioIO/Duplex", &duplex, true);
 #endif
          if (duplex) {
             // See if there is really anything being overdubbed
@@ -813,6 +813,6 @@ namespace {
 AttachedToolBarMenuItem sAttachment{
    /* i18n-hint: Clicking this menu item shows the toolbar
       with the big buttons on it (play record etc) */
-   TransportBarID, wxT("ShowTransportTB"), XXO("&Transport Toolbar")
+   TransportBarID, L"ShowTransportTB", XXO("&Transport Toolbar")
 };
 }

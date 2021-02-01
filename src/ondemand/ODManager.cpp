@@ -317,7 +317,7 @@ void ODManager::Init()
    mCurrentThreads = 0;
    mMaxThreads = 5;
 
-   //   wxLogDebug(wxT("Initializing ODManager...Creating manager thread"));
+   //   wxLogDebug(L"Initializing ODManager...Creating manager thread");
    // This is a detached thread, so it deletes itself when it finishes
    // ... except on Mac where we don't use wxThread for reasons unexplained
    ODManagerHelperThread* startThread = safenew ODManagerHelperThread;

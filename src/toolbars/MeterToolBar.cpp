@@ -49,16 +49,16 @@ END_EVENT_TABLE()
 
 //Standard constructor
 MeterToolBar::MeterToolBar(AudacityProject &project, int type)
-: ToolBar(project, type, XO("Combined Meter"), wxT("CombinedMeter"), true)
+: ToolBar(project, type, XO("Combined Meter"), L"CombinedMeter", true)
 {
    if( mType == RecordMeterBarID ){
       mWhichMeters = kWithRecordMeter;
       mLabel = XO("Recording Meter");
-      mSection = wxT("RecordMeter");
+      mSection = L"RecordMeter";
    } else if( mType == PlayMeterBarID ){
       mWhichMeters = kWithPlayMeter;
       mLabel = XO("Playback Meter");
-      mSection = wxT("PlayMeter");
+      mSection = L"PlayMeter";
    } else {
       mWhichMeters = kWithPlayMeter | kWithRecordMeter;
    }
@@ -278,19 +278,19 @@ namespace {
 AttachedToolBarMenuItem sAttachment1{
    /* i18n-hint: Clicking this menu item shows the toolbar
       with the recording level meters */
-   RecordMeterBarID, wxT("ShowRecordMeterTB"), XXO("&Recording Meter Toolbar"),
+   RecordMeterBarID, L"ShowRecordMeterTB", XXO("&Recording Meter Toolbar"),
    {}, { MeterBarID }
 };
 AttachedToolBarMenuItem sAttachment2{
    /* i18n-hint: Clicking this menu item shows the toolbar
       with the playback level meter */
-   PlayMeterBarID, wxT("ShowPlayMeterTB"), XXO("&Playback Meter Toolbar"),
+   PlayMeterBarID, L"ShowPlayMeterTB", XXO("&Playback Meter Toolbar"),
    {}, { MeterBarID }
 };
 //AttachedToolBarMenuItem sAttachment3{
 //   /* --i18nhint: Clicking this menu item shows the toolbar
 //      which has sound level meters */
-//   MeterBarID, wxT("ShowMeterTB"), XXO("Co&mbined Meter Toolbar"),
+//   MeterBarID, L"ShowMeterTB", XXO("Co&mbined Meter Toolbar"),
 //   { Registry::OrderingHint::After, "ShowPlayMeterTB" },
 //   { PlayMeterBarID, RecordMeterBarID }
 //};

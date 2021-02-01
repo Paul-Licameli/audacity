@@ -133,7 +133,7 @@ void ErrorDialog::OnOk(wxCommandEvent & WXUNUSED(event))
 
 void ErrorDialog::OnHelp(wxCommandEvent & WXUNUSED(event))
 {
-   if( dhelpPage.StartsWith(wxT("innerlink:")) )
+   if( dhelpPage.StartsWith(L"innerlink:") )
    {
       HelpSystem::ShowHtmlText(
          this,

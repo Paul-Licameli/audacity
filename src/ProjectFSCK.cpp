@@ -169,7 +169,7 @@ XO("Project check of \"%s\" folder \
             ++iter;
          }
          if ((action == 2) && bAutoRecoverMode)
-            wxLogWarning(wxT("   Project check replaced missing aliased file(s) with silence."));
+            wxLogWarning(L"   Project check replaced missing aliased file(s) with silence.");
       }
    }
 
@@ -241,7 +241,7 @@ XO("Project check of \"%s\" folder \
             ++iter;
          }
          if ((action == 0) && bAutoRecoverMode)
-            wxLogWarning(wxT("   Project check regenerated missing alias summary file(s)."));
+            wxLogWarning(L"   Project check regenerated missing alias summary file(s).");
       }
    }
 
@@ -317,7 +317,7 @@ XO("Project check of \"%s\" folder \
             ++iter;
          }
          if ((action == 2) && bAutoRecoverMode)
-            wxLogWarning(wxT("   Project check replaced missing audio data block file(s) with silence."));
+            wxLogWarning(L"   Project check replaced missing audio data block file(s) with silence.");
       }
    }
 
@@ -333,7 +333,7 @@ XO("Project check of \"%s\" folder \
       // They will be deleted when project is saved the first time.
       if (bAutoRecoverMode)
       {
-         wxLogWarning(wxT("   Project check ignored orphan block file(s). They will be deleted when project is saved."));
+         wxLogWarning(L"   Project check ignored orphan block file(s). They will be deleted when project is saved.");
          action = 1;
       }
       else
@@ -392,7 +392,7 @@ other projects. \
          !missingAUHash.empty() ||
          !orphanFilePathArray.empty())
    {
-      wxLogWarning(wxT("Project check found file inconsistencies inspecting the loaded project data."));
+      wxLogWarning(L"Project check found file inconsistencies inspecting the loaded project data.");
       wxLog::FlushActive(); // Flush is modal and will clear the log (both desired).
 
       // In auto-recover mode, we didn't do any ShowMultiDialog calls above, so put up an alert.

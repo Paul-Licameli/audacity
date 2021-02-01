@@ -218,7 +218,7 @@ void ExportFFmpegAC3Options::PopulateOrExchange(ShuttleGui & S)
          {
             S.TieNumberAsChoice(
                XXO("Bit Rate:"),
-               {wxT("/FileFormats/AC3BitRate"),
+               {L"/FileFormats/AC3BitRate",
                 160000},
                AC3BitRateNames,
                &AC3BitRateValues
@@ -282,7 +282,7 @@ void ExportFFmpegAACOptions::PopulateOrExchange(ShuttleGui & S)
             S.SetStretchyCol(1);
             S.Prop(1).TieSlider(
                XXO("Quality (kbps):"),
-               {wxT("/FileFormats/AACQuality"), 160},320, 98);
+               {L"/FileFormats/AACQuality", 160},320, 98);
          }
          S.EndMultiColumn();
       }
@@ -373,7 +373,7 @@ void ExportFFmpegAMRNBOptions::PopulateOrExchange(ShuttleGui & S)
          {
             S.TieNumberAsChoice(
                XXO("Bit Rate:"),
-               {wxT("/FileFormats/AMRNBBitRate"),
+               {L"/FileFormats/AMRNBBitRate",
                 12200},
                AMRNBBitRateNames,
                &AMRNBBitRateValues
@@ -414,7 +414,7 @@ namespace {
    /// Bit Rates supported by OPUS encoder. Setting bit rate to other values will not result in different file size.
    ChoiceSetting OPUSBitrate
    {
-      wxT("/FileFormats/OPUSBitrate"),
+      L"/FileFormats/OPUSBitrate",
       {
          ByColumns,
          {
@@ -434,20 +434,20 @@ namespace {
             n_kbps( 256 ),
          },
          {
-            wxT("6000"),
-            wxT("8000"),
-            wxT("16000"),
-            wxT("24000"),
-            wxT("32000"),
-            wxT("40000"),
-            wxT("48000"),
-            wxT("64000"),
-            wxT("80000"),
-            wxT("96000"),
-            wxT("128000"),
-            wxT("160000"),
-            wxT("192000"),
-            wxT("256000"),
+            L"6000",
+            L"8000",
+            L"16000",
+            L"24000",
+            L"32000",
+            L"40000",
+            L"48000",
+            L"64000",
+            L"80000",
+            L"96000",
+            L"128000",
+            L"160000",
+            L"192000",
+            L"256000",
          }
       },
       7 // "128 kbps"
@@ -455,7 +455,7 @@ namespace {
 
    ChoiceSetting OPUSCompression
    {
-      wxT("/FileFormats/OPUSCompression"),
+      L"/FileFormats/OPUSCompression",
       {
          ByColumns,
          {
@@ -472,17 +472,17 @@ namespace {
             XO("10"),
          },
          {
-            wxT("0"),
-            wxT("1"),
-            wxT("2"),
-            wxT("3"),
-            wxT("4"),
-            wxT("5"),
-            wxT("6"),
-            wxT("7"),
-            wxT("8"),
-            wxT("9"),
-            wxT("10"),
+            L"0",
+            L"1",
+            L"2",
+            L"3",
+            L"4",
+            L"5",
+            L"6",
+            L"7",
+            L"8",
+            L"9",
+            L"10",
          }
       },
       10 // "10"
@@ -491,7 +491,7 @@ namespace {
 
    ChoiceSetting OPUSVbrMode
    {
-      wxT("/FileFormats/OPUSVbrMode"),
+      L"/FileFormats/OPUSVbrMode",
       {
          ByColumns,
          {
@@ -500,9 +500,9 @@ namespace {
             XO("Constrained"),
          },
          {
-            wxT("off"),
-            wxT("on"),
-            wxT("constrained"),
+            L"off",
+            L"on",
+            L"constrained",
          }
       },
       1 // "On"
@@ -510,7 +510,7 @@ namespace {
 
    ChoiceSetting OPUSApplication
    {
-      wxT("/FileFormats/OPUSApplication"),
+      L"/FileFormats/OPUSApplication",
       {
          ByColumns,
          {
@@ -519,9 +519,9 @@ namespace {
             XO("Low Delay"),
          },
          {
-            wxT("voip"),
-            wxT("audio"),
-            wxT("lowdelay"),
+            L"voip",
+            L"audio",
+            L"lowdelay",
          }
       },
       1 // "Audio"
@@ -529,7 +529,7 @@ namespace {
 
    ChoiceSetting OPUSFrameDuration
    {
-      wxT("/FileFormats/OPUSFrameDuration"),
+      L"/FileFormats/OPUSFrameDuration",
       {
          ByColumns,
          {
@@ -541,12 +541,12 @@ namespace {
             XO("60 ms"),
          },
          {
-            wxT("2.5"),
-            wxT("5"),
-            wxT("10"),
-            wxT("20"),
-            wxT("40"),
-            wxT("60"),
+            L"2.5",
+            L"5",
+            L"10",
+            L"20",
+            L"40",
+            L"60",
          }
       },
       3 // "20"
@@ -554,7 +554,7 @@ namespace {
 
    ChoiceSetting OPUSCutoff
    {
-      wxT("/FileFormats/OPUSCutoff"),
+      L"/FileFormats/OPUSCutoff",
       {
          ByColumns,
          {
@@ -566,12 +566,12 @@ namespace {
             XO("Fullband"),
          },
          {
-            wxT("0"),
-            wxT("4000"),
-            wxT("6000"),
-            wxT("8000"),
-            wxT("12000"),
-            wxT("20000"),
+            L"0",
+            L"4000",
+            L"6000",
+            L"8000",
+            L"12000",
+            L"20000",
          }
       },
       0 // "Disabled"
@@ -732,7 +732,7 @@ void ExportFFmpegWMAOptions::PopulateOrExchange(ShuttleGui & S)
          {
             S.TieNumberAsChoice(
                XXO("Bit Rate:"),
-               {wxT("/FileFormats/WMABitRate"),
+               {L"/FileFormats/WMABitRate",
                 128000},
                WMABitRateNames,
                &WMABitRateValues
@@ -802,9 +802,9 @@ void ExportFFmpegCustomOptions::PopulateOrExchange(ShuttleGui & S)
          S.StartMultiColumn(2, wxCENTER);
          {
             S.AddPrompt(XXO("Current Format:"));
-            mFormat = S.Style(wxTE_READONLY).AddTextBox({}, wxT(""), 25);
+            mFormat = S.Style(wxTE_READONLY).AddTextBox({}, L"", 25);
             S.AddPrompt(XXO("Current Codec:"));
-            mCodec = S.Style(wxTE_READONLY).AddTextBox({}, wxT(""), 25);
+            mCodec = S.Style(wxTE_READONLY).AddTextBox({}, L"", 25);
          }
          S.EndMultiColumn();
       }
@@ -819,8 +819,8 @@ bool ExportFFmpegCustomOptions::TransferDataToWindow()
 {
    if (mFormat)
    {
-      mFormat->SetValue(gPrefs->Read(wxT("/FileFormats/FFmpegFormat"), wxT("")));
-      mCodec->SetValue(gPrefs->Read(wxT("/FileFormats/FFmpegCodec"), wxT("")));
+      mFormat->SetValue(gPrefs->Read(L"/FileFormats/FFmpegFormat", L""));
+      mCodec->SetValue(gPrefs->Read(L"/FileFormats/FFmpegCodec", L""));
    }
    return true;
 }
@@ -878,7 +878,7 @@ FFmpegPresets::FFmpegPresets()
    mAbortImport = false;
 
    XMLFileReader xmlfile;
-   wxFileName xmlFileName(FileNames::DataDir(), wxT("ffmpeg_presets.xml"));
+   wxFileName xmlFileName(FileNames::DataDir(), L"ffmpeg_presets.xml");
    xmlfile.Parse(this,xmlFileName.GetFullPath());
 }
 
@@ -886,7 +886,7 @@ FFmpegPresets::~FFmpegPresets()
 {
    // We're in a destructor!  Don't let exceptions out!
    GuardedCall( [&] {
-      wxFileName xmlFileName{ FileNames::DataDir(), wxT("ffmpeg_presets.xml") };
+      wxFileName xmlFileName{ FileNames::DataDir(), L"ffmpeg_presets.xml" };
       XMLFileWriter writer{
          xmlFileName.GetFullPath(), XO("Error Saving FFmpeg Presets") };
       WriteXMLHeader(writer);
@@ -1035,7 +1035,7 @@ bool FFmpegPresets::SavePreset(ExportFFmpegOptions *parent, wxString &name)
          case FEMuxRateID:
          case FEPacketSizeID:
             sc = dynamic_cast<wxSpinCtrl*>(wnd);
-            preset->mControlState[id - FEFirstID] = wxString::Format(wxT("%d"),sc->GetValue());
+            preset->mControlState[id - FEFirstID] = wxString::Format(L"%d",sc->GetValue());
             break;
          // Text control
          case FELanguageID:
@@ -1047,14 +1047,14 @@ bool FFmpegPresets::SavePreset(ExportFFmpegOptions *parent, wxString &name)
          case FEProfileID:
          case FEPredOrderID:
             ch = dynamic_cast<wxChoice*>(wnd);
-            preset->mControlState[id - FEFirstID] = wxString::Format(wxT("%d"),ch->GetSelection());
+            preset->mControlState[id - FEFirstID] = wxString::Format(L"%d",ch->GetSelection());
             break;
          // Check box
          case FEUseLPCID:
          case FEBitReservoirID:
          case FEVariableBlockLenID:
             cb = dynamic_cast<wxCheckBox*>(wnd);
-            preset->mControlState[id - FEFirstID] = wxString::Format(wxT("%d"),cb->GetValue());
+            preset->mControlState[id - FEFirstID] = wxString::Format(L"%d",cb->GetValue());
             break;
          }
       }
@@ -1148,12 +1148,12 @@ bool FFmpegPresets::HandleXMLTag(const wxChar *tag, const wxChar **attrs)
       return false;
    }
 
-   if (!wxStrcmp(tag,wxT("ffmpeg_presets")))
+   if (!wxStrcmp(tag,L"ffmpeg_presets"))
    {
       return true;
    }
 
-   if (!wxStrcmp(tag,wxT("preset")))
+   if (!wxStrcmp(tag,L"preset"))
    {
       while (*attrs)
       {
@@ -1163,7 +1163,7 @@ bool FFmpegPresets::HandleXMLTag(const wxChar *tag, const wxChar **attrs)
          if (!value)
             break;
 
-         if (!wxStrcmp(attr,wxT("name")))
+         if (!wxStrcmp(attr,L"name"))
          {
             mPreset = FindPreset(value);
             if (mPreset)
@@ -1195,7 +1195,7 @@ bool FFmpegPresets::HandleXMLTag(const wxChar *tag, const wxChar **attrs)
       return true;
    }
 
-   if (!wxStrcmp(tag,wxT("setctrlstate")) && mPreset)
+   if (!wxStrcmp(tag,L"setctrlstate") && mPreset)
    {
       long id = -1;
       while (*attrs)
@@ -1206,13 +1206,13 @@ bool FFmpegPresets::HandleXMLTag(const wxChar *tag, const wxChar **attrs)
          if (!value)
             break;
 
-         if (!wxStrcmp(attr,wxT("id")))
+         if (!wxStrcmp(attr,L"id"))
          {
             for (long i = FEFirstID; i < FELastID; i++)
                if (!wxStrcmp(FFmpegExportCtrlIDNames[i - FEFirstID],value))
                   id = i;
          }
-         else if (!wxStrcmp(attr,wxT("state")))
+         else if (!wxStrcmp(attr,L"state"))
          {
             if (id > FEFirstID && id < FELastID)
                mPreset->mControlState[id - FEFirstID] = wxString(value);
@@ -1231,11 +1231,11 @@ XMLTagHandler *FFmpegPresets::HandleXMLChild(const wxChar *tag)
       return NULL;
    }
 
-   if (!wxStrcmp(tag, wxT("preset")))
+   if (!wxStrcmp(tag, L"preset"))
    {
       return this;
    }
-   else if (!wxStrcmp(tag, wxT("setctrlstate")))
+   else if (!wxStrcmp(tag, L"setctrlstate"))
    {
       return this;
    }
@@ -1245,44 +1245,44 @@ XMLTagHandler *FFmpegPresets::HandleXMLChild(const wxChar *tag)
 void FFmpegPresets::WriteXMLHeader(XMLWriter &xmlFile) const
 // may throw
 {
-   xmlFile.Write(wxT("<?xml "));
-   xmlFile.Write(wxT("version=\"1.0\" "));
-   xmlFile.Write(wxT("standalone=\"no\" "));
-   xmlFile.Write(wxT("?>\n"));
+   xmlFile.Write(L"<?xml ");
+   xmlFile.Write(L"version=\"1.0\" ");
+   xmlFile.Write(L"standalone=\"no\" ");
+   xmlFile.Write(L"?>\n");
 
-   wxString dtdName = wxT("-//audacityffmpegpreset-1.0.0//DTD//EN");
+   wxString dtdName = L"-//audacityffmpegpreset-1.0.0//DTD//EN";
    wxString dtdURI =
-      wxT("http://audacity.sourceforge.net/xml/audacityffmpegpreset-1.0.0.dtd");
+      L"http://audacity.sourceforge.net/xml/audacityffmpegpreset-1.0.0.dtd";
 
-   xmlFile.Write(wxT("<!DOCTYPE "));
-   xmlFile.Write(wxT("project "));
-   xmlFile.Write(wxT("PUBLIC "));
-   xmlFile.Write(wxT("\"-//audacityffmpegpreset-1.0.0//DTD//EN\" "));
-   xmlFile.Write(wxT("\"http://audacity.sourceforge.net/xml/audacityffmpegpreset-1.0.0.dtd\" "));
-   xmlFile.Write(wxT(">\n"));
+   xmlFile.Write(L"<!DOCTYPE ");
+   xmlFile.Write(L"project ");
+   xmlFile.Write(L"PUBLIC ");
+   xmlFile.Write(L"\"-//audacityffmpegpreset-1.0.0//DTD//EN\" ");
+   xmlFile.Write(L"\"http://audacity.sourceforge.net/xml/audacityffmpegpreset-1.0.0.dtd\" ");
+   xmlFile.Write(L">\n");
 }
 
 void FFmpegPresets::WriteXML(XMLWriter &xmlFile) const
 // may throw
 {
-   xmlFile.StartTag(wxT("ffmpeg_presets"));
-   xmlFile.WriteAttr(wxT("version"),wxT("1.0"));
+   xmlFile.StartTag(L"ffmpeg_presets");
+   xmlFile.WriteAttr(L"version",L"1.0");
    FFmpegPresetMap::const_iterator iter;
    for (iter = mPresets.begin(); iter != mPresets.end(); ++iter)
    {
       auto preset = &iter->second;
-      xmlFile.StartTag(wxT("preset"));
-      xmlFile.WriteAttr(wxT("name"),preset->mPresetName);
+      xmlFile.StartTag(L"preset");
+      xmlFile.WriteAttr(L"name",preset->mPresetName);
       for (long i = FEFirstID + 1; i < FELastID; i++)
       {
-         xmlFile.StartTag(wxT("setctrlstate"));
-         xmlFile.WriteAttr(wxT("id"),wxString(FFmpegExportCtrlIDNames[i - FEFirstID]));
-         xmlFile.WriteAttr(wxT("state"),preset->mControlState[i - FEFirstID]);
-         xmlFile.EndTag(wxT("setctrlstate"));
+         xmlFile.StartTag(L"setctrlstate");
+         xmlFile.WriteAttr(L"id",wxString(FFmpegExportCtrlIDNames[i - FEFirstID]));
+         xmlFile.WriteAttr(L"state",preset->mControlState[i - FEFirstID]);
+         xmlFile.EndTag(L"setctrlstate");
       }
-      xmlFile.EndTag(wxT("preset"));
+      xmlFile.EndTag(L"preset");
    }
-   xmlFile.EndTag(wxT("ffmpeg_presets"));
+   xmlFile.EndTag(L"ffmpeg_presets");
 }
 
 //----------------------------------------------------------------------------
@@ -1307,298 +1307,298 @@ END_EVENT_TABLE()
 /// Must end with NULL entry
 CompatibilityEntry ExportFFmpegOptions::CompatibilityList[] =
 {
-   { wxT("adts"), AV_CODEC_ID_AAC },
+   { L"adts", AV_CODEC_ID_AAC },
 
-   { wxT("aiff"), AV_CODEC_ID_PCM_S16BE },
-   { wxT("aiff"), AV_CODEC_ID_PCM_S8 },
-   { wxT("aiff"), AV_CODEC_ID_PCM_S24BE },
-   { wxT("aiff"), AV_CODEC_ID_PCM_S32BE },
-   { wxT("aiff"), AV_CODEC_ID_PCM_ALAW },
-   { wxT("aiff"), AV_CODEC_ID_PCM_MULAW },
-   { wxT("aiff"), AV_CODEC_ID_MACE3 },
-   { wxT("aiff"), AV_CODEC_ID_MACE6 },
-   { wxT("aiff"), AV_CODEC_ID_GSM },
-   { wxT("aiff"), AV_CODEC_ID_ADPCM_G726 },
-   { wxT("aiff"), AV_CODEC_ID_PCM_S16LE },
-   { wxT("aiff"), AV_CODEC_ID_ADPCM_IMA_QT },
-   { wxT("aiff"), AV_CODEC_ID_QDM2 },
+   { L"aiff", AV_CODEC_ID_PCM_S16BE },
+   { L"aiff", AV_CODEC_ID_PCM_S8 },
+   { L"aiff", AV_CODEC_ID_PCM_S24BE },
+   { L"aiff", AV_CODEC_ID_PCM_S32BE },
+   { L"aiff", AV_CODEC_ID_PCM_ALAW },
+   { L"aiff", AV_CODEC_ID_PCM_MULAW },
+   { L"aiff", AV_CODEC_ID_MACE3 },
+   { L"aiff", AV_CODEC_ID_MACE6 },
+   { L"aiff", AV_CODEC_ID_GSM },
+   { L"aiff", AV_CODEC_ID_ADPCM_G726 },
+   { L"aiff", AV_CODEC_ID_PCM_S16LE },
+   { L"aiff", AV_CODEC_ID_ADPCM_IMA_QT },
+   { L"aiff", AV_CODEC_ID_QDM2 },
 
-   { wxT("amr"), AV_CODEC_ID_AMR_NB },
-   { wxT("amr"), AV_CODEC_ID_AMR_WB },
+   { L"amr", AV_CODEC_ID_AMR_NB },
+   { L"amr", AV_CODEC_ID_AMR_WB },
 
-   { wxT("asf"), AV_CODEC_ID_PCM_S16LE },
-   { wxT("asf"), AV_CODEC_ID_PCM_U8 },
-   { wxT("asf"), AV_CODEC_ID_PCM_S24LE },
-   { wxT("asf"), AV_CODEC_ID_PCM_S32LE },
-   { wxT("asf"), AV_CODEC_ID_ADPCM_MS },
-   { wxT("asf"), AV_CODEC_ID_PCM_ALAW },
-   { wxT("asf"), AV_CODEC_ID_PCM_MULAW },
-   { wxT("asf"), AV_CODEC_ID_WMAVOICE },
-   { wxT("asf"), AV_CODEC_ID_ADPCM_IMA_WAV },
-   { wxT("asf"), AV_CODEC_ID_ADPCM_YAMAHA },
-   { wxT("asf"), AV_CODEC_ID_TRUESPEECH },
-   { wxT("asf"), AV_CODEC_ID_GSM_MS },
-   { wxT("asf"), AV_CODEC_ID_ADPCM_G726 },
-   //{ wxT("asf"), AV_CODEC_ID_MP2 }, Bug 59
-   { wxT("asf"), AV_CODEC_ID_MP3 },
+   { L"asf", AV_CODEC_ID_PCM_S16LE },
+   { L"asf", AV_CODEC_ID_PCM_U8 },
+   { L"asf", AV_CODEC_ID_PCM_S24LE },
+   { L"asf", AV_CODEC_ID_PCM_S32LE },
+   { L"asf", AV_CODEC_ID_ADPCM_MS },
+   { L"asf", AV_CODEC_ID_PCM_ALAW },
+   { L"asf", AV_CODEC_ID_PCM_MULAW },
+   { L"asf", AV_CODEC_ID_WMAVOICE },
+   { L"asf", AV_CODEC_ID_ADPCM_IMA_WAV },
+   { L"asf", AV_CODEC_ID_ADPCM_YAMAHA },
+   { L"asf", AV_CODEC_ID_TRUESPEECH },
+   { L"asf", AV_CODEC_ID_GSM_MS },
+   { L"asf", AV_CODEC_ID_ADPCM_G726 },
+   //{ L"asf", AV_CODEC_ID_MP2 }, Bug 59
+   { L"asf", AV_CODEC_ID_MP3 },
 #if LIBAVCODEC_VERSION_MAJOR < 58
-   { wxT("asf"), AV_CODEC_ID_VOXWARE },
+   { L"asf", AV_CODEC_ID_VOXWARE },
 #endif
-   { wxT("asf"), AV_CODEC_ID_AAC },
-   { wxT("asf"), AV_CODEC_ID_WMAV1 },
-   { wxT("asf"), AV_CODEC_ID_WMAV2 },
-   { wxT("asf"), AV_CODEC_ID_WMAPRO },
-   { wxT("asf"), AV_CODEC_ID_ADPCM_CT },
-   { wxT("asf"), AV_CODEC_ID_ATRAC3 },
-   { wxT("asf"), AV_CODEC_ID_IMC },
-   { wxT("asf"), AV_CODEC_ID_AC3 },
-   { wxT("asf"), AV_CODEC_ID_DTS },
-   { wxT("asf"), AV_CODEC_ID_FLAC },
-   { wxT("asf"), AV_CODEC_ID_ADPCM_SWF },
-   { wxT("asf"), AV_CODEC_ID_VORBIS },
+   { L"asf", AV_CODEC_ID_AAC },
+   { L"asf", AV_CODEC_ID_WMAV1 },
+   { L"asf", AV_CODEC_ID_WMAV2 },
+   { L"asf", AV_CODEC_ID_WMAPRO },
+   { L"asf", AV_CODEC_ID_ADPCM_CT },
+   { L"asf", AV_CODEC_ID_ATRAC3 },
+   { L"asf", AV_CODEC_ID_IMC },
+   { L"asf", AV_CODEC_ID_AC3 },
+   { L"asf", AV_CODEC_ID_DTS },
+   { L"asf", AV_CODEC_ID_FLAC },
+   { L"asf", AV_CODEC_ID_ADPCM_SWF },
+   { L"asf", AV_CODEC_ID_VORBIS },
 
-   { wxT("au"), AV_CODEC_ID_PCM_MULAW },
-   { wxT("au"), AV_CODEC_ID_PCM_S8 },
-   { wxT("au"), AV_CODEC_ID_PCM_S16BE },
-   { wxT("au"), AV_CODEC_ID_PCM_ALAW },
+   { L"au", AV_CODEC_ID_PCM_MULAW },
+   { L"au", AV_CODEC_ID_PCM_S8 },
+   { L"au", AV_CODEC_ID_PCM_S16BE },
+   { L"au", AV_CODEC_ID_PCM_ALAW },
 
-   { wxT("avi"), AV_CODEC_ID_PCM_S16LE },
-   { wxT("avi"), AV_CODEC_ID_PCM_U8 },
-   { wxT("avi"), AV_CODEC_ID_PCM_S24LE },
-   { wxT("avi"), AV_CODEC_ID_PCM_S32LE },
-   { wxT("avi"), AV_CODEC_ID_ADPCM_MS },
-   { wxT("avi"), AV_CODEC_ID_PCM_ALAW },
-   { wxT("avi"), AV_CODEC_ID_PCM_MULAW },
-   { wxT("avi"), AV_CODEC_ID_WMAVOICE },
-   { wxT("avi"), AV_CODEC_ID_ADPCM_IMA_WAV },
-   { wxT("avi"), AV_CODEC_ID_ADPCM_YAMAHA },
-   { wxT("avi"), AV_CODEC_ID_TRUESPEECH },
-   { wxT("avi"), AV_CODEC_ID_GSM_MS },
-   { wxT("avi"), AV_CODEC_ID_ADPCM_G726 },
-   // { wxT("avi"), AV_CODEC_ID_MP2 }, //Bug 59
-   { wxT("avi"), AV_CODEC_ID_MP3 },
+   { L"avi", AV_CODEC_ID_PCM_S16LE },
+   { L"avi", AV_CODEC_ID_PCM_U8 },
+   { L"avi", AV_CODEC_ID_PCM_S24LE },
+   { L"avi", AV_CODEC_ID_PCM_S32LE },
+   { L"avi", AV_CODEC_ID_ADPCM_MS },
+   { L"avi", AV_CODEC_ID_PCM_ALAW },
+   { L"avi", AV_CODEC_ID_PCM_MULAW },
+   { L"avi", AV_CODEC_ID_WMAVOICE },
+   { L"avi", AV_CODEC_ID_ADPCM_IMA_WAV },
+   { L"avi", AV_CODEC_ID_ADPCM_YAMAHA },
+   { L"avi", AV_CODEC_ID_TRUESPEECH },
+   { L"avi", AV_CODEC_ID_GSM_MS },
+   { L"avi", AV_CODEC_ID_ADPCM_G726 },
+   // { L"avi", AV_CODEC_ID_MP2 }, //Bug 59
+   { L"avi", AV_CODEC_ID_MP3 },
 #if LIBAVCODEC_VERSION_MAJOR < 58
-   { wxT("avi"), AV_CODEC_ID_VOXWARE },
+   { L"avi", AV_CODEC_ID_VOXWARE },
 #endif
-   { wxT("avi"), AV_CODEC_ID_AAC },
-   { wxT("avi"), AV_CODEC_ID_WMAV1 },
-   { wxT("avi"), AV_CODEC_ID_WMAV2 },
-   { wxT("avi"), AV_CODEC_ID_WMAPRO },
-   { wxT("avi"), AV_CODEC_ID_ADPCM_CT },
-   { wxT("avi"), AV_CODEC_ID_ATRAC3 },
-   { wxT("avi"), AV_CODEC_ID_IMC },
-   { wxT("avi"), AV_CODEC_ID_AC3 },
-   { wxT("avi"), AV_CODEC_ID_DTS },
-   { wxT("avi"), AV_CODEC_ID_FLAC },
-   { wxT("avi"), AV_CODEC_ID_ADPCM_SWF },
-   { wxT("avi"), AV_CODEC_ID_VORBIS },
+   { L"avi", AV_CODEC_ID_AAC },
+   { L"avi", AV_CODEC_ID_WMAV1 },
+   { L"avi", AV_CODEC_ID_WMAV2 },
+   { L"avi", AV_CODEC_ID_WMAPRO },
+   { L"avi", AV_CODEC_ID_ADPCM_CT },
+   { L"avi", AV_CODEC_ID_ATRAC3 },
+   { L"avi", AV_CODEC_ID_IMC },
+   { L"avi", AV_CODEC_ID_AC3 },
+   { L"avi", AV_CODEC_ID_DTS },
+   { L"avi", AV_CODEC_ID_FLAC },
+   { L"avi", AV_CODEC_ID_ADPCM_SWF },
+   { L"avi", AV_CODEC_ID_VORBIS },
 
-   { wxT("crc"), AV_CODEC_ID_NONE },
+   { L"crc", AV_CODEC_ID_NONE },
 
-   { wxT("dv"), AV_CODEC_ID_PCM_S16LE },
+   { L"dv", AV_CODEC_ID_PCM_S16LE },
 
-   { wxT("ffm"), AV_CODEC_ID_NONE },
+   { L"ffm", AV_CODEC_ID_NONE },
 
-   { wxT("flv"), AV_CODEC_ID_MP3 },
-   { wxT("flv"), AV_CODEC_ID_PCM_S8 },
-   { wxT("flv"), AV_CODEC_ID_PCM_S16BE },
-   { wxT("flv"), AV_CODEC_ID_PCM_S16LE },
-   { wxT("flv"), AV_CODEC_ID_ADPCM_SWF },
-   { wxT("flv"), AV_CODEC_ID_AAC },
-   { wxT("flv"), AV_CODEC_ID_NELLYMOSER },
+   { L"flv", AV_CODEC_ID_MP3 },
+   { L"flv", AV_CODEC_ID_PCM_S8 },
+   { L"flv", AV_CODEC_ID_PCM_S16BE },
+   { L"flv", AV_CODEC_ID_PCM_S16LE },
+   { L"flv", AV_CODEC_ID_ADPCM_SWF },
+   { L"flv", AV_CODEC_ID_AAC },
+   { L"flv", AV_CODEC_ID_NELLYMOSER },
 
-   { wxT("framecrc"), AV_CODEC_ID_NONE },
+   { L"framecrc", AV_CODEC_ID_NONE },
 
-   { wxT("gxf"), AV_CODEC_ID_PCM_S16LE },
+   { L"gxf", AV_CODEC_ID_PCM_S16LE },
 
-   { wxT("matroska"), AV_CODEC_ID_PCM_S16LE },
-   { wxT("matroska"), AV_CODEC_ID_PCM_U8 },
-   { wxT("matroska"), AV_CODEC_ID_PCM_S24LE },
-   { wxT("matroska"), AV_CODEC_ID_PCM_S32LE },
-   { wxT("matroska"), AV_CODEC_ID_ADPCM_MS },
-   { wxT("matroska"), AV_CODEC_ID_PCM_ALAW },
-   { wxT("matroska"), AV_CODEC_ID_PCM_MULAW },
-   { wxT("matroska"), AV_CODEC_ID_WMAVOICE },
-   { wxT("matroska"), AV_CODEC_ID_ADPCM_IMA_WAV },
-   { wxT("matroska"), AV_CODEC_ID_ADPCM_YAMAHA },
-   { wxT("matroska"), AV_CODEC_ID_TRUESPEECH },
-   { wxT("matroska"), AV_CODEC_ID_GSM_MS },
-   { wxT("matroska"), AV_CODEC_ID_ADPCM_G726 },
-   // { wxT("matroska"), AV_CODEC_ID_MP2 }, // Bug 59
-   { wxT("matroska"), AV_CODEC_ID_MP3 },
+   { L"matroska", AV_CODEC_ID_PCM_S16LE },
+   { L"matroska", AV_CODEC_ID_PCM_U8 },
+   { L"matroska", AV_CODEC_ID_PCM_S24LE },
+   { L"matroska", AV_CODEC_ID_PCM_S32LE },
+   { L"matroska", AV_CODEC_ID_ADPCM_MS },
+   { L"matroska", AV_CODEC_ID_PCM_ALAW },
+   { L"matroska", AV_CODEC_ID_PCM_MULAW },
+   { L"matroska", AV_CODEC_ID_WMAVOICE },
+   { L"matroska", AV_CODEC_ID_ADPCM_IMA_WAV },
+   { L"matroska", AV_CODEC_ID_ADPCM_YAMAHA },
+   { L"matroska", AV_CODEC_ID_TRUESPEECH },
+   { L"matroska", AV_CODEC_ID_GSM_MS },
+   { L"matroska", AV_CODEC_ID_ADPCM_G726 },
+   // { L"matroska", AV_CODEC_ID_MP2 }, // Bug 59
+   { L"matroska", AV_CODEC_ID_MP3 },
 #if LIBAVCODEC_VERSION_MAJOR < 58
-   { wxT("matroska"), AV_CODEC_ID_VOXWARE },
+   { L"matroska", AV_CODEC_ID_VOXWARE },
 #endif
-   { wxT("matroska"), AV_CODEC_ID_AAC },
-   { wxT("matroska"), AV_CODEC_ID_WMAV1 },
-   { wxT("matroska"), AV_CODEC_ID_WMAV2 },
-   { wxT("matroska"), AV_CODEC_ID_WMAPRO },
-   { wxT("matroska"), AV_CODEC_ID_ADPCM_CT },
-   { wxT("matroska"), AV_CODEC_ID_ATRAC3 },
-   { wxT("matroska"), AV_CODEC_ID_IMC },
-   { wxT("matroska"), AV_CODEC_ID_AC3 },
-   { wxT("matroska"), AV_CODEC_ID_DTS },
-   { wxT("matroska"), AV_CODEC_ID_FLAC },
-   { wxT("matroska"), AV_CODEC_ID_ADPCM_SWF },
-   { wxT("matroska"), AV_CODEC_ID_VORBIS },
+   { L"matroska", AV_CODEC_ID_AAC },
+   { L"matroska", AV_CODEC_ID_WMAV1 },
+   { L"matroska", AV_CODEC_ID_WMAV2 },
+   { L"matroska", AV_CODEC_ID_WMAPRO },
+   { L"matroska", AV_CODEC_ID_ADPCM_CT },
+   { L"matroska", AV_CODEC_ID_ATRAC3 },
+   { L"matroska", AV_CODEC_ID_IMC },
+   { L"matroska", AV_CODEC_ID_AC3 },
+   { L"matroska", AV_CODEC_ID_DTS },
+   { L"matroska", AV_CODEC_ID_FLAC },
+   { L"matroska", AV_CODEC_ID_ADPCM_SWF },
+   { L"matroska", AV_CODEC_ID_VORBIS },
 
-   { wxT("mmf"), AV_CODEC_ID_ADPCM_YAMAHA },
+   { L"mmf", AV_CODEC_ID_ADPCM_YAMAHA },
 
-   { wxT("mov"), AV_CODEC_ID_PCM_S32BE }, //mov
-   { wxT("mov"), AV_CODEC_ID_PCM_S32LE },
-   { wxT("mov"), AV_CODEC_ID_PCM_S24BE },
-   { wxT("mov"), AV_CODEC_ID_PCM_S24LE },
-   { wxT("mov"), AV_CODEC_ID_PCM_S16BE },
-   { wxT("mov"), AV_CODEC_ID_PCM_S16LE },
-   { wxT("mov"), AV_CODEC_ID_PCM_S8 },
-   { wxT("mov"), AV_CODEC_ID_PCM_U8 },
-   { wxT("mov"), AV_CODEC_ID_PCM_MULAW },
-   { wxT("mov"), AV_CODEC_ID_PCM_ALAW },
-   { wxT("mov"), AV_CODEC_ID_ADPCM_IMA_QT },
-   { wxT("mov"), AV_CODEC_ID_MACE3 },
-   { wxT("mov"), AV_CODEC_ID_MACE6 },
-   { wxT("mov"), AV_CODEC_ID_MP3 },
-   { wxT("mov"), AV_CODEC_ID_AAC },
-   { wxT("mov"), AV_CODEC_ID_AMR_NB },
-   { wxT("mov"), AV_CODEC_ID_AMR_WB },
-   { wxT("mov"), AV_CODEC_ID_GSM },
-   { wxT("mov"), AV_CODEC_ID_ALAC },
-   { wxT("mov"), AV_CODEC_ID_QCELP },
-   { wxT("mov"), AV_CODEC_ID_QDM2 },
-   { wxT("mov"), AV_CODEC_ID_DVAUDIO },
-   { wxT("mov"), AV_CODEC_ID_WMAV2 },
-   { wxT("mov"), AV_CODEC_ID_ALAC },
+   { L"mov", AV_CODEC_ID_PCM_S32BE }, //mov
+   { L"mov", AV_CODEC_ID_PCM_S32LE },
+   { L"mov", AV_CODEC_ID_PCM_S24BE },
+   { L"mov", AV_CODEC_ID_PCM_S24LE },
+   { L"mov", AV_CODEC_ID_PCM_S16BE },
+   { L"mov", AV_CODEC_ID_PCM_S16LE },
+   { L"mov", AV_CODEC_ID_PCM_S8 },
+   { L"mov", AV_CODEC_ID_PCM_U8 },
+   { L"mov", AV_CODEC_ID_PCM_MULAW },
+   { L"mov", AV_CODEC_ID_PCM_ALAW },
+   { L"mov", AV_CODEC_ID_ADPCM_IMA_QT },
+   { L"mov", AV_CODEC_ID_MACE3 },
+   { L"mov", AV_CODEC_ID_MACE6 },
+   { L"mov", AV_CODEC_ID_MP3 },
+   { L"mov", AV_CODEC_ID_AAC },
+   { L"mov", AV_CODEC_ID_AMR_NB },
+   { L"mov", AV_CODEC_ID_AMR_WB },
+   { L"mov", AV_CODEC_ID_GSM },
+   { L"mov", AV_CODEC_ID_ALAC },
+   { L"mov", AV_CODEC_ID_QCELP },
+   { L"mov", AV_CODEC_ID_QDM2 },
+   { L"mov", AV_CODEC_ID_DVAUDIO },
+   { L"mov", AV_CODEC_ID_WMAV2 },
+   { L"mov", AV_CODEC_ID_ALAC },
 
-   { wxT("mp4"), AV_CODEC_ID_AAC },
-   { wxT("mp4"), AV_CODEC_ID_QCELP },
-   { wxT("mp4"), AV_CODEC_ID_MP3 },
-   { wxT("mp4"), AV_CODEC_ID_VORBIS },
+   { L"mp4", AV_CODEC_ID_AAC },
+   { L"mp4", AV_CODEC_ID_QCELP },
+   { L"mp4", AV_CODEC_ID_MP3 },
+   { L"mp4", AV_CODEC_ID_VORBIS },
 
-   { wxT("psp"), AV_CODEC_ID_AAC },
-   { wxT("psp"), AV_CODEC_ID_QCELP },
-   { wxT("psp"), AV_CODEC_ID_MP3 },
-   { wxT("psp"), AV_CODEC_ID_VORBIS },
+   { L"psp", AV_CODEC_ID_AAC },
+   { L"psp", AV_CODEC_ID_QCELP },
+   { L"psp", AV_CODEC_ID_MP3 },
+   { L"psp", AV_CODEC_ID_VORBIS },
 
-   { wxT("ipod"), AV_CODEC_ID_AAC },
-   { wxT("ipod"), AV_CODEC_ID_QCELP },
-   { wxT("ipod"), AV_CODEC_ID_MP3 },
-   { wxT("ipod"), AV_CODEC_ID_VORBIS },
+   { L"ipod", AV_CODEC_ID_AAC },
+   { L"ipod", AV_CODEC_ID_QCELP },
+   { L"ipod", AV_CODEC_ID_MP3 },
+   { L"ipod", AV_CODEC_ID_VORBIS },
 
-   { wxT("3gp"), AV_CODEC_ID_AAC },
-   { wxT("3gp"), AV_CODEC_ID_AMR_NB },
-   { wxT("3gp"), AV_CODEC_ID_AMR_WB },
+   { L"3gp", AV_CODEC_ID_AAC },
+   { L"3gp", AV_CODEC_ID_AMR_NB },
+   { L"3gp", AV_CODEC_ID_AMR_WB },
 
-   { wxT("3g2"), AV_CODEC_ID_AAC },
-   { wxT("3g2"), AV_CODEC_ID_AMR_NB },
-   { wxT("3g2"), AV_CODEC_ID_AMR_WB },
+   { L"3g2", AV_CODEC_ID_AAC },
+   { L"3g2", AV_CODEC_ID_AMR_NB },
+   { L"3g2", AV_CODEC_ID_AMR_WB },
 
-   { wxT("mp3"), AV_CODEC_ID_MP3 },
+   { L"mp3", AV_CODEC_ID_MP3 },
 
-   { wxT("mpeg"), AV_CODEC_ID_AC3 },
-   { wxT("mpeg"), AV_CODEC_ID_DTS },
-   { wxT("mpeg"), AV_CODEC_ID_PCM_S16BE },
-   //{ wxT("mpeg"), AV_CODEC_ID_MP2 },// Bug 59
+   { L"mpeg", AV_CODEC_ID_AC3 },
+   { L"mpeg", AV_CODEC_ID_DTS },
+   { L"mpeg", AV_CODEC_ID_PCM_S16BE },
+   //{ L"mpeg", AV_CODEC_ID_MP2 },// Bug 59
 
-   { wxT("vcd"), AV_CODEC_ID_AC3 },
-   { wxT("vcd"), AV_CODEC_ID_DTS },
-   { wxT("vcd"), AV_CODEC_ID_PCM_S16BE },
-   //{ wxT("vcd"), AV_CODEC_ID_MP2 },// Bug 59
+   { L"vcd", AV_CODEC_ID_AC3 },
+   { L"vcd", AV_CODEC_ID_DTS },
+   { L"vcd", AV_CODEC_ID_PCM_S16BE },
+   //{ L"vcd", AV_CODEC_ID_MP2 },// Bug 59
 
-   { wxT("vob"), AV_CODEC_ID_AC3 },
-   { wxT("vob"), AV_CODEC_ID_DTS },
-   { wxT("vob"), AV_CODEC_ID_PCM_S16BE },
-   //{ wxT("vob"), AV_CODEC_ID_MP2 },// Bug 59
+   { L"vob", AV_CODEC_ID_AC3 },
+   { L"vob", AV_CODEC_ID_DTS },
+   { L"vob", AV_CODEC_ID_PCM_S16BE },
+   //{ L"vob", AV_CODEC_ID_MP2 },// Bug 59
 
-   { wxT("svcd"), AV_CODEC_ID_AC3 },
-   { wxT("svcd"), AV_CODEC_ID_DTS },
-   { wxT("svcd"), AV_CODEC_ID_PCM_S16BE },
-   //{ wxT("svcd"), AV_CODEC_ID_MP2 },// Bug 59
+   { L"svcd", AV_CODEC_ID_AC3 },
+   { L"svcd", AV_CODEC_ID_DTS },
+   { L"svcd", AV_CODEC_ID_PCM_S16BE },
+   //{ L"svcd", AV_CODEC_ID_MP2 },// Bug 59
 
-   { wxT("dvd"), AV_CODEC_ID_AC3 },
-   { wxT("dvd"), AV_CODEC_ID_DTS },
-   { wxT("dvd"), AV_CODEC_ID_PCM_S16BE },
-   //{ wxT("dvd"), AV_CODEC_ID_MP2 },// Bug 59
+   { L"dvd", AV_CODEC_ID_AC3 },
+   { L"dvd", AV_CODEC_ID_DTS },
+   { L"dvd", AV_CODEC_ID_PCM_S16BE },
+   //{ L"dvd", AV_CODEC_ID_MP2 },// Bug 59
 
-   { wxT("nut"), AV_CODEC_ID_PCM_S16LE },
-   { wxT("nut"), AV_CODEC_ID_PCM_U8 },
-   { wxT("nut"), AV_CODEC_ID_PCM_S24LE },
-   { wxT("nut"), AV_CODEC_ID_PCM_S32LE },
-   { wxT("nut"), AV_CODEC_ID_ADPCM_MS },
-   { wxT("nut"), AV_CODEC_ID_PCM_ALAW },
-   { wxT("nut"), AV_CODEC_ID_PCM_MULAW },
-   { wxT("nut"), AV_CODEC_ID_WMAVOICE },
-   { wxT("nut"), AV_CODEC_ID_ADPCM_IMA_WAV },
-   { wxT("nut"), AV_CODEC_ID_ADPCM_YAMAHA },
-   { wxT("nut"), AV_CODEC_ID_TRUESPEECH },
-   { wxT("nut"), AV_CODEC_ID_GSM_MS },
-   { wxT("nut"), AV_CODEC_ID_ADPCM_G726 },
-   //{ wxT("nut"), AV_CODEC_ID_MP2 },// Bug 59
-   { wxT("nut"), AV_CODEC_ID_MP3 },
+   { L"nut", AV_CODEC_ID_PCM_S16LE },
+   { L"nut", AV_CODEC_ID_PCM_U8 },
+   { L"nut", AV_CODEC_ID_PCM_S24LE },
+   { L"nut", AV_CODEC_ID_PCM_S32LE },
+   { L"nut", AV_CODEC_ID_ADPCM_MS },
+   { L"nut", AV_CODEC_ID_PCM_ALAW },
+   { L"nut", AV_CODEC_ID_PCM_MULAW },
+   { L"nut", AV_CODEC_ID_WMAVOICE },
+   { L"nut", AV_CODEC_ID_ADPCM_IMA_WAV },
+   { L"nut", AV_CODEC_ID_ADPCM_YAMAHA },
+   { L"nut", AV_CODEC_ID_TRUESPEECH },
+   { L"nut", AV_CODEC_ID_GSM_MS },
+   { L"nut", AV_CODEC_ID_ADPCM_G726 },
+   //{ L"nut", AV_CODEC_ID_MP2 },// Bug 59
+   { L"nut", AV_CODEC_ID_MP3 },
  #if LIBAVCODEC_VERSION_MAJOR < 58
-   { wxT("nut"), AV_CODEC_ID_VOXWARE },
+   { L"nut", AV_CODEC_ID_VOXWARE },
  #endif
-   { wxT("nut"), AV_CODEC_ID_AAC },
-   { wxT("nut"), AV_CODEC_ID_WMAV1 },
-   { wxT("nut"), AV_CODEC_ID_WMAV2 },
-   { wxT("nut"), AV_CODEC_ID_WMAPRO },
-   { wxT("nut"), AV_CODEC_ID_ADPCM_CT },
-   { wxT("nut"), AV_CODEC_ID_ATRAC3 },
-   { wxT("nut"), AV_CODEC_ID_IMC },
-   { wxT("nut"), AV_CODEC_ID_AC3 },
-   { wxT("nut"), AV_CODEC_ID_DTS },
-   { wxT("nut"), AV_CODEC_ID_FLAC },
-   { wxT("nut"), AV_CODEC_ID_ADPCM_SWF },
-   { wxT("nut"), AV_CODEC_ID_VORBIS },
+   { L"nut", AV_CODEC_ID_AAC },
+   { L"nut", AV_CODEC_ID_WMAV1 },
+   { L"nut", AV_CODEC_ID_WMAV2 },
+   { L"nut", AV_CODEC_ID_WMAPRO },
+   { L"nut", AV_CODEC_ID_ADPCM_CT },
+   { L"nut", AV_CODEC_ID_ATRAC3 },
+   { L"nut", AV_CODEC_ID_IMC },
+   { L"nut", AV_CODEC_ID_AC3 },
+   { L"nut", AV_CODEC_ID_DTS },
+   { L"nut", AV_CODEC_ID_FLAC },
+   { L"nut", AV_CODEC_ID_ADPCM_SWF },
+   { L"nut", AV_CODEC_ID_VORBIS },
 
-   { wxT("ogg"), AV_CODEC_ID_VORBIS },
-   { wxT("ogg"), AV_CODEC_ID_FLAC },
+   { L"ogg", AV_CODEC_ID_VORBIS },
+   { L"ogg", AV_CODEC_ID_FLAC },
 
-   { wxT("ac3"), AV_CODEC_ID_AC3 },
+   { L"ac3", AV_CODEC_ID_AC3 },
 
-   { wxT("dts"), AV_CODEC_ID_DTS },
+   { L"dts", AV_CODEC_ID_DTS },
 
-   { wxT("flac"), AV_CODEC_ID_FLAC },
+   { L"flac", AV_CODEC_ID_FLAC },
 
-   { wxT("RoQ"), AV_CODEC_ID_ROQ_DPCM },
+   { L"RoQ", AV_CODEC_ID_ROQ_DPCM },
 
-   { wxT("rm"), AV_CODEC_ID_AC3 },
+   { L"rm", AV_CODEC_ID_AC3 },
 
-   { wxT("swf"), AV_CODEC_ID_MP3 },
+   { L"swf", AV_CODEC_ID_MP3 },
 
-   { wxT("avm2"), AV_CODEC_ID_MP3 },
+   { L"avm2", AV_CODEC_ID_MP3 },
 
-   { wxT("voc"), AV_CODEC_ID_PCM_U8 },
+   { L"voc", AV_CODEC_ID_PCM_U8 },
 
-   { wxT("wav"), AV_CODEC_ID_PCM_S16LE },
-   { wxT("wav"), AV_CODEC_ID_PCM_U8 },
-   { wxT("wav"), AV_CODEC_ID_PCM_S24LE },
-   { wxT("wav"), AV_CODEC_ID_PCM_S32LE },
-   { wxT("wav"), AV_CODEC_ID_ADPCM_MS },
-   { wxT("wav"), AV_CODEC_ID_PCM_ALAW },
-   { wxT("wav"), AV_CODEC_ID_PCM_MULAW },
-   { wxT("wav"), AV_CODEC_ID_WMAVOICE },
-   { wxT("wav"), AV_CODEC_ID_ADPCM_IMA_WAV },
-   { wxT("wav"), AV_CODEC_ID_ADPCM_YAMAHA },
-   { wxT("wav"), AV_CODEC_ID_TRUESPEECH },
-   { wxT("wav"), AV_CODEC_ID_GSM_MS },
-   { wxT("wav"), AV_CODEC_ID_ADPCM_G726 },
-   //{ wxT("wav"), AV_CODEC_ID_MP2 }, Bug 59 - It crashes.
-   { wxT("wav"), AV_CODEC_ID_MP3 },
+   { L"wav", AV_CODEC_ID_PCM_S16LE },
+   { L"wav", AV_CODEC_ID_PCM_U8 },
+   { L"wav", AV_CODEC_ID_PCM_S24LE },
+   { L"wav", AV_CODEC_ID_PCM_S32LE },
+   { L"wav", AV_CODEC_ID_ADPCM_MS },
+   { L"wav", AV_CODEC_ID_PCM_ALAW },
+   { L"wav", AV_CODEC_ID_PCM_MULAW },
+   { L"wav", AV_CODEC_ID_WMAVOICE },
+   { L"wav", AV_CODEC_ID_ADPCM_IMA_WAV },
+   { L"wav", AV_CODEC_ID_ADPCM_YAMAHA },
+   { L"wav", AV_CODEC_ID_TRUESPEECH },
+   { L"wav", AV_CODEC_ID_GSM_MS },
+   { L"wav", AV_CODEC_ID_ADPCM_G726 },
+   //{ L"wav", AV_CODEC_ID_MP2 }, Bug 59 - It crashes.
+   { L"wav", AV_CODEC_ID_MP3 },
 #if LIBAVCODEC_VERSION_MAJOR < 58
-   { wxT("wav"), AV_CODEC_ID_VOXWARE },
+   { L"wav", AV_CODEC_ID_VOXWARE },
 #endif
-   { wxT("wav"), AV_CODEC_ID_AAC },
-   // { wxT("wav"), AV_CODEC_ID_WMAV1 },
-   // { wxT("wav"), AV_CODEC_ID_WMAV2 },
-   { wxT("wav"), AV_CODEC_ID_WMAPRO },
-   { wxT("wav"), AV_CODEC_ID_ADPCM_CT },
-   { wxT("wav"), AV_CODEC_ID_ATRAC3 },
-   { wxT("wav"), AV_CODEC_ID_IMC },
-   { wxT("wav"), AV_CODEC_ID_AC3 },
-   //{ wxT("wav"), AV_CODEC_ID_DTS },
-   { wxT("wav"), AV_CODEC_ID_FLAC },
-   { wxT("wav"), AV_CODEC_ID_ADPCM_SWF },
-   { wxT("wav"), AV_CODEC_ID_VORBIS },
+   { L"wav", AV_CODEC_ID_AAC },
+   // { L"wav", AV_CODEC_ID_WMAV1 },
+   // { L"wav", AV_CODEC_ID_WMAV2 },
+   { L"wav", AV_CODEC_ID_WMAPRO },
+   { L"wav", AV_CODEC_ID_ADPCM_CT },
+   { L"wav", AV_CODEC_ID_ATRAC3 },
+   { L"wav", AV_CODEC_ID_IMC },
+   { L"wav", AV_CODEC_ID_AC3 },
+   //{ L"wav", AV_CODEC_ID_DTS },
+   { L"wav", AV_CODEC_ID_FLAC },
+   { L"wav", AV_CODEC_ID_ADPCM_SWF },
+   { L"wav", AV_CODEC_ID_VORBIS },
 
    { NULL, AV_CODEC_ID_NONE }
 };
@@ -1606,12 +1606,12 @@ CompatibilityEntry ExportFFmpegOptions::CompatibilityList[] =
 /// AAC profiles
 // The FF_PROFILE_* enumeration is defined in the ffmpeg library
 // PRL:  I cant find where this preference is used!
-ChoiceSetting AACProfiles { wxT("/FileFormats/FFmpegAACProfile"),
+ChoiceSetting AACProfiles { L"/FileFormats/FFmpegAACProfile",
    {
-      {wxT("1") /*FF_PROFILE_AAC_LOW*/, XO("LC")},
-      {wxT("0") /*FF_PROFILE_AAC_MAIN*/, XO("Main")},
-      // {wxT("2") /*FF_PROFILE_AAC_SSR*/, XO("SSR")}, //SSR is not supported
-      {wxT("3") /*FF_PROFILE_AAC_LTP*/, XO("LTP")},
+      {L"1" /*FF_PROFILE_AAC_LOW*/, XO("LC")},
+      {L"0" /*FF_PROFILE_AAC_MAIN*/, XO("Main")},
+      // {L"2" /*FF_PROFILE_AAC_SSR*/, XO("SSR")}, //SSR is not supported
+      {L"3" /*FF_PROFILE_AAC_LTP*/, XO("LTP")},
    },
    0, // "1"
 };
@@ -1619,12 +1619,12 @@ ChoiceSetting AACProfiles { wxT("/FileFormats/FFmpegAACProfile"),
 /// List of export types
 ExposedFormat ExportFFmpegOptions::fmts[] =
 {
-   {FMT_M4A,   wxT("M4A"),    wxT("m4a"),  wxT("ipod"), 48,  AV_CANMETA,              true,  XO("M4A (AAC) Files (FFmpeg)"),         AV_CODEC_ID_AAC,    true},
-   {FMT_AC3,   wxT("AC3"),    wxT("ac3"),  wxT("ac3"),  7,   AV_VERSION_INT(0,0,0),   false, XO("AC3 Files (FFmpeg)"),               AV_CODEC_ID_AC3,    true},
-   {FMT_AMRNB, wxT("AMRNB"),  wxT("amr"),  wxT("amr"),  1,   AV_VERSION_INT(0,0,0),   false, XO("AMR (narrow band) Files (FFmpeg)"), AV_CODEC_ID_AMR_NB, true},
-   {FMT_OPUS,  wxT("OPUS"),   wxT("opus"), wxT("opus"), 255, AV_CANMETA,              true,  XO("Opus (OggOpus) Files (FFmpeg)"),    AV_CODEC_ID_OPUS,   true},
-   {FMT_WMA2,  wxT("WMA"),    wxT("wma"),  wxT("asf"),  2,   AV_VERSION_INT(52,53,0), false, XO("WMA (version 2) Files (FFmpeg)"),   AV_CODEC_ID_WMAV2,  true},
-   {FMT_OTHER, wxT("FFMPEG"), wxT(""),     wxT(""),     255, AV_CANMETA,              true,  XO("Custom FFmpeg Export"),             AV_CODEC_ID_NONE,   true}
+   {FMT_M4A,   L"M4A",    L"m4a",  L"ipod", 48,  AV_CANMETA,              true,  XO("M4A (AAC) Files (FFmpeg)"),         AV_CODEC_ID_AAC,    true},
+   {FMT_AC3,   L"AC3",    L"ac3",  L"ac3",  7,   AV_VERSION_INT(0,0,0),   false, XO("AC3 Files (FFmpeg)"),               AV_CODEC_ID_AC3,    true},
+   {FMT_AMRNB, L"AMRNB",  L"amr",  L"amr",  1,   AV_VERSION_INT(0,0,0),   false, XO("AMR (narrow band) Files (FFmpeg)"), AV_CODEC_ID_AMR_NB, true},
+   {FMT_OPUS,  L"OPUS",   L"opus", L"opus", 255, AV_CANMETA,              true,  XO("Opus (OggOpus) Files (FFmpeg)"),    AV_CODEC_ID_OPUS,   true},
+   {FMT_WMA2,  L"WMA",    L"wma",  L"asf",  2,   AV_VERSION_INT(52,53,0), false, XO("WMA (version 2) Files (FFmpeg)"),   AV_CODEC_ID_WMAV2,  true},
+   {FMT_OTHER, L"FFMPEG", L"",     L"",     255, AV_CANMETA,              true,  XO("Custom FFmpeg Export"),             AV_CODEC_ID_NONE,   true}
 };
 
 /// Some controls (parameters they represent) are only applicable to a number
@@ -1753,11 +1753,11 @@ ExportFFmpegOptions::ExportFFmpegOptions(wxWindow *parent)
       PopulateOrExchange(S);
 
       //Select the format that was selected last time this dialog was closed
-      mFormatList->Select(mFormatList->FindString(gPrefs->Read(wxT("/FileFormats/FFmpegFormat"))));
+      mFormatList->Select(mFormatList->FindString(gPrefs->Read(L"/FileFormats/FFmpegFormat")));
       DoOnFormatList();
 
       //Select the codec that was selected last time this dialog was closed
-      AVCodec *codec = avcodec_find_encoder_by_name(gPrefs->Read(wxT("/FileFormats/FFmpegCodec")).ToUTF8());
+      AVCodec *codec = avcodec_find_encoder_by_name(gPrefs->Read(L"/FileFormats/FFmpegCodec").ToUTF8());
       if (codec != NULL) mCodecList->Select(mCodecList->FindString(wxString::FromUTF8(codec->name)));
       DoOnCodecList();
    }
@@ -1777,7 +1777,7 @@ void ExportFFmpegOptions::FetchFormatList()
       if (ofmt->audio_codec != AV_CODEC_ID_NONE)
       {
          mFormatNames.push_back(wxString::FromUTF8(ofmt->name));
-         mFormatLongNames.push_back(wxString::Format(wxT("%s - %s"),mFormatNames.back(),wxString::FromUTF8(ofmt->long_name)));
+         mFormatLongNames.push_back(wxString::Format(L"%s - %s",mFormatNames.back(),wxString::FromUTF8(ofmt->long_name)));
       }
    }
    // Show all formats
@@ -1800,7 +1800,7 @@ void ExportFFmpegOptions::FetchCodecList()
          if( codec->id == AV_CODEC_ID_MP2)
             continue;
          mCodecNames.push_back(wxString::FromUTF8(codec->name));
-         mCodecLongNames.push_back(wxString::Format(wxT("%s - %s"),mCodecNames.back(),wxString::FromUTF8(codec->long_name)));
+         mCodecLongNames.push_back(wxString::Format(L"%s - %s",mCodecNames.back(),wxString::FromUTF8(codec->long_name)));
       }
    }
    // Show all codecs
@@ -1819,7 +1819,7 @@ void ExportFFmpegOptions::PopulateOrExchange(ShuttleGui & S)
       S.StartMultiColumn(7, wxEXPAND);
       {
          S.SetStretchyCol(1);
-         mPresetCombo = S.Id(FEPresetID).AddCombo(XXO("Preset:"), gPrefs->Read(wxT("/FileFormats/FFmpegPreset"),wxEmptyString), mPresetNames);
+         mPresetCombo = S.Id(FEPresetID).AddCombo(XXO("Preset:"), gPrefs->Read(L"/FileFormats/FFmpegPreset",wxEmptyString), mPresetNames);
          S.Id(FELoadPresetID).AddButton(XXO("Load Preset"));
          S.Id(FESavePresetID).AddButton(XXO("Save Preset"));
          S.Id(FEDeletePresetID).AddButton(XXO("Delete Preset"));
@@ -1864,15 +1864,15 @@ void ExportFFmpegOptions::PopulateOrExchange(ShuttleGui & S)
                {
                   S.Id(FELanguageID)
                      .ToolTip(XO("ISO 639 3-letter language code\nOptional\nempty - automatic"))
-                     .TieTextBox(XXO("Language:"), {wxT("/FileFormats/FFmpegLanguage"), wxEmptyString}, 9);
+                     .TieTextBox(XXO("Language:"), {L"/FileFormats/FFmpegLanguage", wxEmptyString}, 9);
 
                   S.AddSpace( 20,0 );
                   S.AddVariableText(XO("Bit Reservoir"));
-                  S.Id(FEBitReservoirID).TieCheckBox( {}, {wxT("/FileFormats/FFmpegBitReservoir"), true});
+                  S.Id(FEBitReservoirID).TieCheckBox( {}, {L"/FileFormats/FFmpegBitReservoir", true});
 
                   S.AddSpace( 20,0 );
                   S.AddVariableText(XO("VBL"));
-                  S.Id(FEVariableBlockLenID).TieCheckBox( {}, {wxT("/FileFormats/FFmpegVariableBlockLen"), true});
+                  S.Id(FEVariableBlockLenID).TieCheckBox( {}, {L"/FileFormats/FFmpegVariableBlockLen", true});
                }
                S.EndMultiColumn();
                S.StartMultiColumn(4, wxALIGN_LEFT);
@@ -1880,23 +1880,23 @@ void ExportFFmpegOptions::PopulateOrExchange(ShuttleGui & S)
                   S.Id(FETagID)
                      /* i18n-hint: "codec" is short for a "coder-decoder" algorithm */
                      .ToolTip(XO("Codec tag (FOURCC)\nOptional\nempty - automatic"))
-                     .TieTextBox(XXO("Tag:"), {wxT("/FileFormats/FFmpegTag"), wxEmptyString}, 4);
+                     .TieTextBox(XXO("Tag:"), {L"/FileFormats/FFmpegTag", wxEmptyString}, 4);
 
                   S.Id(FEBitrateID)
                      .ToolTip(XO("Bit Rate (bits/second) - influences the resulting file size and quality\nSome codecs may only accept specific values (128k, 192k, 256k etc)\n0 - automatic\nRecommended - 192000"))
-                     .TieSpinCtrl(XXO("Bit Rate:"), {wxT("/FileFormats/FFmpegBitRate"), 0}, 1000000, 0);
+                     .TieSpinCtrl(XXO("Bit Rate:"), {L"/FileFormats/FFmpegBitRate", 0}, 1000000, 0);
 
                   S.Id(FEQualityID)
                      .ToolTip(XO("Overall quality, used differently by different codecs\nRequired for vorbis\n0 - automatic\n-1 - off (use bitrate instead)"))
-                     .TieSpinCtrl(XXO("Quality:"), {wxT("/FileFormats/FFmpegQuality"), 0}, 500, -1);
+                     .TieSpinCtrl(XXO("Quality:"), {L"/FileFormats/FFmpegQuality", 0}, 500, -1);
 
                   S.Id(FESampleRateID)
                      .ToolTip(XO("Sample rate (Hz)\n0 - don't change sample rate"))
-                     .TieSpinCtrl(XXO("Sample Rate:"), {wxT("/FileFormats/FFmpegSampleRate"), 0}, 200000, 0);
+                     .TieSpinCtrl(XXO("Sample Rate:"), {L"/FileFormats/FFmpegSampleRate", 0}, 200000, 0);
 
                   S.Id(FECutoffID)
                      .ToolTip(XO("Audio cutoff bandwidth (Hz)\nOptional\n0 - automatic"))
-                     .TieSpinCtrl(XXO("Cutoff:"), {wxT("/FileFormats/FFmpegCutOff"), 0}, 10000000, 0);
+                     .TieSpinCtrl(XXO("Cutoff:"), {L"/FileFormats/FFmpegCutOff", 0}, 10000000, 0);
 
                   S.Id(FEProfileID)
                      .ToolTip(XO("AAC Profile\nLow Complexity - default\nMost players won't play anything other than LC"))
@@ -1912,47 +1912,47 @@ void ExportFFmpegOptions::PopulateOrExchange(ShuttleGui & S)
                {
                   S
                      .ToolTip(XO("Compression level\nRequired for FLAC\n-1 - automatic\nmin - 0 (fast encoding, large output file)\nmax - 10 (slow encoding, small output file)"))
-                     .Id(FECompLevelID).TieSpinCtrl(XXO("Compression:"), {wxT("/FileFormats/FFmpegCompLevel"), 0}, 10, -1);
+                     .Id(FECompLevelID).TieSpinCtrl(XXO("Compression:"), {L"/FileFormats/FFmpegCompLevel", 0}, 10, -1);
 
                   S.Id(FEFrameSizeID)
                      .ToolTip(XO("Frame size\nOptional\n0 - default\nmin - 16\nmax - 65535"))
-                     .TieSpinCtrl(XXO("Frame:"), {wxT("/FileFormats/FFmpegFrameSize"), 0}, 65535, 0);
+                     .TieSpinCtrl(XXO("Frame:"), {L"/FileFormats/FFmpegFrameSize", 0}, 65535, 0);
 
                   S.Id(FELPCCoeffsID)
                      .ToolTip(XO("LPC coefficients precision\nOptional\n0 - default\nmin - 1\nmax - 15"))
-                     .TieSpinCtrl(XXO("LPC"), {wxT("/FileFormats/FFmpegLPCCoefPrec"), 0}, 15, 0);
+                     .TieSpinCtrl(XXO("LPC"), {L"/FileFormats/FFmpegLPCCoefPrec", 0}, 15, 0);
 
                   S.Id(FEPredOrderID)
                      .ToolTip(XO("Prediction Order Method\nEstimate - fastest, lower compression\nLog search - slowest, best compression\nFull search - default"))
                      .MinSize( { 100, -1 } )
                      .TieNumberAsChoice(
                         XXO("PdO Method:"),
-                        {wxT("/FileFormats/FFmpegPredOrderMethod"),
+                        {L"/FileFormats/FFmpegPredOrderMethod",
                          4}, // Full search
                         PredictionOrderMethodNames
                      );
 
                   S.Id(FEMinPredID)
                      .ToolTip(XO("Minimal prediction order\nOptional\n-1 - default\nmin - 0\nmax - 32 (with LPC) or 4 (without LPC)"))
-                     .TieSpinCtrl(XXO("Min. PdO"), {wxT("/FileFormats/FFmpegMinPredOrder"), -1}, 32, -1);
+                     .TieSpinCtrl(XXO("Min. PdO"), {L"/FileFormats/FFmpegMinPredOrder", -1}, 32, -1);
 
                   S.Id(FEMaxPredID)
                      .ToolTip(XO("Maximal prediction order\nOptional\n-1 - default\nmin - 0\nmax - 32 (with LPC) or 4 (without LPC)"))
-                     .TieSpinCtrl(XXO("Max. PdO"), {wxT("/FileFormats/FFmpegMaxPredOrder"), -1}, 32, -1);
+                     .TieSpinCtrl(XXO("Max. PdO"), {L"/FileFormats/FFmpegMaxPredOrder", -1}, 32, -1);
 
                   S.Id(FEMinPartOrderID)
                      .ToolTip(XO("Minimal partition order\nOptional\n-1 - default\nmin - 0\nmax - 8"))
-                     .TieSpinCtrl(XXO("Min. PtO"), {wxT("/FileFormats/FFmpegMinPartOrder"), -1}, 8, -1);
+                     .TieSpinCtrl(XXO("Min. PtO"), {L"/FileFormats/FFmpegMinPartOrder", -1}, 8, -1);
 
                   S.Id(FEMaxPartOrderID)
                      .ToolTip(XO("Maximal partition order\nOptional\n-1 - default\nmin - 0\nmax - 8"))
-                     .TieSpinCtrl(XXO("Max. PtO"), {wxT("/FileFormats/FFmpegMaxPartOrder"), -1}, 8, -1);
+                     .TieSpinCtrl(XXO("Max. PtO"), {L"/FileFormats/FFmpegMaxPartOrder", -1}, 8, -1);
 
                   /* i18n-hint:  Abbreviates "Linear Predictive Coding",
                      but this text needs to be kept very short */
                   S.AddVariableText(XO("Use LPC"));
                   // PRL:  This preference is not used anywhere!
-                  S.Id(FEUseLPCID).TieCheckBox( {}, {wxT("/FileFormats/FFmpegUseLPC"), true});
+                  S.Id(FEUseLPCID).TieCheckBox( {}, {L"/FileFormats/FFmpegUseLPC", true});
                }
                S.EndMultiColumn();
             }
@@ -1966,7 +1966,7 @@ void ExportFFmpegOptions::PopulateOrExchange(ShuttleGui & S)
                      /* i18n-hint: 'mux' is short for multiplexor, a device that selects between several inputs
                        'Mux Rate' is a parameter that has some bearing on compression ratio for MPEG
                        it has a hard to predict effect on the degree of compression */
-                     .TieSpinCtrl(XXO("Mux Rate:"), {wxT("/FileFormats/FFmpegMuxRate"), 0}, 10000000, 0);
+                     .TieSpinCtrl(XXO("Mux Rate:"), {L"/FileFormats/FFmpegMuxRate", 0}, 10000000, 0);
 
                   S.Id(FEPacketSizeID)
                      /* i18n-hint: 'Packet Size' is a parameter that has some bearing on compression ratio for MPEG
@@ -1974,7 +1974,7 @@ void ExportFFmpegOptions::PopulateOrExchange(ShuttleGui & S)
                      .ToolTip(XO("Packet size\nOptional\n0 - default"))
                      /* i18n-hint: 'Packet Size' is a parameter that has some bearing on compression ratio for MPEG
                        compression.  It measures how big a chunk of audio is compressed in one piece. */
-                     .TieSpinCtrl(XXO("Packet Size:"), {wxT("/FileFormats/FFmpegPacketSize"), 0}, 10000000, 0);
+                     .TieSpinCtrl(XXO("Packet Size:"), {L"/FileFormats/FFmpegPacketSize", 0}, 10000000, 0);
                }
                S.EndMultiColumn();
             }
@@ -2074,7 +2074,7 @@ int ExportFFmpegOptions::FetchCompatibleCodecList(const wxChar *fmt, AVCodecID i
             // If it was selected - remember its NEW index
             if ((id >= 0) && codec->id == id) index = mShownCodecNames.size();
             mShownCodecNames.push_back(wxString::FromUTF8(codec->name));
-            mShownCodecLongNames.push_back(wxString::Format(wxT("%s - %s"),mShownCodecNames.back(),wxString::FromUTF8(codec->long_name)));
+            mShownCodecLongNames.push_back(wxString::Format(L"%s - %s",mShownCodecNames.back(),wxString::FromUTF8(codec->long_name)));
          }
       }
    }
@@ -2094,7 +2094,7 @@ int ExportFFmpegOptions::FetchCompatibleCodecList(const wxChar *fmt, AVCodecID i
             {
                if ((id >= 0) && codec->id == id) index = mShownCodecNames.size();
                mShownCodecNames.push_back(wxString::FromUTF8(codec->name));
-               mShownCodecLongNames.push_back(wxString::Format(wxT("%s - %s"),mShownCodecNames.back(),wxString::FromUTF8(codec->long_name)));
+               mShownCodecLongNames.push_back(wxString::Format(L"%s - %s",mShownCodecNames.back(),wxString::FromUTF8(codec->long_name)));
             }
          }
       }
@@ -2112,7 +2112,7 @@ int ExportFFmpegOptions::FetchCompatibleCodecList(const wxChar *fmt, AVCodecID i
          {
             if ((id >= 0) && codec->id == id) index = mShownCodecNames.size();
             mShownCodecNames.push_back(wxString::FromUTF8(codec->name));
-            mShownCodecLongNames.push_back(wxString::Format(wxT("%s - %s"),mShownCodecNames.back(),wxString::FromUTF8(codec->long_name)));
+            mShownCodecLongNames.push_back(wxString::Format(L"%s - %s",mShownCodecNames.back(),wxString::FromUTF8(codec->long_name)));
          }
       }
    }
@@ -2142,7 +2142,7 @@ int ExportFFmpegOptions::FetchCompatibleFormatList(AVCodecID id, wxString *selfm
          FromList.push_back(CompatibilityList[i].fmt);
          mShownFormatNames.push_back(CompatibilityList[i].fmt);
          AVOutputFormat *tofmt = av_guess_format(wxString(CompatibilityList[i].fmt).ToUTF8(),NULL,NULL);
-         if (tofmt != NULL) mShownFormatLongNames.push_back(wxString::Format(wxT("%s - %s"),CompatibilityList[i].fmt,wxString::FromUTF8(tofmt->long_name)));
+         if (tofmt != NULL) mShownFormatLongNames.push_back(wxString::Format(L"%s - %s",CompatibilityList[i].fmt,wxString::FromUTF8(tofmt->long_name)));
       }
    }
    bool found = false;
@@ -2181,7 +2181,7 @@ int ExportFFmpegOptions::FetchCompatibleFormatList(AVCodecID id, wxString *selfm
                   (*selfmt == wxString::FromUTF8(ofmt->name)))
                   index = mShownFormatNames.size();
                mShownFormatNames.push_back(wxString::FromUTF8(ofmt->name));
-               mShownFormatLongNames.push_back(wxString::Format(wxT("%s - %s"),mShownFormatNames.back(),wxString::FromUTF8(ofmt->long_name)));
+               mShownFormatLongNames.push_back(wxString::Format(L"%s - %s",mShownFormatNames.back(),wxString::FromUTF8(ofmt->long_name)));
             }
          }
       }
@@ -2287,7 +2287,7 @@ void ExportFFmpegOptions::OnImportPresets(wxCommandEvent& WXUNUSED(event))
    wxString path;
    FileDialogWrapper dlg(this,
       XO("Select xml file with presets to import"),
-      gPrefs->Read(wxT("/FileFormats/FFmpegPresetDir")),
+      gPrefs->Read(L"/FileFormats/FFmpegPresetDir"),
       wxEmptyString,
       FileTypes(),
       wxFD_OPEN);
@@ -2320,7 +2320,7 @@ void ExportFFmpegOptions::OnExportPresets(wxCommandEvent& WXUNUSED(event))
    wxString path;
    FileDialogWrapper dlg(this,
       XO("Select xml file to export presets into"),
-      gPrefs->Read(wxT("/FileFormats/FFmpegPresetDir")),
+      gPrefs->Read(L"/FileFormats/FFmpegPresetDir"),
       wxEmptyString,
       FileTypes(),
       wxFD_SAVE|wxFD_OVERWRITE_PROMPT);
@@ -2422,7 +2422,7 @@ void ExportFFmpegOptions::EnableDisableControls(AVCodec *cdc, wxString *selfmt)
          bool format = false;
          if (apptable[i].codec == AV_CODEC_ID_NONE) codec = true;
          else if (cdc != NULL && apptable[i].codec == cdc->id) codec = true;
-         if (wxString::FromUTF8(apptable[i].format) == wxT("any")) format = true;
+         if (wxString::FromUTF8(apptable[i].format) == L"any") format = true;
          else if (selfmt != NULL &&
             *selfmt == wxString::FromUTF8(apptable[i].format)) format = true;
          if (codec && format)
@@ -2456,7 +2456,7 @@ void ExportFFmpegOptions::DoOnFormatList()
       mFormatName->SetLabel(wxString(_("Failed to guess format")));
       return;
    }
-   mFormatName->SetLabel(wxString::Format(wxT("%s"), *selfmtlong));
+   mFormatName->SetLabel(wxString::Format(L"%s", *selfmtlong));
    int selcdcid = -1;
 
    if (selcdc != NULL)
@@ -2501,7 +2501,7 @@ void ExportFFmpegOptions::DoOnCodecList()
       mCodecName->SetLabel(wxString(_("Failed to find the codec")));
       return;
    }
-   mCodecName->SetLabel(wxString::Format(wxT("[%d] %s"), (int) cdc->id, *selcdclong));
+   mCodecName->SetLabel(wxString::Format(L"[%d] %s", (int) cdc->id, *selcdclong));
 
    if (selfmt != NULL)
    {
@@ -2546,8 +2546,8 @@ void ExportFFmpegOptions::OnOK(wxCommandEvent& WXUNUSED(event))
 
    int selcdc = mCodecList->GetSelection();
    int selfmt = mFormatList->GetSelection();
-   if (selcdc > -1) gPrefs->Write(wxT("/FileFormats/FFmpegCodec"),mCodecList->GetString(selcdc));
-   if (selfmt > -1) gPrefs->Write(wxT("/FileFormats/FFmpegFormat"),mFormatList->GetString(selfmt));
+   if (selcdc > -1) gPrefs->Write(L"/FileFormats/FFmpegCodec",mCodecList->GetString(selcdc));
+   if (selfmt > -1) gPrefs->Write(L"/FileFormats/FFmpegFormat",mFormatList->GetString(selfmt));
    gPrefs->Flush();
 
    ShuttleGui S(this, eIsSavingToPrefs);
@@ -2562,7 +2562,7 @@ void ExportFFmpegOptions::OnOK(wxCommandEvent& WXUNUSED(event))
 
 void ExportFFmpegOptions::OnGetURL(wxCommandEvent & WXUNUSED(event))
 {
-   HelpSystem::ShowHelp(this, wxT("Custom_FFmpeg_Export_Options"));
+   HelpSystem::ShowHelp(this, L"Custom_FFmpeg_Export_Options");
 }
 
 

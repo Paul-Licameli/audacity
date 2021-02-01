@@ -178,14 +178,14 @@ static const double kThirdOct[] =
 // Define keys, defaults, minimums, and maximums for the effect parameters
 //
 //     Name          Type        Key                     Def      Min      Max      Scale
-Param( FilterLength, int,     wxT("FilterLength"),        8191,    21,      8191,    0      );
-Param( CurveName,    wxChar*, wxT("CurveName"),           wxT("unnamed"), wxT(""), wxT(""), wxT(""));
-Param( InterpLin,    bool,    wxT("InterpolateLin"),      false,   false,   true,    false  );
-Param( InterpMeth,   int,     wxT("InterpolationMethod"), 0,       0,       0,       0      );
-Param( DrawMode,     bool,    wxT(""),                   true,    false,   true,    false  );
-Param( DrawGrid,     bool,    wxT(""),                   true,    false,   true,    false  );
-Param( dBMin,        float,   wxT(""),                   -30.0,   -120.0,  -10.0,   0      );
-Param( dBMax,        float,   wxT(""),                   30.0,    0.0,     60.0,    0      );
+Param( FilterLength, int,     L"FilterLength",        8191,    21,      8191,    0      );
+Param( CurveName,    wxChar*, L"CurveName",           L"unnamed", L"", L"", L"");
+Param( InterpLin,    bool,    L"InterpolateLin",      false,   false,   true,    false  );
+Param( InterpMeth,   int,     L"InterpolationMethod", 0,       0,       0,       0      );
+Param( DrawMode,     bool,    L"",                   true,    false,   true,    false  );
+Param( DrawGrid,     bool,    L"",                   true,    false,   true,    false  );
+Param( dBMin,        float,   L"",                   -30.0,   -120.0,  -10.0,   0      );
+Param( dBMax,        float,   L"",                   30.0,    0.0,     60.0,    0      );
 
 ///----------------------------------------------------------------------------
 // EffectEqualization
@@ -199,12 +199,12 @@ const ComponentInterfaceSymbol EffectEqualization::Symbol
 // "Filter Curve EQ" in the user-facing string, but preserve the old
 // internal string
 const ComponentInterfaceSymbol EffectEqualizationCurve::Symbol
-{ wxT("Filter Curve"), XO("Filter Curve EQ") };
+{ L"Filter Curve", XO("Filter Curve EQ") };
 
 namespace{ BuiltinEffectsModule::Registration< EffectEqualizationCurve > reg2; }
 
 const ComponentInterfaceSymbol EffectEqualizationGraphic::Symbol
-{ wxT("Graphic EQ"), XO("Graphic EQ") };
+{ L"Graphic EQ", XO("Graphic EQ") };
 
 namespace{ BuiltinEffectsModule::Registration< EffectEqualizationGraphic > reg3; }
 
@@ -261,10 +261,10 @@ EffectEqualization::EffectEqualization(int Options)
    mInterp = DEF_InterpMeth;
    mCurveName = DEF_CurveName;
 
-   GetPrivateConfig(GetCurrentSettingsGroup(), wxT("dBMin"), mdBMin, DEF_dBMin);
-   GetPrivateConfig(GetCurrentSettingsGroup(), wxT("dBMax"), mdBMax, DEF_dBMax);
-   GetPrivateConfig(GetCurrentSettingsGroup(), wxT("DrawMode"), mDrawMode, DEF_DrawMode);
-   GetPrivateConfig(GetCurrentSettingsGroup(), wxT("DrawGrid"), mDrawGrid, DEF_DrawGrid);
+   GetPrivateConfig(GetCurrentSettingsGroup(), L"dBMin", mdBMin, DEF_dBMin);
+   GetPrivateConfig(GetCurrentSettingsGroup(), L"dBMax", mdBMax, DEF_dBMax);
+   GetPrivateConfig(GetCurrentSettingsGroup(), L"DrawMode", mDrawMode, DEF_DrawMode);
+   GetPrivateConfig(GetCurrentSettingsGroup(), L"DrawGrid", mDrawGrid, DEF_DrawGrid);
 
    mLogEnvelope = std::make_unique<Envelope>
       (false,
@@ -301,7 +301,7 @@ EffectEqualization::EffectEqualization(int Options)
 
 #ifdef EXPERIMENTAL_EQ_SSE_THREADED
    bool useSSE;
-   GetPrivateConfig(GetCurrentSettingsGroup(), wxT("/SSE/GUI"), useSSE, false);
+   GetPrivateConfig(GetCurrentSettingsGroup(), L"/SSE/GUI", useSSE, false);
    if(useSSE && !mEffectEqualization48x)
       mEffectEqualization48x = std::make_unique<EffectEqualization48x>();
    else if(!useSSE)
@@ -352,10 +352,10 @@ wxString EffectEqualization::ManualPage()
 {
    // Bug 2509: Must use _ and not space in names.
    if( mOptions == kEqOptionGraphic )
-      return wxT("Graphic_EQ");
+      return L"Graphic_EQ";
    if( mOptions == kEqOptionCurve )
-      return wxT("Filter_Curve_EQ");
-   return wxT("Equalization");
+      return L"Filter_Curve_EQ";
+   return L"Equalization";
 }
 
 // EffectDefinitionInterface implementation
@@ -472,16 +472,16 @@ static const struct
 }
 FactoryPresets[] =
 {
-   { kCURVE, XO("100Hz Rumble"),           wxT("f0=\"20.0\" v0=\"-80.0\" f1=\"49.237316986327\" v1=\"-33.107692718506\" f2=\"54.196034330446\" v2=\"-29.553844451904\" f3=\"88.033573501041\" v3=\"-6.923076629639\" f4=\"95.871851182279\" v4=\"-4.523078918457\" f5=\"108.957037410504\" v5=\"-1.938461303711\" f6=\"123.828171198057\" v6=\"-0.73846244812\" f7=\"149.228077614658\" v7=\"-0.092308044434\"") },
-   { kCURVE, XO("AM Radio"),               wxT("f0=\"20.0\" v0=\"-63.67\" f1=\"31.0\" v1=\"-33.219\" f2=\"50.0\" v2=\"-3.01\" f3=\"63.0\" v3=\"-0.106\" f4=\"100.0\" v4=\"0.0\" f5=\"2500.0\" v5=\"0.0\" f6=\"4000.0\" v6=\"-0.614\" f7=\"5000.0\" v7=\"-8.059\" f8=\"8000.0\" v8=\"-39.981\" f9=\"20000.0\" v9=\"-103.651\" f10=\"48000.0\" v10=\"-164.485\"") },
-   { kBOTH,  XO("Bass Boost"),             wxT("f0=\"100.0\" v0=\"9.0\" f1=\"500.0\" v1=\"0.0\"") },
-   { kBOTH,  XO("Bass Cut"),               wxT("f0=\"150.0\" v0=\"-50.0\" f1=\"300.0\" v1=\"0.0\"") },
-   { kCURVE, XO("Low rolloff for speech"), wxT("f0=\"50.0\" v0=\"-120.0\" f1=\"60.0\" v1=\"-50.0\" f2=\"65.0\" v2=\"-24.0\" f3=\"70.0\" v3=\"-12.0\" f4=\"80.0\" v4=\"-4.0\" f5=\"90.0\" v5=\"-1.0\" f6=\"100.0\" v6=\"0.0\"") },
-   { kBOTH,  XO("RIAA"),                   wxT("f0=\"20.0\" v0=\"19.274\" f1=\"25.0\" v1=\"18.954\" f2=\"31.0\" v2=\"18.516\" f3=\"40.0\" v3=\"17.792\" f4=\"50.0\" v4=\"16.946\" f5=\"63.0\" v5=\"15.852\" f6=\"80.0\" v6=\"14.506\" f7=\"100.0\" v7=\"13.088\" f8=\"125.0\" v8=\"11.563\" f9=\"160.0\" v9=\"9.809\" f10=\"200.0\" v10=\"8.219\" f11=\"250.0\" v11=\"6.677\" f12=\"315.0\" v12=\"5.179\" f13=\"400.0\" v13=\"3.784\" f14=\"500.0\" v14=\"2.648\" f15=\"630.0\" v15=\"1.642\" f16=\"800.0\" v16=\"0.751\" f17=\"1000.0\" v17=\"0.0\" f18=\"1250.0\" v18=\"-0.744\" f19=\"1600.0\" v19=\"-1.643\" f20=\"2000.0\" v20=\"-2.589\" f21=\"2500.0\" v21=\"-3.7\" f22=\"3150.0\" v22=\"-5.038\" f23=\"4000.0\" v23=\"-6.605\" f24=\"5000.0\" v24=\"-8.21\" f25=\"6300.0\" v25=\"-9.98\" f26=\"8000.0\" v26=\"-11.894\" f27=\"10000.0\" v27=\"-13.734\" f28=\"12500.0\" v28=\"-15.609\" f29=\"16000.0\" v29=\"-17.708\" f30=\"20000.0\" v30=\"-19.62\" f31=\"25000.0\" v31=\"-21.542\" f32=\"48000.0\" v32=\"-27.187\"") },
-   { kCURVE, XO("Telephone"),              wxT("f0=\"20.0\" v0=\"-94.087\" f1=\"200.0\" v1=\"-14.254\" f2=\"250.0\" v2=\"-7.243\" f3=\"315.0\" v3=\"-2.245\" f4=\"400.0\" v4=\"-0.414\" f5=\"500.0\" v5=\"0.0\" f6=\"2500.0\" v6=\"0.0\" f7=\"3150.0\" v7=\"-0.874\" f8=\"4000.0\" v8=\"-3.992\" f9=\"5000.0\" v9=\"-9.993\" f10=\"48000.0\" v10=\"-88.117\"") },
-   { kBOTH,  XO("Treble Boost"),           wxT("f0=\"4000.0\" v0=\"0.0\" f1=\"5000.0\" v1=\"9.0\"") },
-   { kBOTH,  XO("Treble Cut"),             wxT("f0=\"6000.0\" v0=\"0.0\" f1=\"10000.0\" v1=\"-110.0\"") },
-   { kCURVE, XO("Walkie-talkie"),          wxT("f0=\"100.0\" v0=\"-120.0\" f1=\"101.0\" v1=\"0.0\" f2=\"2000.0\" v2=\"0.0\" f3=\"2001.0\" v3=\"-120.0\"") },
+   { kCURVE, XO("100Hz Rumble"),           L"f0=\"20.0\" v0=\"-80.0\" f1=\"49.237316986327\" v1=\"-33.107692718506\" f2=\"54.196034330446\" v2=\"-29.553844451904\" f3=\"88.033573501041\" v3=\"-6.923076629639\" f4=\"95.871851182279\" v4=\"-4.523078918457\" f5=\"108.957037410504\" v5=\"-1.938461303711\" f6=\"123.828171198057\" v6=\"-0.73846244812\" f7=\"149.228077614658\" v7=\"-0.092308044434\"" },
+   { kCURVE, XO("AM Radio"),               L"f0=\"20.0\" v0=\"-63.67\" f1=\"31.0\" v1=\"-33.219\" f2=\"50.0\" v2=\"-3.01\" f3=\"63.0\" v3=\"-0.106\" f4=\"100.0\" v4=\"0.0\" f5=\"2500.0\" v5=\"0.0\" f6=\"4000.0\" v6=\"-0.614\" f7=\"5000.0\" v7=\"-8.059\" f8=\"8000.0\" v8=\"-39.981\" f9=\"20000.0\" v9=\"-103.651\" f10=\"48000.0\" v10=\"-164.485\"" },
+   { kBOTH,  XO("Bass Boost"),             L"f0=\"100.0\" v0=\"9.0\" f1=\"500.0\" v1=\"0.0\"" },
+   { kBOTH,  XO("Bass Cut"),               L"f0=\"150.0\" v0=\"-50.0\" f1=\"300.0\" v1=\"0.0\"" },
+   { kCURVE, XO("Low rolloff for speech"), L"f0=\"50.0\" v0=\"-120.0\" f1=\"60.0\" v1=\"-50.0\" f2=\"65.0\" v2=\"-24.0\" f3=\"70.0\" v3=\"-12.0\" f4=\"80.0\" v4=\"-4.0\" f5=\"90.0\" v5=\"-1.0\" f6=\"100.0\" v6=\"0.0\"" },
+   { kBOTH,  XO("RIAA"),                   L"f0=\"20.0\" v0=\"19.274\" f1=\"25.0\" v1=\"18.954\" f2=\"31.0\" v2=\"18.516\" f3=\"40.0\" v3=\"17.792\" f4=\"50.0\" v4=\"16.946\" f5=\"63.0\" v5=\"15.852\" f6=\"80.0\" v6=\"14.506\" f7=\"100.0\" v7=\"13.088\" f8=\"125.0\" v8=\"11.563\" f9=\"160.0\" v9=\"9.809\" f10=\"200.0\" v10=\"8.219\" f11=\"250.0\" v11=\"6.677\" f12=\"315.0\" v12=\"5.179\" f13=\"400.0\" v13=\"3.784\" f14=\"500.0\" v14=\"2.648\" f15=\"630.0\" v15=\"1.642\" f16=\"800.0\" v16=\"0.751\" f17=\"1000.0\" v17=\"0.0\" f18=\"1250.0\" v18=\"-0.744\" f19=\"1600.0\" v19=\"-1.643\" f20=\"2000.0\" v20=\"-2.589\" f21=\"2500.0\" v21=\"-3.7\" f22=\"3150.0\" v22=\"-5.038\" f23=\"4000.0\" v23=\"-6.605\" f24=\"5000.0\" v24=\"-8.21\" f25=\"6300.0\" v25=\"-9.98\" f26=\"8000.0\" v26=\"-11.894\" f27=\"10000.0\" v27=\"-13.734\" f28=\"12500.0\" v28=\"-15.609\" f29=\"16000.0\" v29=\"-17.708\" f30=\"20000.0\" v30=\"-19.62\" f31=\"25000.0\" v31=\"-21.542\" f32=\"48000.0\" v32=\"-27.187\"" },
+   { kCURVE, XO("Telephone"),              L"f0=\"20.0\" v0=\"-94.087\" f1=\"200.0\" v1=\"-14.254\" f2=\"250.0\" v2=\"-7.243\" f3=\"315.0\" v3=\"-2.245\" f4=\"400.0\" v4=\"-0.414\" f5=\"500.0\" v5=\"0.0\" f6=\"2500.0\" v6=\"0.0\" f7=\"3150.0\" v7=\"-0.874\" f8=\"4000.0\" v8=\"-3.992\" f9=\"5000.0\" v9=\"-9.993\" f10=\"48000.0\" v10=\"-88.117\"" },
+   { kBOTH,  XO("Treble Boost"),           L"f0=\"4000.0\" v0=\"0.0\" f1=\"5000.0\" v1=\"9.0\"" },
+   { kBOTH,  XO("Treble Cut"),             L"f0=\"6000.0\" v0=\"0.0\" f1=\"10000.0\" v1=\"-110.0\"" },
+   { kCURVE, XO("Walkie-talkie"),          L"f0=\"100.0\" v0=\"-120.0\" f1=\"101.0\" v1=\"0.0\" f2=\"2000.0\" v2=\"0.0\" f3=\"2001.0\" v3=\"-120.0\"" },
 };
 
 
@@ -541,7 +541,7 @@ bool EffectEqualization::ValidateUI()
    // If editing a macro, we don't want to be using the unnamed curve so
    // we offer to save it.
 
-   if (mDisallowCustom && mCurveName == wxT("unnamed"))
+   if (mDisallowCustom && mCurveName == L"unnamed")
    {
       // PRL:  This is unreachable.  mDisallowCustom is always false.
 
@@ -574,10 +574,10 @@ bool EffectEqualization::ValidateUI()
    }
    SaveCurves();
 
-   SetPrivateConfig(GetCurrentSettingsGroup(), wxT("dBMin"), mdBMin);
-   SetPrivateConfig(GetCurrentSettingsGroup(), wxT("dBMax"), mdBMax);
-   SetPrivateConfig(GetCurrentSettingsGroup(), wxT("DrawMode"), mDrawMode);
-   SetPrivateConfig(GetCurrentSettingsGroup(), wxT("DrawGrid"), mDrawGrid);
+   SetPrivateConfig(GetCurrentSettingsGroup(), L"dBMin", mdBMin);
+   SetPrivateConfig(GetCurrentSettingsGroup(), L"dBMax", mdBMax);
+   SetPrivateConfig(GetCurrentSettingsGroup(), L"DrawMode", mDrawMode);
+   SetPrivateConfig(GetCurrentSettingsGroup(), L"DrawGrid", mDrawGrid);
 
    return true;
 }
@@ -586,11 +586,11 @@ bool EffectEqualization::ValidateUI()
 
 wxString EffectEqualization::GetPrefsPrefix()
 {
-   wxString base = wxT("/Effects/Equalization/");
+   wxString base = L"/Effects/Equalization/";
    if( mOptions == kEqOptionGraphic )
-      base = wxT("/Effects/GraphicEq/");
+      base = L"/Effects/GraphicEq/";
    else if( mOptions == kEqOptionCurve )
-      base = wxT("/Effects/FilterCurve/");
+      base = L"/Effects/FilterCurve/";
    return base;
 }
 
@@ -602,7 +602,7 @@ bool EffectEqualization::Startup()
    // Migrate settings from 2.1.0 or before
 
    // Already migrated, so bail
-   if (gPrefs->Exists(base + wxT("Migrated")))
+   if (gPrefs->Exists(base + L"Migrated"))
    {
       return true;
    }
@@ -612,42 +612,42 @@ bool EffectEqualization::Startup()
    {
       // These get saved to the current preset
       int filterLength;
-      gPrefs->Read(base + wxT("FilterLength"), &filterLength, 4001);
+      gPrefs->Read(base + L"FilterLength", &filterLength, 4001);
       mM = std::max(0, filterLength);
       if ((mM < 21) || (mM > 8191)) {  // corrupted Prefs?
          mM = 4001;  //default
       }
-      gPrefs->Read(base + wxT("CurveName"), &mCurveName, wxT("unnamed"));
-      gPrefs->Read(base + wxT("Lin"), &mLin, false);
-      gPrefs->Read(base + wxT("Interp"), &mInterp, 0);
+      gPrefs->Read(base + L"CurveName", &mCurveName, L"unnamed");
+      gPrefs->Read(base + L"Lin", &mLin, false);
+      gPrefs->Read(base + L"Interp", &mInterp, 0);
 
       SaveUserPreset(GetCurrentSettingsGroup());
 
       // These persist across preset changes
       double dBMin;
-      gPrefs->Read(base + wxT("dBMin"), &dBMin, -30.0);
+      gPrefs->Read(base + L"dBMin", &dBMin, -30.0);
       if ((dBMin < -120) || (dBMin > -10)) {  // corrupted Prefs?
          dBMin = -30;  //default
       }
       mdBMin = dBMin;
-      SetPrivateConfig(GetCurrentSettingsGroup(), wxT("dBMin"), mdBMin);
+      SetPrivateConfig(GetCurrentSettingsGroup(), L"dBMin", mdBMin);
 
       double dBMax;
-      gPrefs->Read(base + wxT("dBMax"), &dBMax, 30.);
+      gPrefs->Read(base + L"dBMax", &dBMax, 30.);
       if ((dBMax < 0) || (dBMax > 60)) {  // corrupted Prefs?
          dBMax = 30;  //default
       }
       mdBMax = dBMax;
-      SetPrivateConfig(GetCurrentSettingsGroup(), wxT("dBMax"), mdBMax);
+      SetPrivateConfig(GetCurrentSettingsGroup(), L"dBMax", mdBMax);
 
-      gPrefs->Read(base + wxT("DrawMode"), &mDrawMode, true);
-      SetPrivateConfig(GetCurrentSettingsGroup(), wxT("DrawMode"), mDrawMode);
+      gPrefs->Read(base + L"DrawMode", &mDrawMode, true);
+      SetPrivateConfig(GetCurrentSettingsGroup(), L"DrawMode", mDrawMode);
 
-      gPrefs->Read(base + wxT("DrawGrid"), &mDrawGrid, true);
-      SetPrivateConfig(GetCurrentSettingsGroup(), wxT("DrawGrid"), mDrawGrid);
+      gPrefs->Read(base + L"DrawGrid", &mDrawGrid, true);
+      SetPrivateConfig(GetCurrentSettingsGroup(), L"DrawGrid", mDrawGrid);
 
       // Do not migrate again
-      gPrefs->Write(base + wxT("Migrated"), true);
+      gPrefs->Write(base + L"Migrated", true);
       gPrefs->Flush();
    }
 
@@ -1020,7 +1020,7 @@ void EffectEqualization::PopulateOrExchange(ShuttleGui & S)
                S.StartHorizontalLay(wxALIGN_LEFT | wxALIGN_CENTER_VERTICAL, 0);
                {
                   wxString label;
-                  label.Printf(wxT("%ld"), mM);
+                  label.Printf(L"%ld", mM);
                   mMText = S.Name( Verbatim( label ) )
                   // fix for bug 577 (NVDA/Narrator screen readers do not
                   // read static text in dialogs)
@@ -1283,7 +1283,7 @@ bool EffectEqualization::TransferDataFromWindow()
 
       if( mMSlider)
       {
-         tip.Printf(wxT("%d"), (int)mM);
+         tip.Printf(L"%d", (int)mM);
          mMText->SetLabel(tip);
          mMText->SetName(mMText->GetLabel()); // fix for bug 577 (NVDA/Narrator screen readers do not read static text in dialogs)
          mMSlider->SetToolTip(tip);
@@ -1608,7 +1608,7 @@ void EffectEqualization::LoadCurves(const wxString &fileName, bool append)
    (void)fileName;
    (void)append;
    mCurves.clear();
-   mCurves.push_back( wxT("unnamed") );   // we still need a default curve to use
+   mCurves.push_back( L"unnamed" );   // we still need a default curve to use
 #else
    // Construct normal curve filename
    //
@@ -1621,9 +1621,9 @@ void EffectEqualization::LoadCurves(const wxString &fileName, bool append)
 
    if(fileName.empty()) {
       // Check if presets are up to date.
-      wxString eqCurvesCurrentVersion = wxString::Format(wxT("%d.%d"), EQCURVES_VERSION, EQCURVES_REVISION);
+      wxString eqCurvesCurrentVersion = wxString::Format(L"%d.%d", EQCURVES_VERSION, EQCURVES_REVISION);
       wxString eqCurvesInstalledVersion;
-      gPrefs->Read(GetPrefsPrefix() + "PresetVersion", &eqCurvesInstalledVersion, wxT(""));
+      gPrefs->Read(GetPrefsPrefix() + "PresetVersion", &eqCurvesInstalledVersion, L"");
 
       bool needUpdate = (eqCurvesCurrentVersion != eqCurvesInstalledVersion);
 
@@ -1631,7 +1631,7 @@ void EffectEqualization::LoadCurves(const wxString &fileName, bool append)
       // or update all factory preset curves.
       if (needUpdate)
          UpdateDefaultCurves( UPDATE_ALL != 0 );
-      fn = wxFileName( FileNames::DataDir(), wxT("EQCurves.xml") );
+      fn = wxFileName( FileNames::DataDir(), L"EQCurves.xml" );
    }
    else
       fn = fileName; // user is loading a specific set of curves
@@ -1644,7 +1644,7 @@ void EffectEqualization::LoadCurves(const wxString &fileName, bool append)
       return;
    }
 
-   EQCurve tempCustom(wxT("temp"));
+   EQCurve tempCustom(L"temp");
    if( append == false ) // Start from scratch
       mCurves.clear();
    else  // appending so copy and remove 'unnamed', to replace later
@@ -1673,7 +1673,7 @@ void EffectEqualization::LoadCurves(const wxString &fileName, bool append)
    // Move "unnamed" to end, if it exists in current language.
    int numCurves = mCurves.size();
    int curve;
-   EQCurve tempUnnamed(wxT("tempUnnamed"));
+   EQCurve tempUnnamed(L"tempUnnamed");
    for( curve = 0; curve < numCurves-1; curve++ )
    {
       if( mCurves[curve].Name == _("unnamed") )
@@ -1703,26 +1703,26 @@ void EffectEqualization::UpdateDefaultCurves(bool updateAll /* false */)
    if (mCurves.size() == 0)
       return;
 
-   wxString unnamed = wxT("unnamed");
+   wxString unnamed = L"unnamed";
 
    // Save the "unnamed" curve and remove it so we can add it back as the final curve.
-   EQCurve userUnnamed(wxT("temp"));
+   EQCurve userUnnamed(L"temp");
    userUnnamed = mCurves.back();
    mCurves.pop_back();
 
    EQCurveArray userCurves = mCurves;
    mCurves.clear();
    // We only wamt to look for the shipped EQDefaultCurves.xml
-   wxFileName fn = wxFileName(FileNames::ResourcesDir(), wxT("EQDefaultCurves.xml"));
-   wxLogDebug(wxT("Attempting to load EQDefaultCurves.xml from %s"),fn.GetFullPath());
+   wxFileName fn = wxFileName(FileNames::ResourcesDir(), L"EQDefaultCurves.xml");
+   wxLogDebug(L"Attempting to load EQDefaultCurves.xml from %s",fn.GetFullPath());
    XMLFileReader reader;
 
    if(!reader.Parse(this, fn.GetFullPath())) {
-      wxLogError(wxT("EQDefaultCurves.xml could not be read."));
+      wxLogError(L"EQDefaultCurves.xml could not be read.");
       return;
    }
    else {
-      wxLogDebug(wxT("Loading EQDefaultCurves.xml successful."));
+      wxLogDebug(L"Loading EQDefaultCurves.xml successful.");
    }
 
    EQCurveArray defaultCurves = mCurves;
@@ -1733,12 +1733,12 @@ void EffectEqualization::UpdateDefaultCurves(bool updateAll /* false */)
       defaultCurves.pop_back();
    }
    else {
-      wxLogError(wxT("Error in EQDefaultCurves.xml"));
+      wxLogError(L"Error in EQDefaultCurves.xml");
    }
 
    int numUserCurves = userCurves.size();
    int numDefaultCurves = defaultCurves.size();
-   EQCurve tempCurve(wxT("test"));
+   EQCurve tempCurve(L"test");
 
    if (updateAll) {
       // Update all factory preset curves.
@@ -1806,7 +1806,7 @@ void EffectEqualization::UpdateDefaultCurves(bool updateAll /* false */)
 
    // Write current EqCurve version number
    // TODO: Probably better if we used pluginregistry.cfg
-   wxString eqCurvesCurrentVersion = wxString::Format(wxT("%d.%d"), EQCURVES_VERSION, EQCURVES_REVISION);
+   wxString eqCurvesCurrentVersion = wxString::Format(L"%d.%d", EQCURVES_VERSION, EQCURVES_REVISION);
    gPrefs->Write(GetPrefsPrefix()+"PresetVersion", eqCurvesCurrentVersion);
    gPrefs->Flush();
 
@@ -1819,11 +1819,11 @@ void EffectEqualization::UpdateDefaultCurves(bool updateAll /* false */)
 bool EffectEqualization::GetDefaultFileName(wxFileName &fileName)
 {
    // look in data dir first, in case the user has their own defaults (maybe downloaded ones)
-   fileName = wxFileName( FileNames::DataDir(), wxT("EQDefaultCurves.xml") );
+   fileName = wxFileName( FileNames::DataDir(), L"EQDefaultCurves.xml" );
    if( !fileName.FileExists() )
    {  // Default file not found in the data dir.  Fall back to Resources dir.
       // See http://docs.wxwidgets.org/trunk/classwx_standard_paths.html#5514bf6288ee9f5a0acaf065762ad95d
-      fileName = wxFileName( FileNames::ResourcesDir(), wxT("EQDefaultCurves.xml") );
+      fileName = wxFileName( FileNames::ResourcesDir(), L"EQDefaultCurves.xml" );
    }
    if( !fileName.FileExists() )
    {
@@ -1831,10 +1831,10 @@ bool EffectEqualization::GetDefaultFileName(wxFileName &fileName)
       //auto errorMessage = XO("EQCurves.xml and EQDefaultCurves.xml were not found on your system.\nPlease press 'help' to visit the download page.\n\nSave the curves at %s")
       //   .Format( FileNames::DataDir() );
       //ShowErrorDialog(mUIParent, XO("EQCurves.xml and EQDefaultCurves.xml missing"),
-      //   errorMessage, wxT("http://wiki.audacityteam.org/wiki/EQCurvesDownload"), false);
+      //   errorMessage, L"http://wiki.audacityteam.org/wiki/EQCurvesDownload", false);
 
       // Have another go at finding EQCurves.xml in the data dir, in case 'help' helped
-      fileName = wxFileName( FileNames::DataDir(), wxT("EQDefaultCurves.xml") );
+      fileName = wxFileName( FileNames::DataDir(), L"EQDefaultCurves.xml" );
    }
    return (fileName.FileExists());
 }
@@ -1854,7 +1854,7 @@ void EffectEqualization::SaveCurves(const wxString &fileName)
       //       between wxStandardPaths and wxConfig under Linux.  The latter
       //       creates a normal file as "$HOME/.audacity", while the former
       //       expects the ".audacity" portion to be a directory.
-      fn = wxFileName( FileNames::DataDir(), wxT("EQCurves.xml") );
+      fn = wxFileName( FileNames::DataDir(), L"EQCurves.xml" );
 
       // If the directory doesn't exist...
       if( !fn.DirExists() )
@@ -2183,9 +2183,9 @@ void EffectEqualization::Flatten()
 
          wxString tip;
          if( kThirdOct[i] < 1000.)
-            tip.Printf( wxT("%dHz\n%.1fdB"), (int)kThirdOct[i], 0. );
+            tip.Printf( L"%dHz\n%.1fdB", (int)kThirdOct[i], 0. );
          else
-            tip.Printf( wxT("%gkHz\n%.1fdB"), kThirdOct[i]/1000., 0. );
+            tip.Printf( L"%gkHz\n%.1fdB", kThirdOct[i]/1000., 0. );
          mSliders[i]->SetToolTip(tip);
       }
    }
@@ -2198,13 +2198,13 @@ void EffectEqualization::Flatten()
 bool EffectEqualization::HandleXMLTag(const wxChar *tag, const wxChar **attrs)
 {
    // May want to add a version strings...
-   if( !wxStrcmp( tag, wxT("equalizationeffect") ) )
+   if( !wxStrcmp( tag, L"equalizationeffect" ) )
    {
       return true;
    }
 
    // Located a NEW curve
-   if( !wxStrcmp(tag, wxT("curve") ) )
+   if( !wxStrcmp(tag, L"curve" ) )
    {
       // Process the attributes
       while( *attrs )
@@ -2214,7 +2214,7 @@ bool EffectEqualization::HandleXMLTag(const wxChar *tag, const wxChar **attrs)
          const wxChar *value = *attrs++;
 
          // Create a NEW curve and name it
-         if( !wxStrcmp( attr, wxT("name") ) )
+         if( !wxStrcmp( attr, L"name" ) )
          {
             const wxString strValue = value;
             if (!XMLValueChecker::IsGoodString(strValue))
@@ -2229,7 +2229,7 @@ bool EffectEqualization::HandleXMLTag(const wxChar *tag, const wxChar **attrs)
                for(size_t i = 0; i < mCurves.size(); i++)
                {
                   if(n>0)
-                     strValueTemp.Printf(wxT("%s (%d)"),strValue,n);
+                     strValueTemp.Printf(L"%s (%d)",strValue,n);
                   if(mCurves[i].Name == strValueTemp)
                   {
                      exists = true;
@@ -2249,7 +2249,7 @@ bool EffectEqualization::HandleXMLTag(const wxChar *tag, const wxChar **attrs)
    }
 
    // Located a NEW point
-   if( !wxStrcmp( tag, wxT("point") ) )
+   if( !wxStrcmp( tag, L"point" ) )
    {
       // Set defaults in case attributes are missing
       double f = 0.0;
@@ -2265,7 +2265,7 @@ bool EffectEqualization::HandleXMLTag(const wxChar *tag, const wxChar **attrs)
          const wxString strValue = value;
 
          // Get the frequency
-         if( !wxStrcmp( attr, wxT("f") ) )
+         if( !wxStrcmp( attr, L"f" ) )
          {
             if (!XMLValueChecker::IsGoodString(strValue) ||
                !Internat::CompatibleToDouble(strValue, &dblValue))
@@ -2273,7 +2273,7 @@ bool EffectEqualization::HandleXMLTag(const wxChar *tag, const wxChar **attrs)
             f = dblValue;
          }
          // Get the dB
-         else if( !wxStrcmp( attr, wxT("d") ) )
+         else if( !wxStrcmp( attr, L"d" ) )
          {
             if (!XMLValueChecker::IsGoodString(strValue) ||
                !Internat::CompatibleToDouble(strValue, &dblValue))
@@ -2298,17 +2298,17 @@ bool EffectEqualization::HandleXMLTag(const wxChar *tag, const wxChar **attrs)
 //
 XMLTagHandler *EffectEqualization::HandleXMLChild(const wxChar *tag)
 {
-   if( !wxStrcmp( tag, wxT("equalizationeffect") ) )
+   if( !wxStrcmp( tag, L"equalizationeffect" ) )
    {
       return this;
    }
 
-   if( !wxStrcmp( tag, wxT("curve") ) )
+   if( !wxStrcmp( tag, L"curve" ) )
    {
       return this;
    }
 
-   if( !wxStrcmp( tag, wxT("point") ) )
+   if( !wxStrcmp( tag, L"point" ) )
    {
       return this;
    }
@@ -2323,7 +2323,7 @@ void EffectEqualization::WriteXML(XMLWriter &xmlFile) const
 // may throw
 {
    // Start our hierarchy
-   xmlFile.StartTag( wxT( "equalizationeffect" ) );
+   xmlFile.StartTag( L"equalizationeffect" );
 
    // Write all curves
    int numCurves = mCurves.size();
@@ -2331,8 +2331,8 @@ void EffectEqualization::WriteXML(XMLWriter &xmlFile) const
    for( curve = 0; curve < numCurves; curve++ )
    {
       // Start a NEW curve
-      xmlFile.StartTag( wxT( "curve" ) );
-      xmlFile.WriteAttr( wxT( "name" ), mCurves[ curve ].Name );
+      xmlFile.StartTag( L"curve" );
+      xmlFile.WriteAttr( L"name", mCurves[ curve ].Name );
 
       // Write all points
       int numPoints = mCurves[ curve ].points.size();
@@ -2340,18 +2340,18 @@ void EffectEqualization::WriteXML(XMLWriter &xmlFile) const
       for( point = 0; point < numPoints; point++ )
       {
          // Write NEW point
-         xmlFile.StartTag( wxT( "point" ) );
-         xmlFile.WriteAttr( wxT( "f" ), mCurves[ curve ].points[ point ].Freq, 12 );
-         xmlFile.WriteAttr( wxT( "d" ), mCurves[ curve ].points[ point ].dB, 12 );
-         xmlFile.EndTag( wxT( "point" ) );
+         xmlFile.StartTag( L"point" );
+         xmlFile.WriteAttr( L"f", mCurves[ curve ].points[ point ].Freq, 12 );
+         xmlFile.WriteAttr( L"d", mCurves[ curve ].points[ point ].dB, 12 );
+         xmlFile.EndTag( L"point" );
       }
 
       // Terminate curve
-      xmlFile.EndTag( wxT( "curve" ) );
+      xmlFile.EndTag( L"curve" );
    }
 
    // Terminate our hierarchy
-   xmlFile.EndTag( wxT( "equalizationeffect" ) );
+   xmlFile.EndTag( L"equalizationeffect" );
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -2484,9 +2484,9 @@ void EffectEqualization::UpdateGraphic()
       mSlidersOld[i] = mSliders[i]->GetValue();
       wxString tip;
       if( kThirdOct[i] < 1000.)
-         tip.Printf( wxT("%dHz\n%.1fdB"), (int)kThirdOct[i], mEQVals[i] );
+         tip.Printf( L"%dHz\n%.1fdB", (int)kThirdOct[i], mEQVals[i] );
       else
-         tip.Printf( wxT("%gkHz\n%.1fdB"), kThirdOct[i]/1000., mEQVals[i] );
+         tip.Printf( L"%gkHz\n%.1fdB", kThirdOct[i]/1000., mEQVals[i] );
       mSliders[i]->SetToolTip(tip);
    }
 
@@ -2863,9 +2863,9 @@ void EffectEqualization::OnSlider(wxCommandEvent & event)
          mSlidersOld[i] = newPosn;
          wxString tip;
          if( kThirdOct[i] < 1000.)
-            tip.Printf( wxT("%dHz\n%.1fdB"), (int)kThirdOct[i], mEQVals[i] );
+            tip.Printf( L"%dHz\n%.1fdB", (int)kThirdOct[i], mEQVals[i] );
          else
-            tip.Printf( wxT("%gkHz\n%.1fdB"), kThirdOct[i]/1000., mEQVals[i] );
+            tip.Printf( L"%gkHz\n%.1fdB", kThirdOct[i]/1000., mEQVals[i] );
          s->SetToolTip(tip);
          break;
       }
@@ -2958,9 +2958,9 @@ void EffectEqualization::OnInvert(wxCommandEvent & WXUNUSED(event)) // Inverts a
 
          wxString tip;
          if( kThirdOct[i] < 1000.)
-            tip.Printf( wxT("%dHz\n%.1fdB"), (int)kThirdOct[i], mEQVals[i] );
+            tip.Printf( L"%dHz\n%.1fdB", (int)kThirdOct[i], mEQVals[i] );
          else
-            tip.Printf( wxT("%gkHz\n%.1fdB"), kThirdOct[i]/1000., mEQVals[i] );
+            tip.Printf( L"%gkHz\n%.1fdB", kThirdOct[i]/1000., mEQVals[i] );
          mSliders[i]->SetToolTip(tip);
       }
       GraphicEQ(mLogEnvelope.get());
@@ -3478,7 +3478,7 @@ void EditCurvesDialog::OnUp(wxCommandEvent & WXUNUSED(event))
       state = mList->GetItemState(item-1, wxLIST_STATE_SELECTED);
       if ( state != wxLIST_STATE_SELECTED )
       { // swap this with one above but only if it isn't selected
-         EQCurve temp(wxT("temp"));
+         EQCurve temp(L"temp");
          temp.Name = mEditCurves[item].Name;
          temp.points = mEditCurves[item].points;
          mEditCurves[item].Name = mEditCurves[item-1].Name;
@@ -3508,7 +3508,7 @@ void EditCurvesDialog::OnDown(wxCommandEvent & WXUNUSED(event))
          state = mList->GetItemState(item+1, wxLIST_STATE_SELECTED);
          if ( state != wxLIST_STATE_SELECTED )
          { // swap this with one below but only if it isn't selected
-            EQCurve temp(wxT("temp"));
+            EQCurve temp(L"temp");
             temp.Name = mEditCurves[item].Name;
             temp.points = mEditCurves[item].points;
             mEditCurves[item].Name = mEditCurves[item+1].Name;
@@ -3548,10 +3548,10 @@ void EditCurvesDialog::OnRename(wxCommandEvent & WXUNUSED(event))
 
    // Setup list of characters that aren't allowed
    wxArrayStringEx exclude{
-      wxT("<") ,
-      wxT(">") ,
-      wxT("'") ,
-      wxT("\"") ,
+      L"<" ,
+      L">" ,
+      L"'" ,
+      L"\"" ,
    };
 
    // Get the first one to be renamed
@@ -3610,7 +3610,7 @@ void EditCurvesDialog::OnRename(wxCommandEvent & WXUNUSED(event))
                }
             }
          }
-         if( name.empty() || name == wxT("unnamed") )
+         if( name.empty() || name == L"unnamed" )
             bad = true;
       }
 
@@ -3635,7 +3635,7 @@ void EditCurvesDialog::OnRename(wxCommandEvent & WXUNUSED(event))
       }
       else if( item == (numCurves-1) ) // renaming 'unnamed'
       {  // Create a NEW entry
-         mEditCurves.push_back( EQCurve( wxT("unnamed") ) );
+         mEditCurves.push_back( EQCurve( L"unnamed" ) );
          // Copy over the points
          mEditCurves[ numCurves ].points = mEditCurves[ numCurves - 1 ].points;
          // Give the original unnamed entry the NEW name
@@ -3759,7 +3759,7 @@ void EditCurvesDialog::OnImport( wxCommandEvent & WXUNUSED(event))
 {
    FileDialogWrapper filePicker(
       this,
-      XO("Choose an EQ curve file"), FileNames::DataDir(), wxT(""),
+      XO("Choose an EQ curve file"), FileNames::DataDir(), L"",
       XMLtypes() );
    wxString fileName;
    if( filePicker.ShowModal() == wxID_CANCEL)
@@ -3781,7 +3781,7 @@ void EditCurvesDialog::OnImport( wxCommandEvent & WXUNUSED(event))
 void EditCurvesDialog::OnExport( wxCommandEvent & WXUNUSED(event))
 {
    FileDialogWrapper filePicker(this, XO("Export EQ curves as..."),
-      FileNames::DataDir(), wxT(""),
+      FileNames::DataDir(), L"",
       XMLtypes(),
       wxFD_SAVE | wxFD_OVERWRITE_PROMPT | wxRESIZE_BORDER); // wxFD_CHANGE_DIR?
    wxString fileName;
@@ -3833,7 +3833,7 @@ void EditCurvesDialog::OnExport( wxCommandEvent & WXUNUSED(event))
 void EditCurvesDialog::OnLibrary( wxCommandEvent & WXUNUSED(event))
 {
    // full path to wiki.
-   wxLaunchDefaultBrowser(wxT("https://wiki.audacityteam.org/wiki/EQCurvesDownload"));
+   wxLaunchDefaultBrowser(L"https://wiki.audacityteam.org/wiki/EQCurvesDownload");
 }
 
 void EditCurvesDialog::OnDefaults( wxCommandEvent & WXUNUSED(event))
@@ -3841,7 +3841,7 @@ void EditCurvesDialog::OnDefaults( wxCommandEvent & WXUNUSED(event))
    EQCurveArray temp;
    temp = mEffect->mCurves;
    // we expect this to fail in LoadCurves (due to a lack of path) and handle that there
-   mEffect->LoadCurves( wxT("EQDefaultCurves.xml") );
+   mEffect->LoadCurves( L"EQDefaultCurves.xml" );
    mEditCurves = mEffect->mCurves;
    mEffect->mCurves = temp;
    PopulateList(0);  // update the EditCurvesDialog dialog
@@ -3850,7 +3850,7 @@ void EditCurvesDialog::OnDefaults( wxCommandEvent & WXUNUSED(event))
 void EditCurvesDialog::OnOK(wxCommandEvent & WXUNUSED(event))
 {
    // Make a backup of the current curves
-   wxString backupPlace = wxFileName( FileNames::DataDir(), wxT("EQBackup.xml") ).GetFullPath();
+   wxString backupPlace = wxFileName( FileNames::DataDir(), L"EQBackup.xml" ).GetFullPath();
    mEffect->SaveCurves(backupPlace);
    // Load back into the main dialog
    mEffect->mCurves.clear();

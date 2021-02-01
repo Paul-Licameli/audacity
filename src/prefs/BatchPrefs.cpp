@@ -73,7 +73,7 @@ void BatchPrefs::PopulateOrExchange( ShuttleGui & S )
    {
 #ifdef _DEBUG
       S.TieCheckBox( XXO("&Don't apply effects in batch mode"),
-         {wxT("/Batch/Debug"), false});
+         {L"/Batch/Debug", false});
 #endif
    }
    S.EndStatic();

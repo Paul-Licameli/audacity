@@ -76,7 +76,7 @@ END_EVENT_TABLE()
 
 //Standard constructor
 EditToolBar::EditToolBar( AudacityProject &project )
-: ToolBar(project, EditBarID, XO("Edit"), wxT("Edit"))
+: ToolBar(project, EditBarID, XO("Edit"), L"Edit")
 {
 }
 
@@ -226,28 +226,28 @@ static const struct Entry {
    CommandID commandName;
    TranslatableString untranslatedLabel;
 } EditToolbarButtonList[] = {
-   { ETBCutID,      wxT("Cut"),         XO("Cut")  },
-   { ETBCopyID,     wxT("Copy"),        XO("Copy")  },
-   { ETBPasteID,    wxT("Paste"),       XO("Paste")  },
-   { ETBTrimID,     wxT("Trim"),        XO("Trim audio outside selection")  },
-   { ETBSilenceID,  wxT("Silence"),     XO("Silence audio selection")  },
-   { ETBUndoID,     wxT("Undo"),        XO("Undo")  },
-   { ETBRedoID,     wxT("Redo"),        XO("Redo")  },
+   { ETBCutID,      L"Cut",         XO("Cut")  },
+   { ETBCopyID,     L"Copy",        XO("Copy")  },
+   { ETBPasteID,    L"Paste",       XO("Paste")  },
+   { ETBTrimID,     L"Trim",        XO("Trim audio outside selection")  },
+   { ETBSilenceID,  L"Silence",     XO("Silence audio selection")  },
+   { ETBUndoID,     L"Undo",        XO("Undo")  },
+   { ETBRedoID,     L"Redo",        XO("Redo")  },
 
 #ifdef OPTION_SYNC_LOCK_BUTTON
-   { ETBSyncLockID, wxT("SyncLock"),    XO("Sync-Lock Tracks")  },
+   { ETBSyncLockID, L"SyncLock",    XO("Sync-Lock Tracks")  },
 #endif
 
-   { ETBZoomInID,   wxT("ZoomIn"),      XO("Zoom In")  },
-   { ETBZoomOutID,  wxT("ZoomOut"),     XO("Zoom Out")  },
+   { ETBZoomInID,   L"ZoomIn",      XO("Zoom In")  },
+   { ETBZoomOutID,  L"ZoomOut",     XO("Zoom Out")  },
 #ifdef EXPERIMENTAL_ZOOM_TOGGLE_BUTTON
-   { ETBZoomToggleID,   wxT("ZoomToggle"),      XO("Zoom Toggle")  },
+   { ETBZoomToggleID,   L"ZoomToggle",      XO("Zoom Toggle")  },
 #endif 
-   { ETBZoomSelID,  wxT("ZoomSel"),     XO("Fit selection to width")  },
-   { ETBZoomFitID,  wxT("FitInWindow"), XO("Fit project to width")  },
+   { ETBZoomSelID,  L"ZoomSel",     XO("Fit selection to width")  },
+   { ETBZoomFitID,  L"FitInWindow", XO("Fit project to width")  },
 
 #if defined(EXPERIMENTAL_EFFECTS_RACK)
-   { ETBEffectsID,  wxT("ShowEffectsRack"), XO("Open Effects Rack")  },
+   { ETBEffectsID,  L"ShowEffectsRack", XO("Open Effects Rack")  },
 #endif
 };
 
@@ -262,7 +262,7 @@ void EditToolBar::ForAllButtons(int Action)
       cm = &CommandManager::Get( *p );
 #ifdef OPTION_SYNC_LOCK_BUTTON
       bool bSyncLockTracks;
-      gPrefs->Read(wxT("/GUI/SyncLockTracks"), &bSyncLockTracks, false);
+      gPrefs->Read(L"/GUI/SyncLockTracks", &bSyncLockTracks, false);
 
       if (bSyncLockTracks)
          mButtons[ETBSyncLockID]->PushDown();
@@ -322,7 +322,7 @@ static RegisteredToolbarFactory factory{ EditBarID,
 namespace {
 AttachedToolBarMenuItem sAttachment{
    /* i18n-hint: Clicking this menu item shows the toolbar for editing */
-   EditBarID, wxT("ShowEditTB"), XXO("&Edit Toolbar")
+   EditBarID, L"ShowEditTB", XXO("&Edit Toolbar")
 };
 }
 

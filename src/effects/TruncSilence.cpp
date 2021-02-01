@@ -47,19 +47,19 @@ const EnumValueSymbol Enums::DbChoices[] = {
    // Table of text values, only for reading what was stored in legacy config
    // files.
    // It was inappropriate to make this a discrete choice control.
-   { wxT("-20 dB") },
-   { wxT("-25 dB") },
-   { wxT("-30 dB") },
-   { wxT("-35 dB") },
-   { wxT("-40 dB") },
-   { wxT("-45 dB") },
-   { wxT("-50 dB") },
-   { wxT("-55 dB") },
-   { wxT("-60 dB") },
-   { wxT("-65 dB") },
-   { wxT("-70 dB") },
-   { wxT("-75 dB") },
-   { wxT("-80 dB") }
+   { L"-20 dB" },
+   { L"-25 dB" },
+   { L"-30 dB" },
+   { L"-35 dB" },
+   { L"-40 dB" },
+   { L"-45 dB" },
+   { L"-50 dB" },
+   { L"-55 dB" },
+   { L"-60 dB" },
+   { L"-65 dB" },
+   { L"-70 dB" },
+   { L"-75 dB" },
+   { L"-80 dB" }
 };
 
 // Map from position in table above to numerical value.
@@ -85,8 +85,8 @@ static const EnumValueSymbol kActionStrings[nActions] =
 
 static CommandParameters::ObsoleteMap kObsoleteActions[] = {
    // Compatible with 2.1.0 and before
-   { wxT("0"), 0 }, // Remap to Truncate Detected Silence
-   { wxT("1"), 1 }, // Remap to Compress Excess Silence
+   { L"0", 0 }, // Remap to Truncate Detected Silence
+   { L"1", 1 }, // Remap to Compress Excess Silence
 };
 
 static const size_t nObsoleteActions = WXSIZEOF( kObsoleteActions );
@@ -102,14 +102,14 @@ static const size_t nObsoleteActions = WXSIZEOF( kObsoleteActions );
 //     Name       Type     Key               Def         Min      Max                        Scale
 
 // This one is legacy and is intentionally not reported by DefineParams:
-Param( DbIndex,   int,     wxT("Db"),         0,          0,       Enums::NumDbChoices - 1,   1  );
+Param( DbIndex,   int,     L"Db",         0,          0,       Enums::NumDbChoices - 1,   1  );
 
-Param( Threshold, double,  wxT("Threshold"),  -20.0,      -80.0,   -20.0,                     1  );
-Param( ActIndex,  int,     wxT("Action"),     kTruncate,  0,       nActions - 1,           1  );
-Param( Minimum,   double,  wxT("Minimum"),    0.5,        0.001,   10000.0,                   1  );
-Param( Truncate,  double,  wxT("Truncate"),   0.5,        0.0,     10000.0,                   1  );
-Param( Compress,  double,  wxT("Compress"),   50.0,       0.0,     99.9,                      1  );
-Param( Independent, bool,  wxT("Independent"), false,     false,   true,                      1  );
+Param( Threshold, double,  L"Threshold",  -20.0,      -80.0,   -20.0,                     1  );
+Param( ActIndex,  int,     L"Action",     kTruncate,  0,       nActions - 1,           1  );
+Param( Minimum,   double,  L"Minimum",    0.5,        0.001,   10000.0,                   1  );
+Param( Truncate,  double,  L"Truncate",   0.5,        0.0,     10000.0,                   1  );
+Param( Compress,  double,  L"Compress",   50.0,       0.0,     99.9,                      1  );
+Param( Independent, bool,  L"Independent", false,     false,   true,                      1  );
 
 static const size_t DEF_BlendFrameCount = 100;
 
@@ -170,7 +170,7 @@ TranslatableString EffectTruncSilence::GetDescription()
 
 wxString EffectTruncSilence::ManualPage()
 {
-   return wxT("Truncate_Silence");
+   return L"Truncate_Silence";
 }
 
 // EffectDefinitionInterface implementation
@@ -269,12 +269,12 @@ double EffectTruncSilence::CalcPreviewInputLength(double /* previewLength */)
 
 bool EffectTruncSilence::Startup()
 {
-   wxString base = wxT("/Effects/TruncateSilence/");
+   wxString base = L"/Effects/TruncateSilence/";
 
    // Migrate settings from 2.1.0 or before
 
    // Already migrated, so bail
-   if (gPrefs->Exists(base + wxT("Migrated")))
+   if (gPrefs->Exists(base + L"Migrated"))
    {
       return true;
    }
@@ -282,28 +282,28 @@ bool EffectTruncSilence::Startup()
    // Load the old "current" settings
    if (gPrefs->Exists(base))
    {
-      int truncDbChoiceIndex = gPrefs->Read(base + wxT("DbChoiceIndex"), 4L);
+      int truncDbChoiceIndex = gPrefs->Read(base + L"DbChoiceIndex", 4L);
       if ((truncDbChoiceIndex < 0) || (truncDbChoiceIndex >= Enums::NumDbChoices))
       {  // corrupted Prefs?
          truncDbChoiceIndex = 4L;
       }
       mThresholdDB = enumToDB( truncDbChoiceIndex );
-      mActionIndex = gPrefs->Read(base + wxT("ProcessChoice"), 0L);
+      mActionIndex = gPrefs->Read(base + L"ProcessChoice", 0L);
       if ((mActionIndex < 0) || (mActionIndex > 1))
       {  // corrupted Prefs?
          mActionIndex = 0L;
       }
-      gPrefs->Read(base + wxT("InitialAllowedSilence"), &mInitialAllowedSilence, 0.5);
+      gPrefs->Read(base + L"InitialAllowedSilence", &mInitialAllowedSilence, 0.5);
       if ((mInitialAllowedSilence < 0.001) || (mInitialAllowedSilence > 10000.0))
       {  // corrupted Prefs?
          mInitialAllowedSilence = 0.5;
       }
-      gPrefs->Read(base + wxT("LongestAllowedSilence"), &mTruncLongestAllowedSilence, 0.5);
+      gPrefs->Read(base + L"LongestAllowedSilence", &mTruncLongestAllowedSilence, 0.5);
       if ((mTruncLongestAllowedSilence < 0.0) || (mTruncLongestAllowedSilence > 10000.0))
       {  // corrupted Prefs?
          mTruncLongestAllowedSilence = 0.5;
       }
-      gPrefs->Read(base + wxT("CompressPercent"), &mSilenceCompressPercent, 50.0);
+      gPrefs->Read(base + L"CompressPercent", &mSilenceCompressPercent, 50.0);
       if ((mSilenceCompressPercent < 0.0) || (mSilenceCompressPercent > 100.0))
       {  // corrupted Prefs?
          mSilenceCompressPercent = 50.0;
@@ -313,7 +313,7 @@ bool EffectTruncSilence::Startup()
    }
 
    // Do not migrate again
-   gPrefs->Write(base + wxT("Migrated"), true);
+   gPrefs->Write(base + L"Migrated", true);
 
    return true;
 }
@@ -613,7 +613,7 @@ bool EffectTruncSilence::Analyze(RegionList& silenceList,
    sampleCount outLength = 0;
 
    double previewLength;
-   gPrefs->Read(wxT("/AudioIO/EffectsPreviewLen"), &previewLength, 6.0);
+   gPrefs->Read(L"/AudioIO/EffectsPreviewLen", &previewLength, 6.0);
    // Minimum required length in samples.
    const sampleCount previewLen( previewLength * wt->GetRate() );
 
@@ -768,7 +768,7 @@ void EffectTruncSilence::PopulateOrExchange(ShuttleGui & S)
                MIN_Threshold, MAX_Threshold
             )
             .NameSuffix(XO("db"))
-            .AddTextBox(XXO("&Threshold:"), wxT(""), 0);
+            .AddTextBox(XXO("&Threshold:"), L"", 0);
          S.AddUnits(XO("dB"));
 
          // Ignored silence
@@ -777,7 +777,7 @@ void EffectTruncSilence::PopulateOrExchange(ShuttleGui & S)
                NumValidatorStyle::NO_TRAILING_ZEROES,
                MIN_Minimum, MAX_Minimum)
             .NameSuffix(XO("seconds"))
-            .AddTextBox(XXO("&Duration:"), wxT(""), 12);
+            .AddTextBox(XXO("&Duration:"), L"", 12);
          S.AddUnits(XO("seconds"));
       }
       S.EndMultiColumn();
@@ -806,7 +806,7 @@ void EffectTruncSilence::PopulateOrExchange(ShuttleGui & S)
                MIN_Truncate, MAX_Truncate
             )
             .NameSuffix(XO("seconds"))
-            .AddTextBox(XXO("Tr&uncate to:"), wxT(""), 12);
+            .AddTextBox(XXO("Tr&uncate to:"), L"", 12);
          S.AddUnits(XO("seconds"));
 
          mSilenceCompressPercentT = S.Validator<FloatingPointValidator<double>>(
@@ -815,7 +815,7 @@ void EffectTruncSilence::PopulateOrExchange(ShuttleGui & S)
                MIN_Compress, MAX_Compress
             )
             .NameSuffix(XO("%"))
-            .AddTextBox(XXO("C&ompress to:"), wxT(""), 12);
+            .AddTextBox(XXO("C&ompress to:"), L"", 12);
          S.AddUnits(XO("%"));
       }
       S.EndMultiColumn();

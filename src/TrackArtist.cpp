@@ -244,9 +244,9 @@ void TrackArt::DrawNegativeOffsetTrackArrows(
 void TrackArtist::UpdateSelectedPrefs( int id )
 {
    if( id == ShowClippingPrefsID())
-      mShowClipping = gPrefs->Read(wxT("/GUI/ShowClipping"), mShowClipping);
+      mShowClipping = gPrefs->Read(L"/GUI/ShowClipping", mShowClipping);
    if( id == ShowTrackNameInWaveformPrefsID())
-      mbShowTrackNameInTrack = gPrefs->ReadBool(wxT("/GUI/ShowTrackNameInWaveform"), false);
+      mbShowTrackNameInTrack = gPrefs->ReadBool(L"/GUI/ShowTrackNameInWaveform", false);
 }
 
 void TrackArtist::UpdatePrefs()

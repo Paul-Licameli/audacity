@@ -114,7 +114,7 @@ void ChangeExceptionPolicy()
 #if wxUSE_DYNLIB_CLASS
     gs_changedPolicy = false;
 
-    wxLoadedDLL dllKernel32(wxT("kernel32.dll"));
+    wxLoadedDLL dllKernel32(L"kernel32.dll");
 
     if ( gs_pfnGetProcessUserModeExceptionPolicy
         == (GetProcessUserModeExceptionPolicy_t) -1)
@@ -643,7 +643,7 @@ void FileDialog::ParseFilter(int index)
 {
    m_Filters.Empty();
    
-   wxStringTokenizer tokenWild(m_FilterGroups[index - 1], wxT(";"));
+   wxStringTokenizer tokenWild(m_FilterGroups[index - 1], L";");
    
    while (tokenWild.HasMoreTokens())
    {
@@ -881,7 +881,7 @@ static bool ShowCommFileDialog(OPENFILENAME *of, long style)
       // common dialog failed - why?
       if (errCode != 0)
       {
-         wxLogError(wxT("File dialog failed with error code %0lx."), errCode);
+         wxLogError(L"File dialog failed with error code %0lx.", errCode);
       }
       //else: it was just cancelled
 
@@ -1021,16 +1021,16 @@ int FileDialog::ShowModal()
    
    size_t items = wxParseCommonDialogsFilter(m_wildCard, wildDescriptions, m_FilterGroups);
    
-   wxASSERT_MSG( items > 0 , wxT("empty wildcard list") );
+   wxASSERT_MSG( items > 0 , L"empty wildcard list" );
    
    wxString filterBuffer;
    
    for (i = 0; i < items ; i++)
    {
       filterBuffer += wildDescriptions[i];
-      filterBuffer += wxT("|");
+      filterBuffer += L"|";
       filterBuffer += m_FilterGroups[i];
-      filterBuffer += wxT("|");
+      filterBuffer += L"|";
    }
    
    // Replace | with \0
@@ -1068,8 +1068,8 @@ int FileDialog::ShowModal()
          extension = extension + wxStrlen( extension ) + 1;
       
       // use dummy name a to avoid assert in AppendExtension
-      defextBuffer = AppendExtension(wxT("a"), extension);
-      if (defextBuffer.StartsWith(wxT("a.")))
+      defextBuffer = AppendExtension(L"a", extension);
+      if (defextBuffer.StartsWith(L"a."))
       {
          defextBuffer = defextBuffer.Mid(2); // remove "a."
          of.lpstrDefExt = defextBuffer.c_str();
@@ -1117,7 +1117,7 @@ int FileDialog::ShowModal()
          i += wxStrlen(&fileNameBuffer[i]) + 1;
       }
 #else
-      wxStringTokenizer toke(fileNameBuffer, wxT(" \t\r\n"));
+      wxStringTokenizer toke(fileNameBuffer, L" \t\r\n");
       m_dir = toke.GetNextToken();
       m_fileName = toke.GetNextToken();
       m_fileNames.Add(m_fileName);

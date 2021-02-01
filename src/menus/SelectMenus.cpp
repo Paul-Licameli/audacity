@@ -1001,8 +1001,8 @@ void OnSelectAllTime(const CommandContext &context)
 
 void UpdatePrefs() override
 {
-   gPrefs->Read(wxT("/AudioIO/SeekShortPeriod"), &mSeekInfo.mSeekShort, 1.0);
-   gPrefs->Read(wxT("/AudioIO/SeekLongPeriod"), &mSeekInfo.mSeekLong, 15.0);
+   gPrefs->Read(L"/AudioIO/SeekShortPeriod", &mSeekInfo.mSeekShort, 1.0);
+   gPrefs->Read(L"/AudioIO/SeekLongPeriod", &mSeekInfo.mSeekLong, 15.0);
 }
 Handler()
 {
@@ -1037,49 +1037,49 @@ BaseItemSharedPtr SelectMenu()
    static BaseItemSharedPtr menu{
    ( FinderScope{ findCommandHandler },
    /* i18n-hint: (verb) It's an item on a menu. */
-   Menu( wxT("Select"), XXO("&Select"),
+   Menu( L"Select", XXO("&Select"),
       Section( "Basic",
-         Command( wxT("SelectAll"), XXO("&All"), FN(OnSelectAll),
+         Command( L"SelectAll", XXO("&All"), FN(OnSelectAll),
             TracksExistFlag(),
-            Options{ wxT("Ctrl+A"), XO("Select All") } ),
-         Command( wxT("SelectNone"), XXO("&None"), FN(OnSelectNone),
+            Options{ L"Ctrl+A", XO("Select All") } ),
+         Command( L"SelectNone", XXO("&None"), FN(OnSelectNone),
             TracksExistFlag(),
-            Options{ wxT("Ctrl+Shift+A"), XO("Select None") } ),
+            Options{ L"Ctrl+Shift+A", XO("Select None") } ),
 
          //////////////////////////////////////////////////////////////////////////
 
-         Menu( wxT("Tracks"), XXO("&Tracks"),
-            Command( wxT("SelAllTracks"), XXO("In All &Tracks"),
+         Menu( L"Tracks", XXO("&Tracks"),
+            Command( L"SelAllTracks", XXO("In All &Tracks"),
                FN(OnSelectAllTracks),
                TracksExistFlag(),
-               wxT("Ctrl+Shift+K") )
+               L"Ctrl+Shift+K" )
 
    #ifdef EXPERIMENTAL_SYNC_LOCK
             ,
-            Command( wxT("SelSyncLockTracks"), XXO("In All &Sync-Locked Tracks"),
+            Command( L"SelSyncLockTracks", XXO("In All &Sync-Locked Tracks"),
                FN(OnSelectSyncLockSel),
                EditableTracksSelectedFlag() | IsSyncLockedFlag(),
-               Options{ wxT("Ctrl+Shift+Y"), XO("Select Sync-Locked") } )
+               Options{ L"Ctrl+Shift+Y", XO("Select Sync-Locked") } )
    #endif
          ),
 
          //////////////////////////////////////////////////////////////////////////
 
-         Menu( wxT("Region"), XXO("R&egion"),
+         Menu( L"Region", XXO("R&egion"),
             Section( "",
-               Command( wxT("SetLeftSelection"), XXO("&Left at Playback Position"),
+               Command( L"SetLeftSelection", XXO("&Left at Playback Position"),
                   FN(OnSetLeftSelection), TracksExistFlag(),
-                  Options{ wxT("["), XO("Set Selection Left at Play Position") } ),
-               Command( wxT("SetRightSelection"), XXO("&Right at Playback Position"),
+                  Options{ L"[", XO("Set Selection Left at Play Position") } ),
+               Command( L"SetRightSelection", XXO("&Right at Playback Position"),
                   FN(OnSetRightSelection), TracksExistFlag(),
-                  Options{ wxT("]"), XO("Set Selection Right at Play Position") } ),
-               Command( wxT("SelTrackStartToCursor"), XXO("Track &Start to Cursor"),
+                  Options{ L"]", XO("Set Selection Right at Play Position") } ),
+               Command( L"SelTrackStartToCursor", XXO("Track &Start to Cursor"),
                   FN(OnSelectStartCursor), AlwaysEnabledFlag,
-                  Options{ wxT("Shift+J"), XO("Select Track Start to Cursor") } ),
-               Command( wxT("SelCursorToTrackEnd"), XXO("Cursor to Track &End"),
+                  Options{ L"Shift+J", XO("Select Track Start to Cursor") } ),
+               Command( L"SelCursorToTrackEnd", XXO("Cursor to Track &End"),
                   FN(OnSelectCursorEnd), AlwaysEnabledFlag,
-                  Options{ wxT("Shift+K"), XO("Select Cursor to Track End") } ),
-               Command( wxT("SelTrackStartToEnd"), XXO("Track Start to En&d"),
+                  Options{ L"Shift+K", XO("Select Cursor to Track End") } ),
+               Command( L"SelTrackStartToEnd", XXO("Track Start to En&d"),
                   FN(OnSelectTrackStartToEnd), AlwaysEnabledFlag,
                   Options{}.LongName( XO("Select Track Start to End") ) )
             ),
@@ -1090,10 +1090,10 @@ BaseItemSharedPtr SelectMenu()
                // so arguably using the word 'Selection' to do duty for both saving
                // the region or the cursor is better. But it does not belong in a
                // 'Region' submenu.
-               Command( wxT("SelSave"), XXO("S&tore Selection"), FN(OnSelectionSave),
+               Command( L"SelSave", XXO("S&tore Selection"), FN(OnSelectionSave),
                   WaveTracksSelectedFlag() ),
                // Audacity had 'Retrieve Regio&n' here previously.
-               Command( wxT("SelRestore"), XXO("Retrieve Selectio&n"),
+               Command( L"SelRestore", XXO("Retrieve Selectio&n"),
                   FN(OnSelectionRestore), TracksExistFlag() )
             )
          ),
@@ -1101,14 +1101,14 @@ BaseItemSharedPtr SelectMenu()
          //////////////////////////////////////////////////////////////////////////
 
    #ifdef EXPERIMENTAL_SPECTRAL_EDITING
-         Menu( wxT("Spectral"), XXO("S&pectral"),
-            Command( wxT("ToggleSpectralSelection"),
+         Menu( L"Spectral", XXO("S&pectral"),
+            Command( L"ToggleSpectralSelection",
                XXO("To&ggle Spectral Selection"), FN(OnToggleSpectralSelection),
-               TracksExistFlag(), wxT("Q") ),
-            Command( wxT("NextHigherPeakFrequency"),
+               TracksExistFlag(), L"Q" ),
+            Command( L"NextHigherPeakFrequency",
                XXO("Next &Higher Peak Frequency"), FN(OnNextHigherPeakFrequency),
                TracksExistFlag() ),
-            Command( wxT("NextLowerPeakFrequency"),
+            Command( L"NextLowerPeakFrequency",
                XXO("Next &Lower Peak Frequency"), FN(OnNextLowerPeakFrequency),
                TracksExistFlag() )
          )
@@ -1116,12 +1116,12 @@ BaseItemSharedPtr SelectMenu()
       ),
 
       Section( "",
-         Command( wxT("SelCursorStoredCursor"),
+         Command( L"SelCursorStoredCursor",
             XXO("Cursor to Stored &Cursor Position"),
             FN(OnSelectCursorStoredCursor), TracksExistFlag(),
             Options{}.LongName( XO("Select Cursor to Stored") ) ),
 
-         Command( wxT("StoreCursorPosition"), XXO("Store Cursor Pos&ition"),
+         Command( L"StoreCursorPosition", XXO("Store Cursor Pos&ition"),
             FN(OnCursorPositionStore),
             WaveTracksExistFlag() )
          // Save cursor position is used in some selections.
@@ -1129,16 +1129,16 @@ BaseItemSharedPtr SelectMenu()
       ),
 
       Section( "",
-         Command( wxT("ZeroCross"), XXO("At &Zero Crossings"),
+         Command( L"ZeroCross", XXO("At &Zero Crossings"),
             FN(OnZeroCrossing), EditableTracksSelectedFlag(),
-            Options{ wxT("Z"), XO("Select Zero Crossing") } )
+            Options{ L"Z", XO("Select Zero Crossing") } )
       )
    ) ) };
    return menu;
 }
 
 AttachedItem sAttachment1{
-   wxT(""),
+   L"",
    Shared( SelectMenu() )
 };
 
@@ -1147,45 +1147,45 @@ BaseItemSharedPtr ExtraSelectionMenu()
    using Options = CommandManager::Options;
    static BaseItemSharedPtr menu{
    ( FinderScope{ findCommandHandler },
-   Menu( wxT("Select"), XXO("&Selection"),
-      Command( wxT("SnapToOff"), XXO("Snap-To &Off"), FN(OnSnapToOff),
+   Menu( L"Select", XXO("&Selection"),
+      Command( L"SnapToOff", XXO("Snap-To &Off"), FN(OnSnapToOff),
          AlwaysEnabledFlag ),
-      Command( wxT("SnapToNearest"), XXO("Snap-To &Nearest"),
+      Command( L"SnapToNearest", XXO("Snap-To &Nearest"),
          FN(OnSnapToNearest), AlwaysEnabledFlag ),
-      Command( wxT("SnapToPrior"), XXO("Snap-To &Prior"), FN(OnSnapToPrior),
+      Command( L"SnapToPrior", XXO("Snap-To &Prior"), FN(OnSnapToPrior),
          AlwaysEnabledFlag ),
-      Command( wxT("SelStart"), XXO("Selection to &Start"), FN(OnSelToStart),
-         AlwaysEnabledFlag, wxT("Shift+Home") ),
-      Command( wxT("SelEnd"), XXO("Selection to En&d"), FN(OnSelToEnd),
-         AlwaysEnabledFlag, wxT("Shift+End") ),
-      Command( wxT("SelExtLeft"), XXO("Selection Extend &Left"),
+      Command( L"SelStart", XXO("Selection to &Start"), FN(OnSelToStart),
+         AlwaysEnabledFlag, L"Shift+Home" ),
+      Command( L"SelEnd", XXO("Selection to En&d"), FN(OnSelToEnd),
+         AlwaysEnabledFlag, L"Shift+End" ),
+      Command( L"SelExtLeft", XXO("Selection Extend &Left"),
          FN(OnSelExtendLeft),
          TracksExistFlag() | TrackPanelHasFocus(),
-         Options{ wxT("Shift+Left") }.WantKeyUp().AllowDup() ),
-      Command( wxT("SelExtRight"), XXO("Selection Extend &Right"),
+         Options{ L"Shift+Left" }.WantKeyUp().AllowDup() ),
+      Command( L"SelExtRight", XXO("Selection Extend &Right"),
          FN(OnSelExtendRight),
          TracksExistFlag() | TrackPanelHasFocus(),
-         Options{ wxT("Shift+Right") }.WantKeyUp().AllowDup() ),
-      Command( wxT("SelSetExtLeft"), XXO("Set (or Extend) Le&ft Selection"),
+         Options{ L"Shift+Right" }.WantKeyUp().AllowDup() ),
+      Command( L"SelSetExtLeft", XXO("Set (or Extend) Le&ft Selection"),
          FN(OnSelSetExtendLeft),
          TracksExistFlag() | TrackPanelHasFocus() ),
-      Command( wxT("SelSetExtRight"), XXO("Set (or Extend) Rig&ht Selection"),
+      Command( L"SelSetExtRight", XXO("Set (or Extend) Rig&ht Selection"),
          FN(OnSelSetExtendRight),
          TracksExistFlag() | TrackPanelHasFocus() ),
-      Command( wxT("SelCntrLeft"), XXO("Selection Contract L&eft"),
+      Command( L"SelCntrLeft", XXO("Selection Contract L&eft"),
          FN(OnSelContractLeft),
          TracksExistFlag() | TrackPanelHasFocus(),
-         Options{ wxT("Ctrl+Shift+Right") }.WantKeyUp() ),
-      Command( wxT("SelCntrRight"), XXO("Selection Contract R&ight"),
+         Options{ L"Ctrl+Shift+Right" }.WantKeyUp() ),
+      Command( L"SelCntrRight", XXO("Selection Contract R&ight"),
          FN(OnSelContractRight),
          TracksExistFlag() | TrackPanelHasFocus(),
-         Options{ wxT("Ctrl+Shift+Left") }.WantKeyUp() )
+         Options{ L"Ctrl+Shift+Left" }.WantKeyUp() )
    ) ) };
    return menu;
 }
 
 AttachedItem sAttachment2{
-   wxT("Optional/Extra/Part1"),
+   L"Optional/Extra/Part1",
    Shared( ExtraSelectionMenu() )
 };
 }
@@ -1203,38 +1203,38 @@ BaseItemSharedPtr CursorMenu()
    // than 'Skip'.
    static BaseItemSharedPtr menu{
    ( FinderScope{ findCommandHandler },
-   Menu( wxT("Cursor"), XXO("&Cursor to"),
-      Command( wxT("CursSelStart"), XXO("Selection Star&t"),
+   Menu( L"Cursor", XXO("&Cursor to"),
+      Command( L"CursSelStart", XXO("Selection Star&t"),
          FN(OnCursorSelStart),
          TimeSelectedFlag(),
          Options{}.LongName( XO("Cursor to Selection Start") ) ),
-      Command( wxT("CursSelEnd"), XXO("Selection En&d"),
+      Command( L"CursSelEnd", XXO("Selection En&d"),
          FN(OnCursorSelEnd),
          TimeSelectedFlag(),
          Options{}.LongName( XO("Cursor to Selection End") ) ),
 
-      Command( wxT("CursTrackStart"), XXO("Track &Start"),
+      Command( L"CursTrackStart", XXO("Track &Start"),
          FN(OnCursorTrackStart),
          EditableTracksSelectedFlag(),
-         Options{ wxT("J"), XO("Cursor to Track Start") } ),
-      Command( wxT("CursTrackEnd"), XXO("Track &End"),
+         Options{ L"J", XO("Cursor to Track Start") } ),
+      Command( L"CursTrackEnd", XXO("Track &End"),
          FN(OnCursorTrackEnd),
          EditableTracksSelectedFlag(),
-         Options{ wxT("K"), XO("Cursor to Track End") } ),
+         Options{ L"K", XO("Cursor to Track End") } ),
 
-      Command( wxT("CursProjectStart"), XXO("&Project Start"),
+      Command( L"CursProjectStart", XXO("&Project Start"),
          FN(OnSkipStart),
          CanStopFlags,
-         Options{ wxT("Home"), XO("Cursor to Project Start") } ),
-      Command( wxT("CursProjectEnd"), XXO("Project E&nd"), FN(OnSkipEnd),
+         Options{ L"Home", XO("Cursor to Project Start") } ),
+      Command( L"CursProjectEnd", XXO("Project E&nd"), FN(OnSkipEnd),
          CanStopFlags,
-         Options{ wxT("End"), XO("Cursor to Project End") } )
+         Options{ L"End", XO("Cursor to Project End") } )
    ) ) };
    return menu;
 }
 
 AttachedItem sAttachment0{
-   wxT("Transport/Basic"),
+   L"Transport/Basic",
    Shared( CursorMenu() )
 };
 
@@ -1243,31 +1243,31 @@ BaseItemSharedPtr ExtraCursorMenu()
    using Options = CommandManager::Options;
    static BaseItemSharedPtr menu{
    ( FinderScope{ findCommandHandler },
-   Menu( wxT("Cursor"), XXO("&Cursor"),
-      Command( wxT("CursorLeft"), XXO("Cursor &Left"), FN(OnCursorLeft),
+   Menu( L"Cursor", XXO("&Cursor"),
+      Command( L"CursorLeft", XXO("Cursor &Left"), FN(OnCursorLeft),
          TracksExistFlag() | TrackPanelHasFocus(),
-         Options{ wxT("Left") }.WantKeyUp().AllowDup() ),
-      Command( wxT("CursorRight"), XXO("Cursor &Right"), FN(OnCursorRight),
+         Options{ L"Left" }.WantKeyUp().AllowDup() ),
+      Command( L"CursorRight", XXO("Cursor &Right"), FN(OnCursorRight),
          TracksExistFlag() | TrackPanelHasFocus(),
-         Options{ wxT("Right") }.WantKeyUp().AllowDup() ),
-      Command( wxT("CursorShortJumpLeft"), XXO("Cursor Sh&ort Jump Left"),
+         Options{ L"Right" }.WantKeyUp().AllowDup() ),
+      Command( L"CursorShortJumpLeft", XXO("Cursor Sh&ort Jump Left"),
          FN(OnCursorShortJumpLeft),
-         TracksExistFlag() | TrackPanelHasFocus(), wxT(",") ),
-      Command( wxT("CursorShortJumpRight"), XXO("Cursor Shor&t Jump Right"),
+         TracksExistFlag() | TrackPanelHasFocus(), L"," ),
+      Command( L"CursorShortJumpRight", XXO("Cursor Shor&t Jump Right"),
          FN(OnCursorShortJumpRight),
-         TracksExistFlag() | TrackPanelHasFocus(), wxT(".") ),
-      Command( wxT("CursorLongJumpLeft"), XXO("Cursor Long J&ump Left"),
+         TracksExistFlag() | TrackPanelHasFocus(), L"." ),
+      Command( L"CursorLongJumpLeft", XXO("Cursor Long J&ump Left"),
          FN(OnCursorLongJumpLeft),
-         TracksExistFlag() | TrackPanelHasFocus(), wxT("Shift+,") ),
-      Command( wxT("CursorLongJumpRight"), XXO("Cursor Long Ju&mp Right"),
+         TracksExistFlag() | TrackPanelHasFocus(), L"Shift+," ),
+      Command( L"CursorLongJumpRight", XXO("Cursor Long Ju&mp Right"),
          FN(OnCursorLongJumpRight),
-         TracksExistFlag() | TrackPanelHasFocus(), wxT("Shift+.") )
+         TracksExistFlag() | TrackPanelHasFocus(), L"Shift+." )
    ) ) };
    return menu;
 }
 
 AttachedItem sAttachment4{
-   wxT("Optional/Extra/Part2"),
+   L"Optional/Extra/Part2",
    Shared( ExtraCursorMenu() )
 };
 
@@ -1276,26 +1276,26 @@ BaseItemSharedPtr ExtraSeekMenu()
    using Options = CommandManager::Options;
    static BaseItemSharedPtr menu{
    ( FinderScope{ findCommandHandler },
-   Menu( wxT("Seek"), XXO("See&k"),
-      Command( wxT("SeekLeftShort"), XXO("Short Seek &Left During Playback"),
+   Menu( L"Seek", XXO("See&k"),
+      Command( L"SeekLeftShort", XXO("Short Seek &Left During Playback"),
          FN(OnSeekLeftShort), AudioIOBusyFlag(),
-         Options{ wxT("Left") }.AllowDup() ),
-      Command( wxT("SeekRightShort"),
+         Options{ L"Left" }.AllowDup() ),
+      Command( L"SeekRightShort",
          XXO("Short Seek &Right During Playback"), FN(OnSeekRightShort),
          AudioIOBusyFlag(),
-         Options{ wxT("Right") }.AllowDup() ),
-      Command( wxT("SeekLeftLong"), XXO("Long Seek Le&ft During Playback"),
+         Options{ L"Right" }.AllowDup() ),
+      Command( L"SeekLeftLong", XXO("Long Seek Le&ft During Playback"),
          FN(OnSeekLeftLong), AudioIOBusyFlag(),
-         Options{ wxT("Shift+Left") }.AllowDup() ),
-      Command( wxT("SeekRightLong"), XXO("Long Seek Rig&ht During Playback"),
+         Options{ L"Shift+Left" }.AllowDup() ),
+      Command( L"SeekRightLong", XXO("Long Seek Rig&ht During Playback"),
          FN(OnSeekRightLong), AudioIOBusyFlag(),
-         Options{ wxT("Shift+Right") }.AllowDup() )
+         Options{ L"Shift+Right" }.AllowDup() )
    ) ) };
    return menu;
 }
 
 AttachedItem sAttachment5{
-   wxT("Optional/Extra/Part1"),
+   L"Optional/Extra/Part1",
    Shared( ExtraSeekMenu() )
 };
 

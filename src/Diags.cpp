@@ -44,12 +44,12 @@ static bool bStopWatchStarted = false;
 void diagnostics_do_diag( t_diag_struct * pDiag ){
    wxLog * pLog = wxLog::SetActiveTarget(NULL);
    // this macro is empty if wxWidgets is not compiled in debug mode
-   wxLogDebug( wxT("%s"), pDiag->pMessage );
+   wxLogDebug( L"%s", pDiag->pMessage );
    wxLog::SetActiveTarget(pLog);
 }
 void diagnostics_do_diag_mem( t_diag_struct * pDiag, long amount ){
    wxLog * pLog = wxLog::SetActiveTarget(NULL);
-   wxLogDebug( wxT("%s %l"), pDiag->pMessage, amount );
+   wxLogDebug( L"%s %l", pDiag->pMessage, amount );
    wxLog::SetActiveTarget(pLog);
    pDiag->total += amount;
    pDiag->most_recent = amount;
@@ -89,7 +89,7 @@ void diagnostics_do_perfmon_stop( t_diag_struct ** ppDiag ){
    else if( amount < pDiag->least )
       pDiag->least = amount;
    wxLog * pLog = wxLog::SetActiveTarget(NULL);
-   wxLogDebug( wxT("%s %f seconds"), pDiag->pMessage, ((float)amount)/1000.0f );
+   wxLogDebug( L"%s %f seconds", pDiag->pMessage, ((float)amount)/1000.0f );
    wxLog::SetActiveTarget(pLog);
 }
 

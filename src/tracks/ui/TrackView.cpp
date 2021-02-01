@@ -87,15 +87,15 @@ void TrackView::SetMinimized(bool isMinimized)
 
 void TrackView::WriteXMLAttributes( XMLWriter &xmlFile ) const
 {
-   xmlFile.WriteAttr(wxT("height"), GetActualHeight());
-   xmlFile.WriteAttr(wxT("minimized"), GetMinimized());
+   xmlFile.WriteAttr(L"height", GetActualHeight());
+   xmlFile.WriteAttr(L"minimized", GetMinimized());
 }
 
 bool TrackView::HandleXMLAttribute( const wxChar *attr, const wxChar *value )
 {
    wxString strValue( value );
    long nValue;
-   if (!wxStrcmp(attr, wxT("height")) &&
+   if (!wxStrcmp(attr, L"height") &&
          XMLValueChecker::IsGoodInt(strValue) && strValue.ToLong(&nValue)) {
       // Bug 2803: Extreme values for track height (caused by integer overflow)
       // will stall Audacity as it tries to create an enormous vertical ruler.
@@ -104,7 +104,7 @@ bool TrackView::HandleXMLAttribute( const wxChar *attr, const wxChar *value )
       SetHeight(nValue);
       return true;
    }
-   else if (!wxStrcmp(attr, wxT("minimized")) &&
+   else if (!wxStrcmp(attr, L"minimized") &&
          XMLValueChecker::IsGoodInt(strValue) && strValue.ToLong(&nValue)) {
       SetMinimized(nValue != 0);
       return true;

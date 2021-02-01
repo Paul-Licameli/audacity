@@ -97,19 +97,19 @@ BlockFilePtr PCMAliasBlockFile::Copy(wxFileNameWrapper &&newFileName)
 void PCMAliasBlockFile::SaveXML(XMLWriter &xmlFile)
 // may throw
 {
-   xmlFile.StartTag(wxT("pcmaliasblockfile"));
+   xmlFile.StartTag(L"pcmaliasblockfile");
 
-   xmlFile.WriteAttr(wxT("summaryfile"), mFileName.GetFullName());
-   xmlFile.WriteAttr(wxT("aliasfile"), mAliasedFileName.GetFullPath());
-   xmlFile.WriteAttr(wxT("aliasstart"),
+   xmlFile.WriteAttr(L"summaryfile", mFileName.GetFullName());
+   xmlFile.WriteAttr(L"aliasfile", mAliasedFileName.GetFullPath());
+   xmlFile.WriteAttr(L"aliasstart",
                      mAliasStart.as_long_long());
-   xmlFile.WriteAttr(wxT("aliaslen"), mLen);
-   xmlFile.WriteAttr(wxT("aliaschannel"), mAliasChannel);
-   xmlFile.WriteAttr(wxT("min"), mMin);
-   xmlFile.WriteAttr(wxT("max"), mMax);
-   xmlFile.WriteAttr(wxT("rms"), mRMS);
+   xmlFile.WriteAttr(L"aliaslen", mLen);
+   xmlFile.WriteAttr(L"aliaschannel", mAliasChannel);
+   xmlFile.WriteAttr(L"min", mMin);
+   xmlFile.WriteAttr(L"max", mMax);
+   xmlFile.WriteAttr(L"rms", mRMS);
 
-   xmlFile.EndTag(wxT("pcmaliasblockfile"));
+   xmlFile.EndTag(L"pcmaliasblockfile");
 }
 
 // BuildFromXML methods should always return a BlockFile, not NULL,
@@ -133,7 +133,7 @@ BlockFilePtr PCMAliasBlockFile::BuildFromXML(DirManager &dm, const wxChar **attr
          break;
 
       const wxString strValue = value;
-      if (!wxStricmp(attr, wxT("summaryfile")) &&
+      if (!wxStricmp(attr, L"summaryfile") &&
             // Can't use XMLValueChecker::IsGoodFileName here, but do part of its test.
             XMLValueChecker::IsGoodFileString(strValue) &&
             (strValue.length() + 1 + dm.GetProjectDataDir().length() <= PLATFORM_MAX_PATH))
@@ -142,7 +142,7 @@ BlockFilePtr PCMAliasBlockFile::BuildFromXML(DirManager &dm, const wxChar **attr
             // Make sure summaryFileName is back to uninitialized state so we can detect problem later.
             summaryFileName.Clear();
       }
-      else if (!wxStricmp(attr, wxT("aliasfile")))
+      else if (!wxStricmp(attr, L"aliasfile"))
       {
          if (XMLValueChecker::IsGoodPathName(strValue))
             aliasFileName.Assign(strValue);
@@ -155,7 +155,7 @@ BlockFilePtr PCMAliasBlockFile::BuildFromXML(DirManager &dm, const wxChar **attr
             // but we want to keep the reference to the missing file because it's a good path string.
             aliasFileName.Assign(strValue);
       }
-      else if ( !wxStricmp(attr, wxT("aliasstart")) )
+      else if ( !wxStricmp(attr, L"aliasstart") )
       {
          if (XMLValueChecker::IsGoodInt64(strValue) &&
              strValue.ToLongLong(&nnValue) && (nnValue >= 0))
@@ -163,15 +163,15 @@ BlockFilePtr PCMAliasBlockFile::BuildFromXML(DirManager &dm, const wxChar **attr
       }
       else if (XMLValueChecker::IsGoodInt(strValue) && strValue.ToLong(&nValue))
       {  // integer parameters
-         if (!wxStricmp(attr, wxT("aliaslen")) && (nValue >= 0))
+         if (!wxStricmp(attr, L"aliaslen") && (nValue >= 0))
             aliasLen = nValue;
-         else if (!wxStricmp(attr, wxT("aliaschannel")) && XMLValueChecker::IsValidChannel(aliasChannel))
+         else if (!wxStricmp(attr, L"aliaschannel") && XMLValueChecker::IsValidChannel(aliasChannel))
             aliasChannel = nValue;
-         else if (!wxStricmp(attr, wxT("min")))
+         else if (!wxStricmp(attr, L"min"))
             min = nValue;
-         else if (!wxStricmp(attr, wxT("max")))
+         else if (!wxStricmp(attr, L"max"))
             max = nValue;
-         else if (!wxStricmp(attr, wxT("rms")) && (nValue >= 0))
+         else if (!wxStricmp(attr, L"rms") && (nValue >= 0))
             rms = nValue;
       }
       // mchinen: the min/max can be (are?) doubles as well, so handle those cases.
@@ -181,11 +181,11 @@ BlockFilePtr PCMAliasBlockFile::BuildFromXML(DirManager &dm, const wxChar **attr
       // those above, but yes, we need to handle floats.
       else if (XMLValueChecker::IsGoodString(strValue) && Internat::CompatibleToDouble(strValue, &dblValue))
       {  // double parameters
-         if (!wxStricmp(attr, wxT("min")))
+         if (!wxStricmp(attr, L"min"))
             min = dblValue;
-         else if (!wxStricmp(attr, wxT("max")))
+         else if (!wxStricmp(attr, L"max"))
             max = dblValue;
-         else if (!wxStricmp(attr, wxT("rms")) && (dblValue >= 0.0))
+         else if (!wxStricmp(attr, L"rms") && (dblValue >= 0.0))
             rms = dblValue;
       }
    }

@@ -25,7 +25,7 @@ bool WaveTrackVZoomHandle::IsDragZooming(int zoomStart, int zoomEnd)
 {
    const int DragThreshold = 3;// Anything over 3 pixels is a drag, else a click.
    bool bVZoom;
-   gPrefs->Read(wxT("/GUI/VerticalZooming"), &bVZoom, false);
+   gPrefs->Read(L"/GUI/VerticalZooming", &bVZoom, false);
    return bVZoom && (abs(zoomEnd - zoomStart) > DragThreshold);
 }
 
@@ -66,7 +66,7 @@ HitTestPreview WaveTrackVZoomHandle::HitPreview(const wxMouseState &state)
       ::MakeCursor(wxCURSOR_MAGNIFIER, ZoomOutCursorXpm, 19, 15);
    static  wxCursor arrowCursor{ wxCURSOR_ARROW };
    bool bVZoom;
-   gPrefs->Read(wxT("/GUI/VerticalZooming"), &bVZoom, false);
+   gPrefs->Read(L"/GUI/VerticalZooming", &bVZoom, false);
    bVZoom &= !state.RightIsDown();
    const auto message = bVZoom ? 
       XO("Click to vertically zoom in. Shift-click to zoom out. Drag to specify a zoom region.") :
@@ -126,7 +126,7 @@ UIHandle::Result WaveTrackVZoomHandle::DoRelease(
    }
    else{
       bool bVZoom;
-      gPrefs->Read(wxT("/GUI/VerticalZooming"), &bVZoom, false);
+      gPrefs->Read(L"/GUI/VerticalZooming", &bVZoom, false);
       // Ignore Capture Lost event 
       bVZoom &= event.GetId() != kCaptureLostEventId;
       // shiftDown | rightUp | ZoomKind

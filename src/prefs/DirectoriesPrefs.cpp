@@ -202,14 +202,14 @@ void DirectoriesPrefs::PopulateOrExchange(ShuttleGui &S)
          S.Id(OpenTextID);
          mOpenText = S.TieTextBox(XXO("O&pen:"),
                                       {PreferenceKey(Operation::Open, PathType::User),
-                                       wxT("")},
+                                       L""},
                                       30);
          S.Id(OpenButtonID).AddButton(XXO("&Browse..."));
 
          S.Id(SaveTextID);
          mSaveText = S.TieTextBox(XXO("S&ave:"),
                                       {PreferenceKey(Operation::Save, PathType::User),
-                                       wxT("")},
+                                       L""},
                                       30);
          if( mSaveText )
             mSaveText->SetValidator(FilesystemValidator(XO("Projects cannot be saved to FAT drives.")));
@@ -218,21 +218,21 @@ void DirectoriesPrefs::PopulateOrExchange(ShuttleGui &S)
          S.Id(ImportTextID);
          mImportText = S.TieTextBox(XXO("&Import:"),
                                     {PreferenceKey(Operation::Import, PathType::User),
-                                     wxT("")},
+                                     L""},
                                     30);
          S.Id(ImportButtonID).AddButton(XXO("Br&owse..."));
 
          S.Id(ExportTextID);
          mExportText = S.TieTextBox(XXO("&Export:"),
                                     {PreferenceKey(Operation::Export, PathType::User),
-                                     wxT("")},
+                                     L""},
                                     30);
          S.Id(ExportButtonID).AddButton(XXO("Bro&wse..."));
 
          S.Id(MacrosTextID);
          mMacrosText = S.TieTextBox(XXO("&Macro output:"),
                                     {PreferenceKey(Operation::MacrosOut, PathType::User),
-                                     wxT("")},
+                                     L""},
                                     30);
          S.Id(MacrosButtonID).AddButton(XXO("Bro&wse..."));
 
@@ -251,7 +251,7 @@ void DirectoriesPrefs::PopulateOrExchange(ShuttleGui &S)
          S.Id(TempTextID);
          mTempText = S.TieTextBox(XXO("&Location:"),
                                   {PreferenceKey(Operation::Temp, PathType::_None),
-                                   wxT("")},
+                                   L""},
                                   30);
          if( mTempText )
             mTempText->SetValidator(FilesystemValidator(XO("Temporary files directory cannot be on a FAT drive.")));
@@ -301,20 +301,20 @@ void DirectoriesPrefs::OnTempBrowse(wxCommandEvent &evt)
       // already)
       wxString newDirName;
 #if defined(__WXMAC__)
-      newDirName = wxT("SessionData");
+      newDirName = L"SessionData";
 #elif defined(__WXMSW__) 
       // Clearing Bug 1271 residual issue.  Let's NOT have temp in the name.
-      newDirName = wxT("SessionData");
+      newDirName = L"SessionData";
 #else
-      newDirName = wxT(".audacity_temp");
+      newDirName = L".audacity_temp";
 #endif
       auto dirsInPath = tmpDirPath.GetDirs();
 
       // If the default temp dir or user's pref dir don't end in '/' they cause
       // wxFileName's == operator to construct a wxFileName representing a file
       // (that doesn't exist) -- hence the constructor calls
-      if (tmpDirPath != wxFileName(DefaultTempDir(), wxT("")) &&
-            tmpDirPath != wxFileName(mTempText->GetValue(), wxT("")) &&
+      if (tmpDirPath != wxFileName(DefaultTempDir(), L"") &&
+            tmpDirPath != wxFileName(mTempText->GetValue(), L"") &&
             (dirsInPath.size() == 0 ||
              dirsInPath[dirsInPath.size()-1] != newDirName))
       {
@@ -423,7 +423,7 @@ bool DirectoriesPrefs::Validate()
    else {
       /* If the directory already exists, make sure it is writable */
       wxLogNull logNo;
-      Temp.AppendDir(wxT("canicreate"));
+      Temp.AppendDir(L"canicreate");
       path =  Temp.GetPath();
       if (!Temp.Mkdir(0755)) {
          AudacityMessageBox(

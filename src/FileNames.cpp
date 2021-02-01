@@ -50,21 +50,21 @@ used throughout Audacity into this one place.
 static wxString gDataDir;
 
 const FileNames::FileType
-     FileNames::AllFiles{ XO("All files"), { wxT("") } }
+     FileNames::AllFiles{ XO("All files"), { L"" } }
      /* i18n-hint an Audacity project is the state of the program, stored as
      files that can be reopened to resume the session later */
-   , FileNames::AudacityProjects{ XO("AUP3 project files"), { wxT("aup3") }, true }
+   , FileNames::AudacityProjects{ XO("AUP3 project files"), { L"aup3" }, true }
    , FileNames::DynamicLibraries{
 #if defined(__WXMSW__)
-      XO("Dynamically Linked Libraries"), { wxT("dll") }, true
+      XO("Dynamically Linked Libraries"), { L"dll" }, true
 #elif defined(__WXMAC__)
-      XO("Dynamic Libraries"), { wxT("dylib") }, true
+      XO("Dynamic Libraries"), { L"dylib" }, true
 #else
-      XO("Dynamically Linked Libraries"), { wxT("so*") }, true
+      XO("Dynamically Linked Libraries"), { L"so*" }, true
 #endif
      }
-   , FileNames::TextFiles{ XO("Text files"), { wxT("txt") }, true }
-   , FileNames::XMLFiles{ XO("XML files"), { wxT("xml"), wxT("XML") }, true }
+   , FileNames::TextFiles{ XO("Text files"), { L"txt" }, true }
+   , FileNames::XMLFiles{ XO("XML files"), { L"xml", L"XML" }, true }
 ;
 
 wxString FileNames::FormatWildcard( const FileTypes &fileTypes )
@@ -204,7 +204,7 @@ void FileNames::MakeNameUnique(FilePaths &otherNames,
       int i=2;
       wxString orig = newName.GetName();
       do {
-         newName.SetName(wxString::Format(wxT("%s-%d"), orig, i));
+         newName.SetName(wxString::Format(L"%s-%d", orig, i));
          i++;
       } while (otherNames.Index(newName.GetFullName(), false) >= 0);
    }
@@ -245,7 +245,7 @@ FilePath FileNames::DataDir()
       // just remove the MacOSX part.
       exePath.RemoveLastDir();
 #endif
-      wxFileName portablePrefsPath(exePath.GetPath(), wxT("Portable Settings"));
+      wxFileName portablePrefsPath(exePath.GetPath(), L"Portable Settings");
 
       if (::wxDirExists(portablePrefsPath.GetFullPath()))
       {
@@ -256,7 +256,7 @@ FilePath FileNames::DataDir()
          // Use OS-provided user data dir folder
          wxString dataDir( LowerCaseAppNameInPath( wxStandardPaths::Get().GetUserDataDir() ));
 #if defined( __WXGTK__ )
-         dataDir = dataDir + wxT("-data");
+         dataDir = dataDir + L"-data";
 #endif
          gDataDir = FileNames::MkDir(dataDir);
       }
@@ -280,49 +280,49 @@ FilePath FileNames::HtmlHelpDir()
       exePath.RemoveLastDir();
 
    //for mac this puts us within the .app: Audacity.app/Contents/SharedSupport/
-   return wxFileName( exePath.GetPath()+wxT("/help/manual"), wxEmptyString ).GetFullPath();
+   return wxFileName( exePath.GetPath()+L"/help/manual", wxEmptyString ).GetFullPath();
 #else
    //linux goes into /*prefix*/share/audacity/
    //windows (probably) goes into the dir containing the .exe
    wxString dataDir = FileNames::LowerCaseAppNameInPath( wxStandardPaths::Get().GetDataDir());
-   return wxFileName( dataDir+wxT("/help/manual"), wxEmptyString ).GetFullPath();
+   return wxFileName( dataDir+L"/help/manual", wxEmptyString ).GetFullPath();
 #endif
 }
 
 FilePath FileNames::LegacyChainDir()
 {
    // Don't force creation of it
-   return wxFileName{ DataDir(), wxT("Chains") }.GetFullPath();
+   return wxFileName{ DataDir(), L"Chains" }.GetFullPath();
 }
 
 FilePath FileNames::MacroDir()
 {
-   return FileNames::MkDir( wxFileName( DataDir(), wxT("Macros") ).GetFullPath() );
+   return FileNames::MkDir( wxFileName( DataDir(), L"Macros" ).GetFullPath() );
 }
 
 FilePath FileNames::NRPDir()
 {
-   return FileNames::MkDir( wxFileName( DataDir(), wxT("NRP") ).GetFullPath() );
+   return FileNames::MkDir( wxFileName( DataDir(), L"NRP" ).GetFullPath() );
 }
 
 FilePath FileNames::NRPFile()
 {
-   return wxFileName( NRPDir(), wxT("noisegate.nrp") ).GetFullPath();
+   return wxFileName( NRPDir(), L"noisegate.nrp" ).GetFullPath();
 }
 
 FilePath FileNames::PlugInDir()
 {
-   return FileNames::MkDir( wxFileName( DataDir(), wxT("Plug-Ins") ).GetFullPath() );
+   return FileNames::MkDir( wxFileName( DataDir(), L"Plug-Ins" ).GetFullPath() );
 }
 
 FilePath FileNames::PluginRegistry()
 {
-   return wxFileName( DataDir(), wxT("pluginregistry.cfg") ).GetFullPath();
+   return wxFileName( DataDir(), L"pluginregistry.cfg" ).GetFullPath();
 }
 
 FilePath FileNames::PluginSettings()
 {
-   return wxFileName( DataDir(), wxT("pluginsettings.cfg") ).GetFullPath();
+   return wxFileName( DataDir(), L"pluginsettings.cfg" ).GetFullPath();
 }
 
 FilePath FileNames::BaseDir()
@@ -353,49 +353,49 @@ FilePath FileNames::ModulesDir()
 {
    wxFileName modulesDir(BaseDir(), wxEmptyString);
 
-   modulesDir.AppendDir(wxT("modules"));
+   modulesDir.AppendDir(L"modules");
 
    return modulesDir.GetFullPath();
 }
 
 FilePath FileNames::ThemeDir()
 {
-   return FileNames::MkDir( wxFileName( DataDir(), wxT("Theme") ).GetFullPath() );
+   return FileNames::MkDir( wxFileName( DataDir(), L"Theme" ).GetFullPath() );
 }
 
 FilePath FileNames::ThemeComponentsDir()
 {
-   return FileNames::MkDir( wxFileName( ThemeDir(), wxT("Components") ).GetFullPath() );
+   return FileNames::MkDir( wxFileName( ThemeDir(), L"Components" ).GetFullPath() );
 }
 
 FilePath FileNames::ThemeCachePng()
 {
-   return wxFileName( ThemeDir(), wxT("ImageCache.png") ).GetFullPath();
+   return wxFileName( ThemeDir(), L"ImageCache.png" ).GetFullPath();
 }
 
 FilePath FileNames::ThemeCacheHtm()
 {
-   return wxFileName( ThemeDir(), wxT("ImageCache.htm") ).GetFullPath();
+   return wxFileName( ThemeDir(), L"ImageCache.htm" ).GetFullPath();
 }
 
 FilePath FileNames::ThemeImageDefsAsCee()
 {
-   return wxFileName( ThemeDir(), wxT("ThemeImageDefsAsCee.h") ).GetFullPath();
+   return wxFileName( ThemeDir(), L"ThemeImageDefsAsCee.h" ).GetFullPath();
 }
 
 FilePath FileNames::ThemeCacheAsCee( )
 {
 // DA: Theme sourcery file name.
 #ifndef EXPERIMENTAL_DA
-   return wxFileName( ThemeDir(), wxT("ThemeAsCeeCode.h") ).GetFullPath();
+   return wxFileName( ThemeDir(), L"ThemeAsCeeCode.h" ).GetFullPath();
 #else
-   return wxFileName( ThemeDir(), wxT("DarkThemeAsCeeCode.h") ).GetFullPath();
+   return wxFileName( ThemeDir(), L"DarkThemeAsCeeCode.h" ).GetFullPath();
 #endif
 }
 
 FilePath FileNames::ThemeComponent(const wxString &Str)
 {
-   return wxFileName( ThemeComponentsDir(), Str, wxT("png") ).GetFullPath();
+   return wxFileName( ThemeComponentsDir(), Str, L"png" ).GetFullPath();
 }
 
 //
@@ -505,19 +505,19 @@ wxString FileNames::PreferenceKey(FileNames::Operation op, FileNames::PathType t
    wxString key;
    switch (op) {
       case FileNames::Operation::Temp:
-         key = wxT("/Directories/TempDir"); break;
+         key = L"/Directories/TempDir"; break;
       case FileNames::Operation::Presets:
-         key = wxT("/Presets/Path"); break;
+         key = L"/Presets/Path"; break;
       case FileNames::Operation::Open:
-         key = wxT("/Directories/Open"); break;
+         key = L"/Directories/Open"; break;
       case FileNames::Operation::Save:
-         key = wxT("/Directories/Save"); break;
+         key = L"/Directories/Save"; break;
       case FileNames::Operation::Import:
-         key = wxT("/Directories/Import"); break;
+         key = L"/Directories/Import"; break;
       case FileNames::Operation::Export:
-         key = wxT("/Directories/Export"); break;
+         key = L"/Directories/Export"; break;
       case FileNames::Operation::MacrosOut:
-         key = wxT("/Directories/MacrosOut"); break;
+         key = L"/Directories/MacrosOut"; break;
       case FileNames::Operation::_None:
       default:
          break;
@@ -544,14 +544,14 @@ FilePath FileNames::FindDefaultPath(Operation op)
       return wxString{};
 
    // If the user specified a default path, then use that
-   FilePath path = gPrefs->Read(key, wxT(""));
+   FilePath path = gPrefs->Read(key, L"");
    if (!path.empty()) {
       return path;
    }
 
    // Maybe the last used path is available
    key = PreferenceKey(op, PathType::LastUsed);
-   path = gPrefs->Read(key, wxT(""));
+   path = gPrefs->Read(key, L"");
    if (!path.empty()) {
       return path;
    }
@@ -590,7 +590,7 @@ FileNames::SelectFile(Operation op,
    return WithDefaultPath(op, default_path, [&](const FilePath &path) {
       wxString filter;
       if ( !default_extension.empty() )
-         filter = wxT("*.") + default_extension;
+         filter = L"*." + default_extension;
       return FileSelector(
             message.Translation(), path, default_filename, filter,
             FormatWildcard( fileTypes ),
@@ -602,9 +602,9 @@ bool FileNames::IsMidi(const FilePath &fName)
 {
    const auto extension = fName.AfterLast(L'.');
    return
-      extension.IsSameAs(wxT("gro"), false) ||
-      extension.IsSameAs(wxT("midi"), false) ||
-      extension.IsSameAs(wxT("mid"), false);
+      extension.IsSameAs(L"gro", false) ||
+      extension.IsSameAs(L"midi", false) ||
+      extension.IsSameAs(L"mid", false);
 }
 
 static FilePaths sAudacityPathList;
@@ -730,16 +730,16 @@ wxString FileNames::CreateUniqueName(const wxString &prefix,
 {
    static int count = 0;
 
-   return wxString::Format(wxT("%s %s N-%i.%s"),
+   return wxString::Format(L"%s %s N-%i.%s",
                            prefix,
-                           wxDateTime::Now().Format(wxT("%Y-%m-%d %H-%M-%S")),
+                           wxDateTime::Now().Format(L"%Y-%m-%d %H-%M-%S"),
                            ++count,
                            suffix);
 }
 
 wxString FileNames::UnsavedProjectExtension()
 {
-   return wxT("aup3unsaved");
+   return L"aup3unsaved";
 }
 
 // How to detect whether the file system of a path is FAT
@@ -772,7 +772,7 @@ bool FileNames::IsOnFATFileSystem(const FilePath &path)
    wxFileNameWrapper fileName{path};
    if (!fileName.HasVolume())
       return false;
-   auto volume = AbbreviatePath(fileName) + wxT("\\");
+   auto volume = AbbreviatePath(fileName) + L"\\";
    DWORD volumeFlags;
    wxChar volumeType[64];
    if (!::GetVolumeInformationW(
@@ -782,7 +782,7 @@ bool FileNames::IsOnFATFileSystem(const FilePath &path)
       WXSIZEOF(volumeType)))
       return false;
    wxString type(volumeType);
-   if (type == wxT("FAT") || type == wxT("FAT32"))
+   if (type == L"FAT" || type == L"FAT32")
       return true;
    return false;
 }
@@ -799,7 +799,7 @@ wxString FileNames::AbbreviatePath( const wxFileName &fileName )
 #ifdef __WXMSW__
 
    // Drive letter plus colon
-   target = fileName.GetVolume() + wxT(":");
+   target = fileName.GetVolume() + L":";
 
 #else
 

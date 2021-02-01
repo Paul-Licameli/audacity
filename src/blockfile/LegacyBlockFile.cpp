@@ -75,13 +75,13 @@ void ComputeLegacySummaryInfo(const wxFileName &fileName,
    {
       Optional<wxLogNull> silence{};
       const wxString fullPath{ fileName.GetFullPath() };
-      wxFFile summaryFile(fullPath, wxT("rb"));
+      wxFFile summaryFile(fullPath, L"rb");
       if (Silent)
          silence.emplace();
 
       // FIXME: TRAP_ERR no report to user of absent summary files.
       if (!summaryFile.IsOpened()) {
-         wxLogWarning(wxT("Unable to access summary file %s; substituting silence for remainder of session"),
+         wxLogWarning(L"Unable to access summary file %s; substituting silence for remainder of session",
             fullPath);
 
          read = info->frames64K * info->bytesPerFrame;
@@ -157,7 +157,7 @@ LegacyBlockFile::~LegacyBlockFile()
 bool LegacyBlockFile::ReadSummary(ArrayOf<char> &data)
 {
    data.reinit( mSummaryInfo.totalSummaryBytes );
-   wxFFile summaryFile(mFileName.GetFullPath(), wxT("rb"));
+   wxFFile summaryFile(mFileName.GetFullPath(), L"rb");
    size_t read;
    {
       Optional<wxLogNull> silence{};
@@ -205,15 +205,15 @@ size_t LegacyBlockFile::ReadData(samplePtr data, sampleFormat format,
 void LegacyBlockFile::SaveXML(XMLWriter &xmlFile)
 // may throw
 {
-   xmlFile.StartTag(wxT("legacyblockfile"));
+   xmlFile.StartTag(L"legacyblockfile");
 
-   xmlFile.WriteAttr(wxT("name"), mFileName.GetFullName());
-   xmlFile.WriteAttr(wxT("len"), mLen);
+   xmlFile.WriteAttr(L"name", mFileName.GetFullName());
+   xmlFile.WriteAttr(L"len", mLen);
    if (mSummaryInfo.fields < 3)
-      xmlFile.WriteAttr(wxT("norms"), 1);
-   xmlFile.WriteAttr(wxT("summarylen"), mSummaryInfo.totalSummaryBytes);
+      xmlFile.WriteAttr(L"norms", 1);
+   xmlFile.WriteAttr(L"summarylen", mSummaryInfo.totalSummaryBytes);
 
-   xmlFile.EndTag(wxT("legacyblockfile"));
+   xmlFile.EndTag(L"legacyblockfile");
 }
 
 // BuildFromXML methods should always return a BlockFile, not NULL,
@@ -236,20 +236,20 @@ BlockFilePtr LegacyBlockFile::BuildFromXML(const FilePath &projDir, const wxChar
          break;
 
       const wxString strValue = value;
-      if (!wxStricmp(attr, wxT("name")) && XMLValueChecker::IsGoodFileName(strValue, projDir))
+      if (!wxStricmp(attr, L"name") && XMLValueChecker::IsGoodFileName(strValue, projDir))
          //v Should this be
          //    dm.AssignFile(fileName, strValue, false);
          // as in PCMAliasBlockFile::BuildFromXML? Test with an old project.
          fileName.Assign(projDir, strValue);
       else if (XMLValueChecker::IsGoodInt(strValue) && strValue.ToLong(&nValue))
       {  // integer parameters
-         if (!wxStrcmp(attr, wxT("len")) && (nValue >= 0))
+         if (!wxStrcmp(attr, L"len") && (nValue >= 0))
             len = nValue;
-         else if (!wxStrcmp(attr, wxT("norms")))
+         else if (!wxStrcmp(attr, L"norms"))
             noRMS = (nValue != 0);
-         else if (!wxStrcmp(attr, wxT("format")) && XMLValueChecker::IsValidSampleFormat(nValue))
+         else if (!wxStrcmp(attr, L"format") && XMLValueChecker::IsValidSampleFormat(nValue))
             format = (sampleFormat)nValue;
-         else if (!wxStrcmp(attr, wxT("summarylen")) && (nValue > 0))
+         else if (!wxStrcmp(attr, L"summarylen") && (nValue > 0))
             // Note attribute "summarylen" was written as int, no need for 64 bits
             summaryLen = nValue;
       }

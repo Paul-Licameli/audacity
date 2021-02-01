@@ -736,7 +736,7 @@ void ToolManager::ReadConfig()
 #endif
 
    // Change to the bar root
-   gPrefs->SetPath( wxT("/GUI/ToolBars") );
+   gPrefs->SetPath( L"/GUI/ToolBars" );
 
    ToolBarConfiguration::Legacy topLegacy, botLegacy;
 
@@ -786,9 +786,9 @@ void ToolManager::ReadConfig()
       // Read in all the settings
 
       if (useLegacyDock)
-         gPrefs->Read( wxT("Dock"), &dock, -1);       // legacy version of DockV2
+         gPrefs->Read( L"Dock", &dock, -1);       // legacy version of DockV2
       else
-         gPrefs->Read( wxT("DockV2"), &dock, -1);
+         gPrefs->Read( L"DockV2", &dock, -1);
 
       const bool found = (dock != -1);
       if (found)
@@ -811,10 +811,10 @@ void ToolManager::ReadConfig()
          bar, show[ ndx ], bShownByDefault)
       && found;
 
-      gPrefs->Read( wxT("X"), &x, -1 );
-      gPrefs->Read( wxT("Y"), &y, -1 );
-      gPrefs->Read( wxT("W"), &width[ ndx ], -1 );
-      gPrefs->Read( wxT("H"), &height[ ndx ], -1 );
+      gPrefs->Read( L"X", &x, -1 );
+      gPrefs->Read( L"Y", &y, -1 );
+      gPrefs->Read( L"W", &width[ ndx ], -1 );
+      gPrefs->Read( L"H", &height[ ndx ], -1 );
 
       bar->SetVisible( show[ ndx ] );
 
@@ -859,7 +859,7 @@ void ToolManager::ReadConfig()
          // It is needed so that the meterToolbar size gets preserved.
          // Longer-term we should find a better fix for this.
          wxString thisBar = bar->GetSection();
-         if( thisBar != wxT("Edit"))
+         if( thisBar != L"Edit")
          {
             // Set the width
             if( width[ ndx ] >= bar->GetSize().x )
@@ -912,10 +912,10 @@ void ToolManager::ReadConfig()
       }
 
       // Change back to the bar root
-      //gPrefs->SetPath( wxT("..") );  <-- Causes a warning...
+      //gPrefs->SetPath( L".." );  <-- Causes a warning...
       // May or may not have gone into a subdirectory,
       // so use an absolute path.
-      gPrefs->SetPath( wxT("/GUI/ToolBars") );
+      gPrefs->SetPath( L"/GUI/ToolBars" );
    }
 
    mTopDock->GetConfiguration().PostRead(topLegacy);
@@ -974,7 +974,7 @@ void ToolManager::WriteConfig()
    int ndx;
 
    // Change to the bar root
-   gPrefs->SetPath( wxT("/GUI/ToolBars") );
+   gPrefs->SetPath( L"/GUI/ToolBars" );
 
    // Save state of each bar
    for( ndx = 0; ndx < ToolBarCount; ndx++ )
@@ -993,9 +993,9 @@ void ToolManager::WriteConfig()
       // the toolbar layout is not changed when opening a version before 2.2.2, and in particular
       // its value is compatible with versions 2.1.3 to 2.2.1 which have this bug.
       ToolDock* dock = bar->GetDock();       // dock for both shown and hidden toolbars
-      gPrefs->Write( wxT("DockV2"), static_cast<int>(dock == mTopDock ? TopDockID : dock == mBotDock ? BotDockID : NoDockID ));
+      gPrefs->Write( L"DockV2", static_cast<int>(dock == mTopDock ? TopDockID : dock == mBotDock ? BotDockID : NoDockID ));
 
-      gPrefs->Write( wxT("Dock"), static_cast<int>( to ? TopDockID : bo ? BotDockID : NoDockID));
+      gPrefs->Write( L"Dock", static_cast<int>( to ? TopDockID : bo ? BotDockID : NoDockID));
 
       dock = to ? mTopDock : bo ? mBotDock : nullptr;    // dock for shown toolbars
       ToolBarConfiguration::Write
@@ -1008,13 +1008,13 @@ void ToolManager::WriteConfig()
          pos = bar->GetParent()->GetPosition();
          sz = bar->GetParent()->GetSize();
       }
-      gPrefs->Write( wxT("X"), pos.x );
-      gPrefs->Write( wxT("Y"), pos.y );
-      gPrefs->Write( wxT("W"), sz.x );
-      gPrefs->Write( wxT("H"), sz.y );
+      gPrefs->Write( L"X", pos.x );
+      gPrefs->Write( L"Y", pos.y );
+      gPrefs->Write( L"W", sz.x );
+      gPrefs->Write( L"H", sz.y );
 
       // Change back to the bar root
-      gPrefs->SetPath( wxT("..") );
+      gPrefs->SetPath( L".." );
    }
 
    // Restore original config path
@@ -1580,7 +1580,7 @@ AttachedToolBarMenuItem::AttachedToolBarMenuItem(
    std::vector< ToolBarID > excludeIDs )
    : mId{ id }
    , mAttachedItem{
-      Registry::Placement{ wxT("View/Other/Toolbars/Toolbars/Other"), hint },
+      Registry::Placement{ L"View/Other/Toolbars/Toolbars/Other", hint },
       (  MenuTable::FinderScope(
             [this](AudacityProject &) -> CommandHandlerObject&
                { return *this; } ),

@@ -145,7 +145,7 @@ void ShuttleGuiBase::Init(bool vertical, wxSize minSize)
    mpWind = NULL;
    mpSubSizer = NULL;
 
-   mRadioSettingName = wxT("");
+   mRadioSettingName = L"";
    mRadioCount = -1;
 
    miBorder = 5;
@@ -306,7 +306,7 @@ wxCheckBox * ShuttleGuiBase::AddCheckBox( const TranslatableString &Prompt, bool
    if( mpbOptionalFlag )
    {
       AddPrompt( {} );
-      //realPrompt = wxT("");
+      //realPrompt = L"";
    }
 
    UseUpId();
@@ -324,7 +324,7 @@ wxCheckBox * ShuttleGuiBase::AddCheckBox( const TranslatableString &Prompt, bool
       // so that name can be set on a standard control
       pCheckBox->SetAccessible(safenew WindowAccessible(pCheckBox));
 #endif
-      pCheckBox->SetName(wxT("\a"));      // non-empty string which screen readers do not read
+      pCheckBox->SetName(L"\a");      // non-empty string which screen readers do not read
    }
    UpdateSizers();
    return pCheckBox;
@@ -342,7 +342,7 @@ wxCheckBox * ShuttleGuiBase::AddCheckBoxOnRight( const TranslatableString &Promp
       return wxDynamicCast(wxWindow::FindWindowById( miId, mpDlg), wxCheckBox);
    wxCheckBox * pCheckBox;
    miProp=0;
-   mpWind = pCheckBox = safenew wxCheckBox(GetParent(), miId, wxT(""), wxDefaultPosition, wxDefaultSize,
+   mpWind = pCheckBox = safenew wxCheckBox(GetParent(), miId, L"", wxDefaultPosition, wxDefaultSize,
       GetStyle( 0 ));
    pCheckBox->SetValue(Selected);
    pCheckBox->SetName(Prompt.Stripped().Translation());
@@ -642,7 +642,7 @@ wxTextCtrl * ShuttleGuiBase::AddTextBox(
    if( nChars > 0 )
    {
       int width;
-      mpDlg->GetTextExtent( wxT("9"), &width, nullptr );
+      mpDlg->GetTextExtent( L"9", &width, nullptr );
       Size.SetWidth( nChars * width );
    }
    miProp=0;
@@ -899,7 +899,7 @@ wxStaticBox * ShuttleGuiBase::StartStatic(const TranslatableString &Str, int iPr
       // so that name can be set on a standard control
       pBox->SetAccessible(safenew WindowAccessible(pBox));
 #endif
-      pBox->SetName(wxT("\a"));      // non-empty string which screen readers do not read
+      pBox->SetName(L"\a");      // non-empty string which screen readers do not read
    }
    else
       pBox->SetName( wxStripMenuCodes( translated ) );
@@ -940,8 +940,8 @@ wxScrolledWindow * ShuttleGuiBase::StartScroller(int iStyle)
    pScroller->SetScrollRate( 20,20 );
 
    // This fools NVDA into not saying "Panel" when the dialog gets focus
-   pScroller->SetName(wxT("\a"));
-   pScroller->SetLabel(wxT("\a"));
+   pScroller->SetName(L"\a");
+   pScroller->SetLabel(L"\a");
 
    SetProportions( 1 );
    if( iStyle==2 )
@@ -1235,7 +1235,7 @@ wxCheckBox * ShuttleGuiBase::DoTieCheckBox(const TranslatableString &Prompt, Wra
    HandleOptionality( Prompt );
    // The Add function does a UseUpId(), so don't do it here in that case.
    if( mShuttleMode == eIsCreating )
-      return AddCheckBox( Prompt, WrappedRef.ReadAsString() == wxT("true"));
+      return AddCheckBox( Prompt, WrappedRef.ReadAsString() == L"true");
 
    UseUpId();
 
@@ -1271,7 +1271,7 @@ wxCheckBox * ShuttleGuiBase::DoTieCheckBoxOnRight(const TranslatableString &Prom
    HandleOptionality( Prompt );
    // The Add function does a UseUpId(), so don't do it here in that case.
    if( mShuttleMode == eIsCreating )
-      return AddCheckBoxOnRight( Prompt, WrappedRef.ReadAsString() == wxT("true"));
+      return AddCheckBoxOnRight( Prompt, WrappedRef.ReadAsString() == L"true");
 
    UseUpId();
 
@@ -1591,7 +1591,7 @@ void ShuttleGuiBase::EndRadioButtonGroup()
    if( mShuttleMode == eIsGettingFromDialog )
       DoDataShuttle( mRadioSettingName, *mRadioValue );
    mRadioValue.reset();// Clear it out...
-   mRadioSettingName = wxT("");
+   mRadioSettingName = L"";
    mRadioCount = -1; // So we detect a problem.
    mRadioSymbols = {};
 }
@@ -1612,7 +1612,7 @@ wxCheckBox * ShuttleGuiBase::TieCheckBoxOnRight(const TranslatableString &Prompt
    // Only does anything different if it's creating.
    WrappedType WrappedRef( Var );
    if( mShuttleMode == eIsCreating )
-      return AddCheckBoxOnRight( Prompt, WrappedRef.ReadAsString() == wxT("true") );
+      return AddCheckBoxOnRight( Prompt, WrappedRef.ReadAsString() == L"true" );
    return DoTieCheckBox( Prompt, WrappedRef );
 }
 
@@ -1740,7 +1740,7 @@ wxString ShuttleGuiBase::TranslateFromIndex( const int nIn, const wxArrayStringE
    {
       return Choices[n];
    }
-   return wxT("");
+   return L"";
 }
 
 //-----------------------------------------------------------------------//
@@ -2474,7 +2474,7 @@ void ShuttleGui::SetMinSize( wxWindow *window, const std::vector<int> & items )
 
    for( size_t i = 0; i < items.size(); i++ )
    {
-      strs.Add( wxString::Format( wxT("%d"), items[i] ) );
+      strs.Add( wxString::Format( L"%d", items[i] ) );
    }
 
    SetMinSize( window, strs );

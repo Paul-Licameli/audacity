@@ -44,7 +44,7 @@ namespace
    {
       const int DragThreshold = 3;// Anything over 3 pixels is a drag, else a click.
       bool bVZoom;
-      gPrefs->Read(wxT("/GUI/VerticalZooming"), &bVZoom, false);
+      gPrefs->Read(L"/GUI/VerticalZooming", &bVZoom, false);
       return bVZoom && (abs(zoomEnd - zoomStart) > DragThreshold);
    }
 
@@ -74,7 +74,7 @@ HitTestPreview NoteTrackVZoomHandle::HitPreview(const wxMouseState &state)
    static  wxCursor arrowCursor{ wxCURSOR_ARROW };
 
    bool bVZoom;
-   gPrefs->Read(wxT("/GUI/VerticalZooming"), &bVZoom, false);
+   gPrefs->Read(L"/GUI/VerticalZooming", &bVZoom, false);
    bVZoom &= !state.RightIsDown();
    const auto message = bVZoom ? 
       XO("Click to vertically zoom in. Shift-click to zoom out. Drag to specify a zoom region.") :
@@ -256,7 +256,7 @@ BEGIN_POPUP_MENU(NoteTrackVRulerMenuTable)
 
    // Accelerators only if zooming enabled.
    bool bVZoom;
-   gPrefs->Read(wxT("/GUI/VerticalZooming"), &bVZoom, false);
+   gPrefs->Read(L"/GUI/VerticalZooming", &bVZoom, false);
 
    BeginSection( "Zoom" );
       BeginSection( "Basic" );
@@ -320,7 +320,7 @@ UIHandle::Result NoteTrackVZoomHandle::Release
    }
 
    bool bVZoom;
-   gPrefs->Read(wxT("/GUI/VerticalZooming"), &bVZoom, false);
+   gPrefs->Read(L"/GUI/VerticalZooming", &bVZoom, false);
    bVZoom &= event.GetId() != kCaptureLostEventId;
    if( !bVZoom )
       return RefreshAll;

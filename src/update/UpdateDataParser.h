@@ -45,14 +45,14 @@ private:
     XmlParsedTags mXmlParsingState{ XmlParsedTags::kNotUsedTag };
 
     std::map<XmlParsedTags, wxString> mXmlTagNames{
-        { XmlParsedTags::kUpdateTag, wxT("Updates") },
-        { XmlParsedTags::kDescriptionTag, wxT("Description") },
-        { XmlParsedTags::kOsTag, wxT("OS") },
-        { XmlParsedTags::kWindowsTag, wxT("Windows") },
-        { XmlParsedTags::kMacosTag, wxT("Macos") },
-        { XmlParsedTags::kLinuxTag, wxT("Linux") },
-        { XmlParsedTags::kVersionTag, wxT("Version") },
-        { XmlParsedTags::kLinkTag, wxT("Link") },
+        { XmlParsedTags::kUpdateTag, L"Updates" },
+        { XmlParsedTags::kDescriptionTag, L"Description" },
+        { XmlParsedTags::kOsTag, L"OS" },
+        { XmlParsedTags::kWindowsTag, L"Windows" },
+        { XmlParsedTags::kMacosTag, L"Macos" },
+        { XmlParsedTags::kLinuxTag, L"Linux" },
+        { XmlParsedTags::kVersionTag, L"Version" },
+        { XmlParsedTags::kLinkTag, L"Link" },
     };
 
     bool HandleXMLTag(const wxChar* tag, const wxChar** attrs) override;

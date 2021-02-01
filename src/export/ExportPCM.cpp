@@ -58,9 +58,9 @@ struct
 static const kFormats[] =
 {
 #if defined(__WXMAC__)
-   {SF_FORMAT_AIFF | SF_FORMAT_PCM_16, wxT("AIFF"),   XO("AIFF (Apple/SGI)")},
+   {SF_FORMAT_AIFF | SF_FORMAT_PCM_16, L"AIFF",   XO("AIFF (Apple/SGI)")},
 #endif
-   {SF_FORMAT_WAV | SF_FORMAT_PCM_16,  wxT("WAV"),    XO("WAV (Microsoft)")},
+   {SF_FORMAT_WAV | SF_FORMAT_PCM_16,  L"WAV",    XO("WAV (Microsoft)")},
 };
 
 enum
@@ -78,25 +78,25 @@ enum
 
 static int LoadOtherFormat(int def = 0)
 {
-   return gPrefs->Read(wxT("/FileFormats/ExportFormat_SF1"),
+   return gPrefs->Read(L"/FileFormats/ExportFormat_SF1",
                        kFormats[0].format & SF_FORMAT_TYPEMASK);
 }
 
 static void SaveOtherFormat(int val)
 {
-   gPrefs->Write(wxT("/FileFormats/ExportFormat_SF1"), val);
+   gPrefs->Write(L"/FileFormats/ExportFormat_SF1", val);
    gPrefs->Flush();
 }
 
 static int LoadEncoding(int type)
 {
-   return gPrefs->Read(wxString::Format(wxT("/FileFormats/ExportFormat_SF1_Type/%s_%x"),
+   return gPrefs->Read(wxString::Format(L"/FileFormats/ExportFormat_SF1_Type/%s_%x",
                                         sf_header_shortname(type), type), (long int) 0);
 }
 
 static void SaveEncoding(int type, int val)
 {
-   gPrefs->Write(wxString::Format(wxT("/FileFormats/ExportFormat_SF1_Type/%s_%x"),
+   gPrefs->Write(wxString::Format(L"/FileFormats/ExportFormat_SF1_Type/%s_%x",
                                   sf_header_shortname(type), type), val);
    gPrefs->Flush();
 }
@@ -429,7 +429,7 @@ ExportPCM::ExportPCM()
    // Then add the generic libsndfile "format"
    selformat = AddFormat() - 1;     // Matches FMT_OTHER
    SetExtensions(sf_get_all_extensions(), selformat);
-   SetFormat(wxT("LIBSNDFILE"), selformat);
+   SetFormat(L"LIBSNDFILE", selformat);
    SetDescription(XO("Other uncompressed files"), selformat);
    SetCanMetaData(true, selformat);
    SetMaxChannels(255, selformat);
@@ -443,7 +443,7 @@ void ExportPCM::ReportTooBigError(wxWindow * pParent)
       "Audacity cannot do this, the Export was abandoned.");
 
    ShowErrorDialog(pParent, XO("Error Exporting"), message,
-                  wxT("Size_limits_for_WAV_and_AIFF_files"));
+                  L"Size_limits_for_WAV_and_AIFF_files");
 
 // This alternative error dialog was to cover the possibility we could not 
 // compute the size in advance.
@@ -451,7 +451,7 @@ void ExportPCM::ReportTooBigError(wxWindow * pParent)
    ShowErrorDialog(pParent, XO("Error Exporting"),
                   XO("Your exported WAV file has been truncated as Audacity cannot export WAV\n"
                     "files bigger than 4GB."),
-                  wxT("Size_limits_for_WAV_files"));
+                  L"Size_limits_for_WAV_files");
 #endif
 }
 
@@ -914,7 +914,7 @@ bool ExportPCM::AddID3Chunk(
       else if (n.CmpNoCase(TAG_TRACK) == 0) {
          name = ID3_FRAME_TRACK;
       }
-      else if (n.CmpNoCase(wxT("composer")) == 0) {
+      else if (n.CmpNoCase(L"composer") == 0) {
          name = "TCOM";
       }
 
@@ -980,7 +980,7 @@ bool ExportPCM::AddID3Chunk(
 
    id3_tag_render(tp.get(), buffer.get());
 
-   wxFFile f(fName.GetFullPath(), wxT("r+b"));
+   wxFFile f(fName.GetFullPath(), L"r+b");
    if (f.IsOpened()) {
       wxUint32 sz;
 

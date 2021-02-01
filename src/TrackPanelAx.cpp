@@ -374,19 +374,19 @@ wxAccStatus TrackPanelAx::GetName( int childId, wxString* name )
                [&](const LabelTrack *) {
                   /* i18n-hint: This is for screen reader software and indicates that
                      this is a Label track.*/
-                  name->Append( wxT(" ") + wxString(_("Label Track")));
+                  name->Append( L" " + wxString(_("Label Track")));
                },
                [&](const TimeTrack *) {
                   /* i18n-hint: This is for screen reader software and indicates that
                      this is a Time track.*/
-                  name->Append( wxT(" ") + wxString(_("Time Track")));
+                  name->Append( L" " + wxString(_("Time Track")));
                }
 #ifdef USE_MIDI
                 ,
                [&](const NoteTrack *) {
                   /* i18n-hint: This is for screen reader software and indicates that
                      this is a Note track.*/
-                  name->Append( wxT(" ") + wxString(_("Note Track")));
+                  name->Append( L" " + wxString(_("Note Track")));
                }
 #endif
             );
@@ -398,25 +398,25 @@ wxAccStatus TrackPanelAx::GetName( int childId, wxString* name )
                // The following comment also applies to the solo, selected,
                // and synclockselected states.
                // Many of translations of the strings with a leading space omitted
-               // the leading space. Therefore a space has been added using wxT(" ").
+               // the leading space. Therefore a space has been added using L" ".
                // Because screen readers won't be affected by multiple spaces, the
                // leading spaces have not been removed, so that no NEW translations are needed.
                /* i18n-hint: This is for screen reader software and indicates that
                   this track is muted. (The mute button is on.)*/
-               name->Append( wxT(" ") + wxString(_( " Muted" )) );
+               name->Append( L" " + wxString(_( " Muted" )) );
             }
 
             if( pt && pt->GetSolo() )
             {
                /* i18n-hint: This is for screen reader software and indicates that
                   this track is soloed. (The Solo button is on.)*/
-               name->Append( wxT(" ") + wxString(_( " Soloed" )) );
+               name->Append( L" " + wxString(_( " Soloed" )) );
             }
             if( t->GetSelected() )
             {
                /* i18n-hint: This is for screen reader software and indicates that
                   this track is selected.*/
-               name->Append( wxT(" ") + wxString(_( " Selected" )) );
+               name->Append( L" " + wxString(_( " Selected" )) );
             }
             if( t->IsSyncLockSelected() )
             {
@@ -424,7 +424,7 @@ wxAccStatus TrackPanelAx::GetName( int childId, wxString* name )
                   this track is shown with a sync-locked icon.*/
                // The absence of a dash between Sync and Locked is deliberate -
                // if present, Jaws reads it as "dash".
-               name->Append( wxT(" ") + wxString(_( " Sync Locked" )) );
+               name->Append( L" " + wxString(_( " Sync Locked" )) );
             }
          }
       }
@@ -481,9 +481,9 @@ wxAccStatus TrackPanelAx::GetRole( int childId, wxAccRole* role )
 // of this object.
 // Acceptable values:
 // - a null variant (IsNull() returns TRUE)
-// - a list variant (GetType() == wxT("list"))
+// - a list variant (GetType() == L"list")
 // - an integer representing the selected child element,
-//   or 0 if this object is selected (GetType() == wxT("long"))
+//   or 0 if this object is selected (GetType() == L"long")
 // - a "void*" pointer to a wxAccessible child object
 wxAccStatus TrackPanelAx::GetSelections( wxVariant * WXUNUSED(selections) )
 {

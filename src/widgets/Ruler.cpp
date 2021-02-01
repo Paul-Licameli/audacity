@@ -259,7 +259,7 @@ void FindFontHeights(
    wxCoord &height, wxCoord &lead, wxDC &dc, const wxFont &font )
 {
    wxCoord strW, strH, strD, strL;
-   static const wxString exampleText = wxT("0.9");   //ignored for height calcs on all platforms
+   static const wxString exampleText = L"0.9";   //ignored for height calcs on all platforms
    dc.SetFont( font );
    dc.GetTextExtent(exampleText, &strW, &strH, &strD, &strL);
    height = strH - strD - strL;
@@ -619,46 +619,46 @@ TranslatableString LabelString(
 
    switch( format ) {
    case IntFormat:
-      s.Printf(wxT("%d"), (int)floor(d+0.5));
+      s.Printf(L"%d", (int)floor(d+0.5));
       break;
    case LinearDBFormat:
       if (mMinor >= 1.0)
-         s.Printf(wxT("%d"), (int)floor(d+0.5));
+         s.Printf(L"%d", (int)floor(d+0.5));
       else {
          int precision = -log10(mMinor);
-         s.Printf(wxT("%.*f"), precision, d);
+         s.Printf(L"%.*f", precision, d);
       }
       break;
    case RealFormat:
       if (mMinor >= 1.0)
-         s.Printf(wxT("%d"), (int)floor(d+0.5));
+         s.Printf(L"%d", (int)floor(d+0.5));
       else {
-         s.Printf(wxString::Format(wxT("%%.%df"), mDigits), d);
+         s.Printf(wxString::Format(L"%%.%df", mDigits), d);
       }
       break;
    case RealLogFormat:
       if (mMinor >= 1.0)
-         s.Printf(wxT("%d"), (int)floor(d+0.5));
+         s.Printf(L"%d", (int)floor(d+0.5));
       else {
-         s.Printf(wxString::Format(wxT("%%.%df"), mDigits), d);
+         s.Printf(wxString::Format(L"%%.%df", mDigits), d);
       }
       break;
    case TimeFormat:
       if (useMajor) {
          if (d < 0) {
-            s = wxT("-");
+            s = L"-";
             d = -d;
          }
 
          #if ALWAYS_HH_MM_SS
          int secs = (int)(d + 0.5);
          if (mMinor >= 1.0) {
-            s.Printf(wxT("%d:%02d:%02d"), secs/3600, (secs/60)%60, secs%60);
+            s.Printf(L"%d:%02d:%02d", secs/3600, (secs/60)%60, secs%60);
          }
          else {
             wxString t1, t2, format;
-            t1.Printf(wxT("%d:%02d:"), secs/3600, (secs/60)%60);
-            format.Printf(wxT("%%0%d.%dlf"), mDigits+3, mDigits);
+            t1.Printf(L"%d:%02d:", secs/3600, (secs/60)%60);
+            format.Printf(L"%%0%d.%dlf", mDigits+3, mDigits);
             t2.Printf(format, fmod(d, 60.0));
             s += t1 + t2;
          }
@@ -668,27 +668,27 @@ TranslatableString LabelString(
          if (mMinor >= 3600.0) {
             int hrs = (int)(d / 3600.0 + 0.5);
             wxString h;
-            h.Printf(wxT("%d:00:00"), hrs);
+            h.Printf(L"%d:00:00", hrs);
             s += h;
          }
          else if (mMinor >= 60.0) {
             int minutes = (int)(d / 60.0 + 0.5);
             wxString m;
             if (minutes >= 60)
-               m.Printf(wxT("%d:%02d:00"), minutes/60, minutes%60);
+               m.Printf(L"%d:%02d:00", minutes/60, minutes%60);
             else
-               m.Printf(wxT("%d:00"), minutes);
+               m.Printf(L"%d:00", minutes);
             s += m;
          }
          else if (mMinor >= 1.0) {
             int secs = (int)(d + 0.5);
             wxString t;
             if (secs >= 3600)
-               t.Printf(wxT("%d:%02d:%02d"), secs/3600, (secs/60)%60, secs%60);
+               t.Printf(L"%d:%02d:%02d", secs/3600, (secs/60)%60, secs%60);
             else if (secs >= 60)
-               t.Printf(wxT("%d:%02d"), secs/60, secs%60);
+               t.Printf(L"%d:%02d", secs/60, secs%60);
             else
-               t.Printf(wxT("%d"), secs);
+               t.Printf(L"%d", secs);
             s += t;
          }
          else {
@@ -702,14 +702,14 @@ TranslatableString LabelString(
             wxString t1, t2, format;
 
             if (secs >= 3600)
-               t1.Printf(wxT("%d:%02d:"), secs/3600, (secs/60)%60);
+               t1.Printf(L"%d:%02d:", secs/3600, (secs/60)%60);
             else if (secs >= 60)
-               t1.Printf(wxT("%d:"), secs/60);
+               t1.Printf(L"%d:", secs/60);
 
             if (secs >= 60)
-               format.Printf(wxT("%%0%d.%dlf"), mDigits+3, mDigits);
+               format.Printf(L"%%0%d.%dlf", mDigits+3, mDigits);
             else
-               format.Printf(wxT("%%%d.%dlf"), mDigits+3, mDigits);
+               format.Printf(L"%%%d.%dlf", mDigits+3, mDigits);
             // The casting to float is working around an issue where 59 seconds
             // would show up as 60 when using g++ (Ubuntu 4.3.3-5ubuntu4) 4.3.3.
             t2.Printf(format, fmod((float)d, (float)60.0));
@@ -723,14 +723,14 @@ TranslatableString LabelString(
             wxString t1, t2, format;
 
             if (secs >= 3600)
-               t1.Printf(wxT("%d:%02d:"), secs/3600, (secs/60)%60);
+               t1.Printf(L"%d:%02d:", secs/3600, (secs/60)%60);
             else if (secs >= 60)
-               t1.Printf(wxT("%d:"), secs/60);
+               t1.Printf(L"%d:", secs/60);
 
             if (secs >= 60)
-               format.Printf(wxT("%%0%d.%dlf"), mDigits+3, mDigits);
+               format.Printf(L"%%0%d.%dlf", mDigits+3, mDigits);
             else
-               format.Printf(wxT("%%%d.%dlf"), mDigits+3, mDigits);
+               format.Printf(L"%%%d.%dlf", mDigits+3, mDigits);
             // dd will be reduced to just the seconds and fractional part.
             dd = dd - secs + (secs%60);
             // truncate to appropriate number of digits, so that the print formatting 

@@ -89,15 +89,15 @@ bool ImportMIDI(const FilePath &fName, NoteTrack * dest)
    }
 
    bool is_midi = false;
-   if (fName.Right(4).CmpNoCase(wxT(".mid")) == 0 || fName.Right(5).CmpNoCase(wxT(".midi")) == 0)
+   if (fName.Right(4).CmpNoCase(L".mid") == 0 || fName.Right(5).CmpNoCase(L".midi") == 0)
       is_midi = true;
-   else if(fName.Right(4).CmpNoCase(wxT(".gro")) != 0) {
+   else if(fName.Right(4).CmpNoCase(L".gro") != 0) {
       AudacityMessageBox(
          XO("Could not open file %s: Incorrect filetype.").Format( fName ) );
       return false;
    }
 
-   wxFFile mf(fName, wxT("rb"));
+   wxFFile mf(fName, L"rb");
    if (!mf.IsOpened()) {
       AudacityMessageBox(
          XO("Could not open file %s.").Format( fName ) );

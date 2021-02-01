@@ -250,10 +250,10 @@ void OnAdvancedVZoom(const CommandContext &context)
    auto &project = context.project;
    auto &commandManager = CommandManager::Get( project );
 
-   bool checked = !gPrefs->Read(wxT("/GUI/VerticalZooming"), 0L);
-   gPrefs->Write(wxT("/GUI/VerticalZooming"), checked);
+   bool checked = !gPrefs->Read(L"/GUI/VerticalZooming", 0L);
+   gPrefs->Write(L"/GUI/VerticalZooming", checked);
    gPrefs->Flush();
-   commandManager.Check(wxT("AdvancedVZoom"), checked);
+   commandManager.Check(L"AdvancedVZoom", checked);
    MenuCreator::RebuildAllMenuBars();
 }
 
@@ -314,10 +314,10 @@ void OnShowExtraMenus(const CommandContext &context)
    auto &project = context.project;
    auto &commandManager = CommandManager::Get( project );
 
-   bool checked = !gPrefs->Read(wxT("/GUI/ShowExtraMenus"), 0L);
-   gPrefs->Write(wxT("/GUI/ShowExtraMenus"), checked);
+   bool checked = !gPrefs->Read(L"/GUI/ShowExtraMenus", 0L);
+   gPrefs->Write(L"/GUI/ShowExtraMenus", checked);
    gPrefs->Flush();
-   commandManager.Check(wxT("ShowExtraMenus"), checked);
+   commandManager.Check(L"ShowExtraMenus", checked);
    MenuCreator::RebuildAllMenuBars();
 }
 
@@ -327,10 +327,10 @@ void OnShowClipping(const CommandContext &context)
    auto &commandManager = CommandManager::Get( project );
    auto &trackPanel = TrackPanel::Get( project );
 
-   bool checked = !gPrefs->Read(wxT("/GUI/ShowClipping"), 0L);
-   gPrefs->Write(wxT("/GUI/ShowClipping"), checked);
+   bool checked = !gPrefs->Read(L"/GUI/ShowClipping", 0L);
+   gPrefs->Write(L"/GUI/ShowClipping", checked);
    gPrefs->Flush();
-   commandManager.Check(wxT("ShowClipping"), checked);
+   commandManager.Check(L"ShowClipping", checked);
 
    wxTheApp->AddPendingEvent(wxCommandEvent{
       EVT_PREFS_UPDATE, ShowClippingPrefsID() });
@@ -344,10 +344,10 @@ void OnShowNameOverlay(const CommandContext &context)
    auto &commandManager = CommandManager::Get( project );
    auto &trackPanel = TrackPanel::Get( project );
 
-   bool checked = !gPrefs->Read(wxT("/GUI/ShowTrackNameInWaveform"), 0L);
-   gPrefs->Write(wxT("/GUI/ShowTrackNameInWaveform"), checked);
+   bool checked = !gPrefs->Read(L"/GUI/ShowTrackNameInWaveform", 0L);
+   gPrefs->Write(L"/GUI/ShowTrackNameInWaveform", checked);
    gPrefs->Flush();
-   commandManager.Check(wxT("ShowTrackNameInWaveform"), checked);
+   commandManager.Check(L"ShowTrackNameInWaveform", checked);
 
    wxTheApp->AddPendingEvent(wxCommandEvent{
       EVT_PREFS_UPDATE, ShowTrackNameInWaveformPrefsID() });
@@ -414,64 +414,64 @@ BaseItemSharedPtr ViewMenu()
 
    static BaseItemSharedPtr menu{
    ( FinderScope{ findCommandHandler },
-   Menu( wxT("View"), XXO("&View"),
+   Menu( L"View", XXO("&View"),
       Section( "Basic",
-         Menu( wxT("Zoom"), XXO("&Zoom"),
+         Menu( L"Zoom", XXO("&Zoom"),
             Section( "",
-               Command( wxT("ZoomIn"), XXO("Zoom &In"), FN(OnZoomIn),
-                  ZoomInAvailableFlag(), wxT("Ctrl+1") ),
-               Command( wxT("ZoomNormal"), XXO("Zoom &Normal"), FN(OnZoomNormal),
-                  TracksExistFlag(), wxT("Ctrl+2") ),
-               Command( wxT("ZoomOut"), XXO("Zoom &Out"), FN(OnZoomOut),
-                  ZoomOutAvailableFlag(), wxT("Ctrl+3") ),
-               Command( wxT("ZoomSel"), XXO("&Zoom to Selection"), FN(OnZoomSel),
-                  TimeSelectedFlag(), wxT("Ctrl+E") ),
-               Command( wxT("ZoomToggle"), XXO("Zoom &Toggle"), FN(OnZoomToggle),
-                  TracksExistFlag(), wxT("Shift+Z") )
+               Command( L"ZoomIn", XXO("Zoom &In"), FN(OnZoomIn),
+                  ZoomInAvailableFlag(), L"Ctrl+1" ),
+               Command( L"ZoomNormal", XXO("Zoom &Normal"), FN(OnZoomNormal),
+                  TracksExistFlag(), L"Ctrl+2" ),
+               Command( L"ZoomOut", XXO("Zoom &Out"), FN(OnZoomOut),
+                  ZoomOutAvailableFlag(), L"Ctrl+3" ),
+               Command( L"ZoomSel", XXO("&Zoom to Selection"), FN(OnZoomSel),
+                  TimeSelectedFlag(), L"Ctrl+E" ),
+               Command( L"ZoomToggle", XXO("Zoom &Toggle"), FN(OnZoomToggle),
+                  TracksExistFlag(), L"Shift+Z" )
             ),
             Section( "",
-               Command( wxT("AdvancedVZoom"), XXO("Advanced &Vertical Zooming"),
+               Command( L"AdvancedVZoom", XXO("Advanced &Vertical Zooming"),
                   FN(OnAdvancedVZoom), AlwaysEnabledFlag,
-                  Options{}.CheckTest( wxT("/GUI/VerticalZooming"), false ) )
+                  Options{}.CheckTest( L"/GUI/VerticalZooming", false ) )
             )
          ),
 
-         Menu( wxT("TrackSize"), XXO("T&rack Size"),
-            Command( wxT("FitInWindow"), XXO("&Fit to Width"), FN(OnZoomFit),
-               TracksExistFlag(), wxT("Ctrl+F") ),
-            Command( wxT("FitV"), XXO("Fit to &Height"), FN(OnZoomFitV),
-               TracksExistFlag(), wxT("Ctrl+Shift+F") ),
-            Command( wxT("CollapseAllTracks"), XXO("&Collapse All Tracks"),
-               FN(OnCollapseAllTracks), TracksExistFlag(), wxT("Ctrl+Shift+C") ),
-            Command( wxT("ExpandAllTracks"), XXO("E&xpand Collapsed Tracks"),
-               FN(OnExpandAllTracks), TracksExistFlag(), wxT("Ctrl+Shift+X") )
+         Menu( L"TrackSize", XXO("T&rack Size"),
+            Command( L"FitInWindow", XXO("&Fit to Width"), FN(OnZoomFit),
+               TracksExistFlag(), L"Ctrl+F" ),
+            Command( L"FitV", XXO("Fit to &Height"), FN(OnZoomFitV),
+               TracksExistFlag(), L"Ctrl+Shift+F" ),
+            Command( L"CollapseAllTracks", XXO("&Collapse All Tracks"),
+               FN(OnCollapseAllTracks), TracksExistFlag(), L"Ctrl+Shift+C" ),
+            Command( L"ExpandAllTracks", XXO("E&xpand Collapsed Tracks"),
+               FN(OnExpandAllTracks), TracksExistFlag(), L"Ctrl+Shift+X" )
          ),
 
-         Menu( wxT("SkipTo"), XXO("Sk&ip to"),
-            Command( wxT("SkipSelStart"), XXO("Selection Sta&rt"),
+         Menu( L"SkipTo", XXO("Sk&ip to"),
+            Command( L"SkipSelStart", XXO("Selection Sta&rt"),
                FN(OnGoSelStart), TimeSelectedFlag(),
-               Options{ wxT("Ctrl+["), XO("Skip to Selection Start") } ),
-            Command( wxT("SkipSelEnd"), XXO("Selection En&d"), FN(OnGoSelEnd),
+               Options{ L"Ctrl+[", XO("Skip to Selection Start") } ),
+            Command( L"SkipSelEnd", XXO("Selection En&d"), FN(OnGoSelEnd),
                TimeSelectedFlag(),
-               Options{ wxT("Ctrl+]"), XO("Skip to Selection End") } )
+               Options{ L"Ctrl+]", XO("Skip to Selection End") } )
          )
       ),
 
       Section( "Windows" ),
 
       Section( "Other",
-         Command( wxT("ShowExtraMenus"), XXO("&Extra Menus (on/off)"),
+         Command( L"ShowExtraMenus", XXO("&Extra Menus (on/off)"),
             FN(OnShowExtraMenus), AlwaysEnabledFlag,
-            Options{}.CheckTest( wxT("/GUI/ShowExtraMenus"), false ) ),
-         Command( wxT("ShowTrackNameInWaveform"), XXO("Track &Name (on/off)"),
+            Options{}.CheckTest( L"/GUI/ShowExtraMenus", false ) ),
+         Command( L"ShowTrackNameInWaveform", XXO("Track &Name (on/off)"),
             FN(OnShowNameOverlay), AlwaysEnabledFlag,
-            Options{}.CheckTest( wxT("/GUI/ShowTrackNameInWaveform"), false ) ),
-         Command( wxT("ShowClipping"), XXO("&Show Clipping (on/off)"),
+            Options{}.CheckTest( L"/GUI/ShowTrackNameInWaveform", false ) ),
+         Command( L"ShowClipping", XXO("&Show Clipping (on/off)"),
             FN(OnShowClipping), AlwaysEnabledFlag,
-            Options{}.CheckTest( wxT("/GUI/ShowClipping"), false ) )
+            Options{}.CheckTest( L"/GUI/ShowClipping", false ) )
    #if defined(EXPERIMENTAL_EFFECTS_RACK)
          ,
-         Command( wxT("ShowEffectsRack"), XXO("Show Effects Rack"),
+         Command( L"ShowEffectsRack", XXO("Show Effects Rack"),
             FN(OnShowEffectsRack), AlwaysEnabledFlag,
             Options{}.CheckTest( [](AudacityProject &project){
                auto &rack = EffectRack::Get( project );
@@ -484,7 +484,7 @@ BaseItemSharedPtr ViewMenu()
 }
 
 AttachedItem sAttachment1{
-   wxT(""),
+   L"",
    Shared( ViewMenu() )
 };
 }

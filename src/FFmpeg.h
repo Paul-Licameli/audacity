@@ -232,7 +232,7 @@ public:
    ///\return libavformat library version or empty string?
    wxString GetLibraryVersion()
    {
-      return wxString::Format(wxT("F(%s),C(%s),U(%s)"),mAVFormatVersion,mAVCodecVersion,mAVUtilVersion);
+      return wxString::Format(L"F(%s),C(%s),U(%s)",mAVFormatVersion,mAVCodecVersion,mAVUtilVersion);
    }
 
 #if defined(__WXMSW__)
@@ -250,11 +250,11 @@ public:
 
    wxString GetLibAVFormatPath()
    {
-      wxRegKey reg(wxT("HKEY_LOCAL_MACHINE\\Software\\FFmpeg for Audacity"));
+      wxRegKey reg(L"HKEY_LOCAL_MACHINE\\Software\\FFmpeg for Audacity");
       wxString path;
 
       if (reg.Exists()) {
-         reg.QueryValue(wxT("InstallPath"), path);
+         reg.QueryValue(L"InstallPath", path);
       }
 
       return path;
@@ -262,17 +262,17 @@ public:
 
    wxString GetLibAVFormatName()
    {
-      return (wxT("avformat-") wxT(AV_STRINGIFY(LIBAVFORMAT_VERSION_MAJOR)) wxT(".dll"));
+      return (L"avformat-" wxT(AV_STRINGIFY(LIBAVFORMAT_VERSION_MAJOR)) L".dll");
    }
 
    wxString GetLibAVCodecName()
    {
-      return (wxT("avcodec-") wxT(AV_STRINGIFY(LIBAVCODEC_VERSION_MAJOR)) wxT(".dll"));
+      return (L"avcodec-" wxT(AV_STRINGIFY(LIBAVCODEC_VERSION_MAJOR)) L".dll");
    }
 
    wxString GetLibAVUtilName()
    {
-      return (wxT("avutil-") wxT(AV_STRINGIFY(LIBAVUTIL_VERSION_MAJOR)) wxT(".dll"));
+      return (L"avutil-" wxT(AV_STRINGIFY(LIBAVUTIL_VERSION_MAJOR)) L".dll");
    }
 #elif defined(__WXMAC__)
    /* Library names and file filters for Mac OS only */
@@ -286,28 +286,28 @@ public:
 
    wxString GetLibAVFormatPath()
    {
-      return wxT("/Library/Application Support/audacity/libs");
+      return L"/Library/Application Support/audacity/libs";
    }
 
    wxString GetLibAVFormatName()
    {
       if (sizeof(void*) == 8)
-         return (wxT("ffmpeg.") wxT(AV_STRINGIFY(LIBAVFORMAT_VERSION_MAJOR)) wxT(".64bit.dylib"));
-      return (wxT("libavformat.") wxT(AV_STRINGIFY(LIBAVFORMAT_VERSION_MAJOR)) wxT(".dylib"));
+         return (L"ffmpeg." wxT(AV_STRINGIFY(LIBAVFORMAT_VERSION_MAJOR)) L".64bit.dylib");
+      return (L"libavformat." wxT(AV_STRINGIFY(LIBAVFORMAT_VERSION_MAJOR)) L".dylib");
    }
 
    wxString GetLibAVCodecName()
    {
       if (sizeof(void*) == 8)
-         return (wxT("ffmpeg_codecs.") wxT(AV_STRINGIFY(LIBAVCODEC_VERSION_MAJOR)) wxT(".64bit.dylib"));
-      return (wxT("libavcodec.") wxT(AV_STRINGIFY(LIBAVCODEC_VERSION_MAJOR)) wxT(".dylib"));
+         return (L"ffmpeg_codecs." wxT(AV_STRINGIFY(LIBAVCODEC_VERSION_MAJOR)) L".64bit.dylib");
+      return (L"libavcodec." wxT(AV_STRINGIFY(LIBAVCODEC_VERSION_MAJOR)) L".dylib");
    }
 
    wxString GetLibAVUtilName()
    {
       if (sizeof(void*) == 8)
-         return (wxT("ffmpeg_utils.") wxT(AV_STRINGIFY(LIBAVUTIL_VERSION_MAJOR)) wxT(".64bit.dylib"));
-      return (wxT("libavutil.") wxT(AV_STRINGIFY(LIBAVUTIL_VERSION_MAJOR)) wxT(".dylib"));
+         return (L"ffmpeg_utils." wxT(AV_STRINGIFY(LIBAVUTIL_VERSION_MAJOR)) L".64bit.dylib");
+      return (L"libavutil." wxT(AV_STRINGIFY(LIBAVUTIL_VERSION_MAJOR)) L".dylib");
    }
 #else
    /* Library names and file filters for other platforms, basically Linux and
@@ -315,7 +315,7 @@ public:
    FileNames::FileTypes GetLibraryTypes()
    {
       return {
-         { XO("Only libavformat.so"), { wxT("libavformat*.so*") } },
+         { XO("Only libavformat.so"), { L"libavformat*.so*" } },
          FileNames::DynamicLibraries,
          FileNames::AllFiles
       };
@@ -323,22 +323,22 @@ public:
 
    wxString GetLibAVFormatPath()
    {
-      return wxT("");
+      return L"";
    }
 
    wxString GetLibAVFormatName()
    {
-      return (wxT("libavformat.so.") wxT(AV_STRINGIFY(LIBAVFORMAT_VERSION_MAJOR)));
+      return (L"libavformat.so." wxT(AV_STRINGIFY(LIBAVFORMAT_VERSION_MAJOR)));
    }
 
    wxString GetLibAVCodecName()
    {
-      return (wxT("libavcodec.so.") wxT(AV_STRINGIFY(LIBAVCODEC_VERSION_MAJOR)));
+      return (L"libavcodec.so." wxT(AV_STRINGIFY(LIBAVCODEC_VERSION_MAJOR)));
    }
 
    wxString GetLibAVUtilName()
    {
-      return (wxT("libavutil.so.") wxT(AV_STRINGIFY(LIBAVUTIL_VERSION_MAJOR)));
+      return (L"libavutil.so." wxT(AV_STRINGIFY(LIBAVUTIL_VERSION_MAJOR)));
    }
 #endif // (__WXMAC__) || (__WXMSW__)
 
@@ -471,7 +471,7 @@ extern "C" {
    }                                                                    \
    if (f ## _fp == NULL)                                                \
    {                                                                    \
-      wxLogError(wxT("Failed to load symbol ") wxT(#f));                \
+      wxLogError(L"Failed to load symbol " wxT(#f));                \
       return false;                                                     \
    }
 
@@ -488,7 +488,7 @@ extern "C" {
       }                                                                 \
       if (f ## _fp == NULL)                                             \
       {                                                                 \
-         wxLogError(wxT("Failed to load symbol ") wxT(#f));             \
+         wxLogError(L"Failed to load symbol " wxT(#f));             \
          return false;                                                  \
       }                                                                 \
    }

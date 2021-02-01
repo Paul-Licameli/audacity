@@ -36,97 +36,97 @@ wxString HtmlColourOfIndex( int i ){
 
 static wxString WrapText( const wxString & Text )
 {
-   return wxString(wxT(""))+
-      wxT("<html><head></head>") +
-      wxT("<body bgcolor=") + HtmlColourOfIndex(clrTrackInfo) + wxT(">") +
-      wxT("<font color=") + HtmlColourOfIndex(clrTrackPanelText) + wxT(">") +
-      wxT("<p>") + Text +
-      wxT("</font>")+
-      wxT("</body></html>");
+   return wxString(L"")+
+      L"<html><head></head>" +
+      L"<body bgcolor=" + HtmlColourOfIndex(clrTrackInfo) + L">" +
+      L"<font color=" + HtmlColourOfIndex(clrTrackPanelText) + L">" +
+      L"<p>" + Text +
+      L"</font>"+
+      L"</body></html>";
 }
 
 static wxString InnerLink( const wxString &Key, const wxString& Text )
 {
-   return wxString(wxT("")) +
-      wxT("<a href='innerlink:") +
+   return wxString(L"") +
+      L"<a href='innerlink:" +
       Key +
-      wxT("'>") +
+      L"'>" +
       Text +
-      wxT("</a>");
+      L"</a>";
 }
 
 static wxString WikiLink( const wxString &Key, const wxString& Text )
 {
-   return wxString(wxT("")) +
-      wxT("<a href='https://www.audacityteam.org/wiki/index.php?title=") +
+   return wxString(L"") +
+      L"<a href='https://www.audacityteam.org/wiki/index.php?title=" +
       Key +
-      wxT("'>") +
+      L"'>" +
       Text +
-      wxT("</a>");
+      L"</a>";
 }
 
 static wxString FileLink( const wxString &Key, const wxString& Text )
 {
-   return wxString(wxT("")) +
-      wxT("<a href='") +
-      wxT("file:") +
+   return wxString(L"") +
+      L"<a href='" +
+      L"file:" +
       FileNames::HtmlHelpDir() +
       Key +
-      wxT("'>") +
+      L"'>" +
       Text +
-      wxT("</a>");
+      L"</a>";
 }
 
 static wxString TypedLink( const wxString &Key, const wxString& Text )
 {
-   return wxString(wxT("")) +
-      wxT("<a href='") +
+   return wxString(L"") +
+      L"<a href='" +
       Key +
-      wxT("'>") +
+      L"'>" +
       Text +
-      wxT("</a>");
+      L"</a>";
 }
 
 static wxString LinkExpand( const wxString & Text )
 {
    wxString Temp = Text;
    int i,j,k;
-   while( (i=Temp.First( wxT("[[") ))!= wxNOT_FOUND )
+   while( (i=Temp.First( L"[[" ))!= wxNOT_FOUND )
    {
       wxString Key = Temp.Mid(i+2);
-      j = Key.First( wxT("|") );
+      j = Key.First( L"|" );
       if( j==wxNOT_FOUND )
          return Temp;
       wxString LinkText = Key.Mid( j+1);
-      k = LinkText.First( wxT("]]") );
+      k = LinkText.First( L"]]" );
       if( k==wxNOT_FOUND )
          return Temp;
       Key = Key.Mid( 0, j );
       LinkText = LinkText.Mid( 0, k );
 
-      LinkText=wxString("<font color=") + HtmlColourOfIndex(clrSample) + wxT(">") +LinkText+"</font>";
+      LinkText=wxString("<font color=") + HtmlColourOfIndex(clrSample) + L">" +LinkText+"</font>";
       wxString Replacement;
-      if( Key.StartsWith( wxT("wiki:") ))
+      if( Key.StartsWith( L"wiki:" ))
       {
          Replacement = WikiLink( Key.Mid( 5 ), LinkText );
       }
-      else if( Key.StartsWith( wxT("file:") ))
+      else if( Key.StartsWith( L"file:" ))
       {
          Replacement = FileLink( Key.Mid( 5 ), LinkText );
       }
-      else if( Key.StartsWith( wxT("http:") ))
+      else if( Key.StartsWith( L"http:" ))
       {
          Replacement = TypedLink( Key, LinkText );
       }
-      else if( Key.StartsWith( wxT("https:") ))
+      else if( Key.StartsWith( L"https:" ))
       {
          Replacement = TypedLink( Key, LinkText );
       }
-      else if( Key.StartsWith( wxT("mailto:") ))
+      else if( Key.StartsWith( L"mailto:" ))
       {
          Replacement = TypedLink( Key, LinkText );
       }
-      else if( Key.StartsWith( wxT("*URL*") ))
+      else if( Key.StartsWith( L"*URL*" ))
       {
          Replacement = TypedLink( Key, LinkText );
       }
@@ -143,62 +143,62 @@ static wxString LinkExpand( const wxString & Text )
 
 TranslatableString TitleText( const wxString & Key )
 {
-   if(Key==wxT("welcome"))
+   if(Key==L"welcome")
    {
       return XO("Welcome!");
    }
 
-   if(Key ==wxT("play") )
+   if(Key ==L"play" )
    {
       /* i18n-hint: Title for a topic.*/
       return XO("Playing Audio");
    }
-   if((Key ==wxT("record") ) || (Key ==wxT("norecord") ))
+   if((Key ==L"record" ) || (Key ==L"norecord" ))
    {
       /* i18n-hint: Title for a topic.*/
       return XO("Recording Audio");
    }
-   if(Key ==wxT("inputdevice") )
+   if(Key ==L"inputdevice" )
    {
       /* i18n-hint: Title for a topic.*/
       return XO("Recording - Choosing the Recording Device");
    }
-   if(Key ==wxT("inputsource") )
+   if(Key ==L"inputsource" )
    {
       /* i18n-hint: Title for a topic.*/
       return XO("Recording - Choosing the Recording Source");
    }
-   if(Key ==wxT("inputlevel") )
+   if(Key ==L"inputlevel" )
    {
       /* i18n-hint: Title for a topic.*/
       return XO("Recording - Setting the Recording Level");
    }
-   if((Key ==wxT("edit") ) || (Key==wxT("grey")))
+   if((Key ==L"edit" ) || (Key==L"grey"))
    {
       /* i18n-hint: Title for a topic.*/
       return XO("Editing and greyed out Menus");
    }
-   if(Key ==wxT("export") )
+   if(Key ==L"export" )
    {
       /* i18n-hint: Title for a topic.*/
       return XO("Exporting an Audio File");
    }
-   if(Key ==wxT("save") )
+   if(Key ==L"save" )
    {
       /* i18n-hint: Title for a topic.*/
       return XO("Saving an Audacity Project");
    }
-   if(Key ==wxT("wma-proprietary") )
+   if(Key ==L"wma-proprietary" )
    {
       /* i18n-hint: Title for a topic.*/
       return XO("Support for Other Formats");
    }
-   if(Key ==wxT("burncd") )
+   if(Key ==L"burncd" )
    {
       /* i18n-hint: Title for a topic.*/
       return XO("Burn to CD" );
    }
-   if(Key ==  wxT("remotehelp") )
+   if(Key ==  L"remotehelp" )
    {
       return XO("No Local Help");
    }
@@ -214,22 +214,22 @@ static wxString HelpTextBuiltIn( const wxString & Key )
    const auto betamsg = XO(
 "<br><br>The version of Audacity you are using is a <b>Beta test version</b>.");
 
-   if (Key == wxT("welcome"))
+   if (Key == L"welcome")
    {
       wxStringOutputStream o;
       wxTextOutputStream s(o);
       s
 #if defined(IS_ALPHA) || defined(IS_BETA)
-         << wxT("<hr><center><h3>")
+         << L"<hr><center><h3>"
          << XO("Get the Official Released Version of Audacity")
-         << wxT("</h3></center>")
+         << L"</h3></center>"
          << VerCheckHtml()
 #ifdef IS_ALPHA
          << alphamsg
 #else
          << betamsg
 #endif
-         << wxT(" ")
+         << L" "
          << XO(
 "We strongly recommend that you use our latest stable released version, which has full documentation and support.<br><br>")
          << XO(
@@ -239,46 +239,46 @@ static wxString HelpTextBuiltIn( const wxString & Key )
 // DA: Support methods text.
 #ifdef EXPERIMENTAL_DA
          // Deliberately not translated.
-         << wxT("<center><h3>DarkAudacity ")
+         << L"<center><h3>DarkAudacity "
          << AUDACITY_VERSION_STRING
-         << wxT("</h3></center>")
-         << wxT("<br><br>DarkAudacity is based on Audacity:")
-         << wxT("<ul><li>")
-         << wxT(" [[http://www.darkaudacity.com|www.darkaudacity.com]] - for differences between them.")
-         << wxT("</li><li>")
+         << L"</h3></center>"
+         << L"<br><br>DarkAudacity is based on Audacity:"
+         << L"<ul><li>"
+         << L" [[http://www.darkaudacity.com|www.darkaudacity.com]] - for differences between them."
+         << L"</li><li>"
          << wxT(
 " email to [[mailto:james@audacityteam.org|james@audacityteam.org]] - for help using DarkAudacity.")
-         << wxT("</li><li>")
+         << L"</li><li>"
          << wxT(
 " [[http://www.darkaudacity.com/video.html|Tutorials]] - for getting started with DarkAudacity.")
-         << wxT("</li></ul>")
-         << wxT("<br><br>Audacity has these support methods:")
-         << wxT("<ul><li>")
-         << wxT(" [[https://manual.audacityteam.org/|Manual]] - for comprehensive Audacity documentation")
-         << wxT("</li><li>")
-         << wxT(" [[https://forum.audacityteam.org/|Forum]] - for large knowledge base on using Audacity.")
-         << wxT("</li></ul>")
+         << L"</li></ul>"
+         << L"<br><br>Audacity has these support methods:"
+         << L"<ul><li>"
+         << L" [[https://manual.audacityteam.org/|Manual]] - for comprehensive Audacity documentation"
+         << L"</li><li>"
+         << L" [[https://forum.audacityteam.org/|Forum]] - for large knowledge base on using Audacity."
+         << L"</li></ul>"
 #else
-         << wxT("<center><h3>Audacity ")
+         << L"<center><h3>Audacity "
          << AUDACITY_VERSION_STRING
-         << wxT("</h3><h3>")
+         << L"</h3><h3>"
          << XO("How to get help")
-         << wxT("</h3></center>")
+         << L"</h3></center>"
          << XO("These are our support methods:")
-         << wxT("<p><ul><li>")
+         << L"<p><ul><li>"
          /* i18n-hint: Preserve '[[help:Quick_Help|' as it's the name of a link.*/
          << XO("[[help:Quick_Help|Quick Help]] - if not installed locally, [[https://manual.audacityteam.org/quick_help.html|view online]]")
-         << wxT("</li><li>")
+         << L"</li><li>"
          << XO(
 /* i18n-hint: Preserve '[[help:Main_Page|' as it's the name of a link.*/
 " [[help:Main_Page|Manual]] - if not installed locally, [[https://manual.audacityteam.org/|view online]]")
-         << wxT("</li><li>")
+         << L"</li><li>"
          << XO(
 " [[https://forum.audacityteam.org/|Forum]] - ask your question directly, online.")
-         << wxT("</li></ul></p><p>")
-         << wxT("<b>")
+         << L"</li></ul></p><p>"
+         << L"<b>"
          << XO("More:</b> Visit our [[https://wiki.audacityteam.org/index.php|Wiki]] for tips, tricks, extra tutorials and effects plug-ins.")
-         << wxT("</p>")
+         << L"</p>"
 #endif
    ;
 
@@ -290,24 +290,24 @@ static wxString HelpTextBuiltIn( const wxString & Key )
 
       return WrapText( result );
    }
-   if(Key==wxT("wma-proprietary"))
+   if(Key==L"wma-proprietary")
    {
       wxStringOutputStream o;
       wxTextOutputStream s(o);
       s
-         << wxT("<p>")
+         << L"<p>"
          << XO(
 "Audacity can import unprotected files in many other formats (such as M4A and WMA, \
 compressed WAV files from portable recorders and audio from video files) if you download and install \
 the optional [[https://manual.audacityteam.org/man/faq_opening_and_saving_files.html#foreign| \
 FFmpeg library]] to your computer.")
-         << wxT("</p><p>")
+         << L"</p><p>"
          <<  XO(
 "You can also read our help on importing \
 [[https://manual.audacityteam.org/man/playing_and_recording.html#midi|MIDI files]] \
 and tracks from [[https://manual.audacityteam.org/man/faq_opening_and_saving_files.html#fromcd| \
 audio CDs]].")
-         << wxT("</p>")
+         << L"</p>"
       ;
       return WrapText( o.GetString() );
    }
@@ -315,7 +315,7 @@ audio CDs]].")
    // Remote help allows us to link to a local copy of the help if it exists,
    // or provide a message that takes you to the Internet if it does not.
    // It's used by the menu item Help > Index
-   if(Key ==  wxT("remotehelp") )
+   if(Key ==  L"remotehelp" )
    {
       wxStringOutputStream o;
       wxTextOutputStream s(o);
@@ -368,11 +368,11 @@ wxString FormatHtmlText( const wxString & Text ){
    wxString localeStr = wxLocale::GetSystemEncodingName();
 
    return 
-      wxT("<html><head><META http-equiv=\"Content-Type\" content=\"text/html; charset=") +
+      L"<html><head><META http-equiv=\"Content-Type\" content=\"text/html; charset=" +
       localeStr +
-      wxT("\"></head>") +
+      L"\"></head>" +
       WrapText( LinkExpand( Text ))+
-      wxT("</html>");
+      L"</html>";
 }
 
 // Function to give the extra arguments to put on the version check string.

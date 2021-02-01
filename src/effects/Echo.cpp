@@ -35,8 +35,8 @@
 // Define keys, defaults, minimums, and maximums for the effect parameters
 //
 //     Name    Type     Key            Def   Min      Max      Scale
-Param( Delay,  float,   wxT("Delay"),   1.0f, 0.001f,  FLT_MAX, 1.0f );
-Param( Decay,  float,   wxT("Decay"),   0.5f, 0.0f,    FLT_MAX, 1.0f );
+Param( Delay,  float,   L"Delay",   1.0f, 0.001f,  FLT_MAX, 1.0f );
+Param( Decay,  float,   L"Decay",   0.5f, 0.0f,    FLT_MAX, 1.0f );
 
 const ComponentInterfaceSymbol EffectEcho::Symbol
 { XO("Echo") };
@@ -69,7 +69,7 @@ TranslatableString EffectEcho::GetDescription()
 
 wxString EffectEcho::ManualPage()
 {
-   return wxT("Echo");
+   return L"Echo";
 }
 
 // EffectDefinitionInterface implementation
@@ -177,12 +177,12 @@ void EffectEcho::PopulateOrExchange(ShuttleGui & S)
             3, &delay, NumValidatorStyle::NO_TRAILING_ZEROES,
             MIN_Delay, MAX_Delay
          )
-         .AddTextBox(XXO("&Delay time (seconds):"), wxT(""), 10);
+         .AddTextBox(XXO("&Delay time (seconds):"), L"", 10);
 
       S.Validator<FloatingPointValidator<double>>(
             3, &decay, NumValidatorStyle::NO_TRAILING_ZEROES,
             MIN_Decay, MAX_Decay)
-         .AddTextBox(XXO("D&ecay factor:"), wxT(""), 10);
+         .AddTextBox(XXO("D&ecay factor:"), L"", 10);
    }
    S.EndMultiColumn();
 }

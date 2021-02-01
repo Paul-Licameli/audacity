@@ -146,7 +146,7 @@ void SpectrumPrefs::PopulatePaddingChoices(size_t windowSize)
    int numChoices = 0;
    const size_t maxWindowSize = 1 << (SpectrogramSettings::LogMaxWindowSize);
    while (windowSize <= maxWindowSize) {
-      const auto numeral = wxString::Format(wxT("%d"), padding);
+      const auto numeral = wxString::Format(L"%d", padding);
       mZeroPaddingChoices.push_back( Verbatim( numeral ) );
       if (pPaddingSizeControl)
          pPaddingSizeControl->Append(numeral);

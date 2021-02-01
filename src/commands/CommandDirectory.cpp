@@ -85,8 +85,8 @@ void CommandDirectory::AddCommand(std::unique_ptr<OldStyleCommandType> type)
    // Internal string is shown but only in assertion message
    auto cmdName = type->GetSymbol().Internal();
    wxASSERT_MSG(sCmdMap().find(cmdName) == sCmdMap().end()
-         , wxT("A command named ") + cmdName
-         + wxT(" already exists."));
+         , L"A command named " + cmdName
+         + L" already exists.");
 
    sCmdMap()[cmdName] = std::move(type);
 }

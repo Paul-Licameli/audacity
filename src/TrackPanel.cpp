@@ -511,8 +511,8 @@ void TrackPanel::OnPaint(wxPaintEvent & /* event */)
 
 #if DEBUG_DRAW_TIMING
    sw.Pause();
-   wxLogDebug(wxT("Total: %ld milliseconds"), sw.Time());
-   wxPrintf(wxT("Total: %ld milliseconds\n"), sw.Time());
+   wxLogDebug(L"Total: %ld milliseconds", sw.Time());
+   wxPrintf(L"Total: %ld milliseconds\n", sw.Time());
 #endif
 }
 

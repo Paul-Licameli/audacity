@@ -52,7 +52,7 @@ TranslatableString EffectSilence::GetDescription()
 
 wxString EffectSilence::ManualPage()
 {
-   return wxT("Silence");
+   return L"Silence";
 }
 
 

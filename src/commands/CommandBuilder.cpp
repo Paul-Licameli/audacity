@@ -65,9 +65,9 @@ OldStyleCommandPointer CommandBuilder::GetCommand()
 wxString CommandBuilder::GetResponse()
 {
    if (!mValid && !mError.empty()) {
-      return mError + wxT("\n");
+      return mError + L"\n";
    }
-   return mResponse->GetResponse() + wxT("\n");
+   return mResponse->GetResponse() + L"\n";
 }
 
 void CommandBuilder::Failure(const wxString &msg)
@@ -101,11 +101,11 @@ void CommandBuilder::BuildCommand(AudacityProject *project,
    {
       // Fall back to hoping the Batch Command system can handle it
 #endif
-      OldStyleCommandType *type = CommandDirectory::Get()->LookUp(wxT("BatchCommand"));
+      OldStyleCommandType *type = CommandDirectory::Get()->LookUp(L"BatchCommand");
       wxASSERT(type != NULL);
       mCommand = type->Create(project, nullptr);
-      mCommand->SetParameter(wxT("CommandName"), cmdName);
-      mCommand->SetParameter(wxT("ParamString"), cmdParamsArg);
+      mCommand->SetParameter(L"CommandName", cmdName);
+      mCommand->SetParameter(L"ParamString", cmdParamsArg);
       auto aCommand = std::make_shared<ApplyAndSendResponse>(mCommand, output);
       Success(aCommand);
       return;
@@ -129,7 +129,7 @@ void CommandBuilder::BuildCommand(AudacityProject *project,
    {
       wxString paramString;
       // IF there is a match in the args actually used
-      if (shuttle.TransferString(iter->first, paramString, wxT("")))
+      if (shuttle.TransferString(iter->first, paramString, L""))
       {
          // Then set that parameter.
          if (!mCommand->SetParameter(iter->first, paramString))
@@ -151,13 +151,13 @@ void CommandBuilder::BuildCommand(AudacityProject *project,
       int splitAt = cmdParams.Find(L'=');
       if (splitAt < 0 && !cmdParams.empty())
       {
-         Failure(wxT("Parameter string is missing '='"));
+         Failure(L"Parameter string is missing '='");
          return;
       }
       wxString paramName = cmdParams.Left(splitAt);
       if (params.find(paramName) == params.end())
       {
-         Failure(wxT("Unrecognized parameter: '") + paramName + wxT("'"));
+         Failure(L"Unrecognized parameter: '" + paramName + L"'");
          return;
       }
       // Handling of quoted strings is quite limited.
@@ -197,7 +197,7 @@ void CommandBuilder::BuildCommand(
    cmdString.Trim(true); cmdString.Trim(false);
    int splitAt = cmdString.Find(L':');
    if (splitAt < 0 && cmdString.Find(L' ') >= 0) {
-      Failure(wxT("Syntax error!\nCommand is missing ':'"));
+      Failure(L"Syntax error!\nCommand is missing ':'");
       return;
    }
 

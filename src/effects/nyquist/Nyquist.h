@@ -21,7 +21,7 @@ class wxFileName;
 class wxCheckBox;
 class wxTextCtrl;
 
-#define NYQUISTEFFECTS_VERSION wxT("1.0.0.0")
+#define NYQUISTEFFECTS_VERSION L"1.0.0.0"
 
 enum NyqControlType
 {

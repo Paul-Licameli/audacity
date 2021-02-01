@@ -31,8 +31,8 @@ class NumericTextCtrl;
 \brief wxGridCellEditor for the NumericTextCtrl.
 
 **************************************************************************/
-#define GRID_VALUE_TIME wxT("Time")
-#define GRID_VALUE_FREQUENCY wxT("Frequency")
+#define GRID_VALUE_TIME L"Time"
+#define GRID_VALUE_FREQUENCY L"Frequency"
 
 class AUDACITY_DLL_API NumericEditor /* not final */ : public wxGridCellEditor
 {
@@ -114,7 +114,7 @@ private:
 \brief Modified version of wxGridChoiceEditor using wxChoice instead of 
 wxComboBox.
 **************************************************************************/
-#define GRID_VALUE_CHOICE wxT("Choice")
+#define GRID_VALUE_CHOICE L"Choice"
 
 class AUDACITY_DLL_API ChoiceEditor final
    : public wxGridCellEditor, wxEvtHandler

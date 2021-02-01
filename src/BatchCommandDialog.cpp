@@ -88,7 +88,7 @@ void MacroCommandDialog::PopulateOrExchange(ShuttleGui &S)
       S.StartMultiColumn(4, wxEXPAND);
       {
          S.SetStretchyCol(1);
-         mCommand = S.AddTextBox(XXO("&Command"), wxT(""), 20);
+         mCommand = S.AddTextBox(XXO("&Command"), L"", 20);
          mCommand->SetEditable(false);
          mEditParams = S.Id(EditParamsButtonID)
             .Disable() // disable button as box is empty
@@ -102,13 +102,13 @@ void MacroCommandDialog::PopulateOrExchange(ShuttleGui &S)
       S.StartMultiColumn(2, wxEXPAND);
       {
          S.SetStretchyCol(1);
-         mParameters = S.AddTextBox(XXO("&Parameters"), wxT(""), 0);
+         mParameters = S.AddTextBox(XXO("&Parameters"), L"", 0);
          mParameters->SetEditable(false);
          auto prompt = XXO("&Details");
          S.Prop(0).AddPrompt(prompt);
          mDetails = S
             .Name( prompt )
-            .AddTextWindow( wxT(""));
+            .AddTextWindow( L"");
          mDetails->SetEditable(false);
       }
       S.EndMultiColumn();

@@ -377,11 +377,11 @@ wxImage GetSubImageWithAlpha( const wxImage & Src,  const wxRect &rect )
    //First part of this code is lifted from wxImage::GetSubImage() source code.
    wxImage image;
 
-   wxCHECK_MSG( Src.Ok(), image, wxT("invalid image") );
+   wxCHECK_MSG( Src.Ok(), image, L"invalid image" );
 
    wxCHECK_MSG( (rect.GetLeft()>=0) && (rect.GetTop()>=0) && (
       rect.GetRight()<=Src.GetWidth()) && (rect.GetBottom()<=Src.GetHeight()),
-      image, wxT("invalid subimage size") );
+      image, L"invalid subimage size" );
 
    int subwidth=rect.GetWidth();
    const int subheight=rect.GetHeight();
@@ -390,7 +390,7 @@ wxImage GetSubImageWithAlpha( const wxImage & Src,  const wxRect &rect )
 
    unsigned char *subdata = image.GetData(), *data=Src.GetData();
 
-   wxCHECK_MSG( subdata, image, wxT("unable to create image") );
+   wxCHECK_MSG( subdata, image, L"unable to create image" );
 
    // JKC: Quick hack - don't deal with masks - need to understand macro M_IMGDATA first.
 //   if (Src.M_IMGDATA->m_hasMask)

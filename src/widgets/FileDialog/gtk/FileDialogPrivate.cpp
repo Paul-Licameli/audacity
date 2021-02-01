@@ -278,9 +278,9 @@ bool FileDialog::Create(wxWindow *parent, const wxString& message,
 
     if (!PreCreation(parent, pos, wxDefaultSize) ||
         !CreateBase(parent, wxID_ANY, pos, wxDefaultSize, style,
-                wxDefaultValidator, wxT("filedialog")))
+                wxDefaultValidator, L"filedialog"))
     {
-        wxFAIL_MSG( wxT("FileDialog creation failed") );
+        wxFAIL_MSG( L"FileDialog creation failed" );
         return false;
     }
 
@@ -647,7 +647,7 @@ void FileDialog::GTKFilterChanged()
    if (filename.HasName())
    {
       wxString ext = m_fc.GetCurrentWildCard().AfterLast(L'.').Lower();
-      if (!ext.empty() && ext != wxT("*") && ext != filename.GetExt())
+      if (!ext.empty() && ext != L"*" && ext != filename.GetExt())
       {
          SetFileExtension(ext);
       }

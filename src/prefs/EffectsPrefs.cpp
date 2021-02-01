@@ -65,7 +65,7 @@ void EffectsPrefs::Populate()
 }
 
 ChoiceSetting EffectsGroupBy{
-   wxT("/Effects/GroupBy"),
+   L"/Effects/GroupBy",
    {
       ByColumns,
       {
@@ -76,11 +76,11 @@ ChoiceSetting EffectsGroupBy{
          XO("Grouped by Type") ,
       },
       {
-         wxT("sortby:name") ,
-         wxT("sortby:publisher:name") ,
-         wxT("sortby:type:name") ,
-         wxT("groupby:publisher") ,
-         wxT("groupby:type") ,
+         L"sortby:name" ,
+         L"sortby:publisher:name" ,
+         L"sortby:type:name" ,
+         L"groupby:publisher" ,
+         L"groupby:type" ,
       }
    },
    0 // "sortby:name"
@@ -100,30 +100,30 @@ namespace {
 const std::map< wxString, TranslatableString > SuggestedPrompts{
 
 /* i18n-hint: Audio Unit is the name of an Apple audio software protocol */
-   { wxT("AudioUnit"), XXO("Audio Unit") },
+   { L"AudioUnit", XXO("Audio Unit") },
 
 /* i18n-hint: abbreviates "Linux Audio Developer's Simple Plugin API"
    (Application programming interface)
  */
-   { wxT("LADSPA"),    XXO("&LADSPA") },
+   { L"LADSPA",    XXO("&LADSPA") },
 
 /* i18n-hint: abbreviates
    "Linux Audio Developer's Simple Plugin API (LADSPA) version 2" */
-   { wxT("LV2"),       XXO("LV&2") },
+   { L"LV2",       XXO("LV&2") },
 
 /* i18n-hint: "Nyquist" is an embedded interpreted programming language in
  Audacity, named in honor of the Swedish-American Harry Nyquist (or Nyqvist).
  In the translations of this and other strings, you may transliterate the
  name into another alphabet.  */
-   { wxT("Nyquist"),   XXO("N&yquist") },
+   { L"Nyquist",   XXO("N&yquist") },
 
 /* i18n-hint: Vamp is the proper name of a software protocol for sound analysis.
    It is not an abbreviation for anything.  See http://vamp-plugins.org */
-   { wxT("Vamp"),      XXO("&Vamp") },
+   { L"Vamp",      XXO("&Vamp") },
 
 /* i18n-hint: Abbreviates Virtual Studio Technology, an audio software protocol
    developed by Steinberg GmbH */
-   { wxT("VST"),       XXO("V&ST") },
+   { L"VST",       XXO("V&ST") },
 
 };
 
@@ -202,7 +202,7 @@ void EffectsPrefs::PopulateOrExchange(ShuttleGui & S)
             .TieChoice( XXO("S&ort or Group:"), EffectsGroupBy);
 
          S.TieIntegerTextBox(XXO("&Maximum effects per group (0 to disable):"),
-                             {wxT("/Effects/MaxPerGroup"),
+                             {L"/Effects/MaxPerGroup",
 #if defined(__WXGTK__)
                               15
 #else
@@ -219,10 +219,10 @@ void EffectsPrefs::PopulateOrExchange(ShuttleGui & S)
    S.StartStatic(XO("Plugin Options"));
    {
       S.TieCheckBox(XXO("Check for updated plugins when Audacity starts"),
-                     {wxT("/Plugins/CheckForUpdates"),
+                     {L"/Plugins/CheckForUpdates",
                      true});
       S.TieCheckBox(XXO("Rescan plugins next time Audacity is started"),
-                     {wxT("/Plugins/Rescan"),
+                     {L"/Plugins/Rescan",
                      false});
    }
    S.EndStatic();
@@ -232,7 +232,7 @@ void EffectsPrefs::PopulateOrExchange(ShuttleGui & S)
    S.StartStatic(XO("Instruction Set"));
    {
       S.TieCheckBox(XXO("&Use SSE/SSE2/.../AVX"),
-                    {wxT("/SSE/GUI"),
+                    {L"/SSE/GUI",
                     true});
    }
    S.EndStatic();

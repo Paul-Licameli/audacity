@@ -53,31 +53,31 @@ void Generate(wxDebugReport::Context ctx)
       std::atomic_bool done = {false};
       auto thread = std::thread([&]
       {
-         wxFileNameWrapper fn{ FileNames::DataDir(), wxT("audacity.cfg") };
+         wxFileNameWrapper fn{ FileNames::DataDir(), L"audacity.cfg" };
          rpt.AddFile(fn.GetFullPath(), _TS("Audacity Configuration"));
-         rpt.AddFile(FileNames::PluginRegistry(), wxT("Plugin Registry"));
-         rpt.AddFile(FileNames::PluginSettings(), wxT("Plugin Settings"));
+         rpt.AddFile(FileNames::PluginRegistry(), L"Plugin Registry");
+         rpt.AddFile(FileNames::PluginSettings(), L"Plugin Settings");
    
          if (ctx == wxDebugReport::Context_Current)
          {
             auto saveLang = Languages::GetLangShort();
-            GUIPrefs::SetLang( wxT("en") );
+            GUIPrefs::SetLang( L"en" );
             auto cleanup = finally( [&]{ GUIPrefs::SetLang( saveLang ); } );
       
             auto gAudioIO = AudioIOBase::Get();
-            rpt.AddText(wxT("audiodev.txt"), gAudioIO->GetDeviceInfo(), wxT("Audio Device Info"));
+            rpt.AddText(L"audiodev.txt", gAudioIO->GetDeviceInfo(), L"Audio Device Info");
 #ifdef EXPERIMENTAL_MIDI_OUT
-            rpt.AddText(wxT("mididev.txt"), gAudioIO->GetMidiDeviceInfo(), wxT("MIDI Device Info"));
+            rpt.AddText(L"mididev.txt", gAudioIO->GetMidiDeviceInfo(), L"MIDI Device Info");
 #endif
             auto project = GetActiveProject();
             auto &projectFileIO = ProjectFileIO::Get( *project );
-            rpt.AddText(wxT("project.txt"), projectFileIO.GenerateDoc(), wxT("Active project doc"));
+            rpt.AddText(L"project.txt", projectFileIO.GenerateDoc(), L"Active project doc");
          }
    
          auto logger = AudacityLogger::Get();
          if (logger)
          {
-            rpt.AddText(wxT("log.txt"), logger->GetLog(), _TS("Audacity Log"));
+            rpt.AddText(L"log.txt", logger->GetLog(), _TS("Audacity Log"));
          }
    
          done = true;
@@ -108,7 +108,7 @@ void Generate(wxDebugReport::Context ctx)
       dlg.SetName(dlg.GetTitle());
       dlg.ShowModal();
       
-      wxLogMessage(wxT("Report generated to: %s"),
+      wxLogMessage(L"Report generated to: %s",
                    rpt.GetCompressedFileName());
       
       rpt.Reset();

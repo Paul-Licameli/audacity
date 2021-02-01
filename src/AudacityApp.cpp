@@ -184,12 +184,12 @@ namespace {
 void PopulatePreferences()
 {
    bool resetPrefs = false;
-   wxString langCode = gPrefs->Read(wxT("/Locale/Language"), wxEmptyString);
+   wxString langCode = gPrefs->Read(L"/Locale/Language", wxEmptyString);
    bool writeLang = false;
 
    const wxFileName fn(
       FileNames::ResourcesDir(), 
-      wxT("FirstTime.ini"));
+      L"FirstTime.ini");
    if (fn.FileExists())   // it will exist if the (win) installer put it there
    {
       const wxString fullPath{fn.GetFullPath()};
@@ -200,7 +200,7 @@ void PopulatePreferences()
       auto &ini = *pIni;
 
       wxString lang;
-      if (ini.Read(wxT("/FromInno/Language"), &lang) && !lang.empty())
+      if (ini.Read(L"/FromInno/Language", &lang) && !lang.empty())
       {
          // Only change "langCode" if the language was actually specified in the ini file.
          langCode = lang;
@@ -208,10 +208,10 @@ void PopulatePreferences()
 
          // Inno Setup doesn't allow special characters in the Name values, so "0" is used
          // to represent the "@" character.
-         langCode.Replace(wxT("0"), wxT("@"));
+         langCode.Replace(L"0", L"@");
       }
 
-      ini.Read(wxT("/FromInno/ResetPrefs"), &resetPrefs, false);
+      ini.Read(L"/FromInno/ResetPrefs", &resetPrefs, false);
 
       bool gone = wxRemoveFile(fullPath);  // remove FirstTime.ini
       if (!gone)
@@ -249,7 +249,7 @@ void PopulatePreferences()
    // Save the specified language
    if (writeLang)
    {
-      gPrefs->Write(wxT("/Locale/Language"), langCode);
+      gPrefs->Write(L"/Locale/Language", langCode);
    }
 
    // In AUdacity 2.1.0 support for the legacy 1.2.x preferences (depreciated since Audacity
@@ -257,23 +257,23 @@ void PopulatePreferences()
    // first time this version of Audacity is run we try to migrate
    // old preferences.
    bool newPrefsInitialized = false;
-   gPrefs->Read(wxT("/NewPrefsInitialized"), &newPrefsInitialized, false);
+   gPrefs->Read(L"/NewPrefsInitialized", &newPrefsInitialized, false);
    if (newPrefsInitialized) {
-      gPrefs->DeleteEntry(wxT("/NewPrefsInitialized"), true);  // take group as well if empty
+      gPrefs->DeleteEntry(L"/NewPrefsInitialized", true);  // take group as well if empty
    }
 
    // record the Prefs version for future checking (this has not been used for a very
    // long time).
-   gPrefs->Write(wxT("/PrefsVersion"), wxString(wxT(AUDACITY_PREFS_VERSION_STRING)));
+   gPrefs->Write(L"/PrefsVersion", wxString(wxT(AUDACITY_PREFS_VERSION_STRING)));
 
    // Check if some prefs updates need to happen based on audacity version.
    // Unfortunately we can't use the PrefsVersion prefs key because that resets things.
    // In the future we may want to integrate that better.
    // these are done on a case-by-case basis for now so they must be backwards compatible
    // (meaning the changes won't mess audacity up if the user goes back to an earlier version)
-   int vMajor = gPrefs->Read(wxT("/Version/Major"), (long) 0);
-   int vMinor = gPrefs->Read(wxT("/Version/Minor"), (long) 0);
-   int vMicro = gPrefs->Read(wxT("/Version/Micro"), (long) 0);
+   int vMajor = gPrefs->Read(L"/Version/Major", (long) 0);
+   int vMinor = gPrefs->Read(L"/Version/Minor", (long) 0);
+   int vMicro = gPrefs->Read(L"/Version/Micro", (long) 0);
 
    gPrefs->SetVersionKeysInit(vMajor, vMinor, vMicro);   // make a note of these initial values
                                                             // for use by ToolManager::ReadConfig()
@@ -287,46 +287,46 @@ void PopulatePreferences()
 
 
       // Do a full reset of the Device Toolbar to get it on the screen.
-      if (gPrefs->Exists(wxT("/GUI/ToolBars/Device")))
-         gPrefs->DeleteGroup(wxT("/GUI/ToolBars/Device"));
+      if (gPrefs->Exists(L"/GUI/ToolBars/Device"))
+         gPrefs->DeleteGroup(L"/GUI/ToolBars/Device");
 
       // We keep the mixer toolbar prefs (shown/not shown)
       // the width of the mixer toolbar may have shrunk, the prefs will keep the larger value
       // if the user had a device that had more than one source.
-      if (gPrefs->Exists(wxT("/GUI/ToolBars/Mixer"))) {
+      if (gPrefs->Exists(L"/GUI/ToolBars/Mixer")) {
          // Use the default width
-         gPrefs->Write(wxT("/GUI/ToolBars/Mixer/W"), -1);
+         gPrefs->Write(L"/GUI/ToolBars/Mixer/W", -1);
       }
    }
 
    // In 2.1.0, the Meter toolbar was split and lengthened, but strange arrangements happen
    // if upgrading due to the extra length.  So, if a user is upgrading, use the pre-2.1.0
    // lengths, but still use the NEW split versions.
-   if (gPrefs->Exists(wxT("/GUI/ToolBars/Meter")) &&
-      !gPrefs->Exists(wxT("/GUI/ToolBars/CombinedMeter"))) {
+   if (gPrefs->Exists(L"/GUI/ToolBars/Meter") &&
+      !gPrefs->Exists(L"/GUI/ToolBars/CombinedMeter")) {
 
       // Read in all of the existing values
       long dock, order, show, x, y, w, h;
-      gPrefs->Read(wxT("/GUI/ToolBars/Meter/Dock"), &dock, -1);
-      gPrefs->Read(wxT("/GUI/ToolBars/Meter/Order"), &order, -1);
-      gPrefs->Read(wxT("/GUI/ToolBars/Meter/Show"), &show, -1);
-      gPrefs->Read(wxT("/GUI/ToolBars/Meter/X"), &x, -1);
-      gPrefs->Read(wxT("/GUI/ToolBars/Meter/Y"), &y, -1);
-      gPrefs->Read(wxT("/GUI/ToolBars/Meter/W"), &w, -1);
-      gPrefs->Read(wxT("/GUI/ToolBars/Meter/H"), &h, -1);
+      gPrefs->Read(L"/GUI/ToolBars/Meter/Dock", &dock, -1);
+      gPrefs->Read(L"/GUI/ToolBars/Meter/Order", &order, -1);
+      gPrefs->Read(L"/GUI/ToolBars/Meter/Show", &show, -1);
+      gPrefs->Read(L"/GUI/ToolBars/Meter/X", &x, -1);
+      gPrefs->Read(L"/GUI/ToolBars/Meter/Y", &y, -1);
+      gPrefs->Read(L"/GUI/ToolBars/Meter/W", &w, -1);
+      gPrefs->Read(L"/GUI/ToolBars/Meter/H", &h, -1);
 
       // "Order" must be adjusted since we're inserting two NEW toolbars
       if (dock > 0) {
          wxString oldPath = gPrefs->GetPath();
-         gPrefs->SetPath(wxT("/GUI/ToolBars"));
+         gPrefs->SetPath(L"/GUI/ToolBars");
 
          wxString bar;
          long ndx = 0;
          bool cont = gPrefs->GetFirstGroup(bar, ndx);
          while (cont) {
             long o;
-            if (gPrefs->Read(bar + wxT("/Order"), &o) && o >= order) {
-               gPrefs->Write(bar + wxT("/Order"), o + 2);
+            if (gPrefs->Read(bar + L"/Order", &o) && o >= order) {
+               gPrefs->Write(bar + L"/Order", o + 2);
             }
             cont = gPrefs->GetNextGroup(bar, ndx);
          }
@@ -337,52 +337,52 @@ void PopulatePreferences()
       }
 
       // Write the split meter bar values
-      gPrefs->Write(wxT("/GUI/ToolBars/RecordMeter/Dock"), dock);
-      gPrefs->Write(wxT("/GUI/ToolBars/RecordMeter/Order"), order);
-      gPrefs->Write(wxT("/GUI/ToolBars/RecordMeter/Show"), show);
-      gPrefs->Write(wxT("/GUI/ToolBars/RecordMeter/X"), -1);
-      gPrefs->Write(wxT("/GUI/ToolBars/RecordMeter/Y"), -1);
-      gPrefs->Write(wxT("/GUI/ToolBars/RecordMeter/W"), w);
-      gPrefs->Write(wxT("/GUI/ToolBars/RecordMeter/H"), h);
-      gPrefs->Write(wxT("/GUI/ToolBars/PlayMeter/Dock"), dock);
-      gPrefs->Write(wxT("/GUI/ToolBars/PlayMeter/Order"), order + 1);
-      gPrefs->Write(wxT("/GUI/ToolBars/PlayMeter/Show"), show);
-      gPrefs->Write(wxT("/GUI/ToolBars/PlayMeter/X"), -1);
-      gPrefs->Write(wxT("/GUI/ToolBars/PlayMeter/Y"), -1);
-      gPrefs->Write(wxT("/GUI/ToolBars/PlayMeter/W"), w);
-      gPrefs->Write(wxT("/GUI/ToolBars/PlayMeter/H"), h);
+      gPrefs->Write(L"/GUI/ToolBars/RecordMeter/Dock", dock);
+      gPrefs->Write(L"/GUI/ToolBars/RecordMeter/Order", order);
+      gPrefs->Write(L"/GUI/ToolBars/RecordMeter/Show", show);
+      gPrefs->Write(L"/GUI/ToolBars/RecordMeter/X", -1);
+      gPrefs->Write(L"/GUI/ToolBars/RecordMeter/Y", -1);
+      gPrefs->Write(L"/GUI/ToolBars/RecordMeter/W", w);
+      gPrefs->Write(L"/GUI/ToolBars/RecordMeter/H", h);
+      gPrefs->Write(L"/GUI/ToolBars/PlayMeter/Dock", dock);
+      gPrefs->Write(L"/GUI/ToolBars/PlayMeter/Order", order + 1);
+      gPrefs->Write(L"/GUI/ToolBars/PlayMeter/Show", show);
+      gPrefs->Write(L"/GUI/ToolBars/PlayMeter/X", -1);
+      gPrefs->Write(L"/GUI/ToolBars/PlayMeter/Y", -1);
+      gPrefs->Write(L"/GUI/ToolBars/PlayMeter/W", w);
+      gPrefs->Write(L"/GUI/ToolBars/PlayMeter/H", h);
 
       // And hide the old combined meter bar
-      gPrefs->Write(wxT("/GUI/ToolBars/Meter/Dock"), -1);
+      gPrefs->Write(L"/GUI/ToolBars/Meter/Dock", -1);
    }
 
    // Upgrading pre 2.2.0 configs we assume extended set of defaults.
    if ((0<vMajor && vMajor < 2) ||
        (vMajor == 2 && vMinor < 2))
    {
-      gPrefs->Write(wxT("/GUI/Shortcuts/FullDefaults"),1);
+      gPrefs->Write(L"/GUI/Shortcuts/FullDefaults",1);
    }
 
    // Upgrading pre 2.4.0 configs, the selection toolbar is now split.
    if ((0<vMajor && vMajor < 2) ||
        (vMajor == 2 && vMinor < 4))
    {
-      gPrefs->Write(wxT("/GUI/Toolbars/Selection/W"),"");
-      gPrefs->Write(wxT("/GUI/Toolbars/SpectralSelection/W"),"");
-      gPrefs->Write(wxT("/GUI/Toolbars/Time/X"),-1);
-      gPrefs->Write(wxT("/GUI/Toolbars/Time/Y"),-1);
-      gPrefs->Write(wxT("/GUI/Toolbars/Time/H"),55);
-      gPrefs->Write(wxT("/GUI/Toolbars/Time/W"),251);
-      gPrefs->Write(wxT("/GUI/Toolbars/Time/DockV2"),2);
-      gPrefs->Write(wxT("/GUI/Toolbars/Time/Dock"),2);
-      gPrefs->Write(wxT("/GUI/Toolbars/Time/Path"),"0,1");
-      gPrefs->Write(wxT("/GUI/Toolbars/Time/Show"),1);
+      gPrefs->Write(L"/GUI/Toolbars/Selection/W","");
+      gPrefs->Write(L"/GUI/Toolbars/SpectralSelection/W","");
+      gPrefs->Write(L"/GUI/Toolbars/Time/X",-1);
+      gPrefs->Write(L"/GUI/Toolbars/Time/Y",-1);
+      gPrefs->Write(L"/GUI/Toolbars/Time/H",55);
+      gPrefs->Write(L"/GUI/Toolbars/Time/W",251);
+      gPrefs->Write(L"/GUI/Toolbars/Time/DockV2",2);
+      gPrefs->Write(L"/GUI/Toolbars/Time/Dock",2);
+      gPrefs->Write(L"/GUI/Toolbars/Time/Path","0,1");
+      gPrefs->Write(L"/GUI/Toolbars/Time/Show",1);
    }
 
    // write out the version numbers to the prefs file for future checking
-   gPrefs->Write(wxT("/Version/Major"), AUDACITY_VERSION);
-   gPrefs->Write(wxT("/Version/Minor"), AUDACITY_RELEASE);
-   gPrefs->Write(wxT("/Version/Micro"), AUDACITY_REVISION);
+   gPrefs->Write(L"/Version/Major", AUDACITY_VERSION);
+   gPrefs->Write(L"/Version/Minor", AUDACITY_RELEASE);
+   gPrefs->Write(L"/Version/Micro", AUDACITY_REVISION);
 
    gPrefs->Flush();
 }
@@ -468,7 +468,7 @@ static void QuitAudacity(bool bForce)
    auto logger = AudacityLogger::Get();
    if (logger)
    {
-      wxFileName logFile(FileNames::DataDir(), wxT("lastlog.txt"));
+      wxFileName logFile(FileNames::DataDir(), L"lastlog.txt");
       logger->SaveLog(logFile.GetFullPath());
    }
 
@@ -669,8 +669,8 @@ static wxArrayString ofqueue;
 // of Audacity.
 //
 
-#define IPC_APPL wxT("audacity")
-#define IPC_TOPIC wxT("System")
+#define IPC_APPL L"audacity"
+#define IPC_TOPIC L"System"
 
 class IPCConn final : public wxConnection
 {
@@ -932,7 +932,7 @@ void AudacityApp::OnTimer(wxTimerEvent& WXUNUSED(event))
             if (!SafeMRUOpen(name)) {
                // Just log it.  Assertion failure is not appropriate on valid
                // defensive path against bad file data.
-               wxLogMessage(wxT("MRUOpen failed"));
+               wxLogMessage(L"MRUOpen failed");
             }
          }
       }
@@ -949,9 +949,9 @@ void AudacityApp::OnTimer(wxTimerEvent& WXUNUSED(event))
 wxLanguageInfo userLangs[] =
 {
    // Bosnian is defined in wxWidgets already
-//   { wxLANGUAGE_USER_DEFINED, wxT("bs"), WL(0, SUBLANG_DEFAULT) wxT("Bosnian"), wxLayout_LeftToRight },
+//   { wxLANGUAGE_USER_DEFINED, L"bs", WL(0, SUBLANG_DEFAULT) L"Bosnian", wxLayout_LeftToRight },
 
-   { wxLANGUAGE_USER_DEFINED, wxT("eu"), WL(0, SUBLANG_DEFAULT) wxT("Basque"), wxLayout_LeftToRight },
+   { wxLANGUAGE_USER_DEFINED, L"eu", WL(0, SUBLANG_DEFAULT) L"Basque", wxLayout_LeftToRight },
 };
 #endif
 
@@ -1115,9 +1115,9 @@ bool AudacityApp::OnInit()
 
 // DA: App name
 #ifndef EXPERIMENTAL_DA
-   wxString appName = wxT("Audacity");
+   wxString appName = L"Audacity";
 #else
-   wxString appName = wxT("DarkAudacity");
+   wxString appName = L"DarkAudacity";
 #endif
 
    wxTheApp->SetAppName(appName);
@@ -1147,23 +1147,23 @@ bool AudacityApp::OnInit()
       * The "share" and "share/doc" directories in their install path */
    wxString home = wxGetHomeDir();
 
-   wxString envTempDir = wxGetenv(wxT("TMPDIR"));
+   wxString envTempDir = wxGetenv(L"TMPDIR");
    if (!envTempDir.empty()) {
       /* On Unix systems, the environment variable TMPDIR may point to
          an unusual path when /tmp and /var/tmp are not desirable. */
       TempDirectory::SetDefaultTempDir( wxString::Format(
-         wxT("%s/audacity-%s"), envTempDir, wxGetUserId() ) );
+         L"%s/audacity-%s", envTempDir, wxGetUserId() ) );
    } else {
       /* On Unix systems, the default temp dir is in /var/tmp. */
       TempDirectory::SetDefaultTempDir( wxString::Format(
-         wxT("/var/tmp/audacity-%s"), wxGetUserId() ) );
+         L"/var/tmp/audacity-%s", wxGetUserId() ) );
    }
 
 // DA: Path env variable.
 #ifndef EXPERIMENTAL_DA
-   wxString pathVar = wxGetenv(wxT("AUDACITY_PATH"));
+   wxString pathVar = wxGetenv(L"AUDACITY_PATH");
 #else
-   wxString pathVar = wxGetenv(wxT("DARKAUDACITY_PATH"));
+   wxString pathVar = wxGetenv(L"DARKAUDACITY_PATH");
 #endif
    if (!pathVar.empty())
       FileNames::AddMultiPathsToPathList(pathVar, audacityPathList);
@@ -1177,36 +1177,37 @@ bool AudacityApp::OnInit()
    FileNames::AddUniquePathToPathList(FileNames::DataDir(), audacityPathList);
 
 #ifdef AUDACITY_NAME
-   FileNames::AddUniquePathToPathList(wxString::Format(wxT("%s/.%s-files"),
+   FileNames::AddUniquePathToPathList(wxString::Format(L"%s/.%s-files",
       home, wxT(AUDACITY_NAME)),
       audacityPathList);
    FileNames::AddUniquePathToPathList(FileNames::ModulesDir(),
       audacityPathList);
-   FileNames::AddUniquePathToPathList(wxString::Format(wxT("%s/share/%s"),
+   FileNames::AddUniquePathToPathList(wxString::Format(L"%s/share/%s",
+prefix...
       wxT(INSTALL_PREFIX), wxT(AUDACITY_NAME)),
       audacityPathList);
-   FileNames::AddUniquePathToPathList(wxString::Format(wxT("%s/share/doc/%s"),
+   FileNames::AddUniquePathToPathList(wxString::Format(L"%s/share/doc/%s",
       wxT(INSTALL_PREFIX), wxT(AUDACITY_NAME)),
       audacityPathList);
 #else //AUDACITY_NAME
-   FileNames::AddUniquePathToPathList(wxString::Format(wxT("%s/.audacity-files"),
+   FileNames::AddUniquePathToPathList(wxString::Format(L"%s/.audacity-files",
       home),
       audacityPathList)
    FileNames::AddUniquePathToPathList(FileNames::ModulesDir(),
       audacityPathList);
-   FileNames::AddUniquePathToPathList(wxString::Format(wxT("%s/share/audacity"),
+   FileNames::AddUniquePathToPathList(wxString::Format(L"%s/share/audacity",
       wxT(INSTALL_PREFIX)),
       audacityPathList);
-   FileNames::AddUniquePathToPathList(wxString::Format(wxT("%s/share/doc/audacity"),
+   FileNames::AddUniquePathToPathList(wxString::Format(L"%s/share/doc/audacity",
       wxT(INSTALL_PREFIX)),
       audacityPathList);
 #endif //AUDACITY_NAME
 
-   FileNames::AddUniquePathToPathList(wxString::Format(wxT("%s/share/locale"),
+   FileNames::AddUniquePathToPathList(wxString::Format(L"%s/share/locale",
       wxT(INSTALL_PREFIX)),
       audacityPathList);
 
-   FileNames::AddUniquePathToPathList(wxString::Format(wxT("./locale")),
+   FileNames::AddUniquePathToPathList(wxString::Format(L"./locale"),
       audacityPathList);
 
 #endif //__WXGTK__
@@ -1218,7 +1219,7 @@ bool AudacityApp::OnInit()
    wxString tmpDirLoc = tmpFile.GetPath(wxPATH_GET_VOLUME);
 #else
    wxFileName tmpFile;
-   tmpFile.AssignTempFileName(wxT("nn"));
+   tmpFile.AssignTempFileName(L"nn");
    wxString tmpDirLoc = tmpFile.GetPath(wxPATH_GET_VOLUME);
    ::wxRemoveFile(tmpFile.GetFullPath());
 #endif
@@ -1230,12 +1231,12 @@ bool AudacityApp::OnInit()
    // On Windows, the path to the Audacity program is in argv[0]
    wxString progPath = wxPathOnly(argv[0]);
    FileNames::AddUniquePathToPathList(progPath, audacityPathList);
-   FileNames::AddUniquePathToPathList(progPath + wxT("\\Languages"), audacityPathList);
+   FileNames::AddUniquePathToPathList(progPath + L"\\Languages", audacityPathList);
 
    // See bug #1271 for explanation of location
    tmpDirLoc = FileNames::MkDir(wxStandardPaths::Get().GetUserLocalDataDir());
    TempDirectory::SetDefaultTempDir( wxString::Format(
-      wxT("%s\\SessionData"), tmpDirLoc ) );
+      L"%s\\SessionData", tmpDirLoc ) );
 #endif //__WXWSW__
 
 #ifdef __WXMAC__
@@ -1245,21 +1246,21 @@ bool AudacityApp::OnInit()
    FileNames::AddUniquePathToPathList(progPath, audacityPathList);
    // If Audacity is a "bundle" package, then the root directory is
    // the great-great-grandparent of the directory containing the executable.
-   //FileNames::AddUniquePathToPathList(progPath + wxT("/../../../"), audacityPathList);
+   //FileNames::AddUniquePathToPathList(progPath + L"/../../../", audacityPathList);
 
    // These allow for searching the "bundle"
    FileNames::AddUniquePathToPathList(
-      progPath + wxT("/../"), audacityPathList);
+      progPath + L"/../", audacityPathList);
    FileNames::AddUniquePathToPathList(
-      progPath + wxT("/../Resources"), audacityPathList);
+      progPath + L"/../Resources", audacityPathList);
 
    // JKC Bug 1220: Using an actual temp directory for session data on Mac was
    // wrong because it would get cleared out on a reboot.
    TempDirectory::SetDefaultTempDir( wxString::Format(
-      wxT("%s/Library/Application Support/audacity/SessionData"), tmpDirLoc) );
+      L"%s/Library/Application Support/audacity/SessionData", tmpDirLoc) );
 
    //TempDirectory::SetDefaultTempDir( wxString::Format(
-   //   wxT("%s/audacity-%s"),
+   //   L"%s/audacity-%s",
    //   tmpDirLoc,
    //   wxGetUserId() ) );
 #endif //__WXMAC__
@@ -1280,7 +1281,7 @@ bool AudacityApp::OnInit()
 
    // Initialize preferences and language
    {
-      wxFileName configFileName(FileNames::DataDir(), wxT("audacity.cfg"));
+      wxFileName configFileName(FileNames::DataDir(), L"audacity.cfg");
       auto appName = wxTheApp->GetAppName();
       InitPreferences( AudacityFileConfig::Create(
          appName, wxEmptyString,
@@ -1370,14 +1371,14 @@ bool AudacityApp::InitPart2()
       exit(1);
    }
 
-   if (parser->Found(wxT("v")))
+   if (parser->Found(L"v"))
    {
       wxPrintf("Audacity v%s\n", AUDACITY_VERSION_STRING);
       exit(0);
    }
 
    long lval;
-   if (parser->Found(wxT("b"), &lval))
+   if (parser->Found(L"b", &lval))
    {
       if (lval < 256 || lval > 100000000)
       {
@@ -1448,11 +1449,11 @@ bool AudacityApp::InitPart2()
       auto fileMenu = std::make_unique<wxMenu>();
       auto urecentMenu = std::make_unique<wxMenu>();
       auto recentMenu = urecentMenu.get();
-      fileMenu->Append(wxID_NEW, wxString(_("&New")) + wxT("\tCtrl+N"));
-      fileMenu->Append(wxID_OPEN, wxString(_("&Open...")) + wxT("\tCtrl+O"));
+      fileMenu->Append(wxID_NEW, wxString(_("&New")) + L"\tCtrl+N");
+      fileMenu->Append(wxID_OPEN, wxString(_("&Open...")) + L"\tCtrl+O");
       fileMenu->AppendSubMenu(urecentMenu.release(), _("Open &Recent..."));
       fileMenu->Append(wxID_ABOUT, _("&About Audacity..."));
-      fileMenu->Append(wxID_PREFERENCES, wxString(_("&Preferences...")) + wxT("\tCtrl+,"));
+      fileMenu->Append(wxID_PREFERENCES, wxString(_("&Preferences...")) + L"\tCtrl+,");
 
       {
          auto menuBar = std::make_unique<wxMenuBar>();
@@ -1524,7 +1525,7 @@ bool AudacityApp::InitPart2()
       //
       if (project && !didRecoverAnything)
       {
-         if (parser->Found(wxT("t")))
+         if (parser->Found(L"t"))
          {
             RunBenchmark( nullptr, *project);
             QuitAudacity(true);
@@ -1573,10 +1574,10 @@ bool AudacityApp::InitPart2()
    // This should resolve confusion of why Audacity appears to record, but only
    // gets silence due to Audacity being denied microphone access previously.
    bool permsReset = false;
-   gPrefs->Read(wxT("/MicrophonePermissionsReset"), &permsReset, false);
+   gPrefs->Read(L"/MicrophonePermissionsReset", &permsReset, false);
    if (!permsReset) {
       system("tccutil reset Microphone org.audacityteam.audacity");
-      gPrefs->Write(wxT("/MicrophonePermissionsReset"), true);
+      gPrefs->Write(L"/MicrophonePermissionsReset", true);
    }
 #endif
 
@@ -1584,7 +1585,7 @@ bool AudacityApp::InitPart2()
    // Bug 2709: Workaround CoreSVG locale issue
    Bind(wxEVT_MENU_OPEN, [=](wxMenuEvent &event)
    {
-      wxSetlocale(LC_NUMERIC, wxString(wxT("C")));
+      wxSetlocale(LC_NUMERIC, wxString(L"C"));
       event.Skip();
    });
 
@@ -1663,7 +1664,7 @@ bool AudacityApp::InitTempDir()
 
    #ifdef __WXGTK__
    if (tempFromPrefs.length() > 0 && tempFromPrefs[0] != L'/')
-      tempFromPrefs = wxT("");
+      tempFromPrefs = L"";
    #endif
 
    // Stop wxWidgets from printing its own error messages
@@ -1732,7 +1733,7 @@ bool AudacityApp::InitTempDir()
 
 bool AudacityApp::CreateSingleInstanceChecker(const wxString &dir)
 {
-   wxString name = wxString::Format(wxT("audacity-lock-%s"), wxGetUserId());
+   wxString name = wxString::Format(L"audacity-lock-%s", wxGetUserId());
    mChecker.reset();
    auto checker = std::make_unique<wxSingleInstanceChecker>();
 
@@ -1764,7 +1765,7 @@ bool AudacityApp::CreateSingleInstanceChecker(const wxString &dir)
          return false;
       }
 
-      if (parser->Found(wxT("v")))
+      if (parser->Found(L"v"))
       {
          wxPrintf("Audacity v%s\n", AUDACITY_VERSION_STRING);
          return false;
@@ -2056,7 +2057,7 @@ bool AudacityApp::CreateSingleInstanceChecker(const wxString &dir)
    }
 
    // Display Audacity's version if requested
-   if (parser->Found(wxT("v")))
+   if (parser->Found(L"v"))
    {
       wxPrintf("Audacity v%s\n", AUDACITY_VERSION_STRING);
 
@@ -2145,18 +2146,18 @@ std::unique_ptr<wxCmdLineParser> AudacityApp::ParseCommandLine()
 
    /*i18n-hint: This controls the number of bytes that Audacity will
     *           use when writing files to the disk */
-   parser->AddOption(wxT("b"), wxT("blocksize"), _("set max disk block size in bytes"),
+   parser->AddOption(L"b", L"blocksize", _("set max disk block size in bytes"),
                      wxCMD_LINE_VAL_NUMBER);
 
    /*i18n-hint: This displays a list of available options */
-   parser->AddSwitch(wxT("h"), wxT("help"), _("this help message"),
+   parser->AddSwitch(L"h", L"help", _("this help message"),
                      wxCMD_LINE_OPTION_HELP);
 
    /*i18n-hint: This runs a set of automatic tests on Audacity itself */
-   parser->AddSwitch(wxT("t"), wxT("test"), _("run self diagnostics"));
+   parser->AddSwitch(L"t", L"test", _("run self diagnostics"));
 
    /*i18n-hint: This displays the Audacity version */
-   parser->AddSwitch(wxT("v"), wxT("version"), _("display Audacity version"));
+   parser->AddSwitch(L"v", L"version", _("display Audacity version"));
 
    /*i18n-hint: This is a list of one or more files that Audacity
     *           should open upon startup */
@@ -2218,10 +2219,10 @@ int AudacityApp::OnExit()
    {
       bool bFalse = false;
       //Should we change the commands.cfg location next startup?
-      if(gPrefs->Read(wxT("/QDeleteCmdCfgLocation"), &bFalse))
+      if(gPrefs->Read(L"/QDeleteCmdCfgLocation", &bFalse))
       {
-         gPrefs->DeleteEntry(wxT("/QDeleteCmdCfgLocation"));
-         gPrefs->Write(wxT("/DeleteCmdCfgLocation"), true);
+         gPrefs->DeleteEntry(L"/QDeleteCmdCfgLocation");
+         gPrefs->Write(L"/DeleteCmdCfgLocation", true);
          gPrefs->Flush();
       }
    }
@@ -2358,7 +2359,7 @@ void AudacityApp::AssociateFileTypes()
 {
    // Check pref in case user has already decided against it.
    bool bWantAssociateFiles = true;
-   if (gPrefs->Read(wxT("/WantAssociateFiles"), &bWantAssociateFiles) &&
+   if (gPrefs->Read(L"/WantAssociateFiles", &bWantAssociateFiles) &&
          !bWantAssociateFiles)
    {
       // User has already decided against it
@@ -2369,12 +2370,12 @@ void AudacityApp::AssociateFileTypes()
 
    auto IsDefined = [&](const wxString &type)
    {
-      associateFileTypes.SetName(wxString::Format(wxT("HKCR\\%s"), type));
+      associateFileTypes.SetName(wxString::Format(L"HKCR\\%s", type));
       bool bKeyExists = associateFileTypes.Exists();
       if (!bKeyExists)
       {
          // Not at HKEY_CLASSES_ROOT. Try HKEY_CURRENT_USER.
-         associateFileTypes.SetName(wxString::Format(wxT("HKCU\\Software\\Classes\\%s"), type));
+         associateFileTypes.SetName(wxString::Format(L"HKCU\\Software\\Classes\\%s", type));
          bKeyExists = associateFileTypes.Exists();
       }
       return bKeyExists;
@@ -2382,15 +2383,15 @@ void AudacityApp::AssociateFileTypes()
 
    auto DefineType = [&](const wxString &type)
    {
-      wxString root_key = wxT("HKCU\\Software\\Classes\\");
+      wxString root_key = L"HKCU\\Software\\Classes\\";
 
       // Start with HKEY_CLASSES_CURRENT_USER.
-      associateFileTypes.SetName(wxString::Format(wxT("%s%s"), root_key, type));
+      associateFileTypes.SetName(wxString::Format(L"%s%s", root_key, type));
       if (!associateFileTypes.Create(true))
       {
          // Not at HKEY_CLASSES_CURRENT_USER. Try HKEY_CURRENT_ROOT.
-         root_key = wxT("HKCR\\");
-         associateFileTypes.SetName(wxString::Format(wxT("%s%s"), root_key, type));
+         root_key = L"HKCR\\";
+         associateFileTypes.SetName(wxString::Format(L"%s%s", root_key, type));
          if (!associateFileTypes.Create(true))
          {
             // Actually, can't create keys. Empty root_key to flag failure.
@@ -2400,14 +2401,14 @@ void AudacityApp::AssociateFileTypes()
 
       if (!root_key.empty())
       {
-         associateFileTypes = wxT("Audacity.Project"); // Finally set value for the key
+         associateFileTypes = L"Audacity.Project"; // Finally set value for the key
       }
 
       return root_key;
    };
 
    // Check for legacy and UP types
-   if (IsDefined(wxT(".aup3")) && IsDefined(wxT(".aup")) && IsDefined(wxT("Audacity.Project")))
+   if (IsDefined(L".aup3") && IsDefined(L".aup") && IsDefined(L"Audacity.Project"))
    {
       // Already defined, so bail
       return;
@@ -2424,48 +2425,48 @@ void AudacityApp::AssociateFileTypes()
    if (wantAssoc == wxNO)
    {
       // User said no. Set a pref so we don't keep asking.
-      gPrefs->Write(wxT("/WantAssociateFiles"), false);
+      gPrefs->Write(L"/WantAssociateFiles", false);
       gPrefs->Flush();
       return;
    }
 
    // Show that user wants associations
-   gPrefs->Write(wxT("/WantAssociateFiles"), true);
+   gPrefs->Write(L"/WantAssociateFiles", true);
    gPrefs->Flush();
 
    wxString root_key;
 
-   root_key = DefineType(wxT(".aup3"));
+   root_key = DefineType(L".aup3");
    if (root_key.empty())
    {
       //v Warn that we can't set keys. Ask whether to set pref for no retry?
    }
    else
    {
-      DefineType(wxT(".aup"));
+      DefineType(L".aup");
 
-      associateFileTypes = wxT("Audacity.Project"); // Finally set value for .AUP key
-      associateFileTypes.SetName(root_key + wxT("Audacity.Project"));
+      associateFileTypes = L"Audacity.Project"; // Finally set value for .AUP key
+      associateFileTypes.SetName(root_key + L"Audacity.Project");
       if (!associateFileTypes.Exists())
       {
          associateFileTypes.Create(true);
-         associateFileTypes = wxT("Audacity Project File");
+         associateFileTypes = L"Audacity Project File";
       }
 
-      associateFileTypes.SetName(root_key + wxT("Audacity.Project\\shell"));
+      associateFileTypes.SetName(root_key + L"Audacity.Project\\shell");
       if (!associateFileTypes.Exists())
       {
          associateFileTypes.Create(true);
-         associateFileTypes = wxT("");
+         associateFileTypes = L"";
       }
 
-      associateFileTypes.SetName(root_key + wxT("Audacity.Project\\shell\\open"));
+      associateFileTypes.SetName(root_key + L"Audacity.Project\\shell\\open");
       if (!associateFileTypes.Exists())
       {
          associateFileTypes.Create(true);
       }
 
-      associateFileTypes.SetName(root_key + wxT("Audacity.Project\\shell\\open\\command"));
+      associateFileTypes.SetName(root_key + L"Audacity.Project\\shell\\open\\command");
       wxString tmpRegAudPath;
       if(associateFileTypes.Exists())
       {
@@ -2473,31 +2474,31 @@ void AudacityApp::AssociateFileTypes()
       }
 
       if (!associateFileTypes.Exists() ||
-            (tmpRegAudPath.Find(wxT("audacity.exe")) >= 0))
+            (tmpRegAudPath.Find(L"audacity.exe") >= 0))
       {
          associateFileTypes.Create(true);
-         associateFileTypes = (wxString)argv[0] + (wxString)wxT(" \"%1\"");
+         associateFileTypes = (wxString)argv[0] + (wxString)L" \"%1\"";
       }
 
 #if 0
       // These can be use later to support more startup messages
       // like maybe "Import into existing project" or some such.
       // Leaving here for an example...
-      associateFileTypes.SetName(root_key + wxT("Audacity.Project\\shell\\open\\ddeexec"));
+      associateFileTypes.SetName(root_key + L"Audacity.Project\\shell\\open\\ddeexec");
       if (!associateFileTypes.Exists())
       {
          associateFileTypes.Create(true);
-         associateFileTypes = wxT("%1");
+         associateFileTypes = L"%1";
       }
 
-      associateFileTypes.SetName(root_key + wxT("Audacity.Project\\shell\\open\\ddeexec\\Application"));
+      associateFileTypes.SetName(root_key + L"Audacity.Project\\shell\\open\\ddeexec\\Application");
       if (!associateFileTypes.Exists())
       {
          associateFileTypes.Create(true);
          associateFileTypes = IPC_APPL;
       }
 
-      associateFileTypes.SetName(root_key + wxT("Audacity.Project\\shell\\open\\ddeexec\\Topic"));
+      associateFileTypes.SetName(root_key + L"Audacity.Project\\shell\\open\\ddeexec\\Topic");
       if (!associateFileTypes.Exists())
       {
          associateFileTypes.Create(true);

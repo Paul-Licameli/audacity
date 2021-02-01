@@ -51,9 +51,9 @@ enum
 // Define keys, defaults, minimums, and maximums for the effect parameters
 //
 //     Name       Type     Key                     Def         Min         Max            Scale
-Param( Ratio,     float,   wxT("Ratio"),            0.9f,       0.003162f,  316.227766f,   1.0f  );
-Param( Amp,       float,   wxT(""),                -0.91515f,  -50.0f,     50.0f,         10.0f );
-Param( Clipping,  bool,    wxT("AllowClipping"),    false,    false,  true,    1  );
+Param( Ratio,     float,   L"Ratio",            0.9f,       0.003162f,  316.227766f,   1.0f  );
+Param( Amp,       float,   L"",                -0.91515f,  -50.0f,     50.0f,         10.0f );
+Param( Clipping,  bool,    L"AllowClipping",    false,    false,  true,    1  );
 
 //
 // EffectAmplify
@@ -101,7 +101,7 @@ TranslatableString EffectAmplify::GetDescription()
 
 wxString EffectAmplify::ManualPage()
 {
-   return wxT("Amplify");
+   return L"Amplify";
 }
 
 // EffectDefinitionInterface implementation
@@ -245,7 +245,7 @@ void EffectAmplify::PopulateOrExchange(ShuttleGui & S)
             .Validator<FloatingPointValidator<double>>(
                precision, &mAmp, NumValidatorStyle::ONE_TRAILING_ZERO, MIN_Amp, MAX_Amp
             )
-            .AddTextBox(XXO("&Amplification (dB):"), wxT(""), 12);
+            .AddTextBox(XXO("&Amplification (dB):"), L"", 12);
       }
       S.EndMultiColumn();
 
@@ -272,7 +272,7 @@ void EffectAmplify::PopulateOrExchange(ShuttleGui & S)
                RoundValue( precision + 1, MIN_Amp + LINEAR_TO_DB(mPeak) ),
                RoundValue( precision + 1, MAX_Amp + LINEAR_TO_DB(mPeak) )
             )
-            .AddTextBox(XXO("&New Peak Amplitude (dB):"), wxT(""), 12);
+            .AddTextBox(XXO("&New Peak Amplitude (dB):"), L"", 12);
       }
       S.EndMultiColumn();
 

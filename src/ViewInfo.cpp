@@ -181,7 +181,7 @@ ViewInfo::ViewInfo(double start, double screenDuration, double pixelsPerSecond)
 void ViewInfo::UpdateSelectedPrefs( int id )
 {
    if (id == UpdateScrollPrefsID())
-      gPrefs->Read(wxT("/GUI/AutoScroll"), &bUpdateTrackIndicator,
+      gPrefs->Read(L"/GUI/AutoScroll", &bUpdateTrackIndicator,
                    true);
    ZoomInfo::UpdateSelectedPrefs( id );
 }
@@ -193,7 +193,7 @@ void ViewInfo::UpdatePrefs()
    gPrefs->Read(TracksBehaviorsPrefs::ScrollingPreferenceKey(), &bScrollBeyondZero,
                 TracksBehaviorsPrefs::ScrollingPreferenceDefault());
 #endif
-   gPrefs->Read(wxT("/GUI/AdjustSelectionEdges"), &bAdjustSelectionEdges,
+   gPrefs->Read(L"/GUI/AdjustSelectionEdges", &bAdjustSelectionEdges,
       true);
 
    UpdateSelectedPrefs( UpdateScrollPrefsID() );
@@ -210,30 +210,30 @@ void ViewInfo::SetBeforeScreenWidth(wxInt64 beforeWidth, wxInt64 screenWidth, do
 void ViewInfo::WriteXMLAttributes(XMLWriter &xmlFile) const
 // may throw
 {
-   selectedRegion.WriteXMLAttributes(xmlFile, wxT("sel0"), wxT("sel1"));
-   xmlFile.WriteAttr(wxT("vpos"), vpos);
-   xmlFile.WriteAttr(wxT("h"), h, 10);
-   xmlFile.WriteAttr(wxT("zoom"), zoom, 10);
+   selectedRegion.WriteXMLAttributes(xmlFile, L"sel0", L"sel1");
+   xmlFile.WriteAttr(L"vpos", vpos);
+   xmlFile.WriteAttr(L"h", h, 10);
+   xmlFile.WriteAttr(L"zoom", zoom, 10);
 }
 
 bool ViewInfo::ReadXMLAttribute(const wxChar *attr, const wxChar *value)
 {
-   if (selectedRegion.HandleXMLAttribute(attr, value, wxT("sel0"), wxT("sel1")))
+   if (selectedRegion.HandleXMLAttribute(attr, value, L"sel0", L"sel1"))
       return true;
 
-   if (!wxStrcmp(attr, wxT("vpos"))) {
+   if (!wxStrcmp(attr, L"vpos")) {
       long longVpos;
       wxString(value).ToLong(&longVpos);
       vpos = (int)(longVpos);
       return true;
    }
 
-   if (!wxStrcmp(attr, wxT("h"))) {
+   if (!wxStrcmp(attr, L"h")) {
       Internat::CompatibleToDouble(value, &h);
       return true;
    }
 
-   if (!wxStrcmp(attr, wxT("zoom"))) {
+   if (!wxStrcmp(attr, L"zoom")) {
       Internat::CompatibleToDouble(value, &zoom);
       return true;
    }

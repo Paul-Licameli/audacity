@@ -154,7 +154,7 @@ TranslatableString PitchName(const double dMIDInote, const PitchNameChoice choic
 TranslatableString PitchName_Absolute(const double dMIDInote, const PitchNameChoice choice)
 {
    // The format string is not localized.  Should it be?
-   return Verbatim( wxT("%s%d") )
+   return Verbatim( L"%s%d" )
       .Format( PitchName(dMIDInote, choice), PitchOctave(dMIDInote) );
 }
 

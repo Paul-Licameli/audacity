@@ -28,7 +28,7 @@ class NumericTextCtrl;
 class VSTControl;
 #include "VSTControl.h"
 
-#define VSTCMDKEY wxT("-checkvst")
+#define VSTCMDKEY L"-checkvst"
 /* i18n-hint: Abbreviates Virtual Studio Technology, an audio software protocol
    developed by Steinberg GmbH */
 #define VSTPLUGINTYPE XO("VST")

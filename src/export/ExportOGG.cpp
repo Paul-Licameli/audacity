@@ -63,7 +63,7 @@ private:
 ExportOGGOptions::ExportOGGOptions(wxWindow *parent, int WXUNUSED(format))
 :  wxPanelWrapper(parent, wxID_ANY)
 {
-   mOggQualityUnscaled = gPrefs->Read(wxT("/FileFormats/OggExportQuality"),50)/10;
+   mOggQualityUnscaled = gPrefs->Read(L"/FileFormats/OggExportQuality",50)/10;
 
    ShuttleGui S(this, eIsCreatingFromPrefs);
    PopulateOrExchange(S);
@@ -112,7 +112,7 @@ bool ExportOGGOptions::TransferDataFromWindow()
    ShuttleGui S(this, eIsSavingToPrefs);
    PopulateOrExchange(S);
 
-   gPrefs->Write(wxT("/FileFormats/OggExportQuality"),mOggQualityUnscaled * 10);
+   gPrefs->Write(L"/FileFormats/OggExportQuality",mOggQualityUnscaled * 10);
    gPrefs->Flush();
 
    return true;
@@ -153,8 +153,8 @@ ExportOGG::ExportOGG()
 :  ExportPlugin()
 {
    AddFormat();
-   SetFormat(wxT("OGG"),0);
-   AddExtension(wxT("ogg"),0);
+   SetFormat(L"OGG",0);
+   AddExtension(L"ogg",0);
    SetMaxChannels(255,0);
    SetCanMetaData(true,0);
    SetDescription(XO("Ogg Vorbis Files"),0);
@@ -173,7 +173,7 @@ ProgressResult ExportOGG::Export(AudacityProject *project,
 {
    double    rate    = ProjectSettings::Get( *project ).GetRate();
    const auto &tracks = TrackList::Get( *project );
-   double    quality = (gPrefs->Read(wxT("/FileFormats/OggExportQuality"), 50)/(float)100.0);
+   double    quality = (gPrefs->Read(L"/FileFormats/OggExportQuality", 50)/(float)100.0);
 
    wxLogNull logNo;            // temporarily disable wxWidgets error messages
    auto updateResult = ProgressResult::Success;
@@ -387,7 +387,7 @@ bool ExportOGG::FillComment(AudacityProject *project, vorbis_comment *comment, c
       n = pair.first;
       const auto &v = pair.second;
       if (n == TAG_YEAR) {
-         n = wxT("DATE");
+         n = L"DATE";
       }
       vorbis_comment_add_tag(comment,
                              (char *) (const char *) n.mb_str(wxConvUTF8),

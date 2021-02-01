@@ -500,11 +500,11 @@ bool EffectEqualization48x::Benchmark(EffectEqualization* effectEqualization)
       XO(
 "Benchmark times:\nOriginal: %s\nDefault Segmented: %s\nDefault Threaded: %s\nSSE: %s\nSSE Threaded: %s\n")
          .Format(
-            tsDefault.Format(wxT("%M:%S.%l")),
-            tsDefaultEnhanced.Format(wxT("%M:%S.%l")),
-            tsDefaultThreaded.Format(wxT("%M:%S.%l")),
-            tsSSE.Format(wxT("%M:%S.%l")),
-            tsSSEThreaded.Format(wxT("%M:%S.%l")) ) );
+            tsDefault.Format(L"%M:%S.%l"),
+            tsDefaultEnhanced.Format(L"%M:%S.%l"),
+            tsDefaultThreaded.Format(L"%M:%S.%l"),
+            tsSSE.Format(L"%M:%S.%l"),
+            tsSSEThreaded.Format(L"%M:%S.%l") ) );
    return bBreakLoop; // return !bBreakLoop ?
 }
 

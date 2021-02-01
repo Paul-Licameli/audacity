@@ -48,7 +48,7 @@ wxString TracksBehaviorsPrefs::HelpPageName()
 
 const wxChar *TracksBehaviorsPrefs::ScrollingPreferenceKey()
 {
-   static auto string = wxT("/GUI/ScrollBeyondZero");
+   static auto string = L"/GUI/ScrollBeyondZero";
    return string;
 }
 
@@ -62,11 +62,11 @@ void TracksBehaviorsPrefs::Populate()
 }
 
 ChoiceSetting TracksBehaviorsSolo{
-   wxT("/GUI/Solo"),
+   L"/GUI/Solo",
    {
       ByColumns,
       { XO("Simple"),  XO("Multi-track"), XO("None") },
-      { wxT("Simple"), wxT("Multi"),      wxT("None") }
+      { L"Simple", L"Multi",      L"None" }
    },
    0, // "Simple"
 };
@@ -79,26 +79,26 @@ void TracksBehaviorsPrefs::PopulateOrExchange(ShuttleGui & S)
    S.StartStatic(XO("Behaviors"));
    {
       S.TieCheckBox(XXO("&Select all audio, if selection required"),
-                    {wxT("/GUI/SelectAllOnNone"),
+                    {L"/GUI/SelectAllOnNone",
                      false});
       /* i18n-hint: Cut-lines are lines that can expand to show the cut audio.*/
       S.TieCheckBox(XXO("Enable cut &lines"),
-                    {wxT("/GUI/EnableCutLines"),
+                    {L"/GUI/EnableCutLines",
                      false});
       S.TieCheckBox(XXO("Enable &dragging selection edges"),
-                    {wxT("/GUI/AdjustSelectionEdges"),
+                    {L"/GUI/AdjustSelectionEdges",
                      true});
       S.TieCheckBox(XXO("Editing a clip can &move other clips"),
-                    {wxT("/GUI/EditClipCanMove"),
+                    {L"/GUI/EditClipCanMove",
                      true});
       S.TieCheckBox(XXO("\"Move track focus\" c&ycles repeatedly through tracks"),
-                    {wxT("/GUI/CircularTrackNavigation"),
+                    {L"/GUI/CircularTrackNavigation",
                      false});
       S.TieCheckBox(XXO("&Type to create a label"),
-                    {wxT("/GUI/TypeToCreateLabel"),
+                    {L"/GUI/TypeToCreateLabel",
                      false});
       S.TieCheckBox(XXO("Use dialog for the &name of a new label"),
-                    {wxT("/GUI/DialogForNameNewLabel"),
+                    {L"/GUI/DialogForNameNewLabel",
                      false});
 #ifdef EXPERIMENTAL_SCROLLING_LIMITS
       S.TieCheckBox(XXO("Enable scrolling left of &zero"),
@@ -106,7 +106,7 @@ void TracksBehaviorsPrefs::PopulateOrExchange(ShuttleGui & S)
                      ScrollingPreferenceDefault()});
 #endif
       S.TieCheckBox(XXO("Advanced &vertical zooming"),
-                    {wxT("/GUI/VerticalZooming"),
+                    {L"/GUI/VerticalZooming",
                      false});
 
       S.AddSpace(10);
@@ -149,10 +149,10 @@ PrefsPanel::Registration sAttachment{ "TracksBehaviors",
 bool GetEditClipsCanMove()
 {
    bool mIsSyncLocked;
-   gPrefs->Read(wxT("/GUI/SyncLockTracks"), &mIsSyncLocked, false);
+   gPrefs->Read(L"/GUI/SyncLockTracks", &mIsSyncLocked, false);
    if( mIsSyncLocked )
       return true;
    bool editClipsCanMove;
-   gPrefs->Read(wxT("/GUI/EditClipCanMove"), &editClipsCanMove, true);
+   gPrefs->Read(L"/GUI/EditClipCanMove", &editClipsCanMove, true);
    return editClipsCanMove;
 }

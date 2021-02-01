@@ -37,10 +37,10 @@
 // Define keys, defaults, minimums, and maximums for the effect parameters
 //
 //     Name         Type     Key                        Def      Min      Max   Scale
-Param( PeakLevel,   double,  wxT("PeakLevel"),           -1.0,    -145.0,  0.0,  1  );
-Param( RemoveDC,    bool,    wxT("RemoveDcOffset"),      true,    false,   true, 1  );
-Param( ApplyGain,   bool,    wxT("ApplyGain"),           true,    false,   true, 1  );
-Param( StereoInd,   bool,    wxT("StereoIndependent"),   false,   false,   true, 1  );
+Param( PeakLevel,   double,  L"PeakLevel",           -1.0,    -145.0,  0.0,  1  );
+Param( RemoveDC,    bool,    L"RemoveDcOffset",      true,    false,   true, 1  );
+Param( ApplyGain,   bool,    L"ApplyGain",           true,    false,   true, 1  );
+Param( StereoInd,   bool,    L"StereoIndependent",   false,   false,   true, 1  );
 
 const ComponentInterfaceSymbol EffectNormalize::Symbol
 { XO("Normalize") };
@@ -80,7 +80,7 @@ TranslatableString EffectNormalize::GetDescription()
 
 wxString EffectNormalize::ManualPage()
 {
-   return wxT("Normalize");
+   return L"Normalize";
 }
 
 // EffectDefinitionInterface implementation
@@ -133,12 +133,12 @@ bool EffectNormalize::CheckWhetherSkipEffect()
 
 bool EffectNormalize::Startup()
 {
-   wxString base = wxT("/Effects/Normalize/");
+   wxString base = L"/Effects/Normalize/";
 
    // Migrate settings from 2.1.0 or before
 
    // Already migrated, so bail
-   if (gPrefs->Exists(base + wxT("Migrated")))
+   if (gPrefs->Exists(base + L"Migrated"))
    {
       return true;
    }
@@ -146,20 +146,20 @@ bool EffectNormalize::Startup()
    // Load the old "current" settings
    if (gPrefs->Exists(base))
    {
-      int boolProxy = gPrefs->Read(base + wxT("RemoveDcOffset"), 1);
+      int boolProxy = gPrefs->Read(base + L"RemoveDcOffset", 1);
       mDC = (boolProxy == 1);
-      boolProxy = gPrefs->Read(base + wxT("Normalize"), 1);
+      boolProxy = gPrefs->Read(base + L"Normalize", 1);
       mGain = (boolProxy == 1);
-      gPrefs->Read(base + wxT("Level"), &mPeakLevel, -1.0);
+      gPrefs->Read(base + L"Level", &mPeakLevel, -1.0);
       if(mPeakLevel > 0.0)  // this should never happen
          mPeakLevel = -mPeakLevel;
-      boolProxy = gPrefs->Read(base + wxT("StereoIndependent"), 0L);
+      boolProxy = gPrefs->Read(base + L"StereoIndependent", 0L);
       mStereoInd = (boolProxy == 1);
 
       SaveUserPreset(GetCurrentSettingsGroup());
 
       // Do not migrate again
-      gPrefs->Write(base + wxT("Migrated"), true);
+      gPrefs->Write(base + L"Migrated", true);
       gPrefs->Flush();
    }
 
@@ -316,7 +316,7 @@ void EffectNormalize::PopulateOrExchange(ShuttleGui & S)
                      MIN_PeakLevel,
                      MAX_PeakLevel
                   )
-                  .AddTextBox( {}, wxT(""), 10);
+                  .AddTextBox( {}, L"", 10);
                mLeveldB = S.AddVariableText(XO("dB"), false,
                   wxALIGN_CENTER_VERTICAL | wxALIGN_LEFT);
                mWarning = S.AddVariableText( {}, false,
@@ -548,7 +548,7 @@ void EffectNormalize::UpdateUI()
       EnableApply(false);
       return;
    }
-   mWarning->SetLabel(wxT(""));
+   mWarning->SetLabel(L"");
 
    // Disallow level stuff if not normalizing
    mLevelTextCtrl->Enable(mGain);

@@ -326,7 +326,7 @@ void CommandManager::SetMaxList()
    mMaxListOnly.clear();
 
    // if the full list, don't exclude any.
-   bool bFull = gPrefs->ReadBool(wxT("/GUI/Shortcuts/FullDefaults"),false);
+   bool bFull = gPrefs->ReadBool(L"/GUI/Shortcuts/FullDefaults",false);
    if( bFull )
       return;
 
@@ -721,13 +721,13 @@ CommandListEntry *CommandManager::NewIdentifier(const CommandID & nameIn,
       entry->parameter = parameter;
 
 #if defined(__WXMAC__)
-      // See bug #2642 for some history as to why these items 
+      // See bug #2642 for some history as to why these items
       // on Mac have their IDs set explicitly and not others.
-      if (name == wxT("Preferences"))
+      if (name == L"Preferences")
          entry->id = wxID_PREFERENCES;
-      else if (name == wxT("Exit"))
+      else if (name == L"Exit")
          entry->id = wxID_EXIT;
-      else if (name == wxT("About"))
+      else if (name == L"About")
          entry->id = wxID_ABOUT;
 #endif
 
@@ -767,14 +767,14 @@ CommandListEntry *CommandManager::NewIdentifier(const CommandID & nameIn,
          entry->key = {};
 
       // Key from preferences overrides the default key given
-      gPrefs->SetPath(wxT("/NewKeys"));
+      gPrefs->SetPath(L"/NewKeys");
       // using GET to interpret CommandID as a config path component
       const auto &path = entry->name.GET();
       if (gPrefs->HasEntry(path)) {
          entry->key =
             NormalizedKeyString{ gPrefs->ReadObject(path, entry->key) };
       }
-      gPrefs->SetPath(wxT("/"));
+      gPrefs->SetPath(L"/");
 
       mCommandList.push_back(std::move(entry));
       // Don't use the variable entry eny more!
@@ -792,12 +792,12 @@ CommandListEntry *CommandManager::NewIdentifier(const CommandID & nameIn,
       // have the exact same name.
       if( prev->label != entry->label )
       {
-         wxLogDebug(wxT("Command '%s' defined by '%s' and '%s'"),
+         wxLogDebug(L"Command '%s' defined by '%s' and '%s'",
                     // using GET in a log message for devs' eyes only
                     entry->name.GET(),
                     prev->label.Debug(),
                     entry->label.Debug());
-         wxFAIL_MSG(wxString::Format(wxT("Command '%s' defined by '%s' and '%s'"),
+         wxFAIL_MSG(wxString::Format(L"Command '%s' defined by '%s' and '%s'",
                     // using GET in an assertion violation message for devs'
                     // eyes only
                     entry->name.GET(),
@@ -821,7 +821,7 @@ wxString CommandManager::FormatLabelForMenu(const CommandListEntry *entry) const
    if (!entry->key.empty())
    {
       // using GET to compose menu item name for wxWidgets
-      label += wxT("\t") + entry->key.GET();
+      label += L"\t" + entry->key.GET();
    }
 
    return label;
@@ -921,11 +921,11 @@ void CommandManager::Enable(CommandListEntry *entry, bool enabled)
             item->Enable(enabled);
          } else {
             // using GET in a log message for devs' eyes only
-            wxLogDebug(wxT("Warning: Menu entry with id %i in %s not found"),
+            wxLogDebug(L"Warning: Menu entry with id %i in %s not found",
                 ID, entry->name.GET());
          }
          } else {
-            wxLogDebug(wxT("Warning: Menu entry with id %i not in hash"), ID);
+            wxLogDebug(L"Warning: Menu entry with id %i not in hash", ID);
          }
       }
    }
@@ -935,7 +935,7 @@ void CommandManager::Enable(const wxString &name, bool enabled)
 {
    CommandListEntry *entry = mCommandNameHash[name];
    if (!entry || !entry->menu) {
-      wxLogDebug(wxT("Warning: Unknown command enabled: '%s'"),
+      wxLogDebug(L"Warning: Unknown command enabled: '%s'",
                  (const wxChar*)name);
       return;
    }
@@ -972,7 +972,7 @@ bool CommandManager::GetEnabled(const CommandID &name)
    CommandListEntry *entry = mCommandNameHash[name];
    if (!entry || !entry->menu) {
       // using GET in a log message for devs' eyes only
-      wxLogDebug(wxT("Warning: command doesn't exist: '%s'"),
+      wxLogDebug(L"Warning: command doesn't exist: '%s'",
                  name.GET());
       return false;
    }
@@ -1026,9 +1026,9 @@ TranslatableString CommandManager::DescribeCommandsAndShortcuts(
    // change of preferences:
    bool rtl = (wxLayout_RightToLeft == wxTheApp->GetLayoutDirection());
    if (rtl)
-      mark = wxT("\u200f");
+      mark = L"\u200f";
 
-   static const wxString &separatorFormat = wxT("%s / %s");
+   static const wxString &separatorFormat = L"%s / %s";
    TranslatableString result;
    for (size_t ii = 0; ii < nCommands; ++ii) {
       const auto &pair = commands[ii];
@@ -1040,7 +1040,7 @@ TranslatableString CommandManager::DescribeCommandsAndShortcuts(
 
       // Note: not putting this and other short format strings in the
       // translation catalogs
-      auto piece = Verbatim( wxT("%s%s") )
+      auto piece = Verbatim( L"%s%s" )
          .Format( mark, pair.Msgid().Stripped() );
 
       auto name = pair.Internal();
@@ -1048,14 +1048,14 @@ TranslatableString CommandManager::DescribeCommandsAndShortcuts(
          auto keyStr = GetKeyFromName(name);
          if (!keyStr.empty()){
             auto keyString = keyStr.Display(true);
-            auto format = wxT("%s %s(%s)");
+            auto format = L"%s %s(%s)";
 #ifdef __WXMAC__
             // The unicode controls push and pop left-to-right embedding.
             // This keeps the directionally weak characters, such as uparrow
             // for Shift, left of the key name,
             // consistently with how menu accelerators appear, even when the
             // system language is RTL.
-            format = wxT("%s %s(\u202a%s\u202c)");
+            format = L"%s %s(\u202a%s\u202c)";
 #endif
             // The mark makes correctly placed parentheses for RTL, even
             // in the case that the piece is untranslated.
@@ -1231,7 +1231,7 @@ void CommandManager::RegisterLastAnalyzer(const CommandContext& context) {
       menuManager.mLastAnalyzerRegistration = MenuCreator::repeattypeunique;
       menuManager.mLastAnalyzerRegisteredId = mLastProcessId;
       auto lastEffectDesc = XO("Repeat %s").Format(mNiceName);
-      Modify(wxT("RepeatLastAnalyzer"), lastEffectDesc);
+      Modify(L"RepeatLastAnalyzer", lastEffectDesc);
    }
    return;
 }
@@ -1244,7 +1244,7 @@ void CommandManager::RegisterLastTool(const CommandContext& context) {
       menuManager.mLastToolRegistration = MenuCreator::repeattypeunique;
       menuManager.mLastToolRegisteredId = mLastProcessId;
       auto lastEffectDesc = XO("Repeat %s").Format(mNiceName);
-      Modify(wxT("RepeatLastTool"), lastEffectDesc);
+      Modify(L"RepeatLastTool", lastEffectDesc);
    }
    return;
 }
@@ -1357,7 +1357,7 @@ void CommandManager::GetAllCommandNames(CommandIDs &names,
       if (!entry->multi)
          names.push_back(entry->name);
       else if( includeMultis )
-         names.push_back(entry->name );// + wxT(":")/*+ mCommandList[i]->label*/);
+         names.push_back(entry->name );// + L":"/*+ mCommandList[i]->label*/);
    }
 }
 
@@ -1434,7 +1434,7 @@ TranslatableString CommandManager::GetPrefixedLabelFromName(const CommandID &nam
       return {};
 
    if (!entry->labelPrefix.empty())
-      return Verbatim( wxT("%s - %s") )
+      return Verbatim( L"%s - %s" )
          .Format(entry->labelPrefix, entry->label)
             .Stripped();
    else
@@ -1472,11 +1472,11 @@ NormalizedKeyString CommandManager::GetDefaultKeyFromName(const CommandID &name)
 
 bool CommandManager::HandleXMLTag(const wxChar *tag, const wxChar **attrs)
 {
-   if (!wxStrcmp(tag, wxT("audacitykeyboard"))) {
+   if (!wxStrcmp(tag, L"audacitykeyboard")) {
       mXMLKeysRead = 0;
    }
 
-   if (!wxStrcmp(tag, wxT("command"))) {
+   if (!wxStrcmp(tag, L"command")) {
       wxString name;
       NormalizedKeyString key;
 
@@ -1487,9 +1487,9 @@ bool CommandManager::HandleXMLTag(const wxChar *tag, const wxChar **attrs)
          if (!value)
             break;
 
-         if (!wxStrcmp(attr, wxT("name")) && XMLValueChecker::IsGoodString(value))
+         if (!wxStrcmp(attr, L"name") && XMLValueChecker::IsGoodString(value))
             name = value;
-         if (!wxStrcmp(attr, wxT("key")) && XMLValueChecker::IsGoodString(value))
+         if (!wxStrcmp(attr, L"key") && XMLValueChecker::IsGoodString(value))
             key = NormalizedKeyString{ value };
       }
 
@@ -1506,7 +1506,7 @@ bool CommandManager::HandleXMLTag(const wxChar *tag, const wxChar **attrs)
 void CommandManager::HandleXMLEndTag(const wxChar *tag)
 {
    /*
-   if (!wxStrcmp(tag, wxT("audacitykeyboard"))) {
+   if (!wxStrcmp(tag, L"audacitykeyboard")) {
       AudacityMessageBox(
          XO("Loaded %d keyboard shortcuts\n")
             .Format( mXMLKeysRead ),
@@ -1524,18 +1524,18 @@ XMLTagHandler *CommandManager::HandleXMLChild(const wxChar * WXUNUSED(tag))
 void CommandManager::WriteXML(XMLWriter &xmlFile) const
 // may throw
 {
-   xmlFile.StartTag(wxT("audacitykeyboard"));
-   xmlFile.WriteAttr(wxT("audacityversion"), AUDACITY_VERSION_STRING);
+   xmlFile.StartTag(L"audacitykeyboard");
+   xmlFile.WriteAttr(L"audacityversion", AUDACITY_VERSION_STRING);
 
    for(const auto &entry : mCommandList) {
 
-      xmlFile.StartTag(wxT("command"));
-      xmlFile.WriteAttr(wxT("name"), entry->name);
-      xmlFile.WriteAttr(wxT("key"), entry->key);
-      xmlFile.EndTag(wxT("command"));
+      xmlFile.StartTag(L"command");
+      xmlFile.WriteAttr(L"name", entry->name);
+      xmlFile.WriteAttr(L"key", entry->key);
+      xmlFile.EndTag(L"command");
    }
 
-   xmlFile.EndTag(wxT("audacitykeyboard"));
+   xmlFile.EndTag(L"audacitykeyboard");
 }
 
 void CommandManager::BeginOccultCommands()
@@ -1547,7 +1547,7 @@ void CommandManager::BeginOccultCommands()
    // Make a temporary menu bar collecting items added after.
    // This bar will be discarded but other side effects on the command
    // manager persist.
-   mTempMenuBar = AddMenuBar(wxT("ext-menu"));
+   mTempMenuBar = AddMenuBar(L"ext-menu");
    bMakingOccultCommands = true;
 }
 
@@ -1585,7 +1585,7 @@ void CommandManager::CheckDups()
 
          if (mCommandList[i]->key == mCommandList[j]->key) {
             wxString msg;
-            msg.Printf(wxT("key combo '%s' assigned to '%s' and '%s'"),
+            msg.Printf(L"key combo '%s' assigned to '%s' and '%s'",
                        // using GET to form debug message
                        mCommandList[i]->key.GET(),
                        mCommandList[i]->label.Debug(),
@@ -1621,7 +1621,7 @@ void CommandManager::RemoveDuplicateShortcuts()
          for (auto& entry2 : mCommandList) {
             if (!entry2->key.empty() && entry2->key == entry2->defaultKey) { // default
                if (entry2->key == entry->key) {
-                  auto name = wxT("/NewKeys/") + entry2->name.GET();
+                  auto name = L"/NewKeys/" + entry2->name.GET();
                   gPrefs->Write(name, NormalizedKeyString{});
 
                   disabledShortcuts +=

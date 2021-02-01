@@ -65,8 +65,8 @@ enum
 // Define keys, defaults, minimums, and maximums for the effect parameters
 //
 //     Name          Type     Key               Def   Min      Max      Scale
-Param( Percentage,   double,  wxT("Percentage"), 0.0,  -95.0,   3000.0,  1  );
-Param( UseSBSMS,     bool,    wxT("SBSMS"),     false, false,   true,    1  );
+Param( Percentage,   double,  L"Percentage", 0.0,  -95.0,   3000.0,  1  );
+Param( UseSBSMS,     bool,    L"SBSMS",     false, false,   true,    1  );
 
 // We warp the slider to go up to 400%, but user can enter higher values.
 static const double kSliderMax = 100.0;         // warped above zero to actually go up to 400%
@@ -126,7 +126,7 @@ TranslatableString EffectChangeTempo::GetDescription()
 
 wxString EffectChangeTempo::ManualPage()
 {
-   return wxT("Change_Tempo");
+   return L"Change_Tempo";
 }
 
 // EffectDefinitionInterface implementation
@@ -243,7 +243,7 @@ void EffectChangeTempo::PopulateOrExchange(ShuttleGui & S)
                3, &m_PercentChange, NumValidatorStyle::THREE_TRAILING_ZEROES,
                MIN_Percentage, MAX_Percentage
             )
-            .AddTextBox(XXO("Percent C&hange:"), wxT(""), 12);
+            .AddTextBox(XXO("Percent C&hange:"), L"", 12);
       }
       S.EndMultiColumn();
 
@@ -269,7 +269,7 @@ void EffectChangeTempo::PopulateOrExchange(ShuttleGui & S)
                   NumValidatorStyle::THREE_TRAILING_ZEROES
                      | NumValidatorStyle::ZERO_AS_BLANK)
                /* i18n-hint: changing tempo "from" one value "to" another */
-               .AddTextBox(XXC("&from", "change tempo"), wxT(""), 12);
+               .AddTextBox(XXC("&from", "change tempo"), L"", 12);
 
             m_pTextCtrl_ToBPM = S.Id(ID_ToBPM)
                /* i18n-hint: changing tempo "from" one value "to" another */
@@ -279,7 +279,7 @@ void EffectChangeTempo::PopulateOrExchange(ShuttleGui & S)
                   NumValidatorStyle::THREE_TRAILING_ZEROES
                      | NumValidatorStyle::ZERO_AS_BLANK)
                /* i18n-hint: changing tempo "from" one value "to" another */
-               .AddTextBox(XXC("&to", "change tempo"), wxT(""), 12);
+               .AddTextBox(XXC("&to", "change tempo"), L"", 12);
          }
          S.EndHorizontalLay();
       }
@@ -297,7 +297,7 @@ void EffectChangeTempo::PopulateOrExchange(ShuttleGui & S)
                   precision, &m_FromLength,
                   NumValidatorStyle::TWO_TRAILING_ZEROES)
                /* i18n-hint: changing tempo "from" one value "to" another */
-               .AddTextBox(XXC("from", "change tempo"), wxT(""), 12);
+               .AddTextBox(XXC("from", "change tempo"), L"", 12);
             m_pTextCtrl_ToLength = S.Id(ID_ToLength)
                .Validator<FloatingPointValidator<double>>(
                   2, &m_ToLength, NumValidatorStyle::TWO_TRAILING_ZEROES,
@@ -308,7 +308,7 @@ void EffectChangeTempo::PopulateOrExchange(ShuttleGui & S)
                      (m_FromLength * 100.0) / (100.0 + MIN_Percentage) )
                )
                /* i18n-hint: changing tempo "from" one value "to" another */
-               .AddTextBox(XXC("t&o", "change tempo"), wxT(""), 12);
+               .AddTextBox(XXC("t&o", "change tempo"), L"", 12);
          }
          S.EndHorizontalLay();
       }

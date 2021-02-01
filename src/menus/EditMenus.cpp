@@ -262,7 +262,7 @@ void OnCut(const CommandContext &context)
       },
 #endif
       [&](WaveTrack *wt, const Track::Fallthrough &fallthrough) {
-         if (gPrefs->Read(wxT("/GUI/EnableCutLines"), (long)0)) {
+         if (gPrefs->Read(L"/GUI/EnableCutLines", (long)0)) {
             wt->ClearAndAddCutLine(
                selectedRegion.t0(),
                selectedRegion.t1());
@@ -1010,9 +1010,9 @@ BaseItemSharedPtr EditMenu()
    // The default shortcut key for Redo is different on different platforms.
    static constexpr auto redoKey =
 #ifdef __WXMSW__
-      wxT("Ctrl+Y")
+      L"Ctrl+Y"
 #else
-      wxT("Ctrl+Shift+Z")
+      L"Ctrl+Shift+Z"
 #endif
    ;
 
@@ -1020,23 +1020,23 @@ BaseItemSharedPtr EditMenu()
       // platforms.
    static constexpr auto prefKey =
 #ifdef __WXMAC__
-      wxT("Ctrl+,")
+      L"Ctrl+,"
 #else
-      wxT("Ctrl+P")
+      L"Ctrl+P"
 #endif
    ;
 
    static BaseItemSharedPtr menu{
    ( FinderScope{ findCommandHandler },
-   Menu( wxT("Edit"), XXO("&Edit"),
+   Menu( L"Edit", XXO("&Edit"),
       Section( "UndoRedo",
-         Command( wxT("Undo"), XXO("&Undo"), FN(OnUndo),
-            AudioIONotBusyFlag() | UndoAvailableFlag(), wxT("Ctrl+Z") ),
+         Command( L"Undo", XXO("&Undo"), FN(OnUndo),
+            AudioIONotBusyFlag() | UndoAvailableFlag(), L"Ctrl+Z" ),
 
-         Command( wxT("Redo"), XXO("&Redo"), FN(OnRedo),
+         Command( L"Redo", XXO("&Redo"), FN(OnRedo),
             AudioIONotBusyFlag() | RedoAvailableFlag(), redoKey ),
             
-         Special( wxT("UndoItemsUpdateStep"),
+         Special( L"UndoItemsUpdateStep",
          [](AudacityProject &project, wxMenu&) {
             // Change names in the CommandManager as a side-effect
             MenuManager::ModifyUndoMenuItems(project);
@@ -1046,44 +1046,44 @@ BaseItemSharedPtr EditMenu()
       Section( "Basic",
          // Basic Edit commands
          /* i18n-hint: (verb)*/
-         Command( wxT("Cut"), XXO("Cu&t"), FN(OnCut),
+         Command( L"Cut", XXO("Cu&t"), FN(OnCut),
             AudioIONotBusyFlag() | CutCopyAvailableFlag() | NoAutoSelect(),
-            wxT("Ctrl+X") ),
-         Command( wxT("Delete"), XXO("&Delete"), FN(OnDelete),
+            L"Ctrl+X" ),
+         Command( L"Delete", XXO("&Delete"), FN(OnDelete),
             AudioIONotBusyFlag() | EditableTracksSelectedFlag() | TimeSelectedFlag() | NoAutoSelect(),
-            wxT("Ctrl+K") ),
+            L"Ctrl+K" ),
          /* i18n-hint: (verb)*/
-         Command( wxT("Copy"), XXO("&Copy"), FN(OnCopy),
-            AudioIONotBusyFlag() | CutCopyAvailableFlag(), wxT("Ctrl+C") ),
+         Command( L"Copy", XXO("&Copy"), FN(OnCopy),
+            AudioIONotBusyFlag() | CutCopyAvailableFlag(), L"Ctrl+C" ),
          /* i18n-hint: (verb)*/
-         Command( wxT("Paste"), XXO("&Paste"), FN(OnPaste),
-            AudioIONotBusyFlag(), wxT("Ctrl+V") ),
+         Command( L"Paste", XXO("&Paste"), FN(OnPaste),
+            AudioIONotBusyFlag(), L"Ctrl+V" ),
          /* i18n-hint: (verb)*/
-         Command( wxT("Duplicate"), XXO("Duplic&ate"), FN(OnDuplicate),
-            NotBusyTimeAndTracksFlags, wxT("Ctrl+D") ),
+         Command( L"Duplicate", XXO("Duplic&ate"), FN(OnDuplicate),
+            NotBusyTimeAndTracksFlags, L"Ctrl+D" ),
 
          Section( "",
-            Menu( wxT("RemoveSpecial"), XXO("R&emove Special"),
+            Menu( L"RemoveSpecial", XXO("R&emove Special"),
                Section( "",
                   /* i18n-hint: (verb) Do a special kind of cut*/
-                  Command( wxT("SplitCut"), XXO("Spl&it Cut"), FN(OnSplitCut),
+                  Command( L"SplitCut", XXO("Spl&it Cut"), FN(OnSplitCut),
                      NotBusyTimeAndTracksFlags,
-                     Options{ wxT("Ctrl+Alt+X") } ),
+                     Options{ L"Ctrl+Alt+X" } ),
                   /* i18n-hint: (verb) Do a special kind of DELETE*/
-                  Command( wxT("SplitDelete"), XXO("Split D&elete"), FN(OnSplitDelete),
+                  Command( L"SplitDelete", XXO("Split D&elete"), FN(OnSplitDelete),
                      NotBusyTimeAndTracksFlags,
-                     Options{ wxT("Ctrl+Alt+K") } )
+                     Options{ L"Ctrl+Alt+K" } )
                ),
 
                Section( "",
                   /* i18n-hint: (verb)*/
-                  Command( wxT("Silence"), XXO("Silence Audi&o"), FN(OnSilence),
+                  Command( L"Silence", XXO("Silence Audi&o"), FN(OnSilence),
                      AudioIONotBusyFlag() | TimeSelectedFlag() | WaveTracksSelectedFlag(),
-                     wxT("Ctrl+L") ),
+                     L"Ctrl+L" ),
                   /* i18n-hint: (verb)*/
-                  Command( wxT("Trim"), XXO("Tri&m Audio"), FN(OnTrim),
+                  Command( L"Trim", XXO("Tri&m Audio"), FN(OnTrim),
                      AudioIONotBusyFlag() | TimeSelectedFlag() | WaveTracksSelectedFlag(),
-                     Options{ wxT("Ctrl+T") } )
+                     Options{ L"Ctrl+T" } )
                )
             )
          )
@@ -1093,29 +1093,29 @@ BaseItemSharedPtr EditMenu()
       Section( "Other",
       //////////////////////////////////////////////////////////////////////////
 
-         Menu( wxT("Clip"), XXO("Clip B&oundaries"),
+         Menu( L"Clip", XXO("Clip B&oundaries"),
             Section( "",
                /* i18n-hint: (verb) It's an item on a menu. */
-               Command( wxT("Split"), XXO("Sp&lit"), FN(OnSplit),
+               Command( L"Split", XXO("Sp&lit"), FN(OnSplit),
                   AudioIONotBusyFlag() | WaveTracksSelectedFlag(),
-                  Options{ wxT("Ctrl+I") } ),
-               Command( wxT("SplitNew"), XXO("Split Ne&w"), FN(OnSplitNew),
+                  Options{ L"Ctrl+I" } ),
+               Command( L"SplitNew", XXO("Split Ne&w"), FN(OnSplitNew),
                   AudioIONotBusyFlag() | TimeSelectedFlag() | WaveTracksSelectedFlag(),
-                  Options{ wxT("Ctrl+Alt+I") } )
+                  Options{ L"Ctrl+Alt+I" } )
             ),
 
             Section( "",
                /* i18n-hint: (verb)*/
-               Command( wxT("Join"), XXO("&Join"), FN(OnJoin),
-                  NotBusyTimeAndTracksFlags, wxT("Ctrl+J") ),
-               Command( wxT("Disjoin"), XXO("Detac&h at Silences"), FN(OnDisjoin),
-                  NotBusyTimeAndTracksFlags, wxT("Ctrl+Alt+J") )
+               Command( L"Join", XXO("&Join"), FN(OnJoin),
+                  NotBusyTimeAndTracksFlags, L"Ctrl+J" ),
+               Command( L"Disjoin", XXO("Detac&h at Silences"), FN(OnDisjoin),
+                  NotBusyTimeAndTracksFlags, L"Ctrl+Alt+J" )
             )
          ),
 
          //////////////////////////////////////////////////////////////////////////
 
-         Command( wxT("EditMetaData"), XXO("&Metadata..."), FN(OnEditMetadata),
+         Command( L"EditMetaData", XXO("&Metadata..."), FN(OnEditMetadata),
             AudioIONotBusyFlag() )
 
          //////////////////////////////////////////////////////////////////////////
@@ -1127,7 +1127,7 @@ BaseItemSharedPtr EditMenu()
       // not appear in the Edit menu but instead under Audacity, consistent with
       // MacOS conventions.
       Section( "Preferences",
-         Command( wxT("Preferences"), XXO("Pre&ferences..."), FN(OnPreferences),
+         Command( L"Preferences", XXO("Pre&ferences..."), FN(OnPreferences),
             AudioIONotBusyFlag(), prefKey )
       )
 
@@ -1136,7 +1136,7 @@ BaseItemSharedPtr EditMenu()
 }
 
 AttachedItem sAttachment1{
-   wxT(""),
+   L"",
    Shared( EditMenu() )
 };
 
@@ -1147,13 +1147,13 @@ BaseItemSharedPtr ExtraEditMenu()
       AudioIONotBusyFlag() | EditableTracksSelectedFlag() | TimeSelectedFlag();
    static BaseItemSharedPtr menu{
    ( FinderScope{ findCommandHandler },
-   Menu( wxT("Edit"), XXO("&Edit"),
-      Command( wxT("DeleteKey"), XXO("&Delete Key"), FN(OnDelete),
+   Menu( L"Edit", XXO("&Edit"),
+      Command( L"DeleteKey", XXO("&Delete Key"), FN(OnDelete),
          (flags | NoAutoSelect()),
-         wxT("Backspace") ),
-      Command( wxT("DeleteKey2"), XXO("Delete Key&2"), FN(OnDelete),
+         L"Backspace" ),
+      Command( L"DeleteKey2", XXO("Delete Key&2"), FN(OnDelete),
          (flags | NoAutoSelect()),
-         wxT("Delete") )
+         L"Delete" )
    ) ) };
    return menu;
 }
@@ -1197,7 +1197,7 @@ RegisteredMenuItemEnabler selectWaveTracks2{{
 }};
 
 AttachedItem sAttachment2{
-   wxT("Optional/Extra/Part1"),
+   L"Optional/Extra/Part1",
    Shared( ExtraEditMenu() )
 };
 

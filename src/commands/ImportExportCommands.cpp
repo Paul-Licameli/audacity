@@ -34,7 +34,7 @@ const ComponentInterfaceSymbol ImportCommand::Symbol
 namespace{ BuiltinCommandsModule::Registration< ImportCommand > reg; }
 
 bool ImportCommand::DefineParams( ShuttleParams & S ){
-   S.Define( mFileName, wxT("Filename"),  "" );
+   S.Define( mFileName, L"Filename",  "" );
    return true;
 }
 
@@ -68,8 +68,8 @@ bool ImportCommand::Apply(const CommandContext & context)
 bool ExportCommand::DefineParams( ShuttleParams & S ){
    wxFileName fn = FileNames::FindDefaultPath(FileNames::Operation::Export);
    fn.SetName("exported.wav");
-   S.Define(mFileName, wxT("Filename"), fn.GetFullPath());
-   S.Define( mnChannels, wxT("NumChannels"),  1 );
+   S.Define(mFileName, L"Filename", fn.GetFullPath());
+   S.Define( mnChannels, L"NumChannels",  1 );
    return true;
 }
 
@@ -101,7 +101,7 @@ bool ExportCommand::Apply(const CommandContext & context)
    int splitAt = mFileName.Find(wxUniChar('.'), true);
    if (splitAt < 0)
    {
-      context.Error(wxT("Export filename must have an extension!"));
+      context.Error(L"Export filename must have an extension!");
       return false;
    }
    wxString extension = mFileName.Mid(splitAt+1).MakeUpper();
@@ -114,12 +114,12 @@ bool ExportCommand::Apply(const CommandContext & context)
 
    if (exportSuccess)
    {
-      context.Status(wxString::Format(wxT("Exported to %s format: %s"),
+      context.Status(wxString::Format(L"Exported to %s format: %s",
                               extension, mFileName));
       return true;
    }
 
-   context.Error(wxString::Format(wxT("Could not export to %s format!"), extension));
+   context.Error(wxString::Format(L"Could not export to %s format!", extension));
    return false;
 }
 

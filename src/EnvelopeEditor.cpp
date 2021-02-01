@@ -173,7 +173,7 @@ bool EnvelopeEditor::HandleMouseButtonDown(const wxMouseEvent & event, wxRect & 
    mButton        = event.GetButton();
    mContourOffset = false;
 
-   //   wxLogDebug(wxT("Y:%i Height:%i Offset:%i"), y, height, mContourOffset );
+   //   wxLogDebug(L"Y:%i Height:%i Offset:%i", y, height, mContourOffset );
    int len = mEnvelope.GetNumberOfPoints();
 
    // TODO: extract this into a function FindNearestControlPoint()

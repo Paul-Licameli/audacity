@@ -431,7 +431,7 @@ wxString ProjectSerializer::Decode(const wxMemoryBuffer &buffer)
          break;
 
          default:
-            wxASSERT_MSG(false, wxT("Characters size not 1, 2, or 4"));
+            wxASSERT_MSG(false, L"Characters size not 1, 2, or 4");
          break;
       }
 

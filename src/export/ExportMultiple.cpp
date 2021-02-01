@@ -223,7 +223,7 @@ int ExportMultipleDialog::ShowModal()
 void ExportMultipleDialog::PopulateOrExchange(ShuttleGui& S)
 {
    wxString name = mProject->GetProjectName();
-   wxString defaultFormat = gPrefs->Read(wxT("/Export/Format"), wxT("WAV"));
+   wxString defaultFormat = gPrefs->Read(L"/Export/Format", L"WAV");
 
    TranslatableStrings visibleFormats;
    wxArrayStringEx formats;
@@ -281,7 +281,7 @@ void ExportMultipleDialog::PopulateOrExchange(ShuttleGui& S)
             mFormat = S.Id(FormatID)
                .TieChoice( XXO("Format:"),
                {
-                  wxT("/Export/MultipleFormat"),
+                  L"/Export/MultipleFormat",
                   {
                      ByColumns,
                      visibleFormats,
@@ -385,11 +385,11 @@ void ExportMultipleDialog::PopulateOrExchange(ShuttleGui& S)
          S.StartPanel();
          {
             S.StartRadioButtonGroup({
-               wxT("/Export/TrackNameWithOrWithoutNumbers"),
+               L"/Export/TrackNameWithOrWithoutNumbers",
                {
-                  { wxT("labelTrack"), XXO("Using Label/Track Name") },
-                  { wxT("numberBefore"), XXO("Numbering before Label/Track Name") },
-                  { wxT("numberAfter"), XXO("Numbering after File name prefix") },
+                  { L"labelTrack", XXO("Using Label/Track Name") },
+                  { L"numberBefore", XXO("Numbering before Label/Track Name") },
+                  { L"numberAfter", XXO("Numbering after File name prefix") },
                },
                0 // labelTrack
             });
@@ -426,7 +426,7 @@ void ExportMultipleDialog::PopulateOrExchange(ShuttleGui& S)
    S.StartHorizontalLay(wxEXPAND, false);
    {
       mOverwrite = S.Id(OverwriteID).TieCheckBox(XXO("Overwrite existing files"),
-                                                 {wxT("/Export/OverwriteExisting"),
+                                                 {L"/Export/OverwriteExisting",
                                                   false});
    }
    S.EndHorizontalLay();
@@ -574,7 +574,7 @@ void ExportMultipleDialog::OnCancel(wxCommandEvent& WXUNUSED(event))
 
 void ExportMultipleDialog::OnHelp(wxCommandEvent& WXUNUSED(event))
 {
-   HelpSystem::ShowHelp(this, wxT("Export_Multiple"), true);
+   HelpSystem::ShowHelp(this, L"Export_Multiple", true);
 }
 
 void ExportMultipleDialog::OnExport(wxCommandEvent& WXUNUSED(event))
@@ -768,8 +768,8 @@ ProgressResult ExportMultipleDialog::ExportMultipleByLabel(bool byName,
    ExportKit setting;   // the current batch of settings
    setting.destfile.SetPath(mDir->GetValue());
    setting.destfile.SetExt(mPlugins[mPluginIndex]->GetExtension(mSubFormatIndex));
-   wxLogDebug(wxT("Plug-in index = %d, Sub-format = %d"), mPluginIndex, mSubFormatIndex);
-   wxLogDebug(wxT("File extension is %s"), setting.destfile.GetExt());
+   wxLogDebug(L"Plug-in index = %d, Sub-format = %d", mPluginIndex, mSubFormatIndex);
+   wxLogDebug(L"File extension is %s", setting.destfile.GetExt());
    wxString name;    // used to hold file name whilst we mess with it
    wxString title;   // un-messed-with title of file for tagging with
 
@@ -808,11 +808,11 @@ ProgressResult ExportMultipleDialog::ExportMultipleByLabel(bool byName,
 
       // Numbering files...
       if( !byName ) {
-         name.Printf(wxT("%s-%02d"), prefix, l+1);
+         name.Printf(L"%s-%02d", prefix, l+1);
       } else if( addNumber ) {
          // Following discussion with GA, always have 2 digits
          // for easy file-name sorting (on Windows)
-         name.Prepend(wxString::Format(wxT("%02d-"), l+1));
+         name.Prepend(wxString::Format(L"%02d-", l+1));
       }
 
       // store sanitised and user checked name in object
@@ -851,7 +851,7 @@ ProgressResult ExportMultipleDialog::ExportMultipleByLabel(bool byName,
             bool bCancelled = !setting.filetags.ShowEditDialog(
                ProjectWindow::Find( mProject ),
                XO("Edit Metadata Tags"), bShowTagsDialog);
-            gPrefs->Read(wxT("/AudioFiles/ShowId3Dialog"), &bShowTagsDialog, true);
+            gPrefs->Read(L"/AudioFiles/ShowId3Dialog", &bShowTagsDialog, true);
             settings.SetShowId3Dialog( bShowTagsDialog );
             if( bCancelled )
                return ProgressResult::Cancelled;
@@ -924,7 +924,7 @@ ProgressResult ExportMultipleDialog::ExportMultipleByTrack(bool byName,
    bool anySolo = !(( mTracks->Any<const WaveTrack>() + &WaveTrack::GetSolo ).empty());
 
    bool skipSilenceAtBeginning;
-   gPrefs->Read(wxT("/AudioFiles/SkipSilenceAtBeginning"), &skipSilenceAtBeginning, false);
+   gPrefs->Read(L"/AudioFiles/SkipSilenceAtBeginning", &skipSilenceAtBeginning, false);
 
    /* Examine all tracks in turn, collecting export information */
    for (auto tr : mTracks->Leaders<WaveTrack>() - 
@@ -951,11 +951,11 @@ ProgressResult ExportMultipleDialog::ExportMultipleByTrack(bool byName,
          name = title;
          if (addNumber) {
             name.Prepend(
-               wxString::Format(wxT("%02d-"), l+1));
+               wxString::Format(L"%02d-", l+1));
          }
       }
       else {
-         name = (wxString::Format(wxT("%s-%02d"), prefix, l+1));
+         name = (wxString::Format(L"%s-%02d", prefix, l+1));
       }
 
       // store sanitised and user checked name in object
@@ -995,7 +995,7 @@ ProgressResult ExportMultipleDialog::ExportMultipleByTrack(bool byName,
             bool bCancelled = !setting.filetags.ShowEditDialog(
                ProjectWindow::Find( mProject ),
                XO("Edit Metadata Tags"), bShowTagsDialog);
-            gPrefs->Read(wxT("/AudioFiles/ShowId3Dialog"), &bShowTagsDialog, true);
+            gPrefs->Read(L"/AudioFiles/ShowId3Dialog", &bShowTagsDialog, true);
             settings.SetShowId3Dialog( bShowTagsDialog );
             if( bCancelled )
                return ProgressResult::Cancelled;
@@ -1065,12 +1065,12 @@ ProgressResult ExportMultipleDialog::DoExport(std::unique_ptr<ProgressDialog> &p
 {
    wxFileName name;
 
-   wxLogDebug(wxT("Doing multiple Export: File name \"%s\""), (inName.GetFullName()));
-   wxLogDebug(wxT("Channels: %i, Start: %lf, End: %lf "), channels, t0, t1);
+   wxLogDebug(L"Doing multiple Export: File name \"%s\"", (inName.GetFullName()));
+   wxLogDebug(L"Channels: %i, Start: %lf, End: %lf ", channels, t0, t1);
    if (selectedOnly)
-      wxLogDebug(wxT("Selected Region Only"));
+      wxLogDebug(L"Selected Region Only");
    else
-      wxLogDebug(wxT("Whole Project"));
+      wxLogDebug(L"Whole Project");
 
    wxFileName backup;
    if (mOverwrite->GetValue()) {
@@ -1080,7 +1080,7 @@ ProgressResult ExportMultipleDialog::DoExport(std::unique_ptr<ProgressDialog> &p
       int suffix = 0;
       do {
          backup.SetName(name.GetName() +
-                           wxString::Format(wxT("%d"), suffix));
+                           wxString::Format(L"%d", suffix));
          ++suffix;
       }
       while (backup.FileExists());
@@ -1091,7 +1091,7 @@ ProgressResult ExportMultipleDialog::DoExport(std::unique_ptr<ProgressDialog> &p
       int i = 2;
       wxString base(name.GetName());
       while (name.FileExists()) {
-         name.SetName(wxString::Format(wxT("%s-%d"), base, i++));
+         name.SetName(wxString::Format(L"%s-%d", base, i++));
       }
    }
 
@@ -1146,7 +1146,7 @@ wxString ExportMultipleDialog::MakeFileName(const wxString &input)
    wxString newname = input; // name we are generating
 
    // strip out anything that isn't allowed in file names on this platform
-   auto changed = Internat::SanitiseFilename(newname, wxT("_"));
+   auto changed = Internat::SanitiseFilename(newname, L"_");
 
    if(changed)
    {  // need to get user to fix file name

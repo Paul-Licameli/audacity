@@ -1079,7 +1079,7 @@ namespace {
 #   endif
          gWaveformTimeTotal += elapsed;
          gWaveformTimeCount++;
-         wxPrintf(wxT("Avg waveform drawing time: %f\n"),
+         wxPrintf(L"Avg waveform drawing time: %f\n",
                   gWaveformTimeTotal / gWaveformTimeCount);
       }
       

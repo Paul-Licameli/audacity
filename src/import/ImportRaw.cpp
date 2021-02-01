@@ -409,13 +409,13 @@ ImportRawDialog::ImportRawDialog(wxWindow * parent,
          // Offset text
          /* i18n-hint: (noun)*/
          mOffsetText = S.AddTextBox(XXO("Start offset:"),
-                                    wxString::Format(wxT("%d"), mOffset),
+                                    wxString::Format(L"%d", mOffset),
                                     12);
          S.AddUnits(XO("bytes"));
 
          // Percent text
          mPercentText = S.AddTextBox(XXO("Amount to import:"),
-                                     wxT("100"),
+                                     L"100",
                                      12);
          S.AddUnits(XO("%"));
 
@@ -423,12 +423,12 @@ ImportRawDialog::ImportRawDialog(wxWindow * parent,
          wxArrayStringEx rates;
          for (int i = 0; i < AudioIOBase::NumStandardRates; i++) {
             rates.Add(
-               wxString::Format(wxT("%d"), AudioIOBase::StandardRates[i]));
+               wxString::Format(L"%d", AudioIOBase::StandardRates[i]));
          }
 
          /* i18n-hint: (noun)*/
          mRateText = S.AddCombo(XXO("Sample rate:"),
-                                wxString::Format(wxT("%d"), (int)mRate),
+                                wxString::Format(L"%d", (int)mRate),
                                 rates);
          /* i18n-hint: This is the abbreviation for "Hertz", or
             cycles per second. */

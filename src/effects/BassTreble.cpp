@@ -45,10 +45,10 @@ enum
 // Define keys, defaults, minimums, and maximums for the effect parameters
 //
 //     Name       Type     Key                  Def      Min      Max      Scale
-Param( Bass,      double,  wxT("Bass"),          0.0,     -30.0,   30.0,    1  );
-Param( Treble,    double,  wxT("Treble"),        0.0,     -30.0,   30.0,    1  );
-Param( Gain,      double,  wxT("Gain"),          0.0,     -30.0,   30.0,    1  );
-Param( Link,      bool,    wxT("Link Sliders"),  false,    false,  true,    1  );
+Param( Bass,      double,  L"Bass",          0.0,     -30.0,   30.0,    1  );
+Param( Treble,    double,  L"Treble",        0.0,     -30.0,   30.0,    1  );
+Param( Gain,      double,  L"Gain",          0.0,     -30.0,   30.0,    1  );
+Param( Link,      bool,    L"Link Sliders",  false,    false,  true,    1  );
 
 // Used to communicate the type of the filter.
 enum kShelfType
@@ -100,7 +100,7 @@ TranslatableString EffectBassTreble::GetDescription()
 
 wxString EffectBassTreble::ManualPage()
 {
-   return wxT("Bass_and_Treble");
+   return L"Bass_and_Treble";
 }
 
 // EffectDefinitionInterface implementation
@@ -235,7 +235,7 @@ void EffectBassTreble::PopulateOrExchange(ShuttleGui & S)
             .Name(XO("Bass (dB):"))
             .Validator<FloatingPointValidator<double>>(
                1, &mBass, NumValidatorStyle::DEFAULT, MIN_Bass, MAX_Bass)
-            .AddTextBox(XXO("Ba&ss (dB):"), wxT(""), 10);
+            .AddTextBox(XXO("Ba&ss (dB):"), L"", 10);
 
          mBassS = S.Id(ID_Bass)
             .Name(XO("Bass"))
@@ -246,7 +246,7 @@ void EffectBassTreble::PopulateOrExchange(ShuttleGui & S)
          mTrebleT = S.Id(ID_Treble)
             .Validator<FloatingPointValidator<double>>(
                1, &mTreble, NumValidatorStyle::DEFAULT, MIN_Treble, MAX_Treble)
-            .AddTextBox(XXO("&Treble (dB):"), wxT(""), 10);
+            .AddTextBox(XXO("&Treble (dB):"), L"", 10);
 
          mTrebleS = S.Id(ID_Treble)
             .Name(XO("Treble"))
@@ -267,7 +267,7 @@ void EffectBassTreble::PopulateOrExchange(ShuttleGui & S)
          mGainT = S.Id(ID_Gain)
             .Validator<FloatingPointValidator<double>>(
                1, &mGain, NumValidatorStyle::DEFAULT, MIN_Gain, MAX_Gain)
-            .AddTextBox(XXO("&Volume (dB):"), wxT(""), 10);
+            .AddTextBox(XXO("&Volume (dB):"), L"", 10);
 
          mGainS = S.Id(ID_Gain)
             .Name(XO("Level"))

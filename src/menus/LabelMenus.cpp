@@ -55,7 +55,7 @@ int DoAddLabel(
    wxString title;      // of label
 
    bool useDialog;
-   gPrefs->Read(wxT("/GUI/DialogForNameNewLabel"), &useDialog, false);
+   gPrefs->Read(L"/GUI/DialogForNameNewLabel", &useDialog, false);
    if (useDialog) {
       if (LabelTrackView::DialogForLabelName(
          project, region, wxEmptyString, title) == wxID_CANCEL)
@@ -377,8 +377,8 @@ void OnPasteNewLabel(const CommandContext &context)
 void OnToggleTypeToCreateLabel(const CommandContext &WXUNUSED(context) )
 {
    bool typeToCreateLabel;
-   gPrefs->Read(wxT("/GUI/TypeToCreateLabel"), &typeToCreateLabel, false);
-   gPrefs->Write(wxT("/GUI/TypeToCreateLabel"), !typeToCreateLabel);
+   gPrefs->Read(L"/GUI/TypeToCreateLabel", &typeToCreateLabel, false);
+   gPrefs->Write(L"/GUI/TypeToCreateLabel", !typeToCreateLabel);
    gPrefs->Flush();
    MenuManager::ModifyAllProjectToolbarMenus();
 }
@@ -407,7 +407,7 @@ void OnCutLabels(const CommandContext &context)
    };
    EditClipboardByLabel( project, tracks, selectedRegion, copyfunc );
 
-   bool enableCutlines = gPrefs->ReadBool(wxT( "/GUI/EnableCutLines"), false);
+   bool enableCutlines = gPrefs->ReadBool(L"/GUI/EnableCutLines", false);
    auto editfunc = [&](Track *track, double t0, double t1)
    {
       track->TypeSwitch(
@@ -700,86 +700,86 @@ BaseItemSharedPtr LabelEditMenus()
    
    static BaseItemSharedPtr menus{
    ( FinderScope{ findCommandHandler },
-   Items( wxT("LabelEditMenus"),
+   Items( L"LabelEditMenus",
    
-   Menu( wxT("Labels"), XXO("&Labels"),
+   Menu( L"Labels", XXO("&Labels"),
       Section( "",
-         Command( wxT("EditLabels"), XXO("&Edit Labels..."), FN(OnEditLabels),
+         Command( L"EditLabels", XXO("&Edit Labels..."), FN(OnEditLabels),
                     AudioIONotBusyFlag() )
       ),
 
       Section( "",
-         Command( wxT("AddLabel"), XXO("Add Label at &Selection"),
-            FN(OnAddLabel), AlwaysEnabledFlag, wxT("Ctrl+B") ),
-         Command( wxT("AddLabelPlaying"),
+         Command( L"AddLabel", XXO("Add Label at &Selection"),
+            FN(OnAddLabel), AlwaysEnabledFlag, L"Ctrl+B" ),
+         Command( L"AddLabelPlaying",
             XXO("Add Label at &Playback Position"),
             FN(OnAddLabelPlaying), AudioIOBusyFlag(),
    #ifdef __WXMAC__
-            wxT("Ctrl+.")
+            L"Ctrl+."
    #else
-            wxT("Ctrl+M")
+            L"Ctrl+M"
    #endif
          ),
-         Command( wxT("PasteNewLabel"), XXO("Paste Te&xt to New Label"),
+         Command( L"PasteNewLabel", XXO("Paste Te&xt to New Label"),
             FN(OnPasteNewLabel),
-            AudioIONotBusyFlag(), wxT("Ctrl+Alt+V") )
+            AudioIONotBusyFlag(), L"Ctrl+Alt+V" )
       ),
 
       Section( "",
-         Command( wxT("TypeToCreateLabel"),
+         Command( L"TypeToCreateLabel",
             XXO("&Type to Create a Label (on/off)"),
             FN(OnToggleTypeToCreateLabel), AlwaysEnabledFlag,
-            Options{}.CheckTest(wxT("/GUI/TypeToCreateLabel"), false) )
+            Options{}.CheckTest(L"/GUI/TypeToCreateLabel", false) )
       )
    ), // first menu
 
    /////////////////////////////////////////////////////////////////////////////
 
-   Menu( wxT("Labeled"), XXO("La&beled Audio"),
+   Menu( L"Labeled", XXO("La&beled Audio"),
       Section( "",
          /* i18n-hint: (verb)*/
-         Command( wxT("CutLabels"), XXO("&Cut"), FN(OnCutLabels),
+         Command( L"CutLabels", XXO("&Cut"), FN(OnCutLabels),
             AudioIONotBusyFlag() | LabelsSelectedFlag() | WaveTracksExistFlag() |
                TimeSelectedFlag(),
-               Options{ wxT("Alt+X"), XO("Label Cut") } ),
-         Command( wxT("DeleteLabels"), XXO("&Delete"), FN(OnDeleteLabels),
+               Options{ L"Alt+X", XO("Label Cut") } ),
+         Command( L"DeleteLabels", XXO("&Delete"), FN(OnDeleteLabels),
             AudioIONotBusyFlag() | LabelsSelectedFlag() | WaveTracksExistFlag() |
                TimeSelectedFlag(),
-            Options{ wxT("Alt+K"), XO("Label Delete") } )
+            Options{ L"Alt+K", XO("Label Delete") } )
       ),
 
       Section( "",
          /* i18n-hint: (verb) A special way to cut out a piece of audio*/
-         Command( wxT("SplitCutLabels"), XXO("&Split Cut"),
+         Command( L"SplitCutLabels", XXO("&Split Cut"),
             FN(OnSplitCutLabels), NotBusyLabelsAndWaveFlags,
-            Options{ wxT("Alt+Shift+X"), XO("Label Split Cut") } ),
-         Command( wxT("SplitDeleteLabels"), XXO("Sp&lit Delete"),
+            Options{ L"Alt+Shift+X", XO("Label Split Cut") } ),
+         Command( L"SplitDeleteLabels", XXO("Sp&lit Delete"),
             FN(OnSplitDeleteLabels), NotBusyLabelsAndWaveFlags,
-            Options{ wxT("Alt+Shift+K"), XO("Label Split Delete") } )
+            Options{ L"Alt+Shift+K", XO("Label Split Delete") } )
       ),
 
       Section( "",
-         Command( wxT("SilenceLabels"), XXO("Silence &Audio"),
+         Command( L"SilenceLabels", XXO("Silence &Audio"),
             FN(OnSilenceLabels), NotBusyLabelsAndWaveFlags,
-            Options{ wxT("Alt+L"), XO("Label Silence") } ),
+            Options{ L"Alt+L", XO("Label Silence") } ),
          /* i18n-hint: (verb)*/
-         Command( wxT("CopyLabels"), XXO("Co&py"), FN(OnCopyLabels),
+         Command( L"CopyLabels", XXO("Co&py"), FN(OnCopyLabels),
             NotBusyLabelsAndWaveFlags,
-            Options{ wxT("Alt+Shift+C"), XO("Label Copy") } )
+            Options{ L"Alt+Shift+C", XO("Label Copy") } )
       ),
 
       Section( "",
          /* i18n-hint: (verb)*/
-         Command( wxT("SplitLabels"), XXO("Spli&t"), FN(OnSplitLabels),
+         Command( L"SplitLabels", XXO("Spli&t"), FN(OnSplitLabels),
             AudioIONotBusyFlag() | LabelsSelectedFlag() | WaveTracksExistFlag(),
-            Options{ wxT("Alt+I"), XO("Label Split") } ),
+            Options{ L"Alt+I", XO("Label Split") } ),
          /* i18n-hint: (verb)*/
-         Command( wxT("JoinLabels"), XXO("&Join"), FN(OnJoinLabels),
+         Command( L"JoinLabels", XXO("&Join"), FN(OnJoinLabels),
             NotBusyLabelsAndWaveFlags,
-            Options{ wxT("Alt+J"), XO("Label Join") } ),
-         Command( wxT("DisjoinLabels"), XXO("Detac&h at Silences"),
+            Options{ L"Alt+J", XO("Label Join") } ),
+         Command( L"DisjoinLabels", XXO("Detac&h at Silences"),
             FN(OnDisjoinLabels), NotBusyLabelsAndWaveFlags,
-            wxT("Alt+Shift+J") )
+            L"Alt+Shift+J" )
       )
    ) // second menu
 
@@ -788,8 +788,8 @@ BaseItemSharedPtr LabelEditMenus()
 }
 
 AttachedItem sAttachment1{
-   { wxT("Edit/Other"),
-     { OrderingHint::Before, wxT("EditMetaData") } },
+   { L"Edit/Other",
+     { OrderingHint::Before, L"EditMetaData" } },
    Shared( LabelEditMenus() )
 };
 

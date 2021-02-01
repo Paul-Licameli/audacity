@@ -71,8 +71,8 @@ IMPLEMENT_CLASS(SelectionBar, ToolBar);
 
 const static wxChar *numbers[] =
 {
-   wxT("0"), wxT("1"), wxT("2"), wxT("3"), wxT("4"),
-   wxT("5"), wxT("6"), wxT("7"), wxT("8"), wxT("9")
+   L"0", L"1", L"2", L"3", L"4",
+   L"5", L"6", L"7", L"8", L"9"
 };
 
 enum {
@@ -108,7 +108,7 @@ BEGIN_EVENT_TABLE(SelectionBar, ToolBar)
 END_EVENT_TABLE()
 
 SelectionBar::SelectionBar( AudacityProject &project )
-: ToolBar(project, SelectionBarID, XO("Selection"), wxT("Selection")),
+: ToolBar(project, SelectionBarID, XO("Selection"), L"Selection"),
   mListener(NULL), mRate(0.0),
   mStart(0.0), mEnd(0.0), mLength(0.0), mCenter(0.0), mAudio(0.0),
   mDrive1( StartTimeID), mDrive2( EndTimeID ),
@@ -127,7 +127,7 @@ SelectionBar::SelectionBar( AudacityProject &project )
    mRate = (double) QualitySettings::DefaultSampleRate.Read();
 
    // Selection mode of 0 means showing 'start' and 'end' only.
-   mSelectionMode = gPrefs->ReadLong(wxT("/SelectionToolbarMode"),  0);
+   mSelectionMode = gPrefs->ReadLong(L"/SelectionToolbarMode",  0);
 }
 
 SelectionBar::~SelectionBar()
@@ -227,7 +227,7 @@ void SelectionBar::Populate()
 
    // Bottom row, (mostly time controls)
    mRateBox = safenew wxComboBox(this, RateID,
-                             wxT(""),
+                             L"",
                              wxDefaultPosition, wxDefaultSize);
 #if wxUSE_ACCESSIBILITY
    // so that name can be set on a standard control
@@ -238,7 +238,7 @@ void SelectionBar::Populate()
    wxTextValidator vld(wxFILTER_INCLUDE_CHAR_LIST);
    vld.SetIncludes(wxArrayString(10, numbers));
    mRateBox->SetValidator(vld);
-   mRateBox->SetValue(wxString::Format(wxT("%d"), (int)mRate));
+   mRateBox->SetValue(wxString::Format(L"%d", (int)mRate));
    UpdateRates(); // Must be done _after_ setting value on mRateBox!
 
    // We need to capture the SetFocus and KillFocus events to set up
@@ -360,7 +360,7 @@ void SelectionBar::UpdatePrefs()
    // This will only change the selection mode during a "Reset Configuration"
    // action since the read value will be the same during a normal preferences
    // update.
-   mSelectionMode = gPrefs->ReadLong(wxT("/SelectionToolbarMode"),  0);
+   mSelectionMode = gPrefs->ReadLong(L"/SelectionToolbarMode",  0);
 
    // This will only change the time format during a "Reset Configuration"
    // action since the read value will be the same during a normal preferences
@@ -368,7 +368,7 @@ void SelectionBar::UpdatePrefs()
    wxCommandEvent e;
    e.SetString(NumericTextCtrl::LookupFormat(
                NumericConverter::TIME,
-               gPrefs->Read(wxT("/SelectionFormat"), wxT(""))).Internal());
+               gPrefs->Read(L"/SelectionFormat", L"")).Internal());
    OnUpdate(e);
 
    // Set label to pull in language change
@@ -613,7 +613,7 @@ void SelectionBar::OnIdle( wxIdleEvent &evt )
 void SelectionBar::SelectionModeUpdated()
 {
    // We just changed the mode.  Remember it.
-   gPrefs->Write(wxT("/SelectionToolbarMode"), mSelectionMode);
+   gPrefs->Write(L"/SelectionToolbarMode", mSelectionMode);
    gPrefs->Flush();
 
    wxSize sz = GetMinSize();
@@ -722,7 +722,7 @@ void SelectionBar::SetRate(double rate)
    if (rate != mRate) {
       // if the rate is actually being changed
       mRate = rate;   // update the stored rate
-      mRateBox->SetValue(wxString::Format(wxT("%d"), (int)rate));
+      mRateBox->SetValue(wxString::Format(L"%d", (int)rate));
 
       // update the TimeTextCtrls if they exist
       NumericTextCtrl ** Ctrls[5] = { &mStartTime, &mEndTime, &mLengthTime, &mCenterTime, &mAudioTime };
@@ -762,7 +762,7 @@ void SelectionBar::UpdateRates()
    mRateBox->Clear();
    for (int i = 0; i < AudioIOBase::NumStandardRates; i++) {
       mRateBox->Append(
-         wxString::Format(wxT("%d"), AudioIOBase::StandardRates[i]));
+         wxString::Format(L"%d", AudioIOBase::StandardRates[i]));
    }
    mRateBox->SetValue(oldValue);
 }
@@ -818,7 +818,7 @@ namespace {
 AttachedToolBarMenuItem sAttachment{
    /* i18n-hint: Clicking this menu item shows the toolbar
       for selecting a time range of audio */
-   SelectionBarID, wxT("ShowSelectionTB"), XXO("&Selection Toolbar")
+   SelectionBarID, L"ShowSelectionTB", XXO("&Selection Toolbar")
 };
 }
 

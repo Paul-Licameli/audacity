@@ -48,25 +48,25 @@ enum
 // Define keys, defaults, minimums, and maximums for the effect parameters
 //
 //     Name       Type        Key               Def                   Min      Max      Scale
-Param( Sequence,  wxString,   wxT("Sequence"),   wxT(SHORT_APP_NAME),  wxT(""), wxT(""), wxT(""));
-Param( DutyCycle, double,     wxT("Duty Cycle"), 55.0,                 0.0,     100.0,   10.0   );
-Param( Amplitude, double,     wxT("Amplitude"),  0.8,                  0.001,   1.0,     1      );
+Param( Sequence,  wxString,   L"Sequence",   wxT(SHORT_APP_NAME),  L"", L"", L"");
+Param( DutyCycle, double,     L"Duty Cycle", 55.0,                 0.0,     100.0,   10.0   );
+Param( Amplitude, double,     L"Amplitude",  0.8,                  0.001,   1.0,     1      );
 
 static const double kFadeInOut = 250.0; // used for fadein/out needed to remove clicking noise
 
 const static wxChar *kSymbols[] =
 {
-   wxT("0"), wxT("1"), wxT("2"), wxT("3"),
-   wxT("4"), wxT("5"), wxT("6"), wxT("7"),
-   wxT("8"), wxT("9"), wxT("*"), wxT("#"),
-   wxT("A"), wxT("B"), wxT("C"), wxT("D"),
-   wxT("a"), wxT("b"), wxT("c"), wxT("d"),
-   wxT("e"), wxT("f"), wxT("g"), wxT("h"),
-   wxT("i"), wxT("j"), wxT("k"), wxT("l"),
-   wxT("m"), wxT("n"), wxT("o"), wxT("p"),
-   wxT("q"), wxT("r"), wxT("s"), wxT("t"),
-   wxT("u"), wxT("v"), wxT("w"), wxT("x"),
-   wxT("y"), wxT("z")
+   L"0", L"1", L"2", L"3",
+   L"4", L"5", L"6", L"7",
+   L"8", L"9", L"*", L"#",
+   L"A", L"B", L"C", L"D",
+   L"a", L"b", L"c", L"d",
+   L"e", L"f", L"g", L"h",
+   L"i", L"j", L"k", L"l",
+   L"m", L"n", L"o", L"p",
+   L"q", L"r", L"s", L"t",
+   L"u", L"v", L"w", L"x",
+   L"y", L"z"
 };
 
 //
@@ -112,7 +112,7 @@ TranslatableString EffectDtmf::GetDescription()
 
 wxString EffectDtmf::ManualPage()
 {
-   return wxT("DTMF_Tones");
+   return L"DTMF_Tones";
 }
 
 // EffectDefinitionInterface implementation
@@ -291,12 +291,12 @@ bool EffectDtmf::SetAutomationParameters(CommandParameters & parms)
 
 bool EffectDtmf::Startup()
 {
-   wxString base = wxT("/Effects/DtmfGen/");
+   wxString base = L"/Effects/DtmfGen/";
 
    // Migrate settings from 2.1.0 or before
 
    // Already migrated, so bail
-   if (gPrefs->Exists(base + wxT("Migrated")))
+   if (gPrefs->Exists(base + L"Migrated"))
    {
       return true;
    }
@@ -304,14 +304,14 @@ bool EffectDtmf::Startup()
    // Load the old "current" settings
    if (gPrefs->Exists(base))
    {
-      gPrefs->Read(base + wxT("String"), &dtmfSequence, wxT(SHORT_APP_NAME));
-      gPrefs->Read(base + wxT("DutyCycle"), &dtmfDutyCycle, 550L);
-      gPrefs->Read(base + wxT("Amplitude"), &dtmfAmplitude, 0.8f);
+      gPrefs->Read(base + L"String", &dtmfSequence, wxT(SHORT_APP_NAME));
+      gPrefs->Read(base + L"DutyCycle", &dtmfDutyCycle, 550L);
+      gPrefs->Read(base + L"Amplitude", &dtmfAmplitude, 0.8f);
 
       SaveUserPreset(GetCurrentSettingsGroup());
 
       // Do not migrate again
-      gPrefs->Write(base + wxT("Migrated"), true);
+      gPrefs->Write(base + L"Migrated", true);
       gPrefs->Flush();
    }
 
@@ -343,13 +343,13 @@ void EffectDtmf::PopulateOrExchange(ShuttleGui & S)
             vldDtmf.SetIncludes(wxArrayString(WXSIZEOF(kSymbols), kSymbols));
             return vldDtmf;
          })
-         .AddTextBox(XXO("DTMF &sequence:"), wxT(""), 10);
+         .AddTextBox(XXO("DTMF &sequence:"), L"", 10);
 
       S.Id(ID_Amplitude)
          .Validator<FloatingPointValidator<double>>(
             3, &dtmfAmplitude, NumValidatorStyle::NO_TRAILING_ZEROES,
             MIN_Amplitude, MAX_Amplitude)
-         .AddTextBox(XXO("&Amplitude (0-1):"), wxT(""), 10);
+         .AddTextBox(XXO("&Amplitude (0-1):"), L"", 10);
 
       S.AddPrompt(XXO("&Duration:"));
       mDtmfDurationT = safenew
@@ -600,7 +600,7 @@ bool EffectDtmf::MakeDtmfTone(float *buffer, size_t len, float fs, wxChar tone, 
 
 void EffectDtmf::UpdateUI(void)
 {
-   mDtmfDutyT->SetLabel(wxString::Format(wxT("%.1f %%"), dtmfDutyCycle));
+   mDtmfDutyT->SetLabel(wxString::Format(L"%.1f %%", dtmfDutyCycle));
    mDtmfDutyT->SetName(mDtmfDutyT->GetLabel()); // fix for bug 577 (NVDA/Narrator screen readers do not read static text in dialogs)
 
    mDtmfSilenceT->SetLabel(wxString::Format(_("%.0f ms"), dtmfTone * 1000.0));

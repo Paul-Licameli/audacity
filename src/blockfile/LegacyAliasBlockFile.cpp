@@ -65,20 +65,20 @@ BlockFilePtr LegacyAliasBlockFile::Copy(wxFileNameWrapper &&newFileName)
 void LegacyAliasBlockFile::SaveXML(XMLWriter &xmlFile)
 // may throw
 {
-   xmlFile.StartTag(wxT("legacyblockfile"));
+   xmlFile.StartTag(L"legacyblockfile");
 
-   xmlFile.WriteAttr(wxT("alias"), 1);
-   xmlFile.WriteAttr(wxT("name"), mFileName.GetFullName());
-   xmlFile.WriteAttr(wxT("aliaspath"), mAliasedFileName.GetFullPath());
-   xmlFile.WriteAttr(wxT("aliasstart"),
+   xmlFile.WriteAttr(L"alias", 1);
+   xmlFile.WriteAttr(L"name", mFileName.GetFullName());
+   xmlFile.WriteAttr(L"aliaspath", mAliasedFileName.GetFullPath());
+   xmlFile.WriteAttr(L"aliasstart",
                      mAliasStart.as_long_long() );
-   xmlFile.WriteAttr(wxT("aliaslen"), mLen);
-   xmlFile.WriteAttr(wxT("aliaschannel"), mAliasChannel);
-   xmlFile.WriteAttr(wxT("summarylen"), mSummaryInfo.totalSummaryBytes);
+   xmlFile.WriteAttr(L"aliaslen", mLen);
+   xmlFile.WriteAttr(L"aliaschannel", mAliasChannel);
+   xmlFile.WriteAttr(L"summarylen", mSummaryInfo.totalSummaryBytes);
    if (mSummaryInfo.fields < 3)
-      xmlFile.WriteAttr(wxT("norms"), 1);
+      xmlFile.WriteAttr(L"norms", 1);
 
-   xmlFile.EndTag(wxT("legacyblockfile"));
+   xmlFile.EndTag(L"legacyblockfile");
 }
 
 // BuildFromXML methods should always return a BlockFile, not NULL,
@@ -102,12 +102,12 @@ BlockFilePtr LegacyAliasBlockFile::BuildFromXML(const FilePath &projDir, const w
          break;
 
       const wxString strValue = value;
-      if (!wxStricmp(attr, wxT("name")) && XMLValueChecker::IsGoodFileName(strValue, projDir))
+      if (!wxStricmp(attr, L"name") && XMLValueChecker::IsGoodFileName(strValue, projDir))
          //v Should this be
          //    dm.AssignFile(summaryFileName, strValue, false);
          // as in PCMAliasBlockFile::BuildFromXML? Test with an old project.
-         summaryFileName.Assign(projDir, strValue, wxT(""));
-      else if ( !wxStricmp(attr, wxT("aliaspath")) )
+         summaryFileName.Assign(projDir, strValue, L"");
+      else if ( !wxStricmp(attr, L"aliaspath") )
       {
          if (XMLValueChecker::IsGoodPathName(strValue))
             aliasFileName.Assign(strValue);
@@ -120,7 +120,7 @@ BlockFilePtr LegacyAliasBlockFile::BuildFromXML(const FilePath &projDir, const w
             // but we want to keep the reference to the missing file because it's a good path string.
             aliasFileName.Assign(strValue);
       }
-      else if ( !wxStricmp(attr, wxT("aliasstart")) )
+      else if ( !wxStricmp(attr, L"aliasstart") )
       {
          if (XMLValueChecker::IsGoodInt64(strValue) &&
              strValue.ToLongLong(&nnValue) && (nnValue >= 0))
@@ -128,13 +128,13 @@ BlockFilePtr LegacyAliasBlockFile::BuildFromXML(const FilePath &projDir, const w
       }
       else if (XMLValueChecker::IsGoodInt(strValue) && strValue.ToLong(&nValue))
       {  // integer parameters
-         if (!wxStricmp(attr, wxT("aliaslen")) && (nValue >= 0))
+         if (!wxStricmp(attr, L"aliaslen") && (nValue >= 0))
             aliasLen = nValue;
-         else if (!wxStricmp(attr, wxT("aliaschannel")) && XMLValueChecker::IsValidChannel(aliasChannel))
+         else if (!wxStricmp(attr, L"aliaschannel") && XMLValueChecker::IsValidChannel(aliasChannel))
             aliasChannel = nValue;
-         else if (!wxStricmp(attr, wxT("summarylen")) && (nValue > 0))
+         else if (!wxStricmp(attr, L"summarylen") && (nValue > 0))
             summaryLen = nValue;
-         else if (!wxStricmp(attr, wxT("norms")))
+         else if (!wxStricmp(attr, L"norms"))
             noRMS = (nValue != 0);
       }
    }
@@ -157,7 +157,7 @@ static const auto sFactory = []( DirManager &dm, const wxChar **attrs ){
    bool alias = false;
 
    while(attrs[i]) {
-      if (!wxStricmp(attrs[i], wxT("alias"))) {
+      if (!wxStricmp(attrs[i], L"alias")) {
          if (wxAtoi(attrs[i+1])==1)
             alias = true;
       }

@@ -130,16 +130,16 @@ void ProjectManager::SaveWindowSize()
       wxRect windowRect = validProject->GetRect();
       wxRect normalRect = validProject->GetNormalizedWindowState();
       bool wndMaximized = validProject->IsMaximized();
-      gPrefs->Write(wxT("/Window/X"), windowRect.GetX());
-      gPrefs->Write(wxT("/Window/Y"), windowRect.GetY());
-      gPrefs->Write(wxT("/Window/Width"), windowRect.GetWidth());
-      gPrefs->Write(wxT("/Window/Height"), windowRect.GetHeight());
-      gPrefs->Write(wxT("/Window/Maximized"), wndMaximized);
-      gPrefs->Write(wxT("/Window/Normal_X"), normalRect.GetX());
-      gPrefs->Write(wxT("/Window/Normal_Y"), normalRect.GetY());
-      gPrefs->Write(wxT("/Window/Normal_Width"), normalRect.GetWidth());
-      gPrefs->Write(wxT("/Window/Normal_Height"), normalRect.GetHeight());
-      gPrefs->Write(wxT("/Window/Iconized"), FALSE);
+      gPrefs->Write(L"/Window/X", windowRect.GetX());
+      gPrefs->Write(L"/Window/Y", windowRect.GetY());
+      gPrefs->Write(L"/Window/Width", windowRect.GetWidth());
+      gPrefs->Write(L"/Window/Height", windowRect.GetHeight());
+      gPrefs->Write(L"/Window/Maximized", wndMaximized);
+      gPrefs->Write(L"/Window/Normal_X", normalRect.GetX());
+      gPrefs->Write(L"/Window/Normal_Y", normalRect.GetY());
+      gPrefs->Write(L"/Window/Normal_Width", normalRect.GetWidth());
+      gPrefs->Write(L"/Window/Normal_Height", normalRect.GetHeight());
+      gPrefs->Write(L"/Window/Iconized", FALSE);
    }
    else
    {
@@ -149,16 +149,16 @@ void ProjectManager::SaveWindowSize()
          wxRect normalRect = validProject->GetNormalizedWindowState();
          // store only the normal rectangle because the itemized rectangle
          // makes no sense for an opening project window
-         gPrefs->Write(wxT("/Window/X"), normalRect.GetX());
-         gPrefs->Write(wxT("/Window/Y"), normalRect.GetY());
-         gPrefs->Write(wxT("/Window/Width"), normalRect.GetWidth());
-         gPrefs->Write(wxT("/Window/Height"), normalRect.GetHeight());
-         gPrefs->Write(wxT("/Window/Maximized"), wndMaximized);
-         gPrefs->Write(wxT("/Window/Normal_X"), normalRect.GetX());
-         gPrefs->Write(wxT("/Window/Normal_Y"), normalRect.GetY());
-         gPrefs->Write(wxT("/Window/Normal_Width"), normalRect.GetWidth());
-         gPrefs->Write(wxT("/Window/Normal_Height"), normalRect.GetHeight());
-         gPrefs->Write(wxT("/Window/Iconized"), TRUE);
+         gPrefs->Write(L"/Window/X", normalRect.GetX());
+         gPrefs->Write(L"/Window/Y", normalRect.GetY());
+         gPrefs->Write(L"/Window/Width", normalRect.GetWidth());
+         gPrefs->Write(L"/Window/Height", normalRect.GetHeight());
+         gPrefs->Write(L"/Window/Maximized", wndMaximized);
+         gPrefs->Write(L"/Window/Normal_X", normalRect.GetX());
+         gPrefs->Write(L"/Window/Normal_Y", normalRect.GetY());
+         gPrefs->Write(L"/Window/Normal_Width", normalRect.GetWidth());
+         gPrefs->Write(L"/Window/Normal_Height", normalRect.GetHeight());
+         gPrefs->Write(L"/Window/Iconized", TRUE);
       }
       else {
          // this would be a very strange case that might possibly occur on the Mac
@@ -166,16 +166,16 @@ void ProjectManager::SaveWindowSize()
          // in this case we are going to write only the default values
          wxRect defWndRect;
          GetDefaultWindowRect(&defWndRect);
-         gPrefs->Write(wxT("/Window/X"), defWndRect.GetX());
-         gPrefs->Write(wxT("/Window/Y"), defWndRect.GetY());
-         gPrefs->Write(wxT("/Window/Width"), defWndRect.GetWidth());
-         gPrefs->Write(wxT("/Window/Height"), defWndRect.GetHeight());
-         gPrefs->Write(wxT("/Window/Maximized"), FALSE);
-         gPrefs->Write(wxT("/Window/Normal_X"), defWndRect.GetX());
-         gPrefs->Write(wxT("/Window/Normal_Y"), defWndRect.GetY());
-         gPrefs->Write(wxT("/Window/Normal_Width"), defWndRect.GetWidth());
-         gPrefs->Write(wxT("/Window/Normal_Height"), defWndRect.GetHeight());
-         gPrefs->Write(wxT("/Window/Iconized"), FALSE);
+         gPrefs->Write(L"/Window/X", defWndRect.GetX());
+         gPrefs->Write(L"/Window/Y", defWndRect.GetY());
+         gPrefs->Write(L"/Window/Width", defWndRect.GetWidth());
+         gPrefs->Write(L"/Window/Height", defWndRect.GetHeight());
+         gPrefs->Write(L"/Window/Maximized", FALSE);
+         gPrefs->Write(L"/Window/Normal_X", defWndRect.GetX());
+         gPrefs->Write(L"/Window/Normal_Y", defWndRect.GetY());
+         gPrefs->Write(L"/Window/Normal_Width", defWndRect.GetWidth());
+         gPrefs->Write(L"/Window/Normal_Height", defWndRect.GetHeight());
+         gPrefs->Write(L"/Window/Iconized", FALSE);
       }
    }
    gPrefs->Flush();
@@ -373,7 +373,7 @@ void InitProjectWindow( ProjectWindow &window )
    // so that name can be set on a standard control
    statusBar->SetAccessible(safenew WindowAccessible(statusBar));
 #endif
-   statusBar->SetName(wxT("status_line"));     // not localized
+   statusBar->SetName(L"status_line");     // not localized
 
    auto &viewInfo = ViewInfo::Get( project );
 

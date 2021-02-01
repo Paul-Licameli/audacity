@@ -87,7 +87,7 @@ bool XMLValueChecker::IsGoodSubdirName(const FilePath & strSubdirName, const Fil
    // so fixes vulnerability #3 in the NGS report for UmixIt,
    // where an attacker could craft an AUP file with relative pathnames to get to system files, for example.
    if (!IsGoodFileString(strSubdirName) ||
-         (strSubdirName == wxT(".")) || (strSubdirName == wxT("..")) ||
+         (strSubdirName == L".") || (strSubdirName == L"..") ||
          (strDirName.length() + 1 + strSubdirName.length() > PLATFORM_MAX_PATH))
       return false;
 

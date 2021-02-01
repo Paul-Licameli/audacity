@@ -73,8 +73,8 @@ enum {
 // Define keys, defaults, minimums, and maximums for the effect parameters
 //
 //     Name          Type     Key               Def   Min      Max      Scale
-Param( Percentage,   double,  wxT("Percentage"), 0.0,  -99.0,   3000.0,  1  );
-Param( UseSBSMS,     bool,    wxT("SBSMS"),     false, false,   true,    1  );
+Param( Percentage,   double,  L"Percentage", 0.0,  -99.0,   3000.0,  1  );
+Param( UseSBSMS,     bool,    L"SBSMS",     false, false,   true,    1  );
 
 // We warp the slider to go up to 400%, but user can enter up to 3000%
 static const double kSliderMax = 100.0;          // warped above zero to actually go up to 400%
@@ -152,7 +152,7 @@ TranslatableString EffectChangePitch::GetDescription()
 
 wxString EffectChangePitch::ManualPage()
 {
-   return wxT("Change_Pitch");
+   return L"Change_Pitch";
 }
 
 // EffectDefinitionInterface implementation
@@ -316,7 +316,7 @@ void EffectChangePitch::PopulateOrExchange(ShuttleGui & S)
                   2, &m_dSemitonesChange,
                   NumValidatorStyle::TWO_TRAILING_ZEROES
                )
-               .AddTextBox(XXO("&Semitones (half-steps):"), wxT(""), 12);
+               .AddTextBox(XXO("&Semitones (half-steps):"), L"", 12);
          }
          S.EndHorizontalLay();
       }
@@ -333,7 +333,7 @@ void EffectChangePitch::PopulateOrExchange(ShuttleGui & S)
                   NumValidatorStyle::THREE_TRAILING_ZEROES,
                   0.0
                )
-               .AddTextBox(XXO("f&rom"), wxT(""), 12);
+               .AddTextBox(XXO("f&rom"), L"", 12);
 
             m_pTextCtrl_ToFrequency = S.Id(ID_ToFrequency)
                .Name(XO("to (Hz)"))
@@ -342,7 +342,7 @@ void EffectChangePitch::PopulateOrExchange(ShuttleGui & S)
                   NumValidatorStyle::THREE_TRAILING_ZEROES,
                   0.0
                )
-               .AddTextBox(XXO("t&o"), wxT(""), 12);
+               .AddTextBox(XXO("t&o"), L"", 12);
 
             S.AddUnits(XO("Hz"));
          }
@@ -356,7 +356,7 @@ void EffectChangePitch::PopulateOrExchange(ShuttleGui & S)
                   NumValidatorStyle::THREE_TRAILING_ZEROES,
                   MIN_Percentage, MAX_Percentage
                )
-               .AddTextBox(XXO("Percent C&hange:"), wxT(""), 12);
+               .AddTextBox(XXO("Percent C&hange:"), L"", 12);
          }
          S.EndHorizontalLay();
 

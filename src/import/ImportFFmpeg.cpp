@@ -39,113 +39,113 @@ Licensed under the GNU General Public License v2 or later
 //TODO: remove non-audio extensions
 #if defined(USE_FFMPEG)
 static const auto exts = {
-   wxT("4xm"),
-   wxT("MTV"),
-   wxT("roq"),
-   wxT("aac"),
-   wxT("ac3"),
-   wxT("aif"),
-   wxT("aiff"),
-   wxT("afc"),
-   wxT("aifc"),
-   wxT("al"),
-   wxT("amr"),
-   wxT("apc"),
-   wxT("ape"),
-   wxT("apl"),
-   wxT("mac"),
-   wxT("asf"),
-   wxT("wmv"),
-   wxT("wma"),
-   wxT("au"),
-   wxT("avi"),
-   wxT("avs"),
-   wxT("bethsoftvid"),
-   wxT("c93"),
-   wxT("302"),
-   wxT("daud"),
-   wxT("dsicin"),
-   wxT("dts"),
-   wxT("dv"),
-   wxT("dxa"),
-   wxT("ea"),
-   wxT("cdata"),
-   wxT("ffm"),
-   wxT("film_cpk"),
-   wxT("flac"),
-   wxT("flic"),
-   wxT("flv"),
-   wxT("gif"),
-   wxT("gxf"),
-   wxT("idcin"),
-   wxT("image2"),
-   wxT("image2pipe"),
-   wxT("cgi"),
-   wxT("ipmovie"),
-   wxT("nut"),
-   wxT("lmlm4"),
-   wxT("m4v"),
-   wxT("mkv"),
-   wxT("mm"),
-   wxT("mmf"),
-   wxT("mov"),
-   wxT("mp4"),
-   wxT("m4a"),
-   wxT("m4r"),
-   wxT("3gp"),
-   wxT("3g2"),
-   wxT("mj2"),
-   wxT("mp3"),
-   wxT("mpc"),
-   wxT("mpc8"),
-   wxT("mpg"),
-   wxT("mpeg"),
-   wxT("ts"),
-   wxT("mpegtsraw"),
-   wxT("mpegvideo"),
-   wxT("msnwctcp"),
-   wxT("ul"),
-   wxT("mxf"),
-   wxT("nsv"),
-   wxT("nuv"),
-   wxT("ogg"),
-   wxT("opus"),
-   wxT("psxstr"),
-   wxT("pva"),
-   wxT("redir"),
-   wxT("rl2"),
-   wxT("rm"),
-   wxT("ra"),
-   wxT("rv"),
-   wxT("rtsp"),
-   wxT("s16be"),
-   wxT("sw"),
-   wxT("s8"),
-   wxT("sb"),
-   wxT("sdp"),
-   wxT("shn"),
-   wxT("siff"),
-   wxT("vb"),
-   wxT("son"),
-   wxT("smk"),
-   wxT("sol"),
-   wxT("swf"),
-   wxT("thp"),
-   wxT("tiertexseq"),
-   wxT("tta"),
-   wxT("txd"),
-   wxT("u16be"),
-   wxT("uw"),
-   wxT("ub"),
-   wxT("u8"),
-   wxT("vfwcap"),
-   wxT("vmd"),
-   wxT("voc"),
-   wxT("wav"),
-   wxT("wc3movie"),
-   wxT("wsaud"),
-   wxT("wsvqa"),
-   wxT("wv")
+   L"4xm",
+   L"MTV",
+   L"roq",
+   L"aac",
+   L"ac3",
+   L"aif",
+   L"aiff",
+   L"afc",
+   L"aifc",
+   L"al",
+   L"amr",
+   L"apc",
+   L"ape",
+   L"apl",
+   L"mac",
+   L"asf",
+   L"wmv",
+   L"wma",
+   L"au",
+   L"avi",
+   L"avs",
+   L"bethsoftvid",
+   L"c93",
+   L"302",
+   L"daud",
+   L"dsicin",
+   L"dts",
+   L"dv",
+   L"dxa",
+   L"ea",
+   L"cdata",
+   L"ffm",
+   L"film_cpk",
+   L"flac",
+   L"flic",
+   L"flv",
+   L"gif",
+   L"gxf",
+   L"idcin",
+   L"image2",
+   L"image2pipe",
+   L"cgi",
+   L"ipmovie",
+   L"nut",
+   L"lmlm4",
+   L"m4v",
+   L"mkv",
+   L"mm",
+   L"mmf",
+   L"mov",
+   L"mp4",
+   L"m4a",
+   L"m4r",
+   L"3gp",
+   L"3g2",
+   L"mj2",
+   L"mp3",
+   L"mpc",
+   L"mpc8",
+   L"mpg",
+   L"mpeg",
+   L"ts",
+   L"mpegtsraw",
+   L"mpegvideo",
+   L"msnwctcp",
+   L"ul",
+   L"mxf",
+   L"nsv",
+   L"nuv",
+   L"ogg",
+   L"opus",
+   L"psxstr",
+   L"pva",
+   L"redir",
+   L"rl2",
+   L"rm",
+   L"ra",
+   L"rv",
+   L"rtsp",
+   L"s16be",
+   L"sw",
+   L"s8",
+   L"sb",
+   L"sdp",
+   L"shn",
+   L"siff",
+   L"vb",
+   L"son",
+   L"smk",
+   L"sol",
+   L"swf",
+   L"thp",
+   L"tiertexseq",
+   L"tta",
+   L"txd",
+   L"u16be",
+   L"uw",
+   L"ub",
+   L"u8",
+   L"vfwcap",
+   L"vmd",
+   L"voc",
+   L"wav",
+   L"wc3movie",
+   L"wsaud",
+   L"wsvqa",
+   L"wv"
 };
 
 // all the includes live here by default
@@ -168,7 +168,7 @@ public:
 
    ~FFmpegImportPlugin() { }
 
-   wxString GetPluginStringID() override { return wxT("libav"); }
+   wxString GetPluginStringID() override { return L"libav"; }
    TranslatableString GetPluginFormatDescription() override;
 
    ///! Probes the file and opens it if appropriate
@@ -290,14 +290,14 @@ std::unique_ptr<ImportFileHandle> FFmpegImportPlugin::Open(
       //Since this will be happening often, use disableable "FFmpeg not found" dialog
       //insdead of usual AudacityMessageBox()
       bool newsession = false;
-      gPrefs->Read(wxT("/NewImportingSession"), &newsession);
+      gPrefs->Read(L"/NewImportingSession", &newsession);
       if (!FFmpegLibsInst()->ValidLibsLoaded())
       {
          int dontShowDlg;
-         gPrefs->Read(wxT("/FFmpeg/NotFoundDontShow"),&dontShowDlg,0);
+         gPrefs->Read(L"/FFmpeg/NotFoundDontShow",&dontShowDlg,0);
          if (dontShowDlg == 0 && newsession)
          {
-            gPrefs->Write(wxT("/NewImportingSession"), false);
+            gPrefs->Write(L"/NewImportingSession", false);
             gPrefs->Flush();
             FFmpegNotFoundDialog{ nullptr }.ShowModal();
          }
@@ -351,7 +351,7 @@ bool FFmpegImportFileHandle::Init()
    err = ufile_fopen_input(tempContext, mName);
    if (err < 0)
    {
-      wxLogError(wxT("FFmpeg : av_open_input_file() failed for file %s"), mName);
+      wxLogError(L"FFmpeg : av_open_input_file() failed for file %s", mName);
       return false;
    }
    wxASSERT(tempContext.get());
@@ -360,7 +360,7 @@ bool FFmpegImportFileHandle::Init()
    err = avformat_find_stream_info(mFormatContext, NULL);
    if (err < 0)
    {
-      wxLogError(wxT("FFmpeg: avformat_find_stream_info() failed for file %s"),mName);
+      wxLogError(L"FFmpeg: avformat_find_stream_info() failed for file %s",mName);
       return false;
    }
 
@@ -396,21 +396,21 @@ bool FFmpegImportFileHandle::InitCodecs()
 
          if (codec == NULL)
          {
-            wxLogError(wxT("FFmpeg : avcodec_find_decoder() failed. Index[%02d], Codec[%02x - %s]"),i,id,name);
+            wxLogError(L"FFmpeg : avcodec_find_decoder() failed. Index[%02d], Codec[%02x - %s]",i,id,name);
             //FFmpeg can't decode this stream, skip it
             continue;
          }
 
          if (codec->type != sc->m_codecCtx->codec_type)
          {
-            wxLogError(wxT("FFmpeg : Codec type mismatch, skipping. Index[%02d], Codec[%02x - %s]"),i,id,name);
+            wxLogError(L"FFmpeg : Codec type mismatch, skipping. Index[%02d], Codec[%02x - %s]",i,id,name);
             //Non-audio codec reported as audio? Nevertheless, we don't need THIS.
             continue;
          }
 
          if (avcodec_open2(sc->m_codecCtx, codec, NULL) < 0)
          {
-            wxLogError(wxT("FFmpeg : avcodec_open() failed. Index[%02d], Codec[%02x - %s]"),i,id,name);
+            wxLogError(L"FFmpeg : avcodec_open() failed. Index[%02d], Codec[%02x - %s]",i,id,name);
             //Can't open decoder - skip this stream
             continue;
          }
@@ -423,9 +423,9 @@ bool FFmpegImportFileHandle::InitCodecs()
             duration = mFormatContext->duration / AV_TIME_BASE;
          wxString bitrate;
          if (sc->m_codecCtx->bit_rate > 0)
-            bitrate.Printf(wxT("%d"),(int)sc->m_codecCtx->bit_rate);
+            bitrate.Printf(L"%d",(int)sc->m_codecCtx->bit_rate);
          else
-            bitrate.Printf(wxT("?"));
+            bitrate.Printf(L"?");
 
          AVDictionaryEntry *tag = av_dict_get(sc->m_stream->metadata, "language", NULL, 0);
          wxString lang;
@@ -530,7 +530,7 @@ ProgressResult FFmpegImportFileHandle::Import(WaveTrackFactory *trackFactory,
       if (sc->m_stream->start_time != int64_t(AV_NOPTS_VALUE) && sc->m_stream->start_time > 0)
       {
          stream_delay = sc->m_stream->start_time;
-         wxLogDebug(wxT("Stream %d start_time = %lld, that would be %f milliseconds."), s, (long long) sc->m_stream->start_time, double(sc->m_stream->start_time)/AV_TIME_BASE*1000);
+         wxLogDebug(L"Stream %d start_time = %lld, that would be %f milliseconds.", s, (long long) sc->m_stream->start_time, double(sc->m_stream->start_time)/AV_TIME_BASE*1000);
       }
       if (stream_delay > 0)
       {
@@ -682,7 +682,7 @@ ProgressResult FFmpegImportFileHandle::WriteData(streamContext *sc)
                break;
 
                default:
-                  wxLogError(wxT("Stream %d has unrecognized sample format %d."), streamid, sc->m_samplefmt);
+                  wxLogError(L"Stream %d has unrecognized sample format %d.", streamid, sc->m_samplefmt);
                   return ProgressResult::Success;
                break;
             }

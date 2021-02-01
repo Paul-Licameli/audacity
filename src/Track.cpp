@@ -334,8 +334,8 @@ void PlayableTrack::SetSolo( bool s  )
 // Serialize, not with tags of its own, but as attributes within a tag.
 void PlayableTrack::WriteXMLAttributes(XMLWriter &xmlFile) const
 {
-   xmlFile.WriteAttr(wxT("mute"), mMute);
-   xmlFile.WriteAttr(wxT("solo"), mSolo);
+   xmlFile.WriteAttr(L"mute", mMute);
+   xmlFile.WriteAttr(L"solo", mSolo);
    AudioTrack::WriteXMLAttributes(xmlFile);
 }
 
@@ -344,12 +344,12 @@ bool PlayableTrack::HandleXMLAttribute(const wxChar *attr, const wxChar *value)
 {
    const wxString strValue{ value };
    long nValue;
-   if (!wxStrcmp(attr, wxT("mute")) &&
+   if (!wxStrcmp(attr, L"mute") &&
             XMLValueChecker::IsGoodInt(strValue) && strValue.ToLong(&nValue)) {
       mMute = (nValue != 0);
       return true;
    }
-   else if (!wxStrcmp(attr, wxT("solo")) &&
+   else if (!wxStrcmp(attr, L"solo") &&
             XMLValueChecker::IsGoodInt(strValue) && strValue.ToLong(&nValue)) {
       mSolo = (nValue != 0);
       return true;
@@ -398,7 +398,7 @@ bool Track::LinkConsistencyCheck()
          if (l->GetLinked())
          {
             wxLogWarning(
-               wxT("Left track %s had linked right track %s with extra right track link.\n   Removing extra link from right track."),
+               L"Left track %s had linked right track %s with extra right track link.\n   Removing extra link from right track.",
                GetName(), l->GetName());
             err = true;
             l->SetLinked(false);
@@ -411,7 +411,7 @@ bool Track::LinkConsistencyCheck()
                      l->GetChannel() == Track::LeftChannel) ) )
          {
             wxLogWarning(
-               wxT("Track %s and %s had left/right track links out of order. Setting tracks to not be linked."),
+               L"Track %s and %s had left/right track links out of order. Setting tracks to not be linked.",
                GetName(), l->GetName());
             err = true;
             SetLinked(false);
@@ -420,7 +420,7 @@ bool Track::LinkConsistencyCheck()
       else
       {
          wxLogWarning(
-            wxT("Track %s had link to NULL track. Setting it to not be linked."),
+            L"Track %s had link to NULL track. Setting it to not be linked.",
             GetName());
          err = true;
          SetLinked(false);
@@ -1244,8 +1244,8 @@ void Track::WriteCommonXMLAttributes(
    XMLWriter &xmlFile, bool includeNameAndSelected) const
 {
    if (includeNameAndSelected) {
-      xmlFile.WriteAttr(wxT("name"), GetName());
-      xmlFile.WriteAttr(wxT("isSelected"), this->GetSelected());
+      xmlFile.WriteAttr(L"name", GetName());
+      xmlFile.WriteAttr(L"isSelected", this->GetSelected());
    }
    if ( mpView )
       mpView->WriteXMLAttributes( xmlFile );
@@ -1262,12 +1262,12 @@ bool Track::HandleCommonXMLAttribute(const wxChar *attr, const wxChar *value)
       ;
    else if ( mpControls && mpControls->HandleXMLAttribute( attr, value ) )
       ;
-   else if (!wxStrcmp(attr, wxT("name")) &&
+   else if (!wxStrcmp(attr, L"name") &&
       XMLValueChecker::IsGoodString(strValue)) {
       SetName( strValue );
       return true;
    }
-   else if (!wxStrcmp(attr, wxT("isSelected")) &&
+   else if (!wxStrcmp(attr, L"isSelected") &&
          XMLValueChecker::IsGoodInt(strValue) && strValue.ToLong(&nValue)) {
       this->SetSelected(nValue != 0);
       return true;

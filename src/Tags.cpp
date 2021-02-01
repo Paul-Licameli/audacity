@@ -71,161 +71,161 @@
 
 static const wxChar *DefaultGenres[] =
 {
-   wxT("Blues"),
-   wxT("Classic Rock"),
-   wxT("Country"),
-   wxT("Dance"),
-   wxT("Disco"),
-   wxT("Funk"),
-   wxT("Grunge"),
-   wxT("Hip-Hop"),
-   wxT("Jazz"),
-   wxT("Metal"),
-   wxT("New Age"),
-   wxT("Oldies"),
-   wxT("Other"),
-   wxT("Pop"),
-   wxT("R&B"),
-   wxT("Rap"),
-   wxT("Reggae"),
-   wxT("Rock"),
-   wxT("Techno"),
-   wxT("Industrial"),
-   wxT("Alternative"),
-   wxT("Ska"),
-   wxT("Death Metal"),
-   wxT("Pranks"),
-   wxT("Soundtrack"),
-   wxT("Euro-Techno"),
-   wxT("Ambient"),
-   wxT("Trip-Hop"),
-   wxT("Vocal"),
-   wxT("Jazz+Funk"),
-   wxT("Fusion"),
-   wxT("Trance"),
-   wxT("Classical"),
-   wxT("Instrumental"),
-   wxT("Acid"),
-   wxT("House"),
-   wxT("Game"),
-   wxT("Sound Clip"),
-   wxT("Gospel"),
-   wxT("Noise"),
-   wxT("Alt. Rock"),
-   wxT("Bass"),
-   wxT("Soul"),
-   wxT("Punk"),
-   wxT("Space"),
-   wxT("Meditative"),
-   wxT("Instrumental Pop"),
-   wxT("Instrumental Rock"),
-   wxT("Ethnic"),
-   wxT("Gothic"),
-   wxT("Darkwave"),
-   wxT("Techno-Industrial"),
-   wxT("Electronic"),
-   wxT("Pop-Folk"),
-   wxT("Eurodance"),
-   wxT("Dream"),
-   wxT("Southern Rock"),
-   wxT("Comedy"),
-   wxT("Cult"),
-   wxT("Gangsta Rap"),
-   wxT("Top 40"),
-   wxT("Christian Rap"),
-   wxT("Pop/Funk"),
-   wxT("Jungle"),
-   wxT("Native American"),
-   wxT("Cabaret"),
-   wxT("New Wave"),
-   wxT("Psychedelic"),
-   wxT("Rave"),
-   wxT("Showtunes"),
-   wxT("Trailer"),
-   wxT("Lo-Fi"),
-   wxT("Tribal"),
-   wxT("Acid Punk"),
-   wxT("Acid Jazz"),
-   wxT("Polka"),
-   wxT("Retro"),
-   wxT("Musical"),
-   wxT("Rock & Roll"),
-   wxT("Hard Rock"),
-   wxT("Folk"),
-   wxT("Folk/Rock"),
-   wxT("National Folk"),
-   wxT("Swing"),
-   wxT("Fast-Fusion"),
-   wxT("Bebob"),
-   wxT("Latin"),
-   wxT("Revival"),
-   wxT("Celtic"),
-   wxT("Bluegrass"),
-   wxT("Avantgarde"),
-   wxT("Gothic Rock"),
-   wxT("Progressive Rock"),
-   wxT("Psychedelic Rock"),
-   wxT("Symphonic Rock"),
-   wxT("Slow Rock"),
-   wxT("Big Band"),
-   wxT("Chorus"),
-   wxT("Easy Listening"),
-   wxT("Acoustic"),
-   wxT("Humour"),
-   wxT("Speech"),
-   wxT("Chanson"),
-   wxT("Opera"),
-   wxT("Chamber Music"),
-   wxT("Sonata"),
-   wxT("Symphony"),
-   wxT("Booty Bass"),
-   wxT("Primus"),
-   wxT("Porn Groove"),
-   wxT("Satire"),
-   wxT("Slow Jam"),
-   wxT("Club"),
-   wxT("Tango"),
-   wxT("Samba"),
-   wxT("Folklore"),
-   wxT("Ballad"),
-   wxT("Power Ballad"),
-   wxT("Rhythmic Soul"),
-   wxT("Freestyle"),
-   wxT("Duet"),
-   wxT("Punk Rock"),
-   wxT("Drum Solo"),
-   wxT("A Cappella"),
-   wxT("Euro-House"),
-   wxT("Dance Hall"),
-   wxT("Goa"),
-   wxT("Drum & Bass"),
-   wxT("Club-House"),
-   wxT("Hardcore"),
-   wxT("Terror"),
-   wxT("Indie"),
-   wxT("BritPop"),
+   L"Blues",
+   L"Classic Rock",
+   L"Country",
+   L"Dance",
+   L"Disco",
+   L"Funk",
+   L"Grunge",
+   L"Hip-Hop",
+   L"Jazz",
+   L"Metal",
+   L"New Age",
+   L"Oldies",
+   L"Other",
+   L"Pop",
+   L"R&B",
+   L"Rap",
+   L"Reggae",
+   L"Rock",
+   L"Techno",
+   L"Industrial",
+   L"Alternative",
+   L"Ska",
+   L"Death Metal",
+   L"Pranks",
+   L"Soundtrack",
+   L"Euro-Techno",
+   L"Ambient",
+   L"Trip-Hop",
+   L"Vocal",
+   L"Jazz+Funk",
+   L"Fusion",
+   L"Trance",
+   L"Classical",
+   L"Instrumental",
+   L"Acid",
+   L"House",
+   L"Game",
+   L"Sound Clip",
+   L"Gospel",
+   L"Noise",
+   L"Alt. Rock",
+   L"Bass",
+   L"Soul",
+   L"Punk",
+   L"Space",
+   L"Meditative",
+   L"Instrumental Pop",
+   L"Instrumental Rock",
+   L"Ethnic",
+   L"Gothic",
+   L"Darkwave",
+   L"Techno-Industrial",
+   L"Electronic",
+   L"Pop-Folk",
+   L"Eurodance",
+   L"Dream",
+   L"Southern Rock",
+   L"Comedy",
+   L"Cult",
+   L"Gangsta Rap",
+   L"Top 40",
+   L"Christian Rap",
+   L"Pop/Funk",
+   L"Jungle",
+   L"Native American",
+   L"Cabaret",
+   L"New Wave",
+   L"Psychedelic",
+   L"Rave",
+   L"Showtunes",
+   L"Trailer",
+   L"Lo-Fi",
+   L"Tribal",
+   L"Acid Punk",
+   L"Acid Jazz",
+   L"Polka",
+   L"Retro",
+   L"Musical",
+   L"Rock & Roll",
+   L"Hard Rock",
+   L"Folk",
+   L"Folk/Rock",
+   L"National Folk",
+   L"Swing",
+   L"Fast-Fusion",
+   L"Bebob",
+   L"Latin",
+   L"Revival",
+   L"Celtic",
+   L"Bluegrass",
+   L"Avantgarde",
+   L"Gothic Rock",
+   L"Progressive Rock",
+   L"Psychedelic Rock",
+   L"Symphonic Rock",
+   L"Slow Rock",
+   L"Big Band",
+   L"Chorus",
+   L"Easy Listening",
+   L"Acoustic",
+   L"Humour",
+   L"Speech",
+   L"Chanson",
+   L"Opera",
+   L"Chamber Music",
+   L"Sonata",
+   L"Symphony",
+   L"Booty Bass",
+   L"Primus",
+   L"Porn Groove",
+   L"Satire",
+   L"Slow Jam",
+   L"Club",
+   L"Tango",
+   L"Samba",
+   L"Folklore",
+   L"Ballad",
+   L"Power Ballad",
+   L"Rhythmic Soul",
+   L"Freestyle",
+   L"Duet",
+   L"Punk Rock",
+   L"Drum Solo",
+   L"A Cappella",
+   L"Euro-House",
+   L"Dance Hall",
+   L"Goa",
+   L"Drum & Bass",
+   L"Club-House",
+   L"Hardcore",
+   L"Terror",
+   L"Indie",
+   L"BritPop",
 
    // Standard name is offensive (see "http://www.audacityteam.org/forum/viewtopic.php?f=11&t=3924").
-   wxT("Offensive"), // wxT("Negerpunk"),
+   L"Offensive", // L"Negerpunk",
 
-   wxT("Polsk Punk"),
-   wxT("Beat"),
-   wxT("Christian Gangsta Rap"),
-   wxT("Heavy Metal"),
-   wxT("Black Metal"),
-   wxT("Crossover"),
-   wxT("Contemporary Christian"),
-   wxT("Christian Rock"),
-   wxT("Merengue"),
-   wxT("Salsa"),
-   wxT("Thrash Metal"),
-   wxT("Anime"),
-   wxT("JPop"),
-   wxT("Synthpop")
+   L"Polsk Punk",
+   L"Beat",
+   L"Christian Gangsta Rap",
+   L"Heavy Metal",
+   L"Black Metal",
+   L"Crossover",
+   L"Contemporary Christian",
+   L"Christian Rock",
+   L"Merengue",
+   L"Salsa",
+   L"Thrash Metal",
+   L"Anime",
+   L"JPop",
+   L"Synthpop"
 };
 
 static ProjectFileIORegistry::Entry registerFactory{
-   wxT( "tags" ),
+   L"tags",
    []( AudacityProject &project ){ return &Tags::Get( project ); }
 };
 
@@ -301,14 +301,14 @@ void Tags::LoadDefaults()
 
    // Set the parent group
    path = gPrefs->GetPath();
-   gPrefs->SetPath(wxT("/Tags"));
+   gPrefs->SetPath(L"/Tags");
 
    // Process all entries in the group
    cont = gPrefs->GetFirstEntry(name, ndx);
    while (cont) {
-      gPrefs->Read(name, &value, wxT(""));
+      gPrefs->Read(name, &value, L"");
 
-      if (name == wxT("ID3V2")) {
+      if (name == L"ID3V2") {
          // LLL:  This is obsolute, but it must be handled and ignored.
       }
       else {
@@ -399,7 +399,7 @@ void Tags::LoadDefaultGenres()
 
 void Tags::LoadGenres()
 {
-   wxFileName fn(FileNames::DataDir(), wxT("genres.txt"));
+   wxFileName fn(FileNames::DataDir(), L"genres.txt");
    wxTextFile tf(fn.GetFullPath());
 
    if (!tf.Exists() || !tf.Open()) {
@@ -421,7 +421,7 @@ wxString Tags::GetUserGenre(int i)
       return mGenres[i];
    }
 
-   return wxT("");
+   return L"";
 }
 
 wxString Tags::GetGenre(int i)
@@ -432,7 +432,7 @@ wxString Tags::GetGenre(int i)
       return DefaultGenres[i];
    }
 
-   return wxT("");
+   return L"";
 }
 
 int Tags::GetGenre(const wxString & name)
@@ -539,16 +539,16 @@ void Tags::SetTag(const wxString & name, const wxString & value, const bool bSpe
 
 void Tags::SetTag(const wxString & name, const int & value)
 {
-   SetTag(name, wxString::Format(wxT("%d"), value));
+   SetTag(name, wxString::Format(L"%d", value));
 }
 
 bool Tags::HandleXMLTag(const wxChar *tag, const wxChar **attrs)
 {
-   if (wxStrcmp(tag, wxT("tags")) == 0) {
+   if (wxStrcmp(tag, L"tags") == 0) {
       return true;
    }
 
-   if (wxStrcmp(tag, wxT("tag")) == 0) {
+   if (wxStrcmp(tag, L"tag") == 0) {
       wxString n, v;
 
       while (*attrs) {
@@ -562,15 +562,15 @@ bool Tags::HandleXMLTag(const wxChar *tag, const wxChar **attrs)
             break;
          }
 
-         if (attr == wxT("name")) {
+         if (attr == L"name") {
             n = value;
          }
-         else if (attr == wxT("value")) {
+         else if (attr == L"value") {
             v = value;
          }
       }
 
-      if (n == wxT("id3v2")) {
+      if (n == L"id3v2") {
          // LLL:  This is obsolete, but it must be handled and ignored.
       }
       else {
@@ -585,11 +585,11 @@ bool Tags::HandleXMLTag(const wxChar *tag, const wxChar **attrs)
 
 XMLTagHandler *Tags::HandleXMLChild(const wxChar *tag)
 {
-   if (wxStrcmp(tag, wxT("tags")) == 0) {
+   if (wxStrcmp(tag, L"tags") == 0) {
       return this;
    }
 
-   if (wxStrcmp(tag, wxT("tag")) == 0) {
+   if (wxStrcmp(tag, L"tag") == 0) {
       return this;
    }
 
@@ -599,18 +599,18 @@ XMLTagHandler *Tags::HandleXMLChild(const wxChar *tag)
 void Tags::WriteXML(XMLWriter &xmlFile) const
 // may throw
 {
-   xmlFile.StartTag(wxT("tags"));
+   xmlFile.StartTag(L"tags");
 
    for (const auto &pair : GetRange()) {
       const auto &n = pair.first;
       const auto &v = pair.second;
-      xmlFile.StartTag(wxT("tag"));
-      xmlFile.WriteAttr(wxT("name"), n);
-      xmlFile.WriteAttr(wxT("value"), v);
-      xmlFile.EndTag(wxT("tag"));
+      xmlFile.StartTag(L"tag");
+      xmlFile.WriteAttr(L"name", n);
+      xmlFile.WriteAttr(L"value", v);
+      xmlFile.EndTag(L"tag");
    }
 
-   xmlFile.EndTag(wxT("tags"));
+   xmlFile.EndTag(L"tags");
 }
 
 bool Tags::ShowEditDialog(wxWindow *parent, const TranslatableString &title, bool force)
@@ -832,10 +832,10 @@ TagsEditorDialog::TagsEditorDialog(wxWindow * parent,
 
    // Override size and position with last saved
    wxRect r = GetRect();
-   gPrefs->Read(wxT("/TagsEditorDialog/x"), &r.x, r.x);
-   gPrefs->Read(wxT("/TagsEditorDialog/y"), &r.y, r.y);
-   gPrefs->Read(wxT("/TagsEditorDialog/width"), &r.width, r.width);
-   gPrefs->Read(wxT("/TagsEditorDialog/height"), &r.height, r.height);
+   gPrefs->Read(L"/TagsEditorDialog/x", &r.x, r.x);
+   gPrefs->Read(L"/TagsEditorDialog/y", &r.y, r.y);
+   gPrefs->Read(L"/TagsEditorDialog/width", &r.width, r.width);
+   gPrefs->Read(L"/TagsEditorDialog/height", &r.height, r.height);
    //On multi-monitor systems, there's a chance the last saved window position is
    //on a monitor that has been removed or is unavailable.
    if (IsWindowRectValid(&r))
@@ -875,7 +875,7 @@ TagsEditorDialog::~TagsEditorDialog()
 void TagsEditorDialog::PopulateOrExchange(ShuttleGui & S)
 {
    bool bShow;
-   gPrefs->Read(wxT("/AudioFiles/ShowId3Dialog"), &bShow, true );
+   gPrefs->Read(L"/AudioFiles/ShowId3Dialog", &bShow, true );
 
    S.StartVerticalLay();
    {
@@ -892,7 +892,7 @@ void TagsEditorDialog::PopulateOrExchange(ShuttleGui & S)
                           wxDefaultSize,
                           wxSUNKEN_BORDER);
 
-         mGrid->RegisterDataType(wxT("Combo"),
+         mGrid->RegisterDataType(L"Combo",
             (mStringRenderer = safenew wxGridCellStringRenderer),
             (mComboEditor = safenew ComboEditor(wxArrayString(), true)));
 
@@ -909,7 +909,7 @@ void TagsEditorDialog::PopulateOrExchange(ShuttleGui & S)
          mGrid->SetColLabelValue(1, _("Value"));
 
          // Resize the name column and set default row height.
-         wxComboBox tc(this, wxID_ANY, wxT(""), wxDefaultPosition, wxDefaultSize, cs);
+         wxComboBox tc(this, wxID_ANY, L"", wxDefaultPosition, wxDefaultSize, cs);
          mGrid->SetColSize(0, tc.GetSize().x);
          mGrid->SetColMinimalWidth(0, tc.GetSize().x);
       }
@@ -966,13 +966,13 @@ void TagsEditorDialog::PopulateOrExchange(ShuttleGui & S)
 void TagsEditorDialog::OnDontShow( wxCommandEvent & Evt )
 {
    bool bShow = !Evt.IsChecked();
-   gPrefs->Write(wxT("/AudioFiles/ShowId3Dialog"), bShow );
+   gPrefs->Write(L"/AudioFiles/ShowId3Dialog", bShow );
    gPrefs->Flush();
 }
 
 void TagsEditorDialog::OnHelp(wxCommandEvent& WXUNUSED(event))
 {
-   HelpSystem::ShowHelp(this, wxT("Metadata_Editor"), true);
+   HelpSystem::ShowHelp(this, L"Metadata_Editor", true);
 }
 
 bool TagsEditorDialog::TransferDataFromWindow()
@@ -1145,7 +1145,7 @@ void TagsEditorDialog::OnEdit(wxCommandEvent & WXUNUSED(event))
 
    S.StartVerticalLay(true);
    {
-      tc = S.AddTextWindow(wxT(""));
+      tc = S.AddTextWindow(L"");
    }
    S.EndVerticalLay();
 
@@ -1159,7 +1159,7 @@ void TagsEditorDialog::OnEdit(wxCommandEvent & WXUNUSED(event))
    std::sort( g.begin(), g.end() );
 
    for (int i = 0; i < cnt; i++) {
-      tc->AppendText(g[i] + wxT("\n"));
+      tc->AppendText(g[i] + L"\n");
    }
 
    dlg.Center();
@@ -1167,7 +1167,7 @@ void TagsEditorDialog::OnEdit(wxCommandEvent & WXUNUSED(event))
       return;
    }
 
-   wxFileName fn(FileNames::DataDir(), wxT("genres.txt"));
+   wxFileName fn(FileNames::DataDir(), L"genres.txt");
    wxFile f(fn.GetFullPath(), wxFile::write);
    if (!f.IsOpened() || !f.Write(tc->GetValue())) {
       AudacityMessageBox(
@@ -1193,7 +1193,7 @@ void TagsEditorDialog::OnReset(wxCommandEvent & WXUNUSED(event))
    }
    mLocal.LoadDefaultGenres();
 
-   wxFileName fn(FileNames::DataDir(), wxT("genres.txt"));
+   wxFileName fn(FileNames::DataDir(), L"genres.txt");
    wxTextFile tf(fn.GetFullPath());
 
    bool open = (tf.Exists() && tf.Open()) ||
@@ -1241,8 +1241,8 @@ void TagsEditorDialog::OnLoad(wxCommandEvent & WXUNUSED(event))
    fn = FileNames::SelectFile(FileNames::Operation::_None,
       XO("Load Metadata As:"),
       FileNames::DataDir(),
-      wxT("Tags.xml"),
-      wxT("xml"),
+      L"Tags.xml",
+      L"xml",
       { FileNames::XMLFiles },
       wxFD_OPEN | wxRESIZE_BORDER,
       this);
@@ -1299,8 +1299,8 @@ void TagsEditorDialog::OnSave(wxCommandEvent & WXUNUSED(event))
    fn = FileNames::SelectFile(FileNames::Operation::_None,
       XO("Save Metadata As:"),
       FileNames::DataDir(),
-      wxT("Tags.xml"),
-      wxT("xml"),
+      L"Tags.xml",
+      L"xml",
       { FileNames::XMLFiles },
       wxFD_SAVE | wxFD_OVERWRITE_PROMPT | wxRESIZE_BORDER,
       this);
@@ -1367,13 +1367,13 @@ void TagsEditorDialog::OnSaveDefaults(wxCommandEvent & WXUNUSED(event))
    }
 
    // Remove any previous defaults
-   gPrefs->DeleteGroup(wxT("/Tags"));
+   gPrefs->DeleteGroup(L"/Tags");
 
    // Write out each tag
    for (const auto &pair : mLocal.GetRange()) {
       const auto &n = pair.first;
       const auto &v = pair.second;
-      gPrefs->Write(wxT("/Tags/") + n, v);
+      gPrefs->Write(L"/Tags/" + n, v);
    }
    gPrefs->Flush();
 
@@ -1434,10 +1434,10 @@ void TagsEditorDialog::OnOk(wxCommandEvent & WXUNUSED(event))
    *mTags = mLocal;
 
    wxRect r = GetRect();
-   gPrefs->Write(wxT("/TagsEditorDialog/x"), r.x);
-   gPrefs->Write(wxT("/TagsEditorDialog/y"), r.y);
-   gPrefs->Write(wxT("/TagsEditorDialog/width"), r.width);
-   gPrefs->Write(wxT("/TagsEditorDialog/height"), r.height);
+   gPrefs->Write(L"/TagsEditorDialog/x", r.x);
+   gPrefs->Write(L"/TagsEditorDialog/y", r.y);
+   gPrefs->Write(L"/TagsEditorDialog/width", r.width);
+   gPrefs->Write(L"/TagsEditorDialog/height", r.height);
    gPrefs->Flush();
 
    EndModal(wxID_OK);
@@ -1485,7 +1485,7 @@ void TagsEditorDialog::SetEditors()
       wxString label = mGrid->GetCellValue(i, 0);
       if (label.CmpNoCase(LABEL_GENRE.Translation()) == 0) {
          // This use of GetDefaultEditorForType does not require DecRef.
-         mGrid->SetCellEditor(i, 1, mGrid->GetDefaultEditorForType(wxT("Combo")));
+         mGrid->SetCellEditor(i, 1, mGrid->GetDefaultEditorForType(L"Combo"));
       }
       else {
          mGrid->SetCellEditor(i, 1, NULL); //mGrid->GetDefaultEditor());
@@ -1506,12 +1506,12 @@ void TagsEditorDialog::PopulateGenres()
    std::sort( g.begin(), g.end() );
 
    for (i = 0; i < cnt; i++) {
-      parm = parm + (i == 0 ? wxT("") : wxT(",")) + g[i];
+      parm = parm + (i == 0 ? L"" : L",") + g[i];
    }
 
    // Here was a memory leak!  wxWidgets docs for wxGrid::GetDefaultEditorForType() say:
    // "The caller must call DecRef() on the returned pointer."
-   auto editor = mGrid->GetDefaultEditorForType(wxT("Combo"));
+   auto editor = mGrid->GetDefaultEditorForType(L"Combo");
    editor->SetParameters(parm);
    editor->DecRef();
 }

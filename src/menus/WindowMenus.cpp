@@ -185,27 +185,27 @@ BaseItemSharedPtr WindowMenu()
       //////////////////////////////////////////////////////////////////////////
    static BaseItemSharedPtr menu{
    ( FinderScope{ findCommandHandler },
-   Menu( wxT("Window"), XXO("&Window"),
+   Menu( L"Window", XXO("&Window"),
       Section( "",
          /* i18n-hint: Standard Macintosh Window menu item:  Make (the current
           * window) shrink to an icon on the dock */
-         Command( wxT("MacMinimize"), XXO("&Minimize"), FN(OnMacMinimize),
-            NotMinimizedFlag(), wxT("Ctrl+M") ),
+         Command( L"MacMinimize", XXO("&Minimize"), FN(OnMacMinimize),
+            NotMinimizedFlag(), L"Ctrl+M" ),
          /* i18n-hint: Standard Macintosh Window menu item:  Make (the current
           * window) full sized */
-         Command( wxT("MacZoom"), XXO("&Zoom"),
+         Command( L"MacZoom", XXO("&Zoom"),
             FN(OnMacZoom), NotMinimizedFlag() )
       ),
 
       Section( "",
          /* i18n-hint: Standard Macintosh Window menu item:  Make all project
           * windows un-hidden */
-         Command( wxT("MacBringAllToFront"), XXO("&Bring All to Front"),
+         Command( L"MacBringAllToFront", XXO("&Bring All to Front"),
             FN(OnMacBringAllToFront), AlwaysEnabledFlag )
       ),
 
       Section( "",
-         Special( wxT("PopulateWindowsStep"),
+         Special( L"PopulateWindowsStep",
          [](AudacityProject &, wxMenu &theMenu)
          {
             // Undo previous bindings
@@ -241,7 +241,7 @@ BaseItemSharedPtr WindowMenu()
 }
 
 AttachedItem sAttachment1{
-   wxT(""),
+   L"",
    Shared( WindowMenu() )
 };
 
@@ -249,18 +249,18 @@ BaseItemSharedPtr ExtraWindowItems()
 {
    static BaseItemSharedPtr items{
    ( FinderScope{ findCommandHandler },
-   Items( wxT("MacWindows"),
+   Items( L"MacWindows",
       /* i18n-hint: Shrink all project windows to icons on the Macintosh
          tooldock */
-      Command( wxT("MacMinimizeAll"), XXO("Minimize All Projects"),
+      Command( L"MacMinimizeAll", XXO("Minimize All Projects"),
          FN(OnMacMinimizeAll),
-         AlwaysEnabledFlag, wxT("Ctrl+Alt+M") )
+         AlwaysEnabledFlag, L"Ctrl+Alt+M" )
    ) ) };
    return items;
 }
 
 AttachedItem sAttachment2{
-   Placement{ wxT("Optional/Extra/Part2/Misc"), OrderingHint::End },
+   Placement{ L"Optional/Extra/Part2/Misc", OrderingHint::End },
    Shared( ExtraWindowItems() )
 };
 

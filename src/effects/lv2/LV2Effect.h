@@ -56,7 +56,7 @@ class wxSlider;
 class wxTextCtrl;
 class NumericTextCtrl;
 
-#define LV2EFFECTS_VERSION wxT("1.0.0.0")
+#define LV2EFFECTS_VERSION L"1.0.0.0"
 /* i18n-hint: abbreviates
    "Linux Audio Developer's Simple Plugin API (LADSPA) version 2" */
 #define LV2EFFECTS_FAMILY XO("LV2")

@@ -142,50 +142,50 @@ bool LV2EffectsModule::Initialize()
    wxString newVar;
 
 #if defined(__WXMAC__)
-#define LV2PATH wxT("/Library/Audio/Plug-Ins/LV2")
+#define LV2PATH L"/Library/Audio/Plug-Ins/LV2"
 
    wxFileName libdir;
 //   libdir.AssignDir(wxT(LIBDIR));
-   libdir.AppendDir(wxT("lv2"));
+   libdir.AppendDir(L"lv2");
 
-   newVar += wxT(":$HOME/.lv2");
+   newVar += L":$HOME/.lv2";
 
    // Look in ~/Library/Audio/Plug-Ins/lv2 and /Library/Audio/Plug-Ins/lv2
-   newVar += wxT(":$HOME") LV2PATH;
-   newVar += wxT(":") LV2PATH;
+   newVar += L":$HOME" LV2PATH;
+   newVar += L":" LV2PATH;
    
-   newVar += wxT(":/usr/local/lib/lv2");
-   newVar += wxT(":/usr/lib/lv2");
-   newVar += wxT(":") + libdir.GetPath();
+   newVar += L":/usr/local/lib/lv2";
+   newVar += L":/usr/lib/lv2";
+   newVar += L":" + libdir.GetPath();
 
 #elif defined(__WXMSW__)
 
-   newVar += wxT(";%APPDATA%\\LV2");
-   newVar += wxT(";%COMMONPROGRAMFILES%\\LV2");
-   newVar += wxT(";%COMMONPROGRAMFILES(x86)%\\LV2");
+   newVar += L";%APPDATA%\\LV2";
+   newVar += L";%COMMONPROGRAMFILES%\\LV2";
+   newVar += L";%COMMONPROGRAMFILES(x86)%\\LV2";
 
 #else
 
    wxFileName libdir;
    libdir.AssignDir(wxT(LIBDIR));
-   libdir.AppendDir(wxT("lv2"));
+   libdir.AppendDir(L"lv2");
 
-   newVar += wxT(":$HOME/.lv2");
+   newVar += L":$HOME/.lv2";
 #if defined(__LP64__)
-   newVar += wxT(":/usr/local/lib64/lv2");
-   newVar += wxT(":/usr/lib64/lv2");
+   newVar += L":/usr/local/lib64/lv2";
+   newVar += L":/usr/lib64/lv2";
 #endif
-   newVar += wxT(":/usr/local/lib/lv2");
-   newVar += wxT(":/usr/lib/lv2");
-   newVar += wxT(":") + libdir.GetPath();
+   newVar += L":/usr/local/lib/lv2";
+   newVar += L":/usr/lib/lv2";
+   newVar += L":" + libdir.GetPath();
 
    // Tell SUIL where to find his GUI support modules
-   wxSetEnv(wxT("SUIL_MODULE_DIR"), wxT(PKGLIBDIR));
+   wxSetEnv(L"SUIL_MODULE_DIR", wxT(PKGLIBDIR));
 #endif
 
    // Start with the LV2_PATH environment variable (if any)
    wxString pathVar;
-   wxGetEnv(wxT("LV2_PATH"), &pathVar);
+   wxGetEnv(L"LV2_PATH", &pathVar);
 
    if (pathVar.empty())
    {
@@ -196,7 +196,7 @@ bool LV2EffectsModule::Initialize()
       pathVar += newVar;
    }
 
-   wxSetEnv(wxT("LV2_PATH"), pathVar);
+   wxSetEnv(L"LV2_PATH", pathVar);
    lilv_world_load_all(gWorld);
 
    return true;
@@ -255,7 +255,7 @@ PluginPaths LV2EffectsModule::FindPluginPaths(PluginManagerInterface & WXUNUSED(
           lilv_node_equals(cls, LV2Effect::node_MathConstants) ||
           lilv_node_equals(cls, LV2Effect::node_MathFunctions))
       {
-         wxLogInfo(wxT("LV2 plugin '%s' has unsupported type '%s'"), lilv_node_as_string(lilv_plugin_get_uri(plug)), lilv_node_as_string(cls));
+         wxLogInfo(L"LV2 plugin '%s' has unsupported type '%s'", lilv_node_as_string(lilv_plugin_get_uri(plug)), lilv_node_as_string(cls));
          printf("LV2 plugin '%s' has unsupported type '%s'\n", lilv_node_as_string(lilv_plugin_get_uri(plug)), lilv_node_as_string(cls));
          continue;
       }
@@ -263,7 +263,7 @@ PluginPaths LV2EffectsModule::FindPluginPaths(PluginManagerInterface & WXUNUSED(
       // If it doesn't have a name or has no ports, then it's not valid
       if (!name || !lilv_plugin_get_port_by_index(plug, 0))
       {
-         wxLogInfo(wxT("LV2 plugin '%s' is invalid"), lilv_node_as_string(lilv_plugin_get_uri(plug)));
+         wxLogInfo(L"LV2 plugin '%s' is invalid", lilv_node_as_string(lilv_plugin_get_uri(plug)));
          printf("LV2 plugin '%s' is invalid\n", lilv_node_as_string(lilv_plugin_get_uri(plug)));
          continue;
       }

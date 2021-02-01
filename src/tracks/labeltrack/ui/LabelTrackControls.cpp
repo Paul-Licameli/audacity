@@ -102,14 +102,14 @@ void LabelTrackMenuTable::OnSetFont(wxCommandEvent &)
    FontEnumerator fontEnumerator(&facenames);
    fontEnumerator.EnumerateFacenames(wxFONTENCODING_SYSTEM, false);
 
-   wxString facename = gPrefs->Read(wxT("/GUI/LabelFontFacename"), wxT(""));
+   wxString facename = gPrefs->Read(L"/GUI/LabelFontFacename", L"");
 
    // Correct for empty facename, or bad preference file:
    // get the name of a really existing font, to highlight by default
    // in the list box
    facename = LabelTrackView::GetFont(facename).GetFaceName();
 
-   long fontsize = gPrefs->Read(wxT("/GUI/LabelFontSize"),
+   long fontsize = gPrefs->Read(L"/GUI/LabelFontSize",
                                 LabelTrackView::DefaultFontSize);
 
    /* i18n-hint: (noun) This is the font for the label track.*/
@@ -143,7 +143,7 @@ void LabelTrackMenuTable::OnSetFont(wxCommandEvent &)
          /* i18n-hint: (noun) The size of the typeface*/
          S.AddPrompt(XXO("Face size"));
          sc = safenew wxSpinCtrl(S.GetParent(), wxID_ANY,
-            wxString::Format(wxT("%ld"), fontsize),
+            wxString::Format(L"%ld", fontsize),
             wxDefaultPosition,
             wxDefaultSize,
             wxSP_ARROW_KEYS,
@@ -164,8 +164,8 @@ void LabelTrackMenuTable::OnSetFont(wxCommandEvent &)
    if (dlg.ShowModal() == wxID_CANCEL)
       return;
 
-   gPrefs->Write(wxT("/GUI/LabelFontFacename"), lb->GetStringSelection());
-   gPrefs->Write(wxT("/GUI/LabelFontSize"), sc->GetValue());
+   gPrefs->Write(L"/GUI/LabelFontFacename", lb->GetStringSelection());
+   gPrefs->Write(L"/GUI/LabelFontSize", sc->GetValue());
    gPrefs->Flush();
 
    LabelTrackView::ResetFont();

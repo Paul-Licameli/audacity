@@ -51,40 +51,40 @@ static bool ConvertLegacyTrack(wxTextFile *f, XMLFileWriter &xmlFile)
 
    kind = (*f)[f->GetCurrentLine()];
 
-   if (kind == wxT("WaveTrack")) {
-      xmlFile.StartTag(wxT("wavetrack"));
-      xmlFile.WriteAttr(wxT("name"), f->GetNextLine());
+   if (kind == L"WaveTrack") {
+      xmlFile.StartTag(L"wavetrack");
+      xmlFile.WriteAttr(L"name", f->GetNextLine());
 
       wxString channel = f->GetNextLine();
-      if (channel == wxT("left")) {
-         xmlFile.WriteAttr(wxT("channel"), 0);
+      if (channel == L"left") {
+         xmlFile.WriteAttr(L"channel", 0);
          line = f->GetNextLine();
       }
-      else if (channel == wxT("right")) {
-         xmlFile.WriteAttr(wxT("channel"), 1);
+      else if (channel == L"right") {
+         xmlFile.WriteAttr(L"channel", 1);
          line = f->GetNextLine();
       }
-      else if (channel == wxT("mono")) {
-         xmlFile.WriteAttr(wxT("channel"), 2);
+      else if (channel == L"mono") {
+         xmlFile.WriteAttr(L"channel", 2);
          line = f->GetNextLine();
       }
       else {
-         xmlFile.WriteAttr(wxT("channel"), 2);
+         xmlFile.WriteAttr(L"channel", 2);
          line = channel;
       }
 
-      if (line == wxT("linked")) {
-         xmlFile.WriteAttr(wxT("linked"), 1);
+      if (line == L"linked") {
+         xmlFile.WriteAttr(L"linked", 1);
          line = f->GetNextLine();
       }
 
-      if (line != wxT("offset"))
+      if (line != L"offset")
          return false;
-      xmlFile.WriteAttr(wxT("offset"), f->GetNextLine());
+      xmlFile.WriteAttr(L"offset", f->GetNextLine());
 
       long envLen;
 
-      if (f->GetNextLine() != wxT("EnvNumPoints"))
+      if (f->GetNextLine() != L"EnvNumPoints")
          return false;
       line = f->GetNextLine();
       line.ToLong(&envLen);
@@ -96,34 +96,34 @@ static bool ConvertLegacyTrack(wxTextFile *f, XMLFileWriter &xmlFile)
          return false;
 
       f->GoToLine(envStart+(2*envLen));
-      if (f->GetNextLine() != wxT("EnvEnd"))
+      if (f->GetNextLine() != L"EnvEnd")
          return false;
-      if (f->GetNextLine() != wxT("numSamples"))
+      if (f->GetNextLine() != L"numSamples")
          return false;
 
       wxString numSamples = f->GetNextLine();
 
-      if (f->GetNextLine() != wxT("rate"))
+      if (f->GetNextLine() != L"rate")
          return false;
 
-      xmlFile.WriteAttr(wxT("rate"), f->GetNextLine());
+      xmlFile.WriteAttr(L"rate", f->GetNextLine());
 
       if (envLen > 0) {
-         xmlFile.StartTag(wxT("envelope"));
-         xmlFile.WriteAttr(wxT("numpoints"), envLen);
+         xmlFile.StartTag(L"envelope");
+         xmlFile.WriteAttr(L"numpoints", envLen);
 
          long i;
          for(i=0; i<envLen; i++) {
-            xmlFile.StartTag(wxT("controlpoint"));
-            xmlFile.WriteAttr(wxT("t"), f->GetLine(envStart + 2*i + 1));
-            xmlFile.WriteAttr(wxT("val"), f->GetLine(envStart + 2*i + 2));
-            xmlFile.EndTag(wxT("controlpoint"));
+            xmlFile.StartTag(L"controlpoint");
+            xmlFile.WriteAttr(L"t", f->GetLine(envStart + 2*i + 1));
+            xmlFile.WriteAttr(L"val", f->GetLine(envStart + 2*i + 2));
+            xmlFile.EndTag(L"controlpoint");
          }
 
-         xmlFile.EndTag(wxT("envelope"));
+         xmlFile.EndTag(L"envelope");
       }
 
-      if (f->GetNextLine() != wxT("numBlocks"))
+      if (f->GetNextLine() != L"numBlocks")
          return false;
       long numBlocks;
       line = f->GetNextLine();
@@ -132,10 +132,10 @@ static bool ConvertLegacyTrack(wxTextFile *f, XMLFileWriter &xmlFile)
       if (numBlocks < 0 || numBlocks > 131072)
          return false;
 
-      xmlFile.StartTag(wxT("sequence"));
-      xmlFile.WriteAttr(wxT("maxsamples"), 524288);
-      xmlFile.WriteAttr(wxT("sampleformat"), 131073);
-      xmlFile.WriteAttr(wxT("numsamples"), numSamples);
+      xmlFile.StartTag(L"sequence");
+      xmlFile.WriteAttr(L"maxsamples", 524288);
+      xmlFile.WriteAttr(L"sampleformat", 131073);
+      xmlFile.WriteAttr(L"numsamples", numSamples);
 
       long b;
       for(b=0; b<numBlocks; b++) {
@@ -143,21 +143,21 @@ static bool ConvertLegacyTrack(wxTextFile *f, XMLFileWriter &xmlFile)
          wxString len;
          wxString name;
 
-         if (f->GetNextLine() != wxT("Block start"))
+         if (f->GetNextLine() != L"Block start")
             return false;
          start = f->GetNextLine();
-         if (f->GetNextLine() != wxT("Block len"))
+         if (f->GetNextLine() != L"Block len")
             return false;
          len = f->GetNextLine();
-         if (f->GetNextLine() != wxT("Block info"))
+         if (f->GetNextLine() != L"Block info")
             return false;
          name = f->GetNextLine();
 
-         xmlFile.StartTag(wxT("waveblock"));
-         xmlFile.WriteAttr(wxT("start"), start);
+         xmlFile.StartTag(L"waveblock");
+         xmlFile.WriteAttr(L"start", start);
 
-         xmlFile.StartTag(wxT("legacyblockfile"));
-         if (name == wxT("Alias")) {
+         xmlFile.StartTag(L"legacyblockfile");
+         if (name == L"Alias") {
             wxString aliasPath = f->GetNextLine();
             wxString localLen = f->GetNextLine();
             wxString aliasStart = f->GetNextLine();
@@ -165,37 +165,37 @@ static bool ConvertLegacyTrack(wxTextFile *f, XMLFileWriter &xmlFile)
             wxString aliasChannel = f->GetNextLine();
             wxString localName = f->GetNextLine();
 
-            xmlFile.WriteAttr(wxT("name"), localName);
-            xmlFile.WriteAttr(wxT("alias"), 1);
-            xmlFile.WriteAttr(wxT("aliaspath"), aliasPath);
+            xmlFile.WriteAttr(L"name", localName);
+            xmlFile.WriteAttr(L"alias", 1);
+            xmlFile.WriteAttr(L"aliaspath", aliasPath);
 
             // This was written but not read again?
-            xmlFile.WriteAttr(wxT("aliasstart"), aliasStart);
+            xmlFile.WriteAttr(L"aliasstart", aliasStart);
 
-            xmlFile.WriteAttr(wxT("aliaslen"), aliasLen);
-            xmlFile.WriteAttr(wxT("aliaschannel"), aliasChannel);
-            xmlFile.WriteAttr(wxT("summarylen"), localLen);
-            xmlFile.WriteAttr(wxT("norms"), 1);
+            xmlFile.WriteAttr(L"aliaslen", aliasLen);
+            xmlFile.WriteAttr(L"aliaschannel", aliasChannel);
+            xmlFile.WriteAttr(L"summarylen", localLen);
+            xmlFile.WriteAttr(L"norms", 1);
          }
          else {
-            xmlFile.WriteAttr(wxT("name"), name);
-            xmlFile.WriteAttr(wxT("len"), len);
-            xmlFile.WriteAttr(wxT("summarylen"), 8244);
-            xmlFile.WriteAttr(wxT("norms"), 1);
+            xmlFile.WriteAttr(L"name", name);
+            xmlFile.WriteAttr(L"len", len);
+            xmlFile.WriteAttr(L"summarylen", 8244);
+            xmlFile.WriteAttr(L"norms", 1);
          }
-         xmlFile.EndTag(wxT("legacyblockfile"));
+         xmlFile.EndTag(L"legacyblockfile");
 
-         xmlFile.EndTag(wxT("waveblock"));
+         xmlFile.EndTag(L"waveblock");
       }
 
-      xmlFile.EndTag(wxT("sequence"));
-      xmlFile.EndTag(wxT("wavetrack"));
+      xmlFile.EndTag(L"sequence");
+      xmlFile.EndTag(L"wavetrack");
 
       return true;
    }
-   else if (kind == wxT("LabelTrack")) {
+   else if (kind == L"LabelTrack") {
       line = f->GetNextLine();
-      if (line != wxT("NumMLabels"))
+      if (line != L"NumMLabels")
          return false;
 
       long numLabels, l;
@@ -205,9 +205,9 @@ static bool ConvertLegacyTrack(wxTextFile *f, XMLFileWriter &xmlFile)
       if (numLabels < 0 || numLabels > 1000000)
          return false;
 
-      xmlFile.StartTag(wxT("labeltrack"));
-      xmlFile.WriteAttr(wxT("name"), wxT("Labels"));
-      xmlFile.WriteAttr(wxT("numlabels"), numLabels);
+      xmlFile.StartTag(L"labeltrack");
+      xmlFile.WriteAttr(L"name", L"Labels");
+      xmlFile.WriteAttr(L"numlabels", numLabels);
 
       for(l=0; l<numLabels; l++) {
          wxString t, title;
@@ -215,29 +215,29 @@ static bool ConvertLegacyTrack(wxTextFile *f, XMLFileWriter &xmlFile)
          t = f->GetNextLine();
          title = f->GetNextLine();
 
-         xmlFile.StartTag(wxT("label"));
-         xmlFile.WriteAttr(wxT("t"), t);
-         xmlFile.WriteAttr(wxT("title"), title);
-         xmlFile.EndTag(wxT("label"));
+         xmlFile.StartTag(L"label");
+         xmlFile.WriteAttr(L"t", t);
+         xmlFile.WriteAttr(L"title", title);
+         xmlFile.EndTag(L"label");
       }
 
-      xmlFile.EndTag(wxT("labeltrack"));
+      xmlFile.EndTag(L"labeltrack");
 
       line = f->GetNextLine();
-      if (line != wxT("MLabelsEnd"))
+      if (line != L"MLabelsEnd")
          return false;
 
       return true;
    }
-   else if (kind == wxT("NoteTrack")) {
+   else if (kind == L"NoteTrack") {
       // Just skip over it - they didn't even work in version 1.0!
 
       do {
          line = f->GetNextLine();
-         if (line == wxT("WaveTrack") ||
-             line == wxT("NoteTrack") ||
-             line == wxT("LabelTrack") ||
-             line == wxT("EndTracks")) {
+         if (line == L"WaveTrack" ||
+             line == L"NoteTrack" ||
+             line == L"LabelTrack" ||
+             line == L"EndTracks") {
             f->GoToLine(f->GetCurrentLine()-1);
             return true;
          }
@@ -261,33 +261,33 @@ bool ConvertLegacyProjectFile(const wxFileName &filename)
    return GuardedCall< bool >( [&] {
       XMLFileWriter xmlFile{ name, XO("Error Converting Legacy Project File") };
 
-      xmlFile.Write(wxT("<?xml version=\"1.0\"?>\n"));
+      xmlFile.Write(L"<?xml version=\"1.0\"?>\n");
 
       wxString label;
       wxString value;
 
-      if (f.GetFirstLine() != wxT("AudacityProject"))
+      if (f.GetFirstLine() != L"AudacityProject")
          return false;
-      if (f.GetNextLine() != wxT("Version"))
+      if (f.GetNextLine() != L"Version")
          return false;
-      if (f.GetNextLine() != wxT("0.95"))
+      if (f.GetNextLine() != L"0.95")
          return false;
-      if (f.GetNextLine() != wxT("projName"))
+      if (f.GetNextLine() != L"projName")
          return false;
 
-      xmlFile.StartTag(wxT("audacityproject"));
-      xmlFile.WriteAttr(wxT("projname"), f.GetNextLine());
-      xmlFile.WriteAttr(wxT("version"), wxT("1.1.0"));
-      xmlFile.WriteAttr(wxT("audacityversion"),AUDACITY_VERSION_STRING);
+      xmlFile.StartTag(L"audacityproject");
+      xmlFile.WriteAttr(L"projname", f.GetNextLine());
+      xmlFile.WriteAttr(L"version", L"1.1.0");
+      xmlFile.WriteAttr(L"audacityversion",AUDACITY_VERSION_STRING);
 
       label = f.GetNextLine();
-      while (label != wxT("BeginTracks")) {
+      while (label != L"BeginTracks") {
          xmlFile.WriteAttr(label, f.GetNextLine());
          label = f.GetNextLine();
       }
 
       label = f.GetNextLine();
-      while (label != wxT("EndTracks")) {
+      while (label != L"EndTracks") {
          bool success = ConvertLegacyTrack(&f, xmlFile);
          if (!success)
             return false;
@@ -297,7 +297,7 @@ bool ConvertLegacyProjectFile(const wxFileName &filename)
       // Close original before Commit() tries to overwrite it.
       f.Close();
 
-      xmlFile.EndTag(wxT("audacityproject"));
+      xmlFile.EndTag(L"audacityproject");
       xmlFile.Commit();
 
       ::AudacityMessageBox(

@@ -75,26 +75,26 @@ void ModulePrefs::GetAllModuleStatuses(){
 
    // Iterate through all Modules listed in prefs.
    // Get their names and values.
-   gPrefs->SetPath( wxT("Module/") );
+   gPrefs->SetPath( L"Module/" );
    bool bCont = gPrefs->GetFirstEntry(str, dummy);
    while ( bCont ) {
       int iStatus;
       gPrefs->Read( str, &iStatus, kModuleDisabled );
       wxString fname;
-      gPrefs->Read( wxString( wxT("/ModulePath/") ) + str, &fname, wxEmptyString );
+      gPrefs->Read( wxString( L"/ModulePath/" ) + str, &fname, wxEmptyString );
       if( !fname.empty() && wxFileExists( fname ) ){
          if( iStatus > kModuleNew ){
             iStatus = kModuleNew;
             gPrefs->Write( str, iStatus );
          }
-         //wxLogDebug( wxT("Entry: %s Value: %i"), str, iStatus );
+         //wxLogDebug( L"Entry: %s Value: %i", str, iStatus );
          mModules.push_back( str );
          mStatuses.push_back( iStatus );
          mPaths.push_back( fname );
       }
       bCont = gPrefs->GetNextEntry(str, dummy);
    }
-   gPrefs->SetPath( wxT("") );
+   gPrefs->SetPath( L"" );
 }
 
 void ModulePrefs::Populate()

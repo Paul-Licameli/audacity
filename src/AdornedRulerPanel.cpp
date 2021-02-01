@@ -929,9 +929,9 @@ AdornedRulerPanel::AdornedRulerPanel(AudacityProject* project,
 
    mIsRecording = false;
 
-   mTimelineToolTip = !!gPrefs->Read(wxT("/QuickPlay/ToolTips"), 1L);
-   mPlayRegionDragsSelection = (gPrefs->Read(wxT("/QuickPlay/DragSelection"), 0L) == 1)? true : false; 
-   mQuickPlayEnabled = !!gPrefs->Read(wxT("/QuickPlay/QuickPlayEnabled"), 1L);
+   mTimelineToolTip = !!gPrefs->Read(L"/QuickPlay/ToolTips", 1L);
+   mPlayRegionDragsSelection = (gPrefs->Read(L"/QuickPlay/DragSelection", 0L) == 1)? true : false; 
+   mQuickPlayEnabled = !!gPrefs->Read(L"/QuickPlay/QuickPlayEnabled", 1L);
 
 #if wxUSE_TOOLTIPS
    wxToolTip::Enable(true);
@@ -980,7 +980,7 @@ void AdornedRulerPanel::UpdatePrefs()
    // Update button texts for language change
    UpdateButtonStates();
 
-   mTimelineToolTip = !!gPrefs->Read(wxT("/QuickPlay/ToolTips"), 1L);
+   mTimelineToolTip = !!gPrefs->Read(L"/QuickPlay/ToolTips", 1L);
 
 #ifdef EXPERIMENTAL_SCROLLING_LIMITS
 #ifdef EXPERIMENTAL_TWO_TONE_TIME_RULER
@@ -1802,7 +1802,7 @@ void AdornedRulerPanel::UpdateButtonStates()
       // Bug 1584: Tooltip now shows what clicking will do.
       // Bug 2357: Action of button (and hence tooltip wording) updated.
       const auto label = XO("Timeline Options");
-      common(*pinButton, wxT("PinnedHead"), label);
+      common(*pinButton, L"PinnedHead", label);
    }
 }
 
@@ -1880,14 +1880,14 @@ void AdornedRulerPanel::ShowScrubMenu(const wxPoint & pos)
 void AdornedRulerPanel::OnToggleQuickPlay(wxCommandEvent&)
 {
    mQuickPlayEnabled = (mQuickPlayEnabled)? false : true;
-   gPrefs->Write(wxT("/QuickPlay/QuickPlayEnabled"), mQuickPlayEnabled);
+   gPrefs->Write(L"/QuickPlay/QuickPlayEnabled", mQuickPlayEnabled);
    gPrefs->Flush();
 }
 
 void AdornedRulerPanel::OnSyncSelToQuickPlay(wxCommandEvent&)
 {
    mPlayRegionDragsSelection = (mPlayRegionDragsSelection)? false : true;
-   gPrefs->Write(wxT("/QuickPlay/DragSelection"), mPlayRegionDragsSelection);
+   gPrefs->Write(L"/QuickPlay/DragSelection", mPlayRegionDragsSelection);
    gPrefs->Flush();
 }
 
@@ -1919,7 +1919,7 @@ void AdornedRulerPanel::HandleSnapping()
 void AdornedRulerPanel::OnTimelineToolTips(wxCommandEvent&)
 {
    mTimelineToolTip = (mTimelineToolTip)? false : true;
-   gPrefs->Write(wxT("/QuickPlay/ToolTips"), mTimelineToolTip);
+   gPrefs->Write(L"/QuickPlay/ToolTips", mTimelineToolTip);
    gPrefs->Flush();
 }
 #endif
@@ -1927,9 +1927,9 @@ void AdornedRulerPanel::OnTimelineToolTips(wxCommandEvent&)
 void AdornedRulerPanel::OnAutoScroll(wxCommandEvent&)
 {
    if (mViewInfo->bUpdateTrackIndicator)
-      gPrefs->Write(wxT("/GUI/AutoScroll"), false);
+      gPrefs->Write(L"/GUI/AutoScroll", false);
    else
-      gPrefs->Write(wxT("/GUI/AutoScroll"), true);
+      gPrefs->Write(L"/GUI/AutoScroll", true);
 
    gPrefs->Flush();
 

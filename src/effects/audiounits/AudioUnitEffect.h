@@ -27,9 +27,9 @@
 
 #include "AUControl.h"
 
-#define AUDIOUNITEFFECTS_VERSION wxT("1.0.0.0")
+#define AUDIOUNITEFFECTS_VERSION L"1.0.0.0"
 /* i18n-hint: the name of an Apple audio software protocol */
-#define AUDIOUNITEFFECTS_FAMILY EffectFamilySymbol{ wxT("AudioUnit"), XO("Audio Unit") }
+#define AUDIOUNITEFFECTS_FAMILY EffectFamilySymbol{ L"AudioUnit", XO("Audio Unit") }
 class AudioUnitEffect;
 
 using AudioUnitEffectArray = std::vector<std::unique_ptr<AudioUnitEffect>>;

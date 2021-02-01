@@ -1024,7 +1024,7 @@ int RawAudioGuess(const wxString &in_fname,
    *out_offset = 0;
    *out_channels = 1;
 
-   wxFFile in_wxFFile(in_fname, wxT("rb"));
+   wxFFile in_wxFFile(in_fname, L"rb");
 
    // JKC FALSE changed to -1.
    if (!in_wxFFile.IsOpened())

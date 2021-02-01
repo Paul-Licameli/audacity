@@ -157,16 +157,16 @@ BaseItemSharedPtr ExtraMenu()
    ) };
 
    static const auto pred =
-      []{ return gPrefs->ReadBool(wxT("/GUI/ShowExtraMenus"), false); };
+      []{ return gPrefs->ReadBool(L"/GUI/ShowExtraMenus", false); };
    static BaseItemSharedPtr menu{
-      ConditionalItems( wxT("Optional"),
-         pred, Menu( wxT("Extra"), XXO("Ext&ra"), extraItems ) )
+      ConditionalItems( L"Optional",
+         pred, Menu( L"Extra", XXO("Ext&ra"), extraItems ) )
    };
    return menu;
 }
 
 AttachedItem sAttachment1{
-   wxT(""),
+   L"",
    Shared( ExtraMenu() )
 };
 
@@ -175,18 +175,18 @@ BaseItemSharedPtr ExtraMixerMenu()
 {
    static BaseItemSharedPtr menu{
    ( FinderScope{ findCommandHandler },
-   Menu( wxT("Mixer"), XXO("Mi&xer"),
-      Command( wxT("OutputGain"), XXO("Ad&just Playback Volume..."),
+   Menu( L"Mixer", XXO("Mi&xer"),
+      Command( L"OutputGain", XXO("Ad&just Playback Volume..."),
          FN(OnOutputGain), AlwaysEnabledFlag ),
-      Command( wxT("OutputGainInc"), XXO("&Increase Playback Volume"),
+      Command( L"OutputGainInc", XXO("&Increase Playback Volume"),
          FN(OnOutputGainInc), AlwaysEnabledFlag ),
-      Command( wxT("OutputGainDec"), XXO("&Decrease Playback Volume"),
+      Command( L"OutputGainDec", XXO("&Decrease Playback Volume"),
          FN(OnOutputGainDec), AlwaysEnabledFlag ),
-      Command( wxT("InputGain"), XXO("Adj&ust Recording Volume..."),
+      Command( L"InputGain", XXO("Adj&ust Recording Volume..."),
          FN(OnInputGain), AlwaysEnabledFlag ),
-      Command( wxT("InputGainInc"), XXO("I&ncrease Recording Volume"),
+      Command( L"InputGainInc", XXO("I&ncrease Recording Volume"),
          FN(OnInputGainInc), AlwaysEnabledFlag ),
-      Command( wxT("InputGainDec"), XXO("D&ecrease Recording Volume"),
+      Command( L"InputGainDec", XXO("D&ecrease Recording Volume"),
          FN(OnInputGainDec), AlwaysEnabledFlag )
    ) ) };
    return menu;
@@ -197,18 +197,18 @@ BaseItemSharedPtr ExtraDeviceMenu()
 {
    static BaseItemSharedPtr menu{
    ( FinderScope{ findCommandHandler },
-   Menu( wxT("Device"), XXO("De&vice"),
-      Command( wxT("InputDevice"), XXO("Change &Recording Device..."),
+   Menu( L"Device", XXO("De&vice"),
+      Command( L"InputDevice", XXO("Change &Recording Device..."),
          FN(OnInputDevice),
-         AudioIONotBusyFlag(), wxT("Shift+I") ),
-      Command( wxT("OutputDevice"), XXO("Change &Playback Device..."),
+         AudioIONotBusyFlag(), L"Shift+I" ),
+      Command( L"OutputDevice", XXO("Change &Playback Device..."),
          FN(OnOutputDevice),
-         AudioIONotBusyFlag(), wxT("Shift+O") ),
-      Command( wxT("AudioHost"), XXO("Change Audio &Host..."), FN(OnAudioHost),
-         AudioIONotBusyFlag(), wxT("Shift+H") ),
-      Command( wxT("InputChannels"), XXO("Change Recording Cha&nnels..."),
+         AudioIONotBusyFlag(), L"Shift+O" ),
+      Command( L"AudioHost", XXO("Change Audio &Host..."), FN(OnAudioHost),
+         AudioIONotBusyFlag(), L"Shift+H" ),
+      Command( L"InputChannels", XXO("Change Recording Cha&nnels..."),
          FN(OnInputChannels),
-         AudioIONotBusyFlag(), wxT("Shift+N") )
+         AudioIONotBusyFlag(), L"Shift+N" )
    ) ) };
    return menu;
 }
@@ -220,22 +220,22 @@ BaseItemSharedPtr ExtraMiscItems()
 
    // Not a menu.
    static BaseItemSharedPtr items{
-   Items( wxT("Misc"),
+   Items( L"Misc",
       // Delayed evaluation
       []( AudacityProject &project ) {
 
    static const auto key =
 #ifdef __WXMAC__
-      wxT("Ctrl+/")
+      L"Ctrl+/"
 #else
-      wxT("F11")
+      L"F11"
 #endif
    ;
 
          return (
          FinderScope{ findCommandHandler },
          // Accel key is not bindable.
-         Command( wxT("FullScreenOnOff"), XXO("&Full Screen (on/off)"),
+         Command( L"FullScreenOnOff", XXO("&Full Screen (on/off)"),
             FN(OnFullScreen),
             AlwaysEnabledFlag,
             Options{ key }.CheckTest( []( const AudacityProject &project ) {
@@ -248,7 +248,7 @@ BaseItemSharedPtr ExtraMiscItems()
 }
 
 AttachedItem sAttachment2{
-   Placement{ wxT("Optional/Extra/Part2"), { OrderingHint::End } },
+   Placement{ L"Optional/Extra/Part2", { OrderingHint::End } },
    Shared( ExtraMiscItems() )
 };
 

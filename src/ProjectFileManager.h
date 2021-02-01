@@ -55,7 +55,7 @@ public:
    bool SaveAs(const FilePath &newFileName, bool addToHistory = true);
    // strProjectPathName is full path for aup except extension
    bool SaveFromTimerRecording( wxFileName fnFile );
-   bool SaveCopy(const FilePath &fileName = wxT(""));
+   bool SaveCopy(const FilePath &fileName = L"");
 
    /** @brief Show an open dialogue for opening audio files, and possibly other
     * sorts of files.

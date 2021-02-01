@@ -71,8 +71,8 @@ bool SetTrackBase::DefineParams( ShuttleParams & S)
 {
    static_cast<void>(S);
 #ifdef USE_OWN_TRACK_SELECTION
-   S.OptionalY( bHasTrackIndex     ).Define(     mTrackIndex,     wxT("Track"),      0, 0, 100 );
-   S.OptionalN( bHasChannelIndex   ).Define(     mChannelIndex,   wxT("Channel"),    0, 0, 100 );
+   S.OptionalY( bHasTrackIndex     ).Define(     mTrackIndex,     L"Track",      0, 0, 100 );
+   S.OptionalN( bHasChannelIndex   ).Define(     mChannelIndex,   L"Channel",    0, 0, 100 );
 #endif
    return true;
 }
@@ -129,10 +129,10 @@ namespace{ BuiltinCommandsModule::Registration< SetTrackStatusCommand > reg; }
 
 bool SetTrackStatusCommand::DefineParams( ShuttleParams & S ){
    SetTrackBase::DefineParams( S );
-   S.OptionalN( bHasTrackName      ).Define(     mTrackName,      wxT("Name"),       _("Unnamed") );
+   S.OptionalN( bHasTrackName      ).Define(     mTrackName,      L"Name",       _("Unnamed") );
    // There is also a select command.  This is an alternative.
-   S.OptionalN( bHasSelected       ).Define(     bSelected,       wxT("Selected"),   false );
-   S.OptionalN( bHasFocused        ).Define(     bFocused,        wxT("Focused"),    false );
+   S.OptionalN( bHasSelected       ).Define(     bSelected,       L"Selected",   false );
+   S.OptionalN( bHasFocused        ).Define(     bFocused,        L"Focused",    false );
    return true;
 };
 
@@ -191,11 +191,11 @@ namespace{ BuiltinCommandsModule::Registration< SetTrackAudioCommand > reg2; }
 
 bool SetTrackAudioCommand::DefineParams( ShuttleParams & S ){ 
    SetTrackBase::DefineParams( S );
-   S.OptionalN( bHasMute           ).Define(     bMute,           wxT("Mute"),       false );
-   S.OptionalN( bHasSolo           ).Define(     bSolo,           wxT("Solo"),       false );
+   S.OptionalN( bHasMute           ).Define(     bMute,           L"Mute",       false );
+   S.OptionalN( bHasSolo           ).Define(     bSolo,           L"Solo",       false );
 
-   S.OptionalN( bHasGain           ).Define(     mGain,           wxT("Gain"),       0.0,  -36.0, 36.0);
-   S.OptionalN( bHasPan            ).Define(     mPan,            wxT("Pan"),        0.0, -100.0, 100.0);
+   S.OptionalN( bHasGain           ).Define(     mGain,           L"Gain",       0.0,  -36.0, 36.0);
+   S.OptionalN( bHasPan            ).Define(     mPan,            L"Pan",        0.0, -100.0, 100.0);
    return true;
 };
 
@@ -257,10 +257,10 @@ enum kColours
 
 static const EnumValueSymbol kColourStrings[nColours] =
 {
-   { wxT("Color0"), XO("Color 0") },
-   { wxT("Color1"), XO("Color 1") },
-   { wxT("Color2"), XO("Color 2") },
-   { wxT("Color3"), XO("Color 3") },
+   { L"Color0", XO("Color 0") },
+   { L"Color1", XO("Color 1") },
+   { L"Color2", XO("Color 2") },
+   { L"Color3", XO("Color 3") },
 };
 
 
@@ -290,7 +290,7 @@ enum kZoomTypes
 static const EnumValueSymbol kZoomTypeStrings[nZoomTypes] =
 {
    { XO("Reset") },
-   { wxT("Times2"), XO("Times 2") },
+   { L"Times2", XO("Times 2") },
    { XO("HalfWave") },
 };
 
@@ -305,24 +305,24 @@ static EnumValueSymbols DiscoverSubViewTypes()
 
 bool SetTrackVisualsCommand::DefineParams( ShuttleParams & S ){ 
    SetTrackBase::DefineParams( S );
-   S.OptionalN( bHasHeight         ).Define(     mHeight,         wxT("Height"),     120, 44, 2000 );
+   S.OptionalN( bHasHeight         ).Define(     mHeight,         L"Height",     120, 44, 2000 );
 
    {
       auto symbols = DiscoverSubViewTypes();
-      S.OptionalN( bHasDisplayType    ).DefineEnum( mDisplayType,    wxT("Display"),    0, symbols.data(), symbols.size() );
+      S.OptionalN( bHasDisplayType    ).DefineEnum( mDisplayType,    L"Display",    0, symbols.data(), symbols.size() );
    }
 
-   S.OptionalN( bHasScaleType      ).DefineEnum( mScaleType,      wxT("Scale"),      kLinear,   kScaleTypeStrings, nScaleTypes );
-   S.OptionalN( bHasColour         ).DefineEnum( mColour,         wxT("Color"),      kColour0,  kColourStrings, nColours );
-   S.OptionalN( bHasVZoom          ).DefineEnum( mVZoom,          wxT("VZoom"),      kReset,    kZoomTypeStrings, nZoomTypes );
-   S.OptionalN( bHasVZoomTop       ).Define(     mVZoomTop,       wxT("VZoomHigh"),  1.0,  -2.0,  2.0 );
-   S.OptionalN( bHasVZoomBottom    ).Define(     mVZoomBottom,    wxT("VZoomLow"),   -1.0, -2.0,  2.0 );
+   S.OptionalN( bHasScaleType      ).DefineEnum( mScaleType,      L"Scale",      kLinear,   kScaleTypeStrings, nScaleTypes );
+   S.OptionalN( bHasColour         ).DefineEnum( mColour,         L"Color",      kColour0,  kColourStrings, nColours );
+   S.OptionalN( bHasVZoom          ).DefineEnum( mVZoom,          L"VZoom",      kReset,    kZoomTypeStrings, nZoomTypes );
+   S.OptionalN( bHasVZoomTop       ).Define(     mVZoomTop,       L"VZoomHigh",  1.0,  -2.0,  2.0 );
+   S.OptionalN( bHasVZoomBottom    ).Define(     mVZoomBottom,    L"VZoomLow",   -1.0, -2.0,  2.0 );
 
-   S.OptionalN( bHasUseSpecPrefs   ).Define(     bUseSpecPrefs,   wxT("SpecPrefs"),  false );
-   S.OptionalN( bHasSpectralSelect ).Define(     bSpectralSelect, wxT("SpectralSel"),true );
+   S.OptionalN( bHasUseSpecPrefs   ).Define(     bUseSpecPrefs,   L"SpecPrefs",  false );
+   S.OptionalN( bHasSpectralSelect ).Define(     bSpectralSelect, L"SpectralSel",true );
 
    auto schemes = SpectrogramSettings::GetColorSchemeNames();
-   S.OptionalN( bHasSpecColorScheme).DefineEnum( mSpecColorScheme,wxT("SpecColor"),  SpectrogramSettings::csColorNew, schemes.data(), schemes.size());
+   S.OptionalN( bHasSpecColorScheme).DefineEnum( mSpecColorScheme,L"SpecColor",  SpectrogramSettings::csColorNew, schemes.data(), schemes.size());
 
    return true;
 };
