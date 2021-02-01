@@ -157,10 +157,10 @@ EffectRack::EffectRack( AudacityProject &project )
       wxString slot;
       gPrefs->Read(wxString::Format(wxT("/EffectsRack/Slot%02d"), i), &slot);
 
-      Effect *effect = em.GetEffect(slot.AfterFirst(wxT(',')));
+      Effect *effect = em.GetEffect(slot.AfterFirst(L','));
       if (effect)
       {
-         Add(effect, slot.BeforeFirst(wxT(',')) == wxT("1"), true);
+         Add(effect, slot.BeforeFirst(L',') == wxT("1"), true);
       }
    }
 

@@ -83,7 +83,7 @@ bool Shuttle::TransferBool( const wxString & Name, bool & bValue, const bool & b
       if( ExchangeWithMaster( Name ))
       {
          if( !mValueString.empty() )
-            bValue = mValueString.GetChar(0) == wxT('y');
+            bValue = mValueString.GetChar(0) == L'y';
       }
    }
    else
@@ -186,7 +186,7 @@ bool Shuttle::TransferEnum( const wxString & Name, int & iValue,
       if( ExchangeWithMaster( Name ))
       {
          wxString str = mValueString;
-         if( str.Left( 1 ) == wxT('"') && str.Right( 1 ) == wxT('"') )
+         if( str.Left( 1 ) == L'"' && str.Right( 1 ) == L'"' )
          {
             str = str.Mid( 2, str.length() - 2 );
          }
@@ -209,9 +209,9 @@ bool Shuttle::TransferEnum( const wxString & Name, int & iValue,
       if( iValue < 0 )
          iValue = 0;
       mValueString = pFirstStr[iValue];
-      if( mValueString.Find( wxT(' ') ) != wxNOT_FOUND )
+      if( mValueString.Find( L' ' ) != wxNOT_FOUND )
       {
-         mValueString = wxT('"') + pFirstStr[iValue] + wxT('"');  //strings have quotes around them
+         mValueString = L'"' + pFirstStr[iValue] + L'"';  //strings have quotes around them
       }
       return ExchangeWithMaster( Name );
    }
@@ -231,7 +231,7 @@ bool Shuttle::TransferString( const wxString & Name, wxString & strValue, const 
    }
    else
    {
-      mValueString = wxT('"') + strValue + wxT('"');  //strings have quotes around them
+      mValueString = L'"' + strValue + L'"';  //strings have quotes around them
       return ExchangeWithMaster( Name );
    }
    return true;
@@ -283,15 +283,15 @@ bool ShuttleCli::ExchangeWithMaster(const wxString & Name)
       if( i>=0 )
       {
          int j=i+2+Name.length();
-         wxString terminator = wxT(' ');
-         if(mParams.GetChar(j) == wxT('"')) //Strings are surrounded by quotes
+         wxString terminator = L' ';
+         if(mParams.GetChar(j) == L'"') //Strings are surrounded by quotes
          {
-            terminator = wxT('"');
+            terminator = L'"';
             j++;
          }
-         else if(mParams.GetChar(j) == wxT('\'')) // or by single quotes.
+         else if(mParams.GetChar(j) == L'\'') // or by single quotes.
          {
-            terminator = wxT('\'');
+            terminator = L'\'';
             j++;
          }         
          i=j;

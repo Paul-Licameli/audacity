@@ -788,7 +788,7 @@ MusicalInstrument::MusicalInstrument(std::unique_ptr<wxBitmap> &&pBitmap, const 
    wxString strFilename = strXPMfilename;
    strFilename.MakeLower(); // Make sure, so we don't have to do case insensitive comparison.
    wxString strKeyword;
-   while ((nUnderscoreIndex = strFilename.Find(wxT('_'))) != -1)
+   while ((nUnderscoreIndex = strFilename.Find(L'_')) != -1)
    {
       strKeyword = strFilename.Left(nUnderscoreIndex);
       mKeywords.push_back(strKeyword);

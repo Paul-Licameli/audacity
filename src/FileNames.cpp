@@ -600,7 +600,7 @@ FileNames::SelectFile(Operation op,
 
 bool FileNames::IsMidi(const FilePath &fName)
 {
-   const auto extension = fName.AfterLast(wxT('.'));
+   const auto extension = fName.AfterLast(L'.');
    return
       extension.IsSameAs(wxT("gro"), false) ||
       extension.IsSameAs(wxT("midi"), false) ||

@@ -646,7 +646,7 @@ void FileDialog::GTKFilterChanged()
 
    if (filename.HasName())
    {
-      wxString ext = m_fc.GetCurrentWildCard().AfterLast(wxT('.')).Lower();
+      wxString ext = m_fc.GetCurrentWildCard().AfterLast(L'.').Lower();
       if (!ext.empty() && ext != wxT("*") && ext != filename.GetExt())
       {
          SetFileExtension(ext);

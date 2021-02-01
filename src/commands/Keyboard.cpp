@@ -47,7 +47,7 @@ NormalizedKeyString::NormalizedKeyString( const wxString & key )
    }
 
    (NormalizedKeyStringBase&)*this =
-      newkey + temp.AfterLast(wxT('+'));
+      newkey + temp.AfterLast(L'+');
 #else
    (NormalizedKeyStringBase&)*this = key;
 #endif

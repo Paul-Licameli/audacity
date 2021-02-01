@@ -1664,7 +1664,7 @@ wxString NyquistEffect::EscapeString(const wxString & inStr)
 std::vector<EnumValueSymbol> NyquistEffect::ParseChoice(const wxString & text)
 {
    std::vector<EnumValueSymbol> results;
-   if (text[0] == wxT('(')) {
+   if (text[0] == L'(') {
       // New style:  expecting a Lisp-like list of strings
       Tokenizer tzer;
       tzer.Tokenize(text, true, 1, 1);
@@ -1684,7 +1684,7 @@ std::vector<EnumValueSymbol> NyquistEffect::ParseChoice(const wxString & text)
       // un-internationalized names, ignoring leading and trailing spaces
       // on each; and the whole may be quoted
       auto choices = wxStringTokenize(
-         text[0] == wxT('"') ? text.Mid(1, text.length() - 2) : text,
+         text[0] == L'"' ? text.Mid(1, text.length() - 2) : text,
          wxT(",")
       );
       for (auto &choice : choices)
@@ -1697,7 +1697,7 @@ FileExtensions NyquistEffect::ParseFileExtensions(const wxString & text)
 {
    // todo: error handling
    FileExtensions results;
-   if (text[0] == wxT('(')) {
+   if (text[0] == L'(') {
       Tokenizer tzer;
       tzer.Tokenize(text, true, 1, 1);
       for (const auto &token : tzer.tokens)
@@ -1710,7 +1710,7 @@ FileNames::FileType NyquistEffect::ParseFileType(const wxString & text)
 {
    // todo: error handling
    FileNames::FileType result;
-   if (text[0] == wxT('(')) {
+   if (text[0] == L'(') {
       Tokenizer tzer;
       tzer.Tokenize(text, true, 1, 1);
       auto &tokens = tzer.tokens;
@@ -1725,11 +1725,11 @@ FileNames::FileTypes NyquistEffect::ParseFileTypes(const wxString & text)
 {
    // todo: error handling
    FileNames::FileTypes results;
-   if (text[0] == wxT('(')) {
+   if (text[0] == L'(') {
       Tokenizer tzer;
       tzer.Tokenize(text, true, 1, 1);
       auto &types = tzer.tokens;
-      if ( !types.empty() && types[0][0] == wxT('(') )
+      if ( !types.empty() && types[0][0] == L'(' )
          for (auto &type : types)
             results.push_back( ParseFileType( type ) );
    }
@@ -1795,14 +1795,14 @@ TranslatableString NyquistEffect::UnQuoteMsgid(const wxString &s, bool allowPare
       *pExtraString = wxString{};
 
    int len = s.length();
-   if (len >= 2 && s[0] == wxT('\"') && s[len - 1] == wxT('\"')) {
+   if (len >= 2 && s[0] == L'\"' && s[len - 1] == L'\"') {
       auto unquoted = s.Mid(1, len - 2);
       // Sorry, no context strings, yet
       // (See also comments in NyquistEffectsModule::AutoRegisterPlugins)
       return TranslatableString{ unquoted, {} };
    }
    else if (allowParens &&
-            len >= 2 && s[0] == wxT('(') && s[len - 1] == wxT(')')) {
+            len >= 2 && s[0] == L'(' && s[len - 1] == L')') {
       Tokenizer tzer;
       tzer.Tokenize(s, true, 1, 1);
       auto &tokens = tzer.tokens;
@@ -1866,13 +1866,13 @@ bool NyquistEffect::Tokenizer::Tokenize(
 
    for (auto c :
         make_iterator_range(line.begin() + trimStart, line.end() - trimEnd)) {
-      if (q && !sl && c == wxT('\\')) {
+      if (q && !sl && c == L'\\') {
          // begin escaped character, only within quotes
          sl = true;
          continue;
       }
 
-      if (!sl && c == wxT('"')) {
+      if (!sl && c == L'"') {
          // Unescaped quote
          if (!q) {
             // start of string
@@ -1892,17 +1892,17 @@ bool NyquistEffect::Tokenizer::Tokenize(
             q = false;
          }
       }
-      else if (!q && !paren && (c == wxT(' ') || c == wxT('\t')))
+      else if (!q && !paren && (c == L' ' || c == L'\t'))
          // Unenclosed whitespace
          // Separate tokens; don't accumulate this character
          endToken();
-      else if (!q && c == wxT(';'))
+      else if (!q && c == L';')
          // semicolon not in quotes, but maybe in parentheses
          // Lisp style comments with ; (but not with #| ... |#) are allowed
          // within a wrapped header multi-line, so that i18n hint comments may
          // be placed before strings and found by xgettext
          break;
-      else if (!q && c == wxT('(')) {
+      else if (!q && c == L'(') {
          // Start of list or sublist
          if (++paren == 1)
             // finish previous token; begin list, including the delimiter
@@ -1911,7 +1911,7 @@ bool NyquistEffect::Tokenizer::Tokenize(
             // defer tokenizing of nested list to a later pass over the token
             tok += c;
       }
-      else if (!q && c == wxT(')')) {
+      else if (!q && c == L')') {
          // End of list or sublist
          if (--paren == 0)
             // finish list, including the delimiter
@@ -1927,7 +1927,7 @@ bool NyquistEffect::Tokenizer::Tokenize(
          if (sl && paren)
             // Escaped character in string inside list, to be parsed again
             // Put the escape back for the next pass
-            tok += wxT('\\');
+            tok += L'\\';
          if (sl && !paren && c == 'n')
             // Convert \n to newline, the only special escape besides \\ or \"
             // But this should not be used if a string needs to localize.
@@ -1947,7 +1947,7 @@ bool NyquistEffect::Tokenizer::Tokenize(
       // End of line but not of file, and a string or list is yet unclosed
       // If a string, accumulate a newline character
       if (q)
-         tok += wxT('\n');
+         tok += L'\n';
       return false;
    }
 }
@@ -2186,8 +2186,8 @@ bool NyquistEffect::Parse(
          ctrl.valStr = len > 5 ? tokens[5] : wxString{};
          ctrl.val = GetCtrlValue(ctrl.valStr);
          if (ctrl.valStr.length() > 0 &&
-               (ctrl.valStr[0] == wxT('(') ||
-               ctrl.valStr[0] == wxT('"')))
+               (ctrl.valStr[0] == L'(' ||
+               ctrl.valStr[0] == L'"'))
             ctrl.valStr = UnQuote( ctrl.valStr );
 
          // 6 is minimum, below
@@ -2344,14 +2344,14 @@ bool NyquistEffect::ParseProgram(wxInputStream & stream)
           // New in 2.3.0:  allow magic comment lines to start with $
           // The trick is that xgettext will not consider such lines comments
           // and will extract the strings they contain
-          (line[0] == wxT(';') || line[0] == wxT('$')) )
+          (line[0] == L';' || line[0] == L'$') )
       {
          Tokenizer tzer;
          unsigned nLines = 1;
          bool done;
          // Allow continuations within control lines.
          bool control =
-            line[0] == wxT('$') || line.StartsWith( wxT(";control") );
+            line[0] == L'$' || line.StartsWith( wxT(";control") );
          do
             done = Parse(tzer, line, !control || stream.Eof(), nLines == 1);
          while(!done &&
@@ -2361,13 +2361,13 @@ bool NyquistEffect::ParseProgram(wxInputStream & stream)
          // by $, but pass blanks,
          // so that SAL effects compile with proper line numbers
          while (nLines --)
-            mCmd += wxT('\n');
+            mCmd += L'\n';
       }
       else
       {
          if(!mFoundType && line.length() > 0) {
-            if (line[0] == wxT('(') ||
-                (line[0] == wxT('#') && line.length() > 1 && line[1] == wxT('|')))
+            if (line[0] == L'(' ||
+                (line[0] == L'#' && line.length() > 1 && line[1] == L'|'))
             {
                mIsSal = false;
                mFoundType = true;

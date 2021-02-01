@@ -1714,7 +1714,7 @@ RegistryPaths LV2Effect::GetFactoryPresets()
          }
          else
          {
-            mFactoryPresetNames.push_back(LilvString(preset).AfterLast(wxT('#')));
+            mFactoryPresetNames.push_back(LilvString(preset).AfterLast(L'#'));
          }
       }
 

@@ -398,7 +398,7 @@ bool LabelDialog::TransferDataFromWindow()
    while (tndx < (int)mTrackNames.size() - 1) {
 
       // Extract the name
-      wxString name = mTrackNames[tndx + 1].AfterFirst(wxT('-')).Mid(1);
+      wxString name = mTrackNames[tndx + 1].AfterFirst(L'-').Mid(1);
 
       // Create the NEW track and add to track list
       auto newTrack = std::make_shared<LabelTrack>();
@@ -678,7 +678,7 @@ void LabelDialog::OnExport(wxCommandEvent & WXUNUSED(event))
    }
 
    // Extract the actual name.
-   wxString fName = mTrackNames[mTrackNames.size() - 1].AfterFirst(wxT('-')).Mid(1);
+   wxString fName = mTrackNames[mTrackNames.size() - 1].AfterFirst(L'-').Mid(1);
 
    fName = FileNames::SelectFile(FileNames::Operation::Export,
       XO("Export Labels As:"),

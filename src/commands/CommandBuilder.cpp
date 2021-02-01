@@ -148,7 +148,7 @@ void CommandBuilder::BuildCommand(AudacityProject *project,
    {
       cmdParams.Trim(true);
       cmdParams.Trim(false);
-      int splitAt = cmdParams.Find(wxT('='));
+      int splitAt = cmdParams.Find(L'=');
       if (splitAt < 0 && !cmdParams.empty())
       {
          Failure(wxT("Parameter string is missing '='"));
@@ -168,14 +168,14 @@ void CommandBuilder::BuildCommand(AudacityProject *project,
          splitAt =-1;
       else if( cmdParams[0] == '\"' ){
          cmdParams = cmdParams.Mid(1);
-         splitAt = cmdParams.Find(wxT('\"'))+1;
+         splitAt = cmdParams.Find(L'\"')+1;
       }
       else if( cmdParams[0] == '\'' ){
          cmdParams = cmdParams.Mid(1);
-         splitAt = cmdParams.Find(wxT('\''))+1;
+         splitAt = cmdParams.Find(L'\'')+1;
       }
       else
-         splitAt = cmdParams.Find(wxT(' '))+1;
+         splitAt = cmdParams.Find(L' ')+1;
       if (splitAt < 1)
       {
          splitAt = cmdParams.length();
@@ -195,8 +195,8 @@ void CommandBuilder::BuildCommand(
    // Find the command name terminator...  If there is more than one word and
    // no terminator, the command is badly formed
    cmdString.Trim(true); cmdString.Trim(false);
-   int splitAt = cmdString.Find(wxT(':'));
-   if (splitAt < 0 && cmdString.Find(wxT(' ')) >= 0) {
+   int splitAt = cmdString.Find(L':');
+   if (splitAt < 0 && cmdString.Find(L' ') >= 0) {
       Failure(wxT("Syntax error!\nCommand is missing ':'"));
       return;
    }

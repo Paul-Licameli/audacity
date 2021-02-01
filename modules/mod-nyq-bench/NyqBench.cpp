@@ -248,13 +248,13 @@ void NyqTextCtrl::OnKeyUp(wxKeyEvent & e)
 
    wxString text = GetRange(lpos, pos);
 
-   if (text[0] == wxT('(')) {
+   if (text[0] == L'(') {
       wxLongToLongHashMap::const_iterator left = mLeftParens.find(lpos);
       if (left != mLeftParens.end()) {
          Colorize(lpos, left->second);
       }
    }
-   else if (text[0] == wxT(')')) {
+   else if (text[0] == L')') {
       wxLongToLongHashMap::const_iterator right = mRightParens.find(lpos);
       if (right != mRightParens.end()) {
          Colorize(right->second, lpos);
@@ -271,13 +271,13 @@ void NyqTextCtrl::OnUpdate(wxUpdateUIEvent & e)
    
       wxString text = GetRange(lpos, pos);
       if (text.Length() > 0) {
-         if (text[0] == wxT('(')) {
+         if (text[0] == L'(') {
             wxLongToLongHashMap::const_iterator left = mLeftParens.find(lpos);
             if (left != mLeftParens.end()) {
                Colorize(lpos, left->second);
             }
          }
-         else if (text[0] == wxT(')')) {
+         else if (text[0] == L')') {
             wxLongToLongHashMap::const_iterator right = mRightParens.find(lpos);
             if (right != mRightParens.end()) {
                Colorize(right->second, lpos);
@@ -385,11 +385,11 @@ void NyqTextCtrl::MoveCursor(long first, long second)
 
    wxString text = GetRange(lpos, pos);
 
-   if (text[0] == wxT('(')) {
+   if (text[0] == L'(') {
       SetInsertionPoint(first + 1);
       Colorize(first, second);
    }
-   else if (text[0] == wxT(')')) {
+   else if (text[0] == L')') {
       SetInsertionPoint(second + 1);
       Colorize(first, second);
    }
@@ -440,23 +440,23 @@ void NyqTextCtrl::FindParens()
       wxChar c = text[pos];
       switch (c)
       {
-         case wxT('"'):
+         case L'"':
             inquotes = !inquotes;
          break;
 
-         case wxT(';'):
+         case L';':
             if (!inquotes) {
-               pos = (long)text.find(wxT('\n'), pos);
+               pos = (long)text.find(L'\n', pos);
                if (pos == (long)wxString::npos) {
                   pos = len;
                }
             }
          break;
 
-         case wxT('#'):
+         case L'#':
             if (!inquotes) {
                long ndx = pos + 1;
-               if (ndx < len && text[(int)ndx] == wxT('|')) {
+               if (ndx < len && text[(int)ndx] == L'|') {
                   // Shamelessly stolen from xlread.c/pcomment()
                   wxChar lastch = -1;
                   int n = 1;
@@ -478,13 +478,13 @@ void NyqTextCtrl::FindParens()
             }
          break;
 
-         case wxT('('):
+         case L'(':
             if (!inquotes) {
                stack.Add(pos);
             }
          break;
 
-         case wxT(')'):
+         case L')':
             if (!inquotes) {
                if (stack.GetCount() > 0) {
                   int left = stack.Last();

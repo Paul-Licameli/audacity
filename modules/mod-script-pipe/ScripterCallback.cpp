@@ -75,14 +75,14 @@ int DoSrv(char *pIn)
    Str2 = wxEmptyString;
    (*pScriptServerFn)( &Str1 , &Str2);
 
-   Str2 += wxT('\n');
+   Str2 += L'\n';
    size_t outputLength = Str2.Length();
    aStr.Clear();
    size_t iStart = 0;
    size_t i;
    for(i = 0; i < outputLength; ++i)
    {
-      if( Str2[i] == wxT('\n') )
+      if( Str2[i] == L'\n' )
       {
          aStr.Add( Str2.Mid( iStart, i-iStart) + wxT("\n") );
          iStart = i+1;

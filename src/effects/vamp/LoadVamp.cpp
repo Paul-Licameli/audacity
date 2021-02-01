@@ -265,7 +265,7 @@ std::unique_ptr<Vamp::Plugin> VampEffectsModule::FindPlugin(const PluginPath & p
                                       int & output,
                                       bool & hasParameters)
 {
-   PluginLoader::PluginKey key = path.BeforeLast(wxT('/')).ToUTF8().data();
+   PluginLoader::PluginKey key = path.BeforeLast(L'/').ToUTF8().data();
 
    std::unique_ptr<Plugin> vp{ PluginLoader::getInstance()->loadPlugin(key, 48000) }; // rate doesn't matter here
    if (!vp)

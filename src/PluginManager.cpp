@@ -1008,7 +1008,7 @@ void PluginRegistrationDialog::OnOK(wxCommandEvent & WXUNUSED(evt))
 
          if (item.state == STATE_Enabled && item.plugs[0]->GetPluginType() == PluginTypeStub)
          {
-            last3 = last3.AfterFirst(wxT('\n')) + item.path + wxT("\n");
+            last3 = last3.AfterFirst(L'\n') + item.path + wxT("\n");
             auto status = progress.Update(++i, enableCount,
                XO("Enabling effect or command:\n\n%s").Format( last3 ));
             if (status == ProgressResult::Cancelled)
@@ -1423,7 +1423,7 @@ RegistryPath PluginManager::GetPluginEnabledSetting(
          if ( family.empty() ) // as for built-in effect and command modules
             return {};
          else
-            return wxT('/') + family + wxT("/Enable");
+            return L'/' + family + wxT("/Enable");
       }
       case PluginTypeEffect:
          // do NOT use GetEffectFamily() for this descriptor, but instead,
@@ -2413,7 +2413,7 @@ void PluginManager::CheckForUpdates(bool bFast)
          continue;
       }
 
-      pathIndex.push_back(plug.GetPath().BeforeFirst(wxT(';')));
+      pathIndex.push_back(plug.GetPath().BeforeFirst(L';'));
    }
 
    // Check all known plugins to ensure they are still valid and scan for NEW ones.
@@ -2457,7 +2457,7 @@ void PluginManager::CheckForUpdates(bool bFast)
             auto paths = mm.FindPluginsForProvider(plugID, plugPath);
             for (size_t i = 0, cnt = paths.size(); i < cnt; i++)
             {
-               wxString path = paths[i].BeforeFirst(wxT(';'));;
+               wxString path = paths[i].BeforeFirst(L';');;
                if ( ! make_iterator_range( pathIndex ).contains( path ) )
                {
                   PluginID ID = plugID + wxT("_") + path;
@@ -3120,7 +3120,7 @@ wxString PluginManager::ConvertID(const PluginID & ID)
 
 // Lookup table for encoding
 const static wxChar cset[] = wxT("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/");
-const static char padc = wxT('=');
+const static char padc = L'=';
 
 wxString PluginManager::b64encode(const void *in, int len)
 {

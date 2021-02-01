@@ -534,7 +534,7 @@ ProgressResult PCMImportFileHandle::Import(WaveTrackFactory *trackFactory,
                   // Use frame description as default tag name.  The descriptions
                   // may include several "meanings" separated by "/" characters, so
                   // we just use the first meaning
-                  n = UTF8CTOWX(frame->description).BeforeFirst(wxT('/'));
+                  n = UTF8CTOWX(frame->description).BeforeFirst(L'/');
                }
 
                const id3_ucs4_t *ustr = NULL;

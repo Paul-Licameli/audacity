@@ -293,8 +293,8 @@ public:
 
       for (size_t i = 0, cnt = parsed.size(); i < cnt; i++)
       {
-         wxString key = parsed[i].BeforeFirst(wxT('=')).Trim(false).Trim(true);
-         wxString val = parsed[i].AfterFirst(wxT('=')).Trim(false).Trim(true);
+         wxString key = parsed[i].BeforeFirst(L'=').Trim(false).Trim(true);
+         wxString val = parsed[i].AfterFirst(L'=').Trim(false).Trim(true);
 
          if (!wxFileConfig::Write(key, Unescape(val)))
          {

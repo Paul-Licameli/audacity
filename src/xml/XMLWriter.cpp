@@ -231,23 +231,23 @@ wxString XMLWriter::XMLEsc(const wxString & s)
       wxUChar c = s.GetChar(i);
 
       switch (c) {
-         case wxT('\''):
+         case L'\'':
             result += wxT("&apos;");
          break;
 
-         case wxT('"'):
+         case L'"':
             result += wxT("&quot;");
          break;
 
-         case wxT('&'):
+         case L'&':
             result += wxT("&amp;");
          break;
 
-         case wxT('<'):
+         case L'<':
             result += wxT("&lt;");
          break;
 
-         case wxT('>'):
+         case L'>':
             result += wxT("&gt;");
          break;
 

@@ -158,9 +158,9 @@ public:
       //    <parmID>
       if (!name.empty())
       {
-         name.Replace(idBeg, wxT('_'));
-         name.Replace(idSep, wxT('_'));
-         name.Replace(idEnd, wxT('_'));
+         name.Replace(idBeg, L'_');
+         name.Replace(idSep, L'_');
+         name.Replace(idEnd, L'_');
          name.Append(idSep);
       }
       name = wxString::Format(wxT("%c%s%x%c"),
@@ -195,9 +195,9 @@ public:
          if (result == noErr)
          {
             clumpName =  wxCFStringRef::AsString(clumpInfo.outName);
-            clumpName.Replace(idBeg, wxT('_'));
-            clumpName.Replace(idSep, wxT('_'));
-            clumpName.Replace(idEnd, wxT('_'));
+            clumpName.Replace(idBeg, L'_');
+            clumpName.Replace(idSep, L'_');
+            clumpName.Replace(idEnd, L'_');
             clumpName.Append(idSep);
          }
          name = wxString::Format(wxT("%c%s%x%c%s"),
@@ -212,9 +212,9 @@ public:
       return true;
    }
 
-   static const char idBeg = wxT('<');
-   static const char idSep = wxT(',');
-   static const char idEnd = wxT('>');
+   static const char idBeg = L'<';
+   static const char idSep = L',';
+   static const char idEnd = L'>';
 
    wxString name;
    AudioUnitParameterInfo info;
@@ -837,8 +837,8 @@ AudioUnitEffect::AudioUnitEffect(const PluginPath & path,
                                  AudioUnitEffect *master)
 {
    mPath = path;
-   mName = name.AfterFirst(wxT(':')).Trim(true).Trim(false);
-   mVendor = name.BeforeFirst(wxT(':')).Trim(true).Trim(false);
+   mName = name.AfterFirst(L':').Trim(true).Trim(false);
+   mVendor = name.BeforeFirst(L':').Trim(true).Trim(false);
    mComponent = component;
    mMaster = master;
 

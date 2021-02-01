@@ -445,8 +445,8 @@ ProgressResult FLACImportFileHandle::Import(WaveTrackFactory *trackFactory,
    if (cnt > 0) {
       tags->Clear();
       for (size_t c = 0; c < cnt; c++) {
-         wxString name = mFile->mComments[c].BeforeFirst(wxT('='));
-         wxString value = mFile->mComments[c].AfterFirst(wxT('='));
+         wxString name = mFile->mComments[c].BeforeFirst(L'=');
+         wxString value = mFile->mComments[c].AfterFirst(L'=');
          wxString upper = name.Upper();
          if (upper == wxT("DATE") && !tags->HasTag(TAG_YEAR)) {
             long val;

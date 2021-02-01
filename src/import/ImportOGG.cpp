@@ -364,8 +364,8 @@ ProgressResult OggImportFileHandle::Import(
       tags->Clear();
       for (int c = 0; c < mVorbisFile->vc[0].comments; c++) {
          wxString comment = UTF8CTOWX(mVorbisFile->vc[0].user_comments[c]);
-         wxString name = comment.BeforeFirst(wxT('='));
-         wxString value = comment.AfterFirst(wxT('='));
+         wxString name = comment.BeforeFirst(L'=');
+         wxString value = comment.AfterFirst(L'=');
          if (name.Upper() == wxT("DATE") && !tags->HasTag(TAG_YEAR)) {
             long val;
             if (value.length() == 4 && value.ToLong(&val)) {

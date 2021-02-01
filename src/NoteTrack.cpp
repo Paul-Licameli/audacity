@@ -409,7 +409,7 @@ void NoteTrack::PrintSequence()
          wxFprintf(debugOutput, "channel: %li\n",
             ((Alg_event_ptr)mSeq->track_list.tracks[i])->chan);
 
-         if(((Alg_event_ptr)mSeq->track_list.tracks[i])->get_type() == wxT('n'))
+         if(((Alg_event_ptr)mSeq->track_list.tracks[i])->get_type() == L'n')
          {
             wxFprintf(debugOutput, "pitch: %f\n",
                ((Alg_note_ptr)mSeq->track_list.tracks[i])->pitch);
@@ -418,20 +418,20 @@ void NoteTrack::PrintSequence()
             wxFprintf(debugOutput, "velocity: %f\n",
                ((Alg_note_ptr)mSeq->track_list.tracks[i])->loud);
          }
-         else if(((Alg_event_ptr)mSeq->track_list.tracks[i])->get_type() == wxT('n'))
+         else if(((Alg_event_ptr)mSeq->track_list.tracks[i])->get_type() == L'n')
          {
             wxFprintf(debugOutput, "key: %li\n", ((Alg_update_ptr)mSeq->track_list.tracks[i])->get_identifier());
             wxFprintf(debugOutput, "attribute type: %c\n", ((Alg_update_ptr)mSeq->track_list.tracks[i])->parameter.attr_type());
             wxFprintf(debugOutput, "attribute: %s\n", ((Alg_update_ptr)mSeq->track_list.tracks[i])->parameter.attr_name());
 
-            if(((Alg_update_ptr)mSeq->track_list.tracks[i])->parameter.attr_type() == wxT('r'))
+            if(((Alg_update_ptr)mSeq->track_list.tracks[i])->parameter.attr_type() == L'r')
             {
                wxFprintf(debugOutput, "value: %f\n", ((Alg_update_ptr)mSeq->track_list.tracks[i])->parameter.r);
             }
-            else if(((Alg_update_ptr)mSeq->track_list.tracks[i])->parameter.attr_type() == wxT('i')) {
+            else if(((Alg_update_ptr)mSeq->track_list.tracks[i])->parameter.attr_type() == L'i') {
                wxFprintf(debugOutput, "value: %li\n", ((Alg_update_ptr)mSeq->track_list.tracks[i])->parameter.i);
             }
-            else if(((Alg_update_ptr)mSeq->track_list.tracks[i])->parameter.attr_type() == wxT('s')) {
+            else if(((Alg_update_ptr)mSeq->track_list.tracks[i])->parameter.attr_type() == L's') {
                wxFprintf(debugOutput, "value: %s\n", ((Alg_update_ptr)mSeq->track_list.tracks[i])->parameter.s);
             }
             else {}

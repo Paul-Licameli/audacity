@@ -33,7 +33,7 @@ and on Mac OS X for the filesystem.
 // (_outside_) the class definition, in order to be allocated some storage.
 // Otherwise, you get link errors.
 
-wxChar Internat::mDecimalSeparator = wxT('.'); // default
+wxChar Internat::mDecimalSeparator = L'.'; // default
 // exclude is used by SanitiseFilename.
 wxArrayString Internat::exclude;
 
@@ -100,7 +100,7 @@ void Internat::Init()
 
    for (auto cc: forbid) {
 #if defined(__WXGTK__)
-      if (cc == wxT('*') || cc == wxT('?')) {
+      if (cc == L'*' || cc == L'?') {
          continue;
       }
 #endif
@@ -177,7 +177,7 @@ wxString Internat::ToDisplayString(double numberToConvert,
          // Strip trailing zeros, but leave one, and decimal separator.
          int pos = result.length() - 1;
          while ((pos > 1) &&
-                  (result.GetChar(pos) == wxT('0')) &&
+                  (result.GetChar(pos) == L'0') &&
                   (result.GetChar(pos - 1) != decSep))
             pos--;
          // (Previous code removed all of them and decimal separator.)

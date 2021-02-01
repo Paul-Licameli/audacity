@@ -705,7 +705,7 @@ CommandListEntry *CommandManager::NewIdentifier(const CommandID & nameIn,
       // the name in prefs is the category name plus the effect name.
       // This feature is not used for built-in effects.
       if (multi)
-         name = CommandID{ { name, nameSuffix }, wxT('_') };
+         name = CommandID{ { name, nameSuffix }, L'_' };
 
       // wxMac 2.5 and higher will do special things with the
       // Preferences, Exit (Quit), and About menu items,
@@ -738,7 +738,7 @@ CommandListEntry *CommandManager::NewIdentifier(const CommandID & nameIn,
       entry->longLabel = longLabel.empty() ? label : longLabel;
 
       entry->excludeFromMacros = excludeFromMacros;
-      entry->key = NormalizedKeyString{ accel.BeforeFirst(wxT('\t')) };
+      entry->key = NormalizedKeyString{ accel.BeforeFirst(L'\t') };
       entry->defaultKey = entry->key;
       entry->labelPrefix = labelPrefix;
       entry->labelTop = mCurrentMenuName.Stripped();

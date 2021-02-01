@@ -795,7 +795,7 @@ void NumericConverter::ParseFormatString(
             handleNum = true;
       }
       else if ((format[i] >= '0' && format[i] <='9') ||
-          format[i] == wxT('*') || format[i] == wxT('#')) {
+          format[i] == L'*' || format[i] == L'#') {
          numStr += format[i];
          if (!delimStr.empty())
             handleDelim = true;

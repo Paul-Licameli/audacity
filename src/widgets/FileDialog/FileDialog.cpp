@@ -89,7 +89,7 @@ wxString FileSelector(const wxString& title,
                             flags, wxPoint(x, y));
 
     // if filter is of form "All files (*)|*|..." set correct filter index
-    if ( !defaultExtension.empty() && filter2.find(wxT('|')) != wxString::npos )
+    if ( !defaultExtension.empty() && filter2.find(L'|') != wxString::npos )
     {
         int filterIndex = 0;
 

@@ -703,8 +703,8 @@ void FileDialog::GetPaths(wxArrayString& paths) const
    paths.Empty();
    
    wxString dir(m_dir);
-   if (m_dir.empty() || m_dir.Last() != wxT('\\'))
-      dir += wxT('\\');
+   if (m_dir.empty() || m_dir.Last() != L'\\')
+      dir += L'\\';
    
    size_t count = m_fileNames.GetCount();
    for (size_t n = 0; n < count; n++)
@@ -872,7 +872,7 @@ static bool ShowCommFileDialog(OPENFILENAME *of, long style)
    {
       // this can happen if the default file name is invalid, try without it
       // now
-      of->lpstrFile[0] = wxT('\0');
+      of->lpstrFile[0] = L'\0';
       success = DoShowCommFileDialog(of, style, &errCode);
    }
 
@@ -903,8 +903,8 @@ int FileDialog::ShowModal()
    static wxChar fileNameBuffer [ wxMAXPATH ];           // the file-name
    wxChar        titleBuffer    [ wxMAXFILE+1+wxMAXEXT ];  // the file-name, without path
    
-   *fileNameBuffer = wxT('\0');
-   *titleBuffer    = wxT('\0');
+   *fileNameBuffer = L'\0';
+   *titleBuffer    = L'\0';
    
    // We always need EXPLORER and ENABLEHOOK to use our filtering code
    DWORD msw_flags = OFN_HIDEREADONLY | OFN_EXPLORER | OFN_ENABLEHOOK | OFN_ENABLESIZING | OFN_ENABLETEMPLATEHANDLE;
@@ -984,17 +984,17 @@ int FileDialog::ShowModal()
       wxChar ch = m_dir[i];
       switch ( ch )
       {
-         case wxT('/'):
+         case L'/':
             // convert to backslash
-            ch = wxT('\\');
+            ch = L'\\';
             
             // fall through
             
-         case wxT('\\'):
+         case L'\\':
             while ( i < len - 1 )
             {
                wxChar chNext = m_dir[i + 1];
-               if ( chNext != wxT('\\') && chNext != wxT('/') )
+               if ( chNext != L'\\' && chNext != L'/' )
                   break;
                
                // ignore the next one, unless it is at the start of a UNC path
@@ -1036,9 +1036,9 @@ int FileDialog::ShowModal()
    // Replace | with \0
    for (i = 0; i < filterBuffer.Len(); i++ )
    {
-      if ( filterBuffer.GetChar(i) == wxT('|') )
+      if ( filterBuffer.GetChar(i) == L'|' )
       {
-         filterBuffer[i] = wxT('\0');
+         filterBuffer[i] = L'\0';
       }
    }
    
@@ -1098,9 +1098,9 @@ int FileDialog::ShowModal()
       
    if ((HasFdFlag(wxFD_MULTIPLE)) &&
 #if defined(OFN_EXPLORER)
-         ( fileNameBuffer[of.nFileOffset-1] == wxT('\0') )
+         ( fileNameBuffer[of.nFileOffset-1] == L'\0' )
 #else
-         ( fileNameBuffer[of.nFileOffset-1] == wxT(' ') )
+         ( fileNameBuffer[of.nFileOffset-1] == L' ' )
 #endif // OFN_EXPLORER
          )
    {
@@ -1111,7 +1111,7 @@ int FileDialog::ShowModal()
       m_fileNames.Add(m_fileName);
       i += m_fileName.Len() + 1;
          
-      while (fileNameBuffer[i] != wxT('\0'))
+      while (fileNameBuffer[i] != L'\0')
       {
          m_fileNames.Add(&fileNameBuffer[i]);
          i += wxStrlen(&fileNameBuffer[i]) + 1;
@@ -1127,8 +1127,8 @@ int FileDialog::ShowModal()
 #endif // OFN_EXPLORER
          
       wxString dir(m_dir);
-      if ( m_dir.Last() != wxT('\\') )
-         dir += wxT('\\');
+      if ( m_dir.Last() != L'\\' )
+         dir += L'\\';
          
       m_path = dir + m_fileName;
       m_filterIndex = (int)of.nFilterIndex - 1;
@@ -1139,7 +1139,7 @@ int FileDialog::ShowModal()
       m_filterIndex = (int)of.nFilterIndex - 1;
 
       if ( !of.nFileExtension ||
-            (of.nFileExtension && fileNameBuffer[of.nFileExtension] == wxT('\0')) )
+            (of.nFileExtension && fileNameBuffer[of.nFileExtension] == L'\0') )
       {
          // User has typed a filename without an extension:
          const wxChar* extension = filterBuffer;

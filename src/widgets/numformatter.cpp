@@ -67,7 +67,7 @@ wxChar NumberFormatter::GetDecimalSeparator()
 
    return s[0];
 #else // !wxUSE_INTL
-   return wxT('.');
+   return L'.';
 #endif // wxUSE_INTL/!wxUSE_INTL
 }
 

@@ -1152,7 +1152,7 @@ wxString ExportMultipleDialog::MakeFileName(const wxString &input)
    {  // need to get user to fix file name
       // build the dialog
       TranslatableString msg;
-      wxString excluded = ::wxJoin( Internat::GetExcludedCharacters(), wxT(' '), wxT('\0') );
+      wxString excluded = ::wxJoin( Internat::GetExcludedCharacters(), L' ', L'\0' );
       // TODO: For Russian language we should have separate cases for 2 and more than 2 letters.
       if( excluded.length() > 1 ){
          msg = XO(

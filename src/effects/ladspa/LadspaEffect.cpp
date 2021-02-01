@@ -326,7 +326,7 @@ bool LadspaEffectsModule::IsPluginValid(const PluginPath & path, bool bFast)
 {
    if( bFast )
       return true;
-   wxString realPath = path.BeforeFirst(wxT(';'));
+   wxString realPath = path.BeforeFirst(L';');
    return wxFileName::FileExists(realPath);
 }
 
@@ -337,8 +337,8 @@ ComponentInterface *LadspaEffectsModule::CreateInstance(const PluginPath & path)
    // 1)  The library's path
    // 2)  The LADSPA descriptor index
    long index;
-   wxString realPath = path.BeforeFirst(wxT(';'));
-   path.AfterFirst(wxT(';')).ToLong(&index);
+   wxString realPath = path.BeforeFirst(L';');
+   path.AfterFirst(L';').ToLong(&index);
 
    // Safety of this depends on complementary calls to DeleteInstance on the module manager side.
    return safenew LadspaEffect(realPath, (int)index);

@@ -452,8 +452,8 @@ void LOFImportFileHandle::lofOpenFiles(wxString* ln)
                if (t == NULL)
                   return;
 #ifdef USE_MIDI
-               if (targetfile.AfterLast(wxT('.')).IsSameAs(wxT("mid"), false) ||
-                   targetfile.AfterLast(wxT('.')).IsSameAs(wxT("midi"), false))
+               if (targetfile.AfterLast(L'.').IsSameAs(wxT("mid"), false) ||
+                   targetfile.AfterLast(L'.').IsSameAs(wxT("midi"), false))
                {
                   AudacityMessageBox(
                      XO("MIDI tracks cannot be offset individually, only audio files can be."),
