@@ -264,7 +264,7 @@ void PopulatePreferences()
 
    // record the Prefs version for future checking (this has not been used for a very
    // long time).
-   gPrefs->Write(L"/PrefsVersion", wxString(wxT(AUDACITY_PREFS_VERSION_STRING)));
+   gPrefs->Write(L"/PrefsVersion", wxString((L"" AUDACITY_PREFS_VERSION_STRING)));
 
    // Check if some prefs updates need to happen based on audacity version.
    // Unfortunately we can't use the PrefsVersion prefs key because that resets things.
@@ -1137,7 +1137,7 @@ bool AudacityApp::OnInit()
 
 #ifdef __WXGTK__
    // Make sure install prefix is set so wxStandardPath resolves paths properly
-   wxStandardPaths::Get().SetInstallPrefix(wxT(INSTALL_PREFIX));
+   wxStandardPaths::Get().SetInstallPrefix((L"" INSTALL_PREFIX));
 
    /* Search path (for plug-ins, translations etc) is (in this order):
       * The AUDACITY_PATH environment variable
@@ -1178,16 +1178,14 @@ bool AudacityApp::OnInit()
 
 #ifdef AUDACITY_NAME
    FileNames::AddUniquePathToPathList(wxString::Format(L"%s/.%s-files",
-      home, wxT(AUDACITY_NAME)),
+      home, (L"" AUDACITY_NAME)),
       audacityPathList);
    FileNames::AddUniquePathToPathList(FileNames::ModulesDir(),
       audacityPathList);
    FileNames::AddUniquePathToPathList(wxString::Format(L"%s/share/%s",
-prefix...
-      wxT(INSTALL_PREFIX), wxT(AUDACITY_NAME)),
-      audacityPathList);
+      (L"" INSTALL_PREFIX), (L"" AUDACITY_NAME)),
    FileNames::AddUniquePathToPathList(wxString::Format(L"%s/share/doc/%s",
-      wxT(INSTALL_PREFIX), wxT(AUDACITY_NAME)),
+      (L"" INSTALL_PREFIX), (L"" AUDACITY_NAME)),
       audacityPathList);
 #else //AUDACITY_NAME
    FileNames::AddUniquePathToPathList(wxString::Format(L"%s/.audacity-files",
@@ -1196,15 +1194,15 @@ prefix...
    FileNames::AddUniquePathToPathList(FileNames::ModulesDir(),
       audacityPathList);
    FileNames::AddUniquePathToPathList(wxString::Format(L"%s/share/audacity",
-      wxT(INSTALL_PREFIX)),
+      (L"" INSTALL_PREFIX)),
       audacityPathList);
    FileNames::AddUniquePathToPathList(wxString::Format(L"%s/share/doc/audacity",
-      wxT(INSTALL_PREFIX)),
+      (L"" INSTALL_PREFIX)),
       audacityPathList);
 #endif //AUDACITY_NAME
 
    FileNames::AddUniquePathToPathList(wxString::Format(L"%s/share/locale",
-      wxT(INSTALL_PREFIX)),
+      (L"" INSTALL_PREFIX)),
       audacityPathList);
 
    FileNames::AddUniquePathToPathList(wxString::Format(L"./locale"),

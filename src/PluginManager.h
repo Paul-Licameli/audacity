@@ -100,7 +100,7 @@ public:
    bool IsEffectRealtime() const;
    bool IsEffectAutomatable() const;
 
-   // "family" should be an untranslated string wrapped in wxT()
+   // "family" should be an untranslated string wrapped in (L"" )
    void SetEffectFamily(const wxString & family);
    void SetEffectType(EffectType type);
    void SetEffectDefault(bool dflt);

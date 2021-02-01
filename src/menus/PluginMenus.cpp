@@ -408,8 +408,7 @@ void OnResetConfig(const CommandContext &context)
    // These are necessary to preserve the newly correctly laid out toolbars.
    // In particular the Device Toolbar ends up short on next restart, 
    // if they are left out.
-   gPrefs->Write(L"/PrefsVersion", wxString(wxT(AUDACITY_PREFS_VERSION_STRING)));
-
+   gPrefs->Write(L"/PrefsVersion", wxString((L"" AUDACITY_PREFS_VERSION_STRING)));
    // write out the version numbers to the prefs file for future checking
    gPrefs->Write(L"/Version/Major", AUDACITY_VERSION);
    gPrefs->Write(L"/Version/Minor", AUDACITY_RELEASE);

@@ -482,7 +482,7 @@ PluginPaths VSTEffectsModule::FindPluginPaths(PluginManagerInterface & pm)
    if (vstpath.empty())
    {
       // We add this "non-default" one
-      pathList.push_back(wxT(LIBDIR) L"/vst");
+      pathList.push_back(L"" LIBDIR L"/vst");
 
       // These are the defaults used by other hosts
       pathList.push_back(L"/usr/lib/vst");

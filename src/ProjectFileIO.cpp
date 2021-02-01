@@ -1624,7 +1624,7 @@ bool ProjectFileIO::HandleXMLTag(const wxChar *tag, const wxChar **attrs)
    int cver;
    int crel;
    int crev;
-   wxSscanf(wxT(AUDACITY_FILE_FORMAT_VERSION), L"%i.%i.%i", &cver, &crel, &crev);
+   wxSscanf((L"" AUDACITY_FILE_FORMAT_VERSION), L"%i.%i.%i", &cver, &crel, &crev);
 
    int fileVer = ((fver *100)+frel)*100+frev;
    int codeVer = ((cver *100)+crel)*100+crev;
@@ -1703,7 +1703,7 @@ void ProjectFileIO::WriteXML(XMLWriter &xmlFile,
    xmlFile.StartTag(L"project");
    xmlFile.WriteAttr(L"xmlns", L"http://audacity.sourceforge.net/xml/");
 
-   xmlFile.WriteAttr(L"version", wxT(AUDACITY_FILE_FORMAT_VERSION));
+   xmlFile.WriteAttr(L"version", (L"" AUDACITY_FILE_FORMAT_VERSION));
    xmlFile.WriteAttr(L"audacityversion", AUDACITY_VERSION_STRING);
 
    viewInfo.WriteXMLAttributes(xmlFile);

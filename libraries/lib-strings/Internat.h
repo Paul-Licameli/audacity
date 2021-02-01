@@ -28,13 +28,13 @@ extern STRINGS_API const wxString& GetCustomSubstitution(const wxString& str1 );
 
 // Marks strings for extraction only... use .Translate() to translate.
 // '&', preceding menu accelerators, should NOT occur in the argument.
-#define XO(s)  (TranslatableString{ wxT(s), {} })
+#define XO(s)  (TranslatableString{ (L"" s), {} })
 
 // Alternative taking a second context argument.  A context is a string literal,
 // which is not translated, but serves to disambiguate uses of the first string
 // that might need differing translations, such as "Light" meaning not-heavy in
 // one place but not-dark elsewhere.
-#define XC(s, c)  (TranslatableString{ wxT(s), {} }.Context(c))
+#define XC(s, c)  (TranslatableString{ (L"" s), {} }.Context(c))
 
 // Marks strings for extraction only, where '&', preceding menu accelerators, MAY
 // occur.
@@ -84,7 +84,7 @@ extern STRINGS_API const wxString& GetCustomSubstitution(const wxString& str1 );
 // msgid sing
 // msgid_plural plural
 //
-// (You must use plain string literals.  Do not use _() or wxT() or L prefix,
+// (You must use plain string literals.  Do not use _() or (L"" ) or L prefix,
 //  which (intentionally) will fail to compile.  The macro inserts wxT).
 //
 // Note too:  The i18n-hint comment must be on the line preceding the first
@@ -94,11 +94,11 @@ extern STRINGS_API const wxString& GetCustomSubstitution(const wxString& str1 );
 // parentheses.  The third argument of the macro call is the zero-based index
 // of the format argument that selects singular or plural
 #define XP(sing, plur, n) \
-   TranslatableString{ wxT(sing), {} }.Plural<(n)>( wxT(plur) )
+   TranslatableString{ (L"" sing), {} }.Plural<(n)>( (L"" plur) )
 
 // Like XP but with an additional context argument, as for XC
 #define XPC(sing, plur, n, c) \
-   TranslatableString{ wxT(sing), {} }.Context(c).Plural<(n)>( wxT(plur) )
+   TranslatableString{ (L"" sing), {} }.Context(c).Plural<(n)>( (L"" plur) )
 
 class STRINGS_API Internat
 {

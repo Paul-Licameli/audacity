@@ -1575,7 +1575,7 @@ FileNames::FileTypes MP3Exporter::GetLibraryTypes()
 
 wxString MP3Exporter::GetLibraryPath()
 {
-   return wxT(LIBDIR);
+   return (L"" LIBDIR);
 }
 
 wxString MP3Exporter::GetLibraryName()

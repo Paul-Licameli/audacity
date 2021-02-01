@@ -145,7 +145,7 @@ bool LV2EffectsModule::Initialize()
 #define LV2PATH L"/Library/Audio/Plug-Ins/LV2"
 
    wxFileName libdir;
-//   libdir.AssignDir(wxT(LIBDIR));
+//   libdir.AssignDir((L"" LIBDIR));
    libdir.AppendDir(L"lv2");
 
    newVar += L":$HOME/.lv2";
@@ -167,7 +167,7 @@ bool LV2EffectsModule::Initialize()
 #else
 
    wxFileName libdir;
-   libdir.AssignDir(wxT(LIBDIR));
+   libdir.AssignDir((L"" LIBDIR));
    libdir.AppendDir(L"lv2");
 
    newVar += L":$HOME/.lv2";
@@ -180,7 +180,7 @@ bool LV2EffectsModule::Initialize()
    newVar += L":" + libdir.GetPath();
 
    // Tell SUIL where to find his GUI support modules
-   wxSetEnv(L"SUIL_MODULE_DIR", wxT(PKGLIBDIR));
+   wxSetEnv(L"SUIL_MODULE_DIR", (L"" PKGLIBDIR));
 #endif
 
    // Start with the LV2_PATH environment variable (if any)

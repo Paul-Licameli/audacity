@@ -408,5 +408,5 @@ const wxString VerCheckUrl(){
 //For testing locally
 //#define VER_CHECK_URL "http://localhost:63342/WorkingDocs/demos/download.html?"
 
-   return wxString( wxT(VER_CHECK_URL)) +VerCheckArgs();
+   return wxString( (L"" VER_CHECK_URL)) +VerCheckArgs();
 }

@@ -93,7 +93,7 @@ bool Module::Load(wxString &deferredErrorMessage)
    }
 
    // Check version string matches.  (For now, they must match exactly)
-   tVersionFn versionFn = (tVersionFn)(mLib->GetSymbol(wxT(versionFnName)));
+   tVersionFn versionFn = (tVersionFn)(mLib->GetSymbol((L"" versionFnName)));
    if (versionFn == NULL){
       AudacityMessageBox(
          XO("The module \"%s\" does not provide a version string.\n\nIt will not be loaded.")
@@ -115,7 +115,7 @@ bool Module::Load(wxString &deferredErrorMessage)
       return false;
    }
 
-   mDispatch = (fnModuleDispatch) mLib->GetSymbol(wxT(ModuleDispatchName));
+   mDispatch = (fnModuleDispatch) mLib->GetSymbol((L"" ModuleDispatchName));
    if (!mDispatch) {
       // Module does not provide a dispatch function.
       return true;

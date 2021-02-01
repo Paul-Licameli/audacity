@@ -387,7 +387,7 @@ FilePaths LadspaEffectsModule::GetSearchPaths()
 #endif
    pathList.push_back(L"/usr/local/lib/ladspa");
    pathList.push_back(L"/usr/lib/ladspa");
-   pathList.push_back(wxT(LIBDIR) L"/ladspa");
+   pathList.push_back(L"" LIBDIR L"/ladspa");
 
 #endif
 

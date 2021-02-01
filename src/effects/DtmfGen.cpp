@@ -48,7 +48,7 @@ enum
 // Define keys, defaults, minimums, and maximums for the effect parameters
 //
 //     Name       Type        Key               Def                   Min      Max      Scale
-Param( Sequence,  wxString,   L"Sequence",   wxT(SHORT_APP_NAME),  L"", L"", L"");
+Param( Sequence,  wxString,   L"Sequence",   (L"" SHORT_APP_NAME),  L"", L"", L"");
 Param( DutyCycle, double,     L"Duty Cycle", 55.0,                 0.0,     100.0,   10.0   );
 Param( Amplitude, double,     L"Amplitude",  0.8,                  0.001,   1.0,     1      );
 
@@ -304,7 +304,7 @@ bool EffectDtmf::Startup()
    // Load the old "current" settings
    if (gPrefs->Exists(base))
    {
-      gPrefs->Read(base + L"String", &dtmfSequence, wxT(SHORT_APP_NAME));
+      gPrefs->Read(base + L"String", &dtmfSequence, (L"" SHORT_APP_NAME));
       gPrefs->Read(base + L"DutyCycle", &dtmfDutyCycle, 550L);
       gPrefs->Read(base + L"Amplitude", &dtmfAmplitude, 0.8f);
 

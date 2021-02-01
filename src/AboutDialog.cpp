@@ -627,7 +627,7 @@ void AboutDialog::PopulateInformationPage( ShuttleGui & S )
 #ifdef __WXGTK__
    /* i18n-hint: The directory audacity is installed into (on *nix systems) */
    AddBuildinfoRow(&informationStr, XO("Installation Prefix:"), \
-         wxT(INSTALL_PREFIX));
+         (L"" INSTALL_PREFIX));
 #endif
 
    // Location of settings
