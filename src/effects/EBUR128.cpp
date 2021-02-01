@@ -8,6 +8,7 @@ Max Maisel
 
 ***********************************************************************/
 
+#define _USE_MATH_DEFINES
 #include "EBUR128.h"
 
 EBUR128::EBUR128(double rate, size_t channels)
