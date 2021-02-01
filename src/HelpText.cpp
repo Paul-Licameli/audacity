@@ -246,11 +246,11 @@ static wxString HelpTextBuiltIn( const wxString & Key )
          << L"<ul><li>"
          << L" [[http://www.darkaudacity.com|www.darkaudacity.com]] - for differences between them."
          << L"</li><li>"
-         << wxT(
-" email to [[mailto:james@audacityteam.org|james@audacityteam.org]] - for help using DarkAudacity.")
+         <<
+L" email to [[mailto:james@audacityteam.org|james@audacityteam.org]] - for help using DarkAudacity."
          << L"</li><li>"
-         << wxT(
-" [[http://www.darkaudacity.com/video.html|Tutorials]] - for getting started with DarkAudacity.")
+         <<
+L" [[http://www.darkaudacity.com/video.html|Tutorials]] - for getting started with DarkAudacity."
          << L"</li></ul>"
          << L"<br><br>Audacity has these support methods:"
          << L"<ul><li>"

@@ -391,24 +391,24 @@ void MenuCreator::CreateMenusAndCommands(AudacityProject &project)
    static Registry::OrderingPreferenceInitializer init{
       MenuPathStart,
       {
-         {L"", wxT(
-   "File,Edit,Select,View,Transport,Tracks,Generate,Effect,Analyze,Tools,Window,Optional,Help"
-          )},
-         {L"/Optional/Extra/Part1", wxT(
-   "Transport,Tools,Mixer,Edit,PlayAtSpeed,Seek,Device,Select"
-          )},
-         {L"/Optional/Extra/Part2", wxT(
-   "Navigation,Focus,Cursor,Track,Scriptables1,Scriptables2"
-          )},
+         {L"",
+   L"File,Edit,Select,View,Transport,Tracks,Generate,Effect,Analyze,Tools,Window,Optional,Help"
+          },
+         {L"/Optional/Extra/Part1",
+   L"Transport,Tools,Mixer,Edit,PlayAtSpeed,Seek,Device,Select"
+          },
+         {L"/Optional/Extra/Part2",
+   L"Navigation,Focus,Cursor,Track,Scriptables1,Scriptables2"
+          },
          {L"/View/Windows", L"UndoHistory,Karaoke,MixerBoard"},
          {L"/Analyze/Analyzers/Windows", L"ContrastAnalyser,PlotSpectrum"},
          {L"/Transport/Basic", L"Play,Record,Scrubbing,Cursor"},
-         {L"/View/Other/Toolbars/Toolbars/Other", wxT(
-"ShowTransportTB,ShowToolsTB,ShowRecordMeterTB,ShowPlayMeterTB,"
+         {L"/View/Other/Toolbars/Toolbars/Other",
+L"ShowTransportTB,ShowToolsTB,ShowRecordMeterTB,ShowPlayMeterTB,"
 //"ShowMeterTB,"
 "ShowMixerTB,"
 "ShowEditTB,ShowTranscriptionTB,ShowScrubbingTB,ShowDeviceTB,ShowSelectionTB,"
-"ShowSpectralSelectionTB") }
+"ShowSpectralSelectionTB" }
       }
    };
 

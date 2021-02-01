@@ -64,7 +64,7 @@ void ActiveProjects::Remove(const FilePath &path)
 
    if (!key.empty())
    {
-      gPrefs->DeleteEntry(wxT("/ActiveProjects/" + key));
+      gPrefs->DeleteEntry(L"/ActiveProjects/" + key);
       gPrefs->Flush();
    }
 }

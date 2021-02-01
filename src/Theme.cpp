@@ -877,7 +877,7 @@ void ThemeBase::WriteImageDefs( )
             Temp ));
       }
       File.Write( wxString::Format(
-         L"   DEFINE_IMAGE( bmp%s, wxImage( %i, %i ), wxT(\"%s\"));\r\n",
+         L"   DEFINE_IMAGE( bmp%s, wxImage( %i, %i ), L\"%s\");\r\n",
          mBitmapNames[i],
          SrcImage.GetWidth(),
          SrcImage.GetHeight(),

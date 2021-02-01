@@ -467,28 +467,28 @@ extern "C" {
 #define FFMPEG_INITDYN(w, f)                                            \
    {                                                                    \
       wxLogNull off;                                                    \
-      *(void**)&f ## _fp = (void*)w->GetSymbol(wxT(#f));                \
+      *(void**)&f ## _fp = (void*)w->GetSymbol(L"" #f);                 \
    }                                                                    \
    if (f ## _fp == NULL)                                                \
    {                                                                    \
-      wxLogError(L"Failed to load symbol " wxT(#f));                \
+      wxLogError(L"Failed to load symbol " #f);                         \
       return false;                                                     \
    }
 
 #define FFMPEG_INITALT(w, f, x, a)                                      \
    {                                                                    \
       wxLogNull off;                                                    \
-      *(void**)&f ## _fp = (void*)w->GetSymbol(wxT(#f));                \
+      *(void**)&f ## _fp = (void*)w->GetSymbol(L"" #f);                 \
    }                                                                    \
    if (f ## _fp == NULL)                                                \
    {                                                                    \
       {                                                                 \
          wxLogNull off;                                                 \
-         *(void**)&f ## _fp = (void*)x->GetSymbol(wxT(#a));             \
+         *(void**)&f ## _fp = (void*)x->GetSymbol(L"" #a);              \
       }                                                                 \
       if (f ## _fp == NULL)                                             \
       {                                                                 \
-         wxLogError(L"Failed to load symbol " wxT(#f));             \
+         wxLogError(L"Failed to load symbol " #f);                      \
          return false;                                                  \
       }                                                                 \
    }

@@ -478,7 +478,7 @@ void Sequence::Paste(sampleCount s, const Sequence *src)
    {
       wxLogError(
          L"Sequence::Paste: sampleCount s %s is < 0 or > mNumSamples %s).",
-         // PRL:  Why bother with Internat when the above is just wxT?
+         // PRL:  Why bother with Internat?
          Internat::ToString(s.as_double(), 0),
          Internat::ToString(mNumSamples.as_double(), 0));
       THROW_INCONSISTENCY_EXCEPTION;
@@ -489,7 +489,7 @@ void Sequence::Paste(sampleCount s, const Sequence *src)
    {
       wxLogError(
          L"Sequence::Paste: mNumSamples %s + src->mNumSamples %s would overflow.",
-         // PRL:  Why bother with Internat when the above is just wxT?
+         // PRL:  Why bother with Internat?
          Internat::ToString(mNumSamples.as_double(), 0),
          Internat::ToString(src->mNumSamples.as_double(), 0));
       THROW_INCONSISTENCY_EXCEPTION;
@@ -919,7 +919,7 @@ void Sequence::HandleXMLEndTag(const wxChar *tag)
             L"Gap detected in project file.\n"
             L"   Start (%s) for block file %lld is not one sample past end of previous block (%s).\n"
             L"   Moving start so blocks are contiguous.",
-            // PRL:  Why bother with Internat when the above is just wxT?
+            // PRL:  Why bother with Internat?
             Internat::ToString(block.start.as_double(), 0),
             block.sb->GetBlockID(),
             Internat::ToString(numSamples.as_double(), 0));
@@ -933,7 +933,7 @@ void Sequence::HandleXMLEndTag(const wxChar *tag)
    {
       wxLogWarning(
          L"Gap detected in project file. Correcting sequence sample count from %s to %s.",
-         // PRL:  Why bother with Internat when the above is just wxT?
+         // PRL:  Why bother with Internat?
          Internat::ToString(mNumSamples.as_double(), 0),
          Internat::ToString(numSamples.as_double(), 0));
       mNumSamples = numSamples;

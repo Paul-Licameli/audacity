@@ -85,7 +85,7 @@ extern STRINGS_API const wxString& GetCustomSubstitution(const wxString& str1 );
 // msgid_plural plural
 //
 // (You must use plain string literals.  Do not use _() or (L"" ) or L prefix,
-//  which (intentionally) will fail to compile.  The macro inserts wxT).
+//  which (intentionally) will fail to compile.  The macro inserts (L"" ) ).
 //
 // Note too:  The i18n-hint comment must be on the line preceding the first
 // string.  That might be inside the parentheses of the macro call.

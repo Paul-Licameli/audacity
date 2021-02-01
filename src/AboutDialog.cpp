@@ -329,9 +329,8 @@ void AboutDialog::PopulateAudacityPage( ShuttleGui & S )
    auto par1Str =
 // DA: Says that it is a customised version.
 #ifdef EXPERIMENTAL_DA
-      wxT(
-"Audacity, which this is a customised version of, is a free program written by a worldwide team of [[https://www.audacityteam.org/about/credits|volunteers]]. \
-Audacity is [[https://www.audacityteam.org/download|available]] for Windows, Mac, and GNU/Linux (and other Unix-like systems).")
+L"Audacity, which this is a customised version of, is a free program written by a worldwide team of [[https://www.audacityteam.org/about/credits|volunteers]]. \
+Audacity is [[https://www.audacityteam.org/download|available]] for Windows, Mac, and GNU/Linux (and other Unix-like systems)."
 #else
 /* Do the i18n of a string with markup carefully with hints.
  (Remember languages with cases.) */

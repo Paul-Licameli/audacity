@@ -123,9 +123,9 @@ enum FFmpegExportCtrlID {
 
 // Now the string representations
 #undef FFMPEG_EXPORT_CTRL_ID_FIRST_ENTRY
-#define FFMPEG_EXPORT_CTRL_ID_FIRST_ENTRY(name, num)  wxT(#name)
+#define FFMPEG_EXPORT_CTRL_ID_FIRST_ENTRY(name, num)  (L"" #name)
 #undef FFMPEG_EXPORT_CTRL_ID_ENTRY
-#define FFMPEG_EXPORT_CTRL_ID_ENTRY(name)             wxT(#name)
+#define FFMPEG_EXPORT_CTRL_ID_ENTRY(name)             (L"" #name)
 static const wxChar *FFmpegExportCtrlIDNames[] = {
    FFMPEG_EXPORT_CTRL_ID_ENTRIES
 };
