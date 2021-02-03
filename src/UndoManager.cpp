@@ -38,6 +38,7 @@ UndoManager
 #include "widgets/ProgressDialog.h"
 
 
+#include <optional>
 #include <unordered_set>
 
 wxDEFINE_EVENT(EVT_UNDO_PUSHED, wxCommandEvent);
@@ -222,7 +223,7 @@ void UndoManager::RemoveStates(size_t begin, size_t end)
    auto cleanup = finally([&]{ pSampleBlockFactory->SetBlockDeletionCallback( prevCallback ); });
 
    // Wrap the whole in a savepoint for better performance
-   Optional<TransactionScope> pTrans;
+   std::optional<TransactionScope> pTrans;
    auto pConnection = ConnectionPtr::Get(mProject).mpConnection.get();
    if (pConnection)
       pTrans.emplace(*pConnection, "DiscardingUndoStates");

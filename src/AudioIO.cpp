@@ -427,6 +427,7 @@ time warp info and AudioIOListener and whether the playback is looped.
 #include <math.h>
 #include <stdlib.h>
 #include <algorithm>
+#include <optional>
 
 #ifdef __WXMSW__
 #include <malloc.h>
@@ -2380,7 +2381,7 @@ void AudioIO::StopStream()
          {
             // This scope may combine many splittings of wave tracks
             // into one transaction, lessening the number of checkpoints
-            Optional<TransactionScope> pScope;
+            std::optional<TransactionScope> pScope;
             if (mOwningProject) {
                auto &pIO = ProjectFileIO::Get(*mOwningProject);
                pScope.emplace(pIO.GetConnection(), "Dropouts");
@@ -2921,7 +2922,7 @@ void AudioIO::FillBuffers()
             // This scope may combine many appendings of wave tracks,
             // and also an autosave, into one transaction,
             // lessening the number of checkpoints
-            Optional<TransactionScope> pScope;
+            std::optional<TransactionScope> pScope;
             if (mOwningProject) {
                auto &pIO = ProjectFileIO::Get(*mOwningProject);
                pScope.emplace(pIO.GetConnection(), "Recording");

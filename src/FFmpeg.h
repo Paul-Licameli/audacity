@@ -1007,7 +1007,7 @@ struct streamContext
    AVStream            *m_stream{};                        // an AVStream *
    AVCodecContext      *m_codecCtx{};                      // pointer to m_stream->codec
 
-   Optional<AVPacketEx>    m_pkt;                           // the last AVPacket we read for this stream
+   std::optional<AVPacketEx>    m_pkt;                           // the last AVPacket we read for this stream
    uint8_t             *m_pktDataPtr{};                    // pointer into m_pkt.data
    int                  m_pktRemainingSiz{};
 

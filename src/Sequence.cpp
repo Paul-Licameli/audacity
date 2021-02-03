@@ -32,6 +32,7 @@
 #include "Sequence.h"
 
 #include <algorithm>
+#include <optional>
 #include <float.h>
 #include <math.h>
 
@@ -1816,7 +1817,7 @@ void Sequence::ConsistencyCheck
 {
    // Construction of the exception at the appropriate line of the function
    // gives a little more discrimination
-   Optional<InconsistencyException> ex;
+   std::optional<InconsistencyException> ex;
 
    unsigned int numBlocks = mBlock.size();
 
