@@ -328,7 +328,7 @@ static Container MakeIntervals(const std::vector<WaveClipHolder> &clips)
    Container result;
    for (const auto &clip: clips) {
       result.emplace_back( clip->GetStartTime(), clip->GetEndTime(),
-         std::make_unique<WaveTrack::IntervalData>( clip ) );
+         std::make_any<WaveTrack::IntervalData>( clip ) );
    }
    return result;
 }

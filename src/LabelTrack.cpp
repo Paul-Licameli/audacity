@@ -97,7 +97,7 @@ static IntervalType DoMakeInterval(const LabelStruct &label, size_t index)
 {
    return {
       label.getT0(), label.getT1(),
-      std::make_unique<LabelTrack::IntervalData>( index ) };
+      std::make_any<LabelTrack::IntervalData>( index ) };
 }
 
 auto LabelTrack::MakeInterval( size_t index ) const -> ConstInterval

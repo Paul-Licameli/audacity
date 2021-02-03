@@ -157,7 +157,7 @@ public:
 
    Track::Holder PasteInto( AudacityProject & ) const override;
 
-   struct IntervalData final : Track::IntervalData {
+   struct IntervalData {
       size_t index;
       explicit IntervalData(size_t index) : index{index} {};
    };

@@ -206,7 +206,7 @@ auto TrackShifter::Detach() -> Intervals
 }
 
 bool TrackShifter::AdjustFit(
-   const Track &, const Intervals&, double &, double)
+   const Track &, const MutableIntervals&, double &, double)
 {
    return false;
 }
@@ -385,7 +385,7 @@ const TrackInterval *ClipMoveState::CapturedInterval() const
          if ( pShifter ) {
             auto &intervals = pShifter->MovingIntervals();
             if ( !intervals.empty() )
-               return &intervals[0];
+               return &*intervals.begin();
          }
       }
    }
@@ -665,7 +665,7 @@ namespace {
 
    bool CheckFit(
       ClipMoveState &state, const Correspondence &correspondence,
-      const DetachedIntervals &intervals,
+      DetachedIntervals &intervals,
       double tolerance, double &desiredSlideAmount )
    {
       bool ok = true;
@@ -677,11 +677,15 @@ namespace {
             auto *pSrcTrack = pair.first;
             auto iter = correspondence.find( pSrcTrack );
             if ( iter != correspondence.end() )
-               if( auto *pOtherTrack = iter->second )
+               if( auto *pOtherTrack = iter->second ) {
+                  auto &srcIntervals = intervals.at(pSrcTrack);
+                  auto range = make_iterator_range(
+                     srcIntervals.begin(), srcIntervals.end());
                   if ( !(ok = pair.second->AdjustFit(
-                     *pOtherTrack, intervals.at(pSrcTrack),
+                     *pOtherTrack, range,
                      desiredSlideAmount /*in,out*/, tolerance)) )
                      break;
+               }
          }
 
          // If it fits ok, desiredSlideAmount could have been updated to get

@@ -66,11 +66,17 @@ public:
 
    using Intervals = std::vector<TrackInterval>;
 
+   //! allows mutative access to vector members but not to vector itself
+   /*! TODO C++20: use span or range */
+   using MutableIntervals = IteratorRange<Intervals::iterator>;
+
    //! Return special intervals of the track that will not move
    const Intervals &FixedIntervals() const { return mFixed; }
 
    //! Return special intervals of the track that may move
    const Intervals &MovingIntervals() const { return mMoving; }
+   const MutableIntervals MovingIntervals() {
+      return { mMoving.begin(), mMoving.end() }; }
    
    //! Change intervals satisfying a predicate from fixed to moving
    void UnfixIntervals(
@@ -121,7 +127,7 @@ public:
    /*! Default implementation does nothing and returns false */
    virtual bool AdjustFit(
       const Track &otherTrack,
-      const Intervals &intervals, /*!<
+      const MutableIntervals &intervals, /*!<
          Assume these came from Detach() and only after MayMigrateTo returned true for otherTrack */
       double &desiredOffset, //!< [in,out]
       double tolerance //! Nonnegative ceiling for allowed changes in fabs(desiredOffset)
