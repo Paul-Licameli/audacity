@@ -226,18 +226,16 @@ void WaveformVZoomHandle::DoZoom(
             if (fixedMousePoint) {
                const float oldRange = max - min;
                const float c = (max * (1.0 - p1) + min * p1);
-               min = std::min(maxRange - ZOOMLIMIT,
-                  std::max(minRange, c - 2 * (1.0f - p1) * oldRange));
-               max = std::max(minRange + ZOOMLIMIT,
-                  std::min(maxRange, c + 2 * p1 * oldRange));
+               min = std::clamp(c - 2 * (1.0f - p1) * oldRange,
+                  minRange, maxRange - ZOOMLIMIT);
+               max = std::clamp(c + 2 * p1 * oldRange,
+                  minRange + ZOOMLIMIT, maxRange);
             }
             else {
                const float c = p1 * min + (1 - p1) * max;
                const float l = (max - min);
-               min = std::min(maxRange - ZOOMLIMIT,
-                              std::max(minRange, c - l));
-               max = std::max(minRange + ZOOMLIMIT,
-                              std::min(maxRange, c + l));
+               min = std::clamp(c - 1, minRange, maxRange - ZOOMLIMIT);
+               max = std::clamp(c + 1, minRange + ZOOMLIMIT, maxRange);
             }
          }
       }
@@ -320,10 +318,8 @@ void WaveformVRulerMenuTable::OnWaveformScaleType(wxCommandEvent &evt)
    // Assume linked track is wave or null
    const WaveformSettings::ScaleType newScaleType =
       WaveformSettings::ScaleType(
-         std::max(0,
-            std::min((int)(WaveformSettings::stNumScaleTypes) - 1,
-               evt.GetId() - OnFirstWaveformScaleID
-      )));
+         std::clamp(evt.GetId() - OnFirstWaveformScaleID, 0,
+            (int)(WaveformSettings::stNumScaleTypes) - 1));
 
    if (wt->GetWaveformSettings().scaleType != newScaleType) {
       for (auto channel : TrackList::Channels(wt)) {

@@ -586,8 +586,7 @@ void OnPunchAndRoll(const CommandContext &context)
    t1 = newt1;
    for (const auto &wt : tracks) {
       const auto endTime = wt->GetEndTime();
-      const auto duration =
-         std::max(0.0, std::min(crossFadeDuration, endTime - t1));
+      const auto duration = std::clamp(crossFadeDuration, 0.0, endTime - t1);
       const size_t getLen = floor(duration * wt->GetRate());
       std::vector<float> data(getLen);
       if (getLen > 0) {

@@ -203,8 +203,8 @@ int ProjectAudioManager::PlayPlayRegion(const SelectedRegion &selectedRegion,
       if (backwards)
          std::swap(t0, t1);
 
-      t0 = std::max(0.0, std::min(t0, latestEnd));
-      t1 = std::max(0.0, std::min(t1, latestEnd));
+      t0 = std::clamp(latestEnd, 0.0, t0);
+      t1 = std::clamp(latestEnd, 0.0, t1);
 
       if (backwards)
          std::swap(t0, t1);

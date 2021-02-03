@@ -307,7 +307,7 @@ public:
          return Cancelled;
 
       // Find new height for the dragged sub-view
-      auto newY = std::max( mYMin, std::min( mYMax, event.event.GetY() ) );
+      auto newY = std::clamp(event.event.GetY(), mYMin,  mYMax);
       const auto delta = newY - mOrigY;
       wxCoord newHeight = mTop
          ? mOrigHeight - delta

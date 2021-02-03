@@ -184,14 +184,10 @@ void SpectrumVZoomHandle::DoZoom(
          const float middle = (xmin + xmax) / 2;
          const float middleValue = scale.PositionToValue(middle);
 
-         min = std::max(spectrumLinear ? 0.0f : 1.0f,
-            std::min(middleValue - minBand / 2,
-            scale.PositionToValue(xmin)
-            ));
-         max = std::min(halfrate,
-            std::max(middleValue + minBand / 2,
-            scale.PositionToValue(xmax)
-            ));
+         min = std::clamp(scale.PositionToValue(xmin),
+            spectrumLinear ? 0.0f : 1.0f, middleValue - minBand / 2);
+         max = std::clamp(scale.PositionToValue(xmax),
+            halfrate, middleValue + minBand / 2);
       }
       break;
    case kZoomIn:
@@ -202,24 +198,16 @@ void SpectrumVZoomHandle::DoZoom(
          const float middleValue = scale.PositionToValue(middle);
 
          if (fixedMousePoint) {
-            min = std::max(spectrumLinear ? 0.0f : 1.0f,
-               std::min(middleValue - minBand * middle,
-               scale.PositionToValue(0.5f * middle)
-            ));
-            max = std::min(halfrate,
-               std::max(middleValue + minBand * p1,
-               scale.PositionToValue(middle + 0.5f * p1)
-            ));
+            min = std::clamp(scale.PositionToValue(0.5f * middle),
+               spectrumLinear ? 0.0f : 1.0f, middleValue - minBand * middle);
+            max = std::clamp(scale.PositionToValue(middle + 0.5f * p1),
+               halfrate, middleValue + minBand * p1);
          }
          else {
-            min = std::max(spectrumLinear ? 0.0f : 1.0f,
-               std::min(middleValue - minBand / 2,
-               scale.PositionToValue(middle - 0.25f)
-            ));
-            max = std::min(halfrate,
-               std::max(middleValue + minBand / 2,
-               scale.PositionToValue(middle + 0.25f)
-            ));
+            min = std::clamp(scale.PositionToValue(middle - 0.25f),
+               spectrumLinear ? 0.0f : 1.0f, middleValue - minBand / 2);
+            max = std::clamp(scale.PositionToValue(middle + 0.25f),
+               halfrate, middleValue + minBand / 2);
          }
       }
       break;
@@ -313,10 +301,8 @@ void SpectrumVRulerMenuTable::OnSpectrumScaleType(wxCommandEvent &evt)
 
    const SpectrogramSettings::ScaleType newScaleType =
       SpectrogramSettings::ScaleType(
-         std::max(0,
-            std::min((int)(SpectrogramSettings::stNumScaleTypes) - 1,
-               evt.GetId() - OnFirstSpectrumScaleID
-      )));
+         std::clamp( evt.GetId() - OnFirstSpectrumScaleID, 0,
+            (int)(SpectrogramSettings::stNumScaleTypes) - 1));
    if (wt->GetSpectrogramSettings().scaleType != newScaleType) {
       for (auto channel : TrackList::Channels(wt))
          channel->GetIndependentSpectrogramSettings().scaleType = newScaleType;

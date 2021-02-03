@@ -123,7 +123,7 @@ namespace {
       // center line:
       const double snap = 0.05;
       const double fraction = (partScreen <= 0.0) ? 0.0 :
-         std::max(snap, std::min(1.0, fabs(timeAtMouse - origin) / partScreen));
+         std::clamp(fabs(timeAtMouse - origin) / partScreen, snap, 1.0);
 
       double result = 1.0 + ((fraction - snap) / (1.0 - snap)) * (extreme - 1.0);
       if (timeAtMouse < origin)
@@ -385,11 +385,11 @@ bool Scrubber::MaybeStartScrubbing(wxCoord xx)
 #ifdef DRAG_SCRUB
             if (mDragging && mSmoothScrollingScrub) {
                auto delta = time0 - time1;
-               time0 = std::max(0.0, std::min(maxTime,
+               time0 = std::clamp(
                   viewInfo.h +
                      (viewInfo.GetScreenEndTime() - viewInfo.h)
-                        * TracksPrefs::GetPinnedHeadPositionPreference()
-               ));
+                        * TracksPrefs::GetPinnedHeadPositionPreference(),
+                  0.0, maxTime);
                time1 = time0 + delta;
             }
 #endif
@@ -985,7 +985,7 @@ void Scrubber::DoScrub(bool seek)
       // Limit x
       auto width = viewInfo.GetTracksUsableWidth();
       const auto offset = viewInfo.GetLeftOffset();
-      xx = (std::max(offset, std::min(offset + width - 1, xx)));
+      xx = std::clamp(xx, offset, offset + width - 1);
 
       MarkScrubStart(xx, scroll, seek);
    }

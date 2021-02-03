@@ -215,21 +215,16 @@ bool SpectrogramSettings::Validate(bool quiet)
       return false;
    }
    else
-      frequencyGain =
-         std::max(0, std::min(60, frequencyGain));
+      frequencyGain = std::clamp(frequencyGain, 0, 60);
 
    // The rest are controlled by drop-down menus so they can't go wrong
    // in the Preferences dialog, but we also come here after reading fom saved
    // preference files, which could be or from future versions.  Validate quietly.
-   windowType =
-      std::max(0, std::min(NumWindowFuncs() - 1, windowType));
-   scaleType =
-      ScaleType(std::max(0,
-         std::min((int)(SpectrogramSettings::stNumScaleTypes) - 1,
-            (int)(scaleType))));
-   algorithm = Algorithm(
-      std::max(0, std::min((int)(algNumAlgorithms) - 1, (int)(algorithm)))
-   );
+   windowType = std::clamp(windowType, 0, NumWindowFuncs() - 1);
+   scaleType = ScaleType(std::clamp( (int)scaleType, 0,
+      (int)(SpectrogramSettings::stNumScaleTypes) - 1));
+   algorithm = Algorithm(std::clamp( (int)algorithm, 0,
+      (int)(algNumAlgorithms) - 1));
    ConvertToEnumeratedWindowSizes();
    ConvertToActualWindowSizes();
 
@@ -523,7 +518,7 @@ void SpectrogramSettings::ConvertToEnumeratedWindowSizes()
    size = unsigned(windowSize);
    while (size > 1)
       size >>= 1, ++logarithm;
-   windowSize = std::max(0, std::min(NumWindowSizes - 1, logarithm));
+   windowSize = std::clamp(logarithm, 0, NumWindowSizes - 1);
 
 #ifdef EXPERIMENTAL_ZERO_PADDED_SPECTROGRAMS
    // Choices for zero padding begin at 1
@@ -531,10 +526,8 @@ void SpectrogramSettings::ConvertToEnumeratedWindowSizes()
    size = unsigned(zeroPaddingFactor);
    while (zeroPaddingFactor > 1)
       zeroPaddingFactor >>= 1, ++logarithm;
-   zeroPaddingFactor = std::max(0,
-      std::min(LogMaxWindowSize - (windowSize + LogMinWindowSize),
-         logarithm
-   ));
+   zeroPaddingFactor = std::clamp(logarithm, 0,
+      (LogMaxWindowSize - (windowSize + LogMinWindowSize)));
 #endif
 }
 

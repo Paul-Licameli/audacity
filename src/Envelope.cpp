@@ -138,7 +138,7 @@ void Envelope::Flatten(double value)
 
 void Envelope::SetDragPoint(int dragPoint)
 {
-   mDragPoint = std::max(-1, std::min(int(mEnv.size() - 1), dragPoint));
+   mDragPoint = std::clamp(dragPoint, -1, int(mEnv.size() - 1));
    mDragPointValid = (mDragPoint >= 0);
 }
 
@@ -384,8 +384,8 @@ void Envelope::CollapseRegion( double t0, double t1, double sampleDur )
    // start and right-side limit at the end.
 
    const auto epsilon = sampleDur / 2;
-   t0 = std::max( 0.0, std::min( mTrackLen, t0 - mOffset ) );
-   t1 = std::max( 0.0, std::min( mTrackLen, t1 - mOffset ) );
+   t0 = std::clamp(t0 - mOffset, 0.0, mTrackLen);
+   t1 = std::clamp(t1 - mOffset, 0.0, mTrackLen);
    bool leftPoint = true, rightPoint = true;
 
    // Determine the start of the range of points to remove from the array.
@@ -481,7 +481,7 @@ void Envelope::PasteEnvelope( double t0, const Envelope *e, double sampleDur )
 
    // Make t0 relative to the offset of the envelope we are pasting into, 
    // and trim it to the domain of this
-   t0 = std::min( mTrackLen, std::max( 0.0, t0 - mOffset ) );
+   t0 = std::clamp(t0 - mOffset, 0.0, mTrackLen);
 
    // Adjust if the insertion point rounds off near a discontinuity in this
    if ( true )
@@ -741,7 +741,7 @@ int Envelope::InsertOrReplaceRelative(double when, double value)
    }
 #endif
 
-   when = std::max( 0.0, std::min( mTrackLen, when ) );
+   when = std::clamp( when, 0.0, mTrackLen );
 
    auto range = EqualRange( when, 0 );
    int index = range.first;
@@ -1161,7 +1161,7 @@ static double SolveIntegrateInverseInterpolated(double y1, double y2, double tim
       else
          res = y1 * expm1(a * (y2 - y1)) / (y2 - y1);
    }
-   return std::max(0.0, std::min(1.0, res)) * time;
+   return std::clamp(res, 0.0, 1.0) * time;
 }
 
 // We should be able to write a very efficient memoizer for this

@@ -1926,7 +1926,7 @@ void EffectEqualization::setCurve(int currentCurve)
          when = (log10(std::max((double) loFreqI, when)) - loLog)/denom;
       }
       value = mCurves[currentCurve].points[0].dB;
-      env->Insert(std::min(1.0, std::max(0.0, when)), value);
+      env->Insert(std::clamp(when, 0.0, 1.0), value);
       ForceRecalc();
       return;
    }

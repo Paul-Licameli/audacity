@@ -178,15 +178,15 @@ void ScrubbingOverlay::OnTimer(wxCommandEvent &event)
          dc.SetFont(labelFont);
          dc.GetTextExtent(mNextScrubSpeedText, &width, &height);
       }
-      const auto xx =
-         std::max(0, std::min(panelWidth - width, position.x - width / 2));
+      const auto xx = std::clamp(position.x - width / 2,
+         0, panelWidth - width);
 
       // Put the text above the cursor, if it fits.
       enum { offset = 20 };
       auto yy = position.y - height + offset;
       if (yy < 0)
          yy += height + 2 * offset;
-      yy = std::max(0, std::min(panelHeight - height, yy));
+      yy = std::clamp(yy, 0, panelHeight - height);
 
       mNextScrubRect = wxRect(xx, yy, width, height);
    }

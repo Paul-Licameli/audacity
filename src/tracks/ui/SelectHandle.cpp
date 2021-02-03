@@ -462,9 +462,7 @@ namespace {
    {
       const double minFrequency = 1.0;
       const double maxFrequency = (rate / 2.0);
-      const double frequency =
-         std::min(maxFrequency,
-            std::max(minFrequency, center));
+      const double frequency = std::clamp(center, minFrequency, maxFrequency);
       return
          std::min(frequency / minFrequency, maxFrequency / frequency);
    }

@@ -356,7 +356,7 @@ void findCorrection(const std::vector<sampleCount> &oldWhere, size_t oldLen,
       const double where0 = oldWhere0 + double(oldX0) * samplesPerPixel;
       // What correction is needed to align the NEW cache with the old?
       const double correction0 = where0 - guessWhere0;
-      correction = std::max(-samplesPerPixel, std::min(samplesPerPixel, correction0));
+      correction = std::clamp(correction0, -samplesPerPixel, samplesPerPixel);
       wxASSERT(correction == correction0);
    }
 }
@@ -444,10 +444,8 @@ bool WaveClip::GetWaveDisplay(WaveDisplay &display, double t0,
          // Remember our first pixel maps to oldX0 in the old cache,
          // possibly out of bounds.
          // For what range of pixels can data be copied?
-         copyBegin = std::min<size_t>(numPixels, std::max(0, -oldX0));
-         copyEnd = std::min<size_t>(numPixels, std::max(0,
-            (int)oldCache->len - oldX0
-         ));
+         copyBegin = std::clamp<int>(-oldX0, 0, numPixels);
+         copyEnd = std::clamp<int>((int)oldCache->len - oldX0, 0, numPixels);
       }
       if (!(copyEnd > copyBegin))
          oldCache.reset(0);
@@ -1060,10 +1058,8 @@ bool WaveClip::GetSpectrogram(WaveTrackCache &waveTrackCache,
       // Remember our first pixel maps to oldX0 in the old cache,
       // possibly out of bounds.
       // For what range of pixels can data be copied?
-      copyBegin = std::min((int)numPixels, std::max(0, -oldX0));
-      copyEnd = std::min((int)numPixels, std::max(0,
-         (int)mSpecCache->len - oldX0
-      ));
+      copyBegin = std::clamp<int>(-oldX0, 0, numPixels);
+      copyEnd = std::clamp<int>((int)mSpecCache->len - oldX0, 0, numPixels);
    }
 
    // Resize the cache, keep the contents unchanged.

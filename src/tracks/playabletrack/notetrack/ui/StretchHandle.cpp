@@ -122,7 +122,7 @@ UIHandlePtr StretchHandle::HitTest
       return {};
 
    auto selStart = viewInfo.PositionToTime( state.m_x, rect.x );
-   selStart = std::max(t0, std::min(t1, selStart));
+   selStart = std::clamp(selStart, t0, t1);
    stretchState.mBeatCenter = pTrack->NearestBeatTime( selStart );
    if ( within( stretchState.mBeat0.second,
                 stretchState.mBeatCenter.second, 0.1 ) ) {
@@ -326,7 +326,7 @@ void StretchHandle::Stretch(AudacityProject *pProject, int mouseXCoordinate, int
          break;
       }
       case stretchCenter: {
-         moveto = std::max(t0, std::min(t1, moveto));
+         moveto = std::clamp(moveto, t0, t1);
          left_dur = moveto - t0;
          right_dur = t1 - moveto;
          if ( left_dur < mStretchState.mLeftBeats * minPeriod ||

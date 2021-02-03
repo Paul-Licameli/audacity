@@ -277,13 +277,13 @@ void SpectralSelectionBar::ModifySpectralSelection(bool done)
             mCenter = sqrt(nyq);
          }
          else if (mWidth < 0) {
-            mCenter = std::max(1.0, std::min(nyq, mCenter));
+            mCenter = std::clamp(mCenter, 1.0, nyq);
             // Choose arbitrary width for the center
             const double ratio = std::min(mCenter, nyq / mCenter);
             mWidth = log(ratio * ratio);
          }
          else {
-            mCenter = std::max(1.0, std::min(nyq, mCenter));
+            mCenter = std::clamp(mCenter, 1.0, nyq);
             double ratio = std::min(mCenter, nyq / mCenter);
             mWidth = std::min(2 * log(ratio), mWidth);
          }

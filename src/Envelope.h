@@ -107,7 +107,8 @@ public:
    double GetMaxValue() const { return mMaxValue; }
    void SetRange(double minValue, double maxValue);
 
-   double ClampValue(double value) { return std::max(mMinValue, std::min(mMaxValue, value)); }
+   double ClampValue(double value) {
+      return std::clamp(value, mMinValue, mMaxValue); }
 
    // Newfangled XML file I/O
    bool HandleXMLTag(const wxChar *tag, const wxChar **attrs) override;

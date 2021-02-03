@@ -553,7 +553,7 @@ double GetPlayHeadFraction( const AudacityProject *pProject, wxCoord xx )
    const auto &viewInfo = ViewInfo::Get( *pProject );
    auto width = viewInfo.GetTracksUsableWidth();
    auto fraction = (xx - viewInfo.GetLeftOffset()) / double(width);
-   return std::max(0.0, std::min(1.0, fraction));
+   return std::clamp(fraction, 0.0, 1.0);
 }
 
 // Handle for dragging the pinned play head, which so far does not need

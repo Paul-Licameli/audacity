@@ -20,8 +20,6 @@
    #include <cmath>
 #endif
 #include <algorithm>
-using std::min;
-using std::max;
 
 #define array_length(a) (sizeof(a)/sizeof(a[0]))
 #define dB_to_linear(x) exp((x) * M_LN10 * 0.05)

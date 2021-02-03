@@ -1103,7 +1103,7 @@ void NumericConverter::ControlsToValue()
       t = frames * 1.001 / 30.;
    }
 
-   mValue = std::max(mMinValue, std::min(mMaxValue, t));
+   mValue = std::clamp(t, mMinValue, mMaxValue);
 }
 
 bool NumericConverter::SetFormatName(const NumericFormatSymbol & formatName)
@@ -1306,7 +1306,7 @@ void NumericConverter::Adjust(int steps, int dir)
                mValue = 0.;
             }
 
-            mValue = std::max(mMinValue, std::min(mMaxValue, mValue));
+            mValue = std::clamp(mValue, mMinValue, mMaxValue);
 
             mValue /= mScalingFactor;
 
@@ -1935,7 +1935,7 @@ void NumericTextCtrl::OnKeyDown(wxKeyEvent &event)
    if (!mReadOnly && (keyCode >= '0' && keyCode <= '9' && !event.HasAnyModifiers())) {
       int digitPosition = mDigits[mFocusedDigit].pos;
       if (mValueString[digitPosition] == wxChar('-')) {
-         mValue = std::max(mMinValue, std::min(mMaxValue, 0.0));
+         mValue = std::clamp(0.0, mMinValue, mMaxValue);
          ValueToControls();
          // Beware relocation of the string
          digitPosition = mDigits[mFocusedDigit].pos;

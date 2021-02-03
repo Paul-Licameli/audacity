@@ -1160,8 +1160,8 @@ int LabelTrackView::GetSelectedIndex( AudacityProject &project ) const
    if ( track->GetSelected() ||
       TrackFocus::Get( project ).Get() == track.get()
    )
-      return mSelIndex = std::max( -1,
-         std::min<int>( track->GetLabels().size() - 1, mSelIndex ) );
+      return mSelIndex = std::clamp<int>(mSelIndex, -1,
+         track->GetLabels().size() - 1 );
    else
       return mSelIndex = -1;
 }

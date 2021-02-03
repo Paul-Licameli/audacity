@@ -126,12 +126,10 @@ static inline float findValue
    if (autocorrelation) {
       // bin = 2 * nBins / (nBins - 1 - array_index);
       // Solve for index
-      index = std::max(0.0f, std::min(float(nBins - 1),
-         (nBins - 1) - (2 * nBins) / (std::max(1.0f, bin0))
-      ));
-      limitIndex = std::max(0.0f, std::min(float(nBins - 1),
-         (nBins - 1) - (2 * nBins) / (std::max(1.0f, bin1))
-      ));
+      index = std::clamp( (nBins - 1) - (2 * nBins) / (std::max(1.0f, bin0)),
+         0.0f, float(nBins - 1));
+      limitIndex = std::clamp((nBins - 1) - (2 * nBins) / (std::max(1.0f, bin1)),
+         0.0f, float(nBins - 1));
    }
    else {
       index = std::min<int>(nBins - 1, (int)(floor(0.5 + bin0)));
@@ -145,7 +143,7 @@ static inline float findValue
       // Last step converts dB to a 0.0-1.0 range
       value = (value + range + gain) / (double)range;
    }
-   value = std::min(1.0f, std::max(0.0f, value));
+   value = std::clamp(value, 0.0f, 1.0f);
    return value;
 }
 
@@ -269,14 +267,14 @@ void DrawClipSpectrum(TrackPanelDrawingContext &context,
       const NumberScale numberScale( settings.GetScale( minFreq, maxFreq ) );
 
       NumberScale::Iterator it = numberScale.begin(mid.height);
-      float nextBin = std::max( 0.0f, std::min( float(nBins - 1),
-         settings.findBin( *it, binUnit ) ) );
+      float nextBin = std::clamp( settings.findBin( *it, binUnit ),
+         0.0f, float(nBins - 1) );
 
       int yy;
       for (yy = 0; yy < hiddenMid.height; ++yy) {
          bins[yy] = nextBin;
-         nextBin = std::max( 0.0f, std::min( float(nBins - 1),
-            settings.findBin( *++it, binUnit ) ) );
+         nextBin = std::clamp( settings.findBin( *++it, binUnit ),
+            0.0f, float(nBins - 1));
       }
       bins[yy] = nextBin;
    }

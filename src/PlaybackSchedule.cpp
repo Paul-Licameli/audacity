@@ -91,9 +91,9 @@ double PlaybackSchedule::LimitTrackTime() const
 double PlaybackSchedule::ClampTrackTime( double trackTime ) const
 {
    if (ReversedTime())
-      return std::max(mT1, std::min(mT0, trackTime));
+      return std::clamp(trackTime, mT1, mT0);
    else
-      return std::max(mT0, std::min(mT1, trackTime));
+      return std::clamp(trackTime, mT0, mT1);
 }
 
 double PlaybackSchedule::NormalizeTrackTime() const

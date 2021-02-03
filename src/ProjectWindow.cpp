@@ -947,9 +947,7 @@ void ProjectWindow::SetHorizontalThumb(double scrollto)
    const auto unscaled = PixelWidthBeforeTime(scrollto);
    const int max = mHsbar->GetRange() - mHsbar->GetThumbSize();
    const int pos =
-      std::min(max,
-         std::max(0,
-            (int)(floor(0.5 + unscaled * viewInfo.sbarScale))));
+      std::clamp( (int)(floor(0.5 + unscaled * viewInfo.sbarScale)), 0, max);
    mHsbar->SetThumbPosition(pos);
    viewInfo.sbarH = floor(0.5 + unscaled - PixelWidthBeforeTime(0.0));
    viewInfo.sbarH = std::max(viewInfo.sbarH,

@@ -680,10 +680,10 @@ size_t Mixer::Process(size_t maxToProcess)
       double t = mSamplePos[i].as_double() / (double)track->GetRate();
       if (mT0 > mT1)
          // backwards (as possibly in scrubbing)
-         mTime = std::max(std::min(t, mTime), mT1);
+         mTime = std::clamp(mTime, mT1, t);
       else
          // forwards (the usual)
-         mTime = std::min(std::max(t, mTime), mT1);
+         mTime = std::clamp(mTime, t, mT1);
    }
    if(mInterleaved) {
       for(size_t c=0; c<mNumChannels; c++) {
@@ -751,9 +751,9 @@ void Mixer::Reposition(double t, bool bSkipping)
    mTime = t;
    const bool backwards = (mT1 < mT0);
    if (backwards)
-      mTime = std::max(mT1, (std::min(mT0, mTime)));
+      mTime = std::clamp(mTime, mT1, mT0);
    else
-      mTime = std::max(mT0, (std::min(mT1, mTime)));
+      mTime = std::clamp(mTime, mT0, mT1);
 
    for(size_t i=0; i<mNumInputTracks; i++) {
       mSamplePos[i] = mInputTrack[i].GetTrack()->TimeToLongSamples(mTime);

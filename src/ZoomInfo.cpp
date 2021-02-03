@@ -87,7 +87,7 @@ double ZoomInfo::GetMinZoom( ) { return gMinZoom;};
 
 void ZoomInfo::SetZoom(double pixelsPerSecond)
 {
-   zoom = std::max(gMinZoom, std::min(gMaxZoom, pixelsPerSecond));
+   zoom = std::clamp(pixelsPerSecond, gMinZoom, gMaxZoom);
 // DA: Avoids stuck in snap-to
 #ifdef EXPERIMENTAL_DA
    // Disable snapping if user zooms in a long way.

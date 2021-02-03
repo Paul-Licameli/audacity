@@ -525,7 +525,7 @@ void EffectBassTreble::UpdateGain(double oldVal, int control)
       newVal = (mTreble > 0)? mTreble / 2.0 : mTreble / 4.0;
 
    mGain -= newVal - oldVal;
-   mGain = std::min(MAX_Gain, std::max(MIN_Gain, mGain));
+   mGain = std::clamp(mGain, MIN_Gain, MAX_Gain);
 
    mGainS->SetValue(mGain);
    mGainT->GetValidator()->TransferToWindow();

@@ -67,9 +67,6 @@ array of Ruler::Label.
 #include "../Theme.h"
 #include "../ViewInfo.h"
 
-using std::min;
-using std::max;
-
 //wxColour Ruler::mTickColour{ 153, 153, 153 };
 
 //
@@ -1032,7 +1029,7 @@ void Ruler::Updater::ChooseFonts(
    int fontSize = 4;
 
    desiredPixelHeight =
-      std::max(MinPixelHeight, std::min(MaxPixelHeight, -desiredPixelHeight));
+      std::clamp( -desiredPixelHeight, MinPixelHeight, MaxPixelHeight );
 
    // Keep making the font bigger until it's too big, then subtract one.
    wxCoord height;

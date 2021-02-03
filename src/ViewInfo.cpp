@@ -201,10 +201,8 @@ void ViewInfo::UpdatePrefs()
 
 void ViewInfo::SetBeforeScreenWidth(wxInt64 beforeWidth, wxInt64 screenWidth, double lowerBoundTime)
 {
-   h =
-      std::max(lowerBoundTime,
-         std::min(total - screenWidth / zoom,
-         beforeWidth / zoom));
+   h = std::clamp(
+      beforeWidth / zoom, lowerBoundTime, total - screenWidth / zoom);
 }
 
 void ViewInfo::WriteXMLAttributes(XMLWriter &xmlFile) const

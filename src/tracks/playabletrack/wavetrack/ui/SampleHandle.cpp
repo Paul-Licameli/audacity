@@ -460,7 +460,7 @@ float SampleHandle::FindSampleEditingLevel
          newLevel = 0;
 
       //Make sure the NEW level is between +/-1
-      newLevel = std::max(-1.0f, std::min(1.0f, newLevel));
+      newLevel = std::clamp(newLevel, -1.0f, 1.0f);
    }
 
    return newLevel;

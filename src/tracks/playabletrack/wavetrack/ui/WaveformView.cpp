@@ -266,8 +266,10 @@ void DrawWaveformBackground(TrackPanelDrawingContext &context,
 
    // If sync-lock selected, draw in linked graphics.
    if (bIsSyncLockSelected && t0 < t1) {
-      const int begin = std::max(0, std::min(rect.width, (int)(zoomInfo.TimeToPosition(t0, -leftOffset))));
-      const int end = std::max(0, std::min(rect.width, (int)(zoomInfo.TimeToPosition(t1, -leftOffset))));
+      const int begin = std::clamp(
+         (int)(zoomInfo.TimeToPosition(t0, -leftOffset)), 0, rect.width);
+      const int end = std::clamp(
+         (int)(zoomInfo.TimeToPosition(t1, -leftOffset)), 0, rect.width);
       TrackArt::DrawSyncLockTiles( context,
          { rect.x + begin, rect.y, end - 1 - begin, rect.height } );
    }
@@ -521,9 +523,9 @@ void DrawIndividualSamples(TrackPanelDrawingContext &context,
 
    for (decltype(slen) s = 0; s < slen; s++) {
       const double time = toffset + (s + s0).as_double() / rate;
-      const int xx = // An offset into the rectangle rect
-         std::max(-10000, std::min(10000,
-            (int)(zoomInfo.TimeToPosition(time, -leftOffset))));
+      const int xx = std::clamp(
+         (int)(zoomInfo.TimeToPosition(time, -leftOffset)),
+         -10000, 10000);
       xpos[s] = xx;
 
       // Calculate sample as it would be rendered, so quantize time
@@ -534,10 +536,9 @@ void DrawIndividualSamples(TrackPanelDrawingContext &context,
       if (clipped && bShowClipping && ((tt <= -MAX_AUDIO) || (tt >= MAX_AUDIO)))
          clipped[clipcnt++] = xx;
       ypos[s] =
-         std::max(-1,
-            std::min(rect.height,
-               GetWaveYPos(tt, zoomMin, zoomMax,
-                                  rect.height, dB, true, dBRange, false)));
+         std::clamp(
+            GetWaveYPos(tt, zoomMin, zoomMax,
+               rect.height, dB, true, dBRange, false), -1, rect.height);
    }
 
 
@@ -568,7 +569,7 @@ void DrawIndividualSamples(TrackPanelDrawingContext &context,
    if (showPoints && (sampleDisplay == (int) WaveTrackViewConstants::StemPlot)) {
       // Draw vertical lines
       int yZero = GetWaveYPos(0.0, zoomMin, zoomMax, rect.height, dB, true, dBRange, false);
-      yZero = rect.y + std::max(-1, std::min(rect.height, yZero));
+      yZero = rect.y + std::clamp(yZero, -1, rect.height);
       for (decltype(slen) s = 0; s < slen; s++) {
          AColor::Line(dc,
                      rect.x + xpos[s], rect.y + ypos[s],

@@ -408,12 +408,12 @@ double TracksPrefs::GetPinnedHeadPositionPreference()
    auto value = gPrefs->ReadDouble(
       PinnedHeadPositionPreferenceKey(),
       PinnedHeadPositionPreferenceDefault());
-   return std::max(0.0, std::min(1.0, value));
+   return std::clamp(value, 0.0, 1.0);
 }
 
 void TracksPrefs::SetPinnedHeadPositionPreference(double value, bool flush)
 {
-   value = std::max(0.0, std::min(1.0, value));
+   value = std::clamp(value, 0.0, 1.0);
    gPrefs->Write(PinnedHeadPositionPreferenceKey(), value);
    if(flush)
       gPrefs->Flush();

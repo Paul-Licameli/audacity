@@ -412,9 +412,8 @@ bool SetTrackVisualsCommand::ApplyInner(const CommandContext & context, Track * 
          mVZoomBottom = vzmin;
       }
 
-      // Can't use std::clamp until C++17
-      mVZoomTop = std::max(-2.0, std::min(mVZoomTop, 2.0));
-      mVZoomBottom = std::max(-2.0, std::min(mVZoomBottom, 2.0));
+      mVZoomTop = std::clamp(mVZoomTop, -2.0, 2.0);
+      mVZoomBottom = std::clamp(mVZoomBottom, -2.0, 2.0);
 
       if (mVZoomBottom > mVZoomTop){
          std::swap(mVZoomTop, mVZoomBottom);

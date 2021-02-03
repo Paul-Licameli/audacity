@@ -296,7 +296,7 @@ void WaveTrack::GetSpectrumBounds(float *min, float *max) const
       if (spectrumMax < 0)
          *max = top;
       else
-         *max = std::max(bottom, std::min(top, spectrumMax));
+         *max = std::clamp(spectrumMax, bottom, top);
    }
 
    {
@@ -306,7 +306,7 @@ void WaveTrack::GetSpectrumBounds(float *min, float *max) const
       if (spectrumMin < 0)
          *min = std::max(bottom, top / 1000.0f);
       else
-         *min = std::max(bottom, std::min(top, spectrumMin));
+         *min = std::clamp(spectrumMin, bottom, top);
    }
 }
 
