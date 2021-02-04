@@ -254,9 +254,6 @@ Tags &Tags::Set( AudacityProject &project, const std::shared_ptr< Tags > &tags )
 
 Tags::Tags()
 {
-   mEditTitle = true;
-   mEditTrackNumber = true;
-
    LoadDefaults();
    LoadGenres();
 }
@@ -279,9 +276,6 @@ void Tags::Merge( const Tags &other )
 
 Tags & Tags::operator=(const Tags & src)
 {
-   mEditTitle = src.mEditTitle;
-   mEditTrackNumber = src.mEditTrackNumber;
-
    mXref.clear();
    mXref = src.mXref;
    mMap.clear();
@@ -367,23 +361,7 @@ bool operator== (const Tags &lhs, const Tags &rhs)
    if (!EqualMaps(lhs.mMap, rhs.mMap))
       return false;
 
-   return
-      lhs.mGenres == rhs.mGenres
-      &&
-      lhs.mEditTitle == rhs.mEditTitle
-      &&
-      lhs.mEditTrackNumber == rhs.mEditTrackNumber
-   ;
-}
-
-void Tags::AllowEditTitle(bool editTitle)
-{
-   mEditTitle = editTitle;
-}
-
-void Tags::AllowEditTrackNumber(bool editTrackNumber)
-{
-   mEditTrackNumber = editTrackNumber;
+   return lhs.mGenres == rhs.mGenres;
 }
 
 int Tags::GetNumUserGenres()
@@ -618,7 +596,7 @@ void Tags::WriteXML(XMLWriter &xmlFile) const
 bool Tags::ShowEditDialog(wxWindow *parent, const TranslatableString &title, bool force)
 {
    if (force) {
-      TagsEditorDialog dlg(parent, title, this, mEditTitle, mEditTrackNumber);
+      TagsEditorDialog dlg(parent, title, this, true, true);
 
       return dlg.ShowModal() == wxID_OK;
    }
