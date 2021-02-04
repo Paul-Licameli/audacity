@@ -729,6 +729,8 @@ list( APPEND SOURCES
       prefs/QualitySettings.h
       prefs/RecordingPrefs.cpp
       prefs/RecordingPrefs.h
+      prefs/RecordingSettings.cpp
+      prefs/RecordingSettings.h
       prefs/SpectrogramSettings.cpp
       prefs/SpectrogramSettings.h
       prefs/SpectrumPrefs.cpp
