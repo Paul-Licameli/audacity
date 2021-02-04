@@ -9,3 +9,6 @@
  **********************************************************************/
 
 #include "RecordingSettings.h"
+
+BoolSetting RecordingSettings::CustomName{
+   L"/GUI/TrackNames/RecordingNameCustom",   false};

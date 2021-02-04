@@ -14,6 +14,8 @@ Paul Licameli split from class LabelTrack
 #include "../../ui/CommonTrackView.h"
 #include "../../../Prefs.h"
 
+class IntSetting;
+class StringSetting;
 class LabelGlyphHandle;
 class LabelTextHandle;
 class LabelDefaultClickHandle;

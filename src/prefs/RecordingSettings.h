@@ -11,4 +11,10 @@
 #ifndef __AUDACITY_RECORDING_SETTINGS__
 #define __AUDACITY_RECORDING_SETTINGS__
 
+#include "Prefs.h"
+
+namespace RecordingSettings {
+extern BoolSetting CustomName;
+}
+
 #endif
