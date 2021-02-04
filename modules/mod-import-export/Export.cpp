@@ -58,6 +58,7 @@
 #include "ProjectHistory.h"
 #include "ProjectSettings.h"
 #include "ProjectWindow.h"
+#include "ProjectWindows.h"
 #include "ShuttleGui.h"
 #include "TagsEditor.h"
 #include "Theme.h"

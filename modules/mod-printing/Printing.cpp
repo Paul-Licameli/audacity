@@ -34,6 +34,7 @@
 #include "commands/CommandManager.h"
 #include "CommonCommandFlags.h"
 #include "Project.h"
+#include "ProjectWindows.h"
 
 namespace {
 // Globals, so that we remember settings from session to session

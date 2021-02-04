@@ -2,6 +2,7 @@
 #include "../Project.h"
 #include "../ProjectHistory.h"
 #include "../ProjectWindow.h"
+#include "ProjectWindows.h"
 #include "../TrackPanelAx.h"
 #include "../UndoManager.h"
 #include "../WaveTrack.h"

@@ -115,6 +115,7 @@ time warp info and AudioIOListener and whether the playback is looped.
 #include "prefs/GUISettings.h"
 #include "Prefs.h"
 #include "Project.h"
+#include "ProjectWindows.h"
 #include "DBConnection.h"
 #include "ProjectFileIO.h"
 #include "WaveTrack.h"

@@ -654,11 +654,12 @@ void ContrastDialog::OnReset(wxCommandEvent & /*event*/)
 #include "commands/CommandContext.h"
 #include "commands/CommandManager.h"
 #include "ModuleConstants.h"
+#include "ProjectWindows.h"
 
 namespace {
 
 // Contrast window attached to each project is built on demand by:
-AudacityProject::AttachedWindows::RegisteredFactory sContrastDialogKey{
+AttachedWindows::RegisteredFactory sContrastDialogKey{
    []( AudacityProject &parent ) -> wxWeakRef< wxWindow > {
       auto &window = ProjectWindow::Get( parent );
       return safenew ContrastDialog(
@@ -674,8 +675,8 @@ struct Handler : CommandHandlerObject {
    {
       auto &project = context.project;
       CommandManager::Get(project).RegisterLastAnalyzer(context);  //Register Contrast as Last Analyzer
-      auto contrastDialog =
-         &project.AttachedWindows::Get< ContrastDialog >( sContrastDialogKey );
+      auto contrastDialog = &GetAttachedWindows(project)
+         .Get< ContrastDialog >( sContrastDialogKey );
 
       contrastDialog->CentreOnParent();
       if( ::CallVetoDialogHook( contrastDialog ) )

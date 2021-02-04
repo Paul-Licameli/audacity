@@ -15,6 +15,7 @@
 #include "ClientData.h"
 #include "AdornedRulerPanel.h"
 #include "Project.h"
+#include "ProjectWindows.h"
 #include "ProjectWindow.h"
 
 #include <wx/dcclient.h>

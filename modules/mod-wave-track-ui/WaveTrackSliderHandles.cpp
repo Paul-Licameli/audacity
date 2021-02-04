@@ -12,6 +12,7 @@ Paul Licameli split from TrackPanel.cpp
 
 #include "WaveTrackControls.h"
 #include "ProjectHistory.h"
+#include "ProjectWindows.h"
 #include "RefreshCode.h"
 #include "TrackInfo.h"
 #include "TrackPanelAx.h"

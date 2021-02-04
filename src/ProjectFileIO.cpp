@@ -25,6 +25,7 @@ Paul Licameli split from AudacityProject.cpp
 #include "ProjectFileIORegistry.h"
 #include "ProjectSerializer.h"
 #include "ProjectSettings.h"
+#include "ProjectWindows.h"
 #include "SampleBlock.h"
 #include "TempDirectory.h"
 #include "ViewInfo.h"
@@ -1459,7 +1460,7 @@ void ProjectFileIO::UpdatePrefs()
 void ProjectFileIO::SetProjectTitle(int number)
 {
    auto &project = mProject;
-   auto pWindow = project.GetFrame();
+   auto pWindow = FindProjectFrame(&project);
    if (!pWindow)
    {
       return;

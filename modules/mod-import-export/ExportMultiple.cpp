@@ -38,6 +38,7 @@
 #include "Project.h"
 #include "ProjectSettings.h"
 #include "ProjectWindow.h"
+#include "ProjectWindows.h"
 #include "Prefs.h"
 #include "SelectionState.h"
 #include "ShuttleGui.h"

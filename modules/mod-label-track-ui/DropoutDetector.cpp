@@ -13,6 +13,7 @@ Paul Licameli split from ProjectAudioManager.cpp
 #include "Project.h"
 #include "ProjectAudioManager.h"
 #include "ProjectHistory.h"
+#include "ProjectWindows.h"
 #include "widgets/Warning.h"
 #include <wx/app.h>
 #include <wx/frame.h>

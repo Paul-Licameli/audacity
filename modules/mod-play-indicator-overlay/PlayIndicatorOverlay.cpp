@@ -18,6 +18,7 @@ Paul Licameli split from TrackPanel.cpp
 #include "ProjectAudioIO.h"
 #include "ProjectAudioManager.h"
 #include "ProjectWindow.h"
+#include "ProjectWindows.h"
 #include "Track.h"
 #include "ViewInfo.h"
 #include "tracks/ui/Scrubbing.h"

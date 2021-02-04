@@ -20,6 +20,7 @@ Paul Licameli split from TrackPanel.cpp
 #include "ProjectHistory.h"
 #include "ProjectSettings.h"
 #include "ProjectWindow.h"
+#include "ProjectWindows.h"
 #include "RefreshCode.h"
 #include "SelectUtilities.h"
 #include "SelectionState.h"

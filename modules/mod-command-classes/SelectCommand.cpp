@@ -34,6 +34,7 @@ explicitly code all three.
 #include <float.h>
 
 #include "LoadCommands.h"
+#include "ProjectWindows.h"
 #include "ProjectSelectionManager.h"
 #include "Shuttle.h"
 #include "ShuttleGui.h"

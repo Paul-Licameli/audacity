@@ -10,6 +10,7 @@
 
 #include "TagsEditor.h"
 
+#include "ProjectWindows.h"
 #include "SelectFile.h"
 #include "ShuttleGui.h"
 #include "widgets/AudacityMessageBox.h"

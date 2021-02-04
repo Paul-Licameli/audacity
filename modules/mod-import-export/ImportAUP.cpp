@@ -29,6 +29,7 @@
 #include "ProjectFileManager.h"
 #include "ProjectHistory.h"
 #include "ProjectSettings.h"
+#include "ProjectWindows.h"
 #include "Sequence.h"
 #include "Tags.h"
 #include "ViewInfo.h"

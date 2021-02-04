@@ -26,6 +26,7 @@ Paul Licameli split from AudacityProject.cpp
 #include "ProjectFileIO.h"
 #include "ProjectFSCK.h"
 #include "ProjectHistory.h"
+#include "ProjectWindows.h"
 #include "ProjectSettings.h"
 #include "ProjectStatus.h"
 #include "ProjectWindow.h"
@@ -40,6 +41,7 @@ Paul Licameli split from AudacityProject.cpp
 #include "widgets/FileHistory.h"
 #include "widgets/UnwritableLocationErrorDialog.h"
 #include "widgets/Warning.h"
+#include "wxPanelWrapper.h"
 #include "XMLFileReader.h"
 
 #include "HelpText.h"

@@ -22,6 +22,7 @@ Paul Licameli split from ProjectManager.cpp
 #include "ProjectHistory.h"
 #include "ProjectSettings.h"
 #include "ProjectStatus.h"
+#include "ProjectWindows.h"
 #include "UndoManager.h"
 #include "ViewInfo.h"
 #include "WaveTrack.h"

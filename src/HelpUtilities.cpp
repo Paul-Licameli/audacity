@@ -11,6 +11,7 @@ Paul Licameli split from HelpMenus.cpp
 #include "HelpUtilities.h"
 
 #include "Project.h"
+#include "ProjectWindows.h"
 #include "SelectFile.h"
 #include "ShuttleGui.h"
 #include "widgets/AudacityMessageBox.h"

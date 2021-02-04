@@ -22,6 +22,7 @@
 #include "LoadCommands.h"
 #include "Project.h"
 #include "ProjectSettings.h"
+#include "ProjectWindows.h"
 #include "WaveTrack.h"
 #include "Shuttle.h"
 #include "ShuttleGui.h"

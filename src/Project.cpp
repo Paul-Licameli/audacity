@@ -92,16 +92,6 @@ AudacityProject::~AudacityProject()
 {
 }
 
-void AudacityProject::SetFrame( wxFrame *pFrame )
-{
-   mFrame = pFrame;
-}
-
-void AudacityProject::SetPanel( CellularPanel *pPanel )
-{
-   mPanel = pPanel;
-}
-
 const wxString &AudacityProject::GetProjectName() const
 {
    return mName;
@@ -128,46 +118,4 @@ void AudacityProject::SetInitialImportPath(const FilePath &path)
 void AudacityProject::DestroyAllAttachments()
 {
    AttachedObjects::ForEach( [](auto &object){ object.Destroy(); } );
-}
-
-AUDACITY_DLL_API wxFrame &GetProjectFrame( AudacityProject &project )
-{
-   auto ptr = project.GetFrame();
-   if ( !ptr )
-      THROW_INCONSISTENCY_EXCEPTION;
-   return *ptr;
-}
-
-AUDACITY_DLL_API const wxFrame &GetProjectFrame( const AudacityProject &project )
-{
-   auto ptr = project.GetFrame();
-   if ( !ptr )
-      THROW_INCONSISTENCY_EXCEPTION;
-   return *ptr;
-}
-
-std::unique_ptr<const BasicUI::WindowPlacement>
-ProjectFramePlacement( AudacityProject *project )
-{
-   if (!project)
-      return std::make_unique<BasicUI::WindowPlacement>();
-   return std::make_unique<wxWidgetsWindowPlacement>(
-      &GetProjectFrame(*project));
-}
-
-AUDACITY_DLL_API CellularPanel &GetProjectPanel( AudacityProject &project )
-{
-   auto ptr = project.GetPanel();
-   if ( !ptr )
-      THROW_INCONSISTENCY_EXCEPTION;
-   return *ptr;
-}
-
-AUDACITY_DLL_API const CellularPanel &GetProjectPanel(
-   const AudacityProject &project )
-{
-   auto ptr = project.GetPanel();
-   if ( !ptr )
-      THROW_INCONSISTENCY_EXCEPTION;
-   return *ptr;
 }

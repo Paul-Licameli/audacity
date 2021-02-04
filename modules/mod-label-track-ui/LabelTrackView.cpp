@@ -21,6 +21,7 @@ Paul Licameli split from TrackPanel.cpp
 #include "HitTestResult.h"
 #include "Project.h"
 #include "ProjectHistory.h"
+#include "ProjectWindows.h"
 #include "ProjectSettings.h"
 #include "ProjectWindow.h"
 #include "RefreshCode.h"

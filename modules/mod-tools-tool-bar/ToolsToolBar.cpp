@@ -48,6 +48,7 @@
 #include "AllThemeResources.h"
 #include "ImageManipulation.h"
 #include "Project.h"
+#include "ProjectWindows.h"
 #include "ProjectSettings.h"
 #include "ProjectWindow.h"
 #include "tracks/ui/Scrubbing.h"

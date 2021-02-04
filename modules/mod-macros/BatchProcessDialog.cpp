@@ -1381,9 +1381,10 @@ void MacrosWindow::UpdatePrefs()
 #include "CommonCommandFlags.h"
 #include "commands/CommandContext.h"
 #include "EffectManager.h"
+#include "ProjectWindows.h"
 namespace {
 
-AudacityProject::AttachedWindows::RegisteredFactory sMacrosWindowKey{
+AttachedWindows::RegisteredFactory sMacrosWindowKey{
    []( AudacityProject &parent ) -> wxWeakRef< wxWindow > {
       auto &window = ProjectWindow::Get( parent );
       return safenew MacrosWindow(
@@ -1423,7 +1424,7 @@ void OnManageMacros(const CommandContext &context )
    auto &project = context.project;
    CommandManager::Get(project).RegisterLastTool(context);  //Register Macros as Last Tool
    auto macrosWindow =
-      &project.AttachedWindows::Get< MacrosWindow >( sMacrosWindowKey );
+      &GetAttachedWindows(project).Get< MacrosWindow >( sMacrosWindowKey );
    if (macrosWindow) {
       macrosWindow->Show();
       macrosWindow->Raise();
@@ -1435,8 +1436,8 @@ void OnApplyMacrosPalette(const CommandContext &context )
 {
    auto &project = context.project;
    CommandManager::Get(project).RegisterLastTool(context);  //Register Palette as Last Tool
-   auto macrosWindow =
-      &project.AttachedWindows::Get< MacrosWindow >( sMacrosWindowKey );
+   auto macrosWindow = &GetAttachedWindows(project)
+      .Get< MacrosWindow >( sMacrosWindowKey );
    if (macrosWindow) {
       macrosWindow->Show();
       macrosWindow->Raise();

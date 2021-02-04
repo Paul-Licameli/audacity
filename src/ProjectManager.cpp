@@ -25,6 +25,7 @@ Paul Licameli split from AudacityProject.cpp
 #include "ProjectFileIO.h"
 #include "ProjectFileManager.h"
 #include "ProjectHistory.h"
+#include "ProjectWindows.h"
 #include "ProjectSettings.h"
 #include "ProjectStatus.h"
 #include "ProjectWindow.h"
@@ -365,7 +366,7 @@ void ProjectManager::InitProjectWindow( ProjectWindow &window )
 
    auto &trackPanel =
       GetMainPanelFactory()(project, pPage, window.NextWindowID());
-   project.SetPanel(&trackPanel);
+   SetProjectPanel(project, trackPanel);
 
    // LLL: When Audacity starts or becomes active after returning from
    //      another application, the first window that can accept focus

@@ -150,6 +150,8 @@ list( APPEND SOURCES
       ProjectWindow.h
       ProjectWindowBase.cpp
       ProjectWindowBase.h
+      ProjectWindows.cpp
+      ProjectWindows.h
       RecordUtilities.cpp
       RecordUtilities.h
       RingBuffer.cpp

@@ -56,6 +56,7 @@ ImportLOF.cpp, and ImportAUP.cpp.
 #include "ProjectHistory.h"
 #include "ProjectSettings.h"
 #include "ProjectWindow.h"
+#include "ProjectWindows.h"
 #include "SelectUtilities.h"
 #include "Tags.h"
 #include "WaveTrack.h"

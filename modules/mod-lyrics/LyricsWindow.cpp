@@ -18,6 +18,7 @@
 #include "Project.h"
 #include "ProjectAudioIO.h"
 #include "ProjectFileIO.h"
+#include "ProjectWindows.h"
 #include "Track.h"
 #include "ViewInfo.h"
 
@@ -199,7 +200,7 @@ void LyricsWindow::UpdatePrefs()
 namespace {
 
 // Lyrics window attached to each project is built on demand by:
-AudacityProject::AttachedWindows::RegisteredFactory sLyricsWindowKey{
+AttachedWindows::RegisteredFactory sLyricsWindowKey{
    []( AudacityProject &parent ) -> wxWeakRef< wxWindow > {
       return safenew LyricsWindow( &parent );
    }
@@ -211,7 +212,7 @@ struct Handler : CommandHandlerObject {
    {
       auto &project = context.project;
 
-      auto lyricsWindow = &project.AttachedWindows::Get( sLyricsWindowKey );
+      auto lyricsWindow = &GetAttachedWindows(project).Get(sLyricsWindowKey);
       lyricsWindow->Show();
       lyricsWindow->Raise();
    }

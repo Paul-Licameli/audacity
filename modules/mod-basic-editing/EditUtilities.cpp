@@ -18,6 +18,7 @@
 #include "ProjectWindow.h"
 #include "effects/TimeWarper.h"
 #include "SelectUtilities.h"
+#include "ProjectWindows.h"
 #include "TrackPanelAx.h"
 #include "ViewInfo.h"
 #include "WaveTrack.h"

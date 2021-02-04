@@ -3,6 +3,7 @@
 #include "Prefs.h"
 #include "Project.h"
 #include "ProjectHistory.h"
+#include "ProjectWindows.h"
 #include "ProjectSettings.h"
 #include "ProjectWindow.h"
 #include "Track.h"

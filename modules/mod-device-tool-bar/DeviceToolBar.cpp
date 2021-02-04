@@ -39,6 +39,7 @@
 #include "KeyboardCapture.h"
 #include "Prefs.h"
 #include "Project.h"
+#include "ProjectWindows.h"
 #include "ShuttleGui.h"
 #include "Grabber.h"
 #include "DeviceManager.h"

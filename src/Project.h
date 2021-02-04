@@ -14,16 +14,10 @@
 #include "Identifier.h"
 
 #include "ClientData.h" // to inherit
-#include "CellularPanel.h"
 
 #include <memory>
 #include <mutex>
-#include <wx/weakref.h> // member variable
-#include <wx/window.h> // MSVC wants this
-
-class wxFrame;
-class wxWindow;
-namespace BasicUI { class WindowPlacement; }
+#include <wx/event.h>
 
 class AudacityProject;
 
@@ -80,11 +74,6 @@ using AttachedProjectObjects = ClientData::Site<
    AudacityProject, AttachedProjectObject, ClientData::SkipCopying,
    std::shared_ptr
 >;
-// Container of pointers to various windows associated with the project, which
-// is not responsible for destroying them -- wxWidgets handles that instead
-using AttachedProjectWindows = ClientData::Site<
-   AudacityProject, wxWindow, ClientData::SkipCopying, ClientData::BarePtr
->;
 
 wxDECLARE_EXPORTED_EVENT(AUDACITY_DLL_API,
                          EVT_TRACK_PANEL_TIMER, wxCommandEvent);
@@ -99,24 +88,14 @@ enum{ TrackPanelTimerInterval_ms = 50 };
 class AUDACITY_DLL_API AudacityProject final
    : public wxEvtHandler
    , public AttachedProjectObjects
-   , public AttachedProjectWindows
    , public std::enable_shared_from_this<AudacityProject>
 {
  public:
    using AttachedObjects = ::AttachedProjectObjects;
-   using AttachedWindows = ::AttachedProjectWindows;
 
    AudacityProject();
    virtual ~AudacityProject();
 
-   wxFrame *GetFrame() { return mFrame; }
-   const wxFrame *GetFrame() const { return mFrame; }
-   void SetFrame( wxFrame *pFrame );
- 
-   CellularPanel *GetPanel() { return mPanel; }
-   const CellularPanel *GetPanel() const { return mPanel; }
-   void SetPanel( CellularPanel *pPanel );
- 
    int GetProjectNumber(){ return mProjectNo;}
 
    // Project name can be either empty or have the name of the project.
@@ -150,35 +129,6 @@ private:
  public:
    bool mbBusyImporting{ false }; // used to fix bug 584
    int mBatchMode{ 0 };// 0 means not, >0 means in batch mode.
-
- private:
-   wxWeakRef< wxFrame > mFrame{};
-   wxWeakRef< CellularPanel > mPanel{};
 };
-
-///\brief Get the top-level window associated with the project (as a wxFrame
-/// only, when you do not need to use the subclass ProjectWindow)
-AUDACITY_DLL_API wxFrame &GetProjectFrame( AudacityProject &project );
-AUDACITY_DLL_API const wxFrame &GetProjectFrame( const AudacityProject &project );
-
-///\brief Get a pointer to the window associated with a project, or null if
-/// the given pointer is null.
-inline wxFrame *FindProjectFrame( AudacityProject *project ) {
-   return project ? &GetProjectFrame( *project ) : nullptr;
-}
-inline const wxFrame *FindProjectFrame( const AudacityProject *project ) {
-   return project ? &GetProjectFrame( *project ) : nullptr;
-}
-
-//! Make a WindowPlacement object suitable for `project` (which may be null)
-/*! @post return value is not null */
-AUDACITY_DLL_API std::unique_ptr<const BasicUI::WindowPlacement>
-ProjectFramePlacement( AudacityProject *project );
-
-///\brief Get the main sub-window of the project frame that displays track data
-// (as a wxWindow only, when you do not need to use the subclass TrackPanel)
-AUDACITY_DLL_API CellularPanel &GetProjectPanel( AudacityProject &project );
-AUDACITY_DLL_API const CellularPanel &GetProjectPanel(
-   const AudacityProject &project );
 
 #endif

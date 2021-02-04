@@ -11,6 +11,7 @@
 #include "../ProjectFileIO.h"
 #include "../ProjectHistory.h"
 #include "../ProjectManager.h"
+#include "../ProjectWindows.h"
 #include "../ProjectSettings.h"
 #include "../ProjectWindow.h"
 #include "../SoundActivatedRecord.h"

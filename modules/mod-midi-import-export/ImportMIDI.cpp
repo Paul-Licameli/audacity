@@ -27,6 +27,7 @@
 #include "ProjectFileIO.h"
 #include "ProjectHistory.h"
 #include "ProjectWindow.h"
+#include "ProjectWindows.h"
 #include "SelectFile.h"
 #include "SelectUtilities.h"
 #include "widgets/AudacityMessageBox.h"

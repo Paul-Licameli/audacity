@@ -10,6 +10,7 @@
 #include "PluginManager.h"
 #include "ProjectStatus.h"
 #include "ProjectWindow.h"
+#include "ProjectWindows.h"
 #include "SelectUtilities.h"
 #include "ShuttleGui.h"
 #include "TrackPanelAx.h"
