@@ -61,7 +61,7 @@
 #include "../ProjectSettings.h"
 #include "../ProjectWindow.h"
 #include "../ShuttleGui.h"
-#include "../Tags.h"
+#include "../TagsEditor.h"
 #include "../Theme.h"
 #include "../WaveTrack.h"
 #include "../widgets/AudacityMessageBox.h"
@@ -409,7 +409,8 @@ bool Exporter::DoEditMetadata(AudacityProject &project,
    // BEFORE doing any editing of it!
    auto newTags = tags.Duplicate();
 
-   if (newTags->ShowEditDialog(&GetProjectFrame( project ), title, force)) {
+   if (TagsEditorDialog::ShowEditDialog(
+      *newTags, &GetProjectFrame( project ), title, force)) {
       if (tags != *newTags) {
          // Commit the change to project state only now.
          Tags::Set( project, newTags );
