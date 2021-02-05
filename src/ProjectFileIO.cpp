@@ -26,7 +26,6 @@ Paul Licameli split from AudacityProject.cpp
 #include "ProjectSerializer.h"
 #include "ProjectSettings.h"
 #include "SampleBlock.h"
-#include "Tags.h"
 #include "TempDirectory.h"
 #include "ViewInfo.h"
 #include "WaveTrack.h"
@@ -1689,9 +1688,6 @@ void ProjectFileIO::WriteXML(XMLWriter &xmlFile,
 {
    auto &proj = mProject;
    auto &tracklist = tracks ? *tracks : TrackList::Get(proj);
-   auto &viewInfo = ViewInfo::Get(proj);
-   auto &tags = Tags::Get(proj);
-   const auto &settings = ProjectSettings::Get(proj);
 
    //TIMER_START( "AudacityProject::WriteXML", xml_writer_timer );
 
@@ -1701,19 +1697,10 @@ void ProjectFileIO::WriteXML(XMLWriter &xmlFile,
    xmlFile.WriteAttr(wxT("version"), wxT(AUDACITY_FILE_FORMAT_VERSION));
    xmlFile.WriteAttr(wxT("audacityversion"), AUDACITY_VERSION_STRING);
 
-   viewInfo.WriteXMLAttributes(xmlFile);
-   xmlFile.WriteAttr(wxT("rate"), settings.GetRate());
-   xmlFile.WriteAttr(wxT("snapto"), settings.GetSnapTo() ? wxT("on") : wxT("off"));
-   xmlFile.WriteAttr(wxT("selectionformat"),
-                     settings.GetSelectionFormat().Internal());
-   xmlFile.WriteAttr(wxT("frequencyformat"),
-                     settings.GetFrequencySelectionFormatName().Internal());
-   xmlFile.WriteAttr(wxT("bandwidthformat"),
-                     settings.GetBandwidthSelectionFormatName().Internal());
+   for (const auto &writer : ProjectFileIORegistry::GetWriters())
+      if (writer)
+         writer(proj, xmlFile);
 
-   tags.WriteXML(xmlFile);
-
-   unsigned int ndx = 0;
    tracklist.Any().Visit([&](const Track *t)
    {
       auto useTrack = t;
