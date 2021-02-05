@@ -16,6 +16,7 @@ Paul Licameli
 
 #include "Prefs.h"
 #include "Project.h"
+#include "ProjectFileIORegistry.h"
 #include "xml/XMLWriter.h"
 #include "prefs/TracksBehaviorsPrefs.h"
 #include "xml/XMLWriter.h"
@@ -246,3 +247,9 @@ int ViewInfo::UpdateScrollPrefsID()
    static int value = wxNewId();
    return value;
 }
+
+static ProjectFileIORegistry::WriterEntry entry {
+[](const AudacityProject &project, XMLWriter &xmlFile){
+   ViewInfo::Get(project).WriteXMLAttributes(xmlFile);
+}
+};

@@ -41,4 +41,22 @@ TagHandlerFactory Lookup( const wxString &tag )
    return iter->second;
 }
 
+
+namespace {
+   static WriterTable &sWriterTable()
+   {
+      static WriterTable theTable;
+      return theTable;
+   }
+}
+
+WriterEntry::WriterEntry( const Writer &writer )
+{
+   sWriterTable().emplace_back(writer);
+}
+
+WriterEntry::Init::Init(){ (void)sWriterTable(); }
+
+const WriterTable &GetWriters() { return sWriterTable(); }
+
 }
