@@ -20,6 +20,7 @@
 #include "ZoomInfo.h" // to inherit
 
 
+namespace ProjectFileIORegistry{ struct AttributeEntry; }
 class NotifyingSelectedRegion;
 
 struct SelectedRegionEvent : public wxEvent
@@ -226,10 +227,11 @@ public:
    bool bAdjustSelectionEdges;
 
    void WriteXMLAttributes(XMLWriter &xmlFile) const;
-   bool ReadXMLAttribute(const wxChar *attr, const wxChar *value);
 
 private:
    int mHeight{ 0 };
+
+   static ProjectFileIORegistry::AttributeEntry AttributeEntries[];
 };
 
 extern SCREEN_GEOMETRY_API BoolSetting ScrollingPreference;

@@ -17,6 +17,32 @@
 namespace ProjectFileIORegistry {
 
 namespace {
+   using AttributeTable = std::unordered_map< std::wstring, AttributeHandler >;
+   static AttributeTable &sAttributeTable()
+   {
+      static AttributeTable theTable;
+      return theTable;
+   }
+}
+
+AttributeEntry::AttributeEntry(
+   const wchar_t *attr, const AttributeHandler &fn )
+{
+   sAttributeTable()[ attr ] = fn;
+}
+
+AttributeEntry::Init::Init() { (void)sAttributeTable(); }
+
+AttributeHandler LookupAttribute( const wchar_t *attr )
+{
+   const auto &table = sAttributeTable();
+   auto iter = table.find( attr );
+   if ( iter == table.end() )
+      return {};
+   return iter->second;
+}
+
+namespace {
    using TagTable = std::unordered_map< wxString, TagHandlerFactory >;
    static TagTable &sTagTable()
    {
@@ -44,11 +70,11 @@ TagHandlerFactory Lookup( const wxString &tag )
 
 
 namespace {
-   static WriterTable &sWriterTable()
-   {
-      static WriterTable theTable;
-      return theTable;
-   }
+WriterTable &sWriterTable()
+{
+   static WriterTable theTable;
+   return theTable;
+}
 }
 
 WriterEntry::WriterEntry( const Writer &writer )

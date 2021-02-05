@@ -83,3 +83,13 @@ static ProjectFileIORegistry::WriterEntry entry {
    xmlFile.WriteAttr(wxT("rate"), ProjectRate::Get(project).GetRate());
 }
 };
+
+static ProjectFileIORegistry::AttributeEntry entries[] {
+   { L"rate", [](AudacityProject &project, const wchar_t *value){
+      auto &projectRate = ProjectRate::Get(project);
+      double rate;
+      Internat::CompatibleToDouble(value, &rate);
+      projectRate.SetRate( rate );
+   } },
+};
+ 

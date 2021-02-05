@@ -190,6 +190,33 @@ static ProjectFileIORegistry::WriterEntry entry {
 }
 };
 
+static ProjectFileIORegistry::AttributeEntry entries[] {
+   { L"snapto", [](AudacityProject &project, const wchar_t *value){
+      auto &settings = ProjectSettings::Get(project);
+      settings.SetSnapTo(wxString(value) == wxT("on") ? true : false);
+   } },
+   { L"selectionformat", [](AudacityProject &project, const wchar_t *value){
+      auto &settings = ProjectSettings::Get(project);
+      settings.SetSelectionFormat(
+         NumericConverter::LookupFormat( NumericConverter::TIME, value) );
+   } },
+   { L"audiotimeformat", [](AudacityProject &project, const wchar_t *value){
+      auto &settings = ProjectSettings::Get(project);
+      settings.SetAudioTimeFormat(
+         NumericConverter::LookupFormat( NumericConverter::TIME, value) );
+   } },
+   { L"frequencyformat", [](AudacityProject &project, const wchar_t *value){
+      auto &settings = ProjectSettings::Get(project);
+      settings.SetFrequencySelectionFormatName(
+         NumericConverter::LookupFormat( NumericConverter::FREQUENCY, value ) );
+   } },
+   { L"bandwidthformat", [](AudacityProject &project, const wchar_t *value){
+      auto &settings = ProjectSettings::Get(project);
+      settings.SetBandwidthSelectionFormatName(
+         NumericConverter::LookupFormat( NumericConverter::BANDWIDTH, value ) );
+   } },
+};
+
 ChoiceSetting ProjectSettings::TracksBehaviorsSolo{
    wxT("/GUI/Solo"),
    {

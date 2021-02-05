@@ -214,30 +214,46 @@ void ViewInfo::WriteXMLAttributes(XMLWriter &xmlFile) const
    xmlFile.WriteAttr(wxT("zoom"), zoom, 10);
 }
 
-bool ViewInfo::ReadXMLAttribute(const wxChar *attr, const wxChar *value)
-{
-   if (selectedRegion.HandleXMLAttribute(attr, value, wxT("sel0"), wxT("sel1")))
-      return true;
-
-   if (!wxStrcmp(attr, wxT("vpos"))) {
+ProjectFileIORegistry::AttributeEntry
+ViewInfo::AttributeEntries[] {
+   { L"vpos", [](AudacityProject &project, const wchar_t *value){
+      auto &viewInfo = ViewInfo::Get(project);
       long longVpos;
       wxString(value).ToLong(&longVpos);
-      vpos = (int)(longVpos);
-      return true;
-   }
-
-   if (!wxStrcmp(attr, wxT("h"))) {
-      Internat::CompatibleToDouble(value, &h);
-      return true;
-   }
-
-   if (!wxStrcmp(attr, wxT("zoom"))) {
-      Internat::CompatibleToDouble(value, &zoom);
-      return true;
-   }
-
-   return false;
-}
+      viewInfo.vpos = (int)(longVpos);
+   } },
+   { L"h", [](AudacityProject &project, const wchar_t *value){
+      auto &viewInfo = ViewInfo::Get(project);
+      Internat::CompatibleToDouble(value, &viewInfo.h);
+   } },
+   { L"zoom", [](AudacityProject &project, const wchar_t *value){
+      auto &viewInfo = ViewInfo::Get(project);
+      Internat::CompatibleToDouble(value, &viewInfo.zoom);
+   } },
+   { L"sel0", [](AudacityProject &project, const wchar_t *value){
+      auto &viewInfo = ViewInfo::Get(project);
+      viewInfo.selectedRegion
+         .HandleXMLAttribute(L"sel0", value, L"sel0", L"sel1");
+   } },
+   { L"sel1", [](AudacityProject &project, const wchar_t *value){
+      auto &viewInfo = ViewInfo::Get(project);
+      viewInfo.selectedRegion
+         .HandleXMLAttribute(L"sel1", value, L"sel0", L"sel1");
+   } },
+   //! TODO figure out how not to duplicate static string constants in SelectedRegion.cpp for frequencies
+   // It would be simpler if SelectedRegion were saved in its own tag, not
+   // as a loose bunch of attributes
+   { L"selStart", [](AudacityProject &project, const wchar_t *value){
+      auto &viewInfo = ViewInfo::Get(project);
+      viewInfo.selectedRegion
+         .HandleXMLAttribute(L"selStart", value, L"sel0", L"sel1");
+   } },
+   { L"selEnd", [](AudacityProject &project, const wchar_t *value){
+      auto &viewInfo = ViewInfo::Get(project);
+      viewInfo.selectedRegion
+         .HandleXMLAttribute(L"selEnd", value, L"sel0", L"sel1");
+   } },
+};
 
 int ViewInfo::UpdateScrollPrefsID()
 {
