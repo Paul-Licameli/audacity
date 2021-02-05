@@ -45,7 +45,7 @@ from the project that will own the track.
 #include "Sequence.h"
 
 #include "ProjectFileIORegistry.h"
-#include "ProjectSettings.h"
+#include "ProjectRate.h"
 
 #include "Prefs.h"
 
@@ -87,7 +87,7 @@ WaveTrack::Holder WaveTrackFactory::NewWaveTrack(sampleFormat format, double rat
    if (format == (sampleFormat)0)
       format = QualitySettings::SampleFormatChoice();
    if (rate == 0)
-      rate = mSettings.GetRate();
+      rate = mRate.GetRate();
    return std::make_shared<WaveTrack> ( mpFactory, format, rate );
 }
 
@@ -2382,7 +2382,7 @@ void InspectBlocks(const TrackList &tracks, BlockInspector inspector,
 #include "SampleBlock.h"
 static auto TrackFactoryFactory = []( AudacityProject &project ) {
    return std::make_shared< WaveTrackFactory >(
-      ProjectSettings::Get( project ),
+      ProjectRate::Get( project ),
       SampleBlockFactory::New( project ) );
 };
 

@@ -21,7 +21,7 @@
 
 #include "LoadCommands.h"
 #include "Project.h"
-#include "ProjectSettings.h"
+#include "ProjectRate.h"
 #include "ProjectWindows.h"
 #include "WaveTrack.h"
 #include "Shuttle.h"
@@ -80,7 +80,7 @@ bool SetProjectCommand::Apply(const CommandContext & context)
 
    if( bHasRate && mRate >= 1 && mRate <= 1000000 )
    {
-      ProjectSettings::Get(project).SetRate( mRate );
+      ProjectRate::Get(project).SetRate( mRate );
    }
 
    if( bHasSizing )

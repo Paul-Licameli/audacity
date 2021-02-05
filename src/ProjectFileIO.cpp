@@ -24,6 +24,7 @@ Paul Licameli split from AudacityProject.cpp
 #include "Project.h"
 #include "ProjectFileIORegistry.h"
 #include "ProjectSerializer.h"
+#include "ProjectRate.h"
 #include "ProjectSettings.h"
 #include "ProjectWindows.h"
 #include "SampleBlock.h"
@@ -1581,7 +1582,7 @@ bool ProjectFileIO::HandleXMLTag(const wxChar *tag, const wxChar **attrs)
       {
          double rate;
          Internat::CompatibleToDouble(value, &rate);
-         settings.SetRate( rate );
+         ProjectRate::Get(project).SetRate( rate );
       }
 
       else if (!wxStrcmp(attr, wxT("snapto")))

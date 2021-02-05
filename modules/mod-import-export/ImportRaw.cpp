@@ -28,7 +28,7 @@ and sample size to help you importing data of an unknown format.
 #include "AudioIOBase.h"
 #include "FileFormats.h"
 #include "Prefs.h"
-#include "ProjectSettings.h"
+#include "ProjectRate.h"
 #include "SelectFile.h"
 #include "ShuttleGui.h"
 #include "UserException.h"
@@ -128,7 +128,7 @@ void ImportRaw(const AudacityProject &project, wxWindow *parent,
          offset = 0;
       }
 
-      rate = ProjectSettings::Get( project ).GetRate();
+      rate = ProjectRate::Get( project ).GetRate();
 
       numChannels = std::max(1u, numChannels);
       ImportRawDialog dlog(parent, encoding, numChannels, (int)offset, rate);

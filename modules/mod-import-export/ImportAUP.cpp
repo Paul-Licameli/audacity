@@ -28,6 +28,7 @@
 #include "ProjectFileIO.h"
 #include "ProjectFileManager.h"
 #include "ProjectHistory.h"
+#include "ProjectRate.h"
 #include "ProjectSettings.h"
 #include "ProjectWindows.h"
 #include "Sequence.h"
@@ -370,7 +371,7 @@ auto AUPImportFileHandle::Import(
 
    if (mProjectAttrs.haverate)
    {
-      settings.SetRate(mProjectAttrs.rate);
+      ProjectRate::Get(mProject).SetRate(mProjectAttrs.rate);
    }
 
    if (mProjectAttrs.havesnapto)

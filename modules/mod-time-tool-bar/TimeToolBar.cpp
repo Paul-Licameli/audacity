@@ -26,6 +26,7 @@
 #include "AudioIO.h"
 #include "Project.h"
 #include "ProjectAudioIO.h"
+#include "ProjectRate.h"
 #include "ProjectSettings.h"
 #include "ViewInfo.h"
 
@@ -54,6 +55,7 @@ TimeToolBar::TimeToolBar(AudacityProject &project)
    mAudioTime(NULL)
 {
    project.Bind(EVT_PROJECT_SETTINGS_CHANGE, &TimeToolBar::OnSettingsChanged, this);
+   project.Bind(EVT_PROJECT_RATE_CHANGE, &TimeToolBar::OnRateChanged, this);
 }
 
 TimeToolBar::~TimeToolBar()
@@ -81,7 +83,7 @@ void TimeToolBar::Populate()
    const auto &settings = ProjectSettings::Get(mProject);
 
    // Get the default sample rate
-   auto rate = settings.GetRate();
+   auto rate = ProjectRate::Get(mProject).GetRate();
 
    // Get the default time format
    auto format = settings.GetAudioTimeFormat();
@@ -260,6 +262,16 @@ void TimeToolBar::SetResizingLimits()
    SetMaxSize(maxSize);
 }
 
+// Called when the project rate changes
+void TimeToolBar::OnRateChanged(wxCommandEvent &evt)
+{
+   evt.Skip();
+
+   if (mAudioTime) {
+      mAudioTime->SetSampleRate(ProjectRate::Get(mProject).GetRate());
+   }
+}
+
 // Called when the project settings change
 void TimeToolBar::OnSettingsChanged(wxCommandEvent &evt)
 {
@@ -267,13 +279,6 @@ void TimeToolBar::OnSettingsChanged(wxCommandEvent &evt)
 
    auto &settings = ProjectSettings::Get(mProject);
    switch (evt.GetInt()) {
-   case ProjectSettings::ChangedProjectRate: {
-      if (mAudioTime) {
-         const auto &settings = ProjectSettings::Get(mProject);
-         mAudioTime->SetSampleRate(settings.GetRate());
-      }
-   }
-      break;
    case ProjectSettings::ChangedAudioTimeFormat:
       SetAudioTimeFormat(settings.GetAudioTimeFormat());
       break;

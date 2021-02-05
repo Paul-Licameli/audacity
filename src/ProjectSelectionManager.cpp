@@ -15,6 +15,7 @@ Paul Licameli split from ProjectManager.cpp
 #include "Project.h"
 #include "ProjectHistory.h"
 #include "ProjectWindows.h"
+#include "ProjectRate.h"
 #include "ProjectSettings.h"
 #include "ProjectWindow.h"
 #include "Snap.h"
@@ -60,7 +61,7 @@ bool ProjectSelectionManager::SnapSelection()
       auto &viewInfo = ViewInfo::Get( project );
       auto &selectedRegion = viewInfo.selectedRegion;
       NumericConverter nc(NumericConverter::TIME,
-         settings.GetSelectionFormat(), 0, settings.GetRate());
+         settings.GetSelectionFormat(), 0, ProjectRate::Get(project).GetRate());
       const bool nearest = (snapTo == SNAP_NEAREST);
 
       const double oldt0 = selectedRegion.t0();
@@ -179,9 +180,8 @@ void ProjectSelectionManager::SSBL_ModifySpectralSelection(
    auto &trackPanel = GetProjectPanel( project );
    auto &viewInfo = ViewInfo::Get( project );
 
-   auto &settings = ProjectSettings::Get(mProject);
    auto &tracks = TrackList::Get(mProject);
-      auto nyq = std::max( settings.GetRate(),
+      auto nyq = std::max( ProjectRate::Get(project).GetRate(),
          tracks.Any<const WaveTrack>().max( &WaveTrack::GetRate ) )
          / 2.0;
    if (bottom >= 0.0)

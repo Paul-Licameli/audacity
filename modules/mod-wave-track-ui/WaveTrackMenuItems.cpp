@@ -11,7 +11,7 @@ Paul Licameli split from TrackMenus.cpp
 
 #include "CommonCommandFlags.h"
 #include "ProjectHistory.h"
-#include "ProjectSettings.h"
+#include "ProjectRate.h"
 #include "ProjectWindow.h"
 #include "SelectUtilities.h"
 #include "TrackPanelAx.h"
@@ -27,14 +27,13 @@ struct Handler : CommandHandlerObject {
 void OnNewWaveTrack(const CommandContext &context)
 {
    auto &project = context.project;
-   const auto &settings = ProjectSettings::Get( project );
    auto &tracks = TrackList::Get( project );
    auto &trackFactory = WaveTrackFactory::Get( project );
    auto &window = ProjectWindow::Get( project );
 
    auto defaultFormat = QualitySettings::SampleFormatChoice();
 
-   auto rate = settings.GetRate();
+   auto rate = ProjectRate::Get(project).GetRate();
 
    auto t = tracks.Add( trackFactory.NewWaveTrack( defaultFormat, rate ) );
    SelectUtilities::SelectNone( project );
@@ -51,14 +50,13 @@ void OnNewWaveTrack(const CommandContext &context)
 void OnNewStereoTrack(const CommandContext &context)
 {
    auto &project = context.project;
-   const auto &settings = ProjectSettings::Get( project );
    auto &tracks = TrackList::Get( project );
    auto &trackFactory = WaveTrackFactory::Get( project );
    auto &window = ProjectWindow::Get( project );
 
    auto defaultFormat = QualitySettings::SampleFormatChoice();
-   auto rate = settings.GetRate();
-
+   auto rate = ProjectRate::Get(project).GetRate();
+\
    SelectUtilities::SelectNone( project );
 
    auto left = tracks.Add( trackFactory.NewWaveTrack( defaultFormat, rate ) );

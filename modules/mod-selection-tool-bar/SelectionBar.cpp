@@ -47,6 +47,7 @@ selection range.
 #include "Project.h"
 #include "ProjectAudioIO.h"
 #include "ProjectSelectionManager.h"
+#include "ProjectRate.h"
 #include "ProjectSettings.h"
 #include "Snap.h"
 #include "ViewInfo.h"
@@ -125,6 +126,7 @@ SelectionBar::SelectionBar( AudacityProject &project )
    // Selection mode of 0 means showing 'start' and 'end' only.
    mSelectionMode = gPrefs->ReadLong(wxT("/SelectionToolbarMode"),  0);
 
+   project.Bind(EVT_PROJECT_RATE_CHANGE, &SelectionBar::OnRateChanged, this);
    project.Bind(EVT_PROJECT_SETTINGS_CHANGE, &SelectionBar::OnSettingsChanged, this);
 }
 
@@ -365,7 +367,7 @@ void SelectionBar::Populate()
    
    CallAfter([this]{
       auto &settings = ProjectSettings::Get(mProject);
-      SetRate(settings.GetRate());
+      SetRate(ProjectRate::Get(mProject).GetRate());
       SetSnapTo(settings.GetSnapTo());
       SetSelectionFormat(settings.GetSelectionFormat());
    });
@@ -747,6 +749,12 @@ void SelectionBar::SetRate(double rate)
    }
 }
 
+void SelectionBar::OnRateChanged(wxCommandEvent &evt)
+{
+   evt.Skip();
+   SetRate( ProjectRate::Get(mProject).GetRate() );
+}
+
 void SelectionBar::OnSettingsChanged(wxCommandEvent &evt)
 {
    evt.Skip();
@@ -756,8 +764,6 @@ void SelectionBar::OnSettingsChanged(wxCommandEvent &evt)
       return SetSnapTo( settings.GetSnapTo() );
    case ProjectSettings::ChangedSelectionFormat:
       return SetSelectionFormat( settings.GetSelectionFormat() );
-   case ProjectSettings::ChangedProjectRate:
-      return SetRate( settings.GetRate() );
    default:
       break;
    }
@@ -770,8 +776,7 @@ void SelectionBar::OnRate(wxCommandEvent & WXUNUSED(event))
    if (value.ToDouble(&mRate) && // is a numeric value
          (mRate != 0.0))
    {
-      auto &settings = ProjectSettings::Get(mProject);
-      settings.SetRate( mRate );
+      ProjectRate::Get(mProject).SetRate(mRate);
 
       mLastValidText = value;
    }

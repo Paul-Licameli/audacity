@@ -45,7 +45,7 @@
 #include "FileIO.h"
 #include "Mix.h"
 #include "Prefs.h"
-#include "ProjectSettings.h"
+#include "ProjectRate.h"
 #include "ShuttleGui.h"
 #include "Tags.h"
 #include "Track.h"
@@ -241,10 +241,9 @@ ProgressResult ExportMP2::Export(AudacityProject *project,
    bool selectionOnly, double t0, double t1, MixerSpec *mixerSpec, const Tags *metadata,
    int WXUNUSED(subformat))
 {
-   const auto &settings = ProjectSettings::Get( *project );
    bool stereo = (channels == 2);
    long bitrate = gPrefs->Read(wxT("/FileFormats/MP2Bitrate"), 160);
-   double rate = settings.GetRate();
+   double rate = ProjectRate::Get(*project).GetRate();
    const auto &tracks = TrackList::Get( *project );
 
    wxLogNull logNo;             /* temporarily disable wxWidgets error messages */

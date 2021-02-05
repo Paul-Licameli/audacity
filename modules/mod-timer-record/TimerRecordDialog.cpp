@@ -1098,6 +1098,7 @@ ProgressResult TimerRecordDialog::PreActionDelay(int iActionIndex, TimerRecordCo
 #include "CommonCommandFlags.h"
 #include "Project.h"
 #include "ProjectHistory.h"
+#include "ProjectRate.h"
 #include "ProjectSettings.h"
 #include "ProjectWindow.h"
 #include "UndoManager.h"
@@ -1159,7 +1160,8 @@ void OnTimerRecord(const CommandContext &context)
    const auto existingTracks = RecordUtilities::ChooseExistingRecordingTracks(
       project, true, rateOfSelected);
    if (existingTracks.empty()) {
-      if (numberOfSelected > 0 && rateOfSelected != settings.GetRate()) {
+      if (numberOfSelected > 0 && rateOfSelected !=
+          ProjectRate::Get(project).GetRate()) {
          AudacityMessageBox(XO(
             "Too few tracks are selected for recording at this sample rate.\n"
             "(Audacity requires two channels at the same sample rate for\n"

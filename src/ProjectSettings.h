@@ -45,7 +45,7 @@ enum {
 };
 }
 
-///\brief Holds various per-project settings values, including the sample rate,
+///\brief Holds various per-project settings values,
 /// and sends events to the project when certain values change
 class AUDACITY_DLL_API ProjectSettings final
    : public AttachedProjectObject
@@ -60,7 +60,6 @@ public:
    // Values retrievable from GetInt() of the event for settings change
    enum EventCode : int {
       ChangedSyncLock,
-      ChangedProjectRate,
       ChangedSnapTo,
       ChangedSelectionFormat,
       ChangedAudioTimeFormat,
@@ -82,11 +81,6 @@ public:
    bool IsSyncLocked() const;
    void SetSyncLock(bool flag);
    
-   // Rate
-
-   void SetRate(double rate);
-   double GetRate() const;
-
    // Snap To
 
    void SetSnapTo(int snap);
@@ -136,8 +130,6 @@ private:
    NumericFormatSymbol mAudioTimeFormat;
 
    wxString mSoloPref;
-
-   double mRate;
 
    // This is atomic because scrubber may read it in a separate thread from
    // the main

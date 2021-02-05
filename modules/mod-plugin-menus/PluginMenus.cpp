@@ -6,6 +6,7 @@
 #include "PluginRegistrationDialog.h"
 #include "Prefs.h"
 #include "Project.h"
+#include "ProjectRate.h"
 #include "ProjectSettings.h"
 #include "ProjectWindow.h"
 #include "ProjectWindows.h"
@@ -410,7 +411,7 @@ void OnResetConfig(const CommandContext &context)
    gPrefs->Flush();
 
    ProjectSettings::Get(project).SetSnapTo(0);
-   ProjectSettings::Get(project).SetRate(
+   ProjectRate::Get(project).SetRate(
       gPrefs->ReadDouble("/DefaultProjectSampleRate", 44100.0));
 }
 
