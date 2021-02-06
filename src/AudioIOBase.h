@@ -33,7 +33,6 @@ class AudioIOBase;
 class AudacityProject;
 class AudioIOListener;
 class BoundedEnvelope;
-// Windows build needs complete type for parameter of wxWeakRef
 // class MeterPanelBase;
 #include "widgets/MeterPanelBase.h"
 using PRCrossfadeData = std::vector< std::vector < float > >;
