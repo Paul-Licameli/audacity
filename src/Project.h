@@ -101,6 +101,7 @@ using AttachedProjectWindows = ClientData::Site<
 
 wxDECLARE_EXPORTED_EVENT(AUDACITY_DLL_API,
                          EVT_TRACK_PANEL_TIMER, wxCommandEvent);
+enum{ TrackPanelTimerInterval_ms = 50 };
 
 // This event is emitted by the application object when there is a change
 // in the activated project

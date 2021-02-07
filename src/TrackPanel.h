@@ -49,10 +49,6 @@ struct TrackPanelDrawingContext;
 
 enum class UndoPush : unsigned char;
 
-enum {
-   kTimerInterval = 50, // milliseconds
-};
-
 const int DragThreshold = 3;// Anything over 3 pixels is a drag, else a click.
 
 class AUDACITY_DLL_API TrackPanel final
