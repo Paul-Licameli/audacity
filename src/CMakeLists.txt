@@ -210,8 +210,6 @@ list( APPEND SOURCES
       SseMathFuncs.h
       Tags.cpp
       Tags.h
-      TagsEditor.cpp
-      TagsEditor.h
       Theme.cpp
       Theme.h
       ThemeAsCeeCode.h

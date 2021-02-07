@@ -52,6 +52,7 @@ static const std::unordered_set<wxString> &autoEnabledModules()
       "mod-pcm",
       "mod-midi-import-export",
       "mod-import-export",
+      "mod-tags-ui",
    };
    return modules;
 }
