@@ -21,8 +21,6 @@ extern "C" {
 }
 #endif
 
-#include "../Tags.h"
-
 #define FLAC_HEADER "fLaC"
 
 ODDecodeFlacTask::~ODDecodeFlacTask()

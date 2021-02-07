@@ -575,3 +575,16 @@ static ProjectFileIORegistry::WriterEntry entry {
    Tags::Get(project).WriteXML(xmlFile);
 }
 };
+
+// Undo/redo handling
+static UndoRedoExtensionRegistry::Entry sEntry {
+   [](AudacityProject &project) -> std::shared_ptr<UndoStateExtension> {
+      return Tags::Get(project).shared_from_this();
+   }
+};
+
+void Tags::RestoreUndoRedoState(AudacityProject &project)
+{
+   // Restore tags
+   Tags::Set( project, shared_from_this() );
+}
