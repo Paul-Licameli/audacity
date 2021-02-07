@@ -392,38 +392,6 @@ const ExportPluginArray &Exporter::GetPlugins()
    return mPlugins;
 }
 
-bool Exporter::DoEditMetadata(AudacityProject &project,
-   const TranslatableString &title,
-   const TranslatableString &shortUndoDescription, bool force)
-{
-   if (force) {
-      auto &tags = Tags::Get( project );
-
-      // Back up my tags
-      // Tags (artist name, song properties, MP3 ID3 info, etc.)
-      // The structure may be shared with undo history entries
-      // To keep undo working correctly, always replace this with a NEW duplicate
-      // BEFORE doing any editing of it!
-      auto newTags = tags.Duplicate();
-
-      if (!TagsEditorDialog::ShowEditDialog(
-         *newTags, &GetProjectFrame( project ), title))
-      return false;
-
-      if (tags != *newTags) {
-         // Commit the change to project state only now.
-         Tags::Set( project, newTags );
-         ProjectHistory::Get( project ).PushState( title, shortUndoDescription);
-      }
-   }
-
-   bool bShowInFuture;
-   gPrefs->Read(wxT("/AudioFiles/ShowId3Dialog"), &bShowInFuture, true);
-   auto &settings = ProjectSettings::Get( project );
-   settings.SetShowId3Dialog( bShowInFuture );
-   return true;
-}
-
 bool Exporter::Process(bool selectedOnly, double t0, double t1)
 {
    // Save parms
@@ -448,7 +416,7 @@ bool Exporter::Process(bool selectedOnly, double t0, double t1)
 
    // Let user edit MetaData
    if (mPlugins[mFormat]->GetCanMetaData(mSubFormat)) {
-      if (!DoEditMetadata( *mProject,
+      if (!TagsEditorDialog::DoEditMetadata( *mProject,
          XO("Edit Metadata Tags"), XO("Exported Tags"),
          ProjectSettings::Get( *mProject ).GetShowId3Dialog())) {
          return false;
@@ -1105,7 +1073,7 @@ bool Exporter::SetAutoExportOptions() {
 
    // Let user edit MetaData
    if (mPlugins[mFormat]->GetCanMetaData(mSubFormat)) {
-      if (!DoEditMetadata( *mProject,
+      if (!TagsEditorDialog::DoEditMetadata( *mProject,
          XO("Edit Metadata Tags"),
          XO("Exported Tags"),
          ProjectSettings::Get(*mProject).GetShowId3Dialog())) {

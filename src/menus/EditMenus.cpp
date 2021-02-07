@@ -19,7 +19,6 @@
 #include "../commands/CommandContext.h"
 #include "../commands/CommandManager.h"
 #include "../effects/TimeWarper.h"
-#include "../export/Export.h"
 #include "../prefs/PrefsDialog.h"
 #include "../tracks/labeltrack/ui/LabelTrackView.h"
 #include "../widgets/AudacityMessageBox.h"
@@ -895,13 +894,6 @@ void OnDisjoin(const CommandContext &context)
       XO("Detach"));
 }
 
-void OnEditMetadata(const CommandContext &context)
-{
-   auto &project = context.project;
-   (void)Exporter::DoEditMetadata( project,
-      XO("Edit Metadata Tags"), XO("Metadata Tags"), true);
-}
-
 void OnPreferences(const CommandContext &context)
 {
    auto &project = context.project;
@@ -1111,14 +1103,7 @@ BaseItemSharedPtr EditMenu()
                Command( wxT("Disjoin"), XXO("Detac&h at Silences"), FN(OnDisjoin),
                   NotBusyTimeAndTracksFlags, wxT("Ctrl+Alt+J") )
             )
-         ),
-
-         //////////////////////////////////////////////////////////////////////////
-
-         Command( wxT("EditMetaData"), XXO("&Metadata..."), FN(OnEditMetadata),
-            AudioIONotBusyFlag() )
-
-         //////////////////////////////////////////////////////////////////////////
+         )
 
       ),
 

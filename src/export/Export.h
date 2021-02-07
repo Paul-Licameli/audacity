@@ -187,10 +187,6 @@ public:
       struct AUDACITY_DLL_API Init{ Init(); };
    };
 
-   static bool DoEditMetadata(AudacityProject &project,
-      const TranslatableString &title,
-      const TranslatableString &shortUndoDescription, bool force);
-
    Exporter( AudacityProject &project );
    virtual ~Exporter();
 
