@@ -125,15 +125,10 @@ private:
    bool            m_allowOthers;
 };
 
-bool TagsEditorDialog::ShowEditDialog(Tags &tags, wxWindow *parent, const TranslatableString &title, bool force)
+bool TagsEditorDialog::ShowEditDialog(Tags &tags, wxWindow *parent, const TranslatableString &title)
 {
-   if (force) {
-      TagsEditorDialog dlg(parent, title, &tags, true, true);
-
-      return dlg.ShowModal() == wxID_OK;
-   }
-
-   return true;
+   TagsEditorDialog dlg(parent, title, &tags, true, true);
+   return dlg.ShowModal() == wxID_OK;
 }
 
 //

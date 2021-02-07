@@ -396,30 +396,32 @@ bool Exporter::DoEditMetadata(AudacityProject &project,
    const TranslatableString &title,
    const TranslatableString &shortUndoDescription, bool force)
 {
-   auto &settings = ProjectSettings::Get( project );
-   auto &tags = Tags::Get( project );
+   if (force) {
+      auto &tags = Tags::Get( project );
 
-   // Back up my tags
-   // Tags (artist name, song properties, MP3 ID3 info, etc.)
-   // The structure may be shared with undo history entries
-   // To keep undo working correctly, always replace this with a NEW duplicate
-   // BEFORE doing any editing of it!
-   auto newTags = tags.Duplicate();
+      // Back up my tags
+      // Tags (artist name, song properties, MP3 ID3 info, etc.)
+      // The structure may be shared with undo history entries
+      // To keep undo working correctly, always replace this with a NEW duplicate
+      // BEFORE doing any editing of it!
+      auto newTags = tags.Duplicate();
 
-   if (TagsEditorDialog::ShowEditDialog(
-      *newTags, &GetProjectFrame( project ), title, force)) {
+      if (!TagsEditorDialog::ShowEditDialog(
+         *newTags, &GetProjectFrame( project ), title))
+      return false;
+
       if (tags != *newTags) {
          // Commit the change to project state only now.
          Tags::Set( project, newTags );
          ProjectHistory::Get( project ).PushState( title, shortUndoDescription);
       }
-      bool bShowInFuture;
-      gPrefs->Read(wxT("/AudioFiles/ShowId3Dialog"), &bShowInFuture, true);
-      settings.SetShowId3Dialog( bShowInFuture );
-      return true;
    }
 
-   return false;
+   bool bShowInFuture;
+   gPrefs->Read(wxT("/AudioFiles/ShowId3Dialog"), &bShowInFuture, true);
+   auto &settings = ProjectSettings::Get( project );
+   settings.SetShowId3Dialog( bShowInFuture );
+   return true;
 }
 
 bool Exporter::Process(bool selectedOnly, double t0, double t1)

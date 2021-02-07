@@ -28,8 +28,9 @@ class TagsEditorDialog final : public wxDialogWrapper
 
    virtual ~TagsEditorDialog();
 
+   //! Show this dialog, return true if not cancelled
    AUDACITY_DLL_API static bool ShowEditDialog( Tags &tags,
-      wxWindow *parent, const TranslatableString &title, bool force = false);
+      wxWindow *parent, const TranslatableString &title);
 
 #if !defined(__WXMSW__)
    bool IsEscapeKey(const wxKeyEvent& /*event*/) override { return false; }

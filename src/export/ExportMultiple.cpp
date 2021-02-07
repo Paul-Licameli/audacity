@@ -848,7 +848,7 @@ ProgressResult ExportMultipleDialog::ExportMultipleByLabel(bool byName,
          if( bShowTagsDialog ){
             bool bCancelled = !TagsEditorDialog::ShowEditDialog(setting.filetags,
                ProjectWindow::Find( mProject ),
-               XO("Edit Metadata Tags"), bShowTagsDialog);
+               XO("Edit Metadata Tags"));
             gPrefs->Read(wxT("/AudioFiles/ShowId3Dialog"), &bShowTagsDialog, true);
             settings.SetShowId3Dialog( bShowTagsDialog );
             if( bCancelled )
@@ -992,7 +992,7 @@ ProgressResult ExportMultipleDialog::ExportMultipleByTrack(bool byName,
          if( bShowTagsDialog ){
             bool bCancelled = !TagsEditorDialog::ShowEditDialog(setting.filetags,
                ProjectWindow::Find( mProject ),
-               XO("Edit Metadata Tags"), bShowTagsDialog);
+               XO("Edit Metadata Tags"));
             gPrefs->Read(wxT("/AudioFiles/ShowId3Dialog"), &bShowTagsDialog, true);
             settings.SetShowId3Dialog( bShowTagsDialog );
             if( bCancelled )
