@@ -563,7 +563,6 @@ void TrackPanel::ProcessUIHandleResult
 
    if (refreshResult & RefreshCode::DrawOverlays) {
       panel->DrawOverlays(false);
-      mRuler->DrawOverlays(false);
    }
 
    // Refresh all if told to do so, or if told to refresh a track that
