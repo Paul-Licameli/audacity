@@ -2419,3 +2419,69 @@ void AdornedRulerPanel::TogglePinnedHead()
    if (scrubber.HasMark())
       scrubber.SetScrollScrubbing(value);
 }
+
+// Attach menu items
+
+#include "commands/CommandContext.h"
+#include "commands/CommandManager.h"
+#include "CommonCommandFlags.h"
+
+namespace {
+struct Handler : CommandHandlerObject {
+void OnLockPlayRegion(const CommandContext &context)
+{
+   AdornedRulerPanel::Get( context.project ).LockPlayRegion();
+}
+
+void OnUnlockPlayRegion(const CommandContext &context)
+{
+   AdornedRulerPanel::Get( context.project ).UnlockPlayRegion();
+}
+
+void OnTogglePinnedHead(const CommandContext &context)
+{
+   AdornedRulerPanel::Get( context.project ).TogglePinnedHead();
+}
+};
+
+static CommandHandlerObject &findCommandHandler(AudacityProject &) {
+   // Handler is not stateful.  Doesn't need a factory registered with
+   // AudacityProject.
+   static Handler instance;
+   return instance;
+};
+
+using namespace MenuTable;
+using Options = CommandManager::Options;
+#define FN(X) (& Handler :: X)
+
+AttachedItem sAttachment1{
+   { wxT("Transport/Other"), { OrderingHint::Begin, {} } },
+   ( FinderScope{ findCommandHandler },
+      Section( "TimeRuler",
+         Menu( wxT("PlayRegion"), XXO("Pla&y Region"),
+            Command( wxT("LockPlayRegion"), XXO("&Lock"), FN(OnLockPlayRegion),
+               PlayRegionNotLockedFlag() ),
+            Command( wxT("UnlockPlayRegion"), XXO("&Unlock"),
+               FN(OnUnlockPlayRegion), PlayRegionLockedFlag() )
+         )
+      )
+   )
+};
+   
+AttachedItem sAttachment2{
+   { wxT("Transport/Other/Options/Part2"), { OrderingHint::Begin, {} } },
+   ( FinderScope{ findCommandHandler },
+      Command( wxT("PinnedHead"), XXO("Pinned Play/Record &Head (on/off)"),
+         FN(OnTogglePinnedHead),
+         // Switching of scrolling on and off is permitted
+         // even during transport
+         AlwaysEnabledFlag,
+         Options{}.CheckTest([](const AudacityProject&){
+            return TracksPrefs::GetPinnedHeadPreference(); } ) )
+   )
+};
+
+#undef FN
+
+}
