@@ -961,6 +961,10 @@ AdornedRulerPanel::AdornedRulerPanel(AudacityProject* project,
    // And call it once to initialize it
    DoSelectionChange( mViewInfo->selectedRegion );
 
+   project->Bind(EVT_TRACK_PANEL_TIMER,
+      &AdornedRulerPanel::OnTimer,
+      this);
+
    SetLeftOffset(viewinfo->GetLeftOffset());  // bevel on AdornedRuler
 }
 
@@ -1957,6 +1961,13 @@ void AdornedRulerPanel::OnLockPlayRegion(wxCommandEvent&)
       LockPlayRegion();
 }
 
+void AdornedRulerPanel::OnTimer(wxCommandEvent &event)
+{
+   event.Skip();
+   if( mLastDrawnSelectedRegion != ViewInfo::Get(*mProject).selectedRegion )
+      DrawSelection();
+   DrawOverlays(false);
+}
 
 // Draws the horizontal <===>
 void AdornedRulerPanel::DoDrawPlayRegion(wxDC * dc)

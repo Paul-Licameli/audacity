@@ -55,8 +55,6 @@ public:
 
    void SetLeftOffset(int offset);
 
-   void DrawSelection();
-
    void SetPlayRegion(double playRegionStart, double playRegionEnd);
    void ClearPlayRegion();
    void LockPlayRegion();
@@ -80,6 +78,7 @@ public:
 
 
 private:
+   void DrawSelection();
    void DoIdle();
    void OnIdle( wxIdleEvent &evt );
    void OnAudioStartStop(wxCommandEvent & evt);
@@ -159,6 +158,7 @@ private:
    //void OnTimelineToolTips(wxCommandEvent &evt);
    void OnAutoScroll(wxCommandEvent &evt);
    void OnLockPlayRegion(wxCommandEvent &evt);
+   void OnTimer(wxCommandEvent &event);
 
    void OnPinnedButton(wxCommandEvent & event);
    void OnTogglePinnedState(wxCommandEvent & event);
