@@ -53,7 +53,7 @@
 #include "WaveTrack.h"
 
 #include "widgets/AButton.h"
-#include "widgets/Meter.h"
+#include "widgets/MeterPanel.h"
 #include "widgets/auStaticText.h"
 
 

@@ -12,7 +12,7 @@
 #include "ToolManager.h"
 #include "widgets/AButton.h"
 #include "widgets/ASlider.h"
-#include "widgets/Meter.h"
+#include "widgets/MeterPanel.h"
 
 // private helper classes and functions
 namespace {

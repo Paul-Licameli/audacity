@@ -262,8 +262,8 @@ list( APPEND SOURCES
       widgets/Grid.h
       widgets/ImageRoll.cpp
       widgets/ImageRoll.h
-      widgets/Meter.cpp
-      widgets/Meter.h
+      widgets/MeterPanel.cpp
+      widgets/MeterPanel.h
       widgets/MeterPanelBase.cpp
       widgets/MeterPanelBase.h
       widgets/MultiDialog.cpp
