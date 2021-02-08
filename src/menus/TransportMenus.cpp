@@ -25,7 +25,6 @@
 #include "../ViewInfo.h"
 #include "../commands/CommandContext.h"
 #include "../commands/CommandManager.h"
-#include "../toolbars/ToolManager.h"
 #include "../widgets/AudacityMessageBox.h"
 #include "BasicUI.h"
 #include "../widgets/ProgressDialog.h"
@@ -277,16 +276,16 @@ void OnSoundActivated(const CommandContext &context)
    dialog.ShowModal();
 }
 
-void OnToggleSoundActivated(const CommandContext &WXUNUSED(context) )
+void OnToggleSoundActivated(const CommandContext & )
 {
    bool pause;
    gPrefs->Read(wxT("/AudioIO/SoundActivatedRecord"), &pause, false);
    gPrefs->Write(wxT("/AudioIO/SoundActivatedRecord"), !pause);
    gPrefs->Flush();
-   ToolManager::ModifyAllProjectToolbarMenus();
+   CommandManager::UpdateCheckmarksInAllProjects();
 }
 
-void OnTogglePlayRecording(const CommandContext &WXUNUSED(context) )
+void OnTogglePlayRecording(const CommandContext & )
 {
    bool Duplex;
 #ifdef EXPERIMENTAL_DA
@@ -296,16 +295,16 @@ void OnTogglePlayRecording(const CommandContext &WXUNUSED(context) )
 #endif
    gPrefs->Write(wxT("/AudioIO/Duplex"), !Duplex);
    gPrefs->Flush();
-   ToolManager::ModifyAllProjectToolbarMenus();
+   CommandManager::UpdateCheckmarksInAllProjects();
 }
 
-void OnToggleSWPlaythrough(const CommandContext &WXUNUSED(context) )
+void OnToggleSWPlaythrough(const CommandContext & )
 {
    bool SWPlaythrough;
    gPrefs->Read(wxT("/AudioIO/SWPlaythrough"), &SWPlaythrough, false);
    gPrefs->Write(wxT("/AudioIO/SWPlaythrough"), !SWPlaythrough);
    gPrefs->Flush();
-   ToolManager::ModifyAllProjectToolbarMenus();
+   CommandManager::UpdateCheckmarksInAllProjects();
 }
 
 #ifdef EXPERIMENTAL_AUTOMATED_INPUT_LEVEL_ADJUSTMENT
@@ -317,7 +316,7 @@ void OnToggleAutomatedInputLevelAdjustment(
       wxT("/AudioIO/AutomatedInputLevelAdjustment"), &AVEnabled, false);
    gPrefs->Write(wxT("/AudioIO/AutomatedInputLevelAdjustment"), !AVEnabled);
    gPrefs->Flush();
-   ToolManager::ModifyAllProjectToolbarMenus();
+   CommandManager::UpdateCheckmarksInAllProjects();
 }
 #endif
 

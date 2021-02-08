@@ -338,6 +338,7 @@ public:
    wxMenu * CurrentMenu() const;
 
    void UpdateCheckmarks( AudacityProject &project );
+   static void UpdateCheckmarksInAllProjects();
 private:
    wxString FormatLabelForMenu(const CommandListEntry *entry) const;
    wxString FormatLabelWithDisabledAccel(const CommandListEntry *entry) const;

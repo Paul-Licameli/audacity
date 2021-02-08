@@ -4,7 +4,6 @@
 #include "../Project.h"
 #include "../commands/CommandContext.h"
 #include "../commands/CommandManager.h"
-#include "../toolbars/ToolManager.h"
 
 #include <wx/frame.h>
 
@@ -30,7 +29,7 @@ void OnFullScreen(const CommandContext &context)
    bool bChecked = !window.wxTopLevelWindow::IsFullScreen();
    window.wxTopLevelWindow::ShowFullScreen(bChecked);
 
-   ToolManager::Get(project).ModifyToolbarMenus(project);
+   CommandManager::Get( project ).UpdateCheckmarks( project );
 }
 
 }; // struct Handler
