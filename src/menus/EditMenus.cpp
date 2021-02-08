@@ -1,4 +1,3 @@
-#include "../AdornedRulerPanel.h"
 #include "../Clipboard.h"
 #include "../CommonCommandFlags.h"
 #include "../EditUtilities.h"
@@ -165,7 +164,6 @@ void OnCut(const CommandContext &context)
    auto &tracks = TrackList::Get( project );
    auto &trackPanel = TrackPanel::Get( project );
    auto &selectedRegion = ViewInfo::Get( project ).selectedRegion;
-   auto &ruler = AdornedRulerPanel::Get( project );
    auto &window = ProjectWindow::Get( project );
 
    // Handle special cut (such as from label tracks) first.
@@ -202,10 +200,6 @@ void OnCut(const CommandContext &context)
 
    ProjectHistory::Get( project )
       .PushState(XO("Cut to the clipboard"), XO("Cut"));
-
-   // Bug 1663
-   //mRuler->ClearPlayRegion();
-   ruler.DrawOverlays( true );
 }
 
 void OnDelete(const CommandContext &context)
