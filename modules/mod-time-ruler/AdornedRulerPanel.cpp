@@ -2485,3 +2485,6 @@ AttachedItem sAttachment2{
 #undef FN
 
 }
+
+#include "ModuleConstants.h"
+DEFINE_MODULE_ENTRIES

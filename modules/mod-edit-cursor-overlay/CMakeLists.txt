@@ -3,5 +3,5 @@ list( APPEND SOURCES
    EditCursorOverlay.h
 )
 audacity_module( mod-edit-cursor-overlay "${SOURCES}"
-   "Audacity"
+   "mod-time-ruler-interface"
    "" "" )

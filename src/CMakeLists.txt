@@ -64,8 +64,6 @@ list( APPEND SOURCES
       ActiveProjects.h
       AboutDialog.cpp
       AboutDialog.h
-      AdornedRulerPanel.cpp
-      AdornedRulerPanel.h
       AllThemeResources.cpp
       AllThemeResources.h
       AudacityApp.cpp
@@ -335,8 +333,6 @@ list( APPEND SOURCES
       tracks/ui/BackgroundCell.h
       tracks/ui/CommonTrackPanelCell.cpp
       tracks/ui/CommonTrackPanelCell.h
-      tracks/ui/ScrubUI.cpp
-      tracks/ui/ScrubUI.h
       tracks/ui/Scrubbing.cpp
       tracks/ui/Scrubbing.h
       tracks/ui/TrackControls.cpp

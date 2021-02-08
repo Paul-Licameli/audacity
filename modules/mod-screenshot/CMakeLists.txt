@@ -3,5 +3,6 @@ list( APPEND SOURCES
    ScreenshotCommand.cpp
    ScreenshotCommand.h
 )
-audacity_module( mod-screenshot "${SOURCES}" "mod-scripting-interface"
+audacity_module( mod-screenshot "${SOURCES}"
+   "mod-scripting-interface;mod-time-ruler-interface"
    "" "" )

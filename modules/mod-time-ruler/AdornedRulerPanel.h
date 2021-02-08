@@ -22,7 +22,7 @@ class SnapManager;
 class TrackList;
 
 // This is an Audacity Specific ruler panel.
-class AUDACITY_DLL_API AdornedRulerPanel final
+class TIME_RULER_API AdornedRulerPanel final
 : public CellularPanel
 , private PrefsListener
 {
