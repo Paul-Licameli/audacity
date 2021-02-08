@@ -229,6 +229,7 @@ private:
    struct MainGroup;
 
    SelectedRegion mLastDrawnSelectedRegion;
+   int mLastDrawnRulerWidth{};
    double mLastDrawnH{};
    double mLastDrawnZoom{};
    bool mDirtySelectedRegion{};

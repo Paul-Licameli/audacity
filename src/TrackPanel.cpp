@@ -919,12 +919,8 @@ void TrackPanel::UpdateVRulerSize()
       for (auto t : trackRange)
          s.IncTo(t->vrulerSize);
 
-      if (mViewInfo->GetVRulerWidth() != s.GetWidth()) {
+      if (mViewInfo->GetVRulerWidth() != s.GetWidth())
          mViewInfo->SetVRulerWidth( s.GetWidth() );
-         mRuler->SetLeftOffset(
-            mViewInfo->GetLeftOffset());  // bevel on AdornedRuler
-         mRuler->Refresh();
-      }
    }
    Refresh(false);
 }
