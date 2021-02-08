@@ -686,10 +686,12 @@ wxRect ScreenshotCommand::GetScreenRect(){
    return wxRect( 0,0,width,height);
 }
 
-wxRect ScreenshotCommand::GetPanelRect(TrackPanel * panel){
+wxRect ScreenshotCommand::GetPanelRect(AudacityProject &project){
    //AdornedRulerPanel *ruler = panel->mRuler;
 
-   int h = panel->GetRuler()->GetRulerHeight();
+   auto panel = &TrackPanel::Get(project);
+   auto ruler = &AdornedRulerPanel::Get(project);
+   int h = ruler->GetRulerHeight();
    int x = 0, y = -h;
    int width, height;
 
@@ -788,7 +790,7 @@ bool ScreenshotCommand::Apply(const CommandContext & context)
       return false;
 
    TrackPanel *panel = &TrackPanel::Get( context.project );
-   AdornedRulerPanel *ruler = panel->GetRuler();
+   AdornedRulerPanel *ruler = &AdornedRulerPanel::Get( context.project );
 
    int nTracks = TrackList::Get( context.project ).size();
 
@@ -821,7 +823,7 @@ bool ScreenshotCommand::Apply(const CommandContext & context)
          CapturePreferences(context, &context.project, mFileName);
          return true;
       case ktrackpanel:
-         return Capture(context, mFileName, panel, GetPanelRect(panel));
+         return Capture(context, mFileName, panel, GetPanelRect(context.project));
       case kruler:
          return Capture(context, mFileName, ruler, GetRulerRect(ruler) );
       case ktracks:

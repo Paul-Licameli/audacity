@@ -124,7 +124,7 @@ private:
    wxRect GetWindowRect(wxTopLevelWindow *w);
    wxRect GetFullWindowRect(wxTopLevelWindow *w);
    wxRect GetScreenRect();
-   wxRect GetPanelRect(TrackPanel * panel);
+   wxRect GetPanelRect(AudacityProject &project);
    wxRect GetRulerRect(AdornedRulerPanel *ruler);
    wxRect GetTracksRect(TrackPanel * panel);
    wxRect GetTrackRect( AudacityProject * pProj, TrackPanel * panel,int n);
