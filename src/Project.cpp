@@ -13,7 +13,6 @@
 #include "Project.h"
 
 #include "FileNames.h"
-#include "KeyboardCapture.h"
 #include "TempDirectory.h"
 #include "widgets/wxWidgetsBasicUI.h"
 
@@ -26,7 +25,6 @@ AttachedProjectObject::~AttachedProjectObject() = default;
 void AttachedProjectObject::Destroy() {}
 
 wxDEFINE_EVENT(EVT_TRACK_PANEL_TIMER, wxCommandEvent);
-wxDEFINE_EVENT(EVT_PROJECT_ACTIVATION, wxCommandEvent);
 
 size_t AllProjects::size() const
 {
@@ -104,25 +102,8 @@ std::mutex &AllProjects::Mutex()
 int AudacityProject::mProjectCounter=0;// global counter.
 
 /* Define Global Variables */
-//This is a pointer to the currently-active project.
-static AudacityProject *gActiveProject;
 //This array holds onto all of the projects currently open
 AllProjects::Container AllProjects::gAudacityProjects;
-
-AUDACITY_DLL_API AudacityProject *GetActiveProject()
-{
-   return gActiveProject;
-}
-
-void SetActiveProject(AudacityProject * project)
-{
-   if ( gActiveProject != project ) {
-      gActiveProject = project;
-      KeyboardCapture::Capture( nullptr );
-      wxTheApp->QueueEvent( safenew wxCommandEvent{ EVT_PROJECT_ACTIVATION } );
-   }
-   wxTheApp->SetTopWindow( FindProjectFrame( project ) );
-}
 
 AudacityProject::AudacityProject()
 {

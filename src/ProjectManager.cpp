@@ -12,6 +12,7 @@ Paul Licameli split from AudacityProject.cpp
 
 
 
+#include "ActiveProject.h"
 #include "AudioIO.h"
 #include "CellularPanel.h"
 #include "Clipboard.h"

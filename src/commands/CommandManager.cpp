@@ -90,9 +90,9 @@ CommandManager.  It holds the callback for one command.
 #include <wx/log.h>
 #include <wx/menu.h>
 
+#include "../ActiveProject.h"
 #include "../Menus.h"
-
-#include "../Project.h"
+#include "Project.h"
 #include "../widgets/AudacityMessageBox.h"
 #include "../widgets/HelpSystem.h"
 

@@ -23,6 +23,7 @@ code out of ModuleManager.
 
 #include "commands/CommandTargets.h"
 #include "CommandBuilder.h"
+#include "ActiveProject.h"
 #include "AppCommandEvent.h"
 #include "Project.h"
 #include <thread>

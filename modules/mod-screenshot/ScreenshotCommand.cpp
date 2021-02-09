@@ -31,6 +31,7 @@ small calculations of rectangles.
 #include <wx/bitmap.h>
 #include <wx/valgen.h>
 
+#include "ActiveProject.h"
 #include "AdornedRulerPanel.h"
 #include "TrackPanel.h"
 #include "ToolManager.h"

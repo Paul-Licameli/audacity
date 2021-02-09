@@ -49,6 +49,7 @@
 #include <wx/popupwin.h>
 
 #include "AColor.h"
+#include "ActiveProject.h"
 #include "AllThemeResources.h"
 #include "ImageManipulation.h"
 #include "Menus.h"
