@@ -13,6 +13,7 @@
 
 #include "Effect.h"
 #include "FileNames.h"
+#include "SampleFormat.h"
 
 #include "nyx.h"
 
