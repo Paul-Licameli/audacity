@@ -3,6 +3,7 @@
 # The list of modules is ordered so that each module occurs after any others
 # that it depends on
 set( MODULES
+   mod-tags
    mod-tags-ui
    mod-import-export
    mod-midi-import-export

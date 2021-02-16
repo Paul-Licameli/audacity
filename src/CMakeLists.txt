@@ -208,8 +208,6 @@ list( APPEND SOURCES
       SqliteSampleBlock.cpp
       SseMathFuncs.cpp
       SseMathFuncs.h
-      Tags.cpp
-      Tags.h
       Theme.cpp
       Theme.h
       ThemeAsCeeCode.h

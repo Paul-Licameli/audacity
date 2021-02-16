@@ -65,7 +65,7 @@ using TagMap = std::unordered_map< wxString, wxString >;
 #define TAG_SOFTWARE wxT("Software")
 #define TAG_COPYRIGHT wxT("Copyright")
 
-class AUDACITY_DLL_API Tags final
+class TAGS_API Tags final
    : public XMLTagHandler
    , public std::enable_shared_from_this< Tags >
    , public ClientData::Base

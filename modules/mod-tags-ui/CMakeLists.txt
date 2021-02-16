@@ -2,5 +2,6 @@ list( APPEND SOURCES
    TagsEditor.cpp
    TagsEditor.h
 )
-audacity_module( mod-tags-ui "${SOURCES}" "Audacity"
+audacity_module( mod-tags-ui "${SOURCES}"
+   "mod-tags-interface"
    "" "" )
