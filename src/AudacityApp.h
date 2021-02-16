@@ -29,7 +29,6 @@ class wxSocketEvent;
 class wxSocketServer;
 
 class IPCServ;
-class Importer;
 class CommandHandler;
 class AppCommandEvent;
 class AudacityProject;

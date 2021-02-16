@@ -17,7 +17,7 @@
 #include "Project.h"
 #include "ProjectWindow.h"
 #include "TrackPanel.h"
-#include "import/Import.h"
+#include "Import.h"
 
 #if wxUSE_DRAG_AND_DROP
 class FileObject final : public wxFileDataObject

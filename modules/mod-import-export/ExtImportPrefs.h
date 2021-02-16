@@ -14,9 +14,9 @@
 #include <wx/defs.h>
 #include <wx/dnd.h> // to inherit wxDropTarget
 
-#include "PrefsPanel.h"
+#include "prefs/PrefsPanel.h"
 
-#include "../import/ImportPlugin.h"
+#include "ImportPlugin.h"
 
 class wxButton;
 class wxGridEvent;

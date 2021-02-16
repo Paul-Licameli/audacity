@@ -9,7 +9,7 @@ if ( USE_LIBFLAC AND USE_LIBVORBIS )
    )
 
    list( APPEND LIBS
-      Audacity
+      mod-import-export-interface
       libogg
       libvorbis
    )

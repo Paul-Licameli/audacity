@@ -11,9 +11,7 @@
 
 **********************************************************************/
 
-
-
-#include "../ProjectSettings.h"
+#include "ProjectSettings.h"
 
 #include <wx/app.h>
 #include <wx/cmdline.h>
@@ -29,17 +27,17 @@
 #include "FileNames.h"
 #include "Export.h"
 
-#include "../Mix.h"
+#include "Mix.h"
 #include "Prefs.h"
-#include "../SelectFile.h"
-#include "../ShuttleGui.h"
-#include "../Tags.h"
-#include "../Track.h"
+#include "SelectFile.h"
+#include "ShuttleGui.h"
+#include "Tags.h"
+#include "Track.h"
 #include "float_cast.h"
-#include "../widgets/FileHistory.h"
-#include "../widgets/AudacityMessageBox.h"
-#include "../widgets/ProgressDialog.h"
-#include "../widgets/Warning.h"
+#include "widgets/FileHistory.h"
+#include "widgets/AudacityMessageBox.h"
+#include "widgets/ProgressDialog.h"
+#include "widgets/Warning.h"
 #include "wxFileNameWrapper.h"
 
 #ifdef USE_LIBID3TAG

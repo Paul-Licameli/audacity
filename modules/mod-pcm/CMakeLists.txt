@@ -3,7 +3,7 @@ set( SOURCES
    ImportPCM.cpp
 )
 set( LIBRARIES
-   Audacity
+   mod-import-export-interface
    libsndfile
 )
 if (USE_LIBID3TAG)

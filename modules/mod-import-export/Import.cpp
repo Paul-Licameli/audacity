@@ -35,7 +35,6 @@ ImportLOF.cpp, and ImportAUP.cpp.
 
 
 
-
 #include "Import.h"
 
 #include "ImportPlugin.h"
@@ -1136,11 +1135,11 @@ void Importer::DoImport(AudacityProject &project, bool isRaw)
 }
 
 // Register a menu item
-#include "../commands/CommandManager.h"
-#include "../commands/CommandContext.h"
-#include "../CommonCommandFlags.h"
-#include "../ProjectFileManager.h"
-#include "../ProjectWindow.h"
+#include "commands/CommandManager.h"
+#include "commands/CommandContext.h"
+#include "CommonCommandFlags.h"
+#include "ProjectFileManager.h"
+#include "ProjectWindow.h"
 
 namespace {
 struct Handler : CommandHandlerObject {
@@ -1184,3 +1183,21 @@ static ProjectFileManager::RegisteredImportProcedure sProcedure {
       return success;
    }
 };
+
+#include "ModuleConstants.h"
+DEFINE_VERSION_CHECK
+
+extern "C" DLL_API int ModuleDispatch(ModuleDispatchTypes type)
+{
+   switch (type){
+   case AppInitialized:
+      Importer::Get().Initialize();
+      break;
+   case AppQuiting:
+      Importer::Get().Terminate();
+      break;
+   default:
+      break;
+   }
+   return 1;
+}

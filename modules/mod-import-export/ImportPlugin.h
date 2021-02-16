@@ -45,8 +45,6 @@ but little else.
 #ifndef __AUDACITY_IMPORTER__
 #define __AUDACITY_IMPORTER__
 
-
-
 #include <memory>
 #include "audacity/Types.h"
 #include "Identifier.h"
@@ -63,7 +61,7 @@ class Tags;
 
 class ImportFileHandle;
 
-class AUDACITY_DLL_API ImportPlugin /* not final */
+class IMPORT_EXPORT_API ImportPlugin /* not final */
 {
 public:
 
@@ -107,7 +105,7 @@ protected:
 class WaveTrack;
 using TrackHolders = std::vector< std::vector< std::shared_ptr<Track> > >;
 
-class AUDACITY_DLL_API ImportFileHandle /* not final */
+class IMPORT_EXPORT_API ImportFileHandle /* not final */
 {
 public:
    ImportFileHandle(const FilePath & filename);

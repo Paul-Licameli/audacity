@@ -6,5 +6,6 @@ list( APPEND SOURCES
    ExportMIDI.cpp
    ImportMIDI.cpp
 )
-audacity_module( mod-midi-import-export "${SOURCES}" "Audacity;portsmf"
+audacity_module( mod-midi-import-export "${SOURCES}"
+   "mod-import-export-interface;portsmf"
    "" "" )

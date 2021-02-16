@@ -8,7 +8,7 @@ if ( USE_LIBFLAC )
    )
 
    set( LIBS
-      Audacity
+      mod-import-export-interface
       libflac
    )
 

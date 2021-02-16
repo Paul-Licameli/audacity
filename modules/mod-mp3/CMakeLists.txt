@@ -6,7 +6,7 @@ set( SOURCES
 )
 
 set( LIBS
-   Audacity
+   mod-import-export-interface
 )
 
 list( APPEND LIBS libmp3lame::libmp3lame )

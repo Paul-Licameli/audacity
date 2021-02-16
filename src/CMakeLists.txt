@@ -104,13 +104,10 @@ list( APPEND SOURCES
       DeviceManager.h
       Diags.cpp
       Diags.h
-      DropTarget.cpp
       Envelope.cpp
       Envelope.h
       EnvelopeEditor.cpp
       EnvelopeEditor.h
-      FileFormats.cpp
-      FileFormats.h
       HelpText.cpp
       HelpText.h
       HiContrastThemeAsCeeCode.h
@@ -391,45 +388,6 @@ list( APPEND SOURCES
       effects/Wahwah.cpp
       effects/Wahwah.h
 
-      # Export
-
-      export/Export.cpp
-      export/Export.h
-
-      # Standard exporters
-      export/ExportCL.cpp
-      export/ExportMultiple.cpp
-      export/ExportMultiple.h
-
-      # Import
-
-      import/FormatClassifier.cpp
-      import/FormatClassifier.h
-      import/Import.cpp
-      import/Import.h
-      import/ImportForwards.h
-      import/MultiFormatReader.cpp
-      import/MultiFormatReader.h
-      import/RawAudioGuess.cpp
-      import/RawAudioGuess.h
-      import/SpecPowerMeter.cpp
-      import/SpecPowerMeter.h
-
-      # Standard importers
-
-      import/ImportAUP.cpp
-      import/ImportLOF.cpp
-      import/ImportPlugin.h
-      import/ImportPlugin.cpp
-      import/ImportRaw.cpp
-      import/ImportRaw.h
-
-      # Optional importers
-
-      $<$<BOOL:${USE_GSTREAMER}>:
-         import/ImportGStreamer.cpp
-      >
-
       # Menus
 
       menus/EditMenus.cpp
@@ -446,8 +404,6 @@ list( APPEND SOURCES
       prefs/DirectoriesPrefs.h
       prefs/EffectsPrefs.cpp
       prefs/EffectsPrefs.h
-      prefs/ExtImportPrefs.cpp
-      prefs/ExtImportPrefs.h
       prefs/GUIPrefs.cpp
       prefs/GUIPrefs.h
       prefs/GUISettings.h
@@ -834,7 +790,6 @@ list( APPEND LIBRARIES
       ZLIB::ZLIB
       wxwidgets::wxwidgets
       expat::expat
-      libsndfile
       portaudio-v19
       sqlite
       $<$<BOOL:${${_OPT}has_crashreports}>:crashreports>
@@ -985,14 +940,6 @@ else()
    set( MIMETYPES
       application/x-audacity-project
    )
-   if( USE_SNDFILE )
-      list( APPEND MIMETYPES
-         audio/basic
-         audio/x-aiff
-         audio/x-wav
-      )
-   endif()
-
    # Create the desktop file
    configure_file( audacity.desktop.in ${_INTDIR}/audacity.desktop )
 

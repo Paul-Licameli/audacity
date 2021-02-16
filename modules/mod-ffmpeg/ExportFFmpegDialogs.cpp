@@ -61,7 +61,7 @@
 #include "widgets/AudacityMessageBox.h"
 #include "widgets/HelpSystem.h"
 
-#include "export/Export.h"
+#include "Export.h"
 
 #if defined(USE_FFMPEG)
 

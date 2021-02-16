@@ -22,7 +22,7 @@
 #include "ProjectFileIO.h"
 #include "ProjectFileManager.h"
 #include "ProjectManager.h"
-#include "export/Export.h"
+#include "Export.h"
 #include "Shuttle.h"
 #include "ShuttleGui.h"
 #include "commands/CommandContext.h"

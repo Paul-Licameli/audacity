@@ -37,7 +37,7 @@ function.
 #include "widgets/ProgressDialog.h"
 #include "wxFileNameWrapper.h"
 
-#include "export/Export.h"
+#include "Export.h"
 
 #include "ExportFFmpegDialogs.h"
 #include "SelectFile.h"

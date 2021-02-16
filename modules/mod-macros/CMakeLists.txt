@@ -10,5 +10,6 @@ list( APPEND SOURCES
    BatchProcessDialog.cpp
    BatchProcessDialog.h
 )
-audacity_module( mod-macros "${SOURCES}" "Audacity"
+audacity_module( mod-macros "${SOURCES}"
+   "mod-import-export-interface"
    "" "" )

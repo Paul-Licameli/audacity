@@ -16,7 +16,7 @@
 #include <wx/filename.h> // member variable
 #include "Identifier.h"
 #include "SampleFormat.h"
-#include "../widgets/wxPanelWrapper.h" // to inherit
+#include "widgets/wxPanelWrapper.h" // to inherit
 #include "FileNames.h" // for FileTypes
 
 #include "Registry.h"
@@ -39,7 +39,7 @@ using WaveTrackConstArray = std::vector < std::shared_ptr < const WaveTrack > >;
 namespace BasicUI{ enum class ProgressResult : unsigned; }
 class wxFileNameWrapper;
 
-class AUDACITY_DLL_API FormatInfo
+class IMPORT_EXPORT_API FormatInfo
 {
    public:
       FormatInfo() {}
@@ -61,7 +61,7 @@ class AUDACITY_DLL_API FormatInfo
 //----------------------------------------------------------------------------
 // ExportPlugin
 //----------------------------------------------------------------------------
-class AUDACITY_DLL_API ExportPlugin /* not final */
+class IMPORT_EXPORT_API ExportPlugin /* not final */
 {
 public:
    using ProgressResult = BasicUI::ProgressResult;
@@ -159,10 +159,10 @@ using ExportPluginArray = std::vector < std::unique_ptr< ExportPlugin > > ;
 //----------------------------------------------------------------------------
 
 // For a file suffix change from the options.
-wxDECLARE_EXPORTED_EVENT(AUDACITY_DLL_API,
+wxDECLARE_EXPORTED_EVENT(IMPORT_EXPORT_API,
    AUDACITY_FILE_SUFFIX_EVENT, wxCommandEvent);
 
-class AUDACITY_DLL_API Exporter final : public wxEvtHandler
+class IMPORT_EXPORT_API Exporter final : public wxEvtHandler
 {
    struct ExporterItem;
 public:
@@ -176,7 +176,7 @@ public:
    // Register factories, not plugin objects themselves, which allows them
    // to have some fresh state variables each time export begins again
    // and to compute translated strings for the current locale
-   struct AUDACITY_DLL_API  RegisteredExportPlugin
+   struct IMPORT_EXPORT_API RegisteredExportPlugin
       : public Registry::RegisteredItem<ExporterItem>
    {
       RegisteredExportPlugin(
@@ -184,7 +184,7 @@ public:
          const ExportPluginFactory&,
          const Registry::Placement &placement = { wxEmptyString, {} } );
 
-      struct AUDACITY_DLL_API Init{ Init(); };
+      struct IMPORT_EXPORT_API Init{ Init(); };
    };
 
    Exporter( AudacityProject &project );
@@ -221,7 +221,7 @@ public:
    void OnHelp(wxCommandEvent &evt);
 
 private:
-   struct AUDACITY_DLL_API ExporterItem final : Registry::SingleItem {
+   struct IMPORT_EXPORT_API ExporterItem final : Registry::SingleItem {
       static Registry::GroupItem &Registry();
    
       ExporterItem(
@@ -334,17 +334,17 @@ private:
    DECLARE_EVENT_TABLE()
 };
 
-AUDACITY_DLL_API TranslatableString AudacityExportCaptionStr();
-AUDACITY_DLL_API TranslatableString AudacityExportMessageStr();
+IMPORT_EXPORT_API TranslatableString AudacityExportCaptionStr();
+IMPORT_EXPORT_API TranslatableString AudacityExportMessageStr();
 
 /// We have many Export errors that are essentially anonymous
 /// and are distinguished only by an error code number.
 /// Rather than repeat the code, we have it just once.
-AUDACITY_DLL_API void ShowExportErrorDialog(wxString ErrorCode,
+IMPORT_EXPORT_API void ShowExportErrorDialog(wxString ErrorCode,
    TranslatableString message = AudacityExportMessageStr(),
    const TranslatableString& caption = AudacityExportCaptionStr());
 
-AUDACITY_DLL_API
+IMPORT_EXPORT_API
 void ShowDiskFullExportErrorDialog(const wxFileNameWrapper &fileName);
 
 // Guarantees registry exists before attempts to use it

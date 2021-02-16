@@ -32,7 +32,7 @@
 #include "widgets/wxWidgetsBasicUI.h"
 #include "wxFileNameWrapper.h"
 
-#include "export/Export.h"
+#include "Export.h"
 
 #ifdef USE_LIBID3TAG
    #include <id3tag.h>

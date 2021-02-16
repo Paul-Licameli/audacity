@@ -7,7 +7,7 @@ if ( USE_LIBTWOLAME )
    )
 
    set( LIBS
-      Audacity
+      mod-import-export-interface
       twolame
    )
 

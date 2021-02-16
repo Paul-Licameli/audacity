@@ -20,8 +20,8 @@
 //#include "strparse.h"
 //#include "mfmidi.h"
 
-#include "import/Import.h"
-#include "import/ImportPlugin.h"
+#include "Import.h"
+#include "ImportPlugin.h"
 #include "NoteTrack.h"
 #include "Project.h"
 #include "ProjectFileIO.h"

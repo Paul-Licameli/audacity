@@ -69,22 +69,20 @@
 
 *//*******************************************************************/
 
-
-
 #include <wx/textfile.h>
 #include <wx/tokenzr.h>
 
 #include "FileNames.h"
-#include "../WaveTrack.h"
+#include "WaveTrack.h"
 #include "ImportPlugin.h"
 #include "Import.h"
-#include "../Project.h"
-#include "../ProjectHistory.h"
-#include "../ProjectManager.h"
-#include "../ProjectWindow.h"
+#include "Project.h"
+#include "ProjectHistory.h"
+#include "ProjectManager.h"
+#include "ProjectWindow.h"
 #include "Prefs.h"
-#include "../widgets/AudacityMessageBox.h"
-#include "../widgets/ProgressDialog.h"
+#include "widgets/AudacityMessageBox.h"
+#include "widgets/ProgressDialog.h"
 
 #define BINARY_FILE_CHECK_BUFFER_SIZE 1024
 

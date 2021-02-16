@@ -29,7 +29,7 @@ class SelectionState;
 class ShuttleGui;
 class Track;
 
-class AUDACITY_DLL_API ExportMultipleDialog final : public wxDialogWrapper
+class IMPORT_EXPORT_API ExportMultipleDialog final : public wxDialogWrapper
 {
 public:
    using ProgressResult = BasicUI::ProgressResult;

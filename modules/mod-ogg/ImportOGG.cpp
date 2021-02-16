@@ -35,7 +35,7 @@
 #include <wx/window.h>
 #endif
 
-#include "import/Import.h"
+#include "Import.h"
 #include "Prefs.h"
 #include "Tags.h"
 #include "widgets/ProgressDialog.h"
@@ -69,7 +69,7 @@ static Importer::RegisteredUnusableImportPlugin registered{
 #include <vorbis/vorbisfile.h>
 
 #include "WaveTrack.h"
-#include "import/ImportPlugin.h"
+#include "ImportPlugin.h"
 
 using NewChannelGroup = std::vector< std::shared_ptr<Track> >;
 

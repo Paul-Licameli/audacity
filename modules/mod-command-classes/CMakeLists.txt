@@ -33,5 +33,6 @@ list( APPEND SOURCES
    SetTrackInfoCommand.cpp
    SetTrackInfoCommand.h
 )
-audacity_module( mod-command-classes "${SOURCES}" "Audacity"
+audacity_module( mod-command-classes "${SOURCES}"
+   "mod-import-export-interface"
    "" "" )

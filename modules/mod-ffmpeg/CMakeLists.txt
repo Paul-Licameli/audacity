@@ -11,7 +11,8 @@ if (USE_FFMPEG)
       FFmpegPrefs.cpp
       ImportFFmpeg.cpp
    )
-   audacity_module( mod-ffmpeg "${SOURCES}" "Audacity;ffmpeg;libsndfile"
+   audacity_module( mod-ffmpeg "${SOURCES}"
+      "mod-import-export-interface;ffmpeg;libsndfile"
       "" "" )
 
 endif()

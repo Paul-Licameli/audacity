@@ -41,7 +41,7 @@
 #include <wx/log.h>
 #include <wx/stream.h>
 
-#include "export/Export.h"
+#include "Export.h"
 #include "FileIO.h"
 #include "Mix.h"
 #include "Prefs.h"
