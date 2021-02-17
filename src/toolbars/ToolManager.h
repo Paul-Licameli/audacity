@@ -111,6 +111,7 @@ class AUDACITY_DLL_API ToolManager final
    static void ModifyToolbarMenus(AudacityProject &project);
    // Calls ModifyToolbarMenus() on all projects
    static void ModifyAllProjectToolbarMenus();
+   void OnThemeChange(wxCommandEvent & evt);
 
  private:
 
