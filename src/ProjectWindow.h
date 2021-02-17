@@ -21,6 +21,17 @@ class Track;
 class wxScrollBar;
 class wxPanel;
 
+//
+// Custom event emitted by window
+//
+wxDECLARE_EXPORTED_EVENT( AUDACITY_DLL_API,
+                         EVT_PROJECT_WINDOW_RESIZING, wxCommandEvent );
+
+//
+// Custom event that can be posted to the window
+//
+DECLARE_EXPORTED_EVENT_TYPE(AUDACITY_DLL_API, EVT_TOOLBAR_UPDATED, -1);
+
 ///\brief A top-level window associated with a project, and handling scrollbars
 /// and zooming
 class AUDACITY_DLL_API ProjectWindow final : public ProjectWindowBase
@@ -153,7 +164,6 @@ public:
    void OnMenu(wxCommandEvent & event);
    void OnUpdateUI(wxUpdateUIEvent & event);
 
-   void MacShowUndockedToolbars(bool show);
    void OnActivate(wxActivateEvent & event);
 
    void OnMouseEvent(wxMouseEvent & event);

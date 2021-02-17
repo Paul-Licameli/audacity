@@ -19,6 +19,7 @@ Paul Licameli split from AudacityProject.cpp
 #include "ProjectAudioIO.h"
 #include "ProjectStatus.h"
 #include "RefreshCode.h"
+#include "Theme.h"
 #include "TrackPanelMouseEvent.h"
 #include "TrackPanelAx.h"
 #include "UndoManager.h"
@@ -27,7 +28,6 @@ Paul Licameli split from AudacityProject.cpp
 #include "WaveTrack.h"
 #include "prefs/ThemePrefs.h"
 #include "prefs/TracksPrefs.h"
-#include "toolbars/ToolManager.h"
 #include "tracks/ui/Scrubbing.h"
 #include "tracks/ui/TrackView.h"
 #include "widgets/wxPanelWrapper.h"
@@ -37,6 +37,13 @@ Paul Licameli split from AudacityProject.cpp
 #include <wx/display.h>
 #include <wx/scrolbar.h>
 #include <wx/sizer.h>
+
+wxDEFINE_EVENT( EVT_PROJECT_WINDOW_RESIZING, wxCommandEvent);
+
+//
+// Custom event
+//
+DEFINE_EVENT_TYPE(EVT_TOOLBAR_UPDATED)
 
 // Returns the screen containing a rectangle, or -1 if none does.
 int ScreenContaining( wxRect & r ){
@@ -1157,13 +1164,15 @@ void ProjectWindow::UpdateLayout()
 {
    auto &project = mProject;
    auto &trackPanel = GetProjectPanel( project );
-   auto &toolManager = ToolManager::Get( project );
 
    // 1. Layout panel, to get widths of the docks.
    Layout();
    // 2. Layout toolbars to pack the toolbars correctly in docks which 
    // are now the correct width.
-   toolManager.LayoutToolBars();
+   {
+      wxCommandEvent evt{EVT_PROJECT_WINDOW_RESIZING};
+      this->GetEventHandler()->ProcessEvent(evt);
+   }
    // 3. Layout panel, to resize docks, in particular reducing the height 
    // of any empty docks, or increasing the height of docks that need it.
    Layout();
@@ -1246,38 +1255,6 @@ void ProjectWindow::UpdateStatusWidths()
    statusBar->SetStatusWidths( nWidths, widths );
 }
 
-void ProjectWindow::MacShowUndockedToolbars(bool show)
-{
-   (void)show;//compiler food
-#ifdef __WXMAC__
-   // Save the focus so we can restore it to whatever had it before since
-   // showing a previously hidden toolbar will cause the focus to be set to
-   // its frame.  If this is not done it will appear that activation events
-   // aren't being sent to the project window since they are actually being
-   // delivered to the last tool frame shown.
-   wxWindow *focused = FindFocus();
-
-   // Find all the floating toolbars, and show or hide them
-   const auto &children = GetChildren();
-   for(const auto &child : children) {
-      if (auto frame = dynamic_cast<ToolFrame*>(child)) {
-         if (!show) {
-            frame->Hide();
-         }
-         else if (frame->GetBar() &&
-                  frame->GetBar()->IsVisible() ) {
-            frame->Show();
-         }
-      }
-   }
-
-   // Restore the focus if needed
-   if (focused) {
-      focused->SetFocus();
-   }
-#endif
-}
-
 void ProjectWindow::OnIconize(wxIconizeEvent &event)
 {
    //JKC: On Iconizing we get called twice.  Don't know
@@ -1286,17 +1263,7 @@ void ProjectWindow::OnIconize(wxIconizeEvent &event)
    // void return?  I don't know.
    mIconized = event.IsIconized();
 
-#if defined(__WXMAC__)
-   // Readdresses bug 1431 since a crash could occur when restoring iconized
-   // floating toolbars due to recursion (bug 2411).
-   MacShowUndockedToolbars(!mIconized);
-   if( !mIconized )
-   {
-      Raise();
-   }
-#endif
-
-   // VisibileProjectCount seems to be just a counter for debugging.
+   // VisibleProjectCount seems to be just a counter for debugging.
    // It's not used outside this function.
    auto VisibleProjectCount = std::count_if(
       AllProjects{}.begin(), AllProjects{}.end(),
@@ -1502,28 +1469,7 @@ void ProjectWindow::OnActivate(wxActivateEvent & event)
    if (IsBeingDeleted()) {
       return;
    }
-
-   auto &project = mProject;
-
    mActive = event.GetActive();
-
-   // Under Windows, focus can be "lost" when returning to
-   // Audacity from a different application.
-   //
-   // This was observed by minimizing all windows using WINDOWS+M and
-   // then ALT+TAB to return to Audacity.  Focus will be given to the
-   // project window frame which is not at all useful.
-   //
-   // So, we use ToolManager's observation of focus changes in a wxEventFilter.
-   // Then, when we receive the
-   // activate event, we restore that focus to the child or the track
-   // panel if no child had the focus (which probably should never happen).
-   if (mActive) {
-      auto &toolManager = ToolManager::Get( project );
-      SetActiveProject( &project );
-      if ( ! toolManager.RestoreFocus() )
-         GetProjectPanel( project ).SetFocus();
-   }
    event.Skip();
 }
 

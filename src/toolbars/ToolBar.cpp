@@ -309,11 +309,6 @@ void ToolBarResizer::OnKeyDown(wxKeyEvent &event)
 IMPLEMENT_CLASS( ToolBar, wxPanelWrapper );
 
 //
-// Custom event
-//
-DEFINE_EVENT_TYPE(EVT_TOOLBAR_UPDATED)
-
-//
 // Event table
 //
 BEGIN_EVENT_TABLE( ToolBar, wxPanelWrapper )

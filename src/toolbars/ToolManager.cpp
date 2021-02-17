@@ -55,6 +55,7 @@
 #include "../Menus.h"
 #include "Prefs.h"
 #include "../Project.h"
+#include "../ProjectWindow.h"
 #include "../prefs/ThemePrefs.h"
 #include "../widgets/AButton.h"
 #include "../widgets/ASlider.h"
@@ -422,7 +423,7 @@ ToolManager::ToolManager( AudacityProject *parent )
 void ToolManager::CreateWindows(wxWindow *topDockParent)
 {
    auto parent = mParent;
-   auto &window = GetProjectFrame( *parent );
+   auto &window = ProjectWindow::Get( *parent );
 
    // Hook the parents mouse events...using the parent helps greatly
    // under GTK
@@ -473,6 +474,11 @@ void ToolManager::CreateWindows(wxWindow *topDockParent)
    wxEvtHandler::AddFilter(this);
 
    parent->Bind( EVT_MENU_UPDATE, &ToolManager::OnMenuUpdate, this );
+
+   auto handler = window.GetEventHandler();
+   handler->Bind( EVT_PROJECT_WINDOW_RESIZING, &ToolManager::OnResize, this );
+   handler->Bind( wxEVT_ACTIVATE, &ToolManager::OnActivate, this );
+   handler->Bind( wxEVT_ICONIZE, &ToolManager::OnIconize, this );
 }
 
 //
@@ -1314,6 +1320,85 @@ void ToolManager::OnMenuUpdate( wxCommandEvent &event )
 {
    event.Skip();
    ModifyToolbarMenus( *mParent );
+}
+
+void ToolManager::OnResize( wxCommandEvent &event )
+{
+   event.Skip();
+   LayoutToolBars();
+}
+
+void ToolManager::OnActivate(wxActivateEvent & event)
+{
+   event.Skip();
+
+   // Activate events can fire during window teardown, so just
+   // ignore them.
+   auto &project = *mParent;
+   auto &window = ProjectWindow::Get( project );
+   if (window.IsBeingDeleted()) {
+      return;
+   }
+
+   // Under Windows, focus can be "lost" when returning to
+   // Audacity from a different application.
+   //
+   // This was observed by minimizing all windows using WINDOWS+M and
+   // then ALT+TAB to return to Audacity.  Focus will be given to the
+   // project window frame which is not at all useful.
+   //
+   // So, we use ToolManager's observation of focus changes in a wxEventFilter.
+   // Then, when we receive the
+   // activate event, we restore that focus to the child or the track
+   // panel if no child had the focus (which probably should never happen).
+   if (event.GetActive()) {
+      SetActiveProject( &project );
+      if ( !RestoreFocus() )
+         GetProjectPanel( project ).SetFocus();
+   }
+}
+
+void ToolManager::OnIconize(wxIconizeEvent &event)
+{
+   event.Skip();
+#if defined(__WXMAC__)
+   auto &project = *mParent;
+   auto &window = ProjectWindow::Get( project );
+   auto iconized = event.IsIconized();
+
+   // Readdresses bug 1431 since a crash could occur when restoring iconized
+   // floating toolbars due to recursion (bug 2411).
+   // Save the focus so we can restore it to whatever had it before since
+   // showing a previously hidden toolbar will cause the focus to be set to
+   // its frame.  If this is not done it will appear that activation events
+   // aren't being sent to the project window since they are actually being
+   // delivered to the last tool frame shown.
+   wxWindow *focused = window.FindFocus();
+
+   // Find all the floating toolbars, and show or hide them
+   const auto &children = window.GetChildren();
+   for(const auto &child : children) {
+      if (auto frame = dynamic_cast<ToolFrame*>(child)) {
+         if (iconized) {
+            frame->Hide();
+         }
+         else if (frame->GetBar() &&
+                  frame->GetBar()->IsVisible() ) {
+            frame->Show();
+         }
+      }
+   }
+
+   // Restore the focus if needed
+   if (focused) {
+      focused->SetFocus();
+   }
+
+   if( !iconized )
+   {
+      window.Raise();
+   }
+#endif
 }
 
 //

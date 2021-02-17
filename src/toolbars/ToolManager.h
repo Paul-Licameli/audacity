@@ -114,6 +114,9 @@ class AUDACITY_DLL_API ToolManager final
    ToolBar *Float( ToolBar *t, wxPoint & pos );
 
    void OnMenuUpdate( wxCommandEvent &event );
+   void OnResize( wxCommandEvent &event );
+   void OnActivate(wxActivateEvent & event);
+   void OnIconize(wxIconizeEvent &event);
    void OnTimer( wxTimerEvent & event );
    void OnMouse( wxMouseEvent & event );
    void OnCaptureLost( wxMouseCaptureLostEvent & event );

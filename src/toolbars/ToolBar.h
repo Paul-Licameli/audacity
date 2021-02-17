@@ -49,11 +49,6 @@ class ToolBarResizer;
 ////////////////////////////////////////////////////////////
 
 //
-// Custom event
-//
-DECLARE_EXPORTED_EVENT_TYPE(AUDACITY_DLL_API, EVT_TOOLBAR_UPDATED, -1);
-
-//
 // Height of a single line toolbar
 //
 #define toolbarSingle 27

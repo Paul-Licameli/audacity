@@ -44,6 +44,7 @@
 #include "../AllThemeResources.h"
 #include "../ImageManipulation.h"
 #include "Prefs.h"
+#include "../ProjectWindow.h"
 #include "../widgets/Grabber.h"
 
 const ToolBarConfiguration::Position
