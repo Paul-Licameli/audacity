@@ -14,6 +14,7 @@ Max Maisel
 #include "Biquad.h"
 #include <memory>
 #include "SampleFormat.h"
+#include <cmath>
 
 #include <cmath>
 
