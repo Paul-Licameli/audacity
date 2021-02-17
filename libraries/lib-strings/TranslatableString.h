@@ -29,7 +29,7 @@ class Identifier;
 // The msgid should be used only in unusual cases and the translation more often
 //
 // Implicit conversions to and from wxString are intentionally disabled
-class AUDACITY_DLL_API TranslatableString {
+class STRINGS_API TranslatableString {
    enum class Request;
    template< size_t N > struct PluralTemp;
 

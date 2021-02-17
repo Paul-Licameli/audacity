@@ -3,6 +3,7 @@
 # The list of modules is ordered so that each library occurs after any others
 # that it depends on
 set( LIBRARIES
+   lib-strings
 )
 
 foreach( LIBRARY ${LIBRARIES} )

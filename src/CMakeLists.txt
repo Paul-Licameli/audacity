@@ -144,14 +144,10 @@ list( APPEND SOURCES
       HistoryWindow.cpp
       HistoryWindow.h
       HitTestResult.h
-      Identifier.cpp
-      Identifier.h
       ImageManipulation.cpp
       ImageManipulation.h
       InconsistencyException.cpp
       InconsistencyException.h
-      Internat.cpp
-      Internat.h
       InterpolateAudio.cpp
       InterpolateAudio.h
       KeyboardCapture.cpp
@@ -162,8 +158,6 @@ list( APPEND SOURCES
       LabelTrack.h
       LangChoice.cpp
       LangChoice.h
-      Languages.cpp
-      Languages.h
       Legacy.cpp
       Legacy.h
       LightThemeAsCeeCode.h
@@ -314,8 +308,6 @@ list( APPEND SOURCES
       TrackPanelResizerCell.h
       TrackUtilities.cpp
       TrackUtilities.h
-      TranslatableString.cpp
-      TranslatableString.h
       UIHandle.cpp
       UIHandle.h
       UndoManager.cpp
@@ -336,8 +328,6 @@ list( APPEND SOURCES
       ZoomInfo.cpp
       ZoomInfo.h
       float_cast.h
-      wxArrayStringEx.cpp
-      wxArrayStringEx.h
       wxFileNameWrapper.h
 
       # Commands
