@@ -72,6 +72,7 @@ AttachedVirtualFunction<
    AbstractHost, // class to be switched on by runtime type
    int, double // other arguments
 >;
+registries):libraries/lib-registries/AttachedVirtualFunction.h
 ```
 
 Definitions needed:
