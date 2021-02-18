@@ -14,10 +14,6 @@
 #ifndef __AUDACITY_LOGGER__
 #define __AUDACITY_LOGGER__
 
-
-
-
-
 #include <functional>
 #include <wx/log.h> // to inherit
 #include <wx/event.h> // to inherit wxEvtHandler
@@ -25,7 +21,7 @@
 class wxFrame;
 class wxTextCtrl;
 
-class AUDACITY_DLL_API AudacityLogger final : public wxEvtHandler,
+class FILES_API AudacityLogger final : public wxEvtHandler,
                              public wxLog
 {
  public:
