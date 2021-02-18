@@ -42,7 +42,7 @@
 #include "../Project.h"
 #include "../ProjectSettings.h"
 #include "../ProjectWindow.h"
-#include "../Prefs.h"
+#include "Prefs.h"
 #include "../SelectionState.h"
 #include "../ShuttleGui.h"
 #include "../Tags.h"
