@@ -1252,13 +1252,13 @@ void FFmpegPresets::WriteXMLHeader(XMLWriter &xmlFile) const
 
    wxString dtdName = wxT("-//audacityffmpegpreset-1.0.0//DTD//EN");
    wxString dtdURI =
-      wxT("http://audacity.sourceforge.net/xml/audacityffmpegpreset-1.0.0.dtd");
+      wxT("http://audacity.sourceforge.net/audacityffmpegpreset-1.0.0.dtd");
 
    xmlFile.Write(wxT("<!DOCTYPE "));
    xmlFile.Write(wxT("project "));
    xmlFile.Write(wxT("PUBLIC "));
    xmlFile.Write(wxT("\"-//audacityffmpegpreset-1.0.0//DTD//EN\" "));
-   xmlFile.Write(wxT("\"http://audacity.sourceforge.net/xml/audacityffmpegpreset-1.0.0.dtd\" "));
+   xmlFile.Write(wxT("\"http://audacity.sourceforge.net/audacityffmpegpreset-1.0.0.dtd\" "));
    xmlFile.Write(wxT(">\n"));
 }
 

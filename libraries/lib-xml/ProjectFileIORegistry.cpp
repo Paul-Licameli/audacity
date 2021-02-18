@@ -10,7 +10,7 @@
 
 #include "ProjectFileIORegistry.h"
 
-#include "Identifier.h"
+#include <wx/string.h>
 #include <unordered_map>
 #include <wx/string.h>
 

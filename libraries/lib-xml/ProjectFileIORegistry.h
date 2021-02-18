@@ -26,23 +26,23 @@ using TagHandlerFactory =
    std::function< XMLTagHandler *( AudacityProject & ) >;
 
 //! Typically statically constructed
-struct AUDACITY_DLL_API Entry{
+struct XML_API Entry{
    Entry( const wxString &tag, const TagHandlerFactory &factory );
 };
 
-TagHandlerFactory Lookup( const wxString &tag );
+XML_API TagHandlerFactory Lookup( const wxString &tag );
 
 //! Type of function that writes extra data directly contained in the top project tag
 using Writer = std::function< void(const AudacityProject &, XMLWriter &) >;
 using WriterTable = std::vector< Writer >;
 
 //! Typically statically constructed
-struct AUDACITY_DLL_API WriterEntry{
+struct XML_API WriterEntry{
    WriterEntry( const Writer &writer );
-   struct AUDACITY_DLL_API Init{ Init(); };
+   struct XML_API Init{ Init(); };
 };
 
-const WriterTable &GetWriters();
+XML_API const WriterTable &GetWriters();
 
 }
 

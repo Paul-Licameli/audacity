@@ -193,8 +193,6 @@ list( APPEND SOURCES
       ProjectAudioManager.h
       ProjectFileIO.cpp
       ProjectFileIO.h
-      ProjectFileIORegistry.cpp
-      ProjectFileIORegistry.h
       ProjectFileManager.cpp
       ProjectFileManager.h
       ProjectHistory.cpp
@@ -947,15 +945,6 @@ list( APPEND SOURCES
       widgets/wxWidgetsBasicUI.cpp
       widgets/wxWidgetsBasicUI.h
 
-      # XML handling
-      xml/XMLFileReader.cpp
-      xml/XMLFileReader.h
-      xml/XMLTagHandler.cpp
-      xml/XMLTagHandler.h
-      xml/XMLWriter.cpp
-      xml/XMLWriter.h
-      xml/audacityproject.dtd
-
       # Update version
       $<$<BOOL:${${_OPT}has_updates_check}>:
           update/VersionId.h
@@ -972,8 +961,6 @@ list( APPEND SOURCES
           prefs/ApplicationPrefs.h
           prefs/ApplicationPrefs.cpp
       >
-
-      Experimental.cmake
 )
 
 #
