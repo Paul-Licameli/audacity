@@ -52,6 +52,7 @@ selection range.
 #include "ViewInfo.h"
 #include "prefs/QualitySettings.h"
 #include "AllThemeResources.h"
+#include "widgets/auStaticText.h"
 
 #if wxUSE_ACCESSIBILITY
 #include "widgets/WindowAccessible.h"

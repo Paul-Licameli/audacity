@@ -52,6 +52,7 @@
 
 #include "widgets/AButton.h"
 #include "widgets/Meter.h"
+#include "widgets/auStaticText.h"
 
 
 #include "../images/MusicalInstruments.h"

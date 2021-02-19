@@ -15,8 +15,7 @@
 
 #include "HelpText.h"
 
-
-
+#include <wx/colour.h>
 #include <wx/sstream.h>
 #include <wx/txtstrm.h>
 
