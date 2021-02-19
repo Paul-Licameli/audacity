@@ -16,6 +16,8 @@
 class ComponentInterfaceSymbol;
 class WrappedType;
 
+#include <wx/string.h>
+
 class Shuttle /* not final */ {
  public:
    // constructors and destructors
@@ -57,7 +59,7 @@ class CommandParameters;
 virtual functions that do nothing by default.
 Unrelated to class Shuttle.
 ********************************************************************************/
-class AUDACITY_DLL_API ShuttleParams /* not final */
+class SHUTTLEGUI_API ShuttleParams /* not final */
 {
 public:
    wxString mParams;

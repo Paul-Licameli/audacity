@@ -12,8 +12,6 @@
 #ifndef __WRAPPED_TYPE__
 #define __WRAPPED_TYPE__
 
-
-
 enum teWrappedType
 {
    eWrappedNotSet,
@@ -27,7 +25,7 @@ enum teWrappedType
 class wxString;
 class ShuttlePrefs;
 
-class AUDACITY_DLL_API WrappedType
+class SHUTTLEGUI_API WrappedType
 {
 public:
 

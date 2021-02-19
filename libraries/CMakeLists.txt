@@ -17,6 +17,7 @@ set( LIBRARIES
    lib-xml
    lib-theme
    lib-wx-wrappers
+   lib-shuttlegui
 )
 
 if ( ${_OPT}has_networking )

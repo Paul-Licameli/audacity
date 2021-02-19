@@ -172,14 +172,8 @@ list( APPEND SOURCES
       SelectionState.h
       Sequence.cpp
       Sequence.h
-      Shuttle.cpp
-      Shuttle.h
       ShuttleAutomation.cpp
       ShuttleAutomation.h
-      ShuttleGui.cpp
-      ShuttleGui.h
-      ShuttlePrefs.cpp
-      ShuttlePrefs.h
       Snap.cpp
       Snap.h
       SoundActivatedRecord.cpp
@@ -222,8 +216,6 @@ list( APPEND SOURCES
       WaveClip.h
       WaveTrack.cpp
       WaveTrack.h
-      WrappedType.cpp
-      WrappedType.h
       ZoomInfo.cpp
       ZoomInfo.h
 
@@ -338,7 +330,6 @@ list( APPEND SOURCES
       widgets/PopupMenuTable.h
       widgets/ProgressDialog.cpp
       widgets/ProgressDialog.h
-      widgets/ReadOnlyText.h
       widgets/Ruler.cpp
       widgets/Ruler.h
       $<$<BOOL:${${_OPT}has_sentry_reporting}>:
@@ -357,7 +348,6 @@ list( APPEND SOURCES
       widgets/numformatter.h
       widgets/valnum.cpp
       widgets/valnum.h
-      widgets/wxTextCtrlWrapper.h
       widgets/wxWidgetsBasicUI.cpp
       widgets/wxWidgetsBasicUI.h
 

@@ -14,7 +14,7 @@
 #include "ShuttleGui.h"
 #include "LibraryPrefs.h"
 #include "widgets/HelpSystem.h"
-#include "widgets/ReadOnlyText.h"
+#include "ReadOnlyText.h"
 #include <wx/button.h>
 #include <wx/stattext.h>
 
