@@ -53,7 +53,6 @@ and use it for toolbar and window layouts too.
 
 *//*****************************************************************/
 
-
 #include "Theme.h"
 
 
@@ -193,7 +192,7 @@ static const unsigned char HiContrastImageCacheAsData[] = {
 };
 
 // theTheme is a global variable.
-AUDACITY_DLL_API Theme theTheme;
+THEME_API Theme theTheme;
 
 Theme::Theme(void)
 {

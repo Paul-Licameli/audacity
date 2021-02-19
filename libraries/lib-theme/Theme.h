@@ -14,8 +14,6 @@
 #ifndef __AUDACITY_THEME__
 #define __AUDACITY_THEME__
 
-
-
 #include <vector>
 #include <wx/arrstr.h>
 #include <wx/defs.h>
@@ -63,7 +61,7 @@ enum teThemeType
 
 
 
-class AUDACITY_DLL_API FlowPacker
+class THEME_API FlowPacker
 {
 public:
    FlowPacker(){;};
@@ -96,7 +94,7 @@ private:
 
 };
 
-class AUDACITY_DLL_API ThemeBase /* not final */
+class THEME_API ThemeBase /* not final */
 {
 public:
    ThemeBase(void);
@@ -161,7 +159,7 @@ protected:
 };
 
 
-class AUDACITY_DLL_API Theme final : public ThemeBase
+class THEME_API Theme final : public ThemeBase
 {
 public:
    Theme(void);
@@ -174,9 +172,9 @@ public:
    bool mbInitialised;
 };
 
-extern AUDACITY_DLL_API Theme theTheme;
+extern THEME_API Theme theTheme;
 
-extern AUDACITY_DLL_API ChoiceSetting
+extern THEME_API ChoiceSetting
      GUITheme
 ;
 

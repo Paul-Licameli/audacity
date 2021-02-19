@@ -58,17 +58,17 @@
 #include <math.h>
 
 #include "../AudioIO.h"
-#include "../AColor.h"
-#include "../ImageManipulation.h"
+#include "AColor.h"
+#include "ImageManipulation.h"
 #include "../prefs/GUISettings.h"
 #include "../Project.h"
 #include "../ProjectAudioManager.h"
 #include "../ProjectStatus.h"
 #include "Prefs.h"
 #include "../ShuttleGui.h"
-#include "../Theme.h"
+#include "Theme.h"
 
-#include "../AllThemeResources.h"
+#include "AllThemeResources.h"
 #include "../widgets/valnum.h"
 
 #if wxUSE_ACCESSIBILITY

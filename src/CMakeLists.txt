@@ -57,15 +57,10 @@ endif()
 #
 list( APPEND SOURCES
    PRIVATE
-      AColor.cpp
-      AColor.h
-      AColorResources.h
       ActiveProjects.cpp
       ActiveProjects.h
       AboutDialog.cpp
       AboutDialog.h
-      AllThemeResources.cpp
-      AllThemeResources.h
       AudacityApp.cpp
       AudacityApp.h
       $<$<BOOL:${wxIS_MAC}>:AudacityApp.mm>
@@ -86,14 +81,12 @@ list( APPEND SOURCES
       Benchmark.h
       CellularPanel.cpp
       CellularPanel.h
-      ClassicThemeAsCeeCode.h
       Clipboard.cpp
       Clipboard.h
       CommonCommandFlags.cpp
       CommonCommandFlags.h
       CrashReport.cpp
       CrashReport.h
-      DarkThemeAsCeeCode.h
       DBConnection.cpp
       DBConnection.h
       DeviceChange.cpp
@@ -108,20 +101,15 @@ list( APPEND SOURCES
       HelpText.h
       HelpUtilities.cpp
       HelpUtilities.h
-      HiContrastThemeAsCeeCode.h
       HitTestResult.h
-      ImageManipulation.cpp
-      ImageManipulation.h
       KeyboardCapture.cpp
       KeyboardCapture.h
       LangChoice.cpp
       LangChoice.h
       Legacy.cpp
       Legacy.h
-      LightThemeAsCeeCode.h
       LogWindow.cpp
       LogWindow.h
-      MacroMagic.h
       Menus.cpp
       Menus.h
       Mix.cpp
@@ -201,8 +189,6 @@ list( APPEND SOURCES
       SqliteSampleBlock.cpp
       SseMathFuncs.cpp
       SseMathFuncs.h
-      Theme.cpp
-      Theme.h
       TimeDialog.cpp
       TimeDialog.h
       Track.cpp
@@ -602,9 +588,6 @@ elseif( CMAKE_SYSTEM_NAME MATCHES "Darwin" )
          "-framework CoreAudio"
          "-framework CoreAudioKit"
    )
-
-   # Use the Aqua theme
-   set( USE_AQUA_THEME 1 )
 
    # Copy the required wxWidgets libs into the bundle
    add_custom_command(

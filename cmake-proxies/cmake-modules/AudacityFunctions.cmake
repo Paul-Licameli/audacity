@@ -263,6 +263,8 @@ function( audacity_append_common_compiler_options var use_pch )
          # Define/undefine _DEBUG
 	 # Yes, -U to /U too as needed for Windows:
 	 $<IF:$<CONFIG:Debug>,-D_DEBUG=1,-U_DEBUG>
+
+         -DUSE_AQUA_THEME
    )   
    # Definitions controlled by the AUDACITY_BUILD_LEVEL switch
    if( AUDACITY_BUILD_LEVEL EQUAL 0 )
@@ -272,7 +274,7 @@ function( audacity_append_common_compiler_options var use_pch )
    else()
       list( APPEND ${var} -DIS_RELEASE )
    endif()
-
+  
    set( ${var} "${${var}}" PARENT_SCOPE )
 endfunction()
 

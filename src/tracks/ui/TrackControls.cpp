@@ -10,7 +10,7 @@ Paul Licameli split from TrackPanel.cpp
 
 
 #include "TrackControls.h"
-#include "../../AColor.h"
+#include "AColor.h"
 #include "../../TrackPanelDrawingContext.h"
 #include <wx/dc.h>
 
