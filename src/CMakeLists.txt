@@ -203,7 +203,6 @@ list( APPEND SOURCES
       SseMathFuncs.h
       Theme.cpp
       Theme.h
-      ThemeAsCeeCode.h
       TimeDialog.cpp
       TimeDialog.h
       Track.cpp
