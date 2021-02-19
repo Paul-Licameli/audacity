@@ -45,7 +45,7 @@
 #include "WaveTrack.h"
 #include "widgets/HelpSystem.h"
 #include "widgets/AudacityMessageBox.h"
-#include "widgets/AudacityTextEntryDialog.h"
+#include "AudacityTextEntryDialog.h"
 #include "widgets/ProgressDialog.h"
 
 

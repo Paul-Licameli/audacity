@@ -12,7 +12,7 @@
 #define __AUDACITY_HISTORY_WINDOW__
 
 #include "Prefs.h"
-#include "widgets/wxPanelWrapper.h" // to inherit
+#include "wxPanelWrapper.h" // to inherit
 
 class wxButton;
 class wxListCtrl;

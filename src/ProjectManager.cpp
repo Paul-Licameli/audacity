@@ -36,7 +36,7 @@ Paul Licameli split from AudacityProject.cpp
 #include "prefs/QualitySettings.h"
 #include "widgets/AudacityMessageBox.h"
 #include "widgets/FileHistory.h"
-#include "widgets/WindowAccessible.h"
+#include "WindowAccessible.h"
 
 #include <wx/app.h>
 #include <wx/scrolbar.h>

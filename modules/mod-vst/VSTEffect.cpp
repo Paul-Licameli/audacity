@@ -88,7 +88,7 @@
 #include "XMLFileReader.h"
 
 #if wxUSE_ACCESSIBILITY
-#include "widgets/WindowAccessible.h"
+#include "WindowAccessible.h"
 #endif
 
 #include "ConfigInterface.h"

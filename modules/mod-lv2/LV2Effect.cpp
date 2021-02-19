@@ -45,7 +45,7 @@
 #include "ShuttleGui.h"
 #include "widgets/valnum.h"
 #include "widgets/AudacityMessageBox.h"
-#include "widgets/wxPanelWrapper.h"
+#include "wxPanelWrapper.h"
 #include "widgets/NumericTextCtrl.h"
 
 #include "lilv/lilv.h"

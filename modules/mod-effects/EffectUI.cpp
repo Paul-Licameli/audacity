@@ -38,7 +38,7 @@
 #include "commands/CommandContext.h"
 #include "Prefs.h"
 #include "Project.h"
-#include "widgets/wxPanelWrapper.h"
+#include "wxPanelWrapper.h"
 
 #include "images/EffectRack/EffectRack.h"
 

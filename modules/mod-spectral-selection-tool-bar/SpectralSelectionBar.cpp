@@ -52,7 +52,7 @@ frequency selection range.
 #include "WaveTrack.h"
 
 #if wxUSE_ACCESSIBILITY
-#include "widgets/WindowAccessible.h"
+#include "WindowAccessible.h"
 #endif
 
 #include "widgets/NumericTextCtrl.h"

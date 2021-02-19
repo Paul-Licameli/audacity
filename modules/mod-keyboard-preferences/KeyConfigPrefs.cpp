@@ -45,7 +45,7 @@ KeyConfigPrefs and MousePrefs use.
 #include "widgets/AudacityMessageBox.h"
 
 #if wxUSE_ACCESSIBILITY
-#include "widgets/WindowAccessible.h"
+#include "WindowAccessible.h"
 #endif
 
 #ifdef EXPERIMENTAL_EASY_CHANGE_KEY_BINDINGS

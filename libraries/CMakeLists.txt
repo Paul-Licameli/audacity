@@ -16,6 +16,7 @@ set( LIBRARIES
    lib-registries
    lib-xml
    lib-theme
+   lib-wx-wrappers
 )
 
 if ( ${_OPT}has_networking )

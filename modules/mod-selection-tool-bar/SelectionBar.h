@@ -13,6 +13,7 @@
 
 #include <wx/defs.h>
 
+#include "audacity/Types.h"
 #include "ToolBar.h"
 #include "widgets/auStaticText.h"
 

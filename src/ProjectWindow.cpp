@@ -28,8 +28,8 @@ Paul Licameli split from AudacityProject.cpp
 #include "WaveTrack.h"
 #include "tracks/ui/Scrubbing.h"
 #include "tracks/ui/TrackView.h"
-#include "widgets/wxPanelWrapper.h"
-#include "widgets/WindowAccessible.h"
+#include "wxPanelWrapper.h"
+#include "WindowAccessible.h"
 
 #include <wx/app.h>
 #include <wx/display.h>

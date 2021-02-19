@@ -26,7 +26,7 @@
 #include <wx/menu.h>
 
 #if wxUSE_ACCESSIBILITY
-#include "widgets/WindowAccessible.h"
+#include "WindowAccessible.h"
 
 // ----------------------------------------------------------------------------
 // KeyViewAx

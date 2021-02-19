@@ -20,7 +20,7 @@
 #include <wx/event.h>
 
 #if wxUSE_ACCESSIBILITY
-#include "widgets/WindowAccessible.h" // to inherit
+#include "WindowAccessible.h" // to inherit
 #endif
 
 #include "Project.h"

@@ -18,7 +18,7 @@
 #include "../commands/CommandManager.h"
 #include "../widgets/AudacityMessageBox.h"
 #include "../widgets/FileHistory.h"
-#include "../widgets/wxPanelWrapper.h"
+#include "wxPanelWrapper.h"
 
 #include <wx/app.h>
 #include <wx/menu.h>

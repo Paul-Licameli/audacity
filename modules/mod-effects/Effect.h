@@ -23,6 +23,7 @@ class wxChoice;
 class wxListBox;
 class wxWindow;
 
+#include "audacity/Types.h"
 #include "ConfigInterface.h"
 #include "EffectInterface.h"
 #include "PluginInterface.h"
@@ -32,7 +33,7 @@ class wxWindow;
 
 #include "Track.h"
 
-#include "widgets/wxPanelWrapper.h" // to inherit
+#include "wxPanelWrapper.h" // to inherit
 
 class wxArrayString;
 class ShuttleGui;

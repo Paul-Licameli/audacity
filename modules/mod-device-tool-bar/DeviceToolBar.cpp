@@ -45,7 +45,7 @@
 #include "widgets/AudacityMessageBox.h"
 
 #if wxUSE_ACCESSIBILITY
-#include "widgets/WindowAccessible.h"
+#include "WindowAccessible.h"
 #endif
 
 IMPLEMENT_CLASS(DeviceToolBar, ToolBar);

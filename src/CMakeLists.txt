@@ -304,28 +304,12 @@ list( APPEND SOURCES
       widgets/AttachableScrollBar.h
       widgets/AudacityMessageBox.cpp
       widgets/AudacityMessageBox.h
-      widgets/AudacityTextEntryDialog.cpp
-      widgets/AudacityTextEntryDialog.h
       widgets/BackedPanel.cpp
       widgets/BackedPanel.h
       widgets/ErrorDialog.cpp
       widgets/ErrorDialog.h
       widgets/ExpandingToolBar.cpp
       widgets/ExpandingToolBar.h
-      widgets/FileDialog/FileDialog.cpp
-      widgets/FileDialog/FileDialog.h
-      $<$<BOOL:${wxIS_WIN}>:
-         widgets/FileDialog/win/FileDialogPrivate.cpp
-         widgets/FileDialog/win/FileDialogPrivate.h
-      >
-      $<$<BOOL:${wxIS_MAC}>:
-         widgets/FileDialog/mac/FileDialogPrivate.mm
-         widgets/FileDialog/mac/FileDialogPrivate.h
-      >
-      $<$<BOOL:${wxIS_GTK}>:
-         widgets/FileDialog/gtk/FileDialogPrivate.cpp
-         widgets/FileDialog/gtk/FileDialogPrivate.h
-      >
       widgets/FileHistory.cpp
       widgets/FileHistory.h
       widgets/Grid.cpp
@@ -365,16 +349,12 @@ list( APPEND SOURCES
       widgets/VetoDialogHook.h
       widgets/Warning.cpp
       widgets/Warning.h
-      widgets/WindowAccessible.cpp
-      widgets/WindowAccessible.h
       widgets/auStaticText.cpp
       widgets/auStaticText.h
       widgets/numformatter.cpp
       widgets/numformatter.h
       widgets/valnum.cpp
       widgets/valnum.h
-      widgets/wxPanelWrapper.cpp
-      widgets/wxPanelWrapper.h
       widgets/wxTextCtrlWrapper.h
       widgets/wxWidgetsBasicUI.cpp
       widgets/wxWidgetsBasicUI.h
