@@ -169,23 +169,6 @@ bool XMLValueChecker::IsGoodInt64(const wxString & strInt)
    return IsGoodIntForRange( strInt, "9223372036854775808" );
 }
 
-bool XMLValueChecker::IsValidChannel(const int nValue)
-{
-   return (nValue >= LeftChannel) && (nValue <= MonoChannel);
-}
-
-#ifdef USE_MIDI
-bool XMLValueChecker::IsValidVisibleChannels(const int nValue)
-{
-    return (nValue >= 0 && nValue < (1 << 16));
-}
-#endif
-
-bool XMLValueChecker::IsValidSampleFormat(const int nValue)
-{
-   return (nValue == int16Sample) || (nValue == int24Sample) || (nValue == floatSample);
-}
-
 bool XMLTagHandler::ReadXMLTag(const char *tag, const char **attrs)
 {
    wxArrayString tmp_attrs;
