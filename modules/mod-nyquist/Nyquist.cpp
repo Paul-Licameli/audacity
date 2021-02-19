@@ -57,6 +57,7 @@ effects from this one class.
 #include "PluginManager.h"
 #include "Project.h"
 #include "ProjectSettings.h"
+#include "ShuttleAutomation.h"
 #include "ShuttleGetDefinition.h"
 #include "ShuttleGui.h"
 #include "TempDirectory.h"

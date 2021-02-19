@@ -33,7 +33,7 @@ ShuttleGui.
 
 #include "ConfigInterface.h"
 
-#include "../Shuttle.h"
+#include "../ShuttleAutomation.h"
 #include "../ShuttleGui.h"
 #include "../widgets/ProgressDialog.h"
 #include "../widgets/HelpSystem.h"

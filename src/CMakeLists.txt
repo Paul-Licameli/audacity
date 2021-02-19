@@ -174,6 +174,8 @@ list( APPEND SOURCES
       Sequence.h
       Shuttle.cpp
       Shuttle.h
+      ShuttleAutomation.cpp
+      ShuttleAutomation.h
       ShuttleGui.cpp
       ShuttleGui.h
       ShuttlePrefs.cpp
