@@ -235,7 +235,10 @@ bool GUIPrefs::Commit()
    }
 
    // Reads preference GUITheme
-   theTheme.LoadPreferredTheme();
+   {
+      wxBusyCursor busy;
+      theTheme.LoadPreferredTheme();
+   }
    ThemePrefs::ApplyUpdatedImages();
 
    return true;

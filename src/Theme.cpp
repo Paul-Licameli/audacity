@@ -626,7 +626,6 @@ const int ImageCacheHeight = 836;
 void ThemeBase::CreateImageCache( bool bBinarySave )
 {
    EnsureInitialised();
-   wxBusyCursor busy;
 
    wxImage ImageCache( ImageCacheWidth, ImageCacheHeight );
    ImageCache.SetRGB( wxRect( 0,0,ImageCacheWidth, ImageCacheHeight), 1,1,1);//Not-quite black.
@@ -793,7 +792,6 @@ void ThemeBase::CreateImageCache( bool bBinarySave )
 void ThemeBase::WriteImageMap( )
 {
    EnsureInitialised();
-   wxBusyCursor busy;
 
    int i;
    mFlow.Init( ImageCacheWidth );
@@ -846,7 +844,6 @@ void ThemeBase::WriteImageMap( )
 void ThemeBase::WriteImageDefs( )
 {
    EnsureInitialised();
-   wxBusyCursor busy;
 
    int i;
    wxFFile File( FileNames::ThemeImageDefsAsCee(), wxT("wb") );
@@ -920,7 +917,6 @@ bool ThemeBase::ReadImageCache( teThemeType type, bool bOkIfNotFound)
    using namespace BasicUI;
    EnsureInitialised();
    wxImage ImageCache;
-   wxBusyCursor busy;
 
    // Ensure we have an alpha channel...
 //   if( !ImageCache.HasAlpha() )
@@ -1056,7 +1052,6 @@ void ThemeBase::LoadComponents( bool bOkIfNotFound )
    if( !wxDirExists( FileNames::ThemeComponentsDir() ))
       return;
 
-   wxBusyCursor busy;
    int i;
    int n=0;
    FilePath FileName;
@@ -1128,7 +1123,6 @@ void ThemeBase::SaveComponents()
       }
    }
 
-   wxBusyCursor busy;
    int i;
    int n=0;
    FilePath FileName;
