@@ -97,6 +97,8 @@ list( APPEND SOURCES
       Diags.h
       HelpUtilities.cpp
       HelpUtilities.h
+      KeystrokeHandler.cpp
+      KeystrokeHandler.h
       LangChoice.cpp
       LangChoice.h
       Legacy.cpp

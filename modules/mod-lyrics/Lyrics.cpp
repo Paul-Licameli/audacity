@@ -21,10 +21,10 @@
 #include <wx/mimetype.h>
 
 #include "AudioIO.h"
+#include "KeystrokeHandler.h"
 #include "Project.h"
 #include "ProjectWindowBase.h"
 #include "LabelTrack.h"
-#include "commands/CommandManager.h"
 #include "UndoManager.h"
 #include "ViewInfo.h"
 
@@ -532,8 +532,7 @@ void LyricsPanel::OnShow(wxShowEvent &e)
 void LyricsPanel::OnKeyEvent(wxKeyEvent & event)
 {
    auto project = FindProjectFromWindow( this );
-   auto &commandManager = CommandManager::Get( *project );
-   commandManager.FilterKeyEvent(project, event, true);
+   FilterKeyEvent(project, event, true);
    event.Skip();
 }
 

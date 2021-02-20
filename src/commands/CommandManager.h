@@ -38,7 +38,40 @@ class BoolSetting;
 
 struct MenuBarListEntry;
 struct SubMenuListEntry;
-struct CommandListEntry;
+
+struct CommandListEntry
+{
+   int id;
+   CommandID name;
+   TranslatableString longLabel;
+   NormalizedKeyString key;
+   NormalizedKeyString defaultKey;
+   TranslatableString label;
+   TranslatableString labelPrefix;
+   TranslatableString labelTop;
+   wxMenu *menu;
+   CommandHandlerFinder finder;
+   CommandFunctorPointer callback;
+   CommandParameter parameter;
+
+   // type of a function that determines checkmark state
+   using CheckFn = std::function< bool(AudacityProject&) >;
+   CheckFn checkmarkFn;
+
+   bool multi;
+   int index;
+   int count;
+   bool enabled;
+   bool skipKeydown;
+   bool wantKeyup;
+   bool allowDup;
+   bool isGlobal;
+   bool isOccult;
+   bool isEffect;
+   bool excludeFromMacros;
+   CommandFlag flags;
+   bool useStrictFlags{ false };
+};
 
 using MenuBarList = std::vector < MenuBarListEntry >;
 using SubMenuList = std::vector < SubMenuListEntry >;
@@ -211,9 +244,6 @@ class AUDACITY_DLL_API CommandManager final
    // Executing commands
    //
 
-   // "permit" allows filtering even if the active window isn't a child of the project.
-   // Lyrics and MixerTrackCluster classes use it.
-   bool FilterKeyEvent(AudacityProject *project, const wxKeyEvent & evt, bool permit = false);
    bool HandleMenuID(AudacityProject &project, int id, CommandFlag flags, bool alwaysEnabled);
    void RegisterLastAnalyzer(const CommandContext& context);
    void RegisterLastTool(const CommandContext& context);
@@ -311,6 +341,9 @@ private:
    // Executing commands
    //
 
+public:
+   CommandListEntry *Lookup(const NormalizedKeyString &keyString);
+
    bool HandleCommandEntry(AudacityProject &project,
       const CommandListEntry * entry, CommandFlag flags,
       bool alwaysEnabled, const wxEvent * evt = NULL);
@@ -319,6 +352,7 @@ private:
    // Modifying
    //
 
+private:
    void Enable(CommandListEntry *entry, bool enabled);
    wxMenu *BeginMainMenu(const TranslatableString & tName);
    void EndMainMenu();

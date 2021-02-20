@@ -35,7 +35,4 @@ namespace std
       : hash< NormalizedKeyStringBase > {};
 }
 
-AUDACITY_DLL_API
-NormalizedKeyString KeyEventToKeyString(const wxKeyEvent & keyEvent);
-
 #endif

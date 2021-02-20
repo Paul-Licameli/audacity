@@ -80,17 +80,13 @@ CommandManager.  It holds the callback for one command.
 #include "CommandManager.h"
 
 #include "CommandContext.h"
-#include "CommandManagerWindowClasses.h"
 
 #include <wx/app.h>
 #include <wx/defs.h>
-#include <wx/evtloop.h>
-#include <wx/frame.h>
 #include <wx/hash.h>
 #include <wx/log.h>
 #include <wx/menu.h>
 
-#include "../ActiveProject.h"
 #include "BasicUI.h"
 #include "../Menus.h"
 
@@ -129,40 +125,6 @@ struct SubMenuListEntry
 
    TranslatableString name;
    std::unique_ptr<wxMenu> menu;
-};
-
-struct CommandListEntry
-{
-   int id;
-   CommandID name;
-   TranslatableString longLabel;
-   NormalizedKeyString key;
-   NormalizedKeyString defaultKey;
-   TranslatableString label;
-   TranslatableString labelPrefix;
-   TranslatableString labelTop;
-   wxMenu *menu;
-   CommandHandlerFinder finder;
-   CommandFunctorPointer callback;
-   CommandParameter parameter;
-
-   // type of a function that determines checkmark state
-   using CheckFn = std::function< bool(AudacityProject&) >;
-   CheckFn checkmarkFn;
-
-   bool multi;
-   int index;
-   int count;
-   bool enabled;
-   bool skipKeydown;
-   bool wantKeyup;
-   bool allowDup;
-   bool isGlobal;
-   bool isOccult;
-   bool isEffect;
-   bool excludeFromMacros;
-   CommandFlag flags;
-   bool useStrictFlags{ false };
 };
 
 MenuBarListEntry::MenuBarListEntry(const wxString &name_, wxMenuBar *menubar_)
@@ -1088,117 +1050,11 @@ TranslatableString CommandManager::DescribeCommandsAndShortcuts(
    return result;
 }
 
-///
-///
-///
-bool CommandManager::FilterKeyEvent(AudacityProject *project, const wxKeyEvent & evt, bool permit)
+CommandListEntry *
+CommandManager::Lookup(const NormalizedKeyString &keyString)
 {
-   if (!project)
-      return false;
-   
-   auto pWindow = FindProjectFrame( project );
-   CommandListEntry *entry = mCommandKeyHash[KeyEventToKeyString(evt)];
-   if (entry == NULL)
-   {
-      return false;
-   }
-
-   int type = evt.GetEventType();
-
-   // Global commands aren't tied to any specific project
-   if (entry->isGlobal && type == wxEVT_KEY_DOWN)
-   {
-      // Global commands are always disabled so they do not interfere with the
-      // rest of the command handling.  But, to use the common handler, we
-      // enable them temporarily and then disable them again after handling.
-      // LL:  Why do they need to be disabled???
-      entry->enabled = false;
-      auto cleanup = valueRestorer( entry->enabled, true );
-      return HandleCommandEntry(*project, entry, NoFlagsSpecified, false, &evt);
-   }
-
-   wxWindow * pFocus = wxWindow::FindFocus();
-   wxWindow * pParent = wxGetTopLevelParent( pFocus );
-   bool validTarget = pParent == pWindow;
-   // Bug 1557.  MixerBoard should count as 'destined for project'
-   // MixerBoard IS a TopLevelWindow, and its parent is the project.
-   if( pParent && pParent->GetParent() == pWindow ){
-      if( dynamic_cast< TopLevelKeystrokeHandlingWindow* >( pParent ) != NULL )
-         validTarget = true;
-   }
-   validTarget = validTarget && wxEventLoop::GetActive()->IsMain();
-
-   // Any other keypresses must be destined for this project window
-   if (!permit && !validTarget )
-   {
-      return false;
-   }
-
-   auto flags = MenuManager::Get(*project).GetUpdateFlags();
-
-   wxKeyEvent temp = evt;
-
-   // Possibly let wxWidgets do its normal key handling IF it is one of
-   // the standard navigation keys.
-   if((type == wxEVT_KEY_DOWN) || (type == wxEVT_KEY_UP ))
-   {
-      wxWindow * pWnd = wxWindow::FindFocus();
-      bool bIntercept =
-         pWnd && !dynamic_cast< NonKeystrokeInterceptingWindow * >( pWnd );
-
-      //wxLogDebug("Focus: %p TrackPanel: %p", pWnd, pTrackPanel );
-      // We allow the keystrokes below to be handled by wxWidgets controls IF we are
-      // in some sub window rather than in the TrackPanel itself.
-      // Otherwise they will go to our command handler and if it handles them
-      // they will NOT be available to wxWidgets.
-      if( bIntercept ){
-         switch( evt.GetKeyCode() ){
-         case WXK_LEFT:
-         case WXK_RIGHT:
-         case WXK_UP:
-         case WXK_DOWN:
-         // Don't trap WXK_SPACE (Bug 1727 - SPACE not starting/stopping playback
-         // when cursor is in a time control)
-         // case WXK_SPACE:
-         case WXK_TAB:
-         case WXK_BACK:
-         case WXK_HOME:
-         case WXK_END:
-         case WXK_RETURN:
-         case WXK_NUMPAD_ENTER:
-         case WXK_DELETE:
-         case '0':
-         case '1':
-         case '2':
-         case '3':
-         case '4':
-         case '5':
-         case '6':
-         case '7':
-         case '8':
-         case '9':
-            return false;
-         }
-      }
-   }
-
-   if (type == wxEVT_KEY_DOWN)
-   {
-      if (entry->skipKeydown)
-      {
-         return true;
-      }
-      return HandleCommandEntry(*project, entry, flags, false, &temp);
-   }
-
-   if (type == wxEVT_KEY_UP && entry->wantKeyup)
-   {
-      return HandleCommandEntry(*project, entry, flags, false, &temp);
-   }
-
-   return false;
+   return mCommandKeyHash[keyString];
 }
-
 
 /// HandleCommandEntry() takes a CommandListEntry and executes it
 /// returning true iff successful.  If you pass any flags,
@@ -1663,25 +1519,3 @@ void CommandManager::RemoveDuplicateShortcuts()
       MenuCreator::RebuildAllMenuBars();
    }
 }
-
-#include "KeyboardCapture.h"
-
-static struct InstallHandlers
-{
-   InstallHandlers()
-   {
-      KeyboardCapture::SetPreFilter( []( wxKeyEvent & ) {
-         // We must have a project since we will be working with the
-         // CommandManager, which is tied to individual projects.
-         AudacityProject *project = GetActiveProject();
-         return project && GetProjectFrame( *project ).IsEnabled();
-      } );
-      KeyboardCapture::SetPostFilter( []( wxKeyEvent &key ) {
-         // Capture handler window didn't want it, so ask the CommandManager.
-         AudacityProject *project = GetActiveProject();
-         auto &manager = CommandManager::Get( *project );
-         return manager.FilterKeyEvent(project, key);
-      } );
-   }
-} installHandlers;
-
