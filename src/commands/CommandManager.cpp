@@ -91,13 +91,11 @@ CommandManager.  It holds the callback for one command.
 #include <wx/menu.h>
 
 #include "../ActiveProject.h"
+#include "BasicUI.h"
 #include "../Menus.h"
 
 #include "Project.h"
 #include "ProjectWindows.h"
-#include "../widgets/AudacityMessageBox.h"
-#include "HelpSystem.h"
-
 
 // On wxGTK, there may be many many many plugins, but the menus don't automatically
 // allow for scrolling, so we build sub-menus.  If the menu gets longer than
@@ -1653,11 +1651,13 @@ void CommandManager::RemoveDuplicateShortcuts()
    }
 
    if (!disabledShortcuts.Translation().empty()) {
+      using namespace BasicUI;
       TranslatableString message = XO("The following commands have had their shortcuts removed,"
       " because their default shortcut is new or changed, and is the same shortcut"
       " that you have assigned to another command.")
          + disabledShortcuts;
-      AudacityMessageBox(message, XO("Shortcuts have been removed"), wxOK | wxCENTRE);
+      ShowMessageBox(message,
+         MessageBoxOptions{}.Caption(XO("Shortcuts have been removed")));
 
       gPrefs->Flush();
       MenuCreator::RebuildAllMenuBars();
