@@ -30,7 +30,7 @@
 #include "widgets/NumericTextCtrl.h"
 #include "widgets/valnum.h"
 
-#include "effects/TimeWarper.h"
+#include "TimeWarper.h"
 #include "WaveClip.h"
 #include "WaveTrack.h"
 

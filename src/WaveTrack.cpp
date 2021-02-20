@@ -49,7 +49,7 @@ from the project that will own the track.
 
 #include "Prefs.h"
 
-#include "effects/TimeWarper.h"
+#include "TimeWarper.h"
 #include "prefs/QualitySettings.h"
 
 #include "InconsistencyException.h"

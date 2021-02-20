@@ -30,7 +30,7 @@
 #include "Shuttle.h"
 #include "ShuttleGui.h"
 #include "widgets/valnum.h"
-#include "effects/TimeWarper.h"
+#include "TimeWarper.h"
 
 #include "LoadEffects.h"
 

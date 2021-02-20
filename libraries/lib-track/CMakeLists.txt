@@ -1,6 +1,8 @@
 list( APPEND SOURCES
    Envelope.cpp
    Envelope.h
+   TimeWarper.cpp
+   TimeWarper.h
    Track.cpp
    Track.h
    TrackAttachment.cpp

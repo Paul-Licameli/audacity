@@ -38,7 +38,7 @@ the pitch without changing the tempo.
 #include "Spectrum.h"
 #include "WaveTrack.h"
 #include "widgets/valnum.h"
-#include "effects/TimeWarper.h"
+#include "TimeWarper.h"
 
 // Soundtouch defines these as well, which are also in generated configmac.h
 // and configunix.h, so get rid of them before including,

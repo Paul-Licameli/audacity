@@ -20,7 +20,7 @@ effect that uses SBSMS to do its processing (TimeScale)
 #include "SyncLock.h"
 #include "WaveClip.h"
 #include "WaveTrack.h"
-#include "effects/TimeWarper.h"
+#include "TimeWarper.h"
 
 enum {
   SBSMSOutBlockSize = 512

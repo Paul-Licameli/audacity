@@ -215,8 +215,6 @@ list( APPEND SOURCES
       effects/RealtimeEffectManager.h
       effects/ScoreAlignDialog.cpp
       effects/ScoreAlignDialog.h
-      effects/TimeWarper.cpp
-      effects/TimeWarper.h
 
       # Menus
 

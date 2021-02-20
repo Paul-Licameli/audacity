@@ -16,7 +16,7 @@
 *//*******************************************************************/
 
 #include "Effect.h"
-#include "effects/TimeWarper.h"
+#include "TimeWarper.h"
 
 #include <algorithm>
 

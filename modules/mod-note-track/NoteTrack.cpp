@@ -33,7 +33,7 @@
 
 #include "InconsistencyException.h"
 
-#include "effects/TimeWarper.h"
+#include "TimeWarper.h"
 
 #ifdef SONIFY
 #include "../lib-src/portmidi/pm_common/portmidi.h"

@@ -16,7 +16,7 @@
 #include "ProjectHistory.h"
 #include "ProjectSettings.h"
 #include "ProjectWindow.h"
-#include "effects/TimeWarper.h"
+#include "TimeWarper.h"
 #include "SelectUtilities.h"
 #include "SyncLock.h"
 #include "ProjectWindows.h"

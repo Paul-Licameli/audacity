@@ -23,7 +23,7 @@
 #include "WaveTrack.h"
 #include "TracksBehaviorsPrefs.h"
 
-#include "effects/TimeWarper.h"
+#include "TimeWarper.h"
 
 #include "widgets/AudacityMessageBox.h"
 
