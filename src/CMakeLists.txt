@@ -181,6 +181,8 @@ list( APPEND SOURCES
       TrackUtilities.h
       TransportUtilities.cpp
       TransportUtilities.h
+      UndoRedoMenu.cpp
+      UndoRedoMenu.h
       UndoManager.cpp
       UndoManager.h
       WaveClip.cpp

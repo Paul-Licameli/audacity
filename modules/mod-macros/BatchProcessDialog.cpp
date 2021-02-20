@@ -51,6 +51,7 @@
 #include "../images/Arrow.xpm"
 #include "../images/Empty9x16.xpm"
 #include "UndoManager.h"
+#include "UndoRedoMenu.h"
 
 #include "AllThemeResources.h"
 
@@ -1471,7 +1472,7 @@ void OnApplyMacroDirectlyByName(const CommandContext& context, const MacroID& Na
 #endif
    /* i18n-hint: %s will be the name of the macro which will be
     * repeated if this menu item is chosen */
-   MenuManager::ModifyUndoMenuItems( project );
+   ModifyUndoMenuItems( project );
 
    TranslatableString desc;
    EffectManager& em = EffectManager::Get();

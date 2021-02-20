@@ -91,8 +91,6 @@ public:
 
    static void Visit( ToolbarMenuVisitor &visitor );
 
-   static void ModifyUndoMenuItems(AudacityProject &project);
-
    // checkActive is a temporary hack that should be removed as soon as we
    // get multiple effect preview working
    void UpdateMenus( bool checkActive = true );
@@ -112,8 +110,6 @@ public:
 private:
    void TellUserWhyDisallowed(const TranslatableString & Name, CommandFlag flagsGot,
       CommandFlag flagsRequired);
-
-   void OnUndoRedo( wxCommandEvent &evt );
 
    AudacityProject &mProject;
 

@@ -6,6 +6,7 @@
 #include "ProjectWindows.h"
 #include "../TrackPanelAx.h"
 #include "../UndoManager.h"
+#include "../UndoRedoMenu.h"
 #include "../WaveTrack.h"
 #include "../commands/CommandContext.h"
 #include "../commands/CommandManager.h"
@@ -167,7 +168,7 @@ BaseItemSharedPtr EditMenu()
          Special( wxT("UndoItemsUpdateStep"),
          [](AudacityProject &project, wxMenu&) {
             // Change names in the CommandManager as a side-effect
-            MenuManager::ModifyUndoMenuItems(project);
+            ModifyUndoMenuItems(project);
          })
       ),
 

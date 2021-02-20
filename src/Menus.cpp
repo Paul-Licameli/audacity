@@ -33,9 +33,7 @@
 #include <wx/frame.h>
 
 #include "Project.h"
-#include "ProjectHistory.h"
 #include "ProjectWindows.h"
-#include "UndoManager.h"
 #include "commands/CommandManager.h"
 #include "BasicUI.h"
 
@@ -80,17 +78,10 @@ MenuManager::MenuManager( AudacityProject &project )
    : mProject{ project }
 {
    UpdatePrefs();
-   mProject.Bind( EVT_UNDO_OR_REDO, &MenuManager::OnUndoRedo, this );
-   mProject.Bind( EVT_UNDO_RESET, &MenuManager::OnUndoRedo, this );
-   mProject.Bind( EVT_UNDO_PUSHED, &MenuManager::OnUndoRedo, this );
-   mProject.Bind( EVT_UNDO_RENAMED, &MenuManager::OnUndoRedo, this );
 }
 
 MenuManager::~MenuManager()
 {
-   mProject.Unbind( EVT_UNDO_OR_REDO, &MenuManager::OnUndoRedo, this );
-   mProject.Unbind( EVT_UNDO_RESET, &MenuManager::OnUndoRedo, this );
-   mProject.Unbind( EVT_UNDO_PUSHED, &MenuManager::OnUndoRedo, this );
 }
 
 void MenuManager::UpdatePrefs()
@@ -472,42 +463,6 @@ void MenuManager::Visit( ToolbarMenuVisitor &visitor )
       &MenuTable::ItemRegistry::Registry() );
 }
 
-// TODO: This surely belongs in CommandManager?
-void MenuManager::ModifyUndoMenuItems(AudacityProject &project)
-{
-   TranslatableString desc;
-   auto &undoManager = UndoManager::Get( project );
-   auto &commandManager = CommandManager::Get( project );
-   int cur = undoManager.GetCurrentState();
-
-   if (undoManager.UndoAvailable()) {
-      undoManager.GetShortDescription(cur, &desc);
-      commandManager.Modify(wxT("Undo"),
-         XXO("&Undo %s")
-            .Format( desc ));
-      commandManager.Enable(wxT("Undo"),
-         ProjectHistory::Get( project ).UndoAvailable());
-   }
-   else {
-      commandManager.Modify(wxT("Undo"),
-                            XXO("&Undo"));
-   }
-
-   if (undoManager.RedoAvailable()) {
-      undoManager.GetShortDescription(cur+1, &desc);
-      commandManager.Modify(wxT("Redo"),
-         XXO("&Redo %s")
-            .Format( desc ));
-      commandManager.Enable(wxT("Redo"),
-         ProjectHistory::Get( project ).RedoAvailable());
-   }
-   else {
-      commandManager.Modify(wxT("Redo"),
-                            XXO("&Redo"));
-      commandManager.Enable(wxT("Redo"), false);
-   }
-}
-
 // Get hackcess to a protected method
 class wxFrameEx : public wxFrame
 {
@@ -540,13 +495,6 @@ void MenuCreator::RebuildMenuBar(AudacityProject &project)
    CommandManager::Get( project ).PurgeData();
 
    CreateMenusAndCommands(project);
-}
-
-void MenuManager::OnUndoRedo( wxCommandEvent &evt )
-{
-   evt.Skip();
-   ModifyUndoMenuItems( mProject );
-   UpdateMenus();
 }
 
 CommandFlag MenuManager::GetUpdateFlags( bool checkActive ) const
