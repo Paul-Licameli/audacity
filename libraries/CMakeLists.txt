@@ -20,6 +20,7 @@ set( LIBRARIES
    lib-shuttlegui
    lib-keyboard-capture
    lib-cellular-panel
+   lib-project
 )
 
 if ( ${_OPT}has_networking )

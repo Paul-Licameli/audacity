@@ -9,14 +9,10 @@
 
 *//*******************************************************************/
 
-
 #include "Project.h"
-
-#include "widgets/wxWidgetsBasicUI.h"
 
 #include <wx/display.h>
 #include <wx/filename.h>
-#include <wx/frame.h>
 
 AttachedProjectObject::~AttachedProjectObject() = default;
 void AttachedProjectObject::Destroy() {}

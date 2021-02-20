@@ -11,8 +11,6 @@
 #ifndef __AUDACITY_PROJECT__
 #define __AUDACITY_PROJECT__
 
-#include "Identifier.h"
-
 #include "ClientData.h" // to inherit
 
 #include <memory>
@@ -21,12 +19,14 @@
 
 class AudacityProject;
 
+using FilePath = wxString;
+
 /// \brief an object of class AllProjects acts like a standard library
 /// container, but refers to a global array of open projects.  So you can
 /// iterate easily over shared pointers to them with range-for :
 /// for (auto pProject : AllProjects{}) { ... }
 /// The pointers are never null.
-class AUDACITY_DLL_API AllProjects
+class PROJECT_API AllProjects
 {
    // Use shared_ptr to projects, because elsewhere we need weak_ptr
    using AProjectHolder = std::shared_ptr< AudacityProject >;
@@ -62,7 +62,7 @@ public:
 };
 
 // Abstract base class for attached objects
-struct AUDACITY_DLL_API AttachedProjectObject {
+struct PROJECT_API AttachedProjectObject {
    virtual ~AttachedProjectObject();
    // Default implementation does nothing
    virtual void Destroy();
@@ -75,7 +75,7 @@ using AttachedProjectObjects = ClientData::Site<
    std::shared_ptr
 >;
 
-wxDECLARE_EXPORTED_EVENT(AUDACITY_DLL_API,
+wxDECLARE_EXPORTED_EVENT(PROJECT_API,
                          EVT_TRACK_PANEL_TIMER, wxCommandEvent);
 enum{ TrackPanelTimerInterval_ms = 50 };
 
@@ -85,7 +85,7 @@ enum{ TrackPanelTimerInterval_ms = 50 };
 /// message and a few other things.
 /// There is very little in this class, most of the intelligence residing in
 /// the cooperating attached objects.
-class AUDACITY_DLL_API AudacityProject final
+class PROJECT_API AudacityProject final
    : public wxEvtHandler
    , public AttachedProjectObjects
    , public std::enable_shared_from_this<AudacityProject>

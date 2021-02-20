@@ -756,6 +756,7 @@ public:
 //! Convenience function often useful when adding choice controls
 SHUTTLEGUI_API TranslatableStrings Msgids(
    const EnumValueSymbol strings[], size_t nStrings);
+
 //! Convenience function often useful when adding choice controls
 SHUTTLEGUI_API TranslatableStrings Msgids( const std::vector<EnumValueSymbol> &strings );
 

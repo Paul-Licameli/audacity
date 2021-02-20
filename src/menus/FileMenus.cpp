@@ -3,7 +3,7 @@
 #include "../CommonCommandFlags.h"
 #include "FileNames.h"
 #include "Prefs.h"
-#include "../Project.h"
+#include "Project.h"
 #include "../ProjectFileIO.h"
 #include "../ProjectFileManager.h"
 #include "../ProjectHistory.h"
