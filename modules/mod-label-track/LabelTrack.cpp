@@ -28,7 +28,6 @@ for drawing different aspects of the label and its text box.
 
 *//*******************************************************************/
 
-
 #include "LabelTrack.h"
 
 #include <algorithm>

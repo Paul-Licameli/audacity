@@ -3,5 +3,5 @@ list( APPEND SOURCES
    LabelTrack.h
 )
 audacity_module( mod-label-track "${SOURCES}"
-   "Audacity"
+   "lib-track-interface;lib-screen-geometry-interface;PRIVATE;wxBase"
    "" "" )

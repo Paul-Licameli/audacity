@@ -4,5 +4,6 @@ list( APPEND SOURCES
    LyricsWindow.cpp
    LyricsWindow.h
 )
-audacity_module( mod-lyrics "${SOURCES}" "mod-label-track-interface"
+audacity_module( mod-lyrics "${SOURCES}"
+   "Audacity;mod-label-track-interface"
    "" "" )
