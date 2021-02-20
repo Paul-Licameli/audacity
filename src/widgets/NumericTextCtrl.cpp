@@ -171,7 +171,7 @@ different formats.
 #include "SampleCount.h"
 #include "AllThemeResources.h"
 #include "AColor.h"
-#include "../KeyboardCapture.h"
+#include "KeyboardCapture.h"
 #include "Theme.h"
 
 #include <algorithm>

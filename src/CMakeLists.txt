@@ -102,8 +102,6 @@ list( APPEND SOURCES
       HelpUtilities.cpp
       HelpUtilities.h
       HitTestResult.h
-      KeyboardCapture.cpp
-      KeyboardCapture.h
       LangChoice.cpp
       LangChoice.h
       Legacy.cpp
@@ -231,7 +229,6 @@ list( APPEND SOURCES
       commands/CommandFunctors.h
       commands/CommandManager.cpp
       commands/CommandManager.h
-      commands/CommandManagerWindowClasses.h
       commands/CommandTargets.cpp
       commands/CommandTargets.h
       commands/Keyboard.cpp
@@ -544,7 +541,6 @@ elseif( CMAKE_SYSTEM_NAME MATCHES "Darwin" )
    # from precompiled header usage
    set_source_files_properties(
       AudacityApp.mm
-      KeyboardCapture.cpp
       effects/EffectUI.cpp
       menus/WindowMenus.cpp
       widgets/FileDialog/mac/FileDialogPrivate.mm

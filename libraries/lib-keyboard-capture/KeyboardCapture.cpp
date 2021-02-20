@@ -9,6 +9,7 @@
  **********************************************************************/
 
 #include "KeyboardCapture.h"
+#include "CommandManagerWindowClasses.h"
 
 #if defined(__WXMAC__)
 #include <wx/textctrl.h>
@@ -429,3 +430,11 @@ private:
 #endif
 
 } monitor;
+
+NonKeystrokeInterceptingWindow::~NonKeystrokeInterceptingWindow()
+{
+}
+
+TopLevelKeystrokeHandlingWindow::~TopLevelKeystrokeHandlingWindow()
+{
+}
