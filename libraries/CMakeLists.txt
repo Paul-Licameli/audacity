@@ -22,6 +22,7 @@ set( LIBRARIES
    lib-cellular-panel
    lib-project
    lib-screen-geometry
+   lib-track
 )
 
 if ( ${_OPT}has_networking )

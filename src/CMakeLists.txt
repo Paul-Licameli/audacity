@@ -180,12 +180,8 @@ list( APPEND SOURCES
       SyncLock.h
       TimeDialog.cpp
       TimeDialog.h
-      Track.cpp
-      Track.h
       TrackArtist.cpp
       TrackArtist.h
-      TrackAttachment.h
-      TrackAttachment.cpp
       TrackPanelAx.cpp
       TrackPanelAx.h
       TrackPanelListener.h
