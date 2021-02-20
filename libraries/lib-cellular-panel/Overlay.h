@@ -9,8 +9,6 @@
 #ifndef __AUDACITY_OVERLAY__
 #define __AUDACITY_OVERLAY__
 
-
-
 #include <utility>
 
 class OverlayPanel;
@@ -90,12 +88,12 @@ AdornedRulerPanel.
 
 */
 
-class AUDACITY_DLL_API Overlay
+class CELLULAR_PANEL_API Overlay
 {
 public:
    Overlay() = default;
-   Overlay( const Overlay & ) PROHIBITED;
-   Overlay &operator=( const Overlay & ) PROHIBITED;
+   Overlay( const Overlay & ) = delete;
+   Overlay &operator=( const Overlay & ) = delete;
    virtual ~Overlay() = 0;
 
    ///\brief This number determines an ordering of overlays, so that those

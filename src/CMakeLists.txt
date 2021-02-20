@@ -79,8 +79,6 @@ list( APPEND SOURCES
       AutoRecoveryDialog.h
       Benchmark.cpp
       Benchmark.h
-      CellularPanel.cpp
-      CellularPanel.h
       Clipboard.cpp
       Clipboard.h
       CommonCommandFlags.cpp
@@ -101,7 +99,6 @@ list( APPEND SOURCES
       HelpText.h
       HelpUtilities.cpp
       HelpUtilities.h
-      HitTestResult.h
       LangChoice.cpp
       LangChoice.h
       Legacy.cpp
@@ -153,7 +150,6 @@ list( APPEND SOURCES
       ProjectWindowBase.h
       RecordUtilities.cpp
       RecordUtilities.h
-      RefreshCode.h
       RingBuffer.cpp
       RingBuffer.h
       SampleBlock.cpp
@@ -193,19 +189,11 @@ list( APPEND SOURCES
       TrackAttachment.cpp
       TrackPanelAx.cpp
       TrackPanelAx.h
-      TrackPanelCell.cpp
-      TrackPanelCell.h
-      TrackPanelDrawable.cpp
-      TrackPanelDrawable.h
-      TrackPanelDrawingContext.h
       TrackPanelListener.h
-      TrackPanelMouseEvent.h
       TrackUtilities.cpp
       TrackUtilities.h
       TransportUtilities.cpp
       TransportUtilities.h
-      UIHandle.cpp
-      UIHandle.h
       UndoManager.cpp
       UndoManager.h
       ViewInfo.cpp
@@ -295,8 +283,6 @@ list( APPEND SOURCES
       widgets/AttachableScrollBar.h
       widgets/AudacityMessageBox.cpp
       widgets/AudacityMessageBox.h
-      widgets/BackedPanel.cpp
-      widgets/BackedPanel.h
       widgets/ErrorDialog.cpp
       widgets/ErrorDialog.h
       widgets/ExpandingToolBar.cpp
@@ -319,10 +305,6 @@ list( APPEND SOURCES
       widgets/MultiDialog.h
       widgets/NumericTextCtrl.cpp
       widgets/NumericTextCtrl.h
-      widgets/Overlay.cpp
-      widgets/Overlay.h
-      widgets/OverlayPanel.cpp
-      widgets/OverlayPanel.h
       widgets/PopupMenuTable.cpp
       widgets/PopupMenuTable.h
       widgets/ProgressDialog.cpp

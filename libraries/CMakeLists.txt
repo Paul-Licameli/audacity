@@ -19,6 +19,7 @@ set( LIBRARIES
    lib-wx-wrappers
    lib-shuttlegui
    lib-keyboard-capture
+   lib-cellular-panel
 )
 
 if ( ${_OPT}has_networking )

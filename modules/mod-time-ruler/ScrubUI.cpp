@@ -11,7 +11,7 @@
 #include "ScrubUI.h"
 
 #include "tracks/ui/Scrubbing.h"
-#include "widgets/Overlay.h"
+#include "Overlay.h"
 #include "ClientData.h"
 #include "AdornedRulerPanel.h"
 #include "Project.h"

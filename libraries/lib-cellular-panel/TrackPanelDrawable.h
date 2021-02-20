@@ -11,15 +11,13 @@ Paul Licameli
 #ifndef __AUDACITY_TRACK_PANEL_DRAWABLE__
 #define __AUDACITY_TRACK_PANEL_DRAWABLE__
 
-
-
 #include <wx/gdicmn.h> // for wxRect
 
 struct TrackPanelDrawingContext;
 class wxRect;
 
 /// \brief Drawing interface common to cells, groups of cells, and temporary handles in CellularPanel
-class AUDACITY_DLL_API TrackPanelDrawable {
+class CELLULAR_PANEL_API TrackPanelDrawable {
 public:
    virtual ~TrackPanelDrawable() = 0;
 

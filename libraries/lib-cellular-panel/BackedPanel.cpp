@@ -6,7 +6,6 @@
 //
 //
 
-
 #include "BackedPanel.h"
 
 BackedPanel::BackedPanel(wxWindow * parent, wxWindowID id,

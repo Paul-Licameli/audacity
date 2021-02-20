@@ -13,7 +13,7 @@ Paul Licameli split from TrackPanel.cpp
 
 #include <memory>
 #include "Project.h"
-#include "widgets/Overlay.h" // to inherit
+#include "Overlay.h" // to inherit
 
 class AudacityProject;
 

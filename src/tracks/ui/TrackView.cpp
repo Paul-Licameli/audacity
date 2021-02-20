@@ -11,7 +11,7 @@ Paul Licameli split from TrackPanel.cpp
 #include "TrackView.h"
 #include "../../Track.h"
 #include "AColor.h"
-#include "../../TrackPanelDrawingContext.h"
+#include "TrackPanelDrawingContext.h"
 #include <wx/dc.h>
 
 #include "ClientData.h"

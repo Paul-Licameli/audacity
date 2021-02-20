@@ -27,7 +27,6 @@
 
 *//*****************************************************************/
 
-
 #include "CellularPanel.h"
 
 #include <wx/eventfilter.h>

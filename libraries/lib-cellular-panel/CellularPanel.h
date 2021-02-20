@@ -11,7 +11,7 @@
 #ifndef __AUDACITY_CELLULAR_PANEL__
 #define __AUDACITY_CELLULAR_PANEL__
 
-#include "widgets/OverlayPanel.h" // to inherit
+#include "OverlayPanel.h" // to inherit
 
 class ViewInfo;
 class AudacityProject;
@@ -31,7 +31,7 @@ using UIHandlePtr = std::shared_ptr<UIHandle>;
 // cells, that each implement hit tests returning click-drag-release handler
 // objects, and other services.
 // It has no dependency on the Track class.
-class AUDACITY_DLL_API CellularPanel : public OverlayPanel {
+class CELLULAR_PANEL_API CellularPanel : public OverlayPanel {
 public:
    CellularPanel(wxWindow * parent, wxWindowID id,
                  const wxPoint & pos,

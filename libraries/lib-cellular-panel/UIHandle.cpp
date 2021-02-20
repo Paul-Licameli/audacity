@@ -8,7 +8,6 @@ Paul Licameli
 
 **********************************************************************/
 
-
 #include "UIHandle.h"
 
 #include "RefreshCode.h"
