@@ -653,7 +653,7 @@ private:
 #include "ProjectAudioManager.h"
 #include "ShuttleGui.h"
 #include "ViewInfo.h"
-#include "commands/AudacityCommand.h"
+#include "AudacityCommand.h"
 #include "CommandContext.h"
 #include "CommandTargets.h"
 #include "AudacityMessageBox.h"

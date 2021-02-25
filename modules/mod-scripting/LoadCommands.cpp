@@ -14,7 +14,7 @@ modelled on BuiltinEffectsModule
 *****************************************************************************/
 
 #include "LoadCommands.h"
-#include "commands/AudacityCommand.h"
+#include "AudacityCommand.h"
 #include "ModuleManager.h"
 
 #include "Prefs.h"

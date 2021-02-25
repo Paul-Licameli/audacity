@@ -1,6 +1,8 @@
 list( APPEND SOURCES
    AppCommandEvent.cpp
    AppCommandEvent.h
+   AudacityCommand.cpp
+   AudacityCommand.h
    Command.cpp
    Command.h
    CommandBuilder.cpp
@@ -18,6 +20,8 @@ list( APPEND SOURCES
    LoadCommands.h
    ScriptCommandRelay.cpp
    ScriptCommandRelay.h
+   ShuttleAutomation.cpp
+   ShuttleAutomation.h
    Validators.h
 )
 audacity_module( mod-scripting "${SOURCES}" "Audacity"

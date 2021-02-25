@@ -11,7 +11,7 @@
 #ifndef __AUDACITY_DEMO_COMMAND__
 #define __AUDACITY_DEMO_COMMAND__
 
-#include "commands/AudacityCommand.h"
+#include "AudacityCommand.h"
 #include "SampleFormat.h"
 
 class ShuttleGui;

@@ -23,7 +23,7 @@ Paul Licameli split from TrackControls.cpp
 #include "TrackPanelMouseEvent.h"
 #include "TrackUtilities.h"
 #include <wx/textdlg.h>
-#include "commands/AudacityCommand.h"
+#include "AudacityCommand.h"
 #include "ProjectCommandManager.h"
 #include "ShuttleGui.h"
 #include "Track.h"

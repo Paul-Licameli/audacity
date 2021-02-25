@@ -29,5 +29,5 @@ list( APPEND SOURCES
    ZoomHandle.h
 )
 audacity_module( mod-common-track-ui "${SOURCES}"
-   "mod-preference-pages-interface;mod-track-panel-interface"
+   "mod-preference-pages-interface;mod-track-panel-interface;mod-scripting-interface"
    "" "" )
