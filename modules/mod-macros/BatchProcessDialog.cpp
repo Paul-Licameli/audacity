@@ -45,7 +45,7 @@
 #include "ProjectManager.h"
 #include "ProjectWindow.h"
 #include "SelectUtilities.h"
-#include "commands/CommandManager.h"
+#include "ProjectCommandManager.h"
 #include "Effect.h"
 #include "EffectUI.h"
 #include "../images/Arrow.xpm"
@@ -1411,7 +1411,7 @@ void OnRepeatLastTool(const CommandContext& context)
      }
        break;
      case MenuCreator::repeattypeunique:
-        CommandManager::Get(context.project).DoRepeatProcess(context,
+        ProjectCommandManager::Get(context.project).DoRepeatProcess(context,
            menuManager.mLastToolRegisteredId);
         break;
      case MenuCreator::repeattypeapplymacro:
@@ -1423,7 +1423,7 @@ void OnRepeatLastTool(const CommandContext& context)
 void OnManageMacros(const CommandContext &context )
 {
    auto &project = context.project;
-   CommandManager::Get(project).RegisterLastTool(context);  //Register Macros as Last Tool
+   ProjectCommandManager::Get(project).RegisterLastTool(context);  //Register Macros as Last Tool
    auto macrosWindow =
       &GetAttachedWindows(project).Get< MacrosWindow >( sMacrosWindowKey );
    if (macrosWindow) {
@@ -1436,7 +1436,7 @@ void OnManageMacros(const CommandContext &context )
 void OnApplyMacrosPalette(const CommandContext &context )
 {
    auto &project = context.project;
-   CommandManager::Get(project).RegisterLastTool(context);  //Register Palette as Last Tool
+   ProjectCommandManager::Get(project).RegisterLastTool(context);  //Register Palette as Last Tool
    auto macrosWindow = &GetAttachedWindows(project)
       .Get< MacrosWindow >( sMacrosWindowKey );
    if (macrosWindow) {
@@ -1478,7 +1478,7 @@ void OnApplyMacroDirectlyByName(const CommandContext& context, const MacroID& Na
    EffectManager& em = EffectManager::Get();
    auto shortDesc = em.GetCommandName(Name);
    auto& undoManager = UndoManager::Get(project);
-   auto& commandManager = CommandManager::Get(project);
+   auto& commandManager = ProjectCommandManager::Get(project);
    int cur = undoManager.GetCurrentState();
    if (undoManager.UndoAvailable()) {
        undoManager.GetShortDescription(cur, &desc);

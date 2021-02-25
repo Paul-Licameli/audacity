@@ -43,7 +43,7 @@ small calculations of rectangles.
 #include "widgets/VetoDialogHook.h"
 #include "commands/CommandContext.h"
 #include "commands/CommandDispatch.h"
-#include "commands/CommandManager.h"
+#include "ProjectCommandManager.h"
 
 const ComponentInterfaceSymbol ScreenshotCommand::Symbol
 { XO("Screenshot") };
@@ -405,7 +405,7 @@ void ScreenshotCommand::CapturePreferences(
    AudacityProject * pProject, const wxString &FileName ){
    (void)&FileName;//compiler food.
    (void)&context;
-   CommandManager &commandManager = CommandManager::Get( *pProject );
+   CommandManager &commandManager = ProjectCommandManager::Get( *pProject );
 
    // Yucky static variables.  Is there a better way?  The problem is that we need the
    // idle callback to know more about what to do.
@@ -570,7 +570,7 @@ void ScreenshotCommand::CaptureScriptables(
 void ScreenshotCommand::CaptureCommands( 
    const CommandContext & context, const wxArrayStringEx & Commands ){
    AudacityProject * pProject = &context.project;
-   CommandManager &manager = CommandManager::Get( *pProject );
+   CommandManager &manager = ProjectCommandManager::Get( *pProject );
    wxString Str;
    // Yucky static variables.  Is there a better way?  The problem is that we need the
    // idle callback to know more about what to do.

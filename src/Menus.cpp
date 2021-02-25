@@ -34,7 +34,7 @@
 
 #include "Project.h"
 #include "ProjectWindows.h"
-#include "commands/CommandManager.h"
+#include "ProjectCommandManager.h"
 #include "BasicUI.h"
 
 #include <unordered_set>
@@ -419,7 +419,7 @@ void MenuCreator::CreateMenusAndCommands(AudacityProject &project)
       }
    };
 
-   auto &commandManager = CommandManager::Get( project );
+   auto &commandManager = ProjectCommandManager::Get( project );
 
    // The list of defaults to exclude depends on
    // preference wxT("/GUI/Shortcuts/FullDefaults"), which may have changed.
@@ -492,7 +492,7 @@ void MenuCreator::RebuildMenuBar(AudacityProject &project)
       // menuBar gets deleted here
    }
 
-   CommandManager::Get( project ).PurgeData();
+   ProjectCommandManager::Get( project ).PurgeData();
 
    CreateMenusAndCommands(project);
 }
@@ -566,7 +566,7 @@ void MenuManager::UpdateMenus( bool checkActive )
          flags2 |= enabler.possibleFlags();
    }
 
-   auto &commandManager = CommandManager::Get( project );
+   auto &commandManager = ProjectCommandManager::Get( project );
 
    // With select-all-on-none, some items that we don't want enabled may have
    // been enabled, since we changed the flags.  Here we manually disable them.
@@ -609,7 +609,7 @@ bool MenuManager::ReportIfActionNotAllowed(
    bool bAllowed = TryToMakeActionAllowed( flags, flagsRqd );
    if( bAllowed )
       return true;
-   auto &cm = CommandManager::Get( project );
+   auto &cm = ProjectCommandManager::Get( project );
    TellUserWhyDisallowed( Name, flags & flagsRqd, flagsRqd);
    return false;
 }

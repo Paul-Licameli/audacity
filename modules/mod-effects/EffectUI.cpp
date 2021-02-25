@@ -1845,7 +1845,7 @@ wxDialog *EffectUI::DialogFactory( wxWindow &parent, EffectHostInterface *pHost,
 #include "SelectUtilities.h"
 #include "TrackPanel.h"
 #include "WaveTrack.h"
-#include "commands/CommandManager.h"
+#include "ProjectCommandManager.h"
 
 /// DoEffect() takes a PluginID and executes the associated effect.
 ///
@@ -1863,7 +1863,7 @@ wxDialog *EffectUI::DialogFactory( wxWindow &parent, EffectHostInterface *pHost,
    auto &trackFactory = WaveTrackFactory::Get( project );
    auto rate = settings.GetRate();
    auto &selectedRegion = ViewInfo::Get( project ).selectedRegion;
-   auto &commandManager = CommandManager::Get( project );
+   auto &commandManager = ProjectCommandManager::Get( project );
    auto &window = ProjectWindow::Get( project );
 
    const PluginDescriptor *plug = PluginManager::Get().GetPlugin(ID);

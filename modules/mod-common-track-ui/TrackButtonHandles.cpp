@@ -21,7 +21,7 @@ Paul Licameli split from TrackPanel.cpp
 #include "TrackPanelAx.h"
 #include "TrackInfo.h"
 #include "TrackUtilities.h"
-#include "commands/CommandManager.h"
+#include "ProjectCommandManager.h"
 #include "tracks/ui/TrackView.h"
 
 MinimizeButtonHandle::MinimizeButtonHandle
@@ -180,7 +180,7 @@ TranslatableString CloseButtonHandle::Tip(
    if (!focused)
       return name;
 
-   auto &commandManager = CommandManager::Get( project );
+   auto &commandManager = ProjectCommandManager::Get( project );
    ComponentInterfaceSymbol command{ wxT("TrackClose"), name };
    return commandManager.DescribeCommandsAndShortcuts( &command, 1u );
 }
@@ -242,7 +242,7 @@ TranslatableString MenuButtonHandle::Tip(
    if (!focused)
       return name;
 
-   auto &commandManager = CommandManager::Get( project );
+   auto &commandManager = ProjectCommandManager::Get( project );
    ComponentInterfaceSymbol command{ wxT("TrackMenu"), name };
    return commandManager.DescribeCommandsAndShortcuts( &command, 1u );
 }

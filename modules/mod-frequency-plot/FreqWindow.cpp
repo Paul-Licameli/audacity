@@ -1192,7 +1192,7 @@ void FreqPlot::OnMouseEvent(wxMouseEvent & event)
 
 // Remaining code hooks this add-on into the application
 #include "commands/CommandContext.h"
-#include "commands/CommandManager.h"
+#include "ProjectCommandManager.h"
 #include "ModuleConstants.h"
 #include "ProjectWindows.h"
 
@@ -1213,7 +1213,7 @@ struct Handler : CommandHandlerObject {
    void OnPlotSpectrum(const CommandContext &context)
    {
       auto &project = context.project;
-      CommandManager::Get(project).RegisterLastAnalyzer(context);  //Register Plot Spectrum as Last Analyzer
+      ProjectCommandManager::Get(project).RegisterLastAnalyzer(context);  //Register Plot Spectrum as Last Analyzer
       auto freqWindow = &GetAttachedWindows(project)
          .Get< FrequencyPlotDialog >( sFrequencyWindowKey );
 

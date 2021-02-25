@@ -10,17 +10,17 @@
 
 #include "UndoRedoMenu.h"
 #include "Internat.h"
+#include "ProjectCommandManager.h"
 #include "Menus.h"
 #include "Project.h"
 #include "ProjectHistory.h"
 #include "UndoManager.h"
-#include "commands/CommandManager.h"
 
 void ModifyUndoMenuItems(AudacityProject &project)
 {
    TranslatableString desc;
    auto &undoManager = UndoManager::Get( project );
-   auto &commandManager = CommandManager::Get( project );
+   auto &commandManager = ProjectCommandManager::Get( project );
    int cur = undoManager.GetCurrentState();
 
    if (undoManager.UndoAvailable()) {

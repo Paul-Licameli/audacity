@@ -125,6 +125,8 @@ list( APPEND SOURCES
       ProjectAudioIO.h
       ProjectAudioManager.cpp
       ProjectAudioManager.h
+      ProjectCommandManager.cpp
+      ProjectCommandManager.h
       ProjectFileIO.cpp
       ProjectFileIO.h
       ProjectFileManager.cpp

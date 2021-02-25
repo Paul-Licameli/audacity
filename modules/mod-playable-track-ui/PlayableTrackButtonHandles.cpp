@@ -11,7 +11,7 @@ Paul Licameli split from TrackPanel.cpp
 #include "PlayableTrackButtonHandles.h"
 
 #include "PlayableTrackControls.h"
-#include "commands/CommandManager.h"
+#include "ProjectCommandManager.h"
 #include "Project.h"
 #include "ProjectSettings.h"
 #include "RefreshCode.h"
@@ -49,7 +49,7 @@ TranslatableString MuteButtonHandle::Tip(
    if (!focused)
       return name;
 
-   auto &commandManager = CommandManager::Get( project );
+   auto &commandManager = ProjectCommandManager::Get( project );
    ComponentInterfaceSymbol command{ wxT("TrackMute"), name };
    return commandManager.DescribeCommandsAndShortcuts(&command, 1u);
 }
@@ -105,7 +105,7 @@ TranslatableString SoloButtonHandle::Tip(
    if (!focused)
       return name;
 
-   auto &commandManager = CommandManager::Get( project );
+   auto &commandManager = ProjectCommandManager::Get( project );
    ComponentInterfaceSymbol command{ wxT("TrackSolo"), name };
    return commandManager.DescribeCommandsAndShortcuts( &command, 1u );
 }

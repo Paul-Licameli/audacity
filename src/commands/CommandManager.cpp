@@ -86,12 +86,10 @@ CommandManager.  It holds the callback for one command.
 #include <wx/hash.h>
 #include <wx/log.h>
 #include <wx/menu.h>
+#include <wx/weakref.h>
 
 #include "BasicUI.h"
 #include "../Menus.h"
-
-#include "Project.h"
-#include "ProjectWindows.h"
 
 // On wxGTK, there may be many many many plugins, but the menus don't automatically
 // allow for scrolling, so we build sub-menus.  If the menu gets longer than
@@ -143,23 +141,6 @@ SubMenuListEntry::SubMenuListEntry( const TranslatableString &name_ )
 
 SubMenuListEntry::~SubMenuListEntry()
 {
-}
-
-///
-static const AudacityProject::AttachedObjects::RegisteredFactory key{
-   [](AudacityProject&) {
-      return std::make_unique<CommandManager>();
-   }
-};
-
-CommandManager &CommandManager::Get( AudacityProject &project )
-{
-   return project.AttachedObjects::Get< CommandManager >( key );
-}
-
-const CommandManager &CommandManager::Get( const AudacityProject &project )
-{
-   return Get( const_cast< AudacityProject & >( project ) );
 }
 
 static CommandManager::MenuHook &sMenuHook()
@@ -507,15 +488,6 @@ void CommandManager::UpdateCheckmarks( AudacityProject &project )
       }
    }
 }
-
-void CommandManager::UpdateCheckmarksInAllProjects()
-{
-   for (auto pProject : AllProjects{}) {
-      auto &project = *pProject;
-      CommandManager::Get(project).UpdateCheckmarks(project);
-   }
-}
-
 
 void CommandManager::AddItem(AudacityProject &project,
                              const CommandID &name,

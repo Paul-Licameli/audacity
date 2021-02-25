@@ -47,7 +47,7 @@ in which buttons can be placed.
 #include "AColor.h"
 #include "ImageManipulation.h"
 #include "Project.h"
-#include "commands/CommandManager.h"
+#include "ProjectCommandManager.h"
 #include "widgets/AButton.h"
 #include "Grabber.h"
 #include "Prefs.h"
@@ -893,7 +893,7 @@ void ToolBar::SetButtonToolTip
    TranslatableString result;
    const auto project = &theProject;
    const auto commandManager =
-      project ? &CommandManager::Get( *project ) : nullptr;
+      project ? &ProjectCommandManager::Get( *project ) : nullptr;
    if (commandManager)
       result =
          commandManager->DescribeCommandsAndShortcuts(commands, nCommands);

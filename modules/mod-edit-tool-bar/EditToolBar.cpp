@@ -52,7 +52,7 @@
 
 #include "commands/CommandContext.h"
 #include "commands/CommandDispatch.h"
-#include "commands/CommandManager.h"
+#include "ProjectCommandManager.h"
 
 IMPLEMENT_CLASS(EditToolBar, ToolBar);
 
@@ -260,7 +260,7 @@ void EditToolBar::ForAllButtons(int Action)
 
    if( Action & ETBActEnableDisable ){
       p = &mProject;
-      cm = &CommandManager::Get( *p );
+      cm = &ProjectCommandManager::Get( *p );
 #ifdef OPTION_SYNC_LOCK_BUTTON
       bool bSyncLockTracks;
       gPrefs->Read(wxT("/GUI/SyncLockTracks"), &bSyncLockTracks, false);
@@ -295,7 +295,7 @@ void EditToolBar::OnButton(wxCommandEvent &event)
    auto cleanup = finally( [&] { mButtons[id]->InteractionOver();});
 
    AudacityProject *p = &mProject;
-   auto &cm = CommandManager::Get( *p );
+   auto &cm = ProjectCommandManager::Get( *p );
 
    auto flags = MenuManager::Get(*p).GetUpdateFlags();
    const CommandContext context( *p );

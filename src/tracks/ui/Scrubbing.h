@@ -19,9 +19,9 @@ Paul Licameli split from TrackPanel.cpp
 #include "../../AudioIOBase.h" // for ScrubbingOptions
 #include "ClientData.h" // to inherit
 #include "Prefs.h" // to inherit
+#include "Project.h"
 #include "Overlay.h" // to inherit
 #include "../../commands/CommandContext.h"
-#include "../../commands/CommandManager.h" // for MenuTable
 #include "Identifier.h"
 
 class AudacityProject;

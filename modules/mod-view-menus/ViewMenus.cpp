@@ -13,7 +13,7 @@
 #include "UndoManager.h"
 #include "ViewInfo.h"
 #include "commands/CommandContext.h"
-#include "commands/CommandManager.h"
+#include "ProjectCommandManager.h"
 #include "GUIPrefs.h"
 #include "TracksPrefs.h"
 #include "tracks/ui/TrackView.h"
@@ -248,7 +248,7 @@ void OnZoomFitV(const CommandContext &context)
 void OnAdvancedVZoom(const CommandContext &context)
 {
    auto &project = context.project;
-   auto &commandManager = CommandManager::Get( project );
+   auto &commandManager = ProjectCommandManager::Get( project );
 
    bool checked = !gPrefs->Read(wxT("/GUI/VerticalZooming"), 0L);
    gPrefs->Write(wxT("/GUI/VerticalZooming"), checked);
@@ -312,7 +312,7 @@ void OnGoSelEnd(const CommandContext &context)
 void OnShowExtraMenus(const CommandContext &context)
 {
    auto &project = context.project;
-   auto &commandManager = CommandManager::Get( project );
+   auto &commandManager = ProjectCommandManager::Get( project );
 
    bool checked = !gPrefs->Read(wxT("/GUI/ShowExtraMenus"), 0L);
    gPrefs->Write(wxT("/GUI/ShowExtraMenus"), checked);
@@ -324,7 +324,7 @@ void OnShowExtraMenus(const CommandContext &context)
 void OnShowClipping(const CommandContext &context)
 {
    auto &project = context.project;
-   auto &commandManager = CommandManager::Get( project );
+   auto &commandManager = ProjectCommandManager::Get( project );
    auto &trackPanel = GetProjectPanel( project );
 
    bool checked = !gPrefs->Read(wxT("/GUI/ShowClipping"), 0L);
@@ -340,7 +340,7 @@ void OnShowClipping(const CommandContext &context)
 void OnShowNameOverlay(const CommandContext &context)
 {
    auto &project = context.project;
-   auto &commandManager = CommandManager::Get( project );
+   auto &commandManager = ProjectCommandManager::Get( project );
    auto &trackPanel = TrackPanel::Get( project );
 
    bool checked = !gPrefs->Read(wxT("/GUI/ShowTrackNameInWaveform"), 0L);

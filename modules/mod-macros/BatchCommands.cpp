@@ -32,7 +32,7 @@ processing.  See also MacrosWindow and ApplyMacroDialog.
 #include "ProjectHistory.h"
 #include "ProjectSettings.h"
 #include "ProjectWindow.h"
-#include "commands/CommandManager.h"
+#include "ProjectCommandManager.h"
 #include "EffectManager.h"
 #include "EffectUI.h"
 #include "FileNames.h"
@@ -323,7 +323,7 @@ MacroCommandsCatalog::MacroCommandsCatalog( const AudacityProject *project )
       }
    }
 
-   auto &manager = CommandManager::Get( *project );
+   auto &manager = ProjectCommandManager::Get( *project );
    TranslatableStrings mLabels;
    CommandIDs mNames;
    std::vector<bool> vExcludeFromMacros;
@@ -609,7 +609,7 @@ bool MacroCommands::ApplyCommand( const TranslatableString &friendlyCommand,
    }
 
    AudacityProject *project = &mProject;
-   auto &manager = CommandManager::Get( *project );
+   auto &manager = ProjectCommandManager::Get( *project );
    if( pContext ){
       if( ::HandleTextualCommand(
          manager, command, *pContext, AlwaysEnabledFlag, true ) )

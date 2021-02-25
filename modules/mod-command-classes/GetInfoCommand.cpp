@@ -25,7 +25,7 @@ This class now lists
 #include "LoadCommands.h"
 #include "Project.h"
 #include "ProjectWindows.h"
-#include "commands/CommandManager.h"
+#include "ProjectCommandManager.h"
 #include "commands/CommandTargets.h"
 #include "EffectManager.h"
 #include "Overlay.h"
@@ -611,7 +611,7 @@ void GetInfoCommand::ExploreMenu( const CommandContext &context, wxMenu * pMenu,
    if( !pMenu )
       return;
 
-   auto &commandManager = CommandManager::Get( context.project );
+   auto &commandManager = ProjectCommandManager::Get( context.project );
 
    wxMenuItemList list = pMenu->GetMenuItems();
    size_t lcnt = list.size();

@@ -17,6 +17,7 @@ Paul Licameli split from TrackPanel.cpp
 #include "HitTestResult.h"
 #include "Project.h"
 #include "ProjectAudioIO.h"
+#include "ProjectCommandManager.h"
 #include "ProjectHistory.h"
 #include "ProjectSettings.h"
 #include "ProjectWindow.h"
@@ -609,7 +610,7 @@ HitTestPreview SelectHandle::Preview
          // Look up the current key binding for Preferences.
          // (Don't assume it's the default!)
          auto keyStr =
-            CommandManager::Get( *pProject ).GetKeyFromName(wxT("Preferences"))
+            ProjectCommandManager::Get( *pProject ).GetKeyFromName(wxT("Preferences"))
             .Display( true );
          if (keyStr.empty())
             // No keyboard preference defined for opening Preferences dialog

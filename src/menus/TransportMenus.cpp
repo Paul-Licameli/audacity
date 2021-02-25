@@ -22,7 +22,7 @@
 #include "../WaveTrack.h"
 #include "ViewInfo.h"
 #include "../commands/CommandContext.h"
-#include "../commands/CommandManager.h"
+#include "../ProjectCommandManager.h"
 #include "../widgets/AudacityMessageBox.h"
 #include "BasicUI.h"
 #include "../widgets/ProgressDialog.h"
@@ -119,7 +119,7 @@ void OnToggleSoundActivated(const CommandContext & )
    gPrefs->Read(wxT("/AudioIO/SoundActivatedRecord"), &pause, false);
    gPrefs->Write(wxT("/AudioIO/SoundActivatedRecord"), !pause);
    gPrefs->Flush();
-   CommandManager::UpdateCheckmarksInAllProjects();
+   ProjectCommandManager::UpdateCheckmarksInAllProjects();
 }
 
 void OnTogglePlayRecording(const CommandContext & )
@@ -132,7 +132,7 @@ void OnTogglePlayRecording(const CommandContext & )
 #endif
    gPrefs->Write(wxT("/AudioIO/Duplex"), !Duplex);
    gPrefs->Flush();
-   CommandManager::UpdateCheckmarksInAllProjects();
+   ProjectCommandManager::UpdateCheckmarksInAllProjects();
 }
 
 void OnToggleSWPlaythrough(const CommandContext & )
@@ -141,7 +141,7 @@ void OnToggleSWPlaythrough(const CommandContext & )
    gPrefs->Read(wxT("/AudioIO/SWPlaythrough"), &SWPlaythrough, false);
    gPrefs->Write(wxT("/AudioIO/SWPlaythrough"), !SWPlaythrough);
    gPrefs->Flush();
-   CommandManager::UpdateCheckmarksInAllProjects();
+   ProjectCommandManager::UpdateCheckmarksInAllProjects();
 }
 
 #ifdef EXPERIMENTAL_AUTOMATED_INPUT_LEVEL_ADJUSTMENT
@@ -153,7 +153,7 @@ void OnToggleAutomatedInputLevelAdjustment(
       wxT("/AudioIO/AutomatedInputLevelAdjustment"), &AVEnabled, false);
    gPrefs->Write(wxT("/AudioIO/AutomatedInputLevelAdjustment"), !AVEnabled);
    gPrefs->Flush();
-   CommandManager::UpdateCheckmarksInAllProjects();
+   ProjectCommandManager::UpdateCheckmarksInAllProjects();
 }
 #endif
 

@@ -83,6 +83,7 @@ It handles initialization and termination by subclassing wxApp.
 #include "Project.h"
 #include "ProjectAudioIO.h"
 #include "ProjectAudioManager.h"
+#include "ProjectCommandManager.h"
 #include "ProjectFileIO.h"
 #include "ProjectFileManager.h"
 #include "ProjectHistory.h"
@@ -1518,7 +1519,7 @@ bool AudacityApp::InitPart2()
       gPrefs->GetVersionKeysInit(vMajorInit, vMinorInit, vMicroInit);
       if (vMajorInit != AUDACITY_VERSION || vMinorInit != AUDACITY_RELEASE
          || vMicroInit != AUDACITY_REVISION) {
-         CommandManager::Get(*project).RemoveDuplicateShortcuts();
+         ProjectCommandManager::Get(*project).RemoveDuplicateShortcuts();
       }
       //
       // Auto-recovery

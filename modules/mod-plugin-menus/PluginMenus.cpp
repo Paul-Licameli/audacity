@@ -13,7 +13,7 @@
 #include "TempDirectory.h"
 #include "UndoManager.h"
 #include "commands/CommandContext.h"
-#include "commands/CommandManager.h"
+#include "ProjectCommandManager.h"
 #include "EffectManager.h"
 #include "EffectUI.h"
 #include "effects/RealtimeEffectManager.h"
@@ -472,7 +472,7 @@ void OnRepeatLastAnalyzer(const CommandContext& context)
      }
       break;
    case MenuCreator::repeattypeunique:
-      CommandManager::Get(context.project).DoRepeatProcess(context,
+      ProjectCommandManager::Get(context.project).DoRepeatProcess(context,
          menuManager.mLastAnalyzerRegisteredId);
       break;
    }
@@ -493,7 +493,7 @@ void OnManageTools(const CommandContext &context )
 void OnBenchmark(const CommandContext &context)
 {
    auto &project = context.project;
-   CommandManager::Get(project).RegisterLastTool(context);  //Register Run Benchmark as Last Tool
+   ProjectCommandManager::Get(project).RegisterLastTool(context);  //Register Run Benchmark as Last Tool
    auto &window = GetProjectFrame( project );
    ::RunBenchmark( &window, project);
 }
@@ -501,7 +501,7 @@ void OnBenchmark(const CommandContext &context)
 void OnSimulateRecordingErrors(const CommandContext &context)
 {
    auto &project = context.project;
-   auto &commandManager = CommandManager::Get( project );
+   auto &commandManager = ProjectCommandManager::Get( project );
 
    auto gAudioIO = AudioIO::Get();
    bool &setting = gAudioIO->mSimulateRecordingErrors;
@@ -512,7 +512,7 @@ void OnSimulateRecordingErrors(const CommandContext &context)
 void OnDetectUpstreamDropouts(const CommandContext &context)
 {
    auto &project = context.project;
-   auto &commandManager = CommandManager::Get( project );
+   auto &commandManager = ProjectCommandManager::Get( project );
 
    auto gAudioIO = AudioIO::Get();
    bool &setting = gAudioIO->mDetectUpstreamDropouts;

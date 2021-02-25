@@ -1643,7 +1643,7 @@ void ToolManager::OnThemeChange(wxCommandEvent & evt)
    });
 }
 
-#include "commands/CommandManager.h"
+#include "ProjectCommandManager.h"
 #include "ProjectSettings.h"
 void ToolManager::ModifyToolbarMenus(AudacityProject &project)
 {
@@ -1666,7 +1666,7 @@ void ToolManager::ModifyToolbarMenus(AudacityProject &project)
    gPrefs->Read(wxT("/GUI/SyncLockTracks"), &active, false);
    settings.SetSyncLock(active);
 
-   CommandManager::Get( project ).UpdateCheckmarks( project );
+   ProjectCommandManager::Get( project ).UpdateCheckmarks( project );
 }
 
 AttachedToolBarMenuItem::AttachedToolBarMenuItem(

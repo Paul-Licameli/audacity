@@ -18,6 +18,7 @@ Paul Licameli split from TrackPanel.cpp
 #include "Project.h"
 #include "../../ProjectAudioIO.h"
 #include "../../ProjectAudioManager.h"
+#include "../../ProjectCommandManager.h" // for MenuTable
 #include "../../ProjectHistory.h"
 #include "ProjectWindows.h"
 #include "../../ProjectSettings.h"
@@ -1274,7 +1275,7 @@ AttachedItem sAttachment2{
 void Scrubber::PopulatePopupMenu(wxMenu &menu)
 {
    int id = CMD_ID;
-   auto &cm = CommandManager::Get( *mProject );
+   auto &cm = ProjectCommandManager::Get( *mProject );
    for (const auto &item : menuItems()) {
       if (cm.GetEnabled(item.name)) {
          auto test = item.StatusTest;
@@ -1289,7 +1290,7 @@ void Scrubber::PopulatePopupMenu(wxMenu &menu)
 
 void Scrubber::CheckMenuItems()
 {
-   auto &cm = CommandManager::Get( *mProject );
+   auto &cm = ProjectCommandManager::Get( *mProject );
    for (const auto &item : menuItems()) {
       auto test = item.StatusTest;
       if (test)

@@ -13,8 +13,8 @@
 #include "KeyboardCapture.h"
 #include "Menus.h"
 #include "Project.h"
+#include "ProjectCommandManager.h"
 #include "ProjectWindows.h"
-#include "commands/CommandManager.h"
 #include "CommandManagerWindowClasses.h"
 #include "commands/Keyboard.h"
 
@@ -298,7 +298,7 @@ bool FilterKeyEvent(AudacityProject *project, const wxKeyEvent & evt, bool permi
    if (!project)
       return false;
 
-   auto &cm = CommandManager::Get(*project);
+   auto &cm = ProjectCommandManager::Get(*project);
    
    auto pWindow = FindProjectFrame( project );
    const auto keyString = KeyEventToKeyString(evt);

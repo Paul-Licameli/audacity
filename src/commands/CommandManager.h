@@ -14,7 +14,6 @@
 
 #include "Identifier.h"
 
-#include "ClientData.h"
 #include "CommandFunctors.h"
 #include "CommandFlag.h"
 
@@ -87,14 +86,11 @@ using CommandNumericIDHash = std::unordered_map<int, CommandListEntry*>;
 class AudacityProject;
 class CommandContext;
 
-class AUDACITY_DLL_API CommandManager final
+class AUDACITY_DLL_API CommandManager
    : public XMLTagHandler
    , public AttachedProjectObject
 {
  public:
-   static CommandManager &Get( AudacityProject &project );
-   static const CommandManager &Get( const AudacityProject &project );
-
    // Type of a function that can intercept menu item handling.
    // If it returns true, bypass the usual dipatch of commands.
    using MenuHook = std::function< bool(const CommandID&) >;
@@ -373,7 +369,6 @@ public:
    wxMenu * CurrentMenu() const;
 
    void UpdateCheckmarks( AudacityProject &project );
-   static void UpdateCheckmarksInAllProjects();
 private:
    wxString FormatLabelForMenu(const CommandListEntry *entry) const;
    wxString FormatLabelWithDisabledAccel(const CommandListEntry *entry) const;

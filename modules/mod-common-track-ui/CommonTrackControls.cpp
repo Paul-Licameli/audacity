@@ -24,7 +24,7 @@ Paul Licameli split from TrackControls.cpp
 #include "TrackUtilities.h"
 #include <wx/textdlg.h>
 #include "commands/AudacityCommand.h"
-#include "commands/CommandManager.h"
+#include "ProjectCommandManager.h"
 #include "ShuttleGui.h"
 #include "Track.h"
 #include "widgets/PopupMenuTable.h"
@@ -144,7 +144,7 @@ BEGIN_POPUP_MENU(TrackMenuTable)
          OnMoveUpID,
          XXO("Move Track &Up").Join(
             Verbatim(
-               CommandManager::Get( mpData->project ).
+               ProjectCommandManager::Get( mpData->project ).
                    // using GET to compose menu item name for wxWidgets
                    GetKeyFromName(wxT("TrackMoveUp")).GET() ),
              wxT("\t")
@@ -154,7 +154,7 @@ BEGIN_POPUP_MENU(TrackMenuTable)
          OnMoveDownID,
          XXO("Move Track &Down").Join(
             Verbatim(
-               CommandManager::Get( mpData->project ).
+               ProjectCommandManager::Get( mpData->project ).
                   // using GET to compose menu item name for wxWidgets
                   GetKeyFromName(wxT("TrackMoveDown")).GET() ),
              wxT("\t")
@@ -164,7 +164,7 @@ BEGIN_POPUP_MENU(TrackMenuTable)
          OnMoveTopID,
          XXO("Move Track to &Top").Join(
             Verbatim(
-               CommandManager::Get( mpData->project ).
+               ProjectCommandManager::Get( mpData->project ).
                    // using GET to compose menu item name for wxWidgets
                    GetKeyFromName(wxT("TrackMoveTop")).GET() ),
              wxT("\t")
@@ -174,7 +174,7 @@ BEGIN_POPUP_MENU(TrackMenuTable)
          OnMoveBottomID,
          XXO("Move Track to &Bottom").Join(
             Verbatim(
-               CommandManager::Get( mpData->project ).
+               ProjectCommandManager::Get( mpData->project ).
                   // using GET to compose menu item name for wxWidgets
                   GetKeyFromName(wxT("TrackMoveBottom")).GET() ),
              wxT("\t")

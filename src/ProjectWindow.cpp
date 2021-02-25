@@ -18,6 +18,7 @@ Paul Licameli split from AudacityProject.cpp
 #include "Menus.h"
 #include "Project.h"
 #include "ProjectAudioIO.h"
+#include "ProjectCommandManager.h"
 #include "ProjectWindows.h"
 #include "ProjectStatus.h"
 #include "RefreshCode.h"
@@ -1446,7 +1447,7 @@ void ProjectWindow::OnMenu(wxCommandEvent & event)
    }
 #endif
    auto &project = mProject;
-   auto &commandManager = CommandManager::Get( project );
+   auto &commandManager = ProjectCommandManager::Get( project );
    bool handled = commandManager.HandleMenuID( GetProject(),
       event.GetId(), MenuManager::Get( project ).GetUpdateFlags(),
       false);

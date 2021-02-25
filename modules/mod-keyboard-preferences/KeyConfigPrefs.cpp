@@ -37,7 +37,7 @@ KeyConfigPrefs and MousePrefs use.
 #include "Prefs.h"
 #include "Project.h"
 #include "ProjectWindows.h"
-#include "commands/CommandManager.h"
+#include "ProjectCommandManager.h"
 #include "XMLFileReader.h"
 
 #include "SelectFile.h"
@@ -152,7 +152,7 @@ void KeyConfigPrefs::Populate()
 
    mCommandSelected = wxNOT_FOUND;
 
-   mManager = &CommandManager::Get( *mProject );
+   mManager = &ProjectCommandManager::Get( *mProject );
 
    // For speed, don't sort here.  We're just creating.
    // Instead sort when we do SetView later in this function.
