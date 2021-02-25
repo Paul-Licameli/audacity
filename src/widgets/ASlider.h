@@ -357,7 +357,7 @@ class SliderDialog final : public wxDialogWrapper
    wxTextCtrl * mTextCtrl;
    int mStyle;
    LWSlider * mpOrigin;
-   float mValue;
+   double mValue;
 
  public:
    DECLARE_EVENT_TABLE()

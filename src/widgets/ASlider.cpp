@@ -267,6 +267,7 @@ SliderDialog::SliderDialog(wxWindow * parent, wxWindowID id,
    wxDialogWrapper(parent,id,title,position),
    mStyle(style)
 {
+   using namespace DialogDefinition;
    using Options = DialogDefinition::StringValidator::Options;
    SetName();
    mpOrigin = pSource;
@@ -287,22 +288,22 @@ SliderDialog::SliderDialog(wxWindow * parent, wxWindowID id,
       if (style == PAN_SLIDER)
       {
          mTextCtrl = S
-            .Validator<IntegerValidator<float>>(
-               &mValue, NumValidatorStyle::DEFAULT, -100.0, 100.0)
+            .Target( Transform<double, int>(mValue),
+               NumValidatorStyle::DEFAULT, -100.0, 100.0)
             .AddTextBox({}, wxEmptyString, 15);
       }
       else if (style == VEL_SLIDER)
       {
          mTextCtrl = S
-            .Validator<IntegerValidator<float>>(
-               &mValue, NumValidatorStyle::DEFAULT, -50.0, 50.0)
+            .Target( Transform<double, int>(mValue),
+               NumValidatorStyle::DEFAULT, -50.0, 50.0)
             .AddTextBox({}, wxEmptyString, 15);
       }
       else
       {
          mTextCtrl = S
-            .Validator<FloatingPointValidator<float>>(
-               prec, &mValue, trailing, mpOrigin->GetMinValue(), mpOrigin->GetMaxValue())
+            .Target( mValue,
+               trailing, prec, mpOrigin->GetMinValue(), mpOrigin->GetMaxValue())
             .AddTextBox({}, wxEmptyString, 15);
       }
 
