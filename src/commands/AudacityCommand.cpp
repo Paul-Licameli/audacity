@@ -36,7 +36,7 @@ ShuttleGui.
 #include "../ShuttleAutomation.h"
 #include "ShuttleGui.h"
 #include "../widgets/ProgressDialog.h"
-#include "../widgets/HelpSystem.h"
+#include "HelpSystem.h"
 #include "../widgets/AudacityMessageBox.h"
 #include "../widgets/VetoDialogHook.h"
 

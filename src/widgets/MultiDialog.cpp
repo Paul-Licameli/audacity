@@ -37,7 +37,7 @@ for each problem encountered, since there can be many orphans.
 #include "../LogWindow.h"
 #include "Theme.h"
 #include "AllThemeResources.h"
-#include "../widgets/HelpSystem.h"
+#include "HelpSystem.h"
 
 class MultiDialog final : public wxDialogWrapper
 {

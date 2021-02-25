@@ -21,11 +21,9 @@
 #ifndef __AUDACITY_HELPSYSTEM__
 #define __AUDACITY_HELPSYSTEM__
 
-
-
 #include <wx/defs.h>
 #include "wxPanelWrapper.h" // to inherit
-#include "../HelpText.h"
+#include "HelpText.h"
 
 class AudacityProject;
 
@@ -36,7 +34,7 @@ class AudacityProject;
  * the online copy of the Audacity manual is stored, so that it can be 
  * changed if required
  */
-class AUDACITY_DLL_API HelpSystem
+class HELP_SYSTEM_API HelpSystem
 {
 public:
    /// Displays cuttable information in a text ctrl, with an OK button.
@@ -116,13 +114,13 @@ class ShuttleGui;
 
 #include "HtmlWindow.h" // to inherit
 
-AUDACITY_DLL_API void OpenInDefaultBrowser(const URLString& link);
+HELP_SYSTEM_API void OpenInDefaultBrowser(const URLString& link);
 
 
 /// \brief An HtmlWindow that handles linked clicked - usually the
 /// link will go to our own local copy of the manual, but it could
 /// launch a new browser window.
-class AUDACITY_DLL_API LinkingHtmlWindow final : public HtmlWindow
+class HELP_SYSTEM_API LinkingHtmlWindow final : public HtmlWindow
 {
  public:
    LinkingHtmlWindow(wxWindow *parent, wxWindowID id = -1,
@@ -156,7 +154,7 @@ public:
    DECLARE_EVENT_TABLE()
 };
 
-extern AUDACITY_DLL_API ChoiceSetting
+extern HELP_SYSTEM_API ChoiceSetting
      GUIManualLocation
 ;
 

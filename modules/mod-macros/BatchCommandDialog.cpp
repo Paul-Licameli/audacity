@@ -39,7 +39,7 @@ selected command.
 #include "Project.h"
 #include "EffectManager.h"
 #include "ShuttleGui.h"
-#include "widgets/HelpSystem.h"
+#include "HelpSystem.h"
 
 
 #define CommandsListID        7001

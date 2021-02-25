@@ -34,7 +34,7 @@ most commonly asked questions about Audacity.
 #include "ProjectWindows.h"
 #include "ShuttleGui.h"
 #include "widgets/AudacityMessageBox.h"
-#include "widgets/HelpSystem.h"
+#include "HelpSystem.h"
 
 #include "AllThemeResources.h"
 #include "Prefs.h"

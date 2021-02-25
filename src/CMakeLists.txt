@@ -95,8 +95,6 @@ list( APPEND SOURCES
       DeviceManager.h
       Diags.cpp
       Diags.h
-      HelpText.cpp
-      HelpText.h
       HelpUtilities.cpp
       HelpUtilities.h
       LangChoice.cpp
@@ -274,10 +272,6 @@ list( APPEND SOURCES
       widgets/FileHistory.h
       widgets/Grid.cpp
       widgets/Grid.h
-      widgets/HelpSystem.cpp
-      widgets/HelpSystem.h
-      widgets/HtmlWindow.cpp
-      widgets/HtmlWindow.h
       widgets/ImageRoll.cpp
       widgets/ImageRoll.h
       widgets/Meter.cpp

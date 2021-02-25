@@ -59,7 +59,7 @@
 #include "Mix.h"
 #include "Tags.h"
 #include "widgets/AudacityMessageBox.h"
-#include "widgets/HelpSystem.h"
+#include "HelpSystem.h"
 
 #include "Export.h"
 

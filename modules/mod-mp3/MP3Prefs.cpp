@@ -13,7 +13,7 @@
 #include "Internat.h"
 #include "ShuttleGui.h"
 #include "LibraryPrefs.h"
-#include "widgets/HelpSystem.h"
+#include "HelpSystem.h"
 #include "ReadOnlyText.h"
 #include <wx/button.h>
 #include <wx/stattext.h>

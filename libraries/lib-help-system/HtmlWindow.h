@@ -23,8 +23,6 @@ around to NEW positions.
 #ifndef __AUDACITY_WIDGETS_HtmlWindow__
 #define __AUDACITY_WIDGETS_HtmlWindow__
 
-
-
 #include <wx/setup.h> // for wxUSE_* macros
 #include <wx/defs.h>
 #include <wx/html/htmlwin.h> // to inherit
@@ -33,7 +31,7 @@ around to NEW positions.
 /// HtmlWindow Class
 ////////////////////////////////////////////////////////////
 
-class AUDACITY_DLL_API HtmlWindow /* not final */ : public wxHtmlWindow
+class HELP_SYSTEM_API HtmlWindow /* not final */ : public wxHtmlWindow
 {
 public:
    HtmlWindow(wxWindow *parent,

@@ -12,7 +12,6 @@
 \brief Given a key, returns some html.
 *//********************************************************************/
 
-
 #include "HelpText.h"
 
 #include <wx/colour.h>

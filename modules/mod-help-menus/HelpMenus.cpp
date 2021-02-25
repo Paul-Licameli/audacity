@@ -25,7 +25,7 @@
 #include "commands/CommandManager.h"
 #include "prefs/PrefsDialog.h"
 #include "widgets/AudacityMessageBox.h"
-#include "widgets/HelpSystem.h"
+#include "HelpSystem.h"
 
 // private helper classes and functions
 namespace {

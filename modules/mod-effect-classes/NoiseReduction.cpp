@@ -43,7 +43,7 @@
 #include "EffectUI.h"
 
 #include "ShuttleGui.h"
-#include "widgets/HelpSystem.h"
+#include "HelpSystem.h"
 #include "Prefs.h"
 #include "RealFFTf.h"
 
