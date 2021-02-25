@@ -30,10 +30,6 @@ status in a briefer listing
 \brief LispyCommandMessageTarget is a CommandOutputTarget that provides status 
 in a lispy style.
 
-\class MessageDialogTarget
-\brief MessageDialogTarget is a CommandOutputTarget that sends its status
-to the LongMessageDialog.
-
 \class CommandOutputTargets
 \brief CommandOutputTargets a mix of three output classes to output 
 progress indication, status messages and errors.
@@ -207,18 +203,6 @@ class AUDACITY_DLL_API MessageBoxTarget final : public CommandMessageTarget
 {
 public:
    virtual ~MessageBoxTarget() {}
-   void Update(const wxString &message) override;
-};
-
-/// Displays messages from a command in a wxStatusBar
-class AUDACITY_DLL_API StatusBarTarget final : public CommandMessageTarget
-{
-private:
-   wxStatusBar &mStatus;
-public:
-   StatusBarTarget(wxStatusBar &sb)
-      : mStatus(sb)
-   {}
    void Update(const wxString &message) override;
 };
 
@@ -404,14 +388,5 @@ public :
 private:
    CommandOutputTargets * pToRestore;
 };
-
-class InteractiveOutputTargets : public CommandOutputTargets
-{
-public:
-   InteractiveOutputTargets();
-
-};
-
-std::unique_ptr<CommandOutputTargets> DefaultCommandOutputTargets();
 
 #endif /* End of include guard: __COMMANDTARGETS__ */

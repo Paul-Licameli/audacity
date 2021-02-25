@@ -84,6 +84,7 @@ classes derived from it.
 
 #include "commands/CommandTargets.h"
 #include "CommandDirectory.h"
+#include "DefaultCommandOutputTargets.h"
 
 #include "commands/CommandContext.h"
 

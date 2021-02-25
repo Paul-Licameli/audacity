@@ -89,6 +89,8 @@ list( APPEND SOURCES
       CrashReport.h
       DBConnection.cpp
       DBConnection.h
+      DefaultCommandOutputTargets.cpp
+      DefaultCommandOutputTargets.h
       DeviceChange.cpp
       DeviceChange.h
       DeviceManager.cpp

@@ -12,6 +12,7 @@
 #define __AUDACITY_PROJECT_COMMAND_MANAGER__
 
 #include "commands/CommandManager.h"
+#include "commands/CommandTargets.h"
 
 class ProjectCommandManager final : public CommandManager {
 public:
@@ -23,6 +24,18 @@ public:
    static void UpdateCheckmarksInAllProjects();
 
    std::unique_ptr<CommandOutputTargets> MakeTargets() override;
+};
+
+/// Displays messages from a command in a wxStatusBar
+class AUDACITY_DLL_API StatusBarTarget final : public CommandMessageTarget
+{
+private:
+   wxStatusBar &mStatus;
+public:
+   StatusBarTarget(wxStatusBar &sb)
+      : mStatus(sb)
+   {}
+   void Update(const wxString &message) override;
 };
 
 #endif
