@@ -40,7 +40,6 @@
 #include "../HelpText.h"
 #include "Prefs.h"
 #include "wxFileNameWrapper.h"
-#include "../prefs/GUIPrefs.h"
 
 #ifdef USE_ALPHA_MANUAL
 const wxString HelpSystem::HelpHostname = wxT("alphamanual.audacityteam.org");
@@ -577,3 +576,13 @@ void LinkingHtmlWindow::OnLinkClicked(const wxHtmlLinkInfo& link)
       return;
    pDlg->UpdateButtons();
 }
+
+ChoiceSetting GUIManualLocation{
+   wxT("/GUI/Help"),
+   {
+      ByColumns,
+      { XO("Local") ,  XO("From Internet") , },
+      { wxT("Local") , wxT("FromInternet") , }
+   },
+   0 // "Local"
+};

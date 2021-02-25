@@ -55,8 +55,4 @@ class AUDACITY_DLL_API GUIPrefs final : public PrefsPanel
    int mDefaultRangeIndex;
 };
 
-extern AUDACITY_DLL_API ChoiceSetting
-     GUIManualLocation
-;
-
 #endif
