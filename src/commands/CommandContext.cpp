@@ -32,31 +32,19 @@ messaging from a command back to its invoker.
 
 CommandContext::CommandContext(
       AudacityProject &p
+      , std::unique_ptr<CommandOutputTargets> target
       , const wxEvent *e
       , int ii
       , const CommandParameter &param
    )
       : project{ p }
-      // No target specified?  Use the special interactive one that pops up a dialog.
-      , pOutput( std::make_unique<InteractiveOutputTargets>() )
+      , pOutput( std::move( target) )
       , pEvt{ e }
       , index{ ii }
       , parameter{ param }
 {
 }
    
-CommandContext::CommandContext(
-      AudacityProject &p,
-      std::unique_ptr<CommandOutputTargets> target)
-      : project{ p }
-      // Revisit and use std_unique pointer for pOutput??
-      , pOutput( std::move( target) )
-      , pEvt{ nullptr }
-      , index{ 0 }
-      , parameter{ CommandParameter{}}
-{
-}
-
 CommandContext::~CommandContext() = default;
 
 void CommandContext::Status( const wxString & message, bool bFlush ) const

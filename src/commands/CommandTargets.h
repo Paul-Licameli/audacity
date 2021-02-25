@@ -412,4 +412,6 @@ public:
 
 };
 
+std::unique_ptr<CommandOutputTargets> DefaultCommandOutputTargets();
+
 #endif /* End of include guard: __COMMANDTARGETS__ */

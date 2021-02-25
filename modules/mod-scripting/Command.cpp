@@ -259,7 +259,7 @@ CommandSignature &CommandImplementation::GetSignature()
 bool CommandImplementation::SetParameter(const wxString &paramName, const wxVariant &paramValue)
 {
    wxASSERT(!paramValue.IsType(wxT("null")));
-   CommandContext context( mProject );
+   CommandContext context{ mProject, DefaultCommandOutputTargets() };
    ParamValueMap::iterator iter = mParams.find(paramName);
    if (iter == mParams.end())
    {

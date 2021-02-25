@@ -73,9 +73,9 @@ struct Handler : CommandHandlerObject {
 // It is usually bound to the SPACE key.
 void OnPlayStop(const CommandContext &context)
 {
-   if (TransportUtilities::DoStopPlaying(context.project))
+   if (TransportUtilities::DoStopPlaying(context))
       return;
-   TransportUtilities::DoStartPlaying(context.project);
+   TransportUtilities::DoStartPlaying(context);
 }
 
 void OnPlayStopSelect(const CommandContext &context)

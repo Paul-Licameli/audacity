@@ -52,6 +52,7 @@
 
 #include "commands/CommandContext.h"
 #include "commands/CommandDispatch.h"
+#include "commands/CommandTargets.h"
 #include "ProjectCommandManager.h"
 
 IMPLEMENT_CLASS(EditToolBar, ToolBar);
@@ -298,7 +299,7 @@ void EditToolBar::OnButton(wxCommandEvent &event)
    auto &cm = ProjectCommandManager::Get( *p );
 
    auto flags = MenuManager::Get(*p).GetUpdateFlags();
-   const CommandContext context( *p );
+   const CommandContext context( *p, cm.MakeTargets() );
    ::HandleTextualCommand( cm,
       EditToolbarButtonList[id].commandName, context, flags, false);
 

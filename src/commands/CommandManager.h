@@ -23,6 +23,7 @@
 #include "Project.h"
 #include "Registry.h"
 
+#include <memory>
 #include <vector>
 
 #include "XMLTagHandler.h"
@@ -85,6 +86,7 @@ using CommandNumericIDHash = std::unordered_map<int, CommandListEntry*>;
 
 class AudacityProject;
 class CommandContext;
+class CommandOutputTargets;
 
 class AUDACITY_DLL_API CommandManager
    : public XMLTagHandler
@@ -107,6 +109,8 @@ class AUDACITY_DLL_API CommandManager
 
    CommandManager(const CommandManager&) PROHIBITED;
    CommandManager &operator= (const CommandManager&) PROHIBITED;
+
+   virtual std::unique_ptr<CommandOutputTargets> MakeTargets() = 0;
 
    void SetMaxList();
    void PurgeData();

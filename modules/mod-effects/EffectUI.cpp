@@ -15,6 +15,7 @@
 
 #include "Effect.h"
 #include "EffectManager.h"
+#include "ProjectCommandManager.h"
 #include "ProjectHistory.h"
 #include "ProjectWindowBase.h"
 #include "TrackPanelAx.h"
@@ -653,6 +654,7 @@ private:
 #include "ViewInfo.h"
 #include "commands/AudacityCommand.h"
 #include "commands/CommandContext.h"
+#include "commands/CommandTargets.h"
 #include "widgets/AudacityMessageBox.h"
 #include "HelpSystem.h"
 
@@ -1193,7 +1195,8 @@ void EffectUIHost::OnApply(wxCommandEvent & evt)
    auto cleanup = finally( [&] { mApplyBtn->Enable(); } );
 
    if( mEffect ) {
-      CommandContext context( project );
+      CommandContext context{ project,
+         ProjectCommandManager::Get(project).MakeTargets() };
       // This is absolute hackage...but easy and I can't think of another way just now.
       //
       // It should callback to the EffectManager to kick off the processing
@@ -1204,7 +1207,8 @@ void EffectUIHost::OnApply(wxCommandEvent & evt)
    if( mCommand )
       // PRL:  I don't like the global and would rather pass *mProject!
       // But I am preserving old behavior
-      mCommand->Apply( CommandContext{ project } );
+      mCommand->Apply( CommandContext{ project,
+         ProjectCommandManager::Get(project).MakeTargets() } );
 }
 
 void EffectUIHost::DoCancel()

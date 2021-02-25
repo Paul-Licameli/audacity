@@ -462,3 +462,8 @@ void StatusBarTarget::Update(const wxString &message)
 {
    mStatus.SetStatusText(message, 0);
 }
+
+std::unique_ptr<CommandOutputTargets> DefaultCommandOutputTargets()
+{
+   return std::make_unique<InteractiveOutputTargets>();
+}

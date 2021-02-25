@@ -36,6 +36,7 @@ It forwards the actual work of doing the commands to the ScreenshotCommand.
 
 #include "prefs/GUISettings.h" // for RTL_WORKAROUND
 #include "Project.h"
+#include "ProjectCommandManager.h"
 #include "ProjectStatus.h"
 #include "ProjectWindow.h"
 #include "ProjectWindows.h"
@@ -285,7 +286,7 @@ ScreenshotBigDialog::ScreenshotBigDialog(
 
            wxSYSTEM_MENU|wxCAPTION|wxCLOSE_BOX)
    , mProject{ project }
-   , mContext( project )
+   , mContext{ project, ProjectCommandManager::Get(project).MakeTargets() }
 {
    mDelayCheckBox = NULL;
    mDirectoryTextBox = NULL;
@@ -801,7 +802,6 @@ void ScreenshotBigDialog::UpdatePrefs()
 }
 
 #include "CommonCommandFlags.h"
-#include "commands/CommandManager.h"
 
 namespace {
 

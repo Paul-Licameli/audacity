@@ -51,6 +51,7 @@ processing.  See also MacrosWindow and ApplyMacroDialog.
 
 #include "commands/CommandContext.h"
 #include "commands/CommandDispatch.h"
+#include "commands/CommandTargets.h"
 
 MacroCommands::MacroCommands( AudacityProject &project )
 : mProject{ project }
@@ -598,12 +599,13 @@ bool MacroCommands::ApplyCommand( const TranslatableString &friendlyCommand,
    // Test for an effect.
    const PluginID & ID =
       EffectManager::Get().GetEffectByIdentifier( command );
+   auto &cm = ProjectCommandManager::Get(mProject);
    if (!ID.empty())
    {
       if( pContext )
          return ApplyEffectCommand(
             ID, friendlyCommand, command, params, *pContext);
-      const CommandContext context( mProject );
+      const CommandContext context{ mProject, cm.MakeTargets() };
       return ApplyEffectCommand(
          ID, friendlyCommand, command, params, context);
    }
@@ -620,7 +622,7 @@ bool MacroCommands::ApplyCommand( const TranslatableString &friendlyCommand,
    }
    else
    {
-      const CommandContext context(  mProject );
+      const CommandContext context{ mProject, cm.MakeTargets() };
       if( HandleTextualCommand(
          manager, command, context, AlwaysEnabledFlag, true ) )
          return true;

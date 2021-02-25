@@ -21,6 +21,8 @@ public:
    static const CommandManager &Get( const AudacityProject &project );
 
    static void UpdateCheckmarksInAllProjects();
+
+   std::unique_ptr<CommandOutputTargets> MakeTargets() override;
 };
 
 #endif

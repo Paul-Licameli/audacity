@@ -10,6 +10,7 @@
 
 #include "ProjectCommandManager.h"
 #include "Project.h"
+#include "commands/CommandTargets.h"
 
 ///
 static const AudacityProject::AttachedObjects::RegisteredFactory key{
@@ -34,4 +35,9 @@ void ProjectCommandManager::UpdateCheckmarksInAllProjects()
       auto &project = *pProject;
       ProjectCommandManager::Get(project).UpdateCheckmarks(project);
    }
+}
+
+std::unique_ptr<CommandOutputTargets> ProjectCommandManager::MakeTargets()
+{
+   return DefaultCommandOutputTargets();
 }

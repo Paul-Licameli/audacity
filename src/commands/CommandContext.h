@@ -23,14 +23,11 @@ class AUDACITY_DLL_API CommandContext {
 public:
    CommandContext(
       AudacityProject &p
+      , std::unique_ptr<CommandOutputTargets> target
       , const wxEvent *e = nullptr
       , int ii = 0
       , const CommandParameter &param = CommandParameter{}
    );
-
-   CommandContext(
-      AudacityProject &p,
-      std::unique_ptr<CommandOutputTargets> target);
 
    ~CommandContext();
 

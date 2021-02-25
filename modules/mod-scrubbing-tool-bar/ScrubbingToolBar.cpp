@@ -229,15 +229,16 @@ void ScrubbingToolBar::OnButton(wxCommandEvent &event)
 
    int id = event.GetId();
 
+   CommandContext context{*p, ProjectCommandManager::Get(*p).MakeTargets() };
    switch (id) {
       case STBScrubID:
-         scrubber.OnScrub(*p);
+         scrubber.OnScrub(context);
          break;
       case STBSeekID:
-         scrubber.OnSeek(*p);
+         scrubber.OnSeek(context);
          break;
       case STBRulerID:
-         scrubber.OnToggleScrubRuler(*p);
+         scrubber.OnToggleScrubRuler(context);
          break;
       default:
          wxASSERT(false);

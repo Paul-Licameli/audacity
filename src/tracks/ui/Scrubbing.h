@@ -22,6 +22,8 @@ Paul Licameli split from TrackPanel.cpp
 #include "Project.h"
 #include "Overlay.h" // to inherit
 #include "../../commands/CommandContext.h"
+#include "../../commands/CommandTargets.h"
+#include "../../ProjectCommandManager.h" // for MenuTable
 #include "Identifier.h"
 
 class AudacityProject;
@@ -132,9 +134,11 @@ public:
    void DoKeyboardScrub(bool backwards, bool keyUp);
 
    // Convenience wrapper for the above
-   template<void (Scrubber::*pfn)(const CommandContext&)>
+   template<void (Scrubber::*pfn)(const CommandContext &)>
       void Thunk(wxCommandEvent &)
-         { (this->*pfn)(*mProject); }
+         { (this->*pfn)(
+            CommandContext{*mProject,
+               ProjectCommandManager::Get(*mProject).MakeTargets()}); }
 
    // A string to put in the leftmost part of the status bar
    // when scrub or seek is in progress, or else empty.

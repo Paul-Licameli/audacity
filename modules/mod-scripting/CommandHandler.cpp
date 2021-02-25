@@ -20,10 +20,12 @@
 
 #include "ActiveProject.h"
 #include "Project.h"
+#include "ProjectCommandManager.h"
 #include "ProjectWindow.h"
 #include "AppCommandEvent.h"
 #include "ScriptCommandRelay.h"
 #include "commands/CommandContext.h"
+#include "commands/CommandTargets.h"
 #include "Command.h"
 #include <wx/app.h>
 
@@ -48,7 +50,8 @@ void CommandHandler::OnReceiveCommand(AppCommandEvent &event)
       // Then apply it to current application & project.  Note that the
       // command may change the context - for example, switching to a
       // different project.
-      CommandContext context{ *pProject };
+      CommandContext context{ *pProject,
+         ProjectCommandManager::Get(*pProject).MakeTargets() };
       auto result = GuardedCall<bool>( [&] {
          return cmd->Apply( context );
       });

@@ -813,8 +813,9 @@ void OnExportLabels(const CommandContext &context)
    f.Close();
 }
 
-void DoMoveToLabel(AudacityProject &project, bool next)
+void DoMoveToLabel(const CommandContext &context, bool next)
 {
+   auto &project = context.project;
    auto &tracks = TrackList::Get( project );
    auto &trackFocus = TrackFocus::Get( project );
    auto &window = ProjectWindow::Get( project );
@@ -851,10 +852,10 @@ void DoMoveToLabel(AudacityProject &project, bool next)
          const LabelStruct* label = lt->GetLabel(i);
          bool looping = projectAudioManager.Looping();
          if (ProjectAudioIO::Get( project ).IsAudioActive()) {
-            TransportUtilities::DoStopPlaying(project);
+            TransportUtilities::DoStopPlaying(context);
             selectedRegion = label->selectedRegion;
             window.RedrawProject();
-            TransportUtilities::DoStartPlaying(project, looping);
+            TransportUtilities::DoStartPlaying(context, looping);
          }
          else {
             selectedRegion = label->selectedRegion;
@@ -873,14 +874,12 @@ void DoMoveToLabel(AudacityProject &project, bool next)
 
 void OnMoveToPrevLabel(const CommandContext &context)
 {
-   auto &project = context.project;
-   DoMoveToLabel(project, false);
+   DoMoveToLabel(context, false);
 }
 
 void OnMoveToNextLabel(const CommandContext &context)
 {
-   auto &project = context.project;
-   DoMoveToLabel(project, true);
+   DoMoveToLabel(context, true);
 }
 
 void OnExportMultiple(const CommandContext &context)

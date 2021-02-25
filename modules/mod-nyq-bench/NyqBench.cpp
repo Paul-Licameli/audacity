@@ -35,7 +35,8 @@
 #include "Nyquist.h"
 #include "../images/AudacityLogo.xpm"
 #include "../../src/commands/CommandContext.h"
-#include "../../src/commands/CommandManager.h"
+#include "../../src/ProjectCommandManager.h"
+#include "../../src/commands/CommandTargets.h"
 #include "widgets/AudacityMessageBox.h"
 
 #include "NyqBench.h"
@@ -1347,7 +1348,8 @@ void NyqBench::OnGo(wxCommandEvent & e)
       mRunning = true;
       UpdateWindowUI();
 
-      EffectUI::DoEffect(ID, CommandContext(*p), 0);
+      EffectUI::DoEffect(ID,
+         CommandContext{*p, ProjectCommandManager::Get(*p).MakeTargets()}, 0);
 
       mRunning = false;
       UpdateWindowUI();

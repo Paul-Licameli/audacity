@@ -43,6 +43,7 @@ small calculations of rectangles.
 #include "widgets/VetoDialogHook.h"
 #include "commands/CommandContext.h"
 #include "commands/CommandDispatch.h"
+#include "commands/CommandTargets.h"
 #include "ProjectCommandManager.h"
 
 const ComponentInterfaceSymbol ScreenshotCommand::Symbol
@@ -164,7 +165,9 @@ void IdleHandler(wxIdleEvent& event){
    wxWindow * pWin = dynamic_cast<wxWindow*>(event.GetEventObject());
    wxASSERT( pWin );
    pWin->Unbind(wxEVT_IDLE, IdleHandler);
-   CommandContext context( *pIdleHandlerProject );
+   CommandContext context{ *pIdleHandlerProject,
+      ProjectCommandManager::Get(*pIdleHandlerProject).MakeTargets()
+   };
    // We have the relevant window, so go and capture it.
    if( ScreenshotCommand::mpShooter )
       ScreenshotCommand::mpShooter->CaptureWindowOnIdle( context, pWin );
@@ -423,7 +426,9 @@ void ScreenshotCommand::CapturePreferences(
       gPrefs->Write(wxT("/Prefs/PrefsCategory"), (long)i);
       gPrefs->Flush();
       CommandID Command{ wxT("Preferences") };
-      const CommandContext projectContext( *pProject );
+      const CommandContext projectContext{ *pProject,
+         ProjectCommandManager::Get(*pProject).MakeTargets()
+      };
       if( !::HandleTextualCommand( commandManager,
          Command, projectContext, AlwaysEnabledFlag, true ) )
       {
@@ -585,7 +590,9 @@ void ScreenshotCommand::CaptureCommands(
       // The handler is cleared each time it is used.
       SetIdleHandler( context.project );
       Str = Commands[i];
-      const CommandContext projectContext( *pProject );
+      const CommandContext projectContext{ *pProject,
+         ProjectCommandManager::Get(*pProject).MakeTargets()
+      };
       if( !manager.HandleTextualCommand( Str, projectContext, AlwaysEnabledFlag, true ) )
       {
          wxLogDebug("Command %s not found", Str);

@@ -80,6 +80,7 @@ CommandManager.  It holds the callback for one command.
 #include "CommandManager.h"
 
 #include "CommandContext.h"
+#include "CommandTargets.h"
 
 #include <wx/app.h>
 #include <wx/defs.h>
@@ -1061,7 +1062,8 @@ bool CommandManager::HandleCommandEntry(AudacityProject &project,
       mNiceName = {};
    }
 
-   const CommandContext context{ project, evt, entry->index, entry->parameter };
+   const CommandContext context{ project,
+      MakeTargets(), evt, entry->index, entry->parameter };
    auto &handler = entry->finder(project);
    (handler.*(entry->callback))(context);
    mLastProcessId = 0;
