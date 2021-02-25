@@ -1152,6 +1152,7 @@ void EffectUIHost::OnApply(wxCommandEvent & evt)
       auto flags = AlwaysEnabledFlag;
       bool allowed =
       MenuManager::Get( project ).ReportIfActionNotAllowed(
+         ProjectCommandManager::Get(project),
          mEffect->GetName(),
          flags,
          WaveTracksSelectedFlag() | TimeSelectedFlag());
@@ -1902,7 +1903,7 @@ wxDialog *EffectUI::DialogFactory( wxWindow &parent, EffectHostInterface *pHost,
          // For now, we're limiting realtime preview to a single effect, so
          // make sure the menus reflect that fact that one may have just been
          // opened.
-         MenuManager::Get(project).UpdateMenus( false );
+         MenuManager::Get(project).UpdateMenus( false, commandManager );
       }
 
    } );

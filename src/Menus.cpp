@@ -34,7 +34,7 @@
 
 #include "Project.h"
 #include "ProjectWindows.h"
-#include "ProjectCommandManager.h"
+#include "commands/CommandManager.h"
 #include "BasicUI.h"
 
 #include <unordered_set>
@@ -379,7 +379,8 @@ struct MenuItemVisitor : ToolbarMenuVisitor
 };
 }
 
-void MenuCreator::CreateMenusAndCommands(AudacityProject &project)
+void MenuCreator::CreateMenusAndCommands(
+   AudacityProject &project, CommandManager &commandManager)
 {
    // Once only, cause initial population of preferences for the ordering
    // of some menu items that used to be given in tables but are now separately
@@ -418,8 +419,6 @@ void MenuCreator::CreateMenusAndCommands(AudacityProject &project)
    "NewMonoTrack,NewStereoTrack,NewLabelTrack,NewTimeTrack")},
       }
    };
-
-   auto &commandManager = ProjectCommandManager::Get( project );
 
    // The list of defaults to exclude depends on
    // preference wxT("/GUI/Shortcuts/FullDefaults"), which may have changed.
@@ -470,7 +469,8 @@ public:
    using wxFrame::DetachMenuBar;
 };
 
-void MenuCreator::RebuildMenuBar(AudacityProject &project)
+void MenuCreator::RebuildMenuBar(
+   AudacityProject &project, CommandManager &cm)
 {
    // On OSX, we can't rebuild the menus while a modal dialog is being shown
    // since the enabled state for menus like Quit and Preference gets out of
@@ -492,9 +492,9 @@ void MenuCreator::RebuildMenuBar(AudacityProject &project)
       // menuBar gets deleted here
    }
 
-   ProjectCommandManager::Get( project ).PurgeData();
+    cm.PurgeData();
 
-   CreateMenusAndCommands(project);
+   CreateMenusAndCommands(project, cm);
 }
 
 CommandFlag MenuManager::GetUpdateFlags( bool checkActive ) const
@@ -539,7 +539,7 @@ CommandFlag MenuManager::GetUpdateFlags( bool checkActive ) const
 
 // checkActive is a temporary hack that should be removed as soon as we
 // get multiple effect preview working
-void MenuManager::UpdateMenus( bool checkActive )
+void MenuManager::UpdateMenus( bool checkActive, CommandManager &cm )
 {
    auto &project = mProject;
 
@@ -566,12 +566,10 @@ void MenuManager::UpdateMenus( bool checkActive )
          flags2 |= enabler.possibleFlags();
    }
 
-   auto &commandManager = ProjectCommandManager::Get( project );
-
    // With select-all-on-none, some items that we don't want enabled may have
    // been enabled, since we changed the flags.  Here we manually disable them.
    // 0 is grey out, 1 is Autoselect, 2 is Give warnings.
-   commandManager.EnableUsingFlags(
+   cm.EnableUsingFlags(
       flags2, // the "lax" flags
       (mWhatIfNoSelection == 0 ? flags2 : flags) // the "strict" flags
    );
@@ -584,32 +582,13 @@ void MenuManager::UpdateMenus( bool checkActive )
 /// selecting and unselecting depending if you are on the start of a
 /// block or not.
 
-void MenuCreator::RebuildAllMenuBars()
-{
-   for( auto p : AllProjects{} ) {
-      MenuManager::Get(*p).RebuildMenuBar(*p);
-#if defined(__WXGTK__)
-      // Workaround for:
-      //
-      //   http://bugzilla.audacityteam.org/show_bug.cgi?id=458
-      //
-      // This workaround should be removed when Audacity updates to wxWidgets 3.x which has a fix.
-      auto &window = GetProjectFrame( *p );
-      wxRect r = window.GetRect();
-      window.SetSize(wxSize(1,1));
-      window.SetSize(r.GetSize());
-#endif
-   }
-}
-
-bool MenuManager::ReportIfActionNotAllowed(
+bool MenuManager::ReportIfActionNotAllowed( CommandManager &cm,
    const TranslatableString & Name, CommandFlag & flags, CommandFlag flagsRqd )
 {
    auto &project = mProject;
    bool bAllowed = TryToMakeActionAllowed( flags, flagsRqd );
    if( bAllowed )
       return true;
-   auto &cm = ProjectCommandManager::Get( project );
    TellUserWhyDisallowed( Name, flags & flagsRqd, flagsRqd);
    return false;
 }

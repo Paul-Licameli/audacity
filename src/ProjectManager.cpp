@@ -22,6 +22,7 @@ Paul Licameli split from AudacityProject.cpp
 #include "Project.h"
 #include "ProjectAudioIO.h"
 #include "ProjectAudioManager.h"
+#include "ProjectCommandManager.h"
 #include "ProjectFileIO.h"
 #include "ProjectFileManager.h"
 #include "ProjectHistory.h"
@@ -485,7 +486,8 @@ AudacityProject *ProjectManager::New()
    // This may report an error.
    projectFileManager.OpenNewProject();
 
-   MenuManager::Get( project ).CreateMenusAndCommands( project );
+   MenuManager::Get( project ).CreateMenusAndCommands(
+      project, ProjectCommandManager::Get(project) );
    
    projectHistory.InitialState();
    projectManager.RestartTimer();

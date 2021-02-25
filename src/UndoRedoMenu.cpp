@@ -56,7 +56,8 @@ static AudacityProject::AttachedObjects::RegisteredFactory sKey {
       auto handler = [&project](wxCommandEvent &evt){
          evt.Skip();
          ModifyUndoMenuItems( project );
-         MenuManager::Get(project).UpdateMenus();
+         MenuManager::Get(project)
+            .UpdateMenus(true, ProjectCommandManager::Get(project));
       };
       project.Bind( EVT_UNDO_OR_REDO, handler);
       project.Bind( EVT_UNDO_RESET, handler);

@@ -2093,7 +2093,7 @@ static ProjectFileManager::RegisteredImportProcedure sProcedure {
       // Is it a plug-in?
       if (PluginManager::Get().DropFile(fileName))
       {
-         MenuCreator::RebuildAllMenuBars();
+         ProjectCommandManager::RebuildAllMenuBars();
          return true;
       }
       return false;

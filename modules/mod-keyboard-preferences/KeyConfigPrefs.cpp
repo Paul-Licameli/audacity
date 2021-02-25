@@ -973,7 +973,7 @@ extern "C" DLL_API int ModuleDispatch(ModuleDispatchTypes type)
             auto pWindow = FindProjectFrame( pProject );
             GlobalPrefsDialog dialog( pWindow, pProject, factories );
             dialog.ShowModal();
-            MenuCreator::RebuildAllMenuBars();
+            ProjectCommandManager::RebuildAllMenuBars();
             return true;
          }
          else

@@ -19,6 +19,7 @@ Paul Licameli split from WaveTrackView.cpp
 
 #include "AColor.h"
 #include "Prefs.h"
+#include "ProjectCommandManager.h"
 #include "NumberScale.h"
 #include "TrackArt.h"
 #include "TrackArtist.h"
@@ -1496,7 +1497,7 @@ void SpectrogramSettingsHandler::OnSpectrogramSettings(wxCommandEvent &)
       //Bug 1725 Toolbar was left greyed out.
       //This solution is overkill, but does fix the problem and is what the
       //prefs dialog normally does.
-      MenuCreator::RebuildAllMenuBars();
+      ProjectCommandManager::RebuildAllMenuBars();
       mpData->result = RefreshCode::RefreshAll;
    }
 }

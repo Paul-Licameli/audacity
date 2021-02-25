@@ -1,6 +1,7 @@
 #include "../CommonCommandFlags.h"
 #include "../Menus.h"
 #include "Project.h"
+#include "../ProjectCommandManager.h"
 #include "../ProjectHistory.h"
 #include "../ProjectWindow.h"
 #include "ProjectWindows.h"
@@ -9,7 +10,6 @@
 #include "../UndoRedoMenu.h"
 #include "../WaveTrack.h"
 #include "../commands/CommandContext.h"
-#include "../commands/CommandManager.h"
 #include "../prefs/PrefsDialog.h"
 #include "../widgets/AudacityMessageBox.h"
 #include "../widgets/VetoDialogHook.h"
@@ -99,7 +99,8 @@ void OnPreferences(const CommandContext &context)
    //      rebuilding the menus while the PrefsDialog is still in the modal
    //      state.
    for (auto p : AllProjects{}) {
-      MenuManager::Get(*p).RebuildMenuBar(*p);
+      auto &cm = ProjectCommandManager::Get(*p);
+      MenuManager::Get(*p).RebuildMenuBar(*p, cm);
 // TODO: The comment below suggests this workaround is obsolete.
 #if defined(__WXGTK__)
       // Workaround for:

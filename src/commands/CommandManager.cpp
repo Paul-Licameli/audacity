@@ -1049,7 +1049,7 @@ bool CommandManager::HandleCommandEntry(AudacityProject &project,
          TranslatableString::Ellipses | TranslatableString::MenuCodes );
       // NB: The call may have the side effect of changing flags.
       bool allowed =
-         MenuManager::Get(project).ReportIfActionNotAllowed(
+         MenuManager::Get(project).ReportIfActionNotAllowed( *this,
             NiceName, flags, entry->flags );
       // If the function was disallowed, it STILL should count as having been
       // handled (by doing nothing or by telling the user of the problem).
@@ -1490,6 +1490,5 @@ void CommandManager::RemoveDuplicateShortcuts()
          MessageBoxOptions{}.Caption(XO("Shortcuts have been removed")));
 
       gPrefs->Flush();
-      MenuCreator::RebuildAllMenuBars();
    }
 }

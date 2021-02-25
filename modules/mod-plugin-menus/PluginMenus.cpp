@@ -39,7 +39,7 @@ void DoManagePluginsMenu(AudacityProject &project, EffectType type)
    auto &window = GetProjectFrame( project );
    auto &pm = PluginManager::Get();
    if (ShowManager(pm, &window, type))
-      MenuCreator::RebuildAllMenuBars();
+      ProjectCommandManager::RebuildAllMenuBars();
 }
 
 bool CompareEffectsByName(const PluginDescriptor *a, const PluginDescriptor *b)

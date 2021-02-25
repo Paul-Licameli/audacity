@@ -1520,6 +1520,7 @@ bool AudacityApp::InitPart2()
       if (vMajorInit != AUDACITY_VERSION || vMinorInit != AUDACITY_RELEASE
          || vMicroInit != AUDACITY_REVISION) {
          ProjectCommandManager::Get(*project).RemoveDuplicateShortcuts();
+         ProjectCommandManager::RebuildAllMenuBars();
       }
       //
       // Auto-recovery
