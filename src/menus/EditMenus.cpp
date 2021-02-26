@@ -10,7 +10,7 @@
 #include "../UndoRedoMenu.h"
 #include "../WaveTrack.h"
 #include "CommandContext.h"
-#include "../prefs/PrefsDialog.h"
+#include "PrefsDialog.h"
 #include "../widgets/AudacityMessageBox.h"
 #include "../widgets/VetoDialogHook.h"
 

@@ -46,7 +46,7 @@ MousePrefs, QualityPrefs, SpectrumPrefs and ThemePrefs.
 class AudacityProject;
 class ShuttleGui;
 
-class AUDACITY_DLL_API PrefsPanel /* not final */
+class PREFERENCES_DIALOG_API PrefsPanel /* not final */
    : public wxPanelWrapper, ComponentInterface
 {
    struct PrefsItem;
@@ -83,14 +83,14 @@ class AUDACITY_DLL_API PrefsPanel /* not final */
 
    // Typically you make a static object of this type in the .cpp file that
    // also implements the PrefsPanel subclass.
-   struct AUDACITY_DLL_API Registration final
+   struct PREFERENCES_DIALOG_API Registration final
       : public Registry::RegisteredItem<PrefsItem>
    {
       Registration( const wxString &name, const Factory &factory,
          bool expanded = true,
          const Registry::Placement &placement = { wxEmptyString, {} });
 
-      struct AUDACITY_DLL_API Init{ Init(); };
+      struct PREFERENCES_DIALOG_API Init{ Init(); };
    };
 
    PrefsPanel(wxWindow * parent,
@@ -128,7 +128,7 @@ class AUDACITY_DLL_API PrefsPanel /* not final */
    virtual void Cancel();
 
  private:
-   struct AUDACITY_DLL_API PrefsItem final
+   struct PREFERENCES_DIALOG_API PrefsItem final
       : Registry::ConcreteGroupItem<false> {
       PrefsPanel::Factory factory;
       bool expanded{ false };

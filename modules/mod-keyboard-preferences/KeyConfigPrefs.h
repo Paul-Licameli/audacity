@@ -19,7 +19,7 @@ class ShuttleGui;
 #include <wx/timer.h> // member variable
 
 #include "audacity/Types.h"
-#include "prefs/PrefsPanel.h"
+#include "PrefsPanel.h"
 #include "CommandID.h"
 
 class wxRadioButton;

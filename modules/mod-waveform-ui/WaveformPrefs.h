@@ -12,7 +12,7 @@ Paul Licameli
 #ifndef __AUDACITY_WAVEFORM_PREFS__
 #define __AUDACITY_WAVEFORM_PREFS__
 
-#include "prefs/PrefsPanel.h"
+#include "PrefsPanel.h"
 #include "WaveformSettings.h"
 
 class ShuttleGui;

@@ -145,6 +145,8 @@ list( APPEND SOURCES
       ProjectWindow.h
       RecordUtilities.cpp
       RecordUtilities.h
+      ReloadPreferences.cpp
+      ReloadPreferences.h
       RingBuffer.cpp
       RingBuffer.h
       SampleBlock.cpp
@@ -226,10 +228,6 @@ list( APPEND SOURCES
       prefs/GUISettings.h
       prefs/ModulePrefs.cpp
       prefs/ModulePrefs.h
-      prefs/PrefsDialog.cpp
-      prefs/PrefsDialog.h
-      prefs/PrefsPanel.cpp
-      prefs/PrefsPanel.h
       prefs/QualitySettings.cpp
       prefs/QualitySettings.h
 

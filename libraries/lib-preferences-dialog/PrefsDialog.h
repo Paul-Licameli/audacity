@@ -30,7 +30,8 @@ class ShuttleGui;
 
 class AudacityProject;
 
-class AUDACITY_DLL_API PrefsDialog /* not final */ : public wxDialogWrapper
+class PREFERENCES_DIALOG_API PrefsDialog /* not final */
+   : public wxDialogWrapper
 {
  public:
    PrefsDialog(wxWindow * parent,
@@ -77,7 +78,7 @@ private:
 
 // This adds code appropriate only to the original use of PrefsDialog for
 // global settings -- not its reuses elsewhere as in View Settings
-class AUDACITY_DLL_API GlobalPrefsDialog final : public PrefsDialog
+class PREFERENCES_DIALOG_API GlobalPrefsDialog final : public PrefsDialog
 {
 public:
    GlobalPrefsDialog(
@@ -88,8 +89,5 @@ public:
    long GetPreferredPage() override;
    void SavePreferredPage() override;
 };
-
-class AudacityProject;
-void AUDACITY_DLL_API DoReloadPreferences( AudacityProject &project );
 
 #endif

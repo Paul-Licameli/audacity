@@ -14,7 +14,7 @@
 #ifndef __AUDACITY_TRACKSBEHAVIORS_PREFS__
 #define __AUDACITY_TRACKSBEHAVIORS_PREFS__
 
-#include "prefs/PrefsPanel.h"
+#include "PrefsPanel.h"
 
 class ChoiceSetting;
 class ShuttleGui;

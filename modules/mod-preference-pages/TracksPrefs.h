@@ -17,7 +17,7 @@
 
 #include <functional>
 #include <vector>
-#include "prefs/PrefsPanel.h"
+#include "PrefsPanel.h"
 
 class ShuttleGui;
 

@@ -14,7 +14,7 @@
 #include <wx/defs.h>
 #include <wx/dnd.h> // to inherit wxDropTarget
 
-#include "prefs/PrefsPanel.h"
+#include "PrefsPanel.h"
 
 #include "ImportPlugin.h"
 

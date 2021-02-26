@@ -9,6 +9,7 @@
 #include "ProjectSettings.h"
 #include "ProjectWindow.h"
 #include "ProjectWindows.h"
+#include "ReloadPreferences.h"
 #include "ToolManager.h"
 #include "TempDirectory.h"
 #include "UndoManager.h"
@@ -18,8 +19,8 @@
 #include "EffectUI.h"
 #include "effects/RealtimeEffectManager.h"
 #include "EffectsPrefs.h"
-#include "prefs/PrefsDialog.h"
-   
+#include "PrefsDialog.h"
+
 #include <wx/log.h>
 
 // private helper classes and functions

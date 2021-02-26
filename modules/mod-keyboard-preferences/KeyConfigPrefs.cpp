@@ -53,7 +53,7 @@ KeyConfigPrefs and MousePrefs use.
 #endif
 
 #ifdef EXPERIMENTAL_EASY_CHANGE_KEY_BINDINGS
-#include "prefs/PrefsDialog.h"
+#include "PrefsDialog.h"
 #include <wx/frame.h>
 #endif
 

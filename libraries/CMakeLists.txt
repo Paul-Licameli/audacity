@@ -26,6 +26,7 @@ set( LIBRARIES
    lib-project-windows
    lib-help-system
    lib-command-manager
+   lib-preferences-dialog
 )
 
 if ( ${_OPT}has_networking )
