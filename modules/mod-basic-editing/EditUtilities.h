@@ -19,7 +19,7 @@ class AudacityProject;
 class TranslatableString;
 
 //! A set of callbacks for special cut, copy, and paste behavior for tracks
-struct AUDACITY_DLL_API CopyPasteMethods {
+struct BASIC_EDITING_API CopyPasteMethods {
    virtual ~CopyPasteMethods();
 
    //! Called before doing the default paste procedure, which is skipped if return is true
@@ -45,12 +45,12 @@ CopyPasteMethodsTable &GetCopyPasteMethods();
  Multiple callback objects may be installed and will be tried in the order they were installed until
  one returns true from the relevant virtual function
 */
-struct AUDACITY_DLL_API RegisterCopyPasteMethods {
+struct BASIC_EDITING_API RegisterCopyPasteMethods {
    RegisterCopyPasteMethods(
       std::unique_ptr<CopyPasteMethods> pMethods);
    ~RegisterCopyPasteMethods();
 
-   struct AUDACITY_DLL_API Init{ Init(); };
+   struct BASIC_EDITING_API Init{ Init(); };
 };
 
 //! Guarantee existence of the registry before use
