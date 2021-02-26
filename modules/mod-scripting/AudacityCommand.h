@@ -11,6 +11,10 @@
 #ifndef __AUDACITY_COMMAND__
 #define __AUDACITY_COMMAND__
 
+namespace BasicUI{
+   enum class MessageBoxResult : int;
+}
+
 #include <set>
 
 #include <wx/defs.h>
@@ -78,8 +82,7 @@ class SCRIPTING_API AudacityCommand /* not final */ : public wxEvtHandler,
    // Display a message box, using effect's (translated) name as the prefix
    // for the title.
    enum : long { DefaultMessageBoxStyle = wxOK | wxCENTRE };
-   int MessageBox(const TranslatableString& message,
-                  long style = DefaultMessageBoxStyle,
+   BasicUI::MessageBoxResult MessageBox(const TranslatableString& message,
                   const TranslatableString& titleStr = {});
 
 //
