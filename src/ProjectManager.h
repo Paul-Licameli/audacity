@@ -141,6 +141,8 @@ public:
    void SetStatusText( const TranslatableString &text, int number );
    void SetSkipSavePrompt(bool bSkip) { sbSkipPromptingForSave = bSkip; };
 
+   static void SetClosingAll(bool closing);
+
 private:
    struct AUDACITY_DLL_API InsertedPanelItem final : Registry::SingleItem {
       static Registry::GroupItem &Registry();

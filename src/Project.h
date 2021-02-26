@@ -65,16 +65,6 @@ public:
    /// In case you must iterate in a non-main thread, use this to prevent
    /// changes in the set of open projects
    static std::mutex &Mutex();
-
-   // Return true if all projects do close (always so if force == true)
-   // But if return is false, that means the user cancelled close of at least
-   // one un-saved project.
-   static bool Close( bool force = false );
-
-   static bool Closing() { return sbClosing; }
-
-private:
-   static bool sbClosing;
 };
 
 // Abstract base class for attached objects
