@@ -18,9 +18,9 @@ class wxDialog;
 using VetoDialogHook = bool (*) ( wxDialog* );
 
 //! Install a hook function, returning the previously installed
-AUDACITY_DLL_API VetoDialogHook SetVetoDialogHook( VetoDialogHook hook );
+WX_WRAPPERS_API VetoDialogHook SetVetoDialogHook( VetoDialogHook hook );
 
 //! Invoke the currently installed hook function, or return false if there is none
-AUDACITY_DLL_API bool CallVetoDialogHook( wxDialog *pDialog );
+WX_WRAPPERS_API bool CallVetoDialogHook( wxDialog *pDialog );
 
 #endif

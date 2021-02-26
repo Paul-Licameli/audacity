@@ -44,7 +44,7 @@
 #include "widgets/ProgressDialog.h"
 #include "NumericTextCtrl.h"
 #include "AudacityMessageBox.h"
-#include "widgets/VetoDialogHook.h"
+#include "VetoDialogHook.h"
 
 #include <unordered_map>
 

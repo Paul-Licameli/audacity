@@ -180,8 +180,6 @@ list( APPEND SOURCES
       >
       widgets/UnwritableLocationErrorDialog.cpp
       widgets/UnwritableLocationErrorDialog.h
-      widgets/VetoDialogHook.cpp
-      widgets/VetoDialogHook.h
       widgets/Warning.cpp
       widgets/Warning.h
       widgets/wxWidgetsBasicUI.cpp

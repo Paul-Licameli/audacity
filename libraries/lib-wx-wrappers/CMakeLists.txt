@@ -15,6 +15,8 @@ list( APPEND SOURCES
       FileDialog/gtk/FileDialogPrivate.cpp
       FileDialog/gtk/FileDialogPrivate.h
    >
+   VetoDialogHook.cpp
+   VetoDialogHook.h
    WindowAccessible.cpp
    WindowAccessible.h
    wxPanelWrapper.cpp

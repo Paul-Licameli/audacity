@@ -12,7 +12,7 @@
 #include "CommandContext.h"
 #include "PrefsDialog.h"
 #include "AudacityMessageBox.h"
-#include "../widgets/VetoDialogHook.h"
+#include "VetoDialogHook.h"
 
 namespace EditActions {
 

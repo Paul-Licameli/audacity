@@ -25,7 +25,7 @@
 #include "HelpSystem.h"
 #include "NumericTextCtrl.h"
 #include "AudacityMessageBox.h"
-#include "widgets/VetoDialogHook.h"
+#include "VetoDialogHook.h"
 
 #include <cmath>
 #include <limits>

@@ -40,7 +40,7 @@ small calculations of rectangles.
 #include "Shuttle.h"
 #include "ShuttleGui.h"
 #include "Track.h"
-#include "widgets/VetoDialogHook.h"
+#include "VetoDialogHook.h"
 #include "CommandContext.h"
 #include "commands/CommandDispatch.h"
 #include "CommandTargets.h"
