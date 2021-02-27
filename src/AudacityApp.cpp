@@ -2483,3 +2483,17 @@ void AudacityApp::AssociateFileTypes()
 }
 #endif
 
+#ifdef EXPERIMENTAL_DRAG_DROP_PLUG_INS
+#include "Menus.h"
+static ProjectFileManager::RegisteredImportProcedure sProcedure {
+   [](AudacityProject &, const FilePath &fileName) {
+      // Is it a plug-in?
+      if (PluginManager::Get().DropFile(fileName))
+      {
+         ProjectCommandManager::RebuildAllMenuBars();
+         return true;
+      }
+      return false;
+   }
+};
+#endif

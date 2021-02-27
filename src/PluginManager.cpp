@@ -21,8 +21,6 @@ for shared and private configs - which need to move out.
 
 #include "PluginManager.h"
 
-
-
 #include <algorithm>
 
 #include <wx/log.h>
@@ -2084,19 +2082,3 @@ TranslatableString ComponentInterface::GetName()
 {
    return GetSymbol().Msgid();
 }
-
-#ifdef EXPERIMENTAL_DRAG_DROP_PLUG_INS
-#include "ProjectFileManager.h"
-#include "Menus.h"
-static ProjectFileManager::RegisteredImportProcedure sProcedure {
-   [](AudacityProject &, const FilePath &fileName) {
-      // Is it a plug-in?
-      if (PluginManager::Get().DropFile(fileName))
-      {
-         ProjectCommandManager::RebuildAllMenuBars();
-         return true;
-      }
-      return false;
-   }
-};
-#endif
