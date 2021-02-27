@@ -22,7 +22,7 @@ i.e. an alternative to the usual interface, for Audacity.
 #include "ModuleManager.h"
 #include "ModuleInterface.h"
 
-
+#include "BasicUI.h"
 
 #include <wx/dynlib.h>
 #include <wx/log.h>
@@ -37,8 +37,6 @@ i.e. an alternative to the usual interface, for Audacity.
 #include "Prefs.h"
 #include "ModuleSettings.h"
 #endif
-
-#include "widgets/MultiDialog.h"
 
 #include "widgets/AudacityMessageBox.h"
 
@@ -289,8 +287,8 @@ void ModuleManager::TryLoadModules(
          const TranslatableStrings buttons{
             XO("Yes"), XO("No"),
          };  // could add a button here for 'yes and remember that', and put it into the cfg file.  Needs more thought.
-         int action;
-         action = ShowMultiDialog(msg, XO("Audacity Module Loader"),
+         int action = BasicUI::ShowMultiDialog(msg,
+            XO("Audacity Module Loader"),
             buttons,
             "",
             XO("Try and load this module?"),

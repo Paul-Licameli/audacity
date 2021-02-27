@@ -20,16 +20,13 @@
 #include "Internat.h" // for TranslatableStrings
 class wxString;
 
-const TranslatableString &DefaultMultiDialogMessage();
-
 // Display a dialog with radio buttons.
 // Return the zero-based index of the chosen button.
 int ShowMultiDialog(const TranslatableString &message,
                     const TranslatableString &title,
                     const TranslatableStrings &buttons,
                     const wxString & helpPage,
-                    const TranslatableString &boxMsg
-                       = DefaultMultiDialogMessage(),
-                    bool log = true);
+                    const TranslatableString &boxMsg,
+                    bool log);
 
 #endif // __AUDACITY_MULTIDIALOG__

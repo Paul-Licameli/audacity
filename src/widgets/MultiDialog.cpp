@@ -206,9 +206,3 @@ int ShowMultiDialog(const TranslatableString &message,
    }
    return dlog.ShowModal();
 }
-
-const TranslatableString &DefaultMultiDialogMessage()
-{
-   static auto result = XO("Please select an action");
-   return result;
-}
