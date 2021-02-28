@@ -118,7 +118,6 @@ time warp info and AudioIOListener and whether the playback is looped.
 #include "Project.h"
 #include "ProjectWindows.h"
 #include "DBConnection.h"
-#include "ProjectFileIO.h"
 #include "WaveTrack.h"
 
 #include "effects/RealtimeEffectManager.h"
@@ -1766,8 +1765,9 @@ void AudioIO::StopStream()
             // into one transaction, lessening the number of checkpoints
             Optional<TransactionScope> pScope;
             if (mOwningProject) {
-               auto &pIO = ProjectFileIO::Get(*mOwningProject);
-               pScope.emplace(pIO.GetConnection(), "Dropouts");
+               auto &connectionPtr = ConnectionPtr::Get(*mOwningProject);
+               if(auto pConnection = connectionPtr.mpConnection.get())
+                  pScope.emplace(*pConnection, "Dropouts");
             }
             for (auto &interval : mLostCaptureIntervals) {
                auto &start = interval.first;
@@ -2313,8 +2313,9 @@ void AudioIO::DrainRecordBuffers()
          // lessening the number of checkpoints
          Optional<TransactionScope> pScope;
          if (mOwningProject) {
-            auto &pIO = ProjectFileIO::Get(*mOwningProject);
-            pScope.emplace(pIO.GetConnection(), "Recording");
+            auto &connectionPtr = ConnectionPtr::Get(*mOwningProject);
+            if(auto pConnection = connectionPtr.mpConnection.get())
+               pScope.emplace(*pConnection, "Recording");
          }
 
          bool newBlocks = false;
