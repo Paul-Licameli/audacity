@@ -72,10 +72,6 @@ list( APPEND SOURCES
       AudacityHeaders.h
       AudioIO.cpp
       AudioIO.h
-      AudioIOBase.cpp
-      AudioIOBase.h
-      AudioIOExt.cpp
-      AudioIOExt.h
       AudioIOListener.h
       AutoRecoveryDialog.cpp
       AutoRecoveryDialog.h
@@ -91,10 +87,6 @@ list( APPEND SOURCES
       DBConnection.h
       DefaultCommandOutputTargets.cpp
       DefaultCommandOutputTargets.h
-      DeviceChange.cpp
-      DeviceChange.h
-      DeviceManager.cpp
-      DeviceManager.h
       Diags.cpp
       Diags.h
       HelpUtilities.cpp
@@ -107,8 +99,6 @@ list( APPEND SOURCES
       Legacy.h
       LogWindow.cpp
       LogWindow.h
-      Meter.cpp
-      Meter.h
       MixAndRender.cpp
       MixAndRender.h
       PitchName.cpp

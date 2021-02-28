@@ -23,8 +23,6 @@
 #include "portmixer.h"
 #endif
 
-#include "Project.h"
-
 #include "AudioIOBase.h"
 
 #include "DeviceChange.h" // for HAVE_DEVICE_CHANGE

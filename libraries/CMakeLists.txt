@@ -29,6 +29,7 @@ set( LIBRARIES
    lib-preferences-dialog
    lib-sample-track
    lib-module-manager
+   lib-audio-devices
 )
 
 if ( ${_OPT}has_networking )

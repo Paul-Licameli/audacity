@@ -29,7 +29,7 @@ struct AudioIODiagnostics{
    wxString description; // Non-localized short description
 };
 
-class AUDACITY_DLL_API AudioIOExt
+class AUDIO_DEVICES_API AudioIOExt
 {
 public:
    using Factory = std::function<std::unique_ptr<AudioIOExt>(
@@ -38,7 +38,7 @@ public:
    static Factories &GetFactories();
 
    //! Typically statically constructed
-   struct AUDACITY_DLL_API RegisteredFactory{
+   struct AUDIO_DEVICES_API RegisteredFactory{
       RegisteredFactory(Factory factory);
       ~RegisteredFactory();
    };

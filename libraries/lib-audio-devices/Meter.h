@@ -13,7 +13,7 @@ Paul Licameli split from MeterPanelBase.h
 
 /// \brief an interface for AudioIO to communicate buffers of samples for
 /// real-time display updates
-class AUDACITY_DLL_API Meter /* not final */
+class AUDIO_DEVICES_API Meter /* not final */
 {
 public:
    virtual ~Meter();
