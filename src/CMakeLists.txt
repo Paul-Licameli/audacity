@@ -141,10 +141,6 @@ list( APPEND SOURCES
       ProjectSettings.h
       ProjectWindow.cpp
       ProjectWindow.h
-      ProjectWindowBase.cpp
-      ProjectWindowBase.h
-      ProjectWindows.cpp
-      ProjectWindows.h
       RecordUtilities.cpp
       RecordUtilities.h
       RingBuffer.cpp

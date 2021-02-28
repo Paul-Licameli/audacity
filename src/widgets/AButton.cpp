@@ -34,7 +34,7 @@
 //This is needed for tooltips
 #include "Project.h"
 #include "ProjectStatus.h"
-#include "../ProjectWindowBase.h"
+#include "ProjectWindowBase.h"
 #include <wx/tooltip.h>
 
 #if wxUSE_ACCESSIBILITY

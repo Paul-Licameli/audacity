@@ -64,7 +64,7 @@
 #include "Project.h"
 #include "../ProjectAudioManager.h"
 #include "ProjectStatus.h"
-#include "../ProjectWindows.h"
+#include "ProjectWindows.h"
 #include "Prefs.h"
 #include "ShuttleGui.h"
 #include "Theme.h"

@@ -33,7 +33,9 @@ protected:
    AudacityProject &mProject;
 };
 
-AUDACITY_DLL_API AudacityProject *FindProjectFromWindow( wxWindow *pWindow );
+PROJECT_WINDOWS_API
+AudacityProject *FindProjectFromWindow( wxWindow *pWindow );
+PROJECT_WINDOWS_API
 const AudacityProject *FindProjectFromWindow( const wxWindow *pWindow );
 
 #endif

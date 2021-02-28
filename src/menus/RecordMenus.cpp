@@ -17,7 +17,7 @@
 #include "../widgets/ProgressDialog.h"
 #include "../ProjectAudioManager.h"
 #include "../ProjectHistory.h"
-#include "../ProjectWindows.h"
+#include "ProjectWindows.h"
 #include "../RecordUtilities.h"
 #include "ViewInfo.h"
 #include "../WaveClip.h"

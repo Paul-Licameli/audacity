@@ -46,7 +46,7 @@ const ProjectWindows &ProjectWindows::Get( const AudacityProject &project )
 }
 }
 
-AUDACITY_DLL_API CellularPanel &GetProjectPanel( AudacityProject &project )
+PROJECT_WINDOWS_API CellularPanel &GetProjectPanel( AudacityProject &project )
 {
    auto ptr = ProjectWindows::Get(project).mPanel;
    if ( !ptr )
@@ -54,7 +54,7 @@ AUDACITY_DLL_API CellularPanel &GetProjectPanel( AudacityProject &project )
    return *ptr;
 }
 
-AUDACITY_DLL_API const CellularPanel &GetProjectPanel(
+PROJECT_WINDOWS_API const CellularPanel &GetProjectPanel(
    const AudacityProject &project )
 {
    auto ptr = ProjectWindows::Get(project).mPanel;
@@ -63,13 +63,13 @@ AUDACITY_DLL_API const CellularPanel &GetProjectPanel(
    return *ptr;
 }
 
-AUDACITY_DLL_API void SetProjectPanel(
+PROJECT_WINDOWS_API void SetProjectPanel(
    AudacityProject &project, CellularPanel &panel )
 {
    ProjectWindows::Get(project).mPanel = &panel;
 }
 
-AUDACITY_DLL_API wxFrame &GetProjectFrame( AudacityProject &project )
+PROJECT_WINDOWS_API wxFrame &GetProjectFrame( AudacityProject &project )
 {
    auto ptr = ProjectWindows::Get(project).mFrame;
    if ( !ptr )
@@ -77,7 +77,7 @@ AUDACITY_DLL_API wxFrame &GetProjectFrame( AudacityProject &project )
    return *ptr;
 }
 
-AUDACITY_DLL_API const wxFrame &GetProjectFrame( const AudacityProject &project )
+PROJECT_WINDOWS_API const wxFrame &GetProjectFrame( const AudacityProject &project )
 {
    auto ptr = ProjectWindows::Get(project).mFrame;
    if ( !ptr )
@@ -125,7 +125,7 @@ void SetProjectFrame(AudacityProject &project, wxFrame &frame )
    ProjectWindows::Get(project).mFrame = &frame;
 }
 
-AUDACITY_DLL_API AttachedWindows &GetAttachedWindows(AudacityProject &project)
+AttachedWindows &GetAttachedWindows(AudacityProject &project)
 {
    return ProjectWindows::Get(project).mAttachedWindows;
 }

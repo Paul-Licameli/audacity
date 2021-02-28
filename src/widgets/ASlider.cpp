@@ -53,7 +53,7 @@ or ASlider.
 #include "ImageManipulation.h"
 #include "Project.h"
 #include "ProjectStatus.h"
-#include "../ProjectWindowBase.h"
+#include "ProjectWindowBase.h"
 #include "ShuttleGui.h"
 #include "Theme.h"
 #include "valnum.h"

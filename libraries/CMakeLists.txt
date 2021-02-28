@@ -23,6 +23,7 @@ set( LIBRARIES
    lib-project
    lib-screen-geometry
    lib-track
+   lib-project-windows
 )
 
 if ( ${_OPT}has_networking )
