@@ -1,3 +1,5 @@
+addlib( libsoxr            soxr        SOXR        YES   YES   "soxr >= 0.1.1" )
+
 list( APPEND SOURCES
    Dither.cpp
    Dither.h
@@ -9,6 +11,8 @@ list( APPEND SOURCES
    Matrix.h
    RealFFTf.cpp
    RealFFTf.h
+   Resample.cpp
+   Resample.h
    SampleCount.cpp
    SampleCount.h
    SampleFormat.cpp
@@ -18,6 +22,6 @@ list( APPEND SOURCES
    float_cast.h
 )
 audacity_library( lib-math "${SOURCES}"
-   "lib-preferences-interface;PRIVATE;wxBase"
+   "libsoxr;lib-preferences-interface;PRIVATE;wxBase"
    "" ""
 )
