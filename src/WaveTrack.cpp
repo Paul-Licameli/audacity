@@ -51,7 +51,6 @@ from the project that will own the track.
 
 #include "effects/TimeWarper.h"
 #include "prefs/QualitySettings.h"
-#include "prefs/TracksPrefs.h"
 #include "prefs/TracksBehaviorsPrefs.h"
 
 #include "InconsistencyException.h"
@@ -60,6 +59,21 @@ from the project that will own the track.
 #include "tracks/ui/TrackControls.h"
 
 using std::max;
+
+static auto DefaultName = XO("Audio Track");
+
+wxString WaveTrack::GetDefaultAudioTrackNamePreference()
+{
+   const auto name = AudioTrackNameSetting.ReadWithDefault(L"");
+
+   if (name.empty() || ( name == DefaultName.MSGID() ))
+      // When nothing was specified,
+      // the default-default is whatever translation of...
+      /* i18n-hint: The default name for an audio track. */
+      return DefaultName.Translation();
+   else
+      return name;
+}
 
 static ProjectFileIORegistry::Entry registerFactory{
    wxT( "wavetrack" ),
@@ -102,7 +116,7 @@ WaveTrack::WaveTrack( const SampleBlockFactoryPtr &pFactory,
    mOldGain[0] = 0.0;
    mOldGain[1] = 0.0;
    mWaveColorIndex = 0;
-   SetDefaultName(TracksPrefs::GetDefaultAudioTrackNamePreference());
+   SetDefaultName(GetDefaultAudioTrackNamePreference());
    SetName(GetDefaultName());
 }
 
@@ -2608,3 +2622,9 @@ void WaveTrackFactory::Destroy( AudacityProject &project )
 {
    project.AttachedObjects::Assign( key2, nullptr );
 }
+
+StringSetting AudioTrackNameSetting{
+   L"/GUI/TrackNames/DefaultTrackName",
+   // Computed default value depends on chosen language
+   []{ return DefaultName.Translation(); }
+};
