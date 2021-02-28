@@ -95,8 +95,6 @@ list( APPEND SOURCES
       DeviceManager.h
       Diags.cpp
       Diags.h
-      Envelope.cpp
-      Envelope.h
       HelpText.cpp
       HelpText.h
       HelpUtilities.cpp

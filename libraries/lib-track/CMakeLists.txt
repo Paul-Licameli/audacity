@@ -1,4 +1,6 @@
 list( APPEND SOURCES
+   Envelope.cpp
+   Envelope.h
    Track.cpp
    Track.h
    TrackAttachment.cpp
