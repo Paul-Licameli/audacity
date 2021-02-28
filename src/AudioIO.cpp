@@ -121,7 +121,6 @@ time warp info and AudioIOListener and whether the playback is looped.
 
 #include "effects/RealtimeEffectManager.h"
 #include "prefs/QualitySettings.h"
-#include "prefs/RecordingPrefs.h"
 #include "widgets/MeterPanelBase.h"
 #include "widgets/AudacityMessageBox.h"
 #include "BasicUI.h"
