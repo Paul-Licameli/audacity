@@ -26,6 +26,7 @@ for shared and private configs - which need to move out.
 #include <wx/log.h>
 #include <wx/tokenzr.h>
 
+#include "BasicUI.h"
 #include "ModuleInterface.h"
 
 #include "Internat.h" // for macro XO
@@ -755,6 +756,7 @@ void PluginManager::Terminate()
 
 bool PluginManager::DropFile(const wxString &fileName)
 {
+   using namespace BasicUI;
    auto &mm = ModuleManager::Get();
    const wxFileName src{ fileName };
 
@@ -784,11 +786,12 @@ bool PluginManager::DropFile(const wxString &fileName)
             dst.SetFullName( src.GetFullName() );
             if ( dst.Exists() ) {
                // Query whether to overwrite
-               bool overwrite = (wxYES == ::AudacityMessageBox(
+               bool overwrite = (MessageBoxResult::Yes == ShowMessageBox(
                   XO("Overwrite the plug-in file %s?")
                      .Format( dst.GetFullPath() ),
-                  XO("Plug-in already exists"),
-                  wxYES_NO ) );
+                  MessageBoxOptions{}
+                     .Caption(XO("Plug-in already exists"))
+                     .ButtonStyle(Button::YesNo)));
                if ( !overwrite )
                   return true;
             }
@@ -808,7 +811,7 @@ bool PluginManager::DropFile(const wxString &fileName)
             }
 
             if (!copied) {
-               ::AudacityMessageBox(
+               ShowMessageBox(
                   XO("Plug-in file is in use. Failed to overwrite") );
                return true;
             }
@@ -829,7 +832,7 @@ bool PluginManager::DropFile(const wxString &fileName)
                });
             if ( ! nPlugIns ) {
                // Unlikely after the dry run succeeded
-               ::AudacityMessageBox(
+               ShowMessageBox(
                   XO("Failed to register:\n%s").Format( errMsg ) );
                return true;
             }
@@ -846,10 +849,11 @@ bool PluginManager::DropFile(const wxString &fileName)
                )( nIds );
                for (const auto &name : names)
                   message.Join( Verbatim( name ), wxT("\n") );
-               bool enable = (wxYES == ::AudacityMessageBox(
+               bool enable = (MessageBoxResult::Yes == ShowMessageBox(
                   message,
-                  XO("Enable new plug-ins"),
-                  wxYES_NO ) );
+                  MessageBoxOptions{}
+                     .Caption(XO("Enable new plug-ins"))
+                     .ButtonStyle(Button::YesNo)));
                for (const auto &id : ids)
                   mPlugins[id].SetEnabled(enable);
                // Make changes to enabled status persist:
