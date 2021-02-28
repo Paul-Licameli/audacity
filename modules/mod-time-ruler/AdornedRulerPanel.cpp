@@ -50,7 +50,7 @@
 #include "widgets/AButton.h"
 #include "widgets/AudacityMessageBox.h"
 #include "Grabber.h"
-#include "widgets/MenuHandle.h"
+#include "MenuHandle.h"
 
 #include <wx/dcclient.h>
 
@@ -2423,8 +2423,8 @@ void AdornedRulerPanel::TogglePinnedHead()
 
 // Attach menu items
 
-#include "commands/CommandContext.h"
-#include "commands/CommandManager.h"
+#include "CommandContext.h"
+#include "CommandManager.h"
 #include "CommonCommandFlags.h"
 
 namespace {

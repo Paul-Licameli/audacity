@@ -12,14 +12,13 @@
 #define __AUDACITY_COMMAND_CONTEXT__
 
 #include <memory>
-#include "Identifier.h"
+#include "CommandID.h"
 
 class AudacityProject;
 class wxEvent;
 class CommandOutputTargets;
-using CommandParameter = CommandID;
 
-class AUDACITY_DLL_API CommandContext {
+class COMMAND_MANAGER_API CommandContext {
 public:
    CommandContext(
       AudacityProject &p

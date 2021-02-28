@@ -26,7 +26,7 @@
 
 #include "ToolManager.h"
 
-#include "commands/CommandContext.h"
+#include "CommandContext.h"
 
 // For compilers that support precompilation, includes "wx/wx.h".
 #include <wx/wxprec.h>

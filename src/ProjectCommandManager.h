@@ -11,8 +11,8 @@
 #ifndef __AUDACITY_PROJECT_COMMAND_MANAGER__
 #define __AUDACITY_PROJECT_COMMAND_MANAGER__
 
-#include "commands/CommandManager.h"
-#include "commands/CommandTargets.h"
+#include "CommandManager.h"
+#include "CommandTargets.h"
 
 class ProjectCommandManager final : public CommandManager {
 public:

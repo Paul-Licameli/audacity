@@ -12,7 +12,7 @@
 #include "ToolManager.h"
 #include "TempDirectory.h"
 #include "UndoManager.h"
-#include "commands/CommandContext.h"
+#include "CommandContext.h"
 #include "ProjectCommandManager.h"
 #include "EffectManager.h"
 #include "EffectUI.h"

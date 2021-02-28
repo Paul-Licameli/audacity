@@ -1551,7 +1551,7 @@ PopupMenuTable::AttachedItem sAttachment{
 #include "CommonCommandFlags.h"
 #include "Project.h"
 #include "SpectrumAnalyst.h"
-#include "commands/CommandContext.h"
+#include "CommandContext.h"
 
 namespace {
 void DoNextPeakFrequency(AudacityProject &project, bool up)

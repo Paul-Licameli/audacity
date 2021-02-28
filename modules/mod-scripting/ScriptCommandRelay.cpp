@@ -21,7 +21,7 @@ code out of ModuleManager.
 
 #include "ScriptCommandRelay.h"
 
-#include "commands/CommandTargets.h"
+#include "CommandTargets.h"
 #include "CommandBuilder.h"
 #include "ActiveProject.h"
 #include "AppCommandEvent.h"

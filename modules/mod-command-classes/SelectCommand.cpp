@@ -40,7 +40,7 @@ explicitly code all three.
 #include "ShuttleGui.h"
 #include "Effect.h"
 #include "ViewInfo.h"
-#include "commands/CommandContext.h"
+#include "CommandContext.h"
 
 
 const ComponentInterfaceSymbol SelectTimeCommand::Symbol

@@ -133,8 +133,8 @@ bool ImportMIDI(const FilePath &fName, NoteTrack * dest)
 }
 
 // Insert a menu item
-#include "commands/CommandContext.h"
-#include "commands/CommandManager.h"
+#include "CommandContext.h"
+#include "CommandManager.h"
 #include "CommonCommandFlags.h"
 
 namespace {

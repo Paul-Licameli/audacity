@@ -10,11 +10,9 @@
 #ifndef __AUDACITY_MENUS__
 #define __AUDACITY_MENUS__
 
-#include "Identifier.h"
-
 #include "Prefs.h"
 #include "Project.h"
-#include "commands/CommandFlag.h"
+#include "CommandFlag.h"
 
 class wxArrayString;
 class wxCommandEvent;
@@ -35,9 +33,9 @@ namespace Registry{ class Visitor; }
 
 // Event sent to the project when menus update (such as for changing enablement
 // of items)
-wxDECLARE_EXPORTED_EVENT(AUDACITY_DLL_API, EVT_MENU_UPDATE, wxCommandEvent);
+wxDECLARE_EXPORTED_EVENT(COMMAND_MANAGER_API, EVT_MENU_UPDATE, wxCommandEvent);
 
-class AUDACITY_DLL_API MenuCreator
+class COMMAND_MANAGER_API MenuCreator
 {
 public:
    MenuCreator();
@@ -75,7 +73,7 @@ public:
 
 struct ToolbarMenuVisitor;
 
-class AUDACITY_DLL_API MenuManager final
+class COMMAND_MANAGER_API MenuManager final
    : public MenuCreator
    , public AttachedProjectObject
    , private PrefsListener
@@ -87,8 +85,8 @@ public:
 
    explicit
    MenuManager( AudacityProject &project );
-   MenuManager( const MenuManager & ) PROHIBITED;
-   MenuManager &operator=( const MenuManager & ) PROHIBITED;
+   MenuManager( const MenuManager & ) = delete;
+   MenuManager &operator=( const MenuManager & ) = delete;
    ~MenuManager();
 
    static void Visit( ToolbarMenuVisitor &visitor );

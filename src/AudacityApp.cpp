@@ -106,7 +106,7 @@ It handles initialization and termination by subclassing wxApp.
 #include "tracks/ui/Scrubbing.h"
 #include "FileConfig.h"
 #include "widgets/FileHistory.h"
-#include "widgets/MenuHandle.h"
+#include "MenuHandle.h"
 #include "update/UpdateManager.h"
 #include "widgets/wxWidgetsBasicUI.h"
 

@@ -50,9 +50,9 @@
 #include "UndoManager.h"
 #include "widgets/AButton.h"
 
-#include "commands/CommandContext.h"
+#include "CommandContext.h"
 #include "commands/CommandDispatch.h"
-#include "commands/CommandTargets.h"
+#include "CommandTargets.h"
 #include "ProjectCommandManager.h"
 
 IMPLEMENT_CLASS(EditToolBar, ToolBar);

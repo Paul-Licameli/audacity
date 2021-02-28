@@ -16,7 +16,8 @@
 #include <wx/defs.h>
 #include <wx/vlbox.h> // to inherit wxVListBox
 
-#include "commands/Keyboard.h"
+#include "Keyboard.h"
+#include "CommandID.h"
 
 // Class holding all information about a node.  Rather than a real tree
 // we store these in an array and simulate a tree.

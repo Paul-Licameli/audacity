@@ -25,7 +25,7 @@
 #include "ProjectHistory.h"
 #include "Shuttle.h"
 #include "ShuttleGui.h"
-#include "commands/CommandContext.h"
+#include "CommandContext.h"
 #include "LabelTrackView.h"
 
 const ComponentInterfaceSymbol SetLabelCommand::Symbol

@@ -357,7 +357,7 @@ AttachedToolBarMenuItem sAttachment{
 }
 
 // Now define other related menu items
-#include "commands/CommandContext.h"
+#include "CommandContext.h"
 
 namespace {
 struct Handler : CommandHandlerObject {

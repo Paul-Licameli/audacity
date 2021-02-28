@@ -1134,8 +1134,8 @@ void Importer::DoImport(AudacityProject &project, bool isRaw)
 }
 
 // Register a menu item
-#include "commands/CommandManager.h"
-#include "commands/CommandContext.h"
+#include "CommandManager.h"
+#include "CommandContext.h"
 #include "CommonCommandFlags.h"
 #include "ProjectFileManager.h"
 #include "ProjectWindow.h"

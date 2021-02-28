@@ -28,7 +28,7 @@ class wxWindow;
 #include <memory>
 
 #include "Internat.h"
-#include "../commands/CommandManager.h"
+#include "CommandManager.h"
 #include "MenuHandle.h"
 
 class PopupMenuHandler;

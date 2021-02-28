@@ -67,7 +67,7 @@ public:
 };
 
 /// Interface for objects that can receive (string) messages from a command
-class AUDACITY_DLL_API CommandMessageTarget /* not final */
+class COMMAND_MANAGER_API CommandMessageTarget /* not final */
 {
 public:
    CommandMessageTarget() {mCounts.push_back(0);}
@@ -199,7 +199,7 @@ public:
 };
 
 /// Displays messages from a command in an AudacityMessageBox
-class AUDACITY_DLL_API MessageBoxTarget final : public CommandMessageTarget
+class COMMAND_MANAGER_API MessageBoxTarget final : public CommandMessageTarget
 {
 public:
    virtual ~MessageBoxTarget() {}
@@ -370,7 +370,7 @@ public:
    }
 };
 
-class AUDACITY_DLL_API LispifiedCommandOutputTargets
+class COMMAND_MANAGER_API LispifiedCommandOutputTargets
    : public CommandOutputTargets
 {
 public :
@@ -380,7 +380,7 @@ private:
    CommandOutputTargets * pToRestore;
 };
 
-class AUDACITY_DLL_API BriefCommandOutputTargets : public CommandOutputTargets
+class COMMAND_MANAGER_API BriefCommandOutputTargets : public CommandOutputTargets
 {
 public :
    BriefCommandOutputTargets( CommandOutputTargets & target );

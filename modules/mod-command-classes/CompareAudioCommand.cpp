@@ -31,7 +31,7 @@ threshold of difference in two selected tracks
 #include "ShuttleGui.h"
 #include "widgets/AudacityMessageBox.h"
 #include "widgets/valnum.h"
-#include "commands/CommandContext.h"
+#include "CommandContext.h"
 
 const ComponentInterfaceSymbol CompareAudioCommand::Symbol
 { XO("Compare Audio") };

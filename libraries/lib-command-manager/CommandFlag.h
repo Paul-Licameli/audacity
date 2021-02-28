@@ -14,10 +14,10 @@
 #include <bitset>
 #include <functional>
 #include <utility>
-
-#include "audacity/Types.h"
+#include "Internat.h"
 
 class AudacityProject;
+class TranslatableString;
 
 // Increase the template parameter as needed to allow more flags
 constexpr size_t NCommandFlags = 64;
@@ -84,7 +84,7 @@ struct CommandFlagOptions{
 // Construct one statically to register (and reserve) a bit position in the set
 // an associate it with a test function; those with quickTest = true are cheap
 // to compute and always checked
-class AUDACITY_DLL_API ReservedCommandFlag : public CommandFlag
+class COMMAND_MANAGER_API ReservedCommandFlag : public CommandFlag
 {
 public:
    using Predicate = std::function< bool( const AudacityProject& ) >;
@@ -97,7 +97,7 @@ public:
       const CommandFlagOptions &options = {} );
    ~ReservedCommandFlag();
 
-   struct AUDACITY_DLL_API Init{ Init(); };
+   struct COMMAND_MANAGER_API Init{ Init(); };
 };
 
 // To describe auto-selection, stop-if-paused, etc.:
@@ -125,7 +125,7 @@ struct MenuItemEnabler {
 using MenuItemEnablers = std::vector<MenuItemEnabler>;
 
 // Typically this is statically constructed:
-struct AUDACITY_DLL_API RegisteredMenuItemEnabler{
+struct COMMAND_MANAGER_API RegisteredMenuItemEnabler{
    static const MenuItemEnablers &Enablers();
    RegisteredMenuItemEnabler( const MenuItemEnabler &enabler );
 };

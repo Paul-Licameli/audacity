@@ -41,9 +41,9 @@ small calculations of rectangles.
 #include "ShuttleGui.h"
 #include "Track.h"
 #include "widgets/VetoDialogHook.h"
-#include "commands/CommandContext.h"
+#include "CommandContext.h"
 #include "commands/CommandDispatch.h"
-#include "commands/CommandTargets.h"
+#include "CommandTargets.h"
 #include "ProjectCommandManager.h"
 
 const ComponentInterfaceSymbol ScreenshotCommand::Symbol

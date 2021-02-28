@@ -26,7 +26,7 @@ This class now lists
 #include "Project.h"
 #include "ProjectWindows.h"
 #include "ProjectCommandManager.h"
-#include "commands/CommandTargets.h"
+#include "CommandTargets.h"
 #include "EffectManager.h"
 #include "Overlay.h"
 #include "TrackPanelAx.h"
@@ -39,14 +39,14 @@ This class now lists
 
 #include "SelectCommand.h"
 #include "ShuttleGui.h"
-#include "commands/CommandContext.h"
+#include "CommandContext.h"
 
 #include "prefs/PrefsDialog.h"
 #include "Shuttle.h"
 #include "PluginManager.h"
 #include "tracks/ui/TrackView.h"
 #include "ShuttleGui.h"
-#include "widgets/MenuHandle.h"
+#include "MenuHandle.h"
 
 #include <wx/frame.h>
 #include <wx/log.h>

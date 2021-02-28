@@ -18,6 +18,7 @@
 #include <unordered_map>
 #include "EffectInterface.h"
 #include "Identifier.h"
+#include "CommandID.h"
 
 class AudacityCommand;
 class AudacityProject;

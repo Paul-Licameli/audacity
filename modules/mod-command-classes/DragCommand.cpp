@@ -24,7 +24,7 @@
 #include "WaveTrack.h"
 #include "Shuttle.h"
 #include "ShuttleGui.h"
-#include "commands/CommandContext.h"
+#include "CommandContext.h"
 
 #include <wx/frame.h>
 

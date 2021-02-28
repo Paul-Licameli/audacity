@@ -488,8 +488,8 @@ static Exporter::RegisteredExportPlugin sRegisteredPlugin{ "FLAC",
 };
 
 // Register a hidden menu item, available as a macro command
-#include "commands/CommandContext.h"
-#include "commands/CommandManager.h"
+#include "CommandContext.h"
+#include "CommandManager.h"
 #include "CommonCommandFlags.h"
 
 namespace {

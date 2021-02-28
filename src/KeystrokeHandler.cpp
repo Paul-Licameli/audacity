@@ -16,7 +16,7 @@
 #include "ProjectCommandManager.h"
 #include "ProjectWindows.h"
 #include "CommandManagerWindowClasses.h"
-#include "commands/Keyboard.h"
+#include "Keyboard.h"
 
 #include <wx/evtloop.h>
 #include <wx/frame.h>

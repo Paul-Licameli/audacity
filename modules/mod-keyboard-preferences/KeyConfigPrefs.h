@@ -20,6 +20,7 @@ class ShuttleGui;
 
 #include "audacity/Types.h"
 #include "prefs/PrefsPanel.h"
+#include "CommandID.h"
 
 class wxRadioButton;
 class wxStaticText;

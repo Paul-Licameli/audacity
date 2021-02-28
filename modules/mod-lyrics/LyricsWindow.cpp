@@ -12,7 +12,7 @@
 #include "LyricsWindow.h"
 #include "Lyrics.h"
 #include "AudioIO.h"
-#include "CommonCommandFlags.h"
+#include "CommandFlag.h"
 #include "LabelTrack.h"
 #include "prefs/GUISettings.h" // for RTL_WORKAROUND
 #include "Project.h"
@@ -194,8 +194,8 @@ void LyricsWindow::UpdatePrefs()
 }
 
 // Remaining code hooks this add-on into the application
-#include "commands/CommandContext.h"
-#include "commands/CommandManager.h"
+#include "CommandContext.h"
+#include "CommandManager.h"
 
 namespace {
 

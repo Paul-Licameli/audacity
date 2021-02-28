@@ -16,7 +16,7 @@ Paul Licameli split from TrackPanel.cpp
 #include "RefreshCode.h"
 #include "TimeTrack.h"
 #include "widgets/PopupMenuTable.h"
-#include "widgets/MenuHandle.h"
+#include "MenuHandle.h"
 #include <wx/numdlg.h>
 
 TimeTrackControls::~TimeTrackControls()

@@ -21,7 +21,7 @@
 #include "LoadCommands.h"
 #include "Shuttle.h"
 #include "ShuttleGui.h"
-#include "commands/CommandContext.h"
+#include "CommandContext.h"
 
 const ComponentInterfaceSymbol GetTrackInfoCommand::Symbol
 { XO("Get Track Info") };

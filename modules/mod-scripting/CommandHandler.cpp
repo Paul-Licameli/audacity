@@ -24,8 +24,8 @@
 #include "ProjectWindow.h"
 #include "AppCommandEvent.h"
 #include "ScriptCommandRelay.h"
-#include "commands/CommandContext.h"
-#include "commands/CommandTargets.h"
+#include "CommandContext.h"
+#include "CommandTargets.h"
 #include "Command.h"
 #include <wx/app.h>
 

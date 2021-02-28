@@ -14,7 +14,7 @@
 
 #include <functional>
 #include "CommandFlag.h"
-#include "Identifier.h"
+#include "CommandID.h"
 
 class CommandContext;
 class CommandManager;

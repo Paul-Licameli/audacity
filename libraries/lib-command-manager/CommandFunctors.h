@@ -14,6 +14,8 @@ class AudacityApp;
 class CommandContext;
 class wxEvtHandler;
 
+#include <functional>
+
 // Base class for objects, to whose member functions, the CommandManager will
 // dispatch.
 //

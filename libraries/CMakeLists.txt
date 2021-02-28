@@ -25,6 +25,7 @@ set( LIBRARIES
    lib-track
    lib-project-windows
    lib-help-system
+   lib-command-manager
 )
 
 if ( ${_OPT}has_networking )

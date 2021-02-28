@@ -1200,8 +1200,8 @@ void MouseEvtHandler::OnMouse(wxMouseEvent& event)
 }
 
 // Register some menu items
-#include "commands/CommandContext.h"
-#include "commands/CommandManager.h"
+#include "CommandContext.h"
+#include "CommandManager.h"
 #include "CommonCommandFlags.h"
 #include "ViewInfo.h"
 

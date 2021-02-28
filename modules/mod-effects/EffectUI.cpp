@@ -20,7 +20,7 @@
 #include "ProjectWindowBase.h"
 #include "TrackPanelAx.h"
 #include "effects/RealtimeEffectManager.h"
-#include "widgets/MenuHandle.h"
+#include "MenuHandle.h"
 
 #if defined(EXPERIMENTAL_EFFECTS_RACK)
 
@@ -37,7 +37,7 @@
 #include <wx/stattext.h>
 #include <wx/tglbtn.h>
 
-#include "commands/CommandContext.h"
+#include "CommandContext.h"
 #include "Prefs.h"
 #include "Project.h"
 #include "wxPanelWrapper.h"
@@ -654,8 +654,8 @@ private:
 #include "ShuttleGui.h"
 #include "ViewInfo.h"
 #include "commands/AudacityCommand.h"
-#include "commands/CommandContext.h"
-#include "commands/CommandTargets.h"
+#include "CommandContext.h"
+#include "CommandTargets.h"
 #include "widgets/AudacityMessageBox.h"
 #include "HelpSystem.h"
 

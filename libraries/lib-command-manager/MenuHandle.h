@@ -14,7 +14,7 @@ Paul Licameli
 #include <functional>
 #include <MemoryX.h>
 #include "Internat.h"
-#include "../commands/Keyboard.h"
+#include "Keyboard.h"
 #include <wx/weakref.h>
 
 class wxCommandEvent;

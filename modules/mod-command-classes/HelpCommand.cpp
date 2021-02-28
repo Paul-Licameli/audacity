@@ -19,8 +19,8 @@
 #include "Shuttle.h"
 #include "LoadCommands.h"
 #include "ShuttleGui.h"
-#include "commands/CommandTargets.h"
-#include "commands/CommandContext.h"
+#include "CommandTargets.h"
+#include "CommandContext.h"
 #include "EffectManager.h"
 
 const ComponentInterfaceSymbol HelpCommand::Symbol

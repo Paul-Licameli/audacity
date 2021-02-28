@@ -15,7 +15,7 @@
 
 #include "BatchEvalCommand.h"
 
-#include "commands/CommandContext.h"
+#include "CommandContext.h"
 #include "CommandDirectory.h"
 #include "Project.h"
 

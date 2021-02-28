@@ -64,7 +64,7 @@
    #include "../images/AudacityLogo48x48.xpm"
 #endif
 
-#include "commands/CommandManager.h"
+#include "CommandManager.h"
 
 #define AudacityMixerBoardTitle XO("Audacity Mixer Board%s")
 
@@ -1512,7 +1512,7 @@ void MixerBoardFrame::SetWindowTitle()
 }
 
 // Remaining code hooks this add-on into the application
-#include "commands/CommandContext.h"
+#include "CommandContext.h"
 
 namespace {
 

@@ -12,6 +12,8 @@
 #ifndef __AUDACITY_EFFECT__
 #define __AUDACITY_EFFECT__
 
+#include "audacity/Types.h"
+
 #include <functional>
 #include <set>
 
@@ -23,10 +25,10 @@ class wxChoice;
 class wxListBox;
 class wxWindow;
 
-#include "audacity/Types.h"
 #include "ConfigInterface.h"
 #include "EffectInterface.h"
 #include "PluginInterface.h"
+#include "CommandID.h"
 
 #include "SampleCount.h"
 #include "SelectedRegion.h"
@@ -53,6 +55,7 @@ class WaveTrackFactory;
 class WaveTrack;
 
 using FloatBuffers = ArraysOf<float>;
+using PluginID = wxString;
 
 /* i18n-hint: "Nyquist" is an embedded interpreted programming language in
  Audacity, named in honor of the Swedish-American Harry Nyquist (or Nyqvist).

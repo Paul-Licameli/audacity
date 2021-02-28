@@ -107,8 +107,6 @@ list( APPEND SOURCES
       Legacy.h
       LogWindow.cpp
       LogWindow.h
-      Menus.cpp
-      Menus.h
       Mix.cpp
       Mix.h
       ModuleManager.cpp
@@ -200,19 +198,8 @@ list( APPEND SOURCES
 
       commands/AudacityCommand.cpp
       commands/AudacityCommand.h
-      commands/CommandContext.cpp
-      commands/CommandContext.h
       commands/CommandDispatch.cpp
       commands/CommandDispatch.h
-      commands/CommandFlag.cpp
-      commands/CommandFlag.h
-      commands/CommandFunctors.h
-      commands/CommandManager.cpp
-      commands/CommandManager.h
-      commands/CommandTargets.cpp
-      commands/CommandTargets.h
-      commands/Keyboard.cpp
-      commands/Keyboard.h
       commands/ResponseQueue.cpp
       commands/ResponseQueue.h
 
@@ -283,8 +270,6 @@ list( APPEND SOURCES
       widgets/Grid.h
       widgets/ImageRoll.cpp
       widgets/ImageRoll.h
-      widgets/MenuHandle.cpp
-      widgets/MenuHandle.h
       widgets/Meter.cpp
       widgets/Meter.h
       widgets/MeterPanelBase.cpp

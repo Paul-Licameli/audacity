@@ -25,7 +25,7 @@ capture the more lengthy output from some commands.
 #include "Menus.h"
 #include "Project.h"
 #include "ShuttleGui.h"
-#include "commands/CommandTargets.h"
+#include "CommandTargets.h"
 #include "wxPanelWrapper.h"
 
 #include <wx/app.h>

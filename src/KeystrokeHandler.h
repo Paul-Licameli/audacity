@@ -10,7 +10,7 @@
 #ifndef __AUDACITY_KEYSTROKE_HANDLER__
 #define __AUDACITY_KEYSTROKE_HANDLER__
 
-#include "commands/Keyboard.h"
+#include "Keyboard.h"
 
 class AudacityProject;
 class wxKeyEvent;

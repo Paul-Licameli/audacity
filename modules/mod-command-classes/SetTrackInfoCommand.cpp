@@ -46,7 +46,7 @@ SetTrackAudioCommand and SetTrackVisualsCommand.
 #include "ShuttleGui.h"
 #include "WaveTrackView.h"
 #include "WaveTrackViewConstants.h"
-#include "commands/CommandContext.h"
+#include "CommandContext.h"
 
 SetTrackBase::SetTrackBase(){
    mbPromptForTracks = true;

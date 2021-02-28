@@ -21,8 +21,8 @@ Paul Licameli split from TrackPanel.cpp
 #include "Prefs.h" // to inherit
 #include "Project.h"
 #include "Overlay.h" // to inherit
-#include "../../commands/CommandContext.h"
-#include "../../commands/CommandTargets.h"
+#include "CommandContext.h"
+#include "CommandTargets.h"
 #include "../../ProjectCommandManager.h" // for MenuTable
 #include "Identifier.h"
 

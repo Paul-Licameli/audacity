@@ -848,7 +848,7 @@ void PrefsDialog::RecordExpansionState()
 }
 
 #include <wx/frame.h>
-#include "../Menus.h"
+#include "Menus.h"
 #include "Project.h"
 
 void DoReloadPreferences( AudacityProject &project )

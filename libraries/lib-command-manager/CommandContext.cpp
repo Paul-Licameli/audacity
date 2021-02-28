@@ -20,7 +20,6 @@ messaging from a command back to its invoker.
 
 *//*******************************************************************/
 
-
 #include "CommandContext.h"
 
 #include <map>

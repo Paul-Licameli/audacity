@@ -49,9 +49,9 @@ processing.  See also MacrosWindow and ApplyMacroDialog.
 
 #include "widgets/AudacityMessageBox.h"
 
-#include "commands/CommandContext.h"
+#include "CommandContext.h"
 #include "commands/CommandDispatch.h"
-#include "commands/CommandTargets.h"
+#include "CommandTargets.h"
 
 MacroCommands::MacroCommands( AudacityProject &project )
 : mProject{ project }

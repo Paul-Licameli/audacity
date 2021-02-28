@@ -13,12 +13,12 @@
 #include "../UndoManager.h"
 #include "ViewInfo.h"
 #include "../WaveTrack.h"
-#include "../commands/CommandContext.h"
-#include "../commands/CommandManager.h"
+#include "CommandContext.h"
+#include "CommandManager.h"
 #include "../widgets/AudacityMessageBox.h"
 #include "../widgets/FileHistory.h"
 #include "wxPanelWrapper.h"
-#include "../widgets/MenuHandle.h"
+#include "MenuHandle.h"
 #include <wx/app.h>
 
 // Menu handler functions

@@ -25,8 +25,8 @@ system by constructing BatchCommandEval objects.
 
 #include "CommandDirectory.h"
 #include "Command.h"
-#include "commands/CommandContext.h"
-#include "commands/CommandTargets.h"
+#include "CommandContext.h"
+#include "CommandTargets.h"
 #include "Shuttle.h"
 
 CommandBuilder::CommandBuilder(

@@ -527,8 +527,8 @@ void ImportRawDialog::OnChoice(wxCommandEvent & WXUNUSED(event))
 
 // Register a menu item
 #include "Import.h"
-#include "commands/CommandManager.h"
-#include "commands/CommandContext.h"
+#include "CommandManager.h"
+#include "CommandContext.h"
 #include "CommonCommandFlags.h"
 #include "ProjectWindow.h"
 

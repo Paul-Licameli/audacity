@@ -67,7 +67,7 @@
 #include "Prefs.h"
 #include "ShuttleGui.h"
 #include "Theme.h"
-#include "../widgets/MenuHandle.h"
+#include "MenuHandle.h"
 
 #include "AllThemeResources.h"
 #include "../widgets/valnum.h"

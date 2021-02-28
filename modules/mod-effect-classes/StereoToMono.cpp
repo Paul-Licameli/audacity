@@ -224,7 +224,7 @@ bool EffectStereoToMono::IsHidden()
 // Attach a menu item
 #include "CommonCommandFlags.h"
 #include "PluginManager.h"
-#include "commands/CommandManager.h"
+#include "CommandManager.h"
 #include "EffectManager.h"
 #include "EffectUI.h"
 

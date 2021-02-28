@@ -35,7 +35,7 @@ Paul Licameli split from TrackPanel.cpp
 #include "UndoManager.h"
 #include "ViewInfo.h"
 #include "AudacityTextEntryDialog.h"
-#include "widgets/MenuHandle.h"
+#include "MenuHandle.h"
 
 #include <wx/clipbrd.h>
 #include <wx/dcclient.h>

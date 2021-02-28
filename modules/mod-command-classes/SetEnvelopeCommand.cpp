@@ -18,7 +18,7 @@
 
 #include "SetEnvelopeCommand.h"
 
-#include "commands/CommandContext.h"
+#include "CommandContext.h"
 #include "LoadCommands.h"
 #include "ProjectHistory.h"
 #include "UndoManager.h"

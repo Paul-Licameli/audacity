@@ -1253,8 +1253,8 @@ static Exporter::RegisteredExportPlugin sRegisteredPlugin{ "FFmpeg",
 };
 
 // Register menu items
-#include "commands/CommandContext.h"
-#include "commands/CommandManager.h"
+#include "CommandContext.h"
+#include "CommandManager.h"
 #include "CommonCommandFlags.h"
 
 namespace {

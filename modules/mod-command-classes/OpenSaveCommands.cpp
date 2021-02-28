@@ -25,7 +25,7 @@
 #include "Export.h"
 #include "Shuttle.h"
 #include "ShuttleGui.h"
-#include "commands/CommandContext.h"
+#include "CommandContext.h"
 
 
 const ComponentInterfaceSymbol OpenProjectCommand::Symbol

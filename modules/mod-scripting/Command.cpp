@@ -82,11 +82,11 @@ classes derived from it.
 #include <wx/variant.h>
 #include <wx/arrstr.h>
 
-#include "commands/CommandTargets.h"
+#include "CommandTargets.h"
 #include "CommandDirectory.h"
 #include "DefaultCommandOutputTargets.h"
 
-#include "commands/CommandContext.h"
+#include "CommandContext.h"
 
 #include "AudacityException.h"
 

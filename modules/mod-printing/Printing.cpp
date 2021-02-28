@@ -30,8 +30,8 @@
 
 #include "tracks/ui/TrackView.h"
 
-#include "commands/CommandContext.h"
-#include "commands/CommandManager.h"
+#include "CommandContext.h"
+#include "CommandManager.h"
 #include "CommonCommandFlags.h"
 #include "Project.h"
 #include "ProjectWindows.h"

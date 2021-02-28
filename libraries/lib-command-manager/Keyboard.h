@@ -12,8 +12,8 @@
 #ifndef __AUDACITY_KEYBOARD__
 #define __AUDACITY_KEYBOARD__
 
-#include "Identifier.h"
 #include <wx/defs.h>
+#include "Identifier.h"
 
 class wxKeyEvent;
 
@@ -55,7 +55,7 @@ struct NormalizedKeyStringTag;
 using NormalizedKeyStringBase = TaggedIdentifier<NormalizedKeyStringTag, false>;
 
 // Holds an operating-system-neutral description of a key
-struct AUDACITY_DLL_API NormalizedKeyString : NormalizedKeyStringBase
+struct COMMAND_MANAGER_API NormalizedKeyString : NormalizedKeyStringBase
 {
    NormalizedKeyString() = default;
    NormalizedKeyString( const wxString &key );

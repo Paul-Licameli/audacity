@@ -30,7 +30,7 @@ Paul Licameli split from TrackPanel.cpp
 #include "effects/RealtimeEffectManager.h"
 #include "prefs/PrefsDialog.h"
 #include "widgets/AudacityMessageBox.h"
-#include "widgets/MenuHandle.h"
+#include "MenuHandle.h"
 #include "widgets/ProgressDialog.h"
 #include "UserException.h"
 #include "Identifier.h"

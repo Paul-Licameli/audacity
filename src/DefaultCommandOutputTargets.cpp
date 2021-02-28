@@ -2,7 +2,7 @@
 
 #include <wx/app.h>
 #include <wx/textctrl.h>
-#include "commands/CommandTargets.h"
+#include "CommandTargets.h"
 #include "ShuttleGui.h"
 #include "wxPanelWrapper.h"
 

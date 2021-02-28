@@ -9,6 +9,7 @@ Paul Licameli split from Menus.cpp
 **********************************************************************/
 
 #include "CommandFlag.h"
+#include <vector>
 
 namespace {
 ReservedCommandFlag::Predicates &sPredicates()
