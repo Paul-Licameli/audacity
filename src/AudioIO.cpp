@@ -122,7 +122,6 @@ time warp info and AudioIOListener and whether the playback is looped.
 
 #include "effects/RealtimeEffectManager.h"
 #include "QualitySettings.h"
-#include "widgets/AudacityMessageBox.h"
 #include "BasicUI.h"
 
 #ifdef EXPERIMENTAL_AUTOMATED_INPUT_LEVEL_ADJUSTMENT
@@ -594,10 +593,13 @@ AudioIO::AudioIO()
          errStr += XO("Error: %s").Format( paErrStr );
       // XXX: we are in libaudacity, popping up dialogs not allowed!  A
       // long-term solution will probably involve exceptions
-      AudacityMessageBox(
+      using namespace BasicUI;
+      ShowMessageBox(
          errStr,
-         XO("Error Initializing Audio"),
-         wxICON_ERROR|wxOK);
+         MessageBoxOptions{}
+            .Caption(XO("Error Initializing Audio"))
+            .IconStyle(Icon::Error)
+            .ButtonStyle(Button::Ok));
 
       // Since PortAudio is not initialized, all calls to PortAudio
       // functions will fail.  This will give reasonable behavior, since
@@ -1289,7 +1291,7 @@ int AudioIO::StartStream(const TransportTracks &tracks,
             pListener->OnAudioIOStopRecording();
          StartStreamCleanup();
          // PRL: PortAudio error messages are sadly not internationalized
-         AudacityMessageBox(
+         BasicUI::ShowMessageBox(
             Verbatim( LAT1CTOWX(Pa_GetErrorText(err)) ) );
          return 0;
       }
@@ -1503,7 +1505,7 @@ bool AudioIO::AllocateBuffers(
             // 100 samples, just give up.
             if(captureBufferSize < 100)
             {
-               AudacityMessageBox( XO("Out of memory!") );
+               BasicUI::ShowMessageBox( XO("Out of memory!") );
                return false;
             }
 
@@ -1538,7 +1540,7 @@ bool AudioIO::AllocateBuffers(
             (size_t)lrint(mRate * mPlaybackRingBufferSecs);
          if(playbackBufferSize < 100 || mPlaybackSamplesToCopy < 100)
          {
-            AudacityMessageBox( XO("Out of memory!") );
+            BasicUI::ShowMessageBox( XO("Out of memory!") );
             return false;
          }
       }
