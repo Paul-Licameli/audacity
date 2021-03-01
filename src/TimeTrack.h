@@ -15,11 +15,8 @@
 
 #include <algorithm>
 
-class wxRect;
 class BoundedEnvelope;
-class Ruler;
 class ZoomInfo;
-struct TrackPanelDrawingContext;
 
 class AUDACITY_DLL_API TimeTrack final : public Track {
 
@@ -92,7 +89,7 @@ class AUDACITY_DLL_API TimeTrack final : public Track {
 
    void testMe();
 
-   Ruler &GetRuler() const { return *mRuler; }
+   const ZoomInfo &GetZoomInfo() const { return *mZoomInfo; }
 
  private:
    void CleanState();
@@ -102,7 +99,6 @@ class AUDACITY_DLL_API TimeTrack final : public Track {
 
    const ZoomInfo  *const mZoomInfo;
    std::unique_ptr<BoundedEnvelope> mEnvelope;
-   std::unique_ptr<Ruler> mRuler;
    bool             mDisplayLog;
    bool             mRescaleXMLValues; // needed for backward-compatibility with older project files
 

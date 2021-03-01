@@ -20,8 +20,6 @@
 
 #include <cfloat>
 #include <wx/wxcrtvararg.h>
-#include <wx/dc.h>
-#include "widgets/Ruler.h"
 #include "Envelope.h"
 #include "Project.h"
 #include "ProjectSettings.h"
@@ -68,11 +66,6 @@ void TimeTrack::CleanState()
 
    SetDefaultName(_("Time Track"));
    SetName(GetDefaultName());
-
-   mRuler = std::make_unique<Ruler>();
-   mRuler->SetUseZoomInfo(0, mZoomInfo);
-   mRuler->SetLabelEdges(false);
-   mRuler->SetFormat(Ruler::TimeFormat);
 }
 
 TimeTrack::TimeTrack(const TimeTrack &orig, double *pT0, double *pT1)
@@ -94,12 +87,6 @@ TimeTrack::TimeTrack(const TimeTrack &orig, double *pT0, double *pT1)
 
    mEnvelope->SetTrackLen( len );
    mEnvelope->SetOffset(0);
-
-   ///@TODO: Give Ruler:: a copy-constructor instead of this?
-   mRuler = std::make_unique<Ruler>();
-   mRuler->SetUseZoomInfo(0, mZoomInfo);
-   mRuler->SetLabelEdges(false);
-   mRuler->SetFormat(Ruler::TimeFormat);
 }
 
 // Copy the track metadata but not the contents.
