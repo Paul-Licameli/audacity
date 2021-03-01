@@ -63,7 +63,7 @@ array of Ruler::Label.
 #include "AllThemeResources.h"
 #include "Envelope.h"
 #include "Theme.h"
-#include "ViewInfo.h"
+#include "ZoomInfo.h"
 
 using std::min;
 using std::max;
