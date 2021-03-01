@@ -107,8 +107,6 @@ list( APPEND SOURCES
       Legacy.h
       LogWindow.cpp
       LogWindow.h
-      Mix.cpp
-      Mix.h
       MixAndRender.cpp
       MixAndRender.h
       ModuleManager.cpp
@@ -153,10 +151,6 @@ list( APPEND SOURCES
       RingBuffer.h
       SampleBlock.cpp
       SampleBlock.h
-      SampleTrack.cpp
-      SampleTrack.h
-      SampleTrackCache.cpp
-      SampleTrackCache.h
       SelectUtilities.cpp
       SelectUtilities.h
       SelectFile.cpp

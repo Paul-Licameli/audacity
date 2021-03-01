@@ -20,7 +20,6 @@
 #ifndef __AUDACITY_MIX__
 #define __AUDACITY_MIX__
 
-#include "audacity/Types.h"
 #include "SampleFormat.h"
 #include <functional>
 #include <vector>
@@ -37,7 +36,7 @@ void MixBuffers(unsigned numChannels, int *channelFlags, float *gains,
                 const float *src,
                 samplePtr *dests, int len, bool interleaved);
 
-class AUDACITY_DLL_API MixerSpec
+class SAMPLE_TRACK_API MixerSpec
 {
    unsigned mNumTracks, mNumChannels, mMaxNumChannels;
 
@@ -59,11 +58,11 @@ public:
    MixerSpec& operator=( const MixerSpec &mixerSpec );
 };
 
-class AUDACITY_DLL_API Mixer {
+class SAMPLE_TRACK_API Mixer {
  public:
 
     // An argument to Mixer's constructor
-    class AUDACITY_DLL_API WarpOptions
+    class SAMPLE_TRACK_API WarpOptions
     {
     public:
        //! Type of hook function for default time warp

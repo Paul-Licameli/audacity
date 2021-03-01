@@ -15,7 +15,6 @@ Paul Licameli split from WaveTrack.h
 #include "Prefs.h"
 #include "SampleCount.h"
 #include "SampleFormat.h"
-#include "Prefs.h" // for EnumSetting
 #include "Track.h"
 
 class sampleCount;
@@ -27,7 +26,7 @@ using SampleTrackCaches = ClientData::Site<
    ClientData::DeepCopying
 >;
 
-class AUDACITY_DLL_API SampleTrack /* not final */
+class SAMPLE_TRACK_API SampleTrack /* not final */
    : public PlayableTrack
    , public SampleTrackCaches
 {
@@ -115,7 +114,7 @@ public:
    double LongSamplesToTime(sampleCount pos) const;
 };
 
-class AUDACITY_DLL_API WritableSampleTrack /* not final */
+class SAMPLE_TRACK_API WritableSampleTrack /* not final */
    : public SampleTrack
 {
 public:
