@@ -109,16 +109,10 @@ list( APPEND SOURCES
       LogWindow.h
       MixAndRender.cpp
       MixAndRender.h
-      ModuleManager.cpp
-      ModuleManager.h
-      ModuleSettings.cpp
-      ModuleSettings.h
       PitchName.cpp
       PitchName.h
       PlaybackSchedule.cpp
       PlaybackSchedule.h
-      PluginManager.cpp
-      PluginManager.h
       Profiler.cpp
       Profiler.h
       ProjectAudioIO.cpp

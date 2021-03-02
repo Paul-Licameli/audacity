@@ -28,6 +28,7 @@ set( LIBRARIES
    lib-command-manager
    lib-preferences-dialog
    lib-sample-track
+   lib-module-manager
 )
 
 if ( ${_OPT}has_networking )

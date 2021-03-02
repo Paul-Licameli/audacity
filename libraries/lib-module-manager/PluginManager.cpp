@@ -34,7 +34,6 @@ for shared and private configs - which need to move out.
 #include "MemoryX.h"
 #include "ModuleManager.h"
 #include "PlatformCompatibility.h"
-#include "widgets/AudacityMessageBox.h"
 
 ///////////////////////////////////////////////////////////////////////////////
 //

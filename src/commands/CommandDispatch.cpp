@@ -12,7 +12,7 @@
 #include "CommandDispatch.h"
 
 #include "CommandManager.h"
-#include "../PluginManager.h"
+#include "PluginManager.h"
 
 using TextualCommandHandlers = std::vector<TextualCommandHandler>;
 
