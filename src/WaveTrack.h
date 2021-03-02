@@ -18,7 +18,7 @@
 #include <functional>
 #include <wx/longlong.h>
 
-class ProgressDialog;
+namespace BasicUI{ class ProgressDialog; }
 
 class SampleBlockFactory;
 using SampleBlockFactoryPtr = std::shared_ptr<SampleBlockFactory>;
@@ -472,7 +472,7 @@ private:
    void Merge(const Track &orig) override;
 
    // Resample track (i.e. all clips in the track)
-   void Resample(int rate, ProgressDialog *progress = NULL);
+   void Resample(int rate, BasicUI::ProgressDialog *progress = NULL);
 
    const TypeInfo &GetTypeInfo() const override;
    static const TypeInfo &ClassTypeInfo();
