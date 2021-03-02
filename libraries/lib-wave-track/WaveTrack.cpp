@@ -1762,8 +1762,8 @@ float WaveTrack::GetRMS(double t0, double t1, bool mayThrow) const
 
          float cliprms = clip->GetRMS(t0, t1, mayThrow);
 
-         clip->TimeToSamplesClip(wxMax(t0, clip->GetStartTime()), &clipStart);
-         clip->TimeToSamplesClip(wxMin(t1, clip->GetEndTime()), &clipEnd);
+         clip->TimeToSamplesClip(std::max(t0, clip->GetStartTime()), &clipStart);
+         clip->TimeToSamplesClip(std::min(t1, clip->GetEndTime()), &clipEnd);
          sumsq += cliprms * cliprms * (clipEnd - clipStart).as_float();
          length += (clipEnd - clipStart);
       }

@@ -88,14 +88,14 @@ public:
    }
 };
 
-struct AUDACITY_DLL_API WaveClipListener
+struct WAVE_TRACK_API WaveClipListener
 {
    virtual ~WaveClipListener() = 0;
    virtual void MarkChanged() = 0;
    virtual void Invalidate() = 0;
 };
 
-class AUDACITY_DLL_API WaveClip final : public XMLTagHandler
+class WAVE_TRACK_API WaveClip final : public XMLTagHandler
    , public ClientData::Site< WaveClip, WaveClipListener >
 {
 private:
@@ -295,14 +295,14 @@ protected:
 };
 
 //! TODO find a better place for this function
-AUDACITY_DLL_API
+WAVE_TRACK_API
 void findCorrection(const std::vector<sampleCount> &oldWhere, size_t oldLen,
          size_t newLen,
          double t0, double rate, double samplesPerPixel,
          int &oldX0, double &correction);
 
 //! TODO find a better place for this function
-AUDACITY_DLL_API
+WAVE_TRACK_API
 void fillWhere(std::vector<sampleCount> &where,
    size_t len, double bias, double correction,
    double t0, double rate, double samplesPerPixel);

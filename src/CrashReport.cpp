@@ -18,6 +18,7 @@
 #endif
 
 #include "wxFileNameWrapper.h"
+#include "wxPanelWrapper.h"
 #include "ActiveProject.h"
 #include "AudacityLogger.h"
 #include "AudioIOBase.h"

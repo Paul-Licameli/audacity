@@ -99,8 +99,6 @@ list( APPEND SOURCES
       Legacy.h
       LogWindow.cpp
       LogWindow.h
-      MixAndRender.cpp
-      MixAndRender.h
       PitchName.cpp
       PitchName.h
       PlaybackSchedule.cpp
@@ -135,16 +133,12 @@ list( APPEND SOURCES
       ReloadPreferences.h
       RingBuffer.cpp
       RingBuffer.h
-      SampleBlock.cpp
-      SampleBlock.h
       SelectUtilities.cpp
       SelectUtilities.h
       SelectFile.cpp
       SelectFile.h
       SelectionState.cpp
       SelectionState.h
-      Sequence.cpp
-      Sequence.h
       ShuttleAutomation.cpp
       ShuttleAutomation.h
       Snap.cpp
@@ -175,10 +169,6 @@ list( APPEND SOURCES
       UndoRedoMenu.h
       UndoManager.cpp
       UndoManager.h
-      WaveClip.cpp
-      WaveClip.h
-      WaveTrack.cpp
-      WaveTrack.h
 
       # Commands
 

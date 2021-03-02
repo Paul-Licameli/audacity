@@ -62,7 +62,7 @@ using Regions = std::vector < Region >;
 
 class Envelope;
 
-class AUDACITY_DLL_API WaveTrack final : public WritableSampleTrack
+class WAVE_TRACK_API WaveTrack final : public WritableSampleTrack
 {
 public:
    static wxString GetDefaultAudioTrackNamePreference();
@@ -548,7 +548,7 @@ void InspectBlocks(const TrackList &tracks, BlockInspector inspector,
 
 class ProjectRate;
 
-class AUDACITY_DLL_API WaveTrackFactory final
+class WAVE_TRACK_API WaveTrackFactory final
    : public AttachedProjectObject
 {
  public:
@@ -579,8 +579,8 @@ class AUDACITY_DLL_API WaveTrackFactory final
       double rate = 0);
 };
 
-extern AUDACITY_DLL_API StringSetting AudioTrackNameSetting;
+extern WAVE_TRACK_API StringSetting AudioTrackNameSetting;
 
-AUDACITY_DLL_API bool GetEditClipsCanMove();
+WAVE_TRACK_API bool GetEditClipsCanMove();
 
 #endif // __AUDACITY_WAVETRACK__

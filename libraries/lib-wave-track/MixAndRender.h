@@ -32,7 +32,7 @@ class WaveTrackFactory;
  * no explicit time range to process, and the whole occupied length of the
  * input tracks is processed.
  */
-void AUDACITY_DLL_API MixAndRender(TrackList * tracks, WaveTrackFactory *factory,
+void WAVE_TRACK_API MixAndRender(TrackList * tracks, WaveTrackFactory *factory,
                   double rate, sampleFormat format,
                   double startTime, double endTime,
                   std::shared_ptr<WaveTrack> &uLeft,

@@ -128,8 +128,6 @@ void MixAndRender(TrackList *tracks, WaveTrackFactory *trackFactory,
       startTime, endTime, mono ? 1 : 2, maxBlockLen, false,
       rate, format);
 
-   ::wxSafeYield();
-
    using namespace BasicUI;
    auto updateResult = ProgressResult::Success;
    {

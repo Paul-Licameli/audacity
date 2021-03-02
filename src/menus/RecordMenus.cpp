@@ -20,8 +20,8 @@
 #include "ProjectWindows.h"
 #include "../RecordUtilities.h"
 #include "ViewInfo.h"
-#include "../WaveClip.h"
-#include "../WaveTrack.h"
+#include "WaveClip.h"
+#include "WaveTrack.h"
 
 #include <wx/frame.h>
 

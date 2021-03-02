@@ -8,7 +8,7 @@
 #include "../TrackPanelAx.h"
 #include "../UndoManager.h"
 #include "../UndoRedoMenu.h"
-#include "../WaveTrack.h"
+#include "WaveTrack.h"
 #include "CommandContext.h"
 #include "PrefsDialog.h"
 #include "../widgets/AudacityMessageBox.h"
