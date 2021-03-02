@@ -715,6 +715,7 @@ void OnDisjoin(const CommandContext &context)
    auto &selectedRegion = ViewInfo::Get( project ).selectedRegion;
    auto &window = ProjectWindow::Get( project );
 
+   wxBusyCursor busy;
    for (auto wt : tracks.Selected< WaveTrack >())
       wt->Disjoin(selectedRegion.t0(),
                   selectedRegion.t1());
