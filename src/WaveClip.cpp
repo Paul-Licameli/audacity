@@ -27,7 +27,6 @@
 #include "Prefs.h"
 #include "Envelope.h"
 #include "Resample.h"
-#include "Profiler.h"
 #include "InconsistencyException.h"
 #include "UserException.h"
 
