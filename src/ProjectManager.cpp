@@ -37,7 +37,7 @@ Paul Licameli split from AudacityProject.cpp
 #include "ViewInfo.h"
 #include "WaveTrack.h"
 #include "wxFileNameWrapper.h"
-#include "prefs/QualitySettings.h"
+#include "QualitySettings.h"
 #include "widgets/AudacityMessageBox.h"
 #include "widgets/FileHistory.h"
 #include "WindowAccessible.h"

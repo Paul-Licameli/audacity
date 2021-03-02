@@ -18,7 +18,7 @@ Paul Licameli split from TrackMenus.cpp
 #include "WaveTrack.h"
 #include "CommandContext.h"
 #include "CommandManager.h"
-#include "prefs/QualitySettings.h"
+#include "QualitySettings.h"
 
 namespace {
 using namespace MenuTable;

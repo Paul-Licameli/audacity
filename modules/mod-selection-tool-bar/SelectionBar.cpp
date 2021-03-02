@@ -51,7 +51,7 @@ selection range.
 #include "ProjectSettings.h"
 #include "Snap.h"
 #include "ViewInfo.h"
-#include "prefs/QualitySettings.h"
+#include "QualitySettings.h"
 #include "AllThemeResources.h"
 #include "widgets/auStaticText.h"
 
@@ -749,7 +749,7 @@ void SelectionBar::SetRate(double rate)
    }
 }
 
-void SelectionBar::OnRateChanged(wxCommandEvent &evt)
+void SelectionBar::OnRateChanged(wxEvent &evt)
 {
    evt.Skip();
    SetRate( ProjectRate::Get(mProject).GetRate() );

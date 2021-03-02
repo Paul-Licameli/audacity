@@ -263,7 +263,7 @@ void TimeToolBar::SetResizingLimits()
 }
 
 // Called when the project rate changes
-void TimeToolBar::OnRateChanged(wxCommandEvent &evt)
+void TimeToolBar::OnRateChanged(wxEvent &evt)
 {
    evt.Skip();
 

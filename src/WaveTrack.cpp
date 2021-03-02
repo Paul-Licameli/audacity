@@ -50,7 +50,7 @@ from the project that will own the track.
 #include "Prefs.h"
 
 #include "TimeWarper.h"
-#include "prefs/QualitySettings.h"
+#include "QualitySettings.h"
 
 #include "InconsistencyException.h"
 

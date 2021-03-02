@@ -30,6 +30,7 @@ set( LIBRARIES
    lib-sample-track
    lib-module-manager
    lib-audio-devices
+   lib-project-rate
 )
 
 if ( ${_OPT}has_networking )

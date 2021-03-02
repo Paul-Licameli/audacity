@@ -24,7 +24,7 @@
 #include "AudioIOBase.h"
 #include "Dither.h"
 #include "Prefs.h"
-#include "prefs/QualitySettings.h"
+#include "QualitySettings.h"
 #include "Resample.h"
 #include "ShuttleGui.h"
 

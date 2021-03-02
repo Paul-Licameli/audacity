@@ -87,7 +87,7 @@ class SelectionBar final : public ToolBar {
    void OnUpdate(wxCommandEvent &evt);
    void OnChangedTime(wxCommandEvent &evt);
 
-   void OnRateChanged(wxCommandEvent &evt);
+   void OnRateChanged(wxEvent &evt);
    void OnSettingsChanged(wxCommandEvent &evt);
    void OnRate(wxCommandEvent & event);
    void OnSnapTo(wxCommandEvent & event);

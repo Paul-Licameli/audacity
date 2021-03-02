@@ -24,7 +24,7 @@
 #include "WaveTrack.h"
 #include "CommandContext.h"
 #include "CommandManager.h"
-#include "prefs/QualitySettings.h"
+#include "QualitySettings.h"
 #include "WaveTrackControls.h"
 #include "ToolManager.h"
 #include "widgets/ASlider.h"

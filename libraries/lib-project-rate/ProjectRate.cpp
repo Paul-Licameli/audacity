@@ -13,15 +13,20 @@ Paul Licameli split from ProjectSettings.cpp
 #include "AudioIOBase.h"
 #include "Prefs.h"
 #include "ProjectFileIORegistry.h"
-#include "prefs/QualitySettings.h"
+#include "QualitySettings.h"
 #include "XMLWriter.h"
 
-wxDEFINE_EVENT(EVT_PROJECT_RATE_CHANGE, wxCommandEvent);
+wxDEFINE_EVENT(EVT_PROJECT_RATE_CHANGE, wxEvent);
 
 namespace {
+   struct MyEvent : wxEvent {
+      MyEvent() : wxEvent{ 0, EVT_PROJECT_RATE_CHANGE } {}
+      wxEvent *Clone() const override { return new MyEvent{*this}; }
+   };
+
    void Notify( AudacityProject &project )
    {
-      wxCommandEvent e{ EVT_PROJECT_RATE_CHANGE };
+      MyEvent e;
       project.ProcessEvent( e );
    }
 }
