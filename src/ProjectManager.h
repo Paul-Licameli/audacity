@@ -14,15 +14,18 @@ Paul Licameli split from AudacityProject.h
 #include <memory>
 
 #include "ClientData.h" // to inherit
-#include "Identifier.h"
+#include "Registry.h"
 
 #include <wx/event.h>
 
 class wxTimer;
 class wxTimerEvent;
+class wxWindow;
 
 class AudacityProject;
 struct AudioIOStartStreamOptions;
+
+class ProjectWindow;
 
 ///\brief Object associated with a project for high-level management of the
 /// project's lifetime, including creation, destruction, opening from file,
@@ -31,7 +34,26 @@ class AUDACITY_DLL_API ProjectManager final
    : public wxEvtHandler
    , public ClientData::Base
 {
+   struct InsertedPanelItem;
+   static void InitProjectWindow( ProjectWindow &window );
+
 public:
+   //! Type of function that adds panels to the main window
+   using PanelFactory =
+      std::function< wxWindow *(AudacityProject &, wxWindow * /*parent*/) >;
+
+   //! To be statically constructed, it registers additional panels in the project window layout
+   struct AUDACITY_DLL_API RegisteredPanel
+      : public Registry::RegisteredItem<InsertedPanelItem>
+   {
+      RegisteredPanel( const Identifier &id,
+         unsigned section, //!< 0 for top of layout, 1 for bottom
+         PanelFactory factory,
+         const Registry::Placement &placement = { wxEmptyString, {} } );
+
+      struct AUDACITY_DLL_API Init{ Init(); };
+   };
+
    static ProjectManager &Get( AudacityProject &project );
    static const ProjectManager &Get( const AudacityProject &project );
 
@@ -111,6 +133,16 @@ public:
    void SetSkipSavePrompt(bool bSkip) { sbSkipPromptingForSave = bSkip; };
 
 private:
+   struct AUDACITY_DLL_API InsertedPanelItem final : Registry::SingleItem {
+      static Registry::GroupItem &Registry();
+   
+      InsertedPanelItem(
+         const Identifier &id, unsigned section, PanelFactory factory);
+
+      unsigned mSection;
+      PanelFactory mFactory;
+   };
+
    void OnReconnectionFailure(wxCommandEvent & event);
    void OnCloseWindow(wxCloseEvent & event);
    void OnTimer(wxTimerEvent & event);
@@ -132,5 +164,8 @@ private:
 
 // ID of a wxTimer event that ProjectManager emits
 const int AudacityProjectTimerID = 5200;
+
+// Guarantees registry exists before attempts to use it
+static ProjectManager::RegisteredPanel::Init sInitRegisteredPanel;
 
 #endif

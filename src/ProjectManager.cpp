@@ -47,6 +47,30 @@ Paul Licameli split from AudacityProject.cpp
 #include "../images/AudacityLogoAlpha.xpm"
 #endif
 
+static const auto PathStart = wxT("MainWindowPanels");
+
+Registry::GroupItem &ProjectManager::InsertedPanelItem::Registry()
+{
+   static Registry::TransparentGroupItem<> registry{ PathStart };
+   return registry;
+}
+
+ProjectManager::InsertedPanelItem::InsertedPanelItem(
+   const Identifier &id, unsigned section, PanelFactory factory)
+   : SingleItem{ id }
+   , mSection{ section }
+   , mFactory{ std::move(factory) }
+{}
+
+ProjectManager::RegisteredPanel::RegisteredPanel(
+   const Identifier &id, unsigned section, PanelFactory factory,
+   const Registry::Placement &placement )
+   : RegisteredItem{
+      std::make_unique< InsertedPanelItem >( id, section, std::move(factory) ),
+      placement
+   }
+{}
+
 static AudacityProject::AttachedObjects::RegisteredFactory sProjectManagerKey {
    []( AudacityProject &project ) {
       return std::make_shared< ProjectManager >( project );
@@ -171,8 +195,31 @@ void ProjectManager::SaveWindowSize()
    sbWindowRectAlreadySaved = true;
 }
 
-void InitProjectWindow( ProjectWindow &window )
+void ProjectManager::InitProjectWindow( ProjectWindow &window )
 {
+   using namespace Registry;
+   struct MyVisitor final : Visitor {
+      MyVisitor( AudacityProject &project, wxWindow *pParent,
+                wxSizer &sizer, unsigned section )
+         : mProject{project}, mpParent{pParent}, mSizer{sizer}, section{section}
+      {
+      }
+
+      void Visit( Registry::SingleItem &item, const Path &path ) override
+      {
+         auto &myItem = static_cast<InsertedPanelItem&>(item);
+         if (myItem.mSection == section) {
+            if (auto pWindow = myItem.mFactory(mProject, mpParent))
+               mSizer.Add(pWindow, 0, wxEXPAND);
+         }
+      }
+
+      AudacityProject &mProject;
+      wxWindow *mpParent;
+      wxSizer &mSizer;
+      unsigned section;
+   };
+
    auto &project = window.GetProject();
 
 #ifdef EXPERIMENTAL_DA2
@@ -224,7 +271,18 @@ void InitProjectWindow( ProjectWindow &window )
 
    {
       auto ubs = std::make_unique<wxBoxSizer>(wxVERTICAL);
+
+      static OrderingPreferenceInitializer init{
+         PathStart,
+         { {wxT(""), wxT("TopToolDock,TimeRuler") } },
+      };
+
       ubs->Add( ToolManager::Get( project ).GetTopDock(), 0, wxEXPAND | wxALIGN_TOP );
+
+      TransparentGroupItem<> top{ PathStart };
+      MyVisitor visitor{ project, topPanel, *ubs, 0u };
+      Registry::Visit( visitor, &top, &InsertedPanelItem::Registry() );
+
       ubs->Add(&ruler, 0, wxEXPAND);
       topPanel->SetSizer(ubs.release());
    }
@@ -241,6 +299,11 @@ void InitProjectWindow( ProjectWindow &window )
       bs = ubs.get();
       bs->Add(topPanel, 0, wxEXPAND | wxALIGN_TOP);
       bs->Add(pPage, 1, wxEXPAND);
+
+      TransparentGroupItem<> top{ PathStart };
+      MyVisitor visitor{ project, &window, *ubs, 1u };
+      Registry::Visit( visitor, &top, &InsertedPanelItem::Registry() );
+
       bs->Add( ToolManager::Get( project ).GetBotDock(), 0, wxEXPAND );
       window.SetAutoLayout(true);
       window.SetSizer(ubs.release());
@@ -900,4 +963,9 @@ int ProjectManager::GetEstimatedRecordingMinsLeftOnDisk(long lCaptureChannels) {
    // Convert to minutes before returning
    int iRecMins = (int)round(dRecTime / 60.0);
    return iRecMins;
+}
+
+ProjectManager::RegisteredPanel::Init::Init()
+{
+   (void) InsertedPanelItem::Registry();
 }
