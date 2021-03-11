@@ -16,6 +16,7 @@
 
 
 #include "TracksBehaviorsPrefs.h"
+#include "../ProjectSettings.h"
 #include "../ViewInfo.h"
 
 #include "Prefs.h"
@@ -55,16 +56,6 @@ void TracksBehaviorsPrefs::Populate()
    PopulateOrExchange(S);
    // ----------------------- End of main section --------------
 }
-
-ChoiceSetting TracksBehaviorsSolo{
-   wxT("/GUI/Solo"),
-   {
-      ByColumns,
-      { XO("Simple"),  XO("Multi-track"), XO("None") },
-      { wxT("Simple"), wxT("Multi"),      wxT("None") }
-   },
-   0, // "Simple"
-};
 
 void TracksBehaviorsPrefs::PopulateOrExchange(ShuttleGui & S)
 {
@@ -107,7 +98,7 @@ void TracksBehaviorsPrefs::PopulateOrExchange(ShuttleGui & S)
 
       S.StartMultiColumn(2);
       {
-         S.TieChoice( XXO("Solo &Button:"), TracksBehaviorsSolo);
+         S.TieChoice( XXO("Solo &Button:"), ProjectSettings::TracksBehaviorsSolo);
       }
       S.EndMultiColumn();
    }

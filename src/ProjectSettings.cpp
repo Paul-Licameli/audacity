@@ -17,7 +17,6 @@ Paul Licameli split from AudacityProject.cpp
 #include "ProjectFileIORegistry.h"
 #include "prefs/QualitySettings.h"
 #include "widgets/NumericTextCtrl.h"
-#include "prefs/TracksBehaviorsPrefs.h"
 #include "XMLWriter.h"
 
 wxDEFINE_EVENT(EVT_PROJECT_SETTINGS_CHANGE, wxCommandEvent);
@@ -234,4 +233,14 @@ static ProjectFileIORegistry::WriterEntry entry {
    xmlFile.WriteAttr(wxT("bandwidthformat"),
                      settings.GetBandwidthSelectionFormatName().Internal());
 }
+};
+
+ChoiceSetting ProjectSettings::TracksBehaviorsSolo{
+   wxT("/GUI/Solo"),
+   {
+      ByColumns,
+      { XO("Simple"),  XO("Multi-track"), XO("None") },
+      { wxT("Simple"), wxT("Multi"),      wxT("None") }
+   },
+   0, // "Simple"
 };
