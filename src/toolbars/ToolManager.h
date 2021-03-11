@@ -88,7 +88,7 @@ class AUDACITY_DLL_API ToolManager final
    void Reset();
    static void OnResetToolBars(const CommandContext &context);
 
-   void Destroy();
+   void Destroy() override;
    void RegenerateTooltips();
 
    int FilterEvent(wxEvent &event) override;

@@ -23,6 +23,7 @@
 #include <wx/frame.h>
 
 AttachedProjectObject::~AttachedProjectObject() = default;
+void AttachedProjectObject::Destroy() {}
 
 wxDEFINE_EVENT(EVT_TRACK_PANEL_TIMER, wxCommandEvent);
 wxDEFINE_EVENT(EVT_PROJECT_ACTIVATION, wxCommandEvent);
@@ -185,6 +186,11 @@ void AudacityProject::SetInitialImportPath(const FilePath &path)
    {
       mInitialImportPath = path;
    }
+}
+
+void AudacityProject::DestroyAllAttachments()
+{
+   AttachedObjects::ForEach( [](auto &object){ object.Destroy(); } );
 }
 
 AUDACITY_DLL_API wxFrame &GetProjectFrame( AudacityProject &project )

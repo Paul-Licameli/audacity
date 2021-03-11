@@ -623,9 +623,10 @@ void ProjectManager::OnCloseWindow(wxCloseEvent & event)
    // Check validity of mTrackPanel per bug 584 Comment 1.
    // Deeper fix is in the Import code, but this failsafes against crash.
    TrackPanel::Destroy( project );
+
    // Finalize the tool manager before the children since it needs
    // to save the state of the toolbars.
-   ToolManager::Get( project ).Destroy();
+   project.DestroyAllAttachments();
 
    window.DestroyChildren();
 
