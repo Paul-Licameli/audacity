@@ -418,6 +418,15 @@ ToolManager::ToolManager( AudacityProject *parent )
    mIndicator->Hide();
 
    wxTheApp->Bind(EVT_THEME_CHANGE, &ToolManager::OnThemeChange, this);
+
+   wxTheApp->CallAfter([this]{
+      // Okay, CommandManager is populated. Now we can get its CommandManager,
+      // and add the shortcut keys to the tooltips.
+      ForEach([](auto bar){
+         if (bar)
+            bar->RegenerateTooltips();
+      });
+   });
 }
 
 void ToolManager::CreateWindows(wxWindow *topDockParent)
@@ -669,14 +678,6 @@ void ToolManager::Reset()
    // they will show up again on the next play.
    // SetVUMeters(AudacityProject *p);
    Updated();
-}
-
-void ToolManager::RegenerateTooltips()
-{
-   ForEach([](auto bar){
-      if (bar)
-         bar->RegenerateTooltips();
-   });
 }
 
 int ToolManager::FilterEvent(wxEvent &event)
