@@ -26,6 +26,7 @@
 
 #include "../ShuttleGui.h"
 #include "Prefs.h"
+#include "../tracks/ui/Scrubbing.h"
 
 PlaybackPrefs::PlaybackPrefs(wxWindow * parent, wxWindowID winid)
 :  PrefsPanel(parent, winid, XO("Playback"))
@@ -61,18 +62,6 @@ void PlaybackPrefs::Populate()
    ShuttleGui S(this, eIsCreatingFromPrefs);
    PopulateOrExchange(S);
    // ----------------------- End of main section --------------
-}
-
-namespace {
-   const char *UnpinnedScrubbingPreferenceKey()
-   {
-      return "/AudioIO/UnpinnedScrubbing";
-   }
-   bool UnpinnedScrubbingPreferenceDefault()
-   {
-      return true;
-   }
-   int iPreferenceUnpinned = -1;
 }
 
 void PlaybackPrefs::PopulateOrExchange(ShuttleGui & S)
@@ -149,8 +138,7 @@ void PlaybackPrefs::PopulateOrExchange(ShuttleGui & S)
          S.TieCheckBox(XXO("&Vari-Speed Play"), {"/AudioIO/VariSpeedPlay", true});
          S.TieCheckBox(XXO("&Micro-fades"), {"/AudioIO/Microfades", false});
          S.TieCheckBox(XXO("Always scrub un&pinned"),
-            {UnpinnedScrubbingPreferenceKey(),
-             UnpinnedScrubbingPreferenceDefault()});
+            Scrubber::UnpinnedScrubbingPreference);
       }
       S.EndVerticalLay();
    }
@@ -161,21 +149,8 @@ void PlaybackPrefs::PopulateOrExchange(ShuttleGui & S)
 
 }
 
-bool PlaybackPrefs::GetUnpinnedScrubbingPreference()
-{
-   if ( iPreferenceUnpinned >= 0 )
-      return iPreferenceUnpinned == 1;
-   bool bResult = gPrefs->ReadBool(
-      UnpinnedScrubbingPreferenceKey(),
-      UnpinnedScrubbingPreferenceDefault());
-   iPreferenceUnpinned = bResult ? 1: 0;
-   return bResult;
-}
-
 bool PlaybackPrefs::Commit()
 {
-   iPreferenceUnpinned = -1;
-
    ShuttleGui S(this, eIsSavingToPrefs);
    PopulateOrExchange(S);
 

@@ -43,7 +43,9 @@ class AUDACITY_DLL_API Scrubber final
    , private PrefsListener
    , public std::enable_shared_from_this< Scrubber >
 {
-public:   
+public:
+   static BoolSetting UnpinnedScrubbingPreference;
+
    static Scrubber &Get( AudacityProject &project );
    static const Scrubber &Get( const AudacityProject &project );
 
