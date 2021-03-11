@@ -1845,12 +1845,3 @@ void ProjectWindow::DoZoomFit()
    window.Zoom( window.GetZoomOfToFit() );
    window.TP_ScrollWindow(start);
 }
-
-static struct InstallTopPanelHook{ InstallTopPanelHook() {
-   ToolManager::SetGetTopPanelHook(
-      []( wxWindow &window ){
-         auto pProjectWindow = dynamic_cast< ProjectWindow* >( &window );
-         return pProjectWindow ? pProjectWindow->GetTopPanel() : nullptr;
-      }
-   );
-}} installTopPanelHook;

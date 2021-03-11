@@ -252,17 +252,17 @@ void ProjectManager::InitProjectWindow( ProjectWindow &window )
    //
 
 
+   auto topPanel = window.GetTopPanel();
+
    //
    // Create the ToolDock
    //
-   ToolManager::Get( project ).CreateWindows();
+   ToolManager::Get( project ).CreateWindows(topPanel);
    ToolManager::Get( project ).LayoutToolBars();
 
    //
    // Create the TrackPanel and the scrollbars
    //
-
-   auto topPanel = window.GetTopPanel();
 
    {
       auto ubs = std::make_unique<wxBoxSizer>(wxVERTICAL);

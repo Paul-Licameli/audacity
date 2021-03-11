@@ -331,21 +331,6 @@ BEGIN_EVENT_TABLE( ToolManager, wxEvtHandler )
    EVT_TIMER( wxID_ANY, ToolManager::OnTimer )
 END_EVENT_TABLE()
 
-static ToolManager::GetTopPanelHook &getTopPanelHook()
-{
-   static ToolManager::GetTopPanelHook theHook;
-   return theHook;
-}
-
-auto ToolManager::SetGetTopPanelHook( const GetTopPanelHook &hook )
-   -> GetTopPanelHook
-{
-   auto &theHook = getTopPanelHook();
-   auto result = theHook;
-   theHook = hook;
-   return result;
-}
-
 static const AudacityProject::AttachedObjects::RegisteredFactory key{
   []( AudacityProject &parent ){
      return std::make_shared< ToolManager >( &parent ); }
@@ -434,7 +419,7 @@ ToolManager::ToolManager( AudacityProject *parent )
    wxTheApp->Bind(EVT_THEME_CHANGE, &ToolManager::OnThemeChange, this);
 }
 
-void ToolManager::CreateWindows()
+void ToolManager::CreateWindows(wxWindow *topDockParent)
 {
    auto parent = mParent;
    auto &window = GetProjectFrame( *parent );
@@ -450,8 +435,6 @@ void ToolManager::CreateWindows()
    window.Bind( wxEVT_MOUSE_CAPTURE_LOST,
                      &ToolManager::OnCaptureLost,
                      this );
-
-   wxWindow *topDockParent = getTopPanelHook()( window );
 
    // Create the top and bottom docks
    mTopDock = safenew ToolDock( this, topDockParent, TopDockID );
