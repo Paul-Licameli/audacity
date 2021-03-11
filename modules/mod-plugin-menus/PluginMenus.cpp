@@ -8,7 +8,7 @@
 #include "Project.h"
 #include "ProjectSettings.h"
 #include "ProjectWindow.h"
-#include "toolbars/ToolManager.h"
+#include "ToolManager.h"
 #include "TempDirectory.h"
 #include "UndoManager.h"
 #include "commands/CommandContext.h"

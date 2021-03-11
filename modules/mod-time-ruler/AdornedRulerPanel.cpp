@@ -46,13 +46,13 @@
 #include "prefs/TracksBehaviorsPrefs.h"
 #include "prefs/TracksPrefs.h"
 #include "prefs/ThemePrefs.h"
-#include "toolbars/ToolBar.h"
-#include "toolbars/ToolManager.h"
+#include "ToolBar.h"
+#include "ToolManager.h"
 #include "tracks/ui/Scrubbing.h"
 #include "tracks/ui/TrackView.h"
 #include "widgets/AButton.h"
 #include "widgets/AudacityMessageBox.h"
-#include "widgets/Grabber.h"
+#include "Grabber.h"
 
 #include <wx/dcclient.h>
 #include <wx/menu.h>

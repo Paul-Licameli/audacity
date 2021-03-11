@@ -39,7 +39,7 @@ It forwards the actual work of doing the commands to the ScreenshotCommand.
 #include "ProjectStatus.h"
 #include "ProjectWindow.h"
 #include "Prefs.h"
-#include "toolbars/ToolManager.h"
+#include "ToolManager.h"
 #include "tracks/ui/TrackView.h"
 #include "widgets/HelpSystem.h"
 

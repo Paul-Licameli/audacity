@@ -2,5 +2,6 @@ list( APPEND SOURCES
    ToolbarMenus.cpp
    ViewMenus.cpp
 )
-audacity_module( mod-view-menus "${SOURCES}" "mod-common-track-ui-interface"
+audacity_module( mod-view-menus "${SOURCES}"
+   "mod-common-track-ui-interface;mod-toolbars-interface"
    "" "" )

@@ -13,7 +13,7 @@
 
 #include <wx/defs.h>
 
-#include "toolbars/ToolBar.h"
+#include "ToolBar.h"
 
 // Column for 
 //   Project rate

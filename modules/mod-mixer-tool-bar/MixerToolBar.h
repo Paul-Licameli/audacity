@@ -11,7 +11,7 @@
 #ifndef __AUDACITY_MIXER_TOOLBAR__
 #define __AUDACITY_MIXER_TOOLBAR__
 
-#include "toolbars/ToolBar.h"
+#include "ToolBar.h"
 
 class wxSize;
 class wxPoint;

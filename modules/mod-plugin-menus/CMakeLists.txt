@@ -3,5 +3,6 @@ list( APPEND SOURCES
    PluginRegistrationDialog.cpp
    PluginRegistrationDialog.h
 )
-audacity_module( mod-plugin-menus "${SOURCES}" "mod-effects-interface"
+audacity_module( mod-plugin-menus "${SOURCES}"
+   "mod-effects-interface;mod-toolbars-interface"
    "" "" )

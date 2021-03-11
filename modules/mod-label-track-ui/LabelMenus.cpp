@@ -22,7 +22,7 @@
 #include "LabelTrackView.h"
 #include "widgets/AudacityMessageBox.h"
 #include "ExportMultiple.h"
-#include "toolbars/ToolManager.h"
+#include "ToolManager.h"
 
 // private helper classes and functions
 namespace {

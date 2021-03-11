@@ -12,7 +12,7 @@
 #define __AUDACITY_DEVICE_TOOLBAR__
 
 #include <vector>
-#include "toolbars/ToolBar.h"
+#include "ToolBar.h"
 
 class wxSize;
 class wxPoint;

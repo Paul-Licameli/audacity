@@ -21,7 +21,6 @@
 
 *//**********************************************************************/
 
-
 #include "ToolDock.h"
 
 #include <wx/tokenzr.h>
@@ -40,12 +39,12 @@
 
 #include <algorithm>
 
-#include "../AColor.h"
-#include "../AllThemeResources.h"
-#include "../ImageManipulation.h"
+#include "AColor.h"
+#include "AllThemeResources.h"
+#include "ImageManipulation.h"
 #include "Prefs.h"
-#include "../ProjectWindow.h"
-#include "../widgets/Grabber.h"
+#include "ProjectWindow.h"
+#include "Grabber.h"
 
 const ToolBarConfiguration::Position
    ToolBarConfiguration::UnspecifiedPosition { false };

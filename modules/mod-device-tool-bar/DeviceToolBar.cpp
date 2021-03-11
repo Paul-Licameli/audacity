@@ -15,7 +15,7 @@
 
 
 #include "DeviceToolBar.h"
-#include "toolbars/ToolManager.h"
+#include "ToolManager.h"
 
 // For compilers that support precompilation, includes "wx/wx.h".
 #include <wx/wxprec.h>
@@ -42,7 +42,7 @@
 #include "Prefs.h"
 #include "Project.h"
 #include "ShuttleGui.h"
-#include "widgets/Grabber.h"
+#include "Grabber.h"
 #include "DeviceManager.h"
 #include "widgets/AudacityMessageBox.h"
 

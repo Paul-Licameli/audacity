@@ -4,5 +4,6 @@ list( APPEND SOURCES
    ScrubUI.cpp
    ScrubUI.h
 )
-audacity_module( mod-time-ruler "${SOURCES}" "Audacity"
+audacity_module( mod-time-ruler "${SOURCES}"
+   "mod-toolbars-interface"
    "" "" )

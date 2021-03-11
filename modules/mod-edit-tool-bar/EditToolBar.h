@@ -16,7 +16,7 @@
 
 #include <wx/defs.h>
 
-#include "toolbars/ToolBar.h"
+#include "ToolBar.h"
 
 class wxCommandEvent;
 class wxDC;

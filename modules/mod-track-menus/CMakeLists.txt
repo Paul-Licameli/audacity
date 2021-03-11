@@ -1,5 +1,6 @@
 list( APPEND SOURCES
    TrackMenus.cpp
 )
-audacity_module( mod-track-menus "${SOURCES}" "mod-wave-track-ui-interface"
+audacity_module( mod-track-menus "${SOURCES}"
+   "mod-wave-track-ui-interface;mod-toolbars-interface"
    "" "" )

@@ -24,10 +24,9 @@
 
 *//**********************************************************************/
 
-
 #include "ToolManager.h"
 
-#include "../commands/CommandContext.h"
+#include "commands/CommandContext.h"
 
 // For compilers that support precompilation, includes "wx/wx.h".
 #include <wx/wxprec.h>
@@ -49,19 +48,19 @@
 #include <wx/minifram.h>
 #include <wx/popupwin.h>
 
-#include "../AColor.h"
-#include "../AllThemeResources.h"
-#include "../ImageManipulation.h"
-#include "../Menus.h"
+#include "AColor.h"
+#include "AllThemeResources.h"
+#include "ImageManipulation.h"
+#include "Menus.h"
 #include "Prefs.h"
-#include "../Project.h"
-#include "../ProjectManager.h"
-#include "../ProjectWindow.h"
-#include "../prefs/ThemePrefs.h"
-#include "../widgets/AButton.h"
-#include "../widgets/ASlider.h"
-#include "../widgets/MeterPanelBase.h"
-#include "../widgets/Grabber.h"
+#include "Project.h"
+#include "ProjectManager.h"
+#include "ProjectWindow.h"
+#include "prefs/ThemePrefs.h"
+#include "widgets/AButton.h"
+#include "widgets/ASlider.h"
+#include "widgets/MeterPanelBase.h"
+#include "Grabber.h"
 
 ////////////////////////////////////////////////////////////
 /// Methods for ToolFrame
@@ -1643,8 +1642,8 @@ void ToolManager::OnThemeChange(wxCommandEvent & evt)
    });
 }
 
-#include "../commands/CommandManager.h"
-#include "../ProjectSettings.h"
+#include "commands/CommandManager.h"
+#include "ProjectSettings.h"
 void ToolManager::ModifyToolbarMenus(AudacityProject &project)
 {
    // Refreshes can occur during shutdown and the toolmanager may already
@@ -1716,3 +1715,6 @@ static ProjectManager::RegisteredPanel sRegisteredPanel2{ "BottomToolDock", 1,
       return ToolManager::Get( project ).GetBotDock();
    }
 };
+
+#include "ModuleConstants.h"
+DEFINE_MODULE_ENTRIES

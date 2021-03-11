@@ -22,7 +22,7 @@ frequency selection range.
 
 #include "SpectralSelectionBar.h"
 
-#include "toolbars/ToolManager.h"
+#include "ToolManager.h"
 
 #include <algorithm>
 

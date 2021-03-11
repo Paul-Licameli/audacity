@@ -318,7 +318,7 @@ static RegisteredToolbarFactory factory{
       return ToolBar::Holder{ safenew EditToolBar{ project } }; }
 };
 
-#include "toolbars/ToolManager.h"
+#include "ToolManager.h"
 
 namespace {
 AttachedToolBarMenuItem sAttachment{

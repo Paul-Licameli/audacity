@@ -65,7 +65,7 @@
 #include "FileNames.h"
 
 #include "tracks/ui/Scrubbing.h"
-#include "toolbars/ToolManager.h"
+#include "ToolManager.h"
 
 IMPLEMENT_CLASS(ControlToolBar, ToolBar);
 

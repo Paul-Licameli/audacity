@@ -24,6 +24,7 @@ set( LIBRARIES
    mod-import-export-interface
    mod-label-track-interface
    mod-basic-editing-interface
+   mod-toolbars-interface
 )
 audacity_module( mod-label-track-ui "${SOURCES}" "${LIBRARIES}"
    "" ""

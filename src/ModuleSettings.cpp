@@ -84,6 +84,7 @@ static const std::unordered_set<wxString> &autoEnabledModules()
       "mod-keyboard-preferences",
       "mod-time-ruler",
       "mod-basic-editing",
+      "mod-toolbars",
    };
    return modules;
 }
