@@ -55,6 +55,7 @@
 #include "../Menus.h"
 #include "Prefs.h"
 #include "../Project.h"
+#include "../ProjectManager.h"
 #include "../ProjectWindow.h"
 #include "../prefs/ThemePrefs.h"
 #include "../widgets/AButton.h"
@@ -1701,3 +1702,17 @@ void AttachedToolBarMenuItem::OnShowToolBar( const CommandContext &context )
    toolManager.ShowHide(mId);
    ToolManager::Get(project).ModifyToolbarMenus(project);
 }
+
+static ProjectManager::RegisteredPanel sRegisteredPanel1{ "TopToolDock", 0,
+   [](AudacityProject &project, wxWindow *parent){
+      ToolManager::Get( project ).CreateWindows(parent);
+      ToolManager::Get( project ).LayoutToolBars();
+      return ToolManager::Get( project ).GetTopDock();
+   }
+};
+
+static ProjectManager::RegisteredPanel sRegisteredPanel2{ "BottomToolDock", 1,
+   [](AudacityProject &project, wxWindow *){
+      return ToolManager::Get( project ).GetBotDock();
+   }
+};

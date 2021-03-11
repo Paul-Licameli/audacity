@@ -34,7 +34,6 @@ Paul Licameli split from AudacityProject.cpp
 #include "WaveTrack.h"
 #include "wxFileNameWrapper.h"
 #include "prefs/QualitySettings.h"
-#include "toolbars/ToolManager.h"
 #include "widgets/AudacityMessageBox.h"
 #include "widgets/FileHistory.h"
 #include "widgets/WindowAccessible.h"
@@ -255,12 +254,6 @@ void ProjectManager::InitProjectWindow( ProjectWindow &window )
    auto topPanel = window.GetTopPanel();
 
    //
-   // Create the ToolDock
-   //
-   ToolManager::Get( project ).CreateWindows(topPanel);
-   ToolManager::Get( project ).LayoutToolBars();
-
-   //
    // Create the TrackPanel and the scrollbars
    //
 
@@ -271,8 +264,6 @@ void ProjectManager::InitProjectWindow( ProjectWindow &window )
          PathStart,
          { {wxT(""), wxT("TopToolDock,TimeRuler") } },
       };
-
-      ubs->Add( ToolManager::Get( project ).GetTopDock(), 0, wxEXPAND | wxALIGN_TOP );
 
       TransparentGroupItem<> top{ PathStart };
       MyVisitor visitor{ project, topPanel, *ubs, 0u };
@@ -294,7 +285,6 @@ void ProjectManager::InitProjectWindow( ProjectWindow &window )
       MyVisitor visitor{ project, &window, *ubs, 1u };
       Registry::Visit( visitor, &top, &InsertedPanelItem::Registry() );
 
-      bs->Add( ToolManager::Get( project ).GetBotDock(), 0, wxEXPAND );
       window.SetAutoLayout(true);
       window.SetSizer(ubs.release());
    }
