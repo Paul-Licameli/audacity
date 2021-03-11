@@ -12,7 +12,6 @@ Paul Licameli split from AudacityProject.cpp
 
 
 
-#include "AdornedRulerPanel.h"
 #include "AudioIO.h"
 #include "Clipboard.h"
 #include "FileNames.h"
@@ -31,6 +30,7 @@ Paul Licameli split from AudacityProject.cpp
 #include "TrackPanel.h"
 #include "TrackUtilities.h"
 #include "UndoManager.h"
+#include "ViewInfo.h"
 #include "WaveTrack.h"
 #include "wxFileNameWrapper.h"
 #include "prefs/QualitySettings.h"
@@ -259,11 +259,6 @@ void ProjectManager::InitProjectWindow( ProjectWindow &window )
    ToolManager::Get( project ).LayoutToolBars();
 
    //
-   // Create the horizontal ruler
-   //
-   auto &ruler = AdornedRulerPanel::Get( project );
-
-   //
    // Create the TrackPanel and the scrollbars
    //
 
@@ -283,13 +278,8 @@ void ProjectManager::InitProjectWindow( ProjectWindow &window )
       MyVisitor visitor{ project, topPanel, *ubs, 0u };
       Registry::Visit( visitor, &top, &InsertedPanelItem::Registry() );
 
-      ubs->Add(&ruler, 0, wxEXPAND);
       topPanel->SetSizer(ubs.release());
    }
-
-   // Ensure that the topdock comes before the ruler in the tab order,
-   // irrespective of the order in which they were created.
-   ToolManager::Get(project).GetTopDock()->MoveBeforeInTabOrder(&ruler);
 
    const auto pPage = window.GetMainPage();
 
