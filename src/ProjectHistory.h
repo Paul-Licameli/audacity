@@ -11,14 +11,14 @@ Paul Licameli split from ProjectManager.h
 #ifndef __AUDACITY_PROJECT_HISTORY__
 #define __AUDACITY_PROJECT_HISTORY__
 
-#include "ClientData.h"
+#include "Project.h"
 
 class AudacityProject;
 struct UndoState;
 enum class UndoPush : unsigned char;
 
 class AUDACITY_DLL_API ProjectHistory final
-   : public ClientData::Base
+   : public AttachedProjectObject
 {
 public:
    static ProjectHistory &Get( AudacityProject &project );

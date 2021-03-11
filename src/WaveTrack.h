@@ -622,7 +622,7 @@ void InspectBlocks(const TrackList &tracks, BlockInspector inspector,
    SampleBlockIDSet *pIDs = nullptr);
 
 class AUDACITY_DLL_API WaveTrackFactory final
-   : public ClientData::Base
+   : public AttachedProjectObject
 {
  public:
    static WaveTrackFactory &Get( AudacityProject &project );

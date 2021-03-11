@@ -20,8 +20,7 @@ Paul Licameli -- split from ProjectFileIO.h
 #include <mutex>
 #include <thread>
 
-#include "ClientData.h"
-#include "Identifier.h"
+#include "Project.h"
 
 struct sqlite3;
 struct sqlite3_stmt;
@@ -157,7 +156,7 @@ using Connection = std::unique_ptr<DBConnection>;
 // and may be redirected, temporarily or permanently, to another connection
 // when backing the project up or saving or saving-as.
 class ConnectionPtr final
-   : public ClientData::Base
+   : public AttachedProjectObject
    , public std::enable_shared_from_this< ConnectionPtr >
 {
 public:

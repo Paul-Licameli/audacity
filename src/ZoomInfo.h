@@ -11,7 +11,7 @@
 #ifndef __AUDACITY_ZOOM_INFO__
 #define __AUDACITY_ZOOM_INFO__
 
-#include "ClientData.h" // to inherit
+#include "Project.h"
 #include "Prefs.h" // to inherit
 
 #ifdef __GNUC__
@@ -42,7 +42,7 @@ enum : int {
 class AUDACITY_DLL_API ZoomInfo /* not final */
    // Note that ViewInfo inherits from ZoomInfo but there are no virtual functions.
    // That's okay if we pass always by reference and never copy, suffering "slicing."
-   : public ClientData::Base
+   : public AttachedProjectObject
    , protected PrefsListener
 {
 public:

@@ -68,7 +68,7 @@ using TagMap = std::unordered_map< wxString, wxString >;
 class TAGS_API Tags final
    : public XMLTagHandler
    , public std::enable_shared_from_this< Tags >
-   , public ClientData::Base
+   , public AttachedProjectObject
    , public UndoStateExtension
 {
 

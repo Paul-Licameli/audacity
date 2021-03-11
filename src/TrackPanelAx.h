@@ -23,7 +23,7 @@
 #include "widgets/WindowAccessible.h" // to inherit
 #endif
 
-#include "ClientData.h" // to inherit
+#include "Project.h"
 
 class wxRect;
 
@@ -155,7 +155,7 @@ private:
 };
 
 class AUDACITY_DLL_API TrackFocus final
-   : public ClientData::Base
+   : public AttachedProjectObject
 {
 public:
    static TrackFocus &Get( AudacityProject &project );

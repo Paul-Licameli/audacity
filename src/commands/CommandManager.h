@@ -55,7 +55,7 @@ class CommandContext;
 
 class AUDACITY_DLL_API CommandManager final
    : public XMLTagHandler
-   , public ClientData::Base
+   , public AttachedProjectObject
 {
  public:
    static CommandManager &Get( AudacityProject &project );

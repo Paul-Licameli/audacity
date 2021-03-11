@@ -224,7 +224,7 @@ namespace {
 
 // Attach an object to each project.  It receives track list events and updates
 // track Y coordinates
-struct TrackPositioner final : ClientData::Base, wxEvtHandler
+struct TrackPositioner final : AttachedProjectObject, wxEvtHandler
 {
    AudacityProject &mProject;
 

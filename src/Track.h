@@ -22,7 +22,7 @@
 #include <wx/event.h> // to inherit wxCommandEvent
 #include <wx/longlong.h>
 
-#include "ClientData.h"
+#include "Project.h"
 #include "SampleFormat.h"
 #include "XMLTagHandler.h"
 
@@ -1331,7 +1331,7 @@ class AUDACITY_DLL_API TrackList final
    : public wxEvtHandler
    , public ListOfTracks
    , public std::enable_shared_from_this<TrackList>
-   , public ClientData::Base
+   , public AttachedProjectObject
 {
    // privatize this, make you use Add instead:
    using ListOfTracks::push_back;

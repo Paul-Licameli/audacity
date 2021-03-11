@@ -1576,7 +1576,7 @@ void DoNextPeakFrequency(AudacityProject &project, bool up)
    }
 }
 
-struct Handler : CommandHandlerObject, ClientData::Base {
+struct Handler : CommandHandlerObject, AttachedProjectObject {
 
 // Handler state:
 double mLastF0{ SelectedRegion::UndefinedFrequency };

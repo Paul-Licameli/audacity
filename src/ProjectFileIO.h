@@ -14,7 +14,7 @@ Paul Licameli split from AudacityProject.h
 #include <memory>
 #include <unordered_set>
 
-#include "ClientData.h" // to inherit
+#include "Project.h"
 #include "Prefs.h" // to inherit
 #include "XMLTagHandler.h" // to inherit
 
@@ -55,7 +55,7 @@ wxDECLARE_EXPORTED_EVENT( AUDACITY_DLL_API,
 ///\brief Object associated with a project that manages reading and writing
 /// of Audacity project file formats, and autosave
 class AUDACITY_DLL_API ProjectFileIO final
-   : public ClientData::Base
+   : public AttachedProjectObject
    , public XMLTagHandler
    , private PrefsListener
    , public std::enable_shared_from_this<ProjectFileIO>

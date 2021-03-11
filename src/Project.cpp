@@ -22,6 +22,8 @@
 #include <wx/filename.h>
 #include <wx/frame.h>
 
+AttachedProjectObject::~AttachedProjectObject() = default;
+
 wxDEFINE_EVENT(EVT_TRACK_PANEL_TIMER, wxCommandEvent);
 wxDEFINE_EVENT(EVT_PROJECT_ACTIVATION, wxCommandEvent);
 

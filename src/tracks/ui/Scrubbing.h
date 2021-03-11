@@ -39,7 +39,7 @@ class TranslatableString;
 // Scrub state object
 class AUDACITY_DLL_API Scrubber final
    : public wxEvtHandler
-   , public ClientData::Base
+   , public AttachedProjectObject
    , private PrefsListener
    , public std::enable_shared_from_this< Scrubber >
 {

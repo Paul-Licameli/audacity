@@ -15,7 +15,7 @@ Paul Licameli split from ProjectManager.h
 #include <vector>
 
 #include "AudioIOListener.h" // to inherit
-#include "ClientData.h" // to inherit
+#include "Project.h"
 #include <wx/event.h> // to declare custom event type
 
 constexpr int RATE_NOT_SELECTED{ -1 };
@@ -66,7 +66,7 @@ struct RecordingDropoutEvent : public wxCommandEvent
 };
 
 class AUDACITY_DLL_API ProjectAudioManager final
-   : public ClientData::Base
+   : public AttachedProjectObject
    , public AudioIOListener
    , public std::enable_shared_from_this< ProjectAudioManager >
 {

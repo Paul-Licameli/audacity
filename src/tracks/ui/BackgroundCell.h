@@ -11,7 +11,7 @@ Paul Licameli split from TrackPanel.cpp
 #ifndef __AUDACITY_BACKGROUND_CELL__
 #define __AUDACITY_BACKGROUND_CELL__
 
-#include "ClientData.h"
+#include "../../Project.h"
 #include "CommonTrackPanelCell.h"
 
 class AudacityProject;
@@ -23,7 +23,7 @@ class BackgroundHandle;
 /// provides the hit test function that tells us what was hit.
 class BackgroundCell final
    : public CommonTrackPanelCell
-   , public ClientData::Base
+   , public AttachedProjectObject
 {
 public:
    static BackgroundCell &Get( AudacityProject &project );

@@ -12,14 +12,14 @@ Paul Licameli split from TrackPanel.cpp
 #define __AUDACITY_EDIT_CURSOR_OVERLAY__
 
 #include <memory>
-#include "ClientData.h" // to inherit
+#include "Project.h"
 #include "widgets/Overlay.h" // to inherit
 
 class AudacityProject;
 
 class EditCursorOverlay final
    : public Overlay
-   , public ClientData::Base
+   , public AttachedProjectObject
 {
 public:
    explicit

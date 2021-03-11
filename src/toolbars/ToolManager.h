@@ -50,7 +50,7 @@ class ToolFrame;
 class AUDACITY_DLL_API ToolManager final
    : public wxEvtHandler
    , public wxEventFilter
-   , public ClientData::Base
+   , public AttachedProjectObject
 {
 
  public:
