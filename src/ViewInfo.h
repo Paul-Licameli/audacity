@@ -16,6 +16,7 @@
 #include <wx/weakref.h> // member variable
 #include "SelectedRegion.h"
 #include <memory>
+#include "Prefs.h"
 #include "ZoomInfo.h" // to inherit
 
 
@@ -231,4 +232,5 @@ private:
    int mHeight{ 0 };
 };
 
+extern AUDACITY_DLL_API BoolSetting ScrollingPreference;
 #endif
