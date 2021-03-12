@@ -6,6 +6,7 @@
 #include "ProjectSettings.h"
 #include "ProjectWindow.h"
 #include "Track.h"
+#include "TrackArtist.h"
 #include "TrackInfo.h"
 #include "TrackPanel.h"
 #include "UndoManager.h"
@@ -330,7 +331,7 @@ void OnShowClipping(const CommandContext &context)
    gPrefs->Flush();
    commandManager.Check(wxT("ShowClipping"), checked);
 
-   PrefsListener::Broadcast(ShowClippingPrefsID());
+   PrefsListener::Broadcast(TrackArtist::ShowClippingPrefsID());
 
    trackPanel.Refresh(false);
 }
@@ -346,7 +347,7 @@ void OnShowNameOverlay(const CommandContext &context)
    gPrefs->Flush();
    commandManager.Check(wxT("ShowTrackNameInWaveform"), checked);
 
-   PrefsListener::Broadcast(ShowTrackNameInWaveformPrefsID());
+   PrefsListener::Broadcast(TrackArtist::ShowTrackNameInWaveformPrefsID());
 
    trackPanel.Refresh(false);
 }

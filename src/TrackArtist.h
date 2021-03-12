@@ -39,6 +39,8 @@ class ZoomInfo;
 class AUDACITY_DLL_API TrackArtist final : private PrefsListener {
 
 public:
+   static int ShowClippingPrefsID();
+   static int ShowTrackNameInWaveformPrefsID();
 
    enum : unsigned {
       PassTracks,
