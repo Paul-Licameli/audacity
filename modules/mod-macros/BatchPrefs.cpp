@@ -19,7 +19,6 @@ setting used in debugging batch (aka macros) processing.
 #include <wx/defs.h>
 #include <wx/textdlg.h>
 
-#include "Languages.h"
 #include "Prefs.h"
 #include "ShuttleGui.h"
 
