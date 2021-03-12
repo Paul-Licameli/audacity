@@ -32,6 +32,10 @@ wxDECLARE_EXPORTED_EVENT( AUDACITY_DLL_API,
 //
 DECLARE_EXPORTED_EVENT_TYPE(AUDACITY_DLL_API, EVT_TOOLBAR_UPDATED, -1);
 
+// An event sent to the application when the user changes choice of theme
+wxDECLARE_EXPORTED_EVENT(AUDACITY_DLL_API,
+                         EVT_THEME_CHANGE, wxCommandEvent);
+
 ///\brief A top-level window associated with a project, and handling scrollbars
 /// and zooming
 class AUDACITY_DLL_API ProjectWindow final : public ProjectWindowBase

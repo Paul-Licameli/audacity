@@ -43,7 +43,6 @@
 #include "TrackPanelMouseEvent.h"
 #include "UIHandle.h"
 #include "ViewInfo.h"
-#include "prefs/ThemePrefs.h"
 #include "ToolBar.h"
 #include "ToolManager.h"
 #include "tracks/ui/Scrubbing.h"
