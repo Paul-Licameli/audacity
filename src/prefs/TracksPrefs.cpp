@@ -26,31 +26,9 @@
 #include "Prefs.h"
 #include "../ShuttleGui.h"
 #include "../WaveTrack.h"
+#include "../tracks/ui/Scrubbing.h"
 
 int TracksPrefs::iPreferencePinned = -1;
-
-namespace {
-   const wxChar *PinnedHeadPreferenceKey()
-   {
-      return wxT("/AudioIO/PinnedHead");
-   }
-
-   bool PinnedHeadPreferenceDefault()
-   {
-      return false;
-   }
-   
-   const wxChar *PinnedHeadPositionPreferenceKey()
-   {
-      return wxT("/AudioIO/PinnedHeadPosition");
-   }
-
-   double PinnedHeadPositionPreferenceDefault()
-   {
-      return 0.5;
-   }
-}
-
 
 const wxChar *TracksPrefs::WaveformScaleKey()
 {
@@ -238,8 +216,7 @@ void TracksPrefs::PopulateOrExchange(ShuttleGui & S)
 
 #ifdef SHOW_PINNED_UNPINNED_IN_PREFS
       S.TieCheckBox(XXO("&Pinned Recording/Playback head"),
-         {PinnedHeadPreferenceKey(),
-          PinnedHeadPreferenceDefault()});
+         PinnedHeadPreference);
 #endif
       S.TieCheckBox(XXO("A&uto-scroll if head unpinned"),
          {wxT("/GUI/AutoScroll"),
@@ -252,8 +229,7 @@ void TracksPrefs::PopulateOrExchange(ShuttleGui & S)
 #ifdef SHOW_PINNED_POSITION_IN_PREFS
          S.TieNumericTextBox(
             XXO("Pinned &head position"),
-            {PinnedHeadPositionPreferenceKey(),
-             PinnedHeadPositionPreferenceDefault()},
+            PinnedHeadPreference,
             30
          );
 #endif
@@ -289,41 +265,6 @@ void TracksPrefs::PopulateOrExchange(ShuttleGui & S)
    }
    S.EndStatic();
    S.EndScroller();
-}
-
-bool TracksPrefs::GetPinnedHeadPreference()
-{
-   // JKC: Cache this setting as it is read many times during drawing, and otherwise causes screen flicker.
-   // Correct solution would be to re-write wxFileConfig to be efficient.
-   if( iPreferencePinned >= 0 )
-      return iPreferencePinned == 1;
-   bool bResult = gPrefs->ReadBool(PinnedHeadPreferenceKey(), PinnedHeadPreferenceDefault());
-   iPreferencePinned = bResult ? 1: 0;
-   return bResult;
-}
-
-void TracksPrefs::SetPinnedHeadPreference(bool value, bool flush)
-{
-   iPreferencePinned = value ? 1 :0;
-   gPrefs->Write(PinnedHeadPreferenceKey(), value);
-   if(flush)
-      gPrefs->Flush();
-}
-
-double TracksPrefs::GetPinnedHeadPositionPreference()
-{
-   auto value = gPrefs->ReadDouble(
-      PinnedHeadPositionPreferenceKey(),
-      PinnedHeadPositionPreferenceDefault());
-   return std::max(0.0, std::min(1.0, value));
-}
-
-void TracksPrefs::SetPinnedHeadPositionPreference(double value, bool flush)
-{
-   value = std::max(0.0, std::min(1.0, value));
-   gPrefs->Write(PinnedHeadPositionPreferenceKey(), value);
-   if(flush)
-      gPrefs->Flush();
 }
 
 bool TracksPrefs::Commit()

@@ -27,7 +27,6 @@ Paul Licameli split from AudacityProject.cpp
 #include "WaveClip.h"
 #include "WaveTrack.h"
 #include "prefs/ThemePrefs.h"
-#include "prefs/TracksPrefs.h"
 #include "tracks/ui/Scrubbing.h"
 #include "tracks/ui/TrackView.h"
 #include "widgets/wxPanelWrapper.h"
@@ -1646,7 +1645,7 @@ void ProjectWindow::PlaybackScroller::OnTimer(wxCommandEvent &event)
             /* fallthru */
          case Mode::Pinned:
             deltaX =
-               posX - width * TracksPrefs::GetPinnedHeadPositionPreference();
+               posX - width * GetPinnedHeadPositionPreference();
             break;
          case Mode::Right:
             deltaX = posX - width;        break;

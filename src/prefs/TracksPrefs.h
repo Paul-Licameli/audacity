@@ -69,12 +69,6 @@ class AUDACITY_DLL_API TracksPrefs final : public PrefsPanel
    bool Commit() override;
    ManualPageID HelpPageName() override;
 
-   static bool GetPinnedHeadPreference();
-   static void SetPinnedHeadPreference(bool value, bool flush = false);
-   
-   static double GetPinnedHeadPositionPreference();
-   static void SetPinnedHeadPositionPreference(double value, bool flush = false);
-   
    static const wxChar *WaveformScaleKey();
    static const wxChar *DBValueString();
 

@@ -201,4 +201,13 @@ private:
    bool mMayDragToSeek{ false };
 };
 
+// Is there a better file to put these in?
+extern AUDACITY_DLL_API BoolSetting PinnedHeadPreference;
+extern AUDACITY_DLL_API DoubleSetting PinnedHeadPositionPreference;
+
+// These functions clamp the value between 0 and 1
+AUDACITY_DLL_API double GetPinnedHeadPositionPreference();
+AUDACITY_DLL_API void SetPinnedHeadPositionPreference(
+   double value, bool flush = false);
+
 #endif
