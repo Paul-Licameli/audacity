@@ -244,8 +244,7 @@ void RecordingPrefs::PopulateOrExchange(ShuttleGui & S)
             auto w = S
                .NameSuffix(XO("seconds"))
                .TieNumericTextBox(XXO("Pre-ro&ll:"),
-                  {AUDIO_PRE_ROLL_KEY,
-                   DEFAULT_PRE_ROLL_SECONDS},
+                  RecordPreRollDuration,
                   9);
             S.AddUnits(XO("seconds"));
          }
@@ -253,8 +252,7 @@ void RecordingPrefs::PopulateOrExchange(ShuttleGui & S)
             auto w = S
                .NameSuffix(XO("milliseconds"))
                .TieNumericTextBox(XXO("Cross&fade:"),
-                  {AUDIO_ROLL_CROSSFADE_KEY,
-                   DEFAULT_ROLL_CROSSFADE_MS},
+                  RecordCrossfadeDuration,
                   9);
             S.AddUnits(XO("milliseconds"));
          }

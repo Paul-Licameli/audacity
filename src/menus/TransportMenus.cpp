@@ -19,7 +19,6 @@
 #include "../TransportUtilities.h"
 #include "../UndoManager.h"
 #include "../WaveClip.h"
-#include "../prefs/RecordingPrefs.h"
 #include "../WaveTrack.h"
 #include "../ViewInfo.h"
 #include "../commands/CommandContext.h"
@@ -167,10 +166,8 @@ void OnPunchAndRoll(const CommandContext &context)
    // end of the track, so that at least some nonzero crossfade data can be
    // taken.
    PRCrossfadeData crossfadeData;
-   const double crossFadeDuration = std::max(0.0,
-      gPrefs->Read(AUDIO_ROLL_CROSSFADE_KEY, DEFAULT_ROLL_CROSSFADE_MS)
-         / 1000.0
-   );
+   const double crossFadeDuration =
+      std::max(0.0, RecordCrossfadeDuration.Read()) / 1000.0;
 
    // The test for t1 == 0.0 stops punch and roll deleting everything where the
    // selection is at zero.  There wouldn't be any cued audio to play in
@@ -244,8 +241,7 @@ void OnPunchAndRoll(const CommandContext &context)
    // Try to start recording
    auto options = DefaultPlayOptions( project );
    options.rate = rateOfSelected;
-   options.preRoll = std::max(0L,
-      gPrefs->Read(AUDIO_PRE_ROLL_KEY, DEFAULT_PRE_ROLL_SECONDS));
+   options.preRoll = std::max(0.0, RecordPreRollDuration.Read());
    options.pCrossfadeData = &crossfadeData;
    bool success = ProjectAudioManager::Get( project ).DoRecord(project,
       transportTracks,

@@ -193,3 +193,5 @@ bool TransportUtilities::DoStopPlaying(const CommandContext &context)
    return false;
 }
 
+DoubleSetting RecordPreRollDuration{ L"/AudioIO/PreRoll", 5.0 };
+DoubleSetting RecordCrossfadeDuration{ L"/AudioIO/Crossfade", 10.0 };

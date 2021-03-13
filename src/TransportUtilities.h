@@ -12,6 +12,8 @@
 #ifndef __AUDACITY_TRANSPORT_UTILITIES__
 #define __AUDACITY_TRANSPORT_UTILITIES__
 
+#include "Prefs.h"
+
 struct AudioIOStartStreamOptions;
 class CommandContext;
 class SelectedRegion;
@@ -36,5 +38,8 @@ struct AUDACITY_DLL_API TransportUtilities
    static bool DoStopPlaying(const CommandContext &context);
 
 };
+
+extern AUDACITY_DLL_API DoubleSetting RecordPreRollDuration;
+extern AUDACITY_DLL_API DoubleSetting RecordCrossfadeDuration;
 
 #endif
