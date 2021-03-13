@@ -52,7 +52,7 @@
 #include "BasicUI.h"
 #include "Mix.h"
 #include "Prefs.h"
-#include "prefs/ImportExportPrefs.h"
+#include "ImportExportPrefs.h"
 #include "Project.h"
 #include "ProjectFileIO.h"
 #include "ProjectHistory.h"

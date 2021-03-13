@@ -146,7 +146,7 @@ AttachedItem sAttachment{
 }
 
 #include "ShuttleGui.h"
-#include "prefs/ImportExportPrefs.h"
+#include "ImportExportPrefs.h"
 
 namespace {
 

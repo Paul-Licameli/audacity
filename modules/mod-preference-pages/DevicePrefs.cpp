@@ -22,7 +22,6 @@ other settings.
 
 *//********************************************************************/
 
-
 #include "DevicePrefs.h"
 #include "AudioIOBase.h"
 
@@ -37,8 +36,8 @@ other settings.
 #include "portaudio.h"
 
 #include "Prefs.h"
-#include "../ShuttleGui.h"
-#include "../DeviceManager.h"
+#include "ShuttleGui.h"
+#include "DeviceManager.h"
 
 enum {
    HostID = 10000,

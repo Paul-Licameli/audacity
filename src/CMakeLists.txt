@@ -280,42 +280,18 @@ list( APPEND SOURCES
 
       # Preferences
 
-      prefs/DevicePrefs.cpp
-      prefs/DevicePrefs.h
       prefs/DirectoriesPrefs.cpp
       prefs/DirectoriesPrefs.h
-      prefs/GUIPrefs.cpp
-      prefs/GUIPrefs.h
       prefs/GUISettings.cpp
       prefs/GUISettings.h
-      prefs/ImportExportPrefs.cpp
-      prefs/ImportExportPrefs.h
-      prefs/LibraryPrefs.cpp
-      prefs/LibraryPrefs.h
       prefs/ModulePrefs.cpp
       prefs/ModulePrefs.h
-      prefs/MousePrefs.cpp
-      prefs/MousePrefs.h
-      prefs/PlaybackPrefs.cpp
-      prefs/PlaybackPrefs.h
       prefs/PrefsDialog.cpp
       prefs/PrefsDialog.h
       prefs/PrefsPanel.cpp
       prefs/PrefsPanel.h
-      prefs/QualityPrefs.cpp
-      prefs/QualityPrefs.h
       prefs/QualitySettings.cpp
       prefs/QualitySettings.h
-      prefs/RecordingPrefs.cpp
-      prefs/RecordingPrefs.h
-      prefs/ThemePrefs.cpp
-      prefs/ThemePrefs.h
-      prefs/TracksBehaviorsPrefs.cpp
-      prefs/TracksBehaviorsPrefs.h
-      prefs/TracksPrefs.cpp
-      prefs/TracksPrefs.h
-      prefs/WarningsPrefs.cpp
-      prefs/WarningsPrefs.h
 
       # Tracks UI
 

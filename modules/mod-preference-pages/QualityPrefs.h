@@ -15,7 +15,7 @@
 #include <vector>
 #include <wx/defs.h>
 
-#include "PrefsPanel.h"
+#include "prefs/PrefsPanel.h"
 
 class wxChoice;
 class wxTextCtrl;
@@ -25,7 +25,7 @@ enum DitherType : unsigned;
 
 #define QUALITY_PREFS_PLUGIN_SYMBOL ComponentInterfaceSymbol{ XO("Quality") }
 
-class AUDACITY_DLL_API QualityPrefs final : public PrefsPanel
+class PREFERENCE_PAGES_API QualityPrefs final : public PrefsPanel
 {
  public:
    QualityPrefs(wxWindow * parent, wxWindowID winid);

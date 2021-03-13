@@ -18,7 +18,6 @@
 
 *//********************************************************************/
 
-
 #include "RecordingPrefs.h"
 #include "AudioIOBase.h"
 
@@ -26,9 +25,9 @@
 #include <wx/textctrl.h>
 #include <algorithm>
 
-#include "../prefs/GUISettings.h"
+#include "prefs/GUISettings.h"
 #include "Prefs.h"
-#include "../ShuttleGui.h"
+#include "ShuttleGui.h"
 
 using std::min;
 

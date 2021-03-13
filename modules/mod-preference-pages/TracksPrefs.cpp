@@ -17,16 +17,15 @@
 
 *//*******************************************************************/
 
-
 #include "TracksPrefs.h"
 
 //#include <algorithm>
 //#include <wx/defs.h>
 
 #include "Prefs.h"
-#include "../ShuttleGui.h"
-#include "../WaveTrack.h"
-#include "../tracks/ui/Scrubbing.h"
+#include "ShuttleGui.h"
+#include "WaveTrack.h"
+#include "tracks/ui/Scrubbing.h"
 
 int TracksPrefs::iPreferencePinned = -1;
 

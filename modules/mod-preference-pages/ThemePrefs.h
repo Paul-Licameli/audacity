@@ -16,7 +16,7 @@
 
 #include <wx/defs.h>
 
-#include "PrefsPanel.h"
+#include "prefs/PrefsPanel.h"
 
 class ShuttleGui;
 

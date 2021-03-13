@@ -28,5 +28,6 @@ list( APPEND SOURCES
    ZoomHandle.cpp
    ZoomHandle.h
 )
-audacity_module( mod-common-track-ui "${SOURCES}" "Audacity"
+audacity_module( mod-common-track-ui "${SOURCES}"
+   "mod-preference-pages-interface"
    "" "" )

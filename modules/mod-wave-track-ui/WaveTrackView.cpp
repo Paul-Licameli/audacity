@@ -32,7 +32,7 @@ Paul Licameli split from TrackPanel.cpp
 #include "TrackPanelDrawingContext.h"
 #include "TrackPanelMouseEvent.h"
 #include "ViewInfo.h"
-#include "prefs/TracksPrefs.h"
+#include "TracksPrefs.h"
 
 #include "TimeShiftHandle.h"
 #include "ButtonHandle.h"
@@ -1469,7 +1469,7 @@ void WaveTrackView::BuildSubViews() const
 
 // Additions to Tracks preferences page
 #include "ShuttleGui.h"
-#include "prefs/TracksPrefs.h"
+#include "TracksPrefs.h"
 namespace {
 void AddCollapse( ShuttleGui &S )
 {

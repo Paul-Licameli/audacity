@@ -14,13 +14,12 @@
 
 *//*******************************************************************/
 
-
 #include "TracksBehaviorsPrefs.h"
-#include "../ProjectSettings.h"
-#include "../ViewInfo.h"
+#include "ProjectSettings.h"
+#include "ViewInfo.h"
 
 #include "Prefs.h"
-#include "../ShuttleGui.h"
+#include "ShuttleGui.h"
 
 TracksBehaviorsPrefs::TracksBehaviorsPrefs(wxWindow * parent, wxWindowID winid)
 /* i18n-hint: i.e. the behaviors of tracks */

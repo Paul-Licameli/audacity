@@ -15,14 +15,14 @@
 
 #include <wx/defs.h>
 
-#include "PrefsPanel.h"
+#include "prefs/PrefsPanel.h"
 
 class ChoiceSetting;
 class ShuttleGui;
 
 #define GUI_PREFS_PLUGIN_SYMBOL ComponentInterfaceSymbol{ XO("GUI") }
 
-class AUDACITY_DLL_API GUIPrefs final : public PrefsPanel
+class PREFERENCE_PAGES_API GUIPrefs final : public PrefsPanel
 {
  public:
    GUIPrefs(wxWindow * parent, wxWindowID winid);

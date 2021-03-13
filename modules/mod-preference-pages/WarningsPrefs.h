@@ -2,30 +2,30 @@
 
   Audacity: A Digital Audio Editor
 
-  TracksBehaviorsPrefs.h
+  WarningsPrefs.h
 
   Brian Gunlogson
   Joshua Haberman
   James Crook
-  Steve Daulton
 
 **********************************************************************/
 
-#ifndef __AUDACITY_TRACKSBEHAVIORS_PREFS__
-#define __AUDACITY_TRACKSBEHAVIORS_PREFS__
+#ifndef __AUDACITY_WARNINGS_PREFS__
+#define __AUDACITY_WARNINGS_PREFS__
 
-#include "PrefsPanel.h"
+#include <wx/defs.h>
 
-class ChoiceSetting;
+#include "prefs/PrefsPanel.h"
+
 class ShuttleGui;
 
-#define TRACKS_BEHAVIORS_PREFS_PLUGIN_SYMBOL ComponentInterfaceSymbol{ XO("Tracks Behaviors") }
+#define WARNINGS_PREFS_PLUGIN_SYMBOL ComponentInterfaceSymbol{ XO("Warnings") }
 
-class AUDACITY_DLL_API TracksBehaviorsPrefs final : public PrefsPanel
+class WarningsPrefs final : public PrefsPanel
 {
  public:
-   TracksBehaviorsPrefs(wxWindow * parent, wxWindowID winid);
-   ~TracksBehaviorsPrefs();
+   WarningsPrefs(wxWindow * parent, wxWindowID winid);
+   ~WarningsPrefs();
    ComponentInterfaceSymbol GetSymbol() override;
    TranslatableString GetDescription() override;
 

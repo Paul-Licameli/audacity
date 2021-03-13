@@ -67,7 +67,7 @@ effects from this one class.
 #include "widgets/AudacityMessageBox.h"
 #include "Prefs.h"
 #include "wxFileNameWrapper.h"
-#include "prefs/GUIPrefs.h"
+#include "GUIPrefs.h"
 #include "WaveTrackView.h"
 #include "WaveTrackViewConstants.h"
 #include "widgets/NumericTextCtrl.h"

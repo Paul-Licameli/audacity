@@ -15,19 +15,18 @@
 
 *//*******************************************************************/
 
-
 #include "QualityPrefs.h"
-#include "QualitySettings.h"
 
 #include <wx/choice.h>
 #include <wx/defs.h>
 #include <wx/textctrl.h>
 
-#include "../AudioIOBase.h"
+#include "AudioIOBase.h"
 #include "Dither.h"
 #include "Prefs.h"
+#include "prefs/QualitySettings.h"
 #include "Resample.h"
-#include "../ShuttleGui.h"
+#include "ShuttleGui.h"
 
 #define ID_SAMPLE_RATE_CHOICE           7001
 

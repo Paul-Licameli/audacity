@@ -2,7 +2,7 @@
 
   Audacity: A Digital Audio Editor
 
-  FileFormatPrefs.h
+  ImportExportPrefs.h
 
   Joshua Haberman
   Dominic Mazzoni
@@ -10,21 +10,20 @@
 
 **********************************************************************/
 
-#ifndef __AUDACITY_FILE_FORMAT_PREFS__
-#define __AUDACITY_FILE_FORMAT_PREFS__
+#ifndef __AUDACITY_IMPORT_EXPORT_PREFS__
+#define __AUDACITY_IMPORT_EXPORT_PREFS__
 
-#include <functional>
 #include <wx/defs.h>
 
-#include "PrefsPanel.h"
+#include "prefs/PrefsPanel.h"
 
-class wxStaticText;
-class wxTextCtrl;
 class ShuttleGui;
 
-#define LIBRARY_PREFS_PLUGIN_SYMBOL ComponentInterfaceSymbol{ XO("Library") }
+#define IMPORT_EXPORT_PREFS_PLUGIN_SYMBOL ComponentInterfaceSymbol{ XO("IMPORT EXPORT") }
 
-class LibraryPrefs final : public PrefsPanel
+template< typename Enum > class EnumSetting;
+
+class PREFERENCE_PAGES_API ImportExportPrefs final : public PrefsPanel
 {
    struct PopulatorItem;
  public:
@@ -33,7 +32,7 @@ class LibraryPrefs final : public PrefsPanel
    using Populator = std::function< void(ShuttleGui&) >;
 
    //! To be statically constructed, it registers additions to the Library preference page
-   struct AUDACITY_DLL_API RegisteredControls
+   struct PREFERENCE_PAGES_API RegisteredControls
       : public Registry::RegisteredItem<PopulatorItem>
    {
       // Whether any controls have been registered
@@ -42,11 +41,13 @@ class LibraryPrefs final : public PrefsPanel
       RegisteredControls( const Identifier &id, Populator populator,
          const Registry::Placement &placement = { wxEmptyString, {} } );
 
-      struct AUDACITY_DLL_API Init{ Init(); };
+      struct PREFERENCE_PAGES_API Init{ Init(); };
    };
 
-   LibraryPrefs(wxWindow * parent, wxWindowID winid);
-   ~LibraryPrefs();
+   static EnumSetting< bool > ExportDownMixSetting;
+
+   ImportExportPrefs(wxWindow * parent, wxWindowID winid);
+   ~ImportExportPrefs();
    ComponentInterfaceSymbol GetSymbol() override;
    TranslatableString GetDescription() override;
 
@@ -55,7 +56,7 @@ class LibraryPrefs final : public PrefsPanel
    void PopulateOrExchange(ShuttleGui & S) override;
 
  private:
-   struct AUDACITY_DLL_API PopulatorItem final : Registry::SingleItem {
+   struct PREFERENCE_PAGES_API PopulatorItem final : Registry::SingleItem {
       static Registry::GroupItem &Registry();
    
       PopulatorItem(const Identifier &id, Populator populator);
@@ -66,6 +67,7 @@ class LibraryPrefs final : public PrefsPanel
 };
 
 // Guarantees registry exists before attempts to use it
-static LibraryPrefs::RegisteredControls::Init sInitRegisteredControls;
+static ImportExportPrefs::RegisteredControls::Init
+   sInitRegisteredImpExpControls;
 
 #endif
