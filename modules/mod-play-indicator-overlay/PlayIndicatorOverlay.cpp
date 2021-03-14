@@ -19,7 +19,6 @@ Paul Licameli split from TrackPanel.cpp
 #include "ProjectAudioManager.h"
 #include "ProjectWindow.h"
 #include "Track.h"
-#include "TrackPanel.h"
 #include "ViewInfo.h"
 #include "tracks/ui/Scrubbing.h"
 #include "tracks/ui/TrackView.h"
@@ -97,12 +96,11 @@ void PlayIndicatorOverlayBase::Draw(OverlayPanel &panel, wxDC &dc)
    if (!between_incexc(0, mLastIndicatorX, dc.GetSize().GetWidth()))
       return;
 
-   if(auto tp = dynamic_cast<TrackPanel*>(&panel)) {
-      wxASSERT(mIsMaster);
-
+   auto tp = dynamic_cast<CellularPanel*>(&panel);
+   if (mIsMaster && tp) {
       AColor::Line(dc, mLastIndicatorX, tp->GetRect().GetTop(), mLastIndicatorX, tp->GetRect().GetBottom());
    }
-   else if(auto ruler = dynamic_cast<AdornedRulerPanel*>(&panel)) {
+   else if (auto ruler = dynamic_cast<AdornedRulerPanel*>(&panel)) {
       wxASSERT(!mIsMaster);
 
       auto pair = ruler->GetIndicatorBitmap( mLastIndicatorX, !rec );
@@ -115,7 +113,7 @@ void PlayIndicatorOverlayBase::Draw(OverlayPanel &panel, wxDC &dc)
 static const AudacityProject::AttachedObjects::RegisteredFactory sOverlayKey{
   []( AudacityProject &parent ){
      auto result = std::make_shared< PlayIndicatorOverlay >( &parent );
-     TrackPanel::Get( parent ).AddOverlay( result );
+     GetProjectPanel( parent ).AddOverlay( result );
      return result;
    }
 };

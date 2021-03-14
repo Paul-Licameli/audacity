@@ -16,7 +16,6 @@ Paul Licameli split from TrackPanel.cpp
 #include "Project.h"
 #include "Track.h" //
 #include "TrackPanelAx.h"
-#include "TrackPanel.h"
 #include "ViewInfo.h"
 
 #include <wx/dc.h>
@@ -32,7 +31,7 @@ namespace {
 static const AudacityProject::AttachedObjects::RegisteredFactory sOverlayKey{
   []( AudacityProject &parent ){
      auto result = std::make_shared< EditCursorOverlay >( &parent );
-     TrackPanel::Get( parent ).AddOverlay( result );
+     GetProjectPanel( parent ).AddOverlay( result );
      return result;
    }
 };
@@ -97,9 +96,9 @@ void EditCursorOverlay::Draw(OverlayPanel &panel, wxDC &dc)
    if (!onScreen)
       return;
 
-   auto &trackPanel = TrackPanel::Get( *mProject );
-   if (auto tp = dynamic_cast<TrackPanel*>(&panel)) {
-      wxASSERT(mIsMaster);
+   auto &trackPanel = GetProjectPanel( *mProject );
+   auto tp = dynamic_cast<CellularPanel*>(&panel);
+   if (tp && mIsMaster) {
       AColor::CursorColor(&dc);
 
       // Draw cursor in all selected tracks

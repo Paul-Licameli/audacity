@@ -14,6 +14,7 @@
 #include "Identifier.h"
 
 #include "ClientData.h" // to inherit
+#include "CellularPanel.h"
 
 #include <memory>
 #include <mutex>
@@ -131,9 +132,9 @@ class AUDACITY_DLL_API AudacityProject final
    const wxFrame *GetFrame() const { return mFrame; }
    void SetFrame( wxFrame *pFrame );
  
-   wxWindow *GetPanel() { return mPanel; }
-   const wxWindow *GetPanel() const { return mPanel; }
-   void SetPanel( wxWindow *pPanel );
+   CellularPanel *GetPanel() { return mPanel; }
+   const CellularPanel *GetPanel() const { return mPanel; }
+   void SetPanel( CellularPanel *pPanel );
  
    int GetProjectNumber(){ return mProjectNo;}
 
@@ -171,7 +172,7 @@ private:
 
  private:
    wxWeakRef< wxFrame > mFrame{};
-   wxWeakRef< wxWindow > mPanel{};
+   wxWeakRef< CellularPanel > mPanel{};
 };
 
 ///\brief Get the top-level window associated with the project (as a wxFrame
@@ -195,8 +196,8 @@ ProjectFramePlacement( AudacityProject *project );
 
 ///\brief Get the main sub-window of the project frame that displays track data
 // (as a wxWindow only, when you do not need to use the subclass TrackPanel)
-AUDACITY_DLL_API wxWindow &GetProjectPanel( AudacityProject &project );
-AUDACITY_DLL_API const wxWindow &GetProjectPanel(
+AUDACITY_DLL_API CellularPanel &GetProjectPanel( AudacityProject &project );
+AUDACITY_DLL_API const CellularPanel &GetProjectPanel(
    const AudacityProject &project );
 
 #endif

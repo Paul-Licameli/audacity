@@ -10,12 +10,13 @@
 #include "ProjectWindow.h"
 #include "SelectUtilities.h"
 #include "TimeDialog.h"
-#include "TrackPanel.h"
 #include "WaveTrack.h"
 #include "commands/CommandContext.h"
 #include "commands/CommandManager.h"
 #include "ControlToolBar.h"
 #include "SelectHandle.h"
+
+#include <wx/time.h>
 
 // private helper classes and functions
 namespace {
@@ -201,7 +202,7 @@ void MoveWhenAudioInactive
 (AudacityProject &project, double seekStep, TimeUnit timeUnit)
 {
    auto &viewInfo = ViewInfo::Get( project );
-   auto &trackPanel = TrackPanel::Get( project );
+   auto &trackPanel = GetProjectPanel( project );
    auto &tracks = TrackList::Get( project );
    auto &ruler = AdornedRulerPanel::Get( project );
    const auto &settings = ProjectSettings::Get( project );

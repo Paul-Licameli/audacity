@@ -333,7 +333,7 @@ void OnPlayOneSecond(const CommandContext &context)
       return;
 
    auto &viewInfo = ViewInfo::Get( project );
-   auto &trackPanel = TrackPanel::Get( project );
+   auto &trackPanel = GetProjectPanel( project );
    auto options = DefaultPlayOptions( project );
 
    double pos = GetMostRecentXPos( trackPanel, viewInfo );
@@ -356,7 +356,7 @@ void OnPlayToSelection(const CommandContext &context)
    if( !MakeReadyToPlay(project) )
       return;
 
-   auto &trackPanel = TrackPanel::Get( project );
+   auto &trackPanel = GetProjectPanel( project );
    auto &viewInfo = ViewInfo::Get( project );
    const auto &selectedRegion = viewInfo.selectedRegion;
 

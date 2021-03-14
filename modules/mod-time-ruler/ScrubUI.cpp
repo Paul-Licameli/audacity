@@ -16,7 +16,6 @@
 #include "AdornedRulerPanel.h"
 #include "Project.h"
 #include "ProjectWindow.h"
-#include "TrackPanel.h"
 
 #include <wx/dcclient.h>
 #include <wx/windowptr.h>
@@ -204,7 +203,7 @@ Scrubber &ScrubbingOverlay::GetScrubber()
 static const AudacityProject::AttachedObjects::RegisteredFactory sOverlayKey{
   []( AudacityProject &parent ){
      auto result = std::make_shared< ScrubbingOverlay >( &parent );
-     TrackPanel::Get( parent ).AddOverlay( result );
+     GetProjectPanel( parent ).AddOverlay( result );
      return result;
    }
 };

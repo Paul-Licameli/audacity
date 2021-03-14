@@ -160,7 +160,7 @@ void AudacityProject::SetFrame( wxFrame *pFrame )
    mFrame = pFrame;
 }
 
-void AudacityProject::SetPanel( wxWindow *pPanel )
+void AudacityProject::SetPanel( CellularPanel *pPanel )
 {
    mPanel = pPanel;
 }
@@ -218,7 +218,7 @@ ProjectFramePlacement( AudacityProject *project )
       &GetProjectFrame(*project));
 }
 
-AUDACITY_DLL_API wxWindow &GetProjectPanel( AudacityProject &project )
+AUDACITY_DLL_API CellularPanel &GetProjectPanel( AudacityProject &project )
 {
    auto ptr = project.GetPanel();
    if ( !ptr )
@@ -226,7 +226,7 @@ AUDACITY_DLL_API wxWindow &GetProjectPanel( AudacityProject &project )
    return *ptr;
 }
 
-AUDACITY_DLL_API const wxWindow &GetProjectPanel(
+AUDACITY_DLL_API const CellularPanel &GetProjectPanel(
    const AudacityProject &project )
 {
    auto ptr = project.GetPanel();

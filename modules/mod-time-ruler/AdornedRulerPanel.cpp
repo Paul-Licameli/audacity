@@ -28,7 +28,6 @@
 #include "AColor.h"
 #include "AllThemeResources.h"
 #include "AudioIO.h"
-#include "CellularPanel.h"
 #include "HitTestResult.h"
 #include "Prefs.h"
 #include "Project.h"
