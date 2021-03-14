@@ -1330,7 +1330,7 @@ struct ChannelGroup final : TrackPanelGroup {
          {
             Refinement hgroup {
                std::make_pair(rect.GetLeft() + 1, std::make_shared<EmptyPanelRect>(channel->GetSelected() ? clrTrackInfoSelected : clrTrackInfo)),
-               std::make_pair(mLeftOffset, affordance)
+               std::make_pair(mLeftOffset, affordance->shared_from_this())
             };
             refinement.emplace_back(yy, std::make_shared<HorizontalGroup>(hgroup));
             yy += kAffordancesAreaHeight;

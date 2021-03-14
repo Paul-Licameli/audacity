@@ -14,7 +14,8 @@
 
 class AffordanceHandle;
 
-class NOTE_TRACK_UI_API NoteTrackAffordanceControls : public CommonTrackCell
+class NOTE_TRACK_UI_API NoteTrackAffordanceControls
+   : public TrackAffordanceControls
 {
     std::weak_ptr<AffordanceHandle> mAffordanceHandle;
 public:

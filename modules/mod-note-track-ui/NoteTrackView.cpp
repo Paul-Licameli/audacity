@@ -76,7 +76,7 @@ std::shared_ptr<TrackVRulerControls> NoteTrackView::DoGetVRulerControls()
 #define TIME_TO_X(t) (zoomInfo.TimeToPosition((t), rect.x))
 #define X_TO_TIME(xx) (zoomInfo.PositionToTime((xx), rect.x))
 
-std::shared_ptr<CommonTrackCell> NoteTrackView::DoGetAffordanceControls()
+std::shared_ptr<TrackAffordanceControls> NoteTrackView::DoGetAffordanceControls()
 {
    return std::make_shared<NoteTrackAffordanceControls>(DoFindTrack());
 }
@@ -739,7 +739,7 @@ void NoteTrackView::Draw(
       TrackArt::DrawBackgroundWithSelection(context, rect, nt.get(), AColor::labelSelectedBrush, AColor::labelUnselectedBrush);
 #endif
       bool selected{ false };
-      if (auto affordance = std::dynamic_pointer_cast<NoteTrackAffordanceControls>(GetAffordanceControls()))
+      if (auto affordance = static_cast<NoteTrackAffordanceControls*>(GetAffordanceControls()))
       {
          selected = affordance->IsSelected();
       }

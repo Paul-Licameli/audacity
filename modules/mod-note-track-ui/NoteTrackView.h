@@ -25,7 +25,7 @@ public:
 
 private:
    std::shared_ptr<TrackVRulerControls> DoGetVRulerControls() override;
-   std::shared_ptr<CommonTrackCell> DoGetAffordanceControls() override;
+   std::shared_ptr<TrackAffordanceControls> DoGetAffordanceControls() override;
 
    std::vector<UIHandlePtr> DetailedHitTest
       (const TrackPanelMouseState &state,

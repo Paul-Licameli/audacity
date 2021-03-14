@@ -141,7 +141,7 @@ private:
    Refinement GetSubViews( const wxRect &rect ) override;
 
 protected:
-   std::shared_ptr<CommonTrackCell> DoGetAffordanceControls() override;
+   std::shared_ptr<TrackAffordanceControls> DoGetAffordanceControls() override;
 
    void DoSetMinimized( bool minimized ) override;
 
