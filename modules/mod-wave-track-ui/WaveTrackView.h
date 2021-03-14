@@ -141,8 +141,6 @@ private:
    Refinement GetSubViews( const wxRect &rect ) override;
 
 protected:
-   std::shared_ptr<TrackAffordanceControls> DoGetAffordanceControls() override;
-
    void DoSetMinimized( bool minimized ) override;
 
    // Placements are in correspondence with the array of sub-views

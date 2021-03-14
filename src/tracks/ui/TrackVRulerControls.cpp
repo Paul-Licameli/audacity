@@ -33,18 +33,57 @@ TrackVRulerControls::~TrackVRulerControls()
 {
 }
 
+DEFINE_ATTACHED_VIRTUAL(DoGetVRulerControls) {
+   return [](auto &trackView) {
+      // Default returns just a stub implementation
+      return std::make_shared<TrackVRulerControls>(trackView.shared_from_this());
+   };
+}
+
+static AttachedTrackViewCells::RegisteredFactory
+sKey{ [](auto&){return nullptr;} };
+
 TrackVRulerControls &TrackVRulerControls::Get( TrackView &trackView )
 {
-   return *trackView.GetVRulerControls();
+   if (auto result = trackView.AttachedTrackViewCells::Find(sKey))
+      return *static_cast<TrackVRulerControls *>(result);
+
+   // Create on demand
+   auto sresult = DoGetVRulerControls::Call(trackView);
+   auto result = sresult.get();
+   wxASSERT(result);
+   trackView.AttachedTrackViewCells::Assign(sKey, std::move(sresult));
+   return *result;
 }
 
 const TrackVRulerControls &TrackVRulerControls::Get( const TrackView &trackView )
 {
-   return *trackView.GetVRulerControls();
+   return *DoGetVRulerControls::Call(const_cast<TrackView&>(trackView));
 }
 
 void TrackVRulerControls::UpdateRuler( const wxRect & )
 {
+}
+
+DEFINE_ATTACHED_VIRTUAL(DoGetAffordanceControls) {
+   return [](auto &trackView) {
+      return nullptr;
+   };
+}
+static AttachedTrackViewCells::RegisteredFactory
+sKey0{ [](auto&){return nullptr;} };
+
+TrackAffordanceControls &TrackAffordanceControls::Get( TrackView &trackView )
+{
+   if (auto result = trackView.AttachedTrackViewCells::Find(sKey0))
+      return *static_cast<TrackAffordanceControls *>(result);
+
+   // Create on demand
+   auto sresult = DoGetAffordanceControls::Call(trackView);
+   auto result = sresult.get();
+   wxASSERT(result);
+   trackView.AttachedTrackViewCells::Assign(sKey, std::move(sresult));
+   return *result;
 }
 
 std::shared_ptr<Track> TrackVRulerControls::DoFindTrack()

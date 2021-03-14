@@ -102,9 +102,12 @@ auto SpectrumView::SubViewType() const -> const Type &
    return sType;
 }
 
-std::shared_ptr<TrackVRulerControls> SpectrumView::DoGetVRulerControls()
-{
-   return std::make_shared<SpectrumVRulerControls>( shared_from_this() );
+using DoGetSpectrumVRulerControls =
+   DoGetVRulerControls::Override< SpectrumView >;
+DEFINE_ATTACHED_VIRTUAL_OVERRIDE(DoGetSpectrumVRulerControls) {
+   return [](SpectrumView &view) {
+      return std::make_shared<SpectrumVRulerControls>( view.shared_from_this() );
+   };
 }
 
 namespace

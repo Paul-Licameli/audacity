@@ -1326,8 +1326,7 @@ struct ChannelGroup final : TrackPanelGroup {
       for ( auto channel : channels ) 
       {
          auto &view = TrackView::Get( *channel );
-         if (auto affordance = view.GetAffordanceControls())
-         {
+         if (auto affordance = DoGetAffordanceControls::Call(view)) {
             Refinement hgroup {
                std::make_pair(rect.GetLeft() + 1, std::make_shared<EmptyPanelRect>(channel->GetSelected() ? clrTrackInfoSelected : clrTrackInfo)),
                std::make_pair(mLeftOffset, affordance->shared_from_this())
@@ -1496,7 +1495,7 @@ struct Subgroup final : TrackPanelGroup {
             auto &view = TrackView::Get( *channel );
             height += view.GetHeight();
 
-            if (view.GetAffordanceControls())
+            if (DoGetAffordanceControls::Call(view))
                height += kAffordancesAreaHeight;
          }
          refinement.emplace_back( yy,

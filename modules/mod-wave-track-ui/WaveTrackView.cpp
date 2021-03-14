@@ -1193,11 +1193,6 @@ WaveTrackView::GetAllSubViews()
    return results;
 }
 
-std::shared_ptr<TrackAffordanceControls> WaveTrackView::DoGetAffordanceControls()
-{
-   return std::make_shared<WaveTrackAffordanceControls>(FindTrack());
-}
-
 void WaveTrackView::DoSetMinimized( bool minimized )
 {
    BuildSubViews();
@@ -1213,6 +1208,15 @@ using DoGetWaveTrackView = DoGetView::Override< WaveTrack >;
 DEFINE_ATTACHED_VIRTUAL_OVERRIDE(DoGetWaveTrackView) {
    return [](WaveTrack &track) {
       return std::make_shared<WaveTrackView>( track.SharedPointer() );
+   };
+}
+
+using DoGetWaveTrackAffordanceControls =
+   DoGetAffordanceControls::Override< WaveTrackView >;
+DEFINE_ATTACHED_VIRTUAL_OVERRIDE(DoGetWaveTrackAffordanceControls) {
+   return [](WaveTrackView &view) {
+      return std::make_shared<WaveTrackAffordanceControls>(
+         view.DoFindTrack() );
    };
 }
 
@@ -1426,14 +1430,17 @@ void WaveTrackView::Reparent( const std::shared_ptr<Track> &parent )
    WaveTrackSubViews::ForEach( [&parent](WaveTrackSubView &subView){
       subView.Reparent( parent );
    } );
-   if (mpAffordanceCellControl)
-      mpAffordanceCellControl->Reparent(parent);
+   if (auto affordance =
+       static_cast<WaveTrackAffordanceControls*>(
+         DoGetAffordanceControls::Call(*this).get()))
+      affordance->Reparent(parent);
 }
 
 std::weak_ptr<WaveClip> WaveTrackView::GetSelectedClip()
 {
    if (auto affordance =
-       static_cast<WaveTrackAffordanceControls*>(GetAffordanceControls()))
+       static_cast<WaveTrackAffordanceControls*>(
+         DoGetAffordanceControls::Call(*this).get()))
    {
       return affordance->GetSelectedClip();
    }

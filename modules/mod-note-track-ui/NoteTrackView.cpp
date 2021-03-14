@@ -67,19 +67,25 @@ DEFINE_ATTACHED_VIRTUAL_OVERRIDE(DoGetNoteTrackView) {
    };
 }
 
-std::shared_ptr<TrackVRulerControls> NoteTrackView::DoGetVRulerControls()
-{
-   return
-      std::make_shared<NoteTrackVRulerControls>( shared_from_this() );
+using DoGetNoteTrackVRulerControls =
+   DoGetVRulerControls::Override< NoteTrackView >;
+DEFINE_ATTACHED_VIRTUAL_OVERRIDE(DoGetNoteTrackVRulerControls) {
+   return [](NoteTrackView &view) {
+      return std::make_shared<NoteTrackVRulerControls>( view.shared_from_this() );
+   };
+}
+
+using DoGetNoteTrackAffordanceControls =
+   DoGetAffordanceControls::Override< NoteTrackView >;
+DEFINE_ATTACHED_VIRTUAL_OVERRIDE(DoGetNoteTrackAffordanceControls) {
+   return [](NoteTrackView &view) {
+      return std::make_shared<NoteTrackAffordanceControls>(
+         static_pointer_cast<NoteTrack>(view.DoFindTrack()) );
+   };
 }
 
 #define TIME_TO_X(t) (zoomInfo.TimeToPosition((t), rect.x))
 #define X_TO_TIME(xx) (zoomInfo.PositionToTime((xx), rect.x))
-
-std::shared_ptr<TrackAffordanceControls> NoteTrackView::DoGetAffordanceControls()
-{
-   return std::make_shared<NoteTrackAffordanceControls>(DoFindTrack());
-}
 
 namespace {
 
@@ -739,7 +745,8 @@ void NoteTrackView::Draw(
       TrackArt::DrawBackgroundWithSelection(context, rect, nt.get(), AColor::labelSelectedBrush, AColor::labelUnselectedBrush);
 #endif
       bool selected{ false };
-      if (auto affordance = static_cast<NoteTrackAffordanceControls*>(GetAffordanceControls()))
+      if (auto affordance = static_cast<NoteTrackAffordanceControls*>(
+         DoGetAffordanceControls::Call(*this).get()))
       {
          selected = affordance->IsSelected();
       }

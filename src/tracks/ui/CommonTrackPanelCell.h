@@ -71,12 +71,25 @@ private:
 };
 
 // fix this
+#include "AttachedVirtualFunction.h"
+class TrackView;
 class AUDACITY_DLL_API TrackAffordanceControls
    : public CommonTrackCell
    , public std::enable_shared_from_this<TrackAffordanceControls>
 {
 public:
    using CommonTrackCell::CommonTrackCell;
+   static TrackAffordanceControls &Get( TrackView &trackView );
 };
+
+struct DoGetAffordanceControlsTag;
+
+using DoGetAffordanceControls =
+AttachedVirtualFunction<
+DoGetAffordanceControlsTag,
+   std::shared_ptr< TrackAffordanceControls >,
+   TrackView
+>;
+DECLARE_EXPORTED_ATTACHED_VIRTUAL(AUDACITY_DLL_API, DoGetAffordanceControls);
 
 #endif

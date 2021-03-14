@@ -28,9 +28,6 @@ public:
 
    const Type &SubViewType() const override;
 
-   std::shared_ptr<TrackVRulerControls> DoGetVRulerControls() override;
-
-
 private:
    // TrackPanelDrawable implementation
    void Draw(

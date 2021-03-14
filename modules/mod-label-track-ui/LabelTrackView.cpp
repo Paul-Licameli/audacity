@@ -2256,10 +2256,12 @@ DEFINE_ATTACHED_VIRTUAL_OVERRIDE(DoGetLabelTrackView) {
    };
 }
 
-std::shared_ptr<TrackVRulerControls> LabelTrackView::DoGetVRulerControls()
-{
-   return
-      std::make_shared<LabelTrackVRulerControls>( shared_from_this() );
+using DoGetLabelTrackVRulerControls =
+   DoGetVRulerControls::Override< LabelTrackView >;
+DEFINE_ATTACHED_VIRTUAL_OVERRIDE(DoGetLabelTrackVRulerControls) {
+   return [](LabelTrackView &view) {
+      return std::make_shared<LabelTrackVRulerControls>( view.shared_from_this() );
+   };
 }
 
 // Install cut-copy-paste hooks

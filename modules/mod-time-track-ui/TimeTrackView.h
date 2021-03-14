@@ -28,8 +28,6 @@ public:
       const std::shared_ptr<Track> &pTrack, const ZoomInfo &zoomInfo );
    ~TimeTrackView() override;
 
-   std::shared_ptr<TrackVRulerControls> DoGetVRulerControls() override;
-
 private:
    Ruler &GetRuler() const { return *mRuler; }
 
