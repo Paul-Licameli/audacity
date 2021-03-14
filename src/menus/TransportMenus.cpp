@@ -320,16 +320,23 @@ void OnStop(const CommandContext &context)
    ProjectAudioManager::Get( context.project ).Stop();
 }
 
+double GetMostRecentXPos( const CellularPanel &panel, const ViewInfo &viewInfo )
+{
+   return viewInfo.PositionToTime(
+      panel.MostRecentXCoord(), viewInfo.GetLabelWidth());
+}
+
 void OnPlayOneSecond(const CommandContext &context)
 {
    auto &project = context.project;
    if( !MakeReadyToPlay(project) )
       return;
 
+   auto &viewInfo = ViewInfo::Get( project );
    auto &trackPanel = TrackPanel::Get( project );
    auto options = DefaultPlayOptions( project );
 
-   double pos = trackPanel.GetMostRecentXPos();
+   double pos = GetMostRecentXPos( trackPanel, viewInfo );
    TransportUtilities::PlayPlayRegionAndWait(
       context, SelectedRegion(pos - 0.5, pos + 0.5),
       options, PlayMode::oneSecondPlay);
@@ -353,7 +360,7 @@ void OnPlayToSelection(const CommandContext &context)
    auto &viewInfo = ViewInfo::Get( project );
    const auto &selectedRegion = viewInfo.selectedRegion;
 
-   double pos = trackPanel.GetMostRecentXPos();
+   double pos = GetMostRecentXPos( trackPanel, viewInfo );
 
    double t0,t1;
    // check region between pointer and the nearest selection edge
