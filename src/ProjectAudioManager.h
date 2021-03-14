@@ -18,8 +18,6 @@ Paul Licameli split from ProjectManager.h
 #include "Project.h"
 #include <wx/event.h> // to declare custom event type
 
-constexpr int RATE_NOT_SELECTED{ -1 };
-
 class AudacityProject;
 struct AudioIOStartStreamOptions;
 class TrackList;
@@ -74,13 +72,6 @@ public:
    static ProjectAudioManager &Get( AudacityProject &project );
    static const ProjectAudioManager &Get( const AudacityProject &project );
 
-   // Find suitable tracks to record into, or return an empty array.
-   static WaveTrackArray ChooseExistingRecordingTracks(
-      AudacityProject &proj, bool selectedOnly,
-      double targetRate = RATE_NOT_SELECTED);
-
-   static bool UseDuplex();
-
    static TransportTracks GetAllPlaybackTracks(
       TrackList &trackList, bool selectedOnly,
       bool nonWaveToo = false //!< if true, collect all PlayableTracks
@@ -113,14 +104,6 @@ public:
    // A project is only allowed to stop an audio stream that it owns.
    bool CanStopAudioStream () const;
 
-   void OnRecord(bool altAppearance);
-
-   bool DoRecord(AudacityProject &project,
-      const TransportTracks &transportTracks, // If captureTracks is empty, then tracks are created
-      double t0, double t1,
-      bool altAppearance,
-      const AudioIOStartStreamOptions &options);
-
    int PlayPlayRegion(const SelectedRegion &selectedRegion,
                       const AudioIOStartStreamOptions &options,
                       PlayMode playMode,
@@ -147,9 +130,10 @@ public:
 
    PlayMode GetLastPlayMode() const { return mLastPlayMode; }
 
+   void SetAppending( bool value ) { mAppending = value; }
+
 private:
    void SetPaused( bool value ) { mPaused = value; }
-   void SetAppending( bool value ) { mAppending = value; }
    void SetLooping( bool value ) { mLooping = value; }
    void SetCutting( bool value ) { mCutting = value; }
    void SetStopping( bool value ) { mStopping = value; }
@@ -157,9 +141,6 @@ private:
    void SetupCutPreviewTracks(double playStart, double cutStart,
                              double cutEnd, double playEnd);
    void ClearCutPreviewTracks();
-
-   // Cancel the addition of temporary recording tracks into the project
-   void CancelRecording();
 
    // Audio IO callback methods
    void OnAudioIORate(int rate) override;
@@ -196,16 +177,6 @@ AUDACITY_DLL_API
 AudioIOStartStreamOptions DefaultPlayOptions( AudacityProject &project );
 AUDACITY_DLL_API
 AudioIOStartStreamOptions DefaultSpeedPlayOptions( AudacityProject &project );
-
-struct PropertiesOfSelected
-{
-   bool allSameRate{ false };
-   int rateOfSelected{ RATE_NOT_SELECTED };
-   int numberOfSelected{ 0 };
-};
-
-AUDACITY_DLL_API
-PropertiesOfSelected GetPropertiesOfSelected(const AudacityProject &proj);
 
 #include "commands/CommandFlag.h"
 

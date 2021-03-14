@@ -69,7 +69,7 @@ void WaveTrackAffordanceControls::Draw(TrackPanelDrawingContext& context, const 
         TrackArt::DrawBackgroundWithSelection(context, rect, track.get(), artist->blankSelectedBrush, artist->blankBrush);
 
         const auto waveTrack = std::static_pointer_cast<WaveTrack>(track->SubstitutePendingChangedTrack());
-        const auto& zoomInfo = *artist->pZoomInfo;
+        const auto& zoomInfo = artist->zoomInfo;
 
         context.dc.SetClippingRegion(rect);
 

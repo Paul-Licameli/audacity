@@ -27,6 +27,7 @@
 
 #include "prefs/GUISettings.h"
 #include "Prefs.h"
+#include "RecordUtilities.h"
 #include "ShuttleGui.h"
 
 using std::min;
@@ -243,7 +244,7 @@ void RecordingPrefs::PopulateOrExchange(ShuttleGui & S)
             auto w = S
                .NameSuffix(XO("seconds"))
                .TieNumericTextBox(XXO("Pre-ro&ll:"),
-                  RecordPreRollDuration,
+                  RecordUtilities::RecordPreRollDuration,
                   9);
             S.AddUnits(XO("seconds"));
          }
@@ -251,7 +252,7 @@ void RecordingPrefs::PopulateOrExchange(ShuttleGui & S)
             auto w = S
                .NameSuffix(XO("milliseconds"))
                .TieNumericTextBox(XXO("Cross&fade:"),
-                  RecordCrossfadeDuration,
+                  RecordUtilities::RecordCrossfadeDuration,
                   9);
             S.AddUnits(XO("milliseconds"));
          }

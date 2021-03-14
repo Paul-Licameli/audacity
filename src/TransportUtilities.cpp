@@ -101,45 +101,6 @@ void TransportUtilities::PlayPlayRegionAndWait(
    }
 }
 
-void TransportUtilities::RecordAndWait(
-   const CommandContext &context, bool altAppearance)
-{
-   auto &project = context.project;
-   auto &projectAudioManager = ProjectAudioManager::Get(project);
-
-   const auto &selectedRegion = ViewInfo::Get(project).selectedRegion;
-   double t0 = selectedRegion.t0();
-   double t1 = selectedRegion.t1();
-
-   projectAudioManager.OnRecord(altAppearance);
-
-   if (project.mBatchMode > 0 && t1 != t0) {
-      wxYieldIfNeeded();
-
-      /* i18n-hint: This title appears on a dialog that indicates the progress
-         in doing something.*/
-      ProgressDialog progress(XO("Progress"), XO("Recording"), pdlgHideCancelButton);
-      auto gAudioIO = AudioIO::Get();
-
-      while (projectAudioManager.Recording()) {
-         ProgressResult result = progress.Update(gAudioIO->GetStreamTime() - t0, t1 - t0);
-         if (result != ProgressResult::Success) {
-            projectAudioManager.Stop();
-            if (result != ProgressResult::Stopped) {
-               context.Error(wxT("Recording interrupted"));
-            }
-            break;
-         }
-
-         wxMilliSleep(100);
-         wxYieldIfNeeded();
-      }
-
-      projectAudioManager.Stop();
-      wxYieldIfNeeded();
-   }
-}
-
 void TransportUtilities::DoStartPlaying(
    const CommandContext &context, bool looping)
 {
@@ -192,6 +153,3 @@ bool TransportUtilities::DoStopPlaying(const CommandContext &context)
    }
    return false;
 }
-
-DoubleSetting RecordPreRollDuration{ L"/AudioIO/PreRoll", 5.0 };
-DoubleSetting RecordCrossfadeDuration{ L"/AudioIO/Crossfade", 10.0 };

@@ -165,6 +165,8 @@ list( APPEND SOURCES
       ProjectWindow.h
       ProjectWindowBase.cpp
       ProjectWindowBase.h
+      RecordUtilities.cpp
+      RecordUtilities.h
       RefreshCode.h
       RingBuffer.cpp
       RingBuffer.h
@@ -272,6 +274,7 @@ list( APPEND SOURCES
       menus/EditMenus.cpp
       menus/ExtraMenus.cpp
       menus/FileMenus.cpp
+      menus/RecordMenus.cpp
       menus/TransportMenus.cpp
 
       # Preferences

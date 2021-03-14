@@ -65,7 +65,7 @@ void NoteTrackAffordanceControls::Draw(TrackPanelDrawingContext& context, const 
 
         TrackArt::DrawBackgroundWithSelection(context, rect, nt.get(), AColor::labelSelectedBrush, AColor::labelUnselectedBrush);
 
-        const auto& zoomInfo = *artist->pZoomInfo;
+        const auto& zoomInfo = artist->zoomInfo;
         auto left = zoomInfo.TimeToPosition(nt->GetOffset(), rect.x);
         auto right = zoomInfo.TimeToPosition(nt->GetOffset() + nt->GetSeq().get_real_dur(), rect.x);
         auto clipRect = wxRect(left, rect.y, right - left + 1, rect.height);

@@ -60,6 +60,7 @@
 #include "ProjectSettings.h"
 #include "ProjectStatus.h"
 #include "ProjectWindow.h"
+#include "RecordUtilities.h"
 #include "Track.h"
 #include "widgets/AButton.h"
 #include "FileNames.h"
@@ -592,7 +593,7 @@ void ControlToolBar::OnRecord(wxCommandEvent &evt)
    // normally used for buttons.
 
    bool altAppearance = mRecord->WasShiftDown();
-   ProjectAudioManager::Get( mProject ).OnRecord( altAppearance );
+   RecordUtilities::OnRecord( mProject, altAppearance );
 }
 
 void ControlToolBar::OnPause(wxCommandEvent & WXUNUSED(evt))

@@ -39,7 +39,4 @@ struct AUDACITY_DLL_API TransportUtilities
 
 };
 
-extern AUDACITY_DLL_API DoubleSetting RecordPreRollDuration;
-extern AUDACITY_DLL_API DoubleSetting RecordCrossfadeDuration;
-
 #endif
