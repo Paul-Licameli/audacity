@@ -11,7 +11,7 @@ Paul Licameli split from TrackControls.h
 #ifndef __AUDACITY_COMMON_TRACK_CONTROLS__
 #define __AUDACITY_COMMON_TRACK_CONTROLS__
 
-#include "tracks/ui/TrackControls.h" // to inherit
+#include "TrackControls.h" // to inherit
 
 class CloseButtonHandle;
 class MenuButtonHandle;

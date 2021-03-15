@@ -44,7 +44,7 @@ This class now lists
 #include "PrefsDialog.h"
 #include "Shuttle.h"
 #include "PluginManager.h"
-#include "tracks/ui/TrackView.h"
+#include "TrackView.h"
 #include "ShuttleGui.h"
 #include "MenuHandle.h"
 

@@ -12,7 +12,7 @@
 #include "SpectrogramSettings.h"
 #include "NumberScale.h"
 #include "SpectrumAnalyst.h"
-#include "tracks/ui/TrackView.h"
+#include "TrackView.h"
 #include "ViewInfo.h"
 #include "WaveTrack.h"
 #include "HitTestResult.h"

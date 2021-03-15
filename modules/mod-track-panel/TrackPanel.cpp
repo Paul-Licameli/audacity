@@ -79,9 +79,9 @@ is time to refresh some aspect of the screen.
 #include "ViewInfo.h"
 #include "WaveTrack.h"
 
-#include "tracks/ui/TrackControls.h"
-#include "tracks/ui/TrackView.h"
-#include "tracks/ui/TrackVRulerControls.h"
+#include "TrackControls.h"
+#include "TrackView.h"
+#include "TrackVRulerControls.h"
 
 //This loads the appropriate set of cursors, depending on platform.
 #include "../images/Cursors.h"

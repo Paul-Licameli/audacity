@@ -21,7 +21,7 @@
 #include "ProjectSettings.h"
 #include "ProjectWindows.h"
 #include "TrackPanelAx.h"
-#include "tracks/ui/TrackView.h"
+#include "TrackView.h"
 #include "ViewInfo.h"
 #include "WaveTrack.h"
 

@@ -11,7 +11,7 @@ Paul Licameli split from class TrackView
 #ifndef __AUDACITY_COMMON_TRACK_VIEW__
 #define __AUDACITY_COMMON_TRACK_VIEW__
 
-#include "tracks/ui/TrackView.h" // to inherit
+#include "TrackView.h" // to inherit
 
 class Envelope;
 class SelectHandle;

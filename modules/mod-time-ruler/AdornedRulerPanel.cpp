@@ -46,7 +46,7 @@
 #include "ToolBar.h"
 #include "ToolManager.h"
 #include "tracks/ui/Scrubbing.h"
-#include "tracks/ui/TrackView.h"
+#include "TrackView.h"
 #include "widgets/AButton.h"
 #include "widgets/AudacityMessageBox.h"
 #include "Grabber.h"

@@ -16,7 +16,7 @@
 #include "ProjectCommandManager.h"
 #include "GUIPrefs.h"
 #include "TracksPrefs.h"
-#include "tracks/ui/TrackView.h"
+#include "TrackView.h"
 
 #ifdef EXPERIMENTAL_EFFECTS_RACK
 #include "effects/EffectUI.h"

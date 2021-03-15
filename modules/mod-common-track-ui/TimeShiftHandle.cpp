@@ -10,7 +10,7 @@ Paul Licameli split from TrackPanel.cpp
 
 #include "TimeShiftHandle.h"
 
-#include "tracks/ui/TrackView.h"
+#include "TrackView.h"
 #include "AColor.h"
 #include "HitTestResult.h"
 #include "ProjectAudioIO.h"

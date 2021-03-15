@@ -25,7 +25,7 @@ using AttachedTrackViewCells = ClientData::Site<
    std::shared_ptr
 >;
 
-class AUDACITY_DLL_API TrackView /* not final */ : public CommonTrackCell
+class TRACK_VIEW_API TrackView /* not final */ : public CommonTrackCell
    , public std::enable_shared_from_this<TrackView>
    , public AttachedTrackViewCells
 {
@@ -111,7 +111,7 @@ AttachedVirtualFunction<
    std::shared_ptr< TrackView >,
    Track
 >;
-DECLARE_EXPORTED_ATTACHED_VIRTUAL(AUDACITY_DLL_API, DoGetView);
+DECLARE_EXPORTED_ATTACHED_VIRTUAL(TRACK_VIEW_API, DoGetView);
 
 struct GetDefaultTrackHeightTag;
 
@@ -121,6 +121,6 @@ AttachedVirtualFunction<
    int,
    Track
 >;
-DECLARE_EXPORTED_ATTACHED_VIRTUAL(AUDACITY_DLL_API, GetDefaultTrackHeight);
+DECLARE_EXPORTED_ATTACHED_VIRTUAL(TRACK_VIEW_API, GetDefaultTrackHeight);
 
 #endif

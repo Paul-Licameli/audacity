@@ -10,7 +10,7 @@ Paul Licameli split from TrackPanel.cpp
 
 #include "EnvelopeHandle.h"
 
-#include "tracks/ui/TrackView.h"
+#include "TrackView.h"
 
 #include "Envelope.h"
 #include "EnvelopeEditor.h"

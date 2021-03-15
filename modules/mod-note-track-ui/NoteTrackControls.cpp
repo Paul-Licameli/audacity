@@ -426,7 +426,7 @@ DEFINE_ATTACHED_VIRTUAL_OVERRIDE(DoGetNoteTrackControls) {
    };
 }
 
-#include "tracks/ui/TrackView.h"
+#include "TrackView.h"
 
 using GetDefaultNoteTrackHeight = GetDefaultTrackHeight::Override< NoteTrack >;
 DEFINE_ATTACHED_VIRTUAL_OVERRIDE(GetDefaultNoteTrackHeight) {

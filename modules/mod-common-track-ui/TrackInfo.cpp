@@ -43,7 +43,7 @@ Paul Licameli split from TrackPanel.cpp
 #include "TrackPanelDrawingContext.h"
 #include "ViewInfo.h"
 #include "TracksBehaviorsPrefs.h"
-#include "tracks/ui/TrackView.h"
+#include "TrackView.h"
 
 // Subscribe to preference changes to update static variables
 struct Settings : PrefsListener {

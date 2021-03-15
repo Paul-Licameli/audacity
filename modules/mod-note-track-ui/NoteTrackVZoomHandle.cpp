@@ -12,7 +12,7 @@ Paul Licameli split from TrackPanel.cpp
 #include "NoteTrackVZoomHandle.h"
 #include "NoteTrackDisplayData.h"
 
-#include "tracks/ui/TrackVRulerControls.h"
+#include "TrackVRulerControls.h"
 
 #include "HitTestResult.h"
 #include "NoteTrack.h"

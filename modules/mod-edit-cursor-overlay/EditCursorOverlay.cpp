@@ -10,7 +10,7 @@ Paul Licameli split from TrackPanel.cpp
 
 #include "EditCursorOverlay.h"
 
-#include "tracks/ui/TrackView.h"
+#include "TrackView.h"
 #include "AColor.h"
 #include "AdornedRulerPanel.h"
 #include "Project.h"

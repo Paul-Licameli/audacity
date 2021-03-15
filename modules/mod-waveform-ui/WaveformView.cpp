@@ -1290,7 +1290,7 @@ bool WaveClipWaveformCache::GetWaveDisplay(
 
 // Headers needed only for experimental drawing below
 //#include "tracks/playabletrack/wavetrack/ui/SampleHandle.h"
-//#include "tracks/ui/EnvelopeHandle.h"
+//#include "EnvelopeHandle.h"
 void DrawClipWaveform(TrackPanelDrawingContext &context,
                                    const WaveTrack *track,
                                    const WaveClip *clip,
@@ -1602,7 +1602,7 @@ void DrawTimeSlider( TrackPanelDrawingContext &context,
 }
 
 // Header needed only for experimental drawing below
-//#include "tracks/ui/TimeShiftHandle.h"
+//#include "TimeShiftHandle.h"
 void WaveformView::DoDraw(TrackPanelDrawingContext &context,
                                const WaveTrack *track,
                                const WaveClip* selectedClip,

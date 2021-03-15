@@ -20,7 +20,7 @@ class wxDC;
 
 const int kGuard = 5; // 5 pixels to reduce risk of VZooming accidentally
 
-class AUDACITY_DLL_API TrackVRulerControls /* not final */
+class TRACK_VIEW_API TrackVRulerControls /* not final */
    : public CommonTrackPanelCell
    , public std::enable_shared_from_this< TrackVRulerControls >
 {
@@ -73,6 +73,6 @@ AttachedVirtualFunction<
    std::shared_ptr< TrackVRulerControls >,
    TrackView
 >;
-DECLARE_EXPORTED_ATTACHED_VIRTUAL(AUDACITY_DLL_API, DoGetVRulerControls);
+DECLARE_EXPORTED_ATTACHED_VIRTUAL(TRACK_VIEW_API, DoGetVRulerControls);
 
 #endif

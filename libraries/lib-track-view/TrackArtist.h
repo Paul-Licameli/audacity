@@ -35,7 +35,7 @@ class Track;
 struct TrackPanelDrawingContext;
 class ZoomInfo;
 
-class AUDACITY_DLL_API TrackArtist final : private PrefsListener {
+class TRACK_VIEW_API TrackArtist final : private PrefsListener {
 
 public:
    static int ShowClippingPrefsID();

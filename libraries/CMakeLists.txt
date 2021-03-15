@@ -32,6 +32,7 @@ set( LIBRARIES
    lib-audio-devices
    lib-project-rate
    lib-wave-track
+   lib-track-view
 )
 
 if ( ${_OPT}has_networking )

@@ -13,7 +13,7 @@ Paul Licameli split from TrackPanel.cpp
 
 #include "StretchHandle.h"
 
-#include "tracks/ui/CommonTrackPanelCell.h"
+#include "CommonTrackPanelCell.h"
 #include "HitTestResult.h"
 #include "NoteTrack.h"
 #include "ProjectAudioIO.h"

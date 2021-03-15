@@ -156,8 +156,6 @@ list( APPEND SOURCES
       SyncLock.h
       TimeDialog.cpp
       TimeDialog.h
-      TrackArtist.cpp
-      TrackArtist.h
       TrackPanelAx.cpp
       TrackPanelAx.h
       TrackPanelListener.h
@@ -205,16 +203,8 @@ list( APPEND SOURCES
 
       # Tracks UI
 
-      tracks/ui/CommonTrackPanelCell.cpp
-      tracks/ui/CommonTrackPanelCell.h
       tracks/ui/Scrubbing.cpp
       tracks/ui/Scrubbing.h
-      tracks/ui/TrackControls.cpp
-      tracks/ui/TrackControls.h
-      tracks/ui/TrackVRulerControls.cpp
-      tracks/ui/TrackVRulerControls.h
-      tracks/ui/TrackView.cpp
-      tracks/ui/TrackView.h
 
       # ui helpers
       ui/AccessibleLinksFormatter.h

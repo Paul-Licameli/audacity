@@ -11,7 +11,7 @@ Paul Licameli split from class TrackView
 #include "CommonTrackView.h"
 
 #include "TimeShiftHandle.h"
-#include "tracks/ui/TrackControls.h"
+#include "TrackControls.h"
 #include "ZoomHandle.h"
 #include "SelectHandle.h"
 #include "AColor.h"

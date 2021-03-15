@@ -11,7 +11,7 @@ Paul Licameli split from TrackPanel.cpp
 #include "SelectHandle.h"
 
 #include "tracks/ui/Scrubbing.h"
-#include "tracks/ui/TrackView.h"
+#include "TrackView.h"
 
 #include "AColor.h"
 #include "HitTestResult.h"

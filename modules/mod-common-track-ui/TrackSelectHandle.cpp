@@ -10,7 +10,7 @@ Paul Licameli split from TrackPanel.cpp
 
 #include "TrackSelectHandle.h"
 
-#include "tracks/ui/TrackView.h"
+#include "TrackView.h"
 #include "HitTestResult.h"
 #include "Project.h"
 #include "ProjectAudioIO.h"

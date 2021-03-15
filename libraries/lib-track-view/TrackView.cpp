@@ -206,8 +206,8 @@ struct TrackPositioner final : AttachedProjectObject, wxEvtHandler
       TrackList::Get( project ).Bind(
          EVT_TRACKLIST_RESIZING, &TrackPositioner::OnUpdate, this );
    }
-   TrackPositioner( const TrackPositioner & ) PROHIBITED;
-   TrackPositioner &operator=( const TrackPositioner & ) PROHIBITED;
+   TrackPositioner( const TrackPositioner & ) = delete;
+   TrackPositioner &operator=( const TrackPositioner & ) = delete;
 
    void OnUpdate( TrackListEvent & e )
    {

@@ -22,7 +22,7 @@ Paul Licameli split from TrackPanel.cpp
 #include "TrackInfo.h"
 #include "TrackUtilities.h"
 #include "ProjectCommandManager.h"
-#include "tracks/ui/TrackView.h"
+#include "TrackView.h"
 
 MinimizeButtonHandle::MinimizeButtonHandle
 ( const std::shared_ptr<Track> &pTrack, const wxRect &rect )

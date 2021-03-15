@@ -28,7 +28,7 @@
 
 #include "TrackPanelDrawingContext.h"
 
-#include "tracks/ui/TrackView.h"
+#include "TrackView.h"
 
 #include "CommandContext.h"
 #include "CommandManager.h"

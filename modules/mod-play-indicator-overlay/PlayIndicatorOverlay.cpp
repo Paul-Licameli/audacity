@@ -22,7 +22,7 @@ Paul Licameli split from TrackPanel.cpp
 #include "Track.h"
 #include "ViewInfo.h"
 #include "tracks/ui/Scrubbing.h"
-#include "tracks/ui/TrackView.h"
+#include "TrackView.h"
 
 #include <wx/dc.h>
 
