@@ -34,7 +34,6 @@ Paul Licameli split from AudacityProject.cpp
 #include "AudacityMessageBox.h"
 #include "NumericTextCtrl.h"
 #include "BasicUI.h"
-#include "widgets/ProgressDialog.h"
 #include "wxFileNameWrapper.h"
 #include "XMLFileReader.h"
 #include "SentryHelper.h"
@@ -827,6 +826,8 @@ bool ProjectFileIO::CopyTo(const FilePath &destpath,
    bool prune /* = false */,
    const std::vector<const TrackList *> &tracks /* = {} */)
 {
+   using namespace BasicUI;
+
    auto pConn = CurrConn().get();
    if (!pConn)
       return false;
@@ -980,7 +981,8 @@ bool ProjectFileIO::CopyTo(const FilePath &destpath,
 
       /* i18n-hint: This title appears on a dialog that indicates the progress
          in doing something.*/
-      ProgressDialog progress(XO("Progress"), msg, pdlgHideStopButton);
+      auto progress =
+         BasicUI::MakeProgress(XO("Progress"), msg, ProgressShowCancel);
       ProgressResult result = ProgressResult::Success;
 
       wxLongLong_t count = 0;
@@ -1037,7 +1039,7 @@ bool ProjectFileIO::CopyTo(const FilePath &destpath,
             THROW_INCONSISTENCY_EXCEPTION;
          }
 
-         result = progress.Update(++count, total);
+         result = progress->Poll(++count, total);
          if (result != ProgressResult::Success)
          {
             // Note that we're not setting success, so the finally
