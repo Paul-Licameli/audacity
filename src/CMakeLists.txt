@@ -158,8 +158,6 @@ list( APPEND SOURCES
       PluginManager.h
       PluginRegistrationDialog.cpp
       PluginRegistrationDialog.h
-      Printing.cpp
-      Printing.h
       Profiler.cpp
       Profiler.h
       Project.cpp

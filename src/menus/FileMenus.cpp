@@ -5,7 +5,6 @@
 #include "../LabelTrack.h"
 #include "../NoteTrack.h"
 #include "Prefs.h"
-#include "../Printing.h"
 #include "../Project.h"
 #include "../ProjectFileIO.h"
 #include "../ProjectFileManager.h"
@@ -14,7 +13,6 @@
 #include "../ProjectWindow.h"
 #include "../SelectFile.h"
 #include "../SelectUtilities.h"
-#include "../TrackPanel.h"
 #include "../UndoManager.h"
 #include "../ViewInfo.h"
 #include "../WaveTrack.h"
@@ -507,22 +505,6 @@ void OnImportRaw(const CommandContext &context)
    DoImport(context, true);
 }
 
-void OnPageSetup(const CommandContext &context)
-{
-   auto &project = context.project;
-   auto &window = GetProjectFrame( project );
-   HandlePageSetup(&window);
-}
-
-void OnPrint(const CommandContext &context)
-{
-   auto &project = context.project;
-   auto name = project.GetProjectName();
-   auto &tracks = TrackList::Get( project );
-   auto &window = GetProjectFrame( project );
-   HandlePrint(&window, name, &tracks, TrackPanel::Get( project ));
-}
-
 void OnExit(const CommandContext &WXUNUSED(context) )
 {
    // Simulate the application Exit menu item
@@ -684,13 +666,7 @@ BaseItemSharedPtr FileMenu()
          )
       ),
 
-      Section( "Print",
-         Command( wxT("PageSetup"), XXO("Pa&ge Setup..."), FN(OnPageSetup),
-            AudioIONotBusyFlag() | TracksExistFlag() ),
-         /* i18n-hint: (verb) It's item on a menu. */
-         Command( wxT("Print"), XXO("&Print..."), FN(OnPrint),
-            AudioIONotBusyFlag() | TracksExistFlag() )
-      ),
+      Section( "Print" ),
 
       Section( "Exit",
          // On the Mac, the Exit item doesn't actually go here...wxMac will

@@ -14,9 +14,6 @@
 *//*******************************************************************/
 
 
-
-#include "Printing.h"
-
 #include <wx/defs.h>
 #include <wx/dc.h>
 #include <wx/print.h>
@@ -33,6 +30,13 @@
 
 #include "tracks/ui/TrackView.h"
 
+#include "commands/CommandContext.h"
+#include "commands/CommandManager.h"
+#include "CommonCommandFlags.h"
+#include "Project.h"
+#include "TrackPanel.h"
+
+namespace {
 // Globals, so that we remember settings from session to session
 wxPrintData &gPrintData()
 {
@@ -186,3 +190,54 @@ void HandlePrint(
       gPrintData() = printer.GetPrintDialogData().GetPrintData();
    }
 }
+
+struct Handler : CommandHandlerObject {
+void OnPageSetup(const CommandContext &context)
+{
+   auto &project = context.project;
+   auto &window = GetProjectFrame( project );
+   HandlePageSetup(&window);
+}
+
+void OnPrint(const CommandContext &context)
+{
+   auto &project = context.project;
+   auto name = project.GetProjectName();
+   auto &tracks = TrackList::Get( project );
+   auto &window = GetProjectFrame( project );
+   HandlePrint(&window, name, &tracks, TrackPanel::Get( project ));
+}
+};
+
+static CommandHandlerObject &findCommandHandler(AudacityProject &) {
+   // Handler is not stateful.  Doesn't need a factory registered with
+   // AudacityProject.
+   static Handler instance;
+   return instance;
+};
+
+#define FN(X) (& Handler :: X)
+using namespace MenuTable;
+BaseItemSharedPtr PrintingItems()
+{
+   static BaseItemSharedPtr items{
+   ( FinderScope{ findCommandHandler },
+   Items( "",
+      Command( wxT("PageSetup"), XXO("Pa&ge Setup..."), FN(OnPageSetup),
+         AudioIONotBusyFlag() | TracksExistFlag() ),
+      /* i18n-hint: (verb) It's item on a menu. */
+      Command( wxT("Print"), XXO("&Print..."), FN(OnPrint),
+         AudioIONotBusyFlag() | TracksExistFlag() )
+   ) ) };
+   return items;
+}
+#undef FN
+
+AttachedItem sAttachment{ L"File/Print",
+   Shared( PrintingItems() )
+};
+
+}
+
+#include "ModuleConstants.h"
+DEFINE_MODULE_ENTRIES
