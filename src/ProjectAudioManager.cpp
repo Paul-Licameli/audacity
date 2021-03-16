@@ -563,9 +563,6 @@ const ReservedCommandFlag&
       }
    }; return flag; }
 
-#include "widgets/Goniometer.h"
-#include "WaveTrack.h"
-
 AudioIOStartStreamOptions
 DefaultPlayOptions( AudacityProject &project )
 {
@@ -578,18 +575,6 @@ DefaultPlayOptions( AudacityProject &project )
    options.playbackMeters =
       { projectAudioIO.GetPlaybackMeters().begin(),
         projectAudioIO.GetPlaybackMeters().end() };
-
-   // Wrong but temporary
-   // I really want another way to have per-track meters that get the
-   // pre-mixed sample streams, but this passes a meter that replicates the
-   // data for the mix in each track
-   for ( auto track : TrackList::Get( project ).Leaders<WaveTrack>() ) {
-      if ( TrackList::Channels( track ).size() == 2 ) {
-         options.playbackMeters.push_back(
-            Goniometer::Get( *track ).shared_from_this() );
-      }
-   }
-
    options.envelope = Mixer::WarpOptions::DefaultWarp(TrackList::Get(project));
    options.listener = ProjectAudioManager::Get( project ).shared_from_this();
    return options;
