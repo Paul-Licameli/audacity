@@ -51,7 +51,7 @@ enum class UndoPush : unsigned char;
 
 const int DragThreshold = 3;// Anything over 3 pixels is a drag, else a click.
 
-class AUDACITY_DLL_API TrackPanel final
+class TRACK_PANEL_API TrackPanel final
    : public CellularPanel
    , public NonKeystrokeInterceptingWindow
    , private PrefsListener
@@ -155,7 +155,7 @@ protected:
 
    std::unique_ptr<TrackArtist> mTrackArtist;
 
-   class AUDACITY_DLL_API AudacityTimer final : public wxTimer {
+   class TRACK_PANEL_API AudacityTimer final : public wxTimer {
    public:
      void Notify() override{
        // (From Debian)

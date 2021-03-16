@@ -210,8 +210,6 @@ list( APPEND SOURCES
       TrackArtist.h
       TrackAttachment.h
       TrackAttachment.cpp
-      TrackPanel.cpp
-      TrackPanel.h
       TrackPanelAx.cpp
       TrackPanelAx.h
       TrackPanelCell.cpp
@@ -221,10 +219,6 @@ list( APPEND SOURCES
       TrackPanelDrawingContext.h
       TrackPanelListener.h
       TrackPanelMouseEvent.h
-      TrackPanelResizeHandle.cpp
-      TrackPanelResizeHandle.h
-      TrackPanelResizerCell.cpp
-      TrackPanelResizerCell.h
       TrackUtilities.cpp
       TrackUtilities.h
       TransportUtilities.cpp
@@ -297,8 +291,6 @@ list( APPEND SOURCES
 
       # Tracks UI
 
-      tracks/ui/BackgroundCell.cpp
-      tracks/ui/BackgroundCell.h
       tracks/ui/CommonTrackPanelCell.cpp
       tracks/ui/CommonTrackPanelCell.h
       tracks/ui/Scrubbing.cpp

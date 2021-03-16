@@ -3,6 +3,7 @@
 # The list of modules is ordered so that each module occurs after any others
 # that it depends on
 set( MODULES
+   mod-track-panel
    mod-preference-pages
    mod-toolbars
    mod-basic-editing

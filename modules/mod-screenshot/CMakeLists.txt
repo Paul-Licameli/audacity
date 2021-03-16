@@ -4,5 +4,5 @@ list( APPEND SOURCES
    ScreenshotCommand.h
 )
 audacity_module( mod-screenshot "${SOURCES}"
-   "mod-scripting-interface;mod-time-ruler-interface"
+   "mod-scripting-interface;mod-time-ruler-interface;mod-track-panel-interface"
    "" "" )

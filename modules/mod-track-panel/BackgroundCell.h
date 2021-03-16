@@ -11,8 +11,8 @@ Paul Licameli split from TrackPanel.cpp
 #ifndef __AUDACITY_BACKGROUND_CELL__
 #define __AUDACITY_BACKGROUND_CELL__
 
-#include "../../Project.h"
-#include "CommonTrackPanelCell.h"
+#include "Project.h"
+#include "tracks/ui/CommonTrackPanelCell.h"
 
 class AudacityProject;
 
