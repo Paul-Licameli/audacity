@@ -11,6 +11,7 @@ Paul Licameli split from TrackMenus.cpp
 
 #include "CommonCommandFlags.h"
 #include "ProjectHistory.h"
+#include "ProjectRate.h"
 #include "ProjectWindow.h"
 #include "SelectUtilities.h"
 #include "TimeTrack.h"
@@ -29,6 +30,7 @@ void OnNewTimeTrack(const CommandContext &context)
    auto &project = context.project;
    auto &tracks = TrackList::Get( project );
    auto &viewInfo = ViewInfo::Get( project );
+   auto &projectRate = ProjectRate::Get(project);
    auto &window = ProjectWindow::Get( project );
 
    if ( *tracks.Any<TimeTrack>().begin() ) {
@@ -38,7 +40,8 @@ void OnNewTimeTrack(const CommandContext &context)
       return;
    }
 
-   auto t = tracks.AddToHead( std::make_shared<TimeTrack>(&viewInfo) );
+   auto t = tracks.AddToHead(
+      std::make_shared<TimeTrack>(&viewInfo, projectRate) );
 
    SelectUtilities::SelectNone( project );
 

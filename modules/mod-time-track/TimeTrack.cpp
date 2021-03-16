@@ -16,7 +16,6 @@
 
 #include "TimeTrack.h"
 
-#include "ActiveProject.h"
 #include <cfloat>
 #include <wx/wxcrtvararg.h>
 #include "Envelope.h"
@@ -45,14 +44,16 @@ TimeTrack *TimeTrack::New( AudacityProject &project )
       // Maintain uniqueness of the time track.  Ignore XML file data.
       return nullptr;
    auto &viewInfo = ViewInfo::Get( project );
-   auto result = tracks.Add(std::make_shared<TimeTrack>(&viewInfo));
+   auto &projectRate = ProjectRate::Get(project);
+   auto result = tracks.Add(std::make_shared<TimeTrack>(&viewInfo, projectRate));
    result->AttachedTrackObjects::BuildAll();
    return result;
 }
 
-TimeTrack::TimeTrack(const ZoomInfo *zoomInfo):
-   Track()
+TimeTrack::TimeTrack(const ZoomInfo *zoomInfo, const ProjectRate &projectRate)
+   : Track()
    , mZoomInfo(zoomInfo)
+   , mProjectRate(projectRate)
 {
    CleanState();
 }
@@ -75,6 +76,7 @@ void TimeTrack::CleanState()
 TimeTrack::TimeTrack(const TimeTrack &orig, double *pT0, double *pT1)
    : Track(orig)
    , mZoomInfo(orig.mZoomInfo)
+   , mProjectRate(orig.mProjectRate)
 {
    Init(orig);	// this copies the TimeTrack metadata (name, range, etc)
 
@@ -157,7 +159,8 @@ Track::Holder TimeTrack::PasteInto( AudacityProject &project ) const
    if( auto pTrack = *TrackList::Get( project ).Any<TimeTrack>().begin() )
       pNewTrack = pTrack->SharedPointer<TimeTrack>();
    else
-      pNewTrack = std::make_shared<TimeTrack>( &ViewInfo::Get( project ) );
+      pNewTrack = std::make_shared<TimeTrack>(
+         &ViewInfo::Get(project), ProjectRate::Get(project) );
 
    // Should come here only for .aup3 import, not for paste (because the
    // track is skipped in cut/copy commands)
@@ -184,14 +187,14 @@ Track::Holder TimeTrack::Copy( double t0, double t1, bool ) const
 
 void TimeTrack::Clear(double t0, double t1)
 {
-   auto sampleTime = 1.0 / ProjectRate::Get( *GetActiveProject() ).GetRate();
+   auto sampleTime = 1.0 / mProjectRate.GetRate();
    mEnvelope->CollapseRegion( t0, t1, sampleTime );
 }
 
 void TimeTrack::Paste(double t, const Track * src)
 {
    bool bOk = src && src->TypeSwitch< bool >( [&] (const TimeTrack *tt) {
-      auto sampleTime = 1.0 / ProjectRate::Get( *GetActiveProject() ).GetRate();
+      auto sampleTime = 1.0 / mProjectRate.GetRate();
       mEnvelope->PasteEnvelope
          (t, tt->mEnvelope.get(), sampleTime);
       return true;

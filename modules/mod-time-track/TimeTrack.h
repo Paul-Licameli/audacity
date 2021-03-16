@@ -16,6 +16,7 @@
 #include <algorithm>
 
 class BoundedEnvelope;
+class ProjectRate;
 class ZoomInfo;
 
 class TIME_TRACK_API TimeTrack final : public Track {
@@ -25,7 +26,7 @@ class TIME_TRACK_API TimeTrack final : public Track {
    // Construct and also build all attachments
    static TimeTrack *New(AudacityProject &project);
 
-   explicit TimeTrack(const ZoomInfo *zoomInfo);
+   explicit TimeTrack(const ZoomInfo *zoomInfo, const ProjectRate &projectRate);
    /** @brief Copy-Constructor - create a NEW TimeTrack:: which is an independent copy of the original
     *
     * Calls TimeTrack::Init() to copy the track metadata, then does a bunch of manipulations on the
@@ -101,6 +102,7 @@ class TIME_TRACK_API TimeTrack final : public Track {
    void CleanState();
 
    const ZoomInfo  *const mZoomInfo;
+   const ProjectRate &mProjectRate;
    std::unique_ptr<BoundedEnvelope> mEnvelope;
    bool             mDisplayLog;
    bool             mRescaleXMLValues; // needed for backward-compatibility with older project files
@@ -122,4 +124,3 @@ ENUMERATE_TRACK_TYPE(TimeTrack);
 
 
 #endif // __AUDACITY_TIMETRACK__
-
