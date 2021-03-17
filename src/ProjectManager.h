@@ -26,6 +26,7 @@ class AudacityProject;
 struct AudioIOStartStreamOptions;
 class CellularPanel;
 
+struct ProjectStatusEvent;
 class ProjectWindow;
 
 ///\brief Object associated with a project for high-level management of the
@@ -158,7 +159,7 @@ private:
    void OnCloseWindow(wxCloseEvent & event);
    void OnTimer(wxTimerEvent & event);
    void OnOpenAudioFile(wxCommandEvent & event);
-   void OnStatusChange( wxCommandEvent& );
+   void OnStatusChange( ProjectStatusEvent& );
 
    void RestartTimer();
 
