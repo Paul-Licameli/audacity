@@ -21,7 +21,7 @@ class Meter;
 /// virtual functions, and the Meter object forwards calls to them.
 /// This indirection is done because shared_ptr or weak_ptr to Meter may be
 /// needed but such pointers to wxWindow classes don't work.
-class AUDACITY_DLL_API MeterPanelBase /* not final */
+class WIDGETS_API MeterPanelBase /* not final */
    : public wxPanelWrapper
 {
 public:

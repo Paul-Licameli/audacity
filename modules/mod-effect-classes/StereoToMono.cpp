@@ -98,13 +98,13 @@ bool EffectStereoToMono::Process()
          {
             if (leftRate != mProjectRate)
             {
-               mProgress->SetMessage(XO("Resampling left channel"));
+//               mProgress->SetMessage(XO("Resampling left channel"));
                left->Resample(mProjectRate, mProgress);
                leftRate = mProjectRate;
             }
             if (rightRate != mProjectRate)
             {
-               mProgress->SetMessage(XO("Resampling right channel"));
+//               mProgress->SetMessage(XO("Resampling right channel"));
                right->Resample(mProjectRate, mProgress);
                rightRate = mProjectRate;
             }
@@ -126,7 +126,7 @@ bool EffectStereoToMono::Process()
    sampleCount curTime = 0;
    bool refreshIter = false;
 
-   mProgress->SetMessage(XO("Mixing down to mono"));
+//   mProgress->SetMessage(XO("Mixing down to mono"));
 
    trackRange = mOutputTracks->SelectedLeaders< WaveTrack >();
    while (trackRange.first != trackRange.second)

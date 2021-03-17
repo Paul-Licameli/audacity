@@ -33,6 +33,7 @@ set( LIBRARIES
    lib-project-rate
    lib-wave-track
    lib-track-view
+   lib-widgets
 )
 
 if ( ${_OPT}has_networking )

@@ -35,7 +35,7 @@
 #include "Track.h"
 #include "float_cast.h"
 #include "widgets/FileHistory.h"
-#include "widgets/AudacityMessageBox.h"
+#include "AudacityMessageBox.h"
 #include "widgets/ProgressDialog.h"
 #include "widgets/Warning.h"
 #include "wxFileNameWrapper.h"

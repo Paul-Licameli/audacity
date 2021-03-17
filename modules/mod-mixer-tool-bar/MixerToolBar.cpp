@@ -36,7 +36,7 @@
 #include "KeyboardCapture.h"
 #include "Prefs.h"
 #include "ProjectManager.h"
-#include "widgets/ASlider.h"
+#include "ASlider.h"
 #include "Grabber.h"
 
 IMPLEMENT_CLASS(MixerToolBar, ToolBar);

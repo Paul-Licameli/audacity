@@ -13,7 +13,7 @@ Paul Licameli
 #include <wx/app.h>
 #include "FileNames.h"
 #include "Languages.h"
-#include "widgets/AudacityMessageBox.h"
+#include "AudacityMessageBox.h"
 #include "wxArrayStringEx.h"
 
 namespace GUISettings {

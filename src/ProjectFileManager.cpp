@@ -37,7 +37,7 @@ Paul Licameli split from AudacityProject.cpp
 #include "UndoManager.h"
 #include "WaveTrack.h"
 #include "wxFileNameWrapper.h"
-#include "widgets/AudacityMessageBox.h"
+#include "AudacityMessageBox.h"
 #include "widgets/FileHistory.h"
 #include "widgets/UnwritableLocationErrorDialog.h"
 #include "widgets/Warning.h"

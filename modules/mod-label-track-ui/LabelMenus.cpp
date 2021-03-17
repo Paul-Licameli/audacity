@@ -21,7 +21,7 @@
 #include "CommandContext.h"
 #include "CommandManager.h"
 #include "LabelTrackView.h"
-#include "widgets/AudacityMessageBox.h"
+#include "AudacityMessageBox.h"
 #include "ExportMultiple.h"
 #include "ToolManager.h"
 

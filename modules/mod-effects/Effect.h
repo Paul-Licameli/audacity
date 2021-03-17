@@ -25,6 +25,7 @@ class wxChoice;
 class wxListBox;
 class wxWindow;
 
+#include "BasicUI.h"
 #include "ConfigInterface.h"
 #include "EffectInterface.h"
 #include "PluginInterface.h"
@@ -453,7 +454,7 @@ protected:
 //
 protected:
 
-   ProgressDialog *mProgress; // Temporary pointer, NOT deleted in destructor.
+   BasicUI::ProgressDialog *mProgress; // Temporary pointer, NOT deleted in destructor.
    double         mProjectRate; // Sample rate of the project - NEW tracks should
                                // be created with this rate...
    double         mSampleRate;

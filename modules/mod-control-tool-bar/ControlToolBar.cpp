@@ -62,7 +62,7 @@
 #include "ProjectWindow.h"
 #include "RecordUtilities.h"
 #include "Track.h"
-#include "widgets/AButton.h"
+#include "AButton.h"
 #include "FileNames.h"
 
 #include "tracks/ui/Scrubbing.h"

@@ -34,8 +34,8 @@
 #include "ShuttleGui.h"
 #include "SyncLock.h"
 #include "WaveTrack.h"
-#include "widgets/valnum.h"
-#include "widgets/AudacityMessageBox.h"
+#include "valnum.h"
+#include "AudacityMessageBox.h"
 
 class Enums {
 public:

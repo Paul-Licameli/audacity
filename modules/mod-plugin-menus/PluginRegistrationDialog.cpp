@@ -13,7 +13,7 @@
 #include "ModuleManager.h"
 #include "PluginManager.h"
 #include "ShuttleGui.h"
-#include "widgets/AudacityMessageBox.h"
+#include "AudacityMessageBox.h"
 #include "widgets/ProgressDialog.h"
 
 #include <wx/setup.h> // for wxUSE_* macros

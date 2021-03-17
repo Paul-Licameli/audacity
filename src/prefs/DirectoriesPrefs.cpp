@@ -31,7 +31,7 @@
 #include "Prefs.h"
 #include "ShuttleGui.h"
 #include "TempDirectory.h"
-#include "../widgets/AudacityMessageBox.h"
+#include "AudacityMessageBox.h"
 #include "FileNames.h"
 #include "ReadOnlyText.h"
 

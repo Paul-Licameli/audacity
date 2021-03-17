@@ -58,9 +58,9 @@
 #include "ProjectManager.h"
 #include "ProjectWindow.h"
 #include "ProjectWindows.h"
-#include "widgets/AButton.h"
-#include "widgets/ASlider.h"
-#include "widgets/MeterPanelBase.h"
+#include "AButton.h"
+#include "ASlider.h"
+#include "MeterPanelBase.h"
 #include "Grabber.h"
 
 ////////////////////////////////////////////////////////////

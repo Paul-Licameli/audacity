@@ -54,7 +54,6 @@ array of Ruler::Label.
 
 *//******************************************************************/
 
-
 #include "Ruler.h"
 
 #include <wx/dcclient.h>

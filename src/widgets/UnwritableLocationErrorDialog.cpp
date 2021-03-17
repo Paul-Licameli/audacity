@@ -13,8 +13,8 @@
 #include "HelpSystem.h"
 #include "ShuttleGui.h"
 
-#include "prefs/PrefsDialog.h"
-#include "ui/AccessibleLinksFormatter.h"
+#include "PrefsDialog.h"
+#include "AccessibleLinksFormatter.h"
 
 BEGIN_EVENT_TABLE(UnwritableLocationErrorDialog, wxDialogWrapper)
     EVT_BUTTON(wxID_OK, UnwritableLocationErrorDialog::OnOk)

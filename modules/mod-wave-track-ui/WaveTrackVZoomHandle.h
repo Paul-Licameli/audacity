@@ -57,7 +57,7 @@ namespace WaveTrackVZoomHandle
       const wxRect &rect, const wxRect &panelRect, unsigned iPass );
 };
 
-#include "widgets/PopupMenuTable.h" // to inherit
+#include "PopupMenuTable.h" // to inherit
 
 class WAVE_TRACK_UI_API WaveTrackVRulerMenuTable
    : public PopupMenuTable

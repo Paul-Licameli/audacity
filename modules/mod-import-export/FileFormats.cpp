@@ -21,8 +21,7 @@ information.
 #include <wx/arrstr.h>
 #include "sndfile.h"
 #include "Internat.h"
-#include "MemoryX.h"
-#include "widgets/AudacityMessageBox.h"
+#include "AudacityMessageBox.h"
 #include "Prefs.h"
 
 #ifndef SNDFILE_1

@@ -42,8 +42,8 @@
 #include "WaveTrack.h"
 #include "wxFileNameWrapper.h"
 #include "widgets/ProgressDialog.h"
-#include "widgets/NumericTextCtrl.h"
-#include "widgets/AudacityMessageBox.h"
+#include "NumericTextCtrl.h"
+#include "AudacityMessageBox.h"
 #include "widgets/VetoDialogHook.h"
 
 #include <unordered_map>
@@ -1294,13 +1294,14 @@ bool Effect::DoEffect(double projectRate,
    bool skipFlag = CheckWhetherSkipEffect();
    if (skipFlag == false)
    {
+      using namespace BasicUI;
       auto name = GetName();
-      ProgressDialog progress{
+      auto progress = MakeProgress(
          name,
          XO("Applying %s...").Format( name ),
-         pdlgHideStopButton
-      };
-      auto vr = valueRestorer( mProgress, &progress );
+         ProgressShowCancel
+      );
+      auto vr = valueRestorer( mProgress, progress.get() );
 
       {
          returnVal = Process();
@@ -1996,7 +1997,7 @@ void Effect::IncludeNotSelectedPreviewTracks(bool includeNotSelected)
 bool Effect::TotalProgress(double frac, const TranslatableString &msg)
 {
    auto updateResult = (mProgress ?
-      mProgress->Update(frac, msg) :
+      mProgress->Poll(frac, 0, msg) : //!
       ProgressResult::Success);
    return (updateResult != ProgressResult::Success);
 }
@@ -2004,7 +2005,7 @@ bool Effect::TotalProgress(double frac, const TranslatableString &msg)
 bool Effect::TrackProgress(int whichTrack, double frac, const TranslatableString &msg)
 {
    auto updateResult = (mProgress ?
-      mProgress->Update(whichTrack + frac, (double) mNumTracks, msg) :
+      mProgress->Poll(whichTrack + frac, (double) mNumTracks, msg) :
       ProgressResult::Success);
    return (updateResult != ProgressResult::Success);
 }
@@ -2012,7 +2013,7 @@ bool Effect::TrackProgress(int whichTrack, double frac, const TranslatableString
 bool Effect::TrackGroupProgress(int whichGroup, double frac, const TranslatableString &msg)
 {
    auto updateResult = (mProgress ?
-      mProgress->Update(whichGroup + frac, (double) mNumGroups, msg) :
+      mProgress->Poll(whichGroup + frac, (double) mNumGroups, msg) :
       ProgressResult::Success);
    return (updateResult != ProgressResult::Success);
 }
@@ -2397,12 +2398,13 @@ void Effect::Preview(bool dryOnly)
 
    // Apply effect
    if (!dryOnly) {
-      ProgressDialog progress{
+      using namespace BasicUI;
+      auto progress = MakeProgress(
          GetName(),
          XO("Preparing preview"),
-         pdlgHideCancelButton
-      }; // Have only "Stop" button.
-      auto vr = valueRestorer( mProgress, &progress );
+         ProgressShowStop
+      ); // Have only "Stop" button.
+      auto vr = valueRestorer( mProgress, progress.get() );
 
       auto vr2 = valueRestorer( mIsPreview, true );
 

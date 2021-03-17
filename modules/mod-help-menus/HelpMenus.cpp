@@ -25,7 +25,7 @@
 #include "CommandManager.h"
 #include "ReloadPreferences.h"
 #include "PrefsDialog.h"
-#include "widgets/AudacityMessageBox.h"
+#include "AudacityMessageBox.h"
 #include "HelpSystem.h"
 
 // private helper classes and functions

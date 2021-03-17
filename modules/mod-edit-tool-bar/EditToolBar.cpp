@@ -48,7 +48,7 @@
 #include "Prefs.h"
 #include "Project.h"
 #include "UndoManager.h"
-#include "widgets/AButton.h"
+#include "AButton.h"
 
 #include "CommandContext.h"
 #include "commands/CommandDispatch.h"

@@ -42,8 +42,8 @@
 
 #include "SelectFile.h"
 #include "ShuttleGui.h"
-#include "widgets/AudacityMessageBox.h"
-#include "widgets/valnum.h"
+#include "AudacityMessageBox.h"
+#include "valnum.h"
 #include "wxPanelWrapper.h"
 
 //

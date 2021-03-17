@@ -8,7 +8,7 @@
   Paul Licameli split from ProjectAudioManager.cpp and TransportUtilities.cpp
 
 **********************************************************************/
-#include "../widgets/AudacityMessageBox.h"
+#include "AudacityMessageBox.h"
 #include "../AudioIO.h"
 #include "BasicUI.h"
 #include "CommandContext.h"

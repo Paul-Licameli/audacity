@@ -165,7 +165,6 @@ different formats.
 **********************************************************************/
 
 
-
 #include "NumericTextCtrl.h"
 
 #include "SampleCount.h"

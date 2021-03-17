@@ -24,7 +24,7 @@ effects.
 
 #include <algorithm>
 
-#include "widgets/AudacityMessageBox.h"
+#include "AudacityMessageBox.h"
 
 #include "ShuttleGetDefinition.h"
 #include "CommandContext.h"

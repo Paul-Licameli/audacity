@@ -16,7 +16,7 @@
 class wxString;
 class wxPaintEvent;
 
-class AUDACITY_DLL_API auStaticText : public wxWindow
+class WIDGETS_API auStaticText : public wxWindow
 {
 public:
    auStaticText(wxWindow* parent, wxString text);

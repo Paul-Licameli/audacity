@@ -37,7 +37,7 @@ other settings.
 #include "NoteTrack.h"
 #include "Prefs.h"
 #include "ShuttleGui.h"
-#include "widgets/AudacityMessageBox.h"
+#include "AudacityMessageBox.h"
 
 #define DEFAULT_SYNTH_LATENCY 5
 

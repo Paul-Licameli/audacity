@@ -23,7 +23,7 @@ Paul Licameli split from TrackPanel.cpp
 
 #include "AColor.h"
 #include "TrackPanelDrawingContext.h"
-#include "widgets/Ruler.h"
+#include "Ruler.h"
 
 #include <wx/dc.h>
 

@@ -69,7 +69,7 @@
 #include "MenuHandle.h"
 
 #include "AllThemeResources.h"
-#include "../widgets/valnum.h"
+#include "valnum.h"
 
 #if wxUSE_ACCESSIBILITY
 #include "WindowAccessible.h"

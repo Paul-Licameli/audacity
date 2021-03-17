@@ -23,8 +23,8 @@
 #include "Prefs.h"
 #include "ShuttleGui.h"
 #include "Import.h"
-#include "widgets/AudacityMessageBox.h"
-#include "widgets/Grid.h"
+#include "AudacityMessageBox.h"
+#include "Grid.h"
 
 #define EXTIMPORT_MIME_SUPPORT 0
 

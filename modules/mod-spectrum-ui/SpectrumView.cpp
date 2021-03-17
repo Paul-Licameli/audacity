@@ -1416,8 +1416,8 @@ static const WaveTrackSubViews::RegisteredFactory key{
 #include "RefreshCode.h"
 #include "PrefsDialog.h"
 #include "SpectrumPrefs.h"
-#include "widgets/AudacityMessageBox.h"
-#include "widgets/PopupMenuTable.h"
+#include "AudacityMessageBox.h"
+#include "PopupMenuTable.h"
 
 namespace {
 struct SpectrogramSettingsHandler : PopupMenuHandler {

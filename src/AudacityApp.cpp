@@ -74,7 +74,6 @@ It handles initialization and termination by subclassing wxApp.
 #include "Benchmark.h"
 #include "Clipboard.h"
 #include "CrashReport.h" // for HAS_CRASH_REPORT
-#include "widgets/ASlider.h"
 //#include "LangChoice.h"
 #include "Languages.h"
 #include "Menus.h"
@@ -100,7 +99,7 @@ It handles initialization and termination by subclassing wxApp.
 #include "AutoRecoveryDialog.h"
 #include "SplashDialog.h"
 #include "FFT.h"
-#include "widgets/AudacityMessageBox.h"
+#include "AudacityMessageBox.h"
 #include "prefs/DirectoriesPrefs.h"
 #include "prefs/GUISettings.h"
 #include "tracks/ui/Scrubbing.h"

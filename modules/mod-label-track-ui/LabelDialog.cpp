@@ -34,9 +34,9 @@
 #include "SelectFile.h"
 #include "ViewInfo.h"
 #include "LabelTrackView.h"
-#include "widgets/AudacityMessageBox.h"
+#include "AudacityMessageBox.h"
 #include "AudacityTextEntryDialog.h"
-#include "widgets/Grid.h"
+#include "Grid.h"
 #include "HelpSystem.h"
 
 #include "FileNames.h"

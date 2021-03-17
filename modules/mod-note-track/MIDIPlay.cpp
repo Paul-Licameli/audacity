@@ -361,7 +361,7 @@ Time (in seconds, = total_sample_count / sample_rate)
 #include "../lib-src/portmidi/pm_common/portmidi.h"
 #include "../lib-src/portmidi/porttime/porttime.h"
 #include "../lib-src/header-substitutes/allegro.h"
-#include "widgets/AudacityMessageBox.h"
+#include "AudacityMessageBox.h"
 #include <wx/log.h>
 #include <wx/sstream.h>
 #include <wx/txtstrm.h>

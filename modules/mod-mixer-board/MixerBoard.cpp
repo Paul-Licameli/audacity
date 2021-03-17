@@ -52,9 +52,9 @@
 #include "UndoManager.h"
 #include "WaveTrack.h"
 
-#include "widgets/AButton.h"
+#include "AButton.h"
 #include "widgets/MeterPanel.h"
-#include "widgets/auStaticText.h"
+#include "auStaticText.h"
 
 
 #include "../images/MusicalInstruments.h"

@@ -45,7 +45,7 @@ KeyConfigPrefs and MousePrefs use.
 #include "FileNames.h"
 
 #include "KeyView.h"
-#include "widgets/AudacityMessageBox.h"
+#include "AudacityMessageBox.h"
 #include "MenuHandle.h"
 
 #if wxUSE_ACCESSIBILITY

@@ -29,7 +29,7 @@ Paul Licameli split from TrackPanel.cpp
 #include "WaveTrack.h"
 #include "effects/RealtimeEffectManager.h"
 #include "PrefsDialog.h"
-#include "widgets/AudacityMessageBox.h"
+#include "AudacityMessageBox.h"
 #include "MenuHandle.h"
 #include "widgets/ProgressDialog.h"
 #include "UserException.h"
@@ -945,7 +945,7 @@ WaveTrackPopupMenuTable &GetWaveTrackMenuTable()
 }
 
 // drawing related
-#include "widgets/ASlider.h"
+#include "ASlider.h"
 #include "TrackInfo.h"
 #include "TrackPanelDrawingContext.h"
 #include "ViewInfo.h"

@@ -34,7 +34,7 @@ public:
    static const int kRangeMax {1000};
 };
 
-#include "widgets/PopupMenuTable.h"
+#include "PopupMenuTable.h"
 
 class TimeTrackMenuTable : public PopupMenuTable
 {

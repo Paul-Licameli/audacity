@@ -82,9 +82,9 @@
 #include "PlatformCompatibility.h"
 #include "SelectFile.h"
 #include "ShuttleGui.h"
-#include "widgets/valnum.h"
-#include "widgets/AudacityMessageBox.h"
-#include "widgets/NumericTextCtrl.h"
+#include "valnum.h"
+#include "AudacityMessageBox.h"
+#include "NumericTextCtrl.h"
 #include "XMLFileReader.h"
 
 #if wxUSE_ACCESSIBILITY

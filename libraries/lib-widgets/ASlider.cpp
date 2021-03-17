@@ -29,7 +29,6 @@ or ASlider.
 *//*******************************************************************/
 
 
-
 #include "ASlider.h"
 
 #include <math.h>
@@ -63,7 +62,10 @@ or ASlider.
 #if wxUSE_ACCESSIBILITY
 #include "WindowAccessible.h"
 
-class AUDACITY_DLL_API ASliderAx final : public WindowAccessible
+#define DB_TO_LINEAR(x) (pow(10.0, (x) / 20.0))
+#define LINEAR_TO_DB(x) (20.0 * log10(x))
+
+class WIDGETS_API ASliderAx final : public WindowAccessible
 {
 public:
    ASliderAx(wxWindow * window);

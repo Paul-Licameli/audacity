@@ -80,8 +80,8 @@ the mouse around.
 #include "WaveTrack.h"
 
 #include "HelpSystem.h"
-#include "widgets/AudacityMessageBox.h"
-#include "widgets/Ruler.h"
+#include "AudacityMessageBox.h"
+#include "Ruler.h"
 #include "widgets/VetoDialogHook.h"
 
 #if wxUSE_ACCESSIBILITY

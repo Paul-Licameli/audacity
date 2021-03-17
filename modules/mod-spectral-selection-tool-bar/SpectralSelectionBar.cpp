@@ -56,7 +56,7 @@ frequency selection range.
 #include "WindowAccessible.h"
 #endif
 
-#include "widgets/NumericTextCtrl.h"
+#include "NumericTextCtrl.h"
 
 #ifdef EXPERIMENTAL_SPECTRAL_EDITING
 

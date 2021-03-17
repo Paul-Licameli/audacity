@@ -23,7 +23,7 @@
 #include "ViewInfo.h"
 #include "CommandContext.h"
 #include "../ProjectCommandManager.h"
-#include "../widgets/AudacityMessageBox.h"
+#include "AudacityMessageBox.h"
 #include "BasicUI.h"
 #include "../widgets/ProgressDialog.h"
 

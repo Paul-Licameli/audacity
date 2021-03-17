@@ -15,7 +15,6 @@
 // headers
 // ----------------------------------------------------------------------------
 
-
 #include "numformatter.h"
 
 // For compilers that support precompilation, includes "wx.h".

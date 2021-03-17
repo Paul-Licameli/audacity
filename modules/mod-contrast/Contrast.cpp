@@ -23,8 +23,8 @@
 #include "FileNames.h"
 #include "ViewInfo.h"
 #include "HelpSystem.h"
-#include "widgets/NumericTextCtrl.h"
-#include "widgets/AudacityMessageBox.h"
+#include "NumericTextCtrl.h"
+#include "AudacityMessageBox.h"
 #include "widgets/VetoDialogHook.h"
 
 #include <cmath>

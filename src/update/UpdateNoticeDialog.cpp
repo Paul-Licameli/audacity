@@ -16,8 +16,8 @@
 
 #include "ShuttleGui.h"
 #include "CodeConversions.h"
-#include "prefs/PrefsDialog.h"
-#include "ui/AccessibleLinksFormatter.h"
+#include "PrefsDialog.h"
+#include "AccessibleLinksFormatter.h"
 
 
 static const auto title =

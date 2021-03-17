@@ -27,7 +27,7 @@ Paul Licameli split from TrackControls.cpp
 #include "ProjectCommandManager.h"
 #include "ShuttleGui.h"
 #include "Track.h"
-#include "widgets/PopupMenuTable.h"
+#include "PopupMenuTable.h"
 #include "MenuHandle.h"
 
 #include <wx/dc.h>

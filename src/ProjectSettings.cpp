@@ -16,7 +16,7 @@ Paul Licameli split from AudacityProject.cpp
 #include "Project.h"
 #include "ProjectFileIORegistry.h"
 #include "QualitySettings.h"
-#include "widgets/NumericTextCtrl.h"
+#include "NumericTextCtrl.h"
 #include "XMLWriter.h"
 
 wxDEFINE_EVENT(EVT_PROJECT_SETTINGS_CHANGE, wxCommandEvent);

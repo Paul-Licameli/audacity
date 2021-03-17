@@ -23,8 +23,8 @@
 #include "TrackArtist.h"
 #include "ViewInfo.h"
 #include "Track.h"
-#include "widgets/Ruler.h"
-#include "widgets/AudacityMessageBox.h"
+#include "Ruler.h"
+#include "AudacityMessageBox.h"
 
 #include "TrackPanelDrawingContext.h"
 

@@ -17,7 +17,7 @@ Paul Licameli split from AudacityLogger.cpp
 #include <wx/weakref.h>
 
 #include "AudacityLogger.h"
-#include "widgets/AudacityMessageBox.h"
+#include "AudacityMessageBox.h"
 #include "FileNames.h"
 #include "Internat.h"
 #include "MemoryX.h"

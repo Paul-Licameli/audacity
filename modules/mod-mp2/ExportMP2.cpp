@@ -49,7 +49,7 @@
 #include "ShuttleGui.h"
 #include "Tags.h"
 #include "Track.h"
-#include "widgets/AudacityMessageBox.h"
+#include "AudacityMessageBox.h"
 #include "widgets/ProgressDialog.h"
 
 #define LIBTWOLAME_STATIC

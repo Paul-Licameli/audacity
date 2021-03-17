@@ -37,7 +37,7 @@
 #include "CommandContext.h"
 #include "ProjectCommandManager.h"
 #include "CommandTargets.h"
-#include "widgets/AudacityMessageBox.h"
+#include "AudacityMessageBox.h"
 
 #include "NyqBench.h"
 

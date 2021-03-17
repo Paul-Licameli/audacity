@@ -36,7 +36,7 @@ and libvorbis examples, Monty <monty@xiph.org>
 #include "Tags.h"
 #include "Track.h"
 
-#include "widgets/AudacityMessageBox.h"
+#include "AudacityMessageBox.h"
 #include "widgets/ProgressDialog.h"
 #include "wxFileNameWrapper.h"
 

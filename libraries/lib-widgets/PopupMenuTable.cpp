@@ -8,7 +8,6 @@ Paul Licameli split from TrackPanel.cpp
 
 **********************************************************************/
 
-
 #include "PopupMenuTable.h"
 #include "MenuHandle.h"
 

@@ -11,7 +11,7 @@
 #include "WaveTrack.h"
 #include "CommandContext.h"
 #include "PrefsDialog.h"
-#include "../widgets/AudacityMessageBox.h"
+#include "AudacityMessageBox.h"
 #include "../widgets/VetoDialogHook.h"
 
 namespace EditActions {

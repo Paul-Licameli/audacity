@@ -33,7 +33,7 @@ most commonly asked questions about Audacity.
 #include "Project.h"
 #include "ProjectWindows.h"
 #include "ShuttleGui.h"
-#include "widgets/AudacityMessageBox.h"
+#include "AudacityMessageBox.h"
 #include "HelpSystem.h"
 
 #include "AllThemeResources.h"

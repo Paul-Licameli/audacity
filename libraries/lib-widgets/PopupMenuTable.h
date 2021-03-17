@@ -34,7 +34,7 @@ class wxWindow;
 class PopupMenuHandler;
 class PopupMenuTable;
 
-struct AUDACITY_DLL_API PopupMenuTableEntry : Registry::SingleItem
+struct WIDGETS_API PopupMenuTableEntry : Registry::SingleItem
 {
    enum Type { Item, RadioItem, CheckItem };
    // Function to determine whether a menu item should be enabled and checked
@@ -63,7 +63,7 @@ struct AUDACITY_DLL_API PopupMenuTableEntry : Registry::SingleItem
    ~PopupMenuTableEntry() override;
 };
 
-struct AUDACITY_DLL_API PopupSubMenu : Registry::ConcreteGroupItem< false >
+struct WIDGETS_API PopupSubMenu : Registry::ConcreteGroupItem< false >
    , MenuTable::WholeMenu
 {
    TranslatableString caption;
@@ -104,14 +104,14 @@ struct PopupMenuVisitor : public MenuVisitor {
 };
 
 // Opaque structure built by PopupMenuTable::BuildMenu
-class AUDACITY_DLL_API PopupMenu
+class WIDGETS_API PopupMenu
 {
 public:
    virtual ~PopupMenu();
    virtual void Popup( wxWindow &window, const wxPoint &pos ) = 0;
 };
 
-class AUDACITY_DLL_API PopupMenuTable : public PopupMenuHandler
+class WIDGETS_API PopupMenuTable : public PopupMenuHandler
 {
 public:
    using Entry = PopupMenuTableEntry;

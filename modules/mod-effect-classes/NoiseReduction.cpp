@@ -48,8 +48,8 @@
 #include "RealFFTf.h"
 
 #include "WaveTrack.h"
-#include "widgets/AudacityMessageBox.h"
-#include "widgets/valnum.h"
+#include "AudacityMessageBox.h"
+#include "valnum.h"
 
 #include <algorithm>
 #include <vector>

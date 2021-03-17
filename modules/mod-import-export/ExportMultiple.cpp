@@ -45,7 +45,8 @@
 #include "TagsEditor.h"
 #include "WaveTrack.h"
 #include "HelpSystem.h"
-#include "widgets/AudacityMessageBox.h"
+#include "AudacityMessageBox.h"
+#include "AudacityMessageBox.h"
 #include "AudacityTextEntryDialog.h"
 #include "widgets/ProgressDialog.h"
 

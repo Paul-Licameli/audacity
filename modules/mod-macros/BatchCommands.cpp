@@ -47,7 +47,7 @@ processing.  See also MacrosWindow and ApplyMacroDialog.
 
 #include "AllThemeResources.h"
 
-#include "widgets/AudacityMessageBox.h"
+#include "AudacityMessageBox.h"
 
 #include "CommandContext.h"
 #include "commands/CommandDispatch.h"

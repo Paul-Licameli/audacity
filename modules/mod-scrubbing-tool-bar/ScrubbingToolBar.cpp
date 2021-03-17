@@ -30,7 +30,7 @@
 #include "ImageManipulation.h"
 #include "Prefs.h"
 #include "UndoManager.h"
-#include "widgets/AButton.h"
+#include "AButton.h"
 #include "tracks/ui/Scrubbing.h"
 
 IMPLEMENT_CLASS(ScrubbingToolBar, ToolBar);

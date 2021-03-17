@@ -63,7 +63,7 @@
 #include "TagsEditor.h"
 #include "Theme.h"
 #include "WaveTrack.h"
-#include "widgets/AudacityMessageBox.h"
+#include "AudacityMessageBox.h"
 #include "widgets/Warning.h"
 #include "HelpSystem.h"
 #include "AColor.h"

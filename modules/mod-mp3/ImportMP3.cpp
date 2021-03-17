@@ -61,7 +61,7 @@ static Importer::RegisteredUnusableImportPlugin registered
 #include "Prefs.h"
 #include "Tags.h"
 #include "WaveTrack.h"
-#include "widgets/AudacityMessageBox.h"
+#include "AudacityMessageBox.h"
 #include "widgets/ProgressDialog.h"
 
 // PRL:  include these last,

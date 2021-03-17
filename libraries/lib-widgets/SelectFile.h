@@ -22,7 +22,9 @@ namespace FileNames {
 }
 using FileTypes = std::vector< FileNames::FileType >;
 
-AUDACITY_DLL_API FilePath
+class wxWindow;
+
+WIDGETS_API FilePath
 SelectFile(FileNames::Operation op,   // op matters only when default_path is empty
    const TranslatableString& message,
    const FilePath& default_path,

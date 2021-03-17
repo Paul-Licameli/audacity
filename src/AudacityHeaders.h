@@ -51,9 +51,9 @@
 #include "Sequence.h"
 #include "UndoManager.h"
 #include "WaveTrack.h"
-#include "widgets/ASlider.h"
+#include "ASlider.h"
 #include "widgets/ProgressDialog.h"
-#include "widgets/Ruler.h"
+#include "Ruler.h"
 
 // PRL:  These lines allow you to remove Project.h above.
 // They must be included before the definition of macro NEW below.

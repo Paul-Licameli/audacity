@@ -41,7 +41,7 @@ undo memory so as to free up space.
 #include "ProjectHistory.h"
 #include "ProjectWindows.h"
 #include "ShuttleGui.h"
-#include "widgets/AudacityMessageBox.h"
+#include "AudacityMessageBox.h"
 #include "HelpSystem.h"
 
 enum {

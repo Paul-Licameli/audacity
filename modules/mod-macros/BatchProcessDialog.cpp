@@ -58,7 +58,7 @@
 #include "FileDialog/FileDialog.h"
 #include "FileNames.h"
 #include "Import.h"
-#include "widgets/AudacityMessageBox.h"
+#include "AudacityMessageBox.h"
 #include "AudacityTextEntryDialog.h"
 #include "HelpSystem.h"
 

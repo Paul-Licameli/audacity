@@ -13,7 +13,7 @@
 #include "LabelTrack.h"
 #include "ShuttleGui.h"
 #include "ImportExportPrefs.h"
-#include "widgets/AudacityMessageBox.h"
+#include "AudacityMessageBox.h"
 
 #include <wx/textfile.h>
 #include <wx/tokenzr.h>

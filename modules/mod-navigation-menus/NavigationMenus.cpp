@@ -10,8 +10,8 @@
 #include "CommandContext.h"
 #include "CommandManager.h"
 #include "ToolManager.h"
-#include "widgets/AButton.h"
-#include "widgets/ASlider.h"
+#include "AButton.h"
+#include "ASlider.h"
 #include "widgets/MeterPanel.h"
 
 // private helper classes and functions

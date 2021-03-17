@@ -19,7 +19,6 @@
 // headers
 // ----------------------------------------------------------------------------
 
-
 #include "valnum.h"
 
 // For compilers that support precompilation, includes "wx.h".

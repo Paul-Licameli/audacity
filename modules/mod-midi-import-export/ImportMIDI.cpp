@@ -30,7 +30,7 @@
 #include "ProjectWindows.h"
 #include "SelectFile.h"
 #include "SelectUtilities.h"
-#include "widgets/AudacityMessageBox.h"
+#include "AudacityMessageBox.h"
 #include "widgets/FileHistory.h"
 #include "widgets/ProgressDialog.h"
 
