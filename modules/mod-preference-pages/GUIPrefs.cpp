@@ -27,6 +27,7 @@
 #include "Prefs.h"
 #include "ShuttleGui.h"
 
+#include "Decibels.h"
 #include "prefs/GUISettings.h"
 
 #include "ThemePrefs.h"
@@ -149,7 +150,7 @@ void GUIPrefs::PopulateOrExchange(ShuttleGui & S)
 
          S.TieChoice( XXO("Meter dB &range:"),
             {
-               ENV_DB_KEY,
+               DecibelScaleCutoff.GetPath(),
                { ByColumns, mRangeChoices, mRangeCodes },
                mDefaultRangeIndex
             }

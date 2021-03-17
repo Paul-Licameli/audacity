@@ -45,7 +45,7 @@ audio tracks.
 #include "Theme.h"
 #include "TrackPanelDrawingContext.h"
 
-#include "prefs/GUISettings.h"
+#include "Decibels.h"
 
 TrackArtist::TrackArtist( AudacityProject &project,
    wxWindow &parent, const ZoomInfo &zoomInfo,
@@ -55,7 +55,7 @@ TrackArtist::TrackArtist( AudacityProject &project,
    , zoomInfo{ zoomInfo }
    , selectedRegion{ selectedRegion }
 {
-   mdBrange = ENV_DB_RANGE;
+   mdBrange = DecibelScaleCutoff.Read();
    mShowClipping = false;
 
    SetColours(0);
@@ -141,7 +141,7 @@ void TrackArtist::UpdateSelectedPrefs( int id )
 
 void TrackArtist::UpdatePrefs()
 {
-   mdBrange = gPrefs->Read(ENV_DB_KEY, mdBrange);
+   mdBrange = DecibelScaleCutoff.Read();
 
    UpdateSelectedPrefs( ShowClippingPrefsID() );
    UpdateSelectedPrefs( ShowTrackNameInWaveformPrefsID() );
