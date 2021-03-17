@@ -21,6 +21,7 @@ set( LIBRARIES
    lib-keyboard-capture
    lib-cellular-panel
    lib-project
+   lib-screen-geometry
 )
 
 if ( ${_OPT}has_networking )

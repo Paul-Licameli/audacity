@@ -20,7 +20,7 @@
 #include "../UndoManager.h"
 #include "../WaveClip.h"
 #include "../WaveTrack.h"
-#include "../ViewInfo.h"
+#include "ViewInfo.h"
 #include "../commands/CommandContext.h"
 #include "../commands/CommandManager.h"
 #include "../widgets/AudacityMessageBox.h"

@@ -39,7 +39,7 @@ enum : int {
 // The subset of ViewInfo information (other than selection)
 // that is sufficient for purposes of TrackArtist,
 // and for computing conversions between track times and pixel positions.
-class AUDACITY_DLL_API ZoomInfo /* not final */
+class SCREEN_GEOMETRY_API ZoomInfo /* not final */
    // Note that ViewInfo inherits from ZoomInfo but there are no virtual functions.
    // That's okay if we pass always by reference and never copy, suffering "slicing."
    : public AttachedProjectObject
@@ -50,8 +50,8 @@ public:
    ~ZoomInfo();
 
    // Be sure we don't slice
-   ZoomInfo(const ZoomInfo&) PROHIBITED;
-   ZoomInfo& operator= (const ZoomInfo&) PROHIBITED;
+   ZoomInfo(const ZoomInfo&) = delete;
+   ZoomInfo& operator= (const ZoomInfo&) = delete;
 
    void UpdatePrefs() override;
 

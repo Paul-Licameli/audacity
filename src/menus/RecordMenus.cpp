@@ -19,7 +19,7 @@
 #include "../ProjectHistory.h"
 #include "../ProjectWindows.h"
 #include "../RecordUtilities.h"
-#include "../ViewInfo.h"
+#include "ViewInfo.h"
 #include "../WaveClip.h"
 #include "../WaveTrack.h"
 

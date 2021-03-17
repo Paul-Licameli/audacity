@@ -241,8 +241,7 @@ bool ViewInfo::ReadXMLAttribute(const wxChar *attr, const wxChar *value)
 
 int ViewInfo::UpdateScrollPrefsID()
 {
-   static int value = wxNewId();
-   return value;
+   return 10000;
 }
 
 static ProjectFileIORegistry::WriterEntry entry {

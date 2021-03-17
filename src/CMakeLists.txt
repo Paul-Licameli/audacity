@@ -89,8 +89,6 @@ list( APPEND SOURCES
       CrashReport.h
       DBConnection.cpp
       DBConnection.h
-      Decibels.cpp
-      Decibels.h
       DeviceChange.cpp
       DeviceChange.h
       DeviceManager.cpp
@@ -117,7 +115,6 @@ list( APPEND SOURCES
       ModuleManager.h
       ModuleSettings.cpp
       ModuleSettings.h
-      NumberScale.h
       PitchName.cpp
       PitchName.h
       PlaybackSchedule.cpp
@@ -162,8 +159,6 @@ list( APPEND SOURCES
       SelectUtilities.h
       SelectFile.cpp
       SelectFile.h
-      SelectedRegion.cpp
-      SelectedRegion.h
       SelectionState.cpp
       SelectionState.h
       Sequence.cpp
@@ -198,14 +193,10 @@ list( APPEND SOURCES
       TransportUtilities.h
       UndoManager.cpp
       UndoManager.h
-      ViewInfo.cpp
-      ViewInfo.h
       WaveClip.cpp
       WaveClip.h
       WaveTrack.cpp
       WaveTrack.h
-      ZoomInfo.cpp
-      ZoomInfo.h
 
       # Commands
 

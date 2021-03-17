@@ -33,12 +33,12 @@ struct SelectedRegionEvent : public wxEvent
 };
 
 // To do:  distinguish time changes from frequency changes perhaps?
-wxDECLARE_EXPORTED_EVENT( AUDACITY_DLL_API,
+wxDECLARE_EXPORTED_EVENT( SCREEN_GEOMETRY_API,
                           EVT_SELECTED_REGION_CHANGE, SelectedRegionEvent );
 
 // This heavyweight wrapper of the SelectedRegion structure emits events
 // on mutating operations, that other classes can listen for.
-class AUDACITY_DLL_API NotifyingSelectedRegion : public wxEvtHandler
+class SCREEN_GEOMETRY_API NotifyingSelectedRegion : public wxEvtHandler
 {
 public:
    // Expose SelectedRegion's const accessors
@@ -168,7 +168,7 @@ private:
    bool mLocked{ false };
 };
 
-class AUDACITY_DLL_API ViewInfo final
+class SCREEN_GEOMETRY_API ViewInfo final
    : public wxEvtHandler, public ZoomInfo
 {
 public:
@@ -176,8 +176,8 @@ public:
    static const ViewInfo &Get( const AudacityProject &project );
 
    ViewInfo(double start, double screenDuration, double pixelsPerSecond);
-   ViewInfo( const ViewInfo & ) PROHIBITED;
-   ViewInfo &operator=( const ViewInfo & ) PROHIBITED;
+   ViewInfo( const ViewInfo & ) = delete;
+   ViewInfo &operator=( const ViewInfo & ) = delete;
 
    int GetHeight() const { return mHeight; }
    void SetHeight( int height ) { mHeight = height; }
@@ -232,5 +232,5 @@ private:
    int mHeight{ 0 };
 };
 
-extern AUDACITY_DLL_API BoolSetting ScrollingPreference;
+extern SCREEN_GEOMETRY_API BoolSetting ScrollingPreference;
 #endif
