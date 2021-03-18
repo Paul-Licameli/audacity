@@ -362,7 +362,7 @@ void OnShowEffectsRack(const CommandContext &context )
 #endif
 
 // Not a menu item, but a listener for events
-void OnUndoPushed( wxCommandEvent &evt )
+void OnUndoPushed( UndoRedoEvent &evt )
 {
    evt.Skip();
    const auto &settings = ProjectSettings::Get( mProject );

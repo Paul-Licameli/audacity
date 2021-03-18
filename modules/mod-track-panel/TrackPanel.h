@@ -36,6 +36,7 @@ class TrackList;
 struct TrackListEvent;
 class TrackPanel;
 class TrackArtist;
+struct UndoRedoEvent;
 class Ruler;
 class SnapManager;
 class LWSlider;
@@ -89,7 +90,7 @@ class TRACK_PANEL_API TrackPanel final
    void OnProjectSettingsChange(wxCommandEvent &event);
    void OnTrackFocusChange( wxCommandEvent &event );
 
-   void OnUndoReset( wxCommandEvent &event );
+   void OnUndoReset( UndoRedoEvent &event );
 
    void Refresh
       (bool eraseBackground = true, const wxRect *rect = (const wxRect *) NULL)

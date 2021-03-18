@@ -1361,20 +1361,20 @@ void ProjectWindow::OnToolBarUpdate(wxCommandEvent & event)
    event.Skip(false);             /* No need to propagate any further */
 }
 
-void ProjectWindow::OnUndoPushedModified( wxCommandEvent &evt )
+void ProjectWindow::OnUndoPushedModified( UndoRedoEvent &evt )
 {
    evt.Skip();
    RedrawProject();
 }
 
-void ProjectWindow::OnUndoRedo( wxCommandEvent &evt )
+void ProjectWindow::OnUndoRedo( UndoRedoEvent &evt )
 {
    evt.Skip();
    HandleResize();
    RedrawProject();
 }
 
-void ProjectWindow::OnUndoReset( wxCommandEvent &evt )
+void ProjectWindow::OnUndoReset( UndoRedoEvent &evt )
 {
    evt.Skip();
    HandleResize();

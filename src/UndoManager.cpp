@@ -31,14 +31,14 @@ UndoManager
 //#include "NoteTrack.h"  // for Sonify* function declarations
 
 
-wxDEFINE_EVENT(EVT_UNDO_PUSHED, wxCommandEvent);
-wxDEFINE_EVENT(EVT_UNDO_MODIFIED, wxCommandEvent);
-wxDEFINE_EVENT(EVT_UNDO_RENAMED, wxCommandEvent);
-wxDEFINE_EVENT(EVT_UNDO_OR_REDO, wxCommandEvent);
-wxDEFINE_EVENT(EVT_UNDO_RESET, wxCommandEvent);
-wxDEFINE_EVENT(EVT_UNDO_PURGE, wxCommandEvent);
+wxDEFINE_EVENT(EVT_UNDO_PUSHED, UndoRedoEvent);
+wxDEFINE_EVENT(EVT_UNDO_MODIFIED, UndoRedoEvent);
+wxDEFINE_EVENT(EVT_UNDO_RENAMED, UndoRedoEvent);
+wxDEFINE_EVENT(EVT_UNDO_OR_REDO, UndoRedoEvent);
+wxDEFINE_EVENT(EVT_UNDO_RESET, UndoRedoEvent);
+wxDEFINE_EVENT(EVT_UNDO_PURGE, UndoRedoEvent);
 wxDEFINE_EVENT(EVT_UNDO_BEGIN_PURGE, UndoPurgeEvent);
-wxDEFINE_EVENT(EVT_UNDO_END_PURGE, wxCommandEvent);
+wxDEFINE_EVENT(EVT_UNDO_END_PURGE, UndoRedoEvent);
 
 UndoStateExtension::~UndoStateExtension() = default;
 
@@ -129,7 +129,7 @@ void UndoManager::RemoveStates(size_t begin, size_t end)
    UndoPurgeEvent evt1{EVT_UNDO_BEGIN_PURGE, begin, end};
    mProject.ProcessEvent(evt1);
    auto cleanup = finally([&]{
-      wxCommandEvent evt2{EVT_UNDO_END_PURGE};
+      UndoRedoEvent evt2{EVT_UNDO_END_PURGE};
       mProject.SafelyProcessEvent(evt1);
    });
 
@@ -150,7 +150,7 @@ void UndoManager::RemoveStates(size_t begin, size_t end)
    
    if (begin != end)
       // wxWidgets will own the event object
-      mProject.QueueEvent( safenew wxCommandEvent{ EVT_UNDO_PURGE } ); //?
+      mProject.QueueEvent( safenew UndoRedoEvent{ EVT_UNDO_PURGE } ); //?
 }
 
 void UndoManager::ClearStates()
@@ -208,7 +208,7 @@ void UndoManager::ModifyState(const TrackList * l,
 //   SonifyEndModifyState();
 
    // wxWidgets will own the event object
-   mProject.QueueEvent( safenew wxCommandEvent{ EVT_UNDO_MODIFIED } );
+   mProject.QueueEvent( safenew UndoRedoEvent{ EVT_UNDO_MODIFIED } );
 }
 
 void UndoManager::RenameState( int state,
@@ -221,7 +221,7 @@ void UndoManager::RenameState( int state,
       theState.shortDescription = shortDescription;
 
       // wxWidgets will own the event object
-      mProject.QueueEvent( safenew wxCommandEvent{ EVT_UNDO_RENAMED } );
+      mProject.QueueEvent( safenew UndoRedoEvent{ EVT_UNDO_RENAMED } );
    }
 }
 
@@ -269,7 +269,7 @@ void UndoManager::PushState(const TrackList * l,
    lastAction = longDescription;
 
    // wxWidgets will own the event object
-   mProject.QueueEvent( safenew wxCommandEvent{ EVT_UNDO_PUSHED } );
+   mProject.QueueEvent( safenew UndoRedoEvent{ EVT_UNDO_PUSHED } );
 }
 
 void UndoManager::AbandonRedo()
@@ -292,7 +292,7 @@ void UndoManager::SetStateTo(unsigned int n, const Consumer &consumer)
    consumer( *stack[current] );
 
    // wxWidgets will own the event object
-   mProject.QueueEvent( safenew wxCommandEvent{ EVT_UNDO_RESET } );
+   mProject.QueueEvent( safenew UndoRedoEvent{ EVT_UNDO_RESET } );
 }
 
 void UndoManager::Undo(const Consumer &consumer)
@@ -307,7 +307,7 @@ void UndoManager::Undo(const Consumer &consumer)
    consumer( *stack[current] );
 
    // wxWidgets will own the event object
-   mProject.QueueEvent( safenew wxCommandEvent{ EVT_UNDO_OR_REDO } );
+   mProject.QueueEvent( safenew UndoRedoEvent{ EVT_UNDO_OR_REDO } );
 }
 
 void UndoManager::Redo(const Consumer &consumer)
@@ -335,7 +335,7 @@ void UndoManager::Redo(const Consumer &consumer)
    consumer( *stack[current] );
 
    // wxWidgets will own the event object
-   mProject.QueueEvent( safenew wxCommandEvent{ EVT_UNDO_OR_REDO } );
+   mProject.QueueEvent( safenew UndoRedoEvent{ EVT_UNDO_OR_REDO } );
 }
 
 void UndoManager::VisitStates( const Consumer &consumer, bool newestFirst )
@@ -390,6 +390,18 @@ int UndoManager::GetSavedState() const
 //                t ? t->GetEndTime()-t->GetStartTime() : 0);
 //   }
 //}
+
+UndoRedoEvent::UndoRedoEvent(wxEventType commandType)
+   : wxEvent{ -1, commandType }
+{}
+
+UndoRedoEvent::~UndoRedoEvent() = default;
+
+wxEvent *UndoRedoEvent::Clone() const
+{
+   // wxWidgets will own the event object
+   return safenew UndoRedoEvent(*this);
+}
 
 UndoPurgeEvent::~UndoPurgeEvent() = default;
 

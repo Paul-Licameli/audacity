@@ -461,7 +461,7 @@ void TrackPanel::OnProjectSettingsChange( wxCommandEvent &event )
    }
 }
 
-void TrackPanel::OnUndoReset( wxCommandEvent &event )
+void TrackPanel::OnUndoReset( UndoRedoEvent &event )
 {
    event.Skip();
    TrackFocus::Get( *GetProject() ).Set( nullptr );
