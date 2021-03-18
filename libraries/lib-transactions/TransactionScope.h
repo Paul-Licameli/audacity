@@ -33,6 +33,15 @@ public:
    static TransactionScopeImplFactory
    InstallImplementation(TransactionScopeImplFactory factory);
 
+   //! Type of function that saves project state to the database, or throws an exception on failure
+   using AutoSaveFunction = std::function< void(AudacityProject &) >;
+
+   //! Installs global autosave function; returns the previously installed
+   static AutoSaveFunction InstallAutoSave(AutoSaveFunction function);
+
+   //! Invoke the installed AutoSaveFunction if there is one
+   static void AutoSave(AudacityProject &project);
+
    //! Construct from a project
    /*!
     If no implementation factory is installed, or the factory returns null,
