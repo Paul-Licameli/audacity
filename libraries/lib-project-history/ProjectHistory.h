@@ -17,7 +17,7 @@ class AudacityProject;
 struct UndoState;
 enum class UndoPush : unsigned char;
 
-class AUDACITY_DLL_API ProjectHistory final
+class PROJECT_HISTORY_API ProjectHistory final
    : public AttachedProjectObject
 {
 public:
@@ -27,8 +27,8 @@ public:
    explicit ProjectHistory( AudacityProject &project )
       : mProject{ project }
    {}
-   ProjectHistory( const ProjectHistory & ) PROHIBITED;
-   ProjectHistory &operator=( const ProjectHistory & ) PROHIBITED;
+   ProjectHistory( const ProjectHistory & ) = default;
+   ProjectHistory &operator=( const ProjectHistory & ) = default;
    ~ProjectHistory() override;
 
    void InitialState();

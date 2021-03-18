@@ -115,8 +115,6 @@ list( APPEND SOURCES
       ProjectFileIO.h
       ProjectFileManager.cpp
       ProjectFileManager.h
-      ProjectHistory.cpp
-      ProjectHistory.h
       ProjectManager.cpp
       ProjectManager.h
       ProjectSelectionManager.cpp
@@ -161,8 +159,6 @@ list( APPEND SOURCES
       TransportUtilities.h
       UndoRedoMenu.cpp
       UndoRedoMenu.h
-      UndoManager.cpp
-      UndoManager.h
 
       # Commands
 

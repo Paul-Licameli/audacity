@@ -16,7 +16,7 @@
 #include "../CommonCommandFlags.h"
 #include "../widgets/ProgressDialog.h"
 #include "../ProjectAudioManager.h"
-#include "../ProjectHistory.h"
+#include "ProjectHistory.h"
 #include "ProjectWindows.h"
 #include "../RecordUtilities.h"
 #include "ViewInfo.h"

@@ -35,6 +35,7 @@ set( LIBRARIES
    lib-track-view
    lib-widgets
    lib-transactions
+   lib-project-history
 )
 
 if ( ${_OPT}has_networking )

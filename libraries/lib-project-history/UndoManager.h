@@ -57,7 +57,7 @@
 #include <wx/event.h>
 
 // Events emitted by AudacityProject for the use of listeners
-struct AUDACITY_DLL_API UndoRedoEvent : wxEvent {
+struct PROJECT_HISTORY_API UndoRedoEvent : wxEvent {
    UndoRedoEvent(wxEventType commandType);
    ~UndoRedoEvent() override;
    wxEvent *Clone() const override;
@@ -65,24 +65,24 @@ struct AUDACITY_DLL_API UndoRedoEvent : wxEvent {
 
 // Project state did not change, but a new state was copied into Undo history
 // and any redo states were lost
-wxDECLARE_EXPORTED_EVENT(AUDACITY_DLL_API, EVT_UNDO_PUSHED, UndoRedoEvent);
+wxDECLARE_EXPORTED_EVENT(PROJECT_HISTORY_API, EVT_UNDO_PUSHED, UndoRedoEvent);
 
 // Project state did not change, but current state was modified in Undo history
-wxDECLARE_EXPORTED_EVENT(AUDACITY_DLL_API, EVT_UNDO_MODIFIED, UndoRedoEvent);
+wxDECLARE_EXPORTED_EVENT(PROJECT_HISTORY_API, EVT_UNDO_MODIFIED, UndoRedoEvent);
 
 // Project state did not change, but current state was renamed in Undo history
-wxDECLARE_EXPORTED_EVENT(AUDACITY_DLL_API, EVT_UNDO_RENAMED, UndoRedoEvent);
+wxDECLARE_EXPORTED_EVENT(PROJECT_HISTORY_API, EVT_UNDO_RENAMED, UndoRedoEvent);
 
 // Project state changed because of undo or redo; undo manager
 // contents did not change other than the pointer to current state
-wxDECLARE_EXPORTED_EVENT(AUDACITY_DLL_API, EVT_UNDO_OR_REDO, UndoRedoEvent);
+wxDECLARE_EXPORTED_EVENT(PROJECT_HISTORY_API, EVT_UNDO_OR_REDO, UndoRedoEvent);
 
 // Project state changed other than for single-step undo/redo; undo manager
 // contents did not change other than the pointer to current state
-wxDECLARE_EXPORTED_EVENT(AUDACITY_DLL_API, EVT_UNDO_RESET, UndoRedoEvent);
+wxDECLARE_EXPORTED_EVENT(PROJECT_HISTORY_API, EVT_UNDO_RESET, UndoRedoEvent);
 
 // Undo or redo states discarded
-wxDECLARE_EXPORTED_EVENT(AUDACITY_DLL_API, EVT_UNDO_PURGE, UndoRedoEvent);
+wxDECLARE_EXPORTED_EVENT(PROJECT_HISTORY_API, EVT_UNDO_PURGE, UndoRedoEvent);
 
 struct UndoPurgeEvent final : UndoRedoEvent
 {
@@ -99,17 +99,17 @@ struct UndoPurgeEvent final : UndoRedoEvent
 };
 
 // Begin elimination of old undo states
-wxDECLARE_EXPORTED_EVENT(AUDACITY_DLL_API, EVT_UNDO_BEGIN_PURGE, UndoPurgeEvent);
+wxDECLARE_EXPORTED_EVENT(PROJECT_HISTORY_API, EVT_UNDO_BEGIN_PURGE, UndoPurgeEvent);
 
 // End elimination of old undo states
-wxDECLARE_EXPORTED_EVENT(AUDACITY_DLL_API, EVT_UNDO_END_PURGE, UndoRedoEvent);
+wxDECLARE_EXPORTED_EVENT(PROJECT_HISTORY_API, EVT_UNDO_END_PURGE, UndoRedoEvent);
 
 class AudacityProject;
 class Track;
 class TrackList;
 
 //! Base class for extra information attached to undo/redo states
-class AUDACITY_DLL_API UndoStateExtension {
+class PROJECT_HISTORY_API UndoStateExtension {
 public:
    virtual ~UndoStateExtension();
 
@@ -117,7 +117,7 @@ public:
    virtual void RestoreUndoRedoState(AudacityProject &) = 0;
 };
 
-class AUDACITY_DLL_API UndoRedoExtensionRegistry {
+class PROJECT_HISTORY_API UndoRedoExtensionRegistry {
 public:
    //! Type of function that produces an UndoStateExtension object when saving state of a project
    /*! Shared pointer allows easy sharing of unchanging parts of project state among history states */
@@ -125,7 +125,7 @@ public:
       std::function<std::shared_ptr<UndoStateExtension>(AudacityProject&)>;
 
    //! Typically statically constructed
-   struct AUDACITY_DLL_API Entry {
+   struct PROJECT_HISTORY_API Entry {
       Entry(const Saver &saver);
    };
 };
@@ -181,7 +181,7 @@ inline UndoPush operator & (UndoPush a, UndoPush b)
 
 //! Maintain a non-persistent list of states of the project, to support undo and redo commands
 /*! The history should be cleared before destruction */
-class AUDACITY_DLL_API UndoManager final
+class PROJECT_HISTORY_API UndoManager final
    : public AttachedProjectObject
 {
  public:
