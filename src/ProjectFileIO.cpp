@@ -2700,3 +2700,102 @@ InvisibleTemporaryProject::~InvisibleTemporaryProject()
    mpProject.reset();
    try { wxTheApp->Yield(); } catch(...) {}
 }
+
+// Install an implementation of TransactionScope
+#include "TransactionScope.h"
+
+namespace {
+struct ProjectFileIOTransactionScopeImpl final : TransactionScopeImpl {
+   explicit ProjectFileIOTransactionScopeImpl(DBConnection &connection)
+      : mConnection{ connection } {}
+   ~ProjectFileIOTransactionScopeImpl() override;
+   bool TransactionStart(const wxString &name) override;
+   bool TransactionCommit(const wxString &name) override;
+   bool TransactionRollback(const wxString &name) override;
+
+   DBConnection &mConnection;
+};
+
+ProjectFileIOTransactionScopeImpl::~ProjectFileIOTransactionScopeImpl() = default;
+
+bool ProjectFileIOTransactionScopeImpl::TransactionStart(const wxString &name)
+{
+   char *errmsg = nullptr;
+
+   int rc = sqlite3_exec(mConnection.DB(),
+                         wxT("SAVEPOINT ") + name + wxT(";"),
+                         nullptr,
+                         nullptr,
+                         &errmsg);
+
+   if (errmsg)
+   {
+      mConnection.SetDBError(
+         XO("Failed to create savepoint:\n\n%s").Format(name)
+      );
+      sqlite3_free(errmsg);
+   }
+
+   return rc == SQLITE_OK;
+}
+
+bool ProjectFileIOTransactionScopeImpl::TransactionCommit(const wxString &name)
+{
+   char *errmsg = nullptr;
+
+   int rc = sqlite3_exec(mConnection.DB(),
+                         wxT("RELEASE ") + name + wxT(";"),
+                         nullptr,
+                         nullptr,
+                         &errmsg);
+
+   if (errmsg)
+   {
+      mConnection.SetDBError(
+         XO("Failed to release savepoint:\n\n%s").Format(name)
+      );
+      sqlite3_free(errmsg);
+   }
+
+   return rc == SQLITE_OK;
+}
+
+bool ProjectFileIOTransactionScopeImpl::TransactionRollback(const wxString &name)
+{
+   char *errmsg = nullptr;
+
+   int rc = sqlite3_exec(mConnection.DB(),
+                         wxT("ROLLBACK TO ") + name + wxT(";"),
+                         nullptr,
+                         nullptr,
+                         &errmsg);
+
+   if (errmsg)
+   {
+      mConnection.SetDBError(
+         XO("Failed to release savepoint:\n\n%s").Format(name)
+      );
+      sqlite3_free(errmsg);
+   }
+
+   if (rc != SQLITE_OK)
+      return false;
+
+   // Rollback AND REMOVE the transaction
+   // -- must do both; rolling back a savepoint only rewinds it
+   // without removing it, unlike the ROLLBACK command
+
+   return TransactionCommit(name);
+}
+
+static struct Installer{ Installer() { TransactionScope::InstallImplementation(
+   [](AudacityProject &project) -> std::unique_ptr<TransactionScopeImpl> {
+      auto &connectionPtr = ConnectionPtr::Get(project);
+      if (auto pConnection = connectionPtr.mpConnection.get())
+         return
+            std::make_unique<ProjectFileIOTransactionScopeImpl>(*pConnection);
+      else
+         return nullptr;
+   }
+); } } installer;
+}

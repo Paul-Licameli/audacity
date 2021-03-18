@@ -26,11 +26,11 @@ UndoManager
 #include <wx/hashset.h>
 
 #include "Clipboard.h"
-#include "DBConnection.h"
 #include "Diags.h"
 #include "Project.h"
 #include "SampleBlock.h"
 #include "Sequence.h"
+#include "TransactionScope.h"
 #include "WaveTrack.h"          // temp
 //#include "NoteTrack.h"  // for Sonify* function declarations
 #include "Diags.h"
@@ -246,10 +246,7 @@ void UndoManager::RemoveStates(size_t begin, size_t end)
    auto cleanup = finally([&]{ pSampleBlockFactory->SetBlockDeletionCallback( prevCallback ); });
 
    // Wrap the whole in a savepoint for better performance
-   Optional<TransactionScope> pTrans;
-   auto pConnection = ConnectionPtr::Get(mProject).mpConnection.get();
-   if (pConnection)
-      pTrans.emplace(*pConnection, "DiscardingUndoStates");
+   TransactionScope trans{mProject, "DiscardingUndoStates"};
 
    for (size_t ii = begin; ii < end; ++ii) {
       RemoveStateAt(begin);
@@ -261,8 +258,7 @@ void UndoManager::RemoveStates(size_t begin, size_t end)
    }
 
    // Success, commit the savepoint
-   if (pTrans)
-      pTrans->Commit();
+   trans.Commit();
    
    if (begin != end)
       // wxWidgets will own the event object

@@ -117,8 +117,8 @@ time warp info and AudioIOListener and whether the playback is looped.
 #include "Prefs.h"
 #include "Project.h"
 #include "ProjectWindows.h"
-#include "DBConnection.h"
 #include "SampleTrack.h"
+#include "TransactionScope.h"
 
 #include "effects/RealtimeEffectManager.h"
 #include "QualitySettings.h"
@@ -1766,11 +1766,8 @@ void AudioIO::StopStream()
             // This scope may combine many splittings of wave tracks
             // into one transaction, lessening the number of checkpoints
             Optional<TransactionScope> pScope;
-            if (mOwningProject) {
-               auto &connectionPtr = ConnectionPtr::Get(*mOwningProject);
-               if(auto pConnection = connectionPtr.mpConnection.get())
-                  pScope.emplace(*pConnection, "Dropouts");
-            }
+            if (mOwningProject)
+               pScope.emplace(*mOwningProject, "Dropouts");
             for (auto &interval : mLostCaptureIntervals) {
                auto &start = interval.first;
                auto duration = interval.second;
@@ -2314,11 +2311,8 @@ void AudioIO::DrainRecordBuffers()
          // and also an autosave, into one transaction,
          // lessening the number of checkpoints
          Optional<TransactionScope> pScope;
-         if (mOwningProject) {
-            auto &connectionPtr = ConnectionPtr::Get(*mOwningProject);
-            if(auto pConnection = connectionPtr.mpConnection.get())
-               pScope.emplace(*pConnection, "Recording");
-         }
+         if (mOwningProject)
+            pScope.emplace(*mOwningProject, "Recording");
 
          bool newBlocks = false;
 

@@ -26,7 +26,6 @@
 
 #include "AudioIO.h"
 #include "widgets/wxWidgetsBasicUI.h"
-#include "DBConnection.h"
 #include "LabelTrack.h"
 #include "MixAndRender.h"
 #include "PluginManager.h"
@@ -38,6 +37,7 @@
 #include "ShuttleAutomation.h"
 #include "ShuttleGui.h"
 #include "SyncLock.h"
+#include "TransactionScope.h"
 #include "ViewInfo.h"
 #include "WaveTrack.h"
 #include "wxFileNameWrapper.h"
@@ -1203,8 +1203,7 @@ bool Effect::DoEffect(double projectRate,
 
    // This is for performance purposes only, no additional recovery implied
    auto &pProject = *const_cast<AudacityProject*>(FindProject()); // how to remove this const_cast?
-   auto &pIO = ProjectFileIO::Get(pProject);
-   TransactionScope trans(pIO.GetConnection(), "Effect");
+   TransactionScope trans(pProject, "Effect");
 
    // Update track/group counts
    CountWaveTracks();
