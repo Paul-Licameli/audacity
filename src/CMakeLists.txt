@@ -157,8 +157,6 @@ list( APPEND SOURCES
       TrackPanelListener.h
       TrackUtilities.cpp
       TrackUtilities.h
-      TransactionScope.cpp
-      TransactionScope.h
       TransportUtilities.cpp
       TransportUtilities.h
       UndoRedoMenu.cpp

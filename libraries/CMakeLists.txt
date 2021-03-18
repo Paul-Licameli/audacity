@@ -34,6 +34,7 @@ set( LIBRARIES
    lib-wave-track
    lib-track-view
    lib-widgets
+   lib-transactions
 )
 
 if ( ${_OPT}has_networking )

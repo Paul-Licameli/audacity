@@ -22,7 +22,7 @@ class TransactionScopeImpl;
     Commit() must not be called again after one successful call.
     An exception is thrown from the constructor if the transaction cannot open.
  */
-class AUDACITY_DLL_API TransactionScope
+class TRANSACTIONS_API TransactionScope
 {
 public:
    //! Type of function supplying implementation of steps
