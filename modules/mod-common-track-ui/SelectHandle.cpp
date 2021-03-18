@@ -25,6 +25,7 @@ Paul Licameli split from TrackPanel.cpp
 #include "RefreshCode.h"
 #include "SelectUtilities.h"
 #include "SelectionState.h"
+#include "SyncLock.h"
 #include "TrackArtist.h"
 #include "TrackPanelAx.h"
 #include "TrackPanelDrawingContext.h"
@@ -319,7 +320,7 @@ UIHandle::Result SelectHandle::Click
    mMostRecentY = event.m_y;
 
    auto &selectionState = SelectionState::Get( *pProject );
-   const auto &settings = ProjectSettings::Get( *pProject );
+   const auto &settings = SyncLockState::Get( *pProject );
    if (event.LeftDClick() && !event.ShiftDown()) {
       // Deselect all other tracks and select this one.
       selectionState.SelectNone( trackList );

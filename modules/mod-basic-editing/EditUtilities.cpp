@@ -16,7 +16,6 @@
 #include "Project.h"
 #include "ProjectHistory.h"
 #include "ProjectRate.h"
-#include "ProjectSettings.h"
 #include "ProjectWindow.h"
 #include "TimeWarper.h"
 #include "SelectUtilities.h"
@@ -228,7 +227,7 @@ void OnPaste(const CommandContext &context)
    auto &project = context.project;
    auto &tracks = TrackList::Get( project );
    auto &selectedRegion = ViewInfo::Get( project ).selectedRegion;
-   const auto &settings = ProjectSettings::Get( project );
+   const auto &settings = SyncLockState::Get( project );
    auto &window = ProjectWindow::Get( project );
 
    auto isSyncLocked = settings.IsSyncLocked();

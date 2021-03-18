@@ -59,7 +59,6 @@ public:
    
    // Values retrievable from GetInt() of the event for settings change
    enum EventCode : int {
-      ChangedSyncLock,
       ChangedSnapTo,
       ChangedSelectionFormat,
       ChangedAudioTimeFormat,
@@ -75,9 +74,6 @@ public:
    bool GetTracksFitVerticallyZoomed() const { return mTracksFitVerticallyZoomed; } //lda
    void SetTracksFitVerticallyZoomed(bool flag) { mTracksFitVerticallyZoomed = flag; } //lda
 
-   bool IsSyncLocked() const;
-   void SetSyncLock(bool flag);
-   
    // Snap To
 
    void SetSnapTo(int snap);
@@ -137,7 +133,6 @@ private:
    int mCurrentTool;
    
    bool mTracksFitVerticallyZoomed{ false };  //lda
-   bool mIsSyncLocked{ false };
    bool mEmptyCanBeDirty;
    bool mShowSplashScreen;
 };

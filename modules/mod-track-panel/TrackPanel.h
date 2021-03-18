@@ -39,6 +39,7 @@ class TrackArtist;
 struct UndoRedoEvent;
 class Ruler;
 class SnapManager;
+struct SyncLockChangeEvent;
 class LWSlider;
 
 class TrackPanelAx;
@@ -87,7 +88,7 @@ class TRACK_PANEL_API TrackPanel final
    void OnSize( wxSizeEvent & );
    void OnIdle(wxIdleEvent & event);
    void OnTimer(wxTimerEvent& event);
-   void OnProjectSettingsChange(wxCommandEvent &event);
+   void OnSyncLockChange(SyncLockChangeEvent &event);
    void OnTrackFocusChange( wxCommandEvent &event );
 
    void OnUndoReset( UndoRedoEvent &event );

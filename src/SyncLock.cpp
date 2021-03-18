@@ -11,8 +11,69 @@ Paul Licameli split from Track.cpp
 
 #include "SyncLock.h"
 
-#include "ProjectSettings.h"
 #include "Track.h"
+
+wxDEFINE_EVENT(EVT_SYNC_LOCK_CHANGE, SyncLockChangeEvent);
+
+SyncLockChangeEvent::SyncLockChangeEvent(bool on)
+   : wxEvent{ -1, EVT_SYNC_LOCK_CHANGE }
+   , mIsOn{ on }
+{}
+SyncLockChangeEvent::~SyncLockChangeEvent() = default;
+wxEvent *SyncLockChangeEvent::Clone() const
+{
+   return safenew SyncLockChangeEvent{*this};
+}
+
+namespace {
+   void Notify( AudacityProject &project, bool on )
+   {
+      SyncLockChangeEvent e{ on };
+      project.ProcessEvent( e );
+   }
+}
+
+static const AudacityProject::AttachedObjects::RegisteredFactory
+sSyncLockStateKey{
+  []( AudacityProject &project ){
+     auto result = std::make_shared< SyncLockState >( project );
+     return result;
+   }
+};
+
+SyncLockState &SyncLockState::Get( AudacityProject &project )
+{
+   return project.AttachedObjects::Get< SyncLockState >(
+      sSyncLockStateKey );
+}
+
+const SyncLockState &SyncLockState::Get( const AudacityProject &project )
+{
+   return Get( const_cast< AudacityProject & >( project ) );
+}
+
+SyncLockState::SyncLockState(AudacityProject &project)
+   : mProject{project}
+{
+   gPrefs->Read(wxT("/GUI/SyncLockTracks"), &mIsSyncLocked, false);
+}
+
+bool SyncLockState::IsSyncLocked() const
+{
+#ifdef EXPERIMENTAL_SYNC_LOCK
+   return mIsSyncLocked;
+#else
+   return false;
+#endif
+}
+
+void SyncLockState::SetSyncLock(bool flag)
+{
+   if (flag != mIsSyncLocked) {
+      mIsSyncLocked = flag;
+      Notify( mProject, flag );
+   }
+}
 
 namespace {
 inline bool IsSyncLockableNonSeparatorTrack( const Track *pTrack )
@@ -90,7 +151,7 @@ bool SyncLock::IsSyncLockSelected( const Track *pTrack )
       return false;
 
    auto p = pList->GetOwner();
-   if (!p || !ProjectSettings::Get( *p ).IsSyncLocked())
+   if (!p || !SyncLockState::Get( *p ).IsSyncLocked())
       return false;
 
    auto shTrack = pTrack->SubstituteOriginalTrack();

@@ -1644,14 +1644,14 @@ void ToolManager::OnThemeChange(wxCommandEvent & evt)
 }
 
 #include "ProjectCommandManager.h"
-#include "ProjectSettings.h"
+#include "SyncLock.h"
 void ToolManager::ModifyToolbarMenus(AudacityProject &project)
 {
    // Refreshes can occur during shutdown and the toolmanager may already
    // be deleted, so protect against it.
    auto &toolManager = ToolManager::Get( project );
 
-   auto &settings = ProjectSettings::Get( project );
+   auto &settings = SyncLockState::Get( project );
 
    // Now, go through each toolbar, and call EnableDisableButtons()
    toolManager.ForEach([](auto bar){

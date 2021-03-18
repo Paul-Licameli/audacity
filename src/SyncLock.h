@@ -13,6 +13,36 @@ Paul Licameli split from Track.cpp
 
 #include "Track.h" // for TrackIterRange
 
+//! Event emitted by the project when sync lock state changes
+struct SyncLockChangeEvent : wxEvent{
+   explicit SyncLockChangeEvent(bool on);
+   ~SyncLockChangeEvent() override;
+   wxEvent *Clone() const override;
+   bool mIsOn; //!< state sync lock has after the change
+};
+
+// Sent to the project when certain settings change
+wxDECLARE_EXPORTED_EVENT(AUDACITY_DLL_API,
+   EVT_SYNC_LOCK_CHANGE, SyncLockChangeEvent);
+
+class AUDACITY_DLL_API SyncLockState final
+   : public AttachedProjectObject
+{
+public:
+   static SyncLockState &Get( AudacityProject &project );
+   static const SyncLockState &Get( const AudacityProject &project );
+   explicit SyncLockState( AudacityProject &project );
+   SyncLockState( const SyncLockState & ) = delete;
+   SyncLockState &operator=( const SyncLockState & ) = delete;
+
+   bool IsSyncLocked() const;
+   void SetSyncLock(bool flag);
+
+private:
+   AudacityProject &mProject;
+   bool mIsSyncLocked{ false };
+};
+
 class AUDACITY_DLL_API SyncLock {
 public:
    //! Checks if sync-lock is on and any track in its sync-lock group is selected.

@@ -69,8 +69,6 @@ ProjectSettings::ProjectSettings(AudacityProject &project)
 }
 , mSnapTo( gPrefs->Read(wxT("/SnapTo"), SNAP_OFF) )
 {
-   gPrefs->Read(wxT("/GUI/SyncLockTracks"), &mIsSyncLocked, false);
-
    bool multiToolActive = false;
    gPrefs->Read(wxT("/GUI/ToolBars/Tools/MultiToolActive"), &multiToolActive);
 
@@ -177,23 +175,6 @@ void ProjectSettings::SetSnapTo(int snap)
 int ProjectSettings::GetSnapTo() const
 {
    return mSnapTo;
-}
-
-bool ProjectSettings::IsSyncLocked() const
-{
-#ifdef EXPERIMENTAL_SYNC_LOCK
-   return mIsSyncLocked;
-#else
-   return false;
-#endif
-}
-
-void ProjectSettings::SetSyncLock(bool flag)
-{
-   if (flag != mIsSyncLocked) {
-      mIsSyncLocked = flag;
-      Notify( mProject, ChangedSyncLock );
-   }
 }
 
 static ProjectFileIORegistry::WriterEntry entry {

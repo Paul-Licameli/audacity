@@ -17,8 +17,8 @@
 #include "Project.h"
 #include "ProjectHistory.h"
 #include "ProjectWindows.h"
-#include "ProjectSettings.h"
 #include "SelectionState.h"
+#include "SyncLock.h"
 #include "TrackPanelAx.h"
 #include "ViewInfo.h"
 #include "WaveTrack.h"
@@ -112,7 +112,7 @@ void DoListSelection
 {
    auto &tracks = TrackList::Get( project );
    auto &selectionState = SelectionState::Get( project );
-   const auto &settings = ProjectSettings::Get( project );
+   const auto &settings = SyncLockState::Get( project );
    auto &viewInfo = ViewInfo::Get( project );
    auto &window = GetProjectFrame( project );
 
