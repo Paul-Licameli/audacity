@@ -22,10 +22,10 @@ struct SyncLockChangeEvent : wxEvent{
 };
 
 // Sent to the project when certain settings change
-wxDECLARE_EXPORTED_EVENT(AUDACITY_DLL_API,
+wxDECLARE_EXPORTED_EVENT(TRACK_SELECTION_API,
    EVT_SYNC_LOCK_CHANGE, SyncLockChangeEvent);
 
-class AUDACITY_DLL_API SyncLockState final
+class TRACK_SELECTION_API SyncLockState final
    : public AttachedProjectObject
 {
 public:
@@ -43,7 +43,7 @@ private:
    bool mIsSyncLocked{ false };
 };
 
-class AUDACITY_DLL_API SyncLock {
+class TRACK_SELECTION_API SyncLock {
 public:
    //! Checks if sync-lock is on and any track in its sync-lock group is selected.
    static bool IsSyncLockSelected( const Track *pTrack );

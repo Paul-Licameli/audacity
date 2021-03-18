@@ -133,8 +133,6 @@ list( APPEND SOURCES
       RingBuffer.h
       SelectUtilities.cpp
       SelectUtilities.h
-      SelectionState.cpp
-      SelectionState.h
       ShuttleAutomation.cpp
       ShuttleAutomation.h
       Snap.cpp
@@ -148,8 +146,6 @@ list( APPEND SOURCES
       SqliteSampleBlock.cpp
       SseMathFuncs.cpp
       SseMathFuncs.h
-      SyncLock.cpp
-      SyncLock.h
       TrackPanelAx.cpp
       TrackPanelAx.h
       TrackPanelListener.h
