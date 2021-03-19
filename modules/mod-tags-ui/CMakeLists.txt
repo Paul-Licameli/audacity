@@ -3,5 +3,5 @@ list( APPEND SOURCES
    TagsEditor.h
 )
 audacity_module( mod-tags-ui "${SOURCES}"
-   "mod-tags-interface"
+   "Audacity;mod-tags-interface"
    "" "" )
