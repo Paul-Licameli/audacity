@@ -70,9 +70,6 @@ list( APPEND SOURCES
       AudacityFileConfig.h
       AudacityHeaders.cpp
       AudacityHeaders.h
-      AudioIO.cpp
-      AudioIO.h
-      AudioIOListener.h
       AutoRecoveryDialog.cpp
       AutoRecoveryDialog.h
       Benchmark.cpp
@@ -101,12 +98,8 @@ list( APPEND SOURCES
       LogWindow.h
       PitchName.cpp
       PitchName.h
-      PlaybackSchedule.cpp
-      PlaybackSchedule.h
       Profiler.cpp
       Profiler.h
-      ProjectAudioIO.cpp
-      ProjectAudioIO.h
       ProjectAudioManager.cpp
       ProjectAudioManager.h
       ProjectCommandManager.cpp
@@ -129,8 +122,6 @@ list( APPEND SOURCES
       RecordUtilities.h
       ReloadPreferences.cpp
       ReloadPreferences.h
-      RingBuffer.cpp
-      RingBuffer.h
       SelectUtilities.cpp
       SelectUtilities.h
       ShuttleAutomation.cpp
@@ -167,8 +158,6 @@ list( APPEND SOURCES
 
       # Built-in Effects
 
-      effects/RealtimeEffectManager.cpp
-      effects/RealtimeEffectManager.h
       effects/ScoreAlignDialog.cpp
       effects/ScoreAlignDialog.h
 

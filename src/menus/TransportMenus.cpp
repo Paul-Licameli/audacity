@@ -1,12 +1,12 @@
 
 
-#include "../AudioIO.h"
+#include "AudioIO.h"
 #include "../CommonCommandFlags.h"
 #include "DeviceManager.h"
 #include "Menus.h"
 #include "Prefs.h"
 #include "Project.h"
-#include "../ProjectAudioIO.h"
+#include "ProjectAudioIO.h"
 #include "../ProjectAudioManager.h"
 #include "../ProjectFileIO.h"
 #include "ProjectHistory.h"

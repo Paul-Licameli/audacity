@@ -37,6 +37,7 @@ set( LIBRARIES
    lib-transactions
    lib-project-history
    lib-track-selection
+   lib-audio-io
 )
 
 if ( ${_OPT}has_networking )

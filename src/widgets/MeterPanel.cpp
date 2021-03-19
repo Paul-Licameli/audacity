@@ -55,7 +55,7 @@
 
 #include <math.h>
 
-#include "../AudioIO.h"
+#include "AudioIO.h"
 #include "AColor.h"
 #include "ImageManipulation.h"
 #include "Decibels.h"

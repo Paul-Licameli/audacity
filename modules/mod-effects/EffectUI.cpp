@@ -19,7 +19,7 @@
 #include "ProjectHistory.h"
 #include "ProjectWindowBase.h"
 #include "TrackPanelAx.h"
-#include "effects/RealtimeEffectManager.h"
+#include "RealtimeEffectManager.h"
 #include "MenuHandle.h"
 
 #if defined(EXPERIMENTAL_EFFECTS_RACK)

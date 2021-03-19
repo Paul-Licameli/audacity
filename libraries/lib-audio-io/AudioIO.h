@@ -13,8 +13,6 @@
 #ifndef __AUDACITY_AUDIO_IO__
 #define __AUDACITY_AUDIO_IO__
 
-
-
 #include "AudioIOBase.h" // to inherit
 #include "PlaybackSchedule.h" // member variable
 
@@ -71,11 +69,11 @@ struct AudioIOEvent : wxEvent {
 };
 
 //! Events emitted by the singleton AudioIO object
-wxDECLARE_EXPORTED_EVENT(AUDACITY_DLL_API,
+wxDECLARE_EXPORTED_EVENT(AUDIO_IO_API,
                          EVT_AUDIOIO_PLAYBACK, AudioIOEvent);
-wxDECLARE_EXPORTED_EVENT(AUDACITY_DLL_API,
+wxDECLARE_EXPORTED_EVENT(AUDIO_IO_API,
                          EVT_AUDIOIO_CAPTURE, AudioIOEvent);
-wxDECLARE_EXPORTED_EVENT(AUDACITY_DLL_API,
+wxDECLARE_EXPORTED_EVENT(AUDIO_IO_API,
                          EVT_AUDIOIO_MONITOR, AudioIOEvent);
 
 struct TransportTracks {
@@ -217,7 +215,7 @@ void MessageBuffer<Data>::Write( Data &&data )
    mSlots[idx].mBusy.store( false, std::memory_order_release );
 }
 
-class AUDACITY_DLL_API AudioIoCallback /* not final */
+class AUDIO_IO_API AudioIoCallback /* not final */
    : public AudioIOBase
    , public wxEvtHandler
 {
@@ -464,7 +462,7 @@ struct PlaybackSlice {
    {}
 };
 
-class AUDACITY_DLL_API AudioIO final
+class AUDIO_IO_API AudioIO final
    : public AudioIoCallback
 {
 

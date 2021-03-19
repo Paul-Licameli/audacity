@@ -9,7 +9,7 @@
 
 **********************************************************************/
 #include "AudacityMessageBox.h"
-#include "../AudioIO.h"
+#include "AudioIO.h"
 #include "BasicUI.h"
 #include "CommandContext.h"
 #include "CommandManager.h"

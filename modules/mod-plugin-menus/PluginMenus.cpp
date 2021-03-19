@@ -18,7 +18,7 @@
 #include "ProjectCommandManager.h"
 #include "EffectManager.h"
 #include "EffectUI.h"
-#include "effects/RealtimeEffectManager.h"
+#include "RealtimeEffectManager.h"
 #include "EffectsPrefs.h"
 #include "PrefsDialog.h"
 

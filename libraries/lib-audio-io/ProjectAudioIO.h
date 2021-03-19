@@ -19,7 +19,7 @@ class Meter;
 
 ///\ brief Holds per-project state needed for interaction with AudioIO,
 /// including the audio stream token and pointers to meters
-class AUDACITY_DLL_API ProjectAudioIO final
+class AUDIO_IO_API ProjectAudioIO final
    : public AttachedProjectObject
 {
 public:
@@ -27,8 +27,8 @@ public:
    static const ProjectAudioIO &Get( const AudacityProject &project );
 
    explicit ProjectAudioIO( AudacityProject &project );
-   ProjectAudioIO( const ProjectAudioIO & ) PROHIBITED;
-   ProjectAudioIO &operator=( const ProjectAudioIO & ) PROHIBITED;
+   ProjectAudioIO( const ProjectAudioIO & ) = delete;
+   ProjectAudioIO &operator=( const ProjectAudioIO & ) = delete;
    ~ProjectAudioIO();
 
    int GetAudioIOToken() const;
