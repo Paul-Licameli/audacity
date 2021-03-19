@@ -659,7 +659,6 @@ private:
 #include "AudacityMessageBox.h"
 #include "HelpSystem.h"
 
-#include <wx/app.h>
 #include <wx/bmpbuttn.h>
 #include <wx/checkbox.h>
 #include <wx/dcclient.h>
@@ -1805,11 +1804,12 @@ void EffectUIHost::InitializeRealtime()
    {
       RealtimeEffectManager::Get().RealtimeAddEffect(mEffect);
       
-      wxTheApp->Bind(EVT_AUDIOIO_PLAYBACK,
+      auto pAudioIO = AudioIO::Get();
+      pAudioIO->Bind(EVT_AUDIOIO_PLAYBACK,
                      &EffectUIHost::OnPlayback,
                      this);
       
-      wxTheApp->Bind(EVT_AUDIOIO_CAPTURE,
+      pAudioIO->Bind(EVT_AUDIOIO_CAPTURE,
                      &EffectUIHost::OnCapture,
                      this);
       

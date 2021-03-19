@@ -46,7 +46,6 @@ is time to refresh some aspect of the screen.
 
 #include "TrackPanel.h"
 
-#include <wx/app.h>
 #include <wx/setup.h> // for wxUSE_* macros
 
 #include "KeyboardCapture.h"
@@ -316,10 +315,11 @@ TrackPanel::TrackPanel(wxWindow * parent, wxWindowID id,
 
    theProject->Bind(EVT_UNDO_RESET, &TrackPanel::OnUndoReset, this);
 
-   wxTheApp->Bind(EVT_AUDIOIO_PLAYBACK,
+   auto pAudioIO = AudioIO::Get();
+   pAudioIO->Bind(EVT_AUDIOIO_PLAYBACK,
                      &TrackPanel::OnAudioIO,
                      this);
-   wxTheApp->Bind(EVT_AUDIOIO_CAPTURE,
+   pAudioIO->Bind(EVT_AUDIOIO_CAPTURE,
                      &TrackPanel::OnAudioIO,
                      this);
    UpdatePrefs();

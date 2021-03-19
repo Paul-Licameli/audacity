@@ -13,7 +13,6 @@
 
 #include <math.h>
 
-#include <wx/app.h>
 #include <wx/dcclient.h>
 #include <wx/defs.h>
 #include <wx/dcmemory.h>
@@ -127,8 +126,9 @@ LyricsPanel::LyricsPanel(wxWindow* parent, wxWindowID id,
    project->Bind(EVT_UNDO_OR_REDO, &LyricsPanel::UpdateLyrics, this);
    project->Bind(EVT_UNDO_RESET, &LyricsPanel::UpdateLyrics, this);
 
-   wxTheApp->Bind(EVT_AUDIOIO_PLAYBACK, &LyricsPanel::OnStartStop, this);
-   wxTheApp->Bind(EVT_AUDIOIO_CAPTURE, &LyricsPanel::OnStartStop, this);
+   auto pAudioIO = AudioIO::Get();
+   pAudioIO->Bind(EVT_AUDIOIO_PLAYBACK, &LyricsPanel::OnStartStop, this);
+   pAudioIO->Bind(EVT_AUDIOIO_CAPTURE, &LyricsPanel::OnStartStop, this);
 }
 
 LyricsPanel::~LyricsPanel()

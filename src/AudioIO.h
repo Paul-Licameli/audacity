@@ -63,6 +63,7 @@ bool ValidateDeviceNames();
 #define MAX_MIDI_BUFFER_SIZE 5000
 #define DEFAULT_SYNTH_LATENCY 5
 
+//! Events emitted by the singleton AudioIO object
 wxDECLARE_EXPORTED_EVENT(AUDACITY_DLL_API,
                          EVT_AUDIOIO_PLAYBACK, wxCommandEvent);
 wxDECLARE_EXPORTED_EVENT(AUDACITY_DLL_API,
@@ -211,6 +212,7 @@ void MessageBuffer<Data>::Write( Data &&data )
 
 class AUDACITY_DLL_API AudioIoCallback /* not final */
    : public AudioIOBase
+   , public wxEvtHandler
 {
 public:
    AudioIoCallback();

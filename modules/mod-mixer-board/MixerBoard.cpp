@@ -944,7 +944,8 @@ MixerBoard::MixerBoard(AudacityProject* pProject,
       &MixerBoard::OnTrackChanged,
       this);
 
-   wxTheApp->Connect(EVT_AUDIOIO_PLAYBACK,
+   auto pAudioIO = AudioIO::Get();
+   pAudioIO->Connect(EVT_AUDIOIO_PLAYBACK,
       wxCommandEventHandler(MixerBoard::OnStartStop),
       NULL,
       this);

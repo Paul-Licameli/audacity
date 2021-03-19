@@ -19,7 +19,6 @@ undo memory so as to free up space.
 
 #include "HistoryWindow.h"
 
-#include <wx/app.h>
 #include <wx/defs.h>
 #include <wx/button.h>
 #include <wx/frame.h>
@@ -147,11 +146,12 @@ HistoryDialog::HistoryDialog(AudacityProject *parent, UndoManager *manager):
    ShuttleGui S(this, eIsCreating);
    Populate(S);
 
-   wxTheApp->Bind(EVT_AUDIOIO_PLAYBACK,
+   auto pAudioIO = AudioIO::Get();
+   pAudioIO->Bind(EVT_AUDIOIO_PLAYBACK,
                      &HistoryDialog::OnAudioIO,
                      this);
 
-   wxTheApp->Bind(EVT_AUDIOIO_CAPTURE,
+   pAudioIO->Bind(EVT_AUDIOIO_CAPTURE,
                      &HistoryDialog::OnAudioIO,
                      this);
 

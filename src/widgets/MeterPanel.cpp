@@ -343,11 +343,12 @@ MeterPanel::MeterPanel(AudacityProject *project,
    mPeakPeakPen = wxPen(theTheme.Colour( clrMeterPeak),        1, wxPENSTYLE_SOLID);
    mDisabledPen = wxPen(theTheme.Colour( clrMeterDisabledPen), 1, wxPENSTYLE_SOLID);
 
+   auto pAudioIO = AudioIO::Get();
    if (mIsInput) {
-      wxTheApp->Bind(EVT_AUDIOIO_MONITOR,
+      pAudioIO->Bind(EVT_AUDIOIO_MONITOR,
                         &MeterPanel::OnAudioIOStatus,
                         this);
-      wxTheApp->Bind(EVT_AUDIOIO_CAPTURE,
+      pAudioIO->Bind(EVT_AUDIOIO_CAPTURE,
                         &MeterPanel::OnAudioIOStatus,
                         this);
 
@@ -360,7 +361,7 @@ MeterPanel::MeterPanel(AudacityProject *project,
    }
    else {
       // Register for AudioIO events
-      wxTheApp->Bind(EVT_AUDIOIO_PLAYBACK,
+      pAudioIO->Bind(EVT_AUDIOIO_PLAYBACK,
                         &MeterPanel::OnAudioIOStatus,
                         this);
 

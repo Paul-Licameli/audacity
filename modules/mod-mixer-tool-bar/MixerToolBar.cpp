@@ -22,7 +22,6 @@
 #include <wx/wxprec.h>
 
 #ifndef WX_PRECOMP
-#include <wx/app.h>
 #include <wx/choice.h>
 #include <wx/settings.h>
 #include <wx/statbmp.h>
@@ -137,7 +136,8 @@ void MixerToolBar::Populate()
    Add(2, -1);
 
    // Listen for capture events
-   wxTheApp->Bind(EVT_AUDIOIO_CAPTURE,
+   auto pAudioIO = AudioIO::Get();
+   pAudioIO->Bind(EVT_AUDIOIO_CAPTURE,
                   &MixerToolBar::OnAudioCapture,
                   this);
 }

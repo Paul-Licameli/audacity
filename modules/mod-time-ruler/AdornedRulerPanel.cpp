@@ -939,10 +939,11 @@ AdornedRulerPanel::AdornedRulerPanel(AudacityProject* project,
    wxToolTip::Enable(true);
 #endif
 
-   wxTheApp->Bind(EVT_AUDIOIO_CAPTURE,
+   auto pAudioIO = AudioIO::Get();
+   pAudioIO->Bind(EVT_AUDIOIO_CAPTURE,
                      &AdornedRulerPanel::OnAudioStartStop,
                      this);
-   wxTheApp->Bind(EVT_AUDIOIO_PLAYBACK,
+   pAudioIO->Bind(EVT_AUDIOIO_PLAYBACK,
                      &AdornedRulerPanel::OnAudioStartStop,
                      this);
 

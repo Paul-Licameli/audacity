@@ -97,7 +97,6 @@ time warp info and AudioIOListener and whether the playback is looped.
 #include "portmixer.h"
 #endif
 
-#include <wx/app.h>
 #include <wx/frame.h>
 #include <wx/wxcrtvararg.h>
 #include <wx/log.h>
@@ -988,7 +987,7 @@ void AudioIO::StartMonitoring( const AudioIOStartStreamOptions &options )
    wxCommandEvent e(EVT_AUDIOIO_MONITOR);
    e.SetEventObject(mOwningProject);
    e.SetInt(true);
-   wxTheApp->ProcessEvent(e);
+   ProcessEvent(e);
 
    // FIXME: TRAP_ERR PaErrorCode 'noted' but not reported in StartMonitoring.
    // Now start the PortAudio stream!
@@ -1311,7 +1310,7 @@ int AudioIO::StartStream(const TransportTracks &tracks,
       wxCommandEvent e(EVT_AUDIOIO_PLAYBACK);
       e.SetEventObject(mOwningProject);
       e.SetInt(true);
-      wxTheApp->ProcessEvent(e);
+      ProcessEvent(e);
    }
 
    if (mNumCaptureChannels > 0)
@@ -1319,7 +1318,7 @@ int AudioIO::StartStream(const TransportTracks &tracks,
       wxCommandEvent e(EVT_AUDIOIO_CAPTURE);
       e.SetEventObject(mOwningProject);
       e.SetInt(true);
-      wxTheApp->ProcessEvent(e);
+      ProcessEvent(e);
    }
 
    commit = true;
@@ -1831,7 +1830,7 @@ void AudioIO::StopStream()
       wxCommandEvent e(EVT_AUDIOIO_PLAYBACK);
       e.SetEventObject(mOwningProject);
       e.SetInt(false);
-      wxTheApp->ProcessEvent(e);
+      ProcessEvent(e);
    }
    
    if (mNumCaptureChannels > 0)
@@ -1839,7 +1838,7 @@ void AudioIO::StopStream()
       wxCommandEvent e(wasMonitoring ? EVT_AUDIOIO_MONITOR : EVT_AUDIOIO_CAPTURE);
       e.SetEventObject(mOwningProject);
       e.SetInt(false);
-      wxTheApp->ProcessEvent(e);
+      ProcessEvent(e);
    }
 
    mNumCaptureChannels = 0;
