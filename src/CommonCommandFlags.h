@@ -43,7 +43,6 @@ extern AUDACITY_DLL_API const ReservedCommandFlag
    &CaptureNotBusyFlag();
 
 extern AUDACITY_DLL_API const ReservedCommandFlag
-   &UnsavedChangesFlag(),
    &UndoAvailableFlag(),
    &RedoAvailableFlag(),
    &ZoomInAvailableFlag(),
