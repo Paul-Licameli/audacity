@@ -8,7 +8,6 @@ Paul Licameli split from Menus.cpp
 
 **********************************************************************/
 
-
 #include "CommonCommandFlags.h"
 
 
@@ -22,7 +21,7 @@ Paul Licameli split from Menus.cpp
 #include "ProjectHistory.h"
 #include "ProjectWindows.h"
 #include "SyncLock.h"
-#include "UndoManager.h"
+//#include "UndoManager.h"
 #include "ViewInfo.h"
 #include "WaveTrack.h"
 #include "CommandManagerWindowClasses.h"

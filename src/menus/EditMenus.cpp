@@ -1,4 +1,4 @@
-#include "../CommonCommandFlags.h"
+#include "CommonCommandFlags.h"
 #include "Menus.h"
 #include "Project.h"
 #include "../ProjectCommandManager.h"

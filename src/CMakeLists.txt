@@ -76,8 +76,6 @@ list( APPEND SOURCES
       Benchmark.h
       Clipboard.cpp
       Clipboard.h
-      CommonCommandFlags.cpp
-      CommonCommandFlags.h
       CrashReport.cpp
       CrashReport.h
       DBConnection.cpp

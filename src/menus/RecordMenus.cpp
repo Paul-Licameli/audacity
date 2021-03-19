@@ -13,7 +13,7 @@
 #include "BasicUI.h"
 #include "CommandContext.h"
 #include "CommandManager.h"
-#include "../CommonCommandFlags.h"
+#include "CommonCommandFlags.h"
 #include "../widgets/ProgressDialog.h"
 #include "../ProjectAudioManager.h"
 #include "ProjectHistory.h"

@@ -11,23 +11,21 @@ Paul Licameli split from Menus.cpp
 #ifndef __AUDACITY_COMMON_COMMAND_FLAGS__
 #define __AUDACITY_COMMON_COMMAND_FLAGS__
 
-
-
 #include "CommandFlag.h"
 
-AUDACITY_DLL_API
+COMMON_COMMAND_FLAGS_API
 bool EditableTracksSelectedPred( const AudacityProject &project );
 
-AUDACITY_DLL_API
+COMMON_COMMAND_FLAGS_API
 bool AudioIOBusyPred( const AudacityProject &project );
 
-AUDACITY_DLL_API
+COMMON_COMMAND_FLAGS_API
 bool TimeSelectedPred( const AudacityProject &project );
 
-AUDACITY_DLL_API
+COMMON_COMMAND_FLAGS_API
 const CommandFlagOptions &cutCopyOptions();
 
-extern AUDACITY_DLL_API const ReservedCommandFlag
+extern COMMON_COMMAND_FLAGS_API const ReservedCommandFlag
    &AudioIONotBusyFlag(),
    &StereoRequiredFlag(),  //lda
    &NoiseReductionTimeSelectedFlag(),
@@ -38,11 +36,11 @@ extern AUDACITY_DLL_API const ReservedCommandFlag
    &AnyTracksSelectedFlag(),
    &TrackPanelHasFocus();  //lll
 
-extern AUDACITY_DLL_API const ReservedCommandFlag
+extern COMMON_COMMAND_FLAGS_API const ReservedCommandFlag
    &AudioIOBusyFlag(), // lll
    &CaptureNotBusyFlag();
 
-extern AUDACITY_DLL_API const ReservedCommandFlag
+extern COMMON_COMMAND_FLAGS_API const ReservedCommandFlag
    &UndoAvailableFlag(),
    &RedoAvailableFlag(),
    &ZoomInAvailableFlag(),
