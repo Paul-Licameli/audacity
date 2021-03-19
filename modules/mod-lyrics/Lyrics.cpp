@@ -513,10 +513,10 @@ void LyricsPanel::UpdateLyrics(wxEvent &e)
    Update(selectedRegion.t0());
 }
 
-void LyricsPanel::OnStartStop(wxCommandEvent &e)
+void LyricsPanel::OnStartStop(AudioIOEvent &e)
 {
    e.Skip();
-   if ( !e.GetInt() && mDelayedUpdate ) {
+   if ( !e.mBoolValue && mDelayedUpdate ) {
       mDelayedUpdate = false;
       UpdateLyrics( e );
    }

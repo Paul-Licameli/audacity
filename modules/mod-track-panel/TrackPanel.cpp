@@ -780,7 +780,7 @@ void TrackPanel::Refresh(bool eraseBackground /* = TRUE */,
    CallAfter([this]{ CellularPanel::HandleCursorForPresentMouseState(); } );
 }
 
-void TrackPanel::OnAudioIO(wxCommandEvent & evt)
+void TrackPanel::OnAudioIO(AudioIOEvent & evt)
 {
    evt.Skip();
    // Some hit tests want to change their cursor to and from the ban symbol

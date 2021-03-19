@@ -112,6 +112,7 @@ private:
 
 class AudacityCommand;
 class AudacityProject;
+struct AudioIOEvent;
 class Effect;
 
 class wxCheckBox;
@@ -156,8 +157,8 @@ private:
    void OnPlay(wxCommandEvent & evt);
    void OnRewind(wxCommandEvent & evt);
    void OnFFwd(wxCommandEvent & evt);
-   void OnPlayback(wxCommandEvent & evt);
-   void OnCapture(wxCommandEvent & evt);
+   void OnPlayback(AudioIOEvent & evt);
+   void OnCapture(AudioIOEvent & evt);
    void OnUserPreset(wxCommandEvent & evt);
    void OnFactoryPreset(wxCommandEvent & evt);
    void OnDeletePreset(wxCommandEvent & evt);

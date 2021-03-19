@@ -1183,12 +1183,12 @@ void AdornedRulerPanel::DoIdle()
    mDirtySelectedRegion = false;
 }
 
-void AdornedRulerPanel::OnAudioStartStop(wxCommandEvent & evt)
+void AdornedRulerPanel::OnAudioStartStop(AudioIOEvent & evt)
 {
    evt.Skip();
 
    if ( evt.GetEventType() == EVT_AUDIOIO_CAPTURE ) {
-      if (evt.GetInt() != 0)
+      if (evt.mBoolValue)
       {
          mIsRecording = true;
          this->CellularPanel::CancelDragging( false );
@@ -1202,7 +1202,7 @@ void AdornedRulerPanel::OnAudioStartStop(wxCommandEvent & evt)
       }
    }
 
-   if ( evt.GetInt() == 0 )
+   if ( !evt.mBoolValue )
       // So that the play region is updated
       DoSelectionChange( mViewInfo->selectedRegion );
 }

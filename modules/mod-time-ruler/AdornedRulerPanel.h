@@ -17,6 +17,7 @@
 #include "ViewInfo.h" // for PlayRegion
 
 class AudacityProject;
+struct AudioIOEvent;
 struct SelectedRegionEvent;
 class SnapManager;
 class TrackList;
@@ -81,7 +82,7 @@ private:
    void DrawSelection();
    void DoIdle();
    void OnIdle( wxIdleEvent &evt );
-   void OnAudioStartStop(wxCommandEvent & evt);
+   void OnAudioStartStop(AudioIOEvent & evt);
    void OnPaint(wxPaintEvent &evt);
    void OnSize(wxSizeEvent &evt);
    void OnThemeChange(wxCommandEvent& evt);

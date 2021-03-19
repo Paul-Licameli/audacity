@@ -142,14 +142,14 @@ void MixerToolBar::Populate()
                   this);
 }
 
-void MixerToolBar::OnAudioCapture(wxCommandEvent & event)
+void MixerToolBar::OnAudioCapture(AudioIOEvent & event)
 {
    event.Skip();
 
    AudacityProject *p = &mProject;
    if ((AudacityProject *) event.GetEventObject() != p)
    {
-      mEnabled = !event.GetInt();
+      mEnabled = !event.mBoolValue;
       mInputSlider->Enable(mEnabled);
       mOutputSlider->Enable(mEnabled);
    }

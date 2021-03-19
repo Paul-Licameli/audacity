@@ -136,9 +136,19 @@ AudioIO *AudioIO::Get()
    return static_cast< AudioIO* >( AudioIOBase::Get() );
 }
 
-wxDEFINE_EVENT(EVT_AUDIOIO_PLAYBACK, wxCommandEvent);
-wxDEFINE_EVENT(EVT_AUDIOIO_CAPTURE, wxCommandEvent);
-wxDEFINE_EVENT(EVT_AUDIOIO_MONITOR, wxCommandEvent);
+AudioIOEvent::AudioIOEvent(wxEventType commandType, bool boolValue)
+   : wxEvent{ -1, commandType }
+   , mBoolValue{boolValue}
+{}
+AudioIOEvent::~AudioIOEvent() = default;
+wxEvent *AudioIOEvent::Clone() const
+{
+   return safenew AudioIOEvent{*this};
+}
+
+wxDEFINE_EVENT(EVT_AUDIOIO_PLAYBACK, AudioIOEvent);
+wxDEFINE_EVENT(EVT_AUDIOIO_CAPTURE, AudioIOEvent);
+wxDEFINE_EVENT(EVT_AUDIOIO_MONITOR, AudioIOEvent);
 
 // static
 int AudioIoCallback::mNextStreamToken = 0;
@@ -984,9 +994,8 @@ void AudioIO::StartMonitoring( const AudioIOStartStreamOptions &options )
       return;
    }
 
-   wxCommandEvent e(EVT_AUDIOIO_MONITOR);
+   AudioIOEvent e(EVT_AUDIOIO_MONITOR, true);
    e.SetEventObject(mOwningProject);
-   e.SetInt(true);
    ProcessEvent(e);
 
    // FIXME: TRAP_ERR PaErrorCode 'noted' but not reported in StartMonitoring.
@@ -1307,17 +1316,15 @@ int AudioIO::StartStream(const TransportTracks &tracks,
 
    if (mNumPlaybackChannels > 0)
    {
-      wxCommandEvent e(EVT_AUDIOIO_PLAYBACK);
+      AudioIOEvent e(EVT_AUDIOIO_PLAYBACK, true);
       e.SetEventObject(mOwningProject);
-      e.SetInt(true);
       ProcessEvent(e);
    }
 
    if (mNumCaptureChannels > 0)
    {
-      wxCommandEvent e(EVT_AUDIOIO_CAPTURE);
+      AudioIOEvent e(EVT_AUDIOIO_CAPTURE, true);
       e.SetEventObject(mOwningProject);
-      e.SetInt(true);
       ProcessEvent(e);
    }
 
@@ -1827,17 +1834,16 @@ void AudioIO::StopStream()
 
    if (mNumPlaybackChannels > 0)
    {
-      wxCommandEvent e(EVT_AUDIOIO_PLAYBACK);
+      AudioIOEvent e(EVT_AUDIOIO_PLAYBACK, false);
       e.SetEventObject(mOwningProject);
-      e.SetInt(false);
       ProcessEvent(e);
    }
    
    if (mNumCaptureChannels > 0)
    {
-      wxCommandEvent e(wasMonitoring ? EVT_AUDIOIO_MONITOR : EVT_AUDIOIO_CAPTURE);
+      AudioIOEvent e(
+         wasMonitoring ? EVT_AUDIOIO_MONITOR : EVT_AUDIOIO_CAPTURE, false);
       e.SetEventObject(mOwningProject);
-      e.SetInt(false);
       ProcessEvent(e);
    }
 

@@ -20,6 +20,7 @@
 #include "wxPanelWrapper.h" // to inherit
 
 class AudacityProject;
+struct AudioIOEvent;
 class LabelTrack;
 
 
@@ -102,7 +103,7 @@ class LyricsPanel final
    void Update(double t);
    void UpdateLyrics(wxEvent &e);
    void OnShow(wxShowEvent& e);
-   void OnStartStop(wxCommandEvent &e);
+   void OnStartStop(AudioIOEvent &e);
 
    //
    // Event handlers

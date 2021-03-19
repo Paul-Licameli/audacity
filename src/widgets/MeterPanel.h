@@ -27,6 +27,7 @@
 #include "Ruler.h" // member variable
 
 class AudacityProject;
+struct AudioIOEvent;
 
 // Increase this when we add support for multichannel meters
 // (most of the code is already there)
@@ -205,7 +206,7 @@ class AUDACITY_DLL_API MeterPanel final
    void OnSetFocus(wxFocusEvent &evt);
    void OnKillFocus(wxFocusEvent &evt);
 
-   void OnAudioIOStatus(wxCommandEvent &evt);
+   void OnAudioIOStatus(AudioIOEvent &evt);
 
    void OnMeterUpdate(wxTimerEvent &evt);
 

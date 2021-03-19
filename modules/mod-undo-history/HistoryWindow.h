@@ -20,6 +20,7 @@ class wxListEvent;
 class wxSpinCtrl;
 class wxTextCtrl;
 class AudacityProject;
+struct AudioIOEvent;
 class ShuttleGui;
 class UndoManager;
 
@@ -37,7 +38,7 @@ class HistoryDialog final : public wxDialogWrapper,
  private:
    void Populate(ShuttleGui & S);
 
-   void OnAudioIO(wxCommandEvent & evt);
+   void OnAudioIO(AudioIOEvent & evt);
    void DoUpdate();
    void UpdateLevels();
 

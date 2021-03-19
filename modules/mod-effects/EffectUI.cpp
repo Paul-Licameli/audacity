@@ -1477,11 +1477,11 @@ void EffectUIHost::OnFFwd(wxCommandEvent & WXUNUSED(evt))
    }
 }
 
-void EffectUIHost::OnPlayback(wxCommandEvent & evt)
+void EffectUIHost::OnPlayback(AudioIOEvent & evt)
 {
    evt.Skip();
    
-   if (evt.GetInt() != 0)
+   if (evt.mBoolValue)
    {
       if (evt.GetEventObject() != mProject)
       {
@@ -1507,11 +1507,11 @@ void EffectUIHost::OnPlayback(wxCommandEvent & evt)
    UpdateControls();
 }
 
-void EffectUIHost::OnCapture(wxCommandEvent & evt)
+void EffectUIHost::OnCapture(AudioIOEvent & evt)
 {
    evt.Skip();
    
-   if (evt.GetInt() != 0)
+   if (evt.mBoolValue)
    {
       if (evt.GetEventObject() != mProject)
       {

@@ -31,6 +31,7 @@
 
 class wxRect;
 
+struct AudioIOEvent;
 class Track;
 class TrackList;
 struct TrackListEvent;
@@ -75,7 +76,7 @@ class TRACK_PANEL_API TrackPanel final
 
    void UpdatePrefs() override;
 
-   void OnAudioIO(wxCommandEvent & evt);
+   void OnAudioIO(AudioIOEvent & evt);
 
    void OnPaint(wxPaintEvent & event);
    void OnMouseEvent(wxMouseEvent & event);

@@ -19,6 +19,7 @@ class wxTimerEvent;
 
 class ASlider;
 class AudacityProject;
+struct AudioIOEvent;
 
 class MixerToolBar final : public ToolBar {
 
@@ -49,7 +50,7 @@ class MixerToolBar final : public ToolBar {
 
    void OnSlider(wxCommandEvent & event);
 
-   void OnAudioCapture(wxCommandEvent & event);
+   void OnAudioCapture(AudioIOEvent & event);
 
    void ShowOutputGainDialog();
    void ShowInputGainDialog();

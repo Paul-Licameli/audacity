@@ -240,11 +240,11 @@ void HistoryDialog::Populate(ShuttleGui & S)
    mList->SetTextColour(wxSystemSettings::GetColour(wxSYS_COLOUR_WINDOWTEXT));
 }
 
-void HistoryDialog::OnAudioIO(wxCommandEvent& evt)
+void HistoryDialog::OnAudioIO(AudioIOEvent& evt)
 {
    evt.Skip();
 
-   if (evt.GetInt() != 0)
+   if (evt.mBoolValue)
       mAudioIOBusy = true;
    else
       mAudioIOBusy = false;

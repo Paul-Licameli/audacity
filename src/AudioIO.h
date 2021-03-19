@@ -63,13 +63,20 @@ bool ValidateDeviceNames();
 #define MAX_MIDI_BUFFER_SIZE 5000
 #define DEFAULT_SYNTH_LATENCY 5
 
+struct AudioIOEvent : wxEvent {
+   explicit AudioIOEvent(wxEventType commandType, bool boolValue = false);
+   ~AudioIOEvent() override;
+   wxEvent *Clone() const override;
+   int mBoolValue{false};
+};
+
 //! Events emitted by the singleton AudioIO object
 wxDECLARE_EXPORTED_EVENT(AUDACITY_DLL_API,
-                         EVT_AUDIOIO_PLAYBACK, wxCommandEvent);
+                         EVT_AUDIOIO_PLAYBACK, AudioIOEvent);
 wxDECLARE_EXPORTED_EVENT(AUDACITY_DLL_API,
-                         EVT_AUDIOIO_CAPTURE, wxCommandEvent);
+                         EVT_AUDIOIO_CAPTURE, AudioIOEvent);
 wxDECLARE_EXPORTED_EVENT(AUDACITY_DLL_API,
-                         EVT_AUDIOIO_MONITOR, wxCommandEvent);
+                         EVT_AUDIOIO_MONITOR, AudioIOEvent);
 
 struct TransportTracks {
    WritableSampleTrackArray playbackTracks;

@@ -1905,12 +1905,12 @@ void MeterPanel::StopMonitoring(){
    } 
 }
 
-void MeterPanel::OnAudioIOStatus(wxCommandEvent &evt)
+void MeterPanel::OnAudioIOStatus(AudioIOEvent &evt)
 {
    evt.Skip();
    AudacityProject *p = (AudacityProject *) evt.GetEventObject();
 
-   mActive = (evt.GetInt() != 0) && (p == mProject);
+   mActive = (evt.mBoolValue) && (p == mProject);
 
    if( mActive ){
       mTimer.Start(1000 / mMeterRefreshRate);
