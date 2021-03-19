@@ -30,7 +30,6 @@ processing.  See also MacrosWindow and ApplyMacroDialog.
 #include "Project.h"
 #include "ProjectAudioManager.h"
 #include "ProjectHistory.h"
-#include "ProjectSettings.h"
 #include "ProjectWindow.h"
 #include "ProjectCommandManager.h"
 #include "EffectManager.h"
@@ -42,6 +41,7 @@ processing.  See also MacrosWindow and ApplyMacroDialog.
 #include "SelectFile.h"
 #include "SelectUtilities.h"
 #include "Shuttle.h"
+#include "TagsEditor.h"
 #include "Track.h"
 #include "UndoManager.h"
 
@@ -641,16 +641,15 @@ bool MacroCommands::ApplyCommandInBatchMode(
    CommandContext const * pContext)
 {
    AudacityProject *project = &mProject;
-   auto &settings = ProjectSettings::Get( *project );
    // Recalc flags and enable items that may have become enabled.
    MenuManager::Get(*project)
       .UpdateMenus(false, ProjectCommandManager::Get(*project));
    // enter batch mode...
-   bool prevShowMode = settings.GetShowId3Dialog();
+   bool prevShowMode = ShowId3DialogSetting.Read();
    project->mBatchMode++;
    auto cleanup = finally( [&] {
       // exit batch mode...
-      settings.SetShowId3Dialog(prevShowMode);
+      ShowId3DialogSetting.Write(prevShowMode);
       project->mBatchMode--;
    } );
 

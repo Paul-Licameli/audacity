@@ -278,8 +278,7 @@ TagsEditorDialog::~TagsEditorDialog()
 
 void TagsEditorDialog::PopulateOrExchange(ShuttleGui & S)
 {
-   bool bShow;
-   gPrefs->Read(wxT("/AudioFiles/ShowId3Dialog"), &bShow, true );
+   bool bShow = ShowId3DialogSetting.Read();
 
    S.StartVerticalLay();
    {
@@ -370,7 +369,7 @@ void TagsEditorDialog::PopulateOrExchange(ShuttleGui & S)
 void TagsEditorDialog::OnDontShow( wxCommandEvent & Evt )
 {
    bool bShow = !Evt.IsChecked();
-   gPrefs->Write(wxT("/AudioFiles/ShowId3Dialog"), bShow );
+   ShowId3DialogSetting.Write(bShow);
    gPrefs->Flush();
 }
 
@@ -940,7 +939,6 @@ bool TagsEditorDialog::IsWindowRectValid(const wxRect *windowRect) const
 
 #include "Project.h"
 #include "ProjectHistory.h"
-#include "ProjectSettings.h"
 #include <wx/frame.h>
 
 bool TagsEditorDialog::DoEditMetadata(AudacityProject &project,
@@ -969,9 +967,6 @@ bool TagsEditorDialog::DoEditMetadata(AudacityProject &project,
    }
 
    bool bShowInFuture;
-   gPrefs->Read(wxT("/AudioFiles/ShowId3Dialog"), &bShowInFuture, true);
-   auto &settings = ProjectSettings::Get( project );
-   settings.SetShowId3Dialog( bShowInFuture );
    return true;
 }
 
@@ -1008,6 +1003,8 @@ AttachedItem sAttachment{
 };
 #undef FN
 }
+
+BoolSetting ShowId3DialogSetting{ L"/AudioFiles/ShowId3Dialog", true };
 
 #include "ModuleConstants.h"
 DEFINE_MODULE_ENTRIES

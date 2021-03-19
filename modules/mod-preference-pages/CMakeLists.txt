@@ -24,6 +24,7 @@ list( APPEND SOURCES
    WarningsPrefs.cpp
    WarningsPrefs.h
 )
-audacity_module( mod-preference-pages "${SOURCES}" "Audacity"
+audacity_module( mod-preference-pages "${SOURCES}"
+   "mod-tags-ui-interface"
    "" ""
 )

@@ -56,7 +56,6 @@
 #include "Project.h"
 #include "ProjectFileIO.h"
 #include "ProjectHistory.h"
-#include "ProjectSettings.h"
 #include "ProjectWindow.h"
 #include "ProjectWindows.h"
 #include "ShuttleGui.h"
@@ -418,7 +417,7 @@ bool Exporter::Process(bool selectedOnly, double t0, double t1)
    if (mPlugins[mFormat]->GetCanMetaData(mSubFormat)) {
       if (!TagsEditorDialog::DoEditMetadata( *mProject,
          XO("Edit Metadata Tags"), XO("Exported Tags"),
-         ProjectSettings::Get( *mProject ).GetShowId3Dialog())) {
+         ShowId3DialogSetting.Read())) {
          return false;
       }
    }
@@ -1076,7 +1075,7 @@ bool Exporter::SetAutoExportOptions() {
       if (!TagsEditorDialog::DoEditMetadata( *mProject,
          XO("Edit Metadata Tags"),
          XO("Exported Tags"),
-         ProjectSettings::Get(*mProject).GetShowId3Dialog())) {
+         ShowId3DialogSetting.Read())) {
          return false;
       }
    }

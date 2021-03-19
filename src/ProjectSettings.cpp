@@ -84,7 +84,6 @@ ProjectSettings::ProjectSettings(AudacityProject &project)
 
 void ProjectSettings::UpdatePrefs()
 {
-   gPrefs->Read(wxT("/AudioFiles/ShowId3Dialog"), &mShowId3Dialog, true);
    gPrefs->Read(wxT("/GUI/EmptyCanBeDirty"), &mEmptyCanBeDirty, true);
    gPrefs->Read(wxT("/GUI/ShowSplashScreen"), &mShowSplashScreen, true);
    mSoloPref = TracksBehaviorsSolo.Read();

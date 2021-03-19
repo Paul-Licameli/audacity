@@ -11,6 +11,7 @@
 #ifndef __AUDACITY_TAGS_EDITOR__
 #define __AUDACITY_TAGS_EDITOR__
 
+#include "Prefs.h"
 #include "Tags.h" // member variable
 #include "wxPanelWrapper.h" // to inherit
 
@@ -87,5 +88,7 @@ class TagsEditorDialog final : public wxDialogWrapper
 
    DECLARE_EVENT_TABLE()
 };
+
+extern TAGS_UI_API BoolSetting ShowId3DialogSetting;
 
 #endif

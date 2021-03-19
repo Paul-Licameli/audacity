@@ -36,7 +36,6 @@
 
 #include "FileNames.h"
 #include "Project.h"
-#include "ProjectSettings.h"
 #include "ProjectWindow.h"
 #include "ProjectWindows.h"
 #include "Prefs.h"
@@ -839,8 +838,7 @@ ProgressResult ExportMultipleDialog::ExportMultipleByLabel(bool byName,
          setting.filetags.SetTag(TAG_TITLE, title);
          setting.filetags.SetTag(TAG_TRACK, l+1);
          // let the user have a crack at editing it, exit if cancelled
-         auto &settings = ProjectSettings::Get( *mProject );
-         bool bShowTagsDialog = settings.GetShowId3Dialog();
+         bool bShowTagsDialog = ShowId3DialogSetting.Read();
 
          bShowTagsDialog = bShowTagsDialog && mPlugins[mPluginIndex]->GetCanMetaData(mSubFormatIndex);
 
@@ -848,8 +846,6 @@ ProgressResult ExportMultipleDialog::ExportMultipleByLabel(bool byName,
             bool bCancelled = !TagsEditorDialog::ShowEditDialog(setting.filetags,
                ProjectWindow::Find( mProject ),
                XO("Edit Metadata Tags"));
-            gPrefs->Read(wxT("/AudioFiles/ShowId3Dialog"), &bShowTagsDialog, true);
-            settings.SetShowId3Dialog( bShowTagsDialog );
             if( bCancelled )
                return ProgressResult::Cancelled;
          }
@@ -983,8 +979,7 @@ ProgressResult ExportMultipleDialog::ExportMultipleByTrack(bool byName,
          setting.filetags.SetTag(TAG_TITLE, title);
          setting.filetags.SetTag(TAG_TRACK, l+1);
          // let the user have a crack at editing it, exit if cancelled
-         auto &settings = ProjectSettings::Get( *mProject );
-         bool bShowTagsDialog = settings.GetShowId3Dialog();
+         bool bShowTagsDialog = ShowId3DialogSetting.Read();
 
          bShowTagsDialog = bShowTagsDialog && mPlugins[mPluginIndex]->GetCanMetaData(mSubFormatIndex);
 
@@ -992,8 +987,6 @@ ProgressResult ExportMultipleDialog::ExportMultipleByTrack(bool byName,
             bool bCancelled = !TagsEditorDialog::ShowEditDialog(setting.filetags,
                ProjectWindow::Find( mProject ),
                XO("Edit Metadata Tags"));
-            gPrefs->Read(wxT("/AudioFiles/ShowId3Dialog"), &bShowTagsDialog, true);
-            settings.SetShowId3Dialog( bShowTagsDialog );
             if( bCancelled )
                return ProgressResult::Cancelled;
          }

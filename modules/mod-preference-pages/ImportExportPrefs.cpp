@@ -21,6 +21,7 @@
 
 #include "Prefs.h"
 #include "ShuttleGui.h"
+#include "TagsEditor.h"
 
 static const auto PathStart = wxT("ImportExportPreferences");
 
@@ -118,8 +119,7 @@ void ImportExportPrefs::PopulateOrExchange(ShuttleGui & S)
       S.EndPanel();
 
       S.TieCheckBox(XXO("S&how Metadata Tags editor before export"),
-                    {wxT("/AudioFiles/ShowId3Dialog"),
-                     true});
+                    ShowId3DialogSetting);
       /* i18n-hint 'blank space' is space on the tracks with no audio in it*/
       S.TieCheckBox(XXO("&Ignore blank space at the beginning"),
                     {wxT("/AudioFiles/SkipSilenceAtBeginning"),
