@@ -25,6 +25,6 @@ list( APPEND SOURCES
    WarningsPrefs.h
 )
 audacity_module( mod-preference-pages "${SOURCES}"
-   "mod-tags-ui-interface"
+   "Audacity;mod-tags-ui-interface"
    "" ""
 )
