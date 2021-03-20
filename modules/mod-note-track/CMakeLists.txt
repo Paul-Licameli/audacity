@@ -14,10 +14,12 @@ list( APPEND SOURCES
    NoteTrack.h
 )
 set( LIBS
-   Audacity
+   lib-audio-io-interface
    portaudio-v19
    portsmf
-   portmidi   
+   portmidi
+   PRIVATE
+   wxBase
 )
 audacity_module( mod-note-track "${SOURCES}" "${LIBS}"
    "" "" )

@@ -359,9 +359,9 @@ Time (in seconds, = total_sample_count / sample_rate)
 #include "AudioIOExt.h"
 #include "BasicUI.h"
 #include "Prefs.h"
-#include "../lib-src/portmidi/pm_common/portmidi.h"
-#include "../lib-src/portmidi/porttime/porttime.h"
-#include "../lib-src/header-substitutes/allegro.h"
+#include "../../lib-src/portmidi/pm_common/portmidi.h"
+#include "../../lib-src/portmidi/porttime/porttime.h"
+#include "../../lib-src/header-substitutes/allegro.h"
 #include <wx/log.h>
 #include <wx/sstream.h>
 #include <wx/txtstrm.h>
@@ -370,7 +370,7 @@ Time (in seconds, = total_sample_count / sample_rate)
    #define ROUND(x) (int) ((x)+0.5)
    //#include <string.h>
 //   #include "../lib-src/portmidi/pm_common/portmidi.h"
-   #include "../lib-src/portaudio-v19/src/common/pa_util.h"
+   #include "../../lib-src/portaudio-v19/src/common/pa_util.h"
    #include "NoteTrack.h"
 
 enum {
