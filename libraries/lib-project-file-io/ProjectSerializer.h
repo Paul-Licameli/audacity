@@ -17,7 +17,6 @@
 
 #include <unordered_set>
 #include <unordered_map>
-#include "Identifier.h"
 
 // From SampleBlock.h
 using SampleBlockID = long long;
@@ -30,7 +29,7 @@ using NameMap = std::unordered_map<wxString, unsigned short>;
 using IdMap = std::unordered_map<unsigned short, wxString>;
 
 // This class's overrides do NOT throw AudacityException.
-class AUDACITY_DLL_API ProjectSerializer final : public XMLWriter
+class PROJECT_FILE_IO_API ProjectSerializer final : public XMLWriter
 {
 public:
 

@@ -44,17 +44,17 @@ using BlockIDs = std::unordered_set<SampleBlockID>;
 
 // An event processed by the project in the main thread after a checkpoint
 // failure was detected in a worker thread
-wxDECLARE_EXPORTED_EVENT( AUDACITY_DLL_API,
+wxDECLARE_EXPORTED_EVENT( PROJECT_FILE_IO_API,
                           EVT_CHECKPOINT_FAILURE, wxCommandEvent );
 
 // An event processed by the project in the main thread after failure to
 // reconnect to the database, after temporary close and attempted file movement
-wxDECLARE_EXPORTED_EVENT( AUDACITY_DLL_API,
+wxDECLARE_EXPORTED_EVENT( PROJECT_FILE_IO_API,
                           EVT_RECONNECTION_FAILURE, wxCommandEvent );
 
 ///\brief Object associated with a project that manages reading and writing
 /// of Audacity project file formats, and autosave
-class AUDACITY_DLL_API ProjectFileIO final
+class PROJECT_FILE_IO_API ProjectFileIO final
    : public AttachedProjectObject
    , public XMLTagHandler
    , private PrefsListener
@@ -70,8 +70,8 @@ public:
 
    explicit ProjectFileIO( AudacityProject &project );
 
-   ProjectFileIO( const ProjectFileIO & ) PROHIBITED;
-   ProjectFileIO &operator=( const ProjectFileIO & ) PROHIBITED;
+   ProjectFileIO( const ProjectFileIO & ) = delete;
+   ProjectFileIO &operator=( const ProjectFileIO & ) = delete;
    ~ProjectFileIO();
 
    // It seems odd to put this method in this class, but the results do depend
@@ -316,11 +316,11 @@ private:
 
 // This event is emitted by the project when there is a change
 // in its title
-wxDECLARE_EXPORTED_EVENT(AUDACITY_DLL_API,
+wxDECLARE_EXPORTED_EVENT(PROJECT_FILE_IO_API,
                          EVT_PROJECT_TITLE_CHANGE, wxCommandEvent);
 
 //! Makes a temporary project that doesn't display on the screen
-class AUDACITY_DLL_API InvisibleTemporaryProject
+class PROJECT_FILE_IO_API InvisibleTemporaryProject
 {
 public:
    InvisibleTemporaryProject();

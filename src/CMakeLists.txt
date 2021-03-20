@@ -59,8 +59,6 @@ list( APPEND SOURCES
    PRIVATE
       ActiveProject.cpp
       ActiveProject.h
-      ActiveProjects.cpp
-      ActiveProjects.h
       AboutDialog.cpp
       AboutDialog.h
       AudacityApp.cpp
@@ -78,8 +76,6 @@ list( APPEND SOURCES
       Clipboard.h
       CrashReport.cpp
       CrashReport.h
-      DBConnection.cpp
-      DBConnection.h
       DefaultCommandOutputTargets.cpp
       DefaultCommandOutputTargets.h
       Diags.cpp
@@ -102,16 +98,12 @@ list( APPEND SOURCES
       ProjectAudioManager.h
       ProjectCommandManager.cpp
       ProjectCommandManager.h
-      ProjectFileIO.cpp
-      ProjectFileIO.h
       ProjectFileManager.cpp
       ProjectFileManager.h
       ProjectManager.cpp
       ProjectManager.h
       ProjectSelectionManager.cpp
       ProjectSelectionManager.h
-      ProjectSerializer.cpp
-      ProjectSerializer.h
       ProjectSettings.cpp
       ProjectSettings.h
       ProjectWindow.cpp
@@ -132,7 +124,6 @@ list( APPEND SOURCES
       SpectrumAnalyst.h
       SplashDialog.cpp
       SplashDialog.h
-      SqliteSampleBlock.cpp
       SseMathFuncs.cpp
       SseMathFuncs.h
       TrackPanelAx.cpp
@@ -304,7 +295,6 @@ list( APPEND LIBRARIES
       wxwidgets::wxwidgets
       expat::expat
       portaudio-v19
-      sqlite
       $<$<BOOL:${${_OPT}has_crashreports}>:crashreports>
       $<$<BOOL:${USE_LIBID3TAG}>:libid3tag::libid3tag>
       $<$<BOOL:${USE_LIBMAD}>:libmad::libmad>

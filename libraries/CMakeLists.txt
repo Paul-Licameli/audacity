@@ -39,6 +39,7 @@ set( LIBRARIES
    lib-track-selection
    lib-audio-io
    lib-common-command-flags
+   lib-project-file-io
 )
 
 if ( ${_OPT}has_networking )

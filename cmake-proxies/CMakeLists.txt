@@ -160,7 +160,6 @@ set_conan_vars_to_parent()
 #
 #       directory          option      symbol      req   chk   version
 addlib( portaudio-v19      portaudio   PORTAUDIO   YES   YES   "" )
-addlib( sqlite             sqlite      SQLITE      YES   YES   "sqlite3 >= 3.32.0" )
 
 # Optional libraries
 #

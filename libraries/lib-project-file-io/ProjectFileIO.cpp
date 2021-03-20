@@ -28,7 +28,6 @@ Paul Licameli split from AudacityProject.cpp
 #include "SampleBlock.h"
 #include "TempDirectory.h"
 #include "WaveTrack.h"
-#include "AudacityMessageBox.h"
 #include "BasicUI.h"
 #include "wxFileNameWrapper.h"
 #include "XMLFileReader.h"
