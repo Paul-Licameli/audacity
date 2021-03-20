@@ -12,7 +12,6 @@ Paul Licameli split from AudacityProject.cpp
 
 #include <atomic>
 #include <sqlite3.h>
-#include <wx/app.h>
 #include <wx/crt.h>
 #include <wx/frame.h>
 #include <wx/sstream.h>
@@ -2045,7 +2044,7 @@ bool ProjectFileIO::SaveProject(
          }
 
          if (!reopened) {
-            wxTheApp->CallAfter([this]{
+            BasicUI::CallAfter([this]{
                ShowError( {},
                   XO("Warning"),
                   XO(
@@ -2697,12 +2696,12 @@ InvisibleTemporaryProject::~InvisibleTemporaryProject()
 
    // Consume some delayed track list related events before destroying the
    // temporary project
-   try { wxTheApp->Yield(); } catch(...) {}
+   try { BasicUI::Yield(); } catch(...) {}
 
    // Destroy the project and yield again to let delayed window deletions happen
    projectFileIO.CloseProject();
    mpProject.reset();
-   try { wxTheApp->Yield(); } catch(...) {}
+   try { BasicUI::Yield(); } catch(...) {}
 }
 
 // Install an implementation of TransactionScope
