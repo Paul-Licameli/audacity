@@ -365,6 +365,7 @@ Time (in seconds, = total_sample_count / sample_rate)
 #include <wx/log.h>
 #include <wx/sstream.h>
 #include <wx/txtstrm.h>
+#include <thread>
 
    #define ROUND(x) (int) ((x)+0.5)
    //#include <string.h>
@@ -662,7 +663,8 @@ void MIDIPlay::StopOtherStream()
       // delay a bit so that messages can be delivered before closing
       // the stream. Add 2ms of "padding" to avoid any rounding errors.
       while (mMaxMidiTimestamp + 2 > MidiTime()) {
-          wxMilliSleep(1); // deliver the all-off messages
+         using namespace std::chrono;
+         std::this_thread::sleep_for(1ms); // deliver the all-off messages
       }
       Pm_Close(mMidiStream);
       mMidiStream = NULL;
