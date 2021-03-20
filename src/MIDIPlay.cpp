@@ -753,8 +753,7 @@ bool MIDIPlay::StartPortMidiStream(double rate)
 
    /* get midi playback device */
    PmDeviceID playbackDevice = Pm_GetDefaultOutputDeviceID();
-   wxString playbackDeviceName = gPrefs->Read(wxT("/MidiIO/PlaybackDevice"),
-                                              wxT(""));
+   auto playbackDeviceName = MidiPlaybackDevice.Read();
    mSynthLatency = gPrefs->Read(wxT("/MidiIO/SynthLatency"),
                                 DEFAULT_SYNTH_LATENCY);
    if (wxStrcmp(playbackDeviceName, wxT("")) != 0) {
@@ -1228,8 +1227,8 @@ wxString GetMIDIDeviceInfo()
    s << XO("Default recording device number: %d\n").Format( recDeviceNum );
    s << XO("Default playback device number: %d\n").Format( playDeviceNum );
 
-   wxString recDevice = gPrefs->Read(wxT("/MidiIO/RecordingDevice"), wxT(""));
-   wxString playDevice = gPrefs->Read(wxT("/MidiIO/PlaybackDevice"), wxT(""));
+   auto recDevice = MidiRecordingDevice.Read();
+   auto playDevice = MidiPlaybackDevice.Read();
 
    // This gets info on all available audio devices (input and output)
    if (cnt <= 0) {

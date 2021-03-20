@@ -968,4 +968,6 @@ void NoteTrack::ZoomAllNotes()
    SetNoteRange(minPitch, maxPitch);
 }
 
+StringSetting MidiPlaybackDevice{ L"/MidiIO/PlaybackDevice", L"" };
+StringSetting MidiRecordingDevice{ L"/MidiIO/RecordingDevice", L"" };
 #endif // USE_MIDI

@@ -16,6 +16,7 @@
 
 
 #include <utility>
+#include "Prefs.h"
 #include "Track.h"
 
 #if defined(USE_MIDI)
@@ -212,6 +213,9 @@ public:
 };
 
 ENUMERATE_TRACK_TYPE(NoteTrack);
+
+extern AUDACITY_DLL_API StringSetting MidiPlaybackDevice;
+extern AUDACITY_DLL_API StringSetting MidiRecordingDevice;
 
 #endif // USE_MIDI
 
