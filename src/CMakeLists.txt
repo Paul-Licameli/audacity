@@ -57,8 +57,6 @@ endif()
 #
 list( APPEND SOURCES
    PRIVATE
-      ActiveProject.cpp
-      ActiveProject.h
       AboutDialog.cpp
       AboutDialog.h
       AudacityApp.cpp

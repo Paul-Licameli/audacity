@@ -21,7 +21,7 @@ static AudacityProject *gActiveProject;
 
 wxDEFINE_EVENT(EVT_PROJECT_ACTIVATION, wxCommandEvent);
 
-AUDACITY_DLL_API AudacityProject *GetActiveProject()
+AudacityProject *GetActiveProject()
 {
    return gActiveProject;
 }

@@ -41,6 +41,7 @@ set( LIBRARIES
    lib-common-command-flags
    lib-project-file-io
    lib-clipboard
+   lib-active-project
 )
 
 if ( ${_OPT}has_networking )
