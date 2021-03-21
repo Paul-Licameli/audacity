@@ -12,6 +12,14 @@ if(USE_LADSPA)
       LadspaEffect.h
       ladspa.h
    )
-   audacity_module( mod-ladspa "${SOURCES}" "Audacity"
+   set( LIBS
+      lib-components-interface
+      lib-math-interface
+      lib-module-manager-interface
+      lib-shuttlegui-interface
+      lib-widgets-interface
+      wxwidgets::wxwidgets
+   )
+   audacity_module( mod-ladspa "${SOURCES}" "${LIBS}"
       "" "" )
 endif()
