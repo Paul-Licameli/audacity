@@ -11,6 +11,16 @@ list( APPEND SOURCES
    zix/ring.cpp
    zix/ring.h
 )
-audacity_module( mod-lv2 "${SOURCES}" "Audacity;lv2"
+set( LIBS
+   lv2
+   lib-components-interface
+   lib-math-interface
+   lib-module-manager-interface
+   lib-shuttlegui-interface
+   lib-utility-interface
+   lib-widgets
+   wxwidgets::wxwidgets
+)
+audacity_module( mod-lv2 "${SOURCES}" "${LIBS}"
    ""
    "$<$<PLATFORM_ID:Linux,FreeBSD,OpenBSD,NetBSD,CYGWIN>:PkgConfig::GTK>" )
