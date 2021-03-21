@@ -19,9 +19,15 @@
 class AudacityProject;
 class TrackList;
 
+struct ClipboardChangeEvent final : wxEvent {
+   ClipboardChangeEvent();
+   ~ClipboardChangeEvent() override;
+   wxEvent *Clone() const override;
+};
+
 // An event emitted by the clipboard whenever its contents change.
 wxDECLARE_EXPORTED_EVENT( AUDACITY_DLL_API,
-                          EVT_CLIPBOARD_CHANGE, wxCommandEvent );
+                          EVT_CLIPBOARD_CHANGE, ClipboardChangeEvent );
 
 class AUDACITY_DLL_API Clipboard final
    : public wxEvtHandler

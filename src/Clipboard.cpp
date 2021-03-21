@@ -9,7 +9,16 @@
 #include "Clipboard.h"
 #include "Track.h"
 
-wxDEFINE_EVENT( EVT_CLIPBOARD_CHANGE, wxCommandEvent);
+ClipboardChangeEvent::ClipboardChangeEvent()
+   : wxEvent{ -1, EVT_CLIPBOARD_CHANGE }
+{}
+ClipboardChangeEvent::~ClipboardChangeEvent() = default;
+wxEvent *ClipboardChangeEvent::Clone() const
+{
+   return safenew ClipboardChangeEvent{*this};
+}
+
+wxDEFINE_EVENT( EVT_CLIPBOARD_CHANGE, ClipboardChangeEvent);
 
 Clipboard::Clipboard()
 : mTracks { TrackList::Create( nullptr ) }
@@ -46,7 +55,7 @@ void Clipboard::Clear()
    mTracks->Clear();
 
    // Emit an event for listeners
-   AddPendingEvent( wxCommandEvent{ EVT_CLIPBOARD_CHANGE } );
+   AddPendingEvent( ClipboardChangeEvent{} );
 }
 
 void Clipboard::Assign( TrackList && newContents,
@@ -60,5 +69,5 @@ void Clipboard::Assign( TrackList && newContents,
    mProject = pProject;
 
    // Emit an event for listeners
-   AddPendingEvent( wxCommandEvent{ EVT_CLIPBOARD_CHANGE } );
+   AddPendingEvent( ClipboardChangeEvent{} );
 }
