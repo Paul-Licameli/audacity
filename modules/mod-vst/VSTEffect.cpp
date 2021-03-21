@@ -24,11 +24,12 @@
 // WARNING:  This is NOT 64-bit safe
 // *******************************************************************
 
+#include "audacity/Types.h"
+#include "BasicUI.h"
 #include "VSTEffect.h"
 #include "ModuleManager.h"
 #include "SampleCount.h"
-
-#include "widgets/ProgressDialog.h"
+#include "wxPanelWrapper.h"
 
 #if 0
 #if defined(BUILDING_AUDACITY)
@@ -508,7 +509,8 @@ unsigned VSTEffectsModule::DiscoverPluginsAtPath(
    wxString effectIDs = wxT("0;");
    wxStringTokenizer effectTzr(effectIDs, wxT(";"));
 
-   Optional<ProgressDialog> progress{};
+   using namespace BasicUI;
+   std::unique_ptr<ProgressDialog> progress;
    size_t idCnt = 0;
    size_t idNdx = 0;
 
@@ -568,7 +570,7 @@ unsigned VSTEffectsModule::DiscoverPluginsAtPath(
                idCnt = effectTzr.CountTokens();
                if (idCnt > 3)
                {
-                  progress.emplace( XO("Scanning Shell VST"),
+                  progress = MakeProgress( XO("Scanning Shell VST"),
                         XO("Registering %d of %d: %-64.64s")
                            .Format( 0, idCnt, proc.GetSymbol().Translation())
                                    /*
@@ -580,7 +582,7 @@ unsigned VSTEffectsModule::DiscoverPluginsAtPath(
                            wxPD_REMAINING_TIME
                                     */
                   );
-                  progress->Show();
+                  //progress->Show();
                }
             break;
 
@@ -644,7 +646,7 @@ unsigned VSTEffectsModule::DiscoverPluginsAtPath(
                if (progress)
                {
                   idNdx++;
-                  auto result = progress->Update((int)idNdx, (int)idCnt,
+                  auto result = progress->Poll((int)idNdx, (int)idCnt,
                      XO("Registering %d of %d: %-64.64s")
                         .Format( idNdx, idCnt, proc.GetSymbol().Translation() ));
                   cont = (result == ProgressResult::Success);
