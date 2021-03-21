@@ -72,8 +72,6 @@ list( APPEND SOURCES
       AutoRecoveryDialog.h
       Benchmark.cpp
       Benchmark.h
-      Clipboard.cpp
-      Clipboard.h
       CrashReport.cpp
       CrashReport.h
       DefaultCommandOutputTargets.cpp

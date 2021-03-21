@@ -40,6 +40,7 @@ set( LIBRARIES
    lib-audio-io
    lib-common-command-flags
    lib-project-file-io
+   lib-clipboard
 )
 
 if ( ${_OPT}has_networking )

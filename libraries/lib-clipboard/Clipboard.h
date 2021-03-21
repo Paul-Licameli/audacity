@@ -11,8 +11,6 @@
 #ifndef __AUDACITY_CLIPBOARD__
 #define __AUDACITY_CLIPBOARD__
 
-
-
 #include <memory>
 #include <wx/event.h> // to inherit wxEvtHandler
 
@@ -26,10 +24,10 @@ struct ClipboardChangeEvent final : wxEvent {
 };
 
 // An event emitted by the clipboard whenever its contents change.
-wxDECLARE_EXPORTED_EVENT( AUDACITY_DLL_API,
+wxDECLARE_EXPORTED_EVENT( CLIPBOARD_API,
                           EVT_CLIPBOARD_CHANGE, ClipboardChangeEvent );
 
-class AUDACITY_DLL_API Clipboard final
+class CLIPBOARD_API Clipboard final
    : public wxEvtHandler
 {
 public:
