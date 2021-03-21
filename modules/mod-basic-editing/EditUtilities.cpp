@@ -16,7 +16,6 @@
 #include "Project.h"
 #include "ProjectHistory.h"
 #include "ProjectRate.h"
-#include "ProjectWindow.h"
 #include "TimeWarper.h"
 #include "SelectUtilities.h"
 #include "SyncLock.h"
@@ -66,7 +65,6 @@ bool DoPasteNothingSelected(AudacityProject &project)
    auto &tracks = TrackList::Get( project );
    auto &selectedRegion = ViewInfo::Get( project ).selectedRegion;
    auto &viewInfo = ViewInfo::Get( project );
-   auto &window = ProjectWindow::Get( project );
 
    // First check whether anything's selected.
    if (tracks.Selected())
@@ -124,7 +122,6 @@ void OnCut(const CommandContext &context)
    auto &project = context.project;
    auto &tracks = TrackList::Get( project );
    auto &selectedRegion = ViewInfo::Get( project ).selectedRegion;
-   auto &window = ProjectWindow::Get( project );
 
    // Handle special cut (such as from label tracks) first.
    for (const auto &pMethods: GetCopyPasteMethods())
@@ -167,7 +164,6 @@ void OnDelete(const CommandContext &context)
    auto &project = context.project;
    auto &tracks = TrackList::Get( project );
    auto &selectedRegion = ViewInfo::Get( project ).selectedRegion;
-   auto &window = ProjectWindow::Get( project );
 
    for (auto n : tracks.Any()) {
       if (!n->SupportsBasicEditing())
@@ -228,7 +224,6 @@ void OnPaste(const CommandContext &context)
    auto &tracks = TrackList::Get( project );
    auto &selectedRegion = ViewInfo::Get( project ).selectedRegion;
    const auto &settings = SyncLockState::Get( project );
-   auto &window = ProjectWindow::Get( project );
 
    auto isSyncLocked = settings.IsSyncLocked();
 
@@ -445,7 +440,6 @@ void OnDuplicate(const CommandContext &context)
    auto &project = context.project;
    auto &tracks = TrackList::Get( project );
    auto &selectedRegion = ViewInfo::Get( project ).selectedRegion;
-   auto &window = ProjectWindow::Get( project );
 
    // This iteration is unusual because we add to the list inside the loop
    auto range = tracks.Selected();
@@ -475,7 +469,6 @@ void OnSplitCut(const CommandContext &context)
    auto &project = context.project;
    auto &tracks = TrackList::Get( project );
    auto &selectedRegion = ViewInfo::Get( project ).selectedRegion;
-   auto &window = ProjectWindow::Get( project );
 
    auto &clipboard = Clipboard::Get();
    clipboard.Clear();
@@ -518,7 +511,6 @@ void OnSplitDelete(const CommandContext &context)
    auto &project = context.project;
    auto &tracks = TrackList::Get( project );
    auto &selectedRegion = ViewInfo::Get( project ).selectedRegion;
-   auto &window = ProjectWindow::Get( project );
 
    tracks.Selected().Visit(
       [&](WaveTrack *wt) {
@@ -559,7 +551,6 @@ void OnTrim(const CommandContext &context)
    auto &project = context.project;
    auto &tracks = TrackList::Get( project );
    auto &selectedRegion = ViewInfo::Get( project ).selectedRegion;
-   auto &window = ProjectWindow::Get( project );
 
    if (selectedRegion.isPoint())
       return;
@@ -644,7 +635,6 @@ void OnSplitNew(const CommandContext &context)
    auto &project = context.project;
    auto &tracks = TrackList::Get( project );
    auto &selectedRegion = ViewInfo::Get( project ).selectedRegion;
-   auto &window = ProjectWindow::Get( project );
 
    Track::Holder dest;
 
@@ -695,7 +685,6 @@ void OnJoin(const CommandContext &context)
    auto &project = context.project;
    auto &tracks = TrackList::Get( project );
    auto &selectedRegion = ViewInfo::Get( project ).selectedRegion;
-   auto &window = ProjectWindow::Get( project );
 
    for (auto wt : tracks.Selected< WaveTrack >())
       wt->Join(selectedRegion.t0(),
@@ -712,7 +701,6 @@ void OnDisjoin(const CommandContext &context)
    auto &project = context.project;
    auto &tracks = TrackList::Get( project );
    auto &selectedRegion = ViewInfo::Get( project ).selectedRegion;
-   auto &window = ProjectWindow::Get( project );
 
    wxBusyCursor busy;
    for (auto wt : tracks.Selected< WaveTrack >())
