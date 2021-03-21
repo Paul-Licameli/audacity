@@ -24,7 +24,6 @@
 // WARNING:  This is NOT 64-bit safe
 // *******************************************************************
 
-#include "audacity/Types.h"
 #include "BasicUI.h"
 #include "VSTEffect.h"
 #include "ModuleManager.h"

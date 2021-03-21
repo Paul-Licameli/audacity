@@ -26,7 +26,16 @@ list( APPEND SOURCES
       VSTControlOSX.h
    >
 )
-audacity_module( "${TARGET}" "${SOURCES}" "Audacity"
+set( LIBS
+   lib-components-interface
+   lib-math-interface
+   lib-module-manager-interface
+   lib-wx-wrappers-interface
+   lib-widgets
+   lib-xml
+   wxwidgets::wxwidgets
+)
+audacity_module( "${TARGET}" "${SOURCES}" "${LIBS}"
    ""
    "$<$<PLATFORM_ID:Linux,FreeBSD,OpenBSD,NetBSD,CYGWIN>:PkgConfig::GTK>" )
  
