@@ -25,15 +25,15 @@ event loop.
 #include "AppCommandEvent.h"
 
 wxDEFINE_EVENT(wxEVT_APP_COMMAND_RECEIVED, AppCommandEvent);
-IMPLEMENT_DYNAMIC_CLASS(AppCommandEvent, wxCommandEvent)
+IMPLEMENT_DYNAMIC_CLASS(AppCommandEvent, wxEvent)
 
 AppCommandEvent::AppCommandEvent(wxEventType commandType, int id)
-: wxCommandEvent(commandType, id)
+: wxEvent{id, commandType}
 { }
 
 // Copy constructor
 AppCommandEvent::AppCommandEvent(const AppCommandEvent &event)
-   : wxCommandEvent(event)
+   : wxEvent{event}
    , mCommand(event.mCommand)
 {
 }

@@ -24,7 +24,7 @@ using OldStyleCommandPointer = std::shared_ptr<OldStyleCommand>;
 class AppCommandEvent;
 wxDECLARE_EVENT(wxEVT_APP_COMMAND_RECEIVED, AppCommandEvent);
 
-class AppCommandEvent final : public wxCommandEvent
+class AppCommandEvent final : public wxEvent
 {
 private:
    OldStyleCommandPointer mCommand;
