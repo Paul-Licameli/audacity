@@ -23,6 +23,7 @@
 #include "Registrar.h"
 
 class ShuttleGui;
+namespace BasicUI{ class ProgressDialog; }
 
 #define BUILTIN_GENERIC_COMMAND_PREFIX wxT("Built-in AudacityCommand: ")
 
@@ -117,7 +118,7 @@ class SCRIPTING_API AudacityCommand /* not final */ : public wxEvtHandler,
 
 protected:
 
-   ProgressDialog *mProgress; // Temporary pointer, NOT deleted in destructor.
+   BasicUI::ProgressDialog *mProgress; // Temporary pointer, NOT deleted in destructor.
    // UI
    wxDialog       *mUIDialog;
    wxWindow       *mUIParent;

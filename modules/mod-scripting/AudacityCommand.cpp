@@ -31,11 +31,11 @@ ShuttleGui.
 #include <wx/tglbtn.h>
 #include <wx/log.h>
 
+#include "BasicUI.h"
 #include "ConfigInterface.h"
 
 #include "ShuttleAutomation.h"
 #include "ShuttleGui.h"
-#include "widgets/ProgressDialog.h"
 #include "HelpSystem.h"
 #include "AudacityMessageBox.h"
 #include "widgets/VetoDialogHook.h"
@@ -182,13 +182,12 @@ bool AudacityCommand::DoAudacityCommand(wxWindow *parent,
    bool skipFlag = CheckWhetherSkipAudacityCommand();
    if (skipFlag == false)
    {
+      using namespace BasicUI;
       auto name = GetName();
-      ProgressDialog progress{
-         name,
+      auto uProgress = MakeProgress(name,
          XO("Applying %s...").Format( name ),
-         pdlgHideStopButton
-      };
-      auto vr = valueRestorer( mProgress, &progress );
+         ProgressShowCancel);
+      auto vr = valueRestorer( mProgress, uProgress.get() );
 
       returnVal = Apply(context);
    }
