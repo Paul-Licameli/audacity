@@ -34,9 +34,6 @@ using EffectMap = std::unordered_map<wxString, Effect *>;
 using AudacityCommandMap = std::unordered_map<wxString, AudacityCommand *>;
 using EffectOwnerMap = std::unordered_map< wxString, std::shared_ptr<Effect> >;
 
-#if defined(EXPERIMENTAL_EFFECTS_RACK)
-class EffectRack;
-#endif
 class AudacityCommand;
 
 
@@ -138,6 +135,9 @@ public:
    /** Return an effect by its ID. */
    Effect *GetEffect(const PluginID & ID);
 
+   /** Create a new instance of an effect by its ID. */
+   std::unique_ptr<Effect> NewEffect(const PluginID & ID);
+
 private:
    AudacityCommand *GetAudacityCommand(const PluginID & ID);
 
@@ -150,11 +150,6 @@ private:
    // Set true if we want to skip pushing state 
    // after processing at effect run time.
    bool mSkipStateFlag;
-
-#if defined(EXPERIMENTAL_EFFECTS_RACK)
-   friend class EffectRack;
-#endif
-
 };
 
 #endif

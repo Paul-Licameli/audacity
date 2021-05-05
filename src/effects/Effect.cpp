@@ -530,6 +530,40 @@ bool Effect::ShowInterface(wxWindow &parent,
    return res;
 }
 
+void Effect::CloseInterface()
+{
+   if (!IsInteractive())
+   {
+      return;
+   }
+
+   if (mUIDialog)
+   {
+      if ( mUIDialog->Close(true) )
+         mUIDialog = nullptr;
+   }
+
+   if (mClient)
+   {
+      return mClient->CloseInterface();
+   }
+}
+
+bool Effect::IsInterfaceShown()
+{
+   if (!IsInteractive())
+   {
+      return false;
+   }
+
+   if (mClient)
+   {
+      return mClient->IsInterfaceShown();
+   }
+
+   return mUIDialog != nullptr;
+}
+
 bool Effect::GetAutomationParameters(CommandParameters & parms)
 {
    if (mClient)

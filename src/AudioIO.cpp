@@ -1667,26 +1667,23 @@ int AudioIO::StartStream(const TransportTracks &tracks,
 
    if (mNumPlaybackChannels > 0)
    {
-      auto & em = RealtimeEffectManager::Get();
+      auto & em = RealtimeEffectManager::Get(*mOwningProject);
+
       // Setup for realtime playback at the rate of the realtime
       // stream, not the rate of the track.
-      em.RealtimeInitialize(mRate);
+      em.Initialize(mRate);
 
-      // The following adds a NEW effect processor for each logical track and the
-      // group determination should mimic what is done in audacityAudioCallback()
-      // when calling RealtimeProcess().
-      int group = 0;
+      // The following adds a new effect processor for each logical track.
       for (size_t i = 0, cnt = mPlaybackTracks.size(); i < cnt;)
       {
-         const WaveTrack *vt = mPlaybackTracks[i].get();
-
-         // TODO: more-than-two-channels
-         unsigned chanCnt = TrackList::Channels(vt).size();
-         i += chanCnt;
+         WaveTrack *vt = mPlaybackTracks[i].get();
 
          // Setup for realtime playback at the rate of the realtime
          // stream, not the rate of the track.
-         em.RealtimeAddProcessor(group++, std::min(2u, chanCnt), mRate);
+         auto chanCnt = TrackList::Channels(vt).size();
+         em.AddProcessor(vt, chanCnt, mRate);
+
+         i += chanCnt;
       }
    }
 
@@ -2054,7 +2051,7 @@ void AudioIO::StartStreamCleanup(bool bOnlyBuffers)
 {
    if (mNumPlaybackChannels > 0)
    {
-      RealtimeEffectManager::Get().RealtimeFinalize();
+      RealtimeEffectManager::Get(*mOwningProject).Finalize();
    }
 
    mPlaybackBuffers.reset();
@@ -2235,12 +2232,6 @@ void AudioIO::StopStream()
 
    wxMutexLocker locker(mSuspendAudioThread);
 
-   // No longer need effects processing
-   if (mNumPlaybackChannels > 0)
-   {
-      RealtimeEffectManager::Get().RealtimeFinalize();
-   }
-
    //
    // We got here in one of two ways:
    //
@@ -2296,6 +2287,13 @@ void AudioIO::StopStream()
       Pa_AbortStream( mPortStreamV19 );
       Pa_CloseStream( mPortStreamV19 );
       mPortStreamV19 = NULL;
+   }
+
+   // No longer need effects processing. This must be done after the stream is stopped
+   // to prevent the callback from being invoked after the effects are finalized.
+   if (mNumPlaybackChannels > 0)
+   {
+      RealtimeEffectManager::Get(*mOwningProject).Finalize();
    }
 
 #ifdef EXPERIMENTAL_MIDI_OUT
@@ -2517,13 +2515,10 @@ void AudioIO::SetPaused(bool state)
 {
    if (state != mPaused)
    {
-      if (state)
+      if (mOwningProject)
       {
-         RealtimeEffectManager::Get().RealtimeSuspend();
-      }
-      else
-      {
-         RealtimeEffectManager::Get().RealtimeResume();
+         auto & manager = RealtimeEffectManager::Get(*mOwningProject);
+         state ? manager.Suspend() : manager.Resume();
       }
    }
 
@@ -3824,32 +3819,45 @@ void AudioIoCallback::AddToOutputChannel( unsigned int chan,
 {
    const auto numPlaybackChannels = mNumPlaybackChannels;
 
-   float gain = vt->GetChannelGain(chan);
-   if (drop || !mAudioThreadFillBuffersLoopRunning || mPaused)
-      gain = 0.0;
+   auto left = 1.0f;
+   auto right = 1.0f;
+   auto pan = vt->GetPan();
+
+   if (pan < 0)
+      right = (pan + 1.0);
+   else if (pan > 0)
+      left = 1.0 - pan;
+
+   if ((chan % 2) == 0)
+      pan = left;
+   else
+      pan = right;
+
+//   if (drop || !mAudioThreadFillBuffersLoopRunning || mPaused)
+//      pan = 0.0;
 
    // Output volume emulation: possibly copy meter samples, then
    // apply volume, then copy to the output buffer
    if (outputMeterFloats != outputFloats)
       for ( unsigned i = 0; i < len; ++i)
          outputMeterFloats[numPlaybackChannels*i+chan] +=
-            gain*tempBuf[i];
+            pan*tempBuf[i];
 
    if (mEmulateMixerOutputVol)
-      gain *= mMixerOutputVol;
+      pan *= mMixerOutputVol;
 
    float oldGain = vt->GetOldChannelGain(chan);
-   if( gain != oldGain )
-      vt->SetOldChannelGain(chan, gain);
+   if( pan != oldGain )
+      vt->SetOldChannelGain(chan, pan);
    // if no microfades, jump in volume.
    if( !mbMicroFades )
-      oldGain =gain;
+      oldGain = pan;
    wxASSERT(len > 0);
 
    // Linear interpolate.
-   float deltaGain = (gain - oldGain) / len;
+   float deltaGain = (pan - oldGain) / len;
    for (unsigned i = 0; i < len; i++)
-      outputFloats[numPlaybackChannels*i+chan] += (oldGain + deltaGain * i) *tempBuf[i];
+      outputFloats[numPlaybackChannels*i+chan] += (oldGain + deltaGain * i) * tempBuf[i];
 };
 
 // Limit values to -1.0..+1.0
@@ -3902,14 +3910,15 @@ bool AudioIoCallback::FillOutputBuffers(
 
    // And these are larger structures....
    for (unsigned int c = 0; c < numPlaybackChannels; c++)
+   {
       tempBufs[c] = (float *) alloca(framesPerBuffer * sizeof(float));
+   }
    // ------ End of MEMORY ALLOCATION ---------------
 
-   auto & em = RealtimeEffectManager::Get();
-   em.RealtimeProcessStart();
+   auto & em = RealtimeEffectManager::Get(*mOwningProject);
+   em.ProcessStart();
 
    bool selected = false;
-   int group = 0;
    int chanCnt = 0;
 
    // Choose a common size to take from all ring buffers
@@ -4003,38 +4012,46 @@ bool AudioIoCallback::FillOutputBuffers(
       // Last channel of a track seen now
       len = mMaxFramesOutput;
 
-      if( !dropQuickly && selected )
-         len = em.RealtimeProcess(group, chanCnt, tempBufs, len);
-      group++;
+      // Do gain and realtime effects
+      if( !dropQuickly && len > 0)
+      {
+         em.Process(chans[0], chans[0]->GetGain(), tempBufs, len);
+
+         // Mix the results with the existing output (software playthrough) and
+         // apply panning.  If post panning effects are desired, the panning would
+         // need to be be split out from the mixing and applied in a separate step.
+         for (auto c = 0; c < chanCnt; ++c)
+         {
+            // Our channels aren't silent.  We need to pass their data on.
+            //
+            // Note that there are two kinds of channel count.
+            // c and chanCnt are counting channels in the Tracks.
+            // chan (and numPlayBackChannels) is counting output channels on the device.
+            // chan = 0 is left channel
+            // chan = 1 is right channel.
+            //
+            // Each channel in the tracks can output to more than one channel on the device.
+            // For example mono channels output to both left and right output channels.
+            if (len > 0) for (int c = 0; c < chanCnt; c++)
+            {
+               vt = chans[c];
+
+               if (vt->GetChannelIgnoringPan() == Track::LeftChannel ||
+                     vt->GetChannelIgnoringPan() == Track::MonoChannel )
+                  AddToOutputChannel( 0, outputMeterFloats, outputFloats,
+                     tempBufs[c], drop, len, vt);
+
+               if (vt->GetChannelIgnoringPan() == Track::RightChannel ||
+                     vt->GetChannelIgnoringPan() == Track::MonoChannel  )
+                  AddToOutputChannel( 1, outputMeterFloats, outputFloats,
+                     tempBufs[c], drop, len, vt);
+            }
+         }
+      }
 
       CallbackCheckCompletion(mCallbackReturn, len);
       if (dropQuickly) // no samples to process, they've been discarded
          continue;
-
-      // Our channels aren't silent.  We need to pass their data on.
-      //
-      // Note that there are two kinds of channel count.
-      // c and chanCnt are counting channels in the Tracks.
-      // chan (and numPlayBackChannels) is counting output channels on the device.
-      // chan = 0 is left channel
-      // chan = 1 is right channel.
-      //
-      // Each channel in the tracks can output to more than one channel on the device.
-      // For example mono channels output to both left and right output channels.
-      if (len > 0) for (int c = 0; c < chanCnt; c++)
-      {
-         vt = chans[c];
-
-         if (vt->GetChannelIgnoringPan() == Track::LeftChannel ||
-               vt->GetChannelIgnoringPan() == Track::MonoChannel )
-            AddToOutputChannel( 0, outputMeterFloats, outputFloats,
-               tempBufs[c], drop, len, vt);
-
-         if (vt->GetChannelIgnoringPan() == Track::RightChannel ||
-               vt->GetChannelIgnoringPan() == Track::MonoChannel  )
-            AddToOutputChannel( 1, outputMeterFloats, outputFloats,
-               tempBufs[c], drop, len, vt);
-      }
 
       chanCnt = 0;
    }
@@ -4047,7 +4064,7 @@ bool AudioIoCallback::FillOutputBuffers(
 
    // wxASSERT( maxLen == toGet );
 
-   em.RealtimeProcessEnd();
+   em.ProcessEnd();
    mLastPlaybackTimeMillis = ::wxGetUTCTimeMillis();
 
    ClampBuffer( outputFloats, framesPerBuffer*numPlaybackChannels );

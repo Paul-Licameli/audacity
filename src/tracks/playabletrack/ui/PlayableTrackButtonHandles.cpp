@@ -132,3 +132,118 @@ UIHandlePtr SoloButtonHandle::HitTest
    else
       return {};
 }
+
+////////////////////////////////////////////////////////////////////////////////
+
+EffectsButtonHandle::EffectsButtonHandle
+( const std::shared_ptr<Track> &pTrack, const wxRect &rect )
+   : ButtonHandle{ pTrack, rect }
+{}
+
+EffectsButtonHandle::~EffectsButtonHandle()
+{
+}
+
+UIHandle::Result EffectsButtonHandle::CommitChanges
+(const wxMouseEvent &event, AudacityProject *pProject, wxWindow *pParent)
+{
+   auto pTrack = mpTrack.lock();
+   if ( dynamic_cast< PlayableTrack* >( pTrack.get() ) )
+      TrackUtilities::DoTrackEffects(*pProject, pTrack.get(),
+         pParent->ClientToScreen(mRect.GetTopRight()));
+
+   return RefreshCode::RefreshNone;
+}
+
+TranslatableString EffectsButtonHandle::Tip(
+   const wxMouseState &, AudacityProject &project) const
+{
+   auto name = XO("Effects");
+   auto focused =
+      TrackFocus::Get( project ).Get() == GetTrack().get();
+   if (!focused)
+      return name;
+
+   auto &commandManager = CommandManager::Get( project );
+   ComponentInterfaceSymbol command{ wxT("TrackEffects"), name };
+   return commandManager.DescribeCommandsAndShortcuts( &command, 1u );
+}
+
+UIHandlePtr EffectsButtonHandle::HitTest
+(std::weak_ptr<EffectsButtonHandle> &holder,
+ const wxMouseState &state, const wxRect &rect,
+ const AudacityProject *pProject, const std::shared_ptr<Track> &pTrack)
+{
+   wxRect buttonRect;
+   if ( pTrack )
+      PlayableTrackControls::GetEffectsBypassRect(rect, buttonRect, false,
+         pTrack.get());
+
+   if ( TrackInfo::HideTopItem( rect, buttonRect ) )
+      return {};
+
+   if ( pTrack && buttonRect.Contains(state.m_x, state.m_y) ) {
+      auto result = std::make_shared<EffectsButtonHandle>( pTrack, buttonRect );
+      result = AssignUIHandlePtr(holder, result);
+      return result;
+   }
+   else
+      return {};
+}
+
+////////////////////////////////////////////////////////////////////////////////
+
+BypassButtonHandle::BypassButtonHandle
+( const std::shared_ptr<Track> &pTrack, const wxRect &rect )
+   : ButtonHandle{ pTrack, rect }
+{}
+
+BypassButtonHandle::~BypassButtonHandle()
+{
+}
+
+UIHandle::Result BypassButtonHandle::CommitChanges
+(const wxMouseEvent &event, AudacityProject *pProject, wxWindow *WXUNUSED(pParent))
+{
+   auto pTrack = mpTrack.lock();
+   if ( dynamic_cast< PlayableTrack* >( pTrack.get() ) )
+      TrackUtilities::DoTrackBypass(*pProject, pTrack.get());
+
+   return RefreshCode::RefreshNone;
+}
+
+TranslatableString BypassButtonHandle::Tip(
+   const wxMouseState &, AudacityProject &project) const
+{
+   auto name = XO("Bypass");
+   auto focused =
+      TrackFocus::Get( project ).Get() == GetTrack().get();
+   if (!focused)
+      return name;
+
+   auto &commandManager = CommandManager::Get( project );
+   ComponentInterfaceSymbol command{ wxT("TrackBypass"), name };
+   return commandManager.DescribeCommandsAndShortcuts( &command, 1u );
+}
+
+UIHandlePtr BypassButtonHandle::HitTest
+(std::weak_ptr<BypassButtonHandle> &holder,
+ const wxMouseState &state, const wxRect &rect,
+ const AudacityProject *pProject, const std::shared_ptr<Track> &pTrack)
+{
+   wxRect buttonRect;
+   if ( pTrack )
+      PlayableTrackControls::GetEffectsBypassRect(rect, buttonRect, true,
+         pTrack.get());
+
+   if ( TrackInfo::HideTopItem( rect, buttonRect ) )
+      return {};
+
+   if ( pTrack && buttonRect.Contains(state.m_x, state.m_y) ) {
+      auto result = std::make_shared<BypassButtonHandle>( pTrack, buttonRect );
+      result = AssignUIHandlePtr(holder, result);
+      return result;
+   }
+   else
+      return {};
+}

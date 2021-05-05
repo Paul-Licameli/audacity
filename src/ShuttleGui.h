@@ -358,7 +358,7 @@ public:
 
    wxScrolledWindow * StartScroller(int iStyle=0);
    void EndScroller();
-   wxPanel * StartPanel(int iStyle=0);
+   wxPanel * StartPanel(int iStyle=0, int iBorder=0);
    void EndPanel();
    void StartMultiColumn(int nCols, int PositionFlags=wxALIGN_LEFT);
    void EndMultiColumn();
@@ -492,6 +492,9 @@ public:
    void SetStretchyCol( int i );
    void SetStretchyRow( int i );
 
+   bool IsThemed() {return mThemed;};
+   void SetThemed( bool themed ) {mThemed = themed;};
+
 //--Some Additions since June 2007 that don't fit in elsewhere...
    wxWindow * GetParent()
    {
@@ -520,6 +523,8 @@ protected:
 
    long GetStyle( long Style );
 
+   void InitTheme(wxWindow *pWind = nullptr);
+
 private:
    void DoInsertListColumns(
       wxListCtrl *pListCtrl,
@@ -540,6 +545,7 @@ protected:
    int mSizerDepth;
    int miBorder;
    int miProp;
+   bool mThemed;
 
    // See UseUpId() for explanation of these three.
    int miId;
@@ -621,10 +627,6 @@ enum
    ePreviewDryID  = wxID_LOWEST - 4,
    eCloseID       = wxID_CANCEL
 };
-
-AUDACITY_DLL_API std::unique_ptr<wxSizer> CreateStdButtonSizer( wxWindow *parent,
-                               long buttons = eOkButton | eCancelButton,
-                               wxWindow *extra = NULL );
 
 // ShuttleGui extends ShuttleGuiBase with Audacity specific extensions.
 class AUDACITY_DLL_API ShuttleGui /* not final */ : public ShuttleGuiBase
@@ -739,6 +741,10 @@ public:
    // Apply, Yes, OK
    void AddStandardButtons(
       long buttons = eOkButton | eCancelButton, wxWindow *extra = NULL );
+
+   std::unique_ptr<wxSizer> CreateStdButtonSizer( wxWindow *parent,
+                               long buttons = eOkButton | eCancelButton,
+                               wxWindow *extra = NULL );
 
    wxSizerItem * AddSpace( int width, int height, int prop = 0 );
    wxSizerItem * AddSpace( int size ) { return AddSpace( size, size ); };

@@ -17,6 +17,8 @@ class CellularPanel;
 class LWSlider;
 class MuteButtonHandle;
 class SoloButtonHandle;
+class EffectsButtonHandle;
+class BypassButtonHandle;
 class GainSliderHandle;
 class PanSliderHandle;
 class WaveTrack;
@@ -64,6 +66,8 @@ private:
 
    std::weak_ptr<MuteButtonHandle> mMuteHandle;
    std::weak_ptr<SoloButtonHandle> mSoloHandle;
+   std::weak_ptr<EffectsButtonHandle> mEffectsHandle;
+   std::weak_ptr<BypassButtonHandle> mBypassHandle;
    std::weak_ptr<GainSliderHandle> mGainHandle;
    std::weak_ptr<PanSliderHandle> mPanHandle;
 };

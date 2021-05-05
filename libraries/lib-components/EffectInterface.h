@@ -226,6 +226,9 @@ public:
       wxWindow &parent, const EffectDialogFactory &factory,
       bool forceModal = false
    ) = 0;
+   virtual void CloseInterface() = 0;
+   virtual bool IsInterfaceShown() = 0;
+
    // Some effects will use define params to define what parameters they take.
    // If they do, they won't need to implement Get or SetAutomation parameters.
    // since the Effect class can do it.  Or at least that is how things happen

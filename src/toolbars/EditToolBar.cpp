@@ -190,11 +190,9 @@ void EditToolBar::Populate()
    mButtons[ETBSyncLockID]->PushDown();
 #endif
 
-#if defined(EXPERIMENTAL_EFFECTS_RACK)
    AddSeparator();
    AddButton(this, bmpEditEffects, bmpEditEffects, bmpEditEffects, ETBEffectsID,
-      XO("Show Effects Rack"), true);
-#endif
+      XO("Show Master Effects"), false);
 
    RegenerateTooltips();
 }
@@ -245,10 +243,7 @@ static const struct Entry {
 #endif 
    { ETBZoomSelID,  wxT("ZoomSel"),     XO("Fit selection to width")  },
    { ETBZoomFitID,  wxT("FitInWindow"), XO("Fit project to width")  },
-
-#if defined(EXPERIMENTAL_EFFECTS_RACK)
-   { ETBEffectsID,  wxT("ShowEffectsRack"), XO("Open Effects Rack")  },
-#endif
+   { ETBEffectsID,  wxT("ShowMasterEffects"), XO("Open Master Effects")  },
 };
 
 

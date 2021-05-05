@@ -104,6 +104,8 @@ public:
    bool Process() override;
    bool ShowInterface( wxWindow &parent,
       const EffectDialogFactory &factory, bool forceModal = false) override;
+   void CloseInterface() override;
+   bool IsInterfaceShown() override;
    void PopulateOrExchange(ShuttleGui & S) override;
    bool TransferDataToWindow() override;
    bool TransferDataFromWindow() override;

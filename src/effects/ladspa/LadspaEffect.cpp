@@ -1093,6 +1093,22 @@ bool LadspaEffect::ShowInterface(
    return res;
 }
 
+void LadspaEffect::CloseInterface()
+{
+   if (mDialog)
+   {
+      if (mDialog->Close(true))
+      {
+         mDialog = nullptr;
+      }
+   }
+}
+
+bool LadspaEffect::IsInterfaceShown()
+{
+   return mDialog != nullptr;
+}
+
 bool LadspaEffect::GetAutomationParameters(CommandParameters & parms)
 {
    for (unsigned long p = 0; p < mData->PortCount; p++)

@@ -4,620 +4,588 @@
  
  RealtimeEffectManager.cpp
  
- Paul Licameli split from EffectManager.cpp
- 
  **********************************************************************/
 
 
 #include "RealtimeEffectManager.h"
+#include "RealtimeEffectState.h"
+#include "RealtimeEffectUI.h"
 
 #include "EffectInterface.h"
 #include <memory>
+#include "../Project.h"
+#include "../ProjectHistory.h"
+#include "../ProjectSettings.h"
+#include "PluginManager.h"
+#include "ProjectFileIORegistry.h"
+#include "Track.h"
+#include "UndoManager.h"
 
 #include <atomic>
-#include <wx/time.h>
+#include <chrono>
 
-class RealtimeEffectState
+static ProjectFileIORegistry::Entry registerFactory
 {
-public:
-   explicit RealtimeEffectState( EffectClientInterface &effect );
-
-   EffectClientInterface &GetEffect() const { return mEffect; }
-
-   bool RealtimeSuspend();
-   bool RealtimeResume();
-   bool RealtimeAddProcessor(int group, unsigned chans, float rate);
-   size_t RealtimeProcess(int group,
-      unsigned chans, float **inbuf, float **outbuf, size_t numSamples);
-   bool IsRealtimeActive();
-
-private:
-   EffectClientInterface &mEffect;
-
-   std::vector<int> mGroupProcessor;
-   int mCurrentProcessor;
-
-   std::atomic<int> mRealtimeSuspendCount{ 1 };    // Effects are initially suspended
+   wxT( "effects" ),
+   [](AudacityProject &project)
+   {
+      auto & manager = RealtimeEffectManager::Get(project);
+      return manager.ReadXML(project);
+   }
 };
 
-RealtimeEffectManager & RealtimeEffectManager::Get()
+RealtimeEffectManager::RealtimeEffectManager(AudacityProject &project)
+:  mProject(project)
 {
-   static RealtimeEffectManager rem;
-   return rem;
-}
+   std::lock_guard<std::mutex> guard(mLock);
 
-RealtimeEffectManager::RealtimeEffectManager()
-{
-   mRealtimeLock.Enter();
-   mRealtimeActive = false;
-   mRealtimeSuspended = true;
-   mRealtimeLatency = 0;
-   mRealtimeLock.Leave();
+   mActive = false;
+   mSuspended = false;
+   mProcessing = false;
+   mLatency = std::chrono::microseconds(0);
 }
 
 RealtimeEffectManager::~RealtimeEffectManager()
 {
 }
 
-#if defined(EXPERIMENTAL_EFFECTS_RACK)
-void RealtimeEffectManager::RealtimeSetEffects(const EffectArray & effects)
+bool RealtimeEffectManager::IsActive() const
 {
-   // Block RealtimeProcess()
-   RealtimeSuspend();
-
-   decltype( mStates ) newStates;
-   auto begin = mStates.begin(), end = mStates.end();
-   for ( auto pEffect : effects ) {
-      auto found = std::find_if( begin, end,
-         [=]( const decltype( mStates )::value_type &state ){
-            return state && &state->GetEffect() == pEffect;
-         }
-      );
-      if ( found == end ) {
-         // Tell New effect to get ready
-         pEffect->RealtimeInitialize();
-         newStates.emplace_back(
-            std::make_unique< RealtimeEffectState >( *pEffect ) );
-      }
-      else {
-         // Preserve state for effect that remains in the chain
-         newStates.emplace_back( std::move( *found ) );
-      }
-   }
-
-   // Remaining states that were not moved need to clean up
-   for ( auto &state : mStates ) {
-      if ( state )
-         state->GetEffect().RealtimeFinalize();
-   }
-
-   // Get rid of the old chain
-   // And install the NEW one
-   mStates.swap( newStates );
-
-   // Allow RealtimeProcess() to, well, process 
-   RealtimeResume();
-}
-#endif
-
-bool RealtimeEffectManager::RealtimeIsActive()
-{
-   return mStates.size() != 0;
+   return mActive;
 }
 
-bool RealtimeEffectManager::RealtimeIsSuspended()
+bool RealtimeEffectManager::IsSuspended() const
 {
-   return mRealtimeSuspended;
+   return mSuspended;
 }
 
-void RealtimeEffectManager::RealtimeAddEffect(EffectClientInterface *effect)
+void RealtimeEffectManager::Suspend()
 {
-   // Block RealtimeProcess()
-   RealtimeSuspend();
-
-   // Add to list of active effects
-   mStates.emplace_back( std::make_unique< RealtimeEffectState >( *effect ) );
-   auto &state = mStates.back();
-
-   // Initialize effect if realtime is already active
-   if (mRealtimeActive)
-   {
-      // Initialize realtime processing
-      effect->RealtimeInitialize();
-
-      // Add the required processors
-      for (size_t i = 0, cnt = mRealtimeChans.size(); i < cnt; i++)
-      {
-         state->RealtimeAddProcessor(i, mRealtimeChans[i], mRealtimeRates[i]);
-      }
-   }
-   
-
-   // Allow RealtimeProcess() to, well, process 
-   RealtimeResume();
-}
-
-void RealtimeEffectManager::RealtimeRemoveEffect(EffectClientInterface *effect)
-{
-   // Block RealtimeProcess()
-   RealtimeSuspend();
-
-   if (mRealtimeActive)
-   {
-      // Cleanup realtime processing
-      effect->RealtimeFinalize();
-   }
-      
-   // Remove from list of active effects
-   auto end = mStates.end();
-   auto found = std::find_if( mStates.begin(), end,
-      [&](const decltype(mStates)::value_type &state){
-         return &state->GetEffect() == effect;
-      }
-   );
-   if (found != end)
-      mStates.erase(found);
-
-   // Allow RealtimeProcess() to, well, process 
-   RealtimeResume();
-}
-
-void RealtimeEffectManager::RealtimeInitialize(double rate)
-{
-   // The audio thread should not be running yet, but protect anyway
-   RealtimeSuspend();
-
-   // (Re)Set processor parameters
-   mRealtimeChans.clear();
-   mRealtimeRates.clear();
-
-   // RealtimeAdd/RemoveEffect() needs to know when we're active so it can
-   // initialize newly added effects
-   mRealtimeActive = true;
-
-   // Tell each effect to get ready for action
-   for (auto &state : mStates) {
-      state->GetEffect().SetSampleRate(rate);
-      state->GetEffect().RealtimeInitialize();
-   }
-
-   // Get things moving
-   RealtimeResume();
-}
-
-void RealtimeEffectManager::RealtimeAddProcessor(int group, unsigned chans, float rate)
-{
-   for (auto &state : mStates)
-      state->RealtimeAddProcessor(group, chans, rate);
-
-   mRealtimeChans.push_back(chans);
-   mRealtimeRates.push_back(rate);
-}
-
-void RealtimeEffectManager::RealtimeFinalize()
-{
-   // Make sure nothing is going on
-   RealtimeSuspend();
-
-   // It is now safe to clean up
-   mRealtimeLatency = 0;
-
-   // Tell each effect to clean up as well
-   for (auto &state : mStates)
-      state->GetEffect().RealtimeFinalize();
-
-   // Reset processor parameters
-   mRealtimeChans.clear();
-   mRealtimeRates.clear();
-
-   // No longer active
-   mRealtimeActive = false;
-}
-
-void RealtimeEffectManager::RealtimeSuspend()
-{
-   mRealtimeLock.Enter();
-
+   wxLogDebug(wxT("Suspend"));
    // Already suspended...bail
-   if (mRealtimeSuspended)
+   if (mSuspended)
    {
-      mRealtimeLock.Leave();
       return;
    }
 
    // Show that we aren't going to be doing anything
-   mRealtimeSuspended = true;
+   mSuspended = true;
 
-   // And make sure the effects don't either
-   for (auto &state : mStates)
-      state->RealtimeSuspend();
+   auto & masterList = RealtimeEffectList::Get(mProject);
+   masterList.Suspend();
 
-   mRealtimeLock.Leave();
-}
-
-void RealtimeEffectManager::RealtimeSuspendOne( EffectClientInterface &effect )
-{
-   auto begin = mStates.begin(), end = mStates.end();
-   auto found = std::find_if( begin, end,
-      [&effect]( const decltype( mStates )::value_type &state ){
-         return state && &state->GetEffect() == &effect;
-      }
-   );
-   if ( found != end )
-      (*found)->RealtimeSuspend();
-}
-
-void RealtimeEffectManager::RealtimeResume()
-{
-   mRealtimeLock.Enter();
-
-   // Already running...bail
-   if (!mRealtimeSuspended)
+   for (auto leader : mGroupLeaders)
    {
-      mRealtimeLock.Leave();
+      auto & trackList = RealtimeEffectList::Get(*leader);
+      trackList.Suspend();
+   }
+}
+
+void RealtimeEffectManager::Resume()
+{
+   wxLogDebug(wxT("Resume"));
+   // Already running...bail
+   if (!mSuspended)
+   {
       return;
    }
+ 
+   auto & masterList = RealtimeEffectList::Get(mProject);
+   masterList.Resume();
 
-   // Tell the effects to get ready for more action
-   for (auto &state : mStates)
-      state->RealtimeResume();
+   for (auto leader : mGroupLeaders)
+   {
+      auto & trackList = RealtimeEffectList::Get(*leader);
+      trackList.Resume();
+   }
 
-   // And we should too
-   mRealtimeSuspended = false;
-
-   mRealtimeLock.Leave();
+   // Show that we aren't going to be doing anything
+   mSuspended = false;
 }
 
-void RealtimeEffectManager::RealtimeResumeOne( EffectClientInterface &effect )
+void RealtimeEffectManager::Initialize(double rate)
 {
-   auto begin = mStates.begin(), end = mStates.end();
-   auto found = std::find_if( begin, end,
-      [&effect]( const decltype( mStates )::value_type &state ){
-         return state && &state->GetEffect() == &effect;
+   wxLogDebug(wxT("Initialize"));
+   // Protect...
+   std::lock_guard<std::mutex> guard(mLock);
+
+   wxASSERT(!mActive);
+   wxASSERT(!mSuspended);
+
+   // The audio thread should not be running yet, but protect anyway
+   Suspend();
+
+   // Remember the rate
+   mRate = rate;
+
+   // (Re)Set processor parameters
+   mChans.clear();
+   mRates.clear();
+   mGroupLeaders.clear();
+
+   // RealtimeAdd/RemoveEffect() needs to know when we're active so it can
+   // initialize newly added effects
+   mActive = true;
+
+   // Get things moving
+   Resume();
+}
+
+void RealtimeEffectManager::AddProcessor(Track *track, unsigned chans, float rate)
+{
+   wxLogDebug(wxT("AddProcess"));
+   // Protect...
+   std::lock_guard<std::mutex> guard(mLock);
+
+   wxASSERT(mActive);
+   wxASSERT(!mSuspended);
+
+   Suspend();
+
+   auto leader = *track->GetOwner()->FindLeader(track);
+   mGroupLeaders.push_back(leader);
+   mChans.insert({leader, chans});
+   mRates.insert({leader, rate});
+
+   ProcessGroup(leader,
+      [&](RealtimeEffectState & state, bool bypassed)
+      {
+         state.Initialize(rate);
+
+         state.AddProcessor(leader, chans, rate);
       }
    );
-   if ( found != end )
-      (*found)->RealtimeResume();
+
+   Resume();
 }
 
 //
 // This will be called in a different thread than the main GUI thread.
 //
-void RealtimeEffectManager::RealtimeProcessStart()
+void RealtimeEffectManager::ProcessStart()
 {
-   // Protect ourselves from the main thread
-   mRealtimeLock.Enter();
+   wxLogDebug(wxT("ProcessStart"));
+   // Protect...
+   std::lock_guard<std::mutex> guard(mLock);
 
-   // Can be suspended because of the audio stream being paused or because effects
-   // have been suspended.
-   if (!mRealtimeSuspended)
+   wxASSERT(mActive);
+   wxASSERT(!mProcessing);
+
+   Suspend();
+
+   mCurrentGroup = 0;
+
+   for (auto leader : mGroupLeaders)
    {
-      for (auto &state : mStates)
-      {
-         if (state->IsRealtimeActive())
-            state->GetEffect().RealtimeProcessStart();
-      }
+      ProcessGroup(leader,
+         [&](RealtimeEffectState &state, bool bypassed)
+         {
+            state.ProcessStart();
+         }
+      );
    }
 
-   mRealtimeLock.Leave();
+   mProcessing = true;
+
+   Resume();
 }
 
 //
 // This will be called in a different thread than the main GUI thread.
 //
-size_t RealtimeEffectManager::RealtimeProcess(int group, unsigned chans, float **buffers, size_t numSamples)
+size_t RealtimeEffectManager::Process(Track *track,
+                                      float gain,
+                                      float **buffers,
+                                      size_t numSamps)
 {
-   // Protect ourselves from the main thread
-   mRealtimeLock.Enter();
+   wxLogDebug(wxT("Process"));
+   // Protect...
+   std::lock_guard<std::mutex> guard(mLock);
 
-   // Can be suspended because of the audio stream being paused or because effects
-   // have been suspended, so allow the samples to pass as-is.
-   if (mRealtimeSuspended || mStates.empty())
+   if (mSuspended || !mProcessing)
    {
-      mRealtimeLock.Leave();
-      return numSamples;
+      return 0;
    }
+
+   auto numChans = mChans[track];
 
    // Remember when we started so we can calculate the amount of latency we
    // are introducing
-   wxMilliClock_t start = wxGetUTCTimeMillis();
+   auto start = std::chrono::steady_clock::now();
 
-   // Allocate the in/out buffer arrays
-   float **ibuf = (float **) alloca(chans * sizeof(float *));
-   float **obuf = (float **) alloca(chans * sizeof(float *));
+   // Allocate the in, out, and prefade buffer arrays
+   float **ibuf = (float **) alloca(numChans * sizeof(float *));
+   float **obuf = (float **) alloca(numChans * sizeof(float *));
+   float **pibuf = (float **) alloca(numChans * sizeof(float *));
+   float **pobuf = (float **) alloca(numChans * sizeof(float *));
+
+   auto group = mCurrentGroup++;
+
+   auto prefade = HasPrefaders(group);
 
    // And populate the input with the buffers we've been given while allocating
    // NEW output buffers
-   for (unsigned int i = 0; i < chans; i++)
+   for (unsigned int c = 0; c < numChans; ++c)
    {
-      ibuf[i] = buffers[i];
-      obuf[i] = (float *) alloca(numSamples * sizeof(float));
+      ibuf[c] = buffers[c];
+      obuf[c] = (float *) alloca(numSamps * sizeof(float));
+
+      if (prefade)
+      {
+         pibuf[c] = (float *) alloca(numSamps * sizeof(float));
+         pobuf[c] = (float *) alloca(numSamps * sizeof(float));
+
+         memcpy(pibuf[c], buffers[c], numSamps * sizeof(float));
+      }
    }
+
+   // Apply gain
+   if (gain != 1.0)
+   {
+      for (auto c = 0; c < numChans; ++c)
+      {
+         for (auto s = 0; s < numSamps; ++s)
+         {
+            ibuf[c][s] *= gain;
+         }
+      }
+   }
+
+   // Tracks how many processors were called
+   size_t called = 0;
 
    // Now call each effect in the chain while swapping buffer pointers to feed the
    // output of one effect as the input to the next effect
-   size_t called = 0;
-   for (auto &state : mStates)
+   if (HasPostfaders(group))
    {
-      if (state->IsRealtimeActive())
-      {
-         state->RealtimeProcess(group, chans, ibuf, obuf, numSamples);
-         called++;
-      }
+      ProcessGroup(track,
+         [&](RealtimeEffectState &state, bool bypassed)
+         {
+            if (bypassed || state.IsPreFade())
+            {
+               return;
+            }
 
-      for (unsigned int j = 0; j < chans; j++)
+            state.Process(track, numChans, ibuf, obuf, numSamps);
+
+            for (auto c = 0; c < numChans; ++c)
+            {
+               std::swap(ibuf[c], obuf[c]);
+            }
+            called++;
+         }
+      );
+
+      // Once we're done, we might wind up with the last effect storing its results
+      // in the temporary buffers.  If that's the case, we need to copy it over to
+      // the caller's buffers.  This happens when the number of effects processed
+      // is odd.
+      if (called & 1)
       {
-         float *temp;
-         temp = ibuf[j];
-         ibuf[j] = obuf[j];
-         obuf[j] = temp;
+         for (auto c = 0; c < numChans; ++c)
+         {
+            memcpy(buffers[c], ibuf[c], numSamps * sizeof(float));
+         }
       }
    }
 
-   // Once we're done, we might wind up with the last effect storing its results
-   // in the temporary buffers.  If that's the case, we need to copy it over to
-   // the caller's buffers.  This happens when the number of effects processed
-   // is odd.
-   if (called & 1)
+   if (prefade)
    {
-      for (unsigned int i = 0; i < chans; i++)
-      {
-         memcpy(buffers[i], ibuf[i], numSamples * sizeof(float));
-      }
+      ProcessGroup(track,
+         [&](RealtimeEffectState &state, bool bypassed)
+         {
+            if (bypassed || !state.IsPreFade())
+            {
+               return;
+            }
+
+            state.Process(track, numChans, pibuf, pobuf, numSamps);
+
+            for (auto c = 0; c < numChans; ++c)
+            {
+               for (auto s = 0; s < numSamps; ++s)
+               {
+                  buffers[c][s] += pobuf[c][s];
+               }
+
+               std::swap(pibuf[c], pobuf[c]);
+            }
+
+            called++;
+         }
+      );
    }
 
    // Remember the latency
-   mRealtimeLatency = (int) (wxGetUTCTimeMillis() - start).GetValue();
-
-   mRealtimeLock.Leave();
+   auto end = std::chrono::steady_clock::now();
+   mLatency = std::chrono::duration_cast<std::chrono::microseconds>(end - start);
 
    //
    // This is wrong...needs to handle tails
    //
-   return numSamples;
+   return called ? numSamps : 0;
 }
 
 //
 // This will be called in a different thread than the main GUI thread.
 //
-void RealtimeEffectManager::RealtimeProcessEnd()
+void RealtimeEffectManager::ProcessEnd()
 {
-   // Protect ourselves from the main thread
-   mRealtimeLock.Enter();
+   wxLogDebug(wxT("ProcessEnd"));
+   // Protect...
+   std::lock_guard<std::mutex> guard(mLock);
 
-   // Can be suspended because of the audio stream being paused or because effects
-   // have been suspended.
-   if (!mRealtimeSuspended)
+   if (!mProcessing)
    {
-      for (auto &state : mStates)
-      {
-         if (state->IsRealtimeActive())
-            state->GetEffect().RealtimeProcessEnd();
-      }
+      return;
    }
 
-   mRealtimeLock.Leave();
-}
+   Suspend();
 
-int RealtimeEffectManager::GetRealtimeLatency()
-{
-   return mRealtimeLatency;
-}
-
-RealtimeEffectState::RealtimeEffectState( EffectClientInterface &effect )
-   : mEffect{ effect }
-{
-}
-
-bool RealtimeEffectState::RealtimeSuspend()
-{
-   auto result = mEffect.RealtimeSuspend();
-   if ( result ) {
-      mRealtimeSuspendCount++;
-   }
-   return result;
-}
-
-bool RealtimeEffectState::RealtimeResume()
-{
-   auto result = mEffect.RealtimeResume();
-   if ( result ) {
-      mRealtimeSuspendCount--;
-   }
-   return result;
-}
-
-// RealtimeAddProcessor and RealtimeProcess use the same method of
-// determining the current processor index, so updates to one should
-// be reflected in the other.
-bool RealtimeEffectState::RealtimeAddProcessor(int group, unsigned chans, float rate)
-{
-   auto ichans = chans;
-   auto ochans = chans;
-   auto gchans = chans;
-
-   // Reset processor index
-   if (group == 0)
+   for (auto leader : mGroupLeaders)
    {
-      mCurrentProcessor = 0;
-      mGroupProcessor.clear();
+      ProcessGroup(leader,
+         [&](RealtimeEffectState &state, bool bypassed)
+         {
+            state.ProcessEnd();
+         }
+      );
    }
 
-   // Remember the processor starting index
-   mGroupProcessor.push_back(mCurrentProcessor);
+   mProcessing = false;
 
-   const auto numAudioIn = mEffect.GetAudioInCount();
-   const auto numAudioOut = mEffect.GetAudioOutCount();
-
-   // Call the client until we run out of input or output channels
-   while (ichans > 0 && ochans > 0)
-   {
-      // If we don't have enough input channels to accommodate the client's
-      // requirements, then we replicate the input channels until the
-      // client's needs are met.
-      if (ichans < numAudioIn)
-      {
-         // All input channels have been consumed
-         ichans = 0;
-      }
-      // Otherwise fulfill the client's needs with as many input channels as possible.
-      // After calling the client with this set, we will loop back up to process more
-      // of the input/output channels.
-      else if (ichans >= numAudioIn)
-      {
-         gchans = numAudioIn;
-         ichans -= gchans;
-      }
-
-      // If we don't have enough output channels to accommodate the client's
-      // requirements, then we provide all of the output channels and fulfill
-      // the client's needs with dummy buffers.  These will just get tossed.
-      if (ochans < numAudioOut)
-      {
-         // All output channels have been consumed
-         ochans = 0;
-      }
-      // Otherwise fulfill the client's needs with as many output channels as possible.
-      // After calling the client with this set, we will loop back up to process more
-      // of the input/output channels.
-      else if (ochans >= numAudioOut)
-      {
-         ochans -= numAudioOut;
-      }
-
-      // Add a NEW processor
-      mEffect.RealtimeAddProcessor(gchans, rate);
-
-      // Bump to next processor
-      mCurrentProcessor++;
-   }
-
-   return true;
+   Resume();
 }
 
-// RealtimeAddProcessor and RealtimeProcess use the same method of
-// determining the current processor group, so updates to one should
-// be reflected in the other.
-size_t RealtimeEffectState::RealtimeProcess(int group,
-                                    unsigned chans,
-                                    float **inbuf,
-                                    float **outbuf,
-                                    size_t numSamples)
+void RealtimeEffectManager::Finalize()
 {
-   //
-   // The caller passes the number of channels to process and specifies
-   // the number of input and output buffers.  There will always be the
-   // same number of output buffers as there are input buffers.
-   //
-   // Effects always require a certain number of input and output buffers,
-   // so if the number of channels we're currently processing are different
-   // than what the effect expects, then we use a few methods of satisfying
-   // the effects requirements.
-   const auto numAudioIn = mEffect.GetAudioInCount();
-   const auto numAudioOut = mEffect.GetAudioOutCount();
+   wxLogDebug(wxT("Finalize"));
 
-   float **clientIn = (float **) alloca(numAudioIn * sizeof(float *));
-   float **clientOut = (float **) alloca(numAudioOut * sizeof(float *));
-   float *dummybuf = (float *) alloca(numSamples * sizeof(float));
-   decltype(numSamples) len = 0;
-   auto ichans = chans;
-   auto ochans = chans;
-   auto gchans = chans;
-   unsigned indx = 0;
-   unsigned ondx = 0;
+   wxASSERT(mActive);
+   wxASSERT(!mProcessing);
+   wxASSERT(!mSuspended);
 
-   int processor = mGroupProcessor[group];
-
-   // Call the client until we run out of input or output channels
-   while (ichans > 0 && ochans > 0)
+   while (mProcessing.load())
    {
-      // If we don't have enough input channels to accommodate the client's
-      // requirements, then we replicate the input channels until the
-      // client's needs are met.
-      if (ichans < numAudioIn)
-      {
-         for (size_t i = 0; i < numAudioIn; i++)
-         {
-            if (indx == ichans)
-            {
-               indx = 0;
-            }
-            clientIn[i] = inbuf[indx++];
-         }
-
-         // All input channels have been consumed
-         ichans = 0;
-      }
-      // Otherwise fulfill the client's needs with as many input channels as possible.
-      // After calling the client with this set, we will loop back up to process more
-      // of the input/output channels.
-      else if (ichans >= numAudioIn)
-      {
-         gchans = 0;
-         for (size_t i = 0; i < numAudioIn; i++, ichans--, gchans++)
-         {
-            clientIn[i] = inbuf[indx++];
-         }
-      }
-
-      // If we don't have enough output channels to accommodate the client's
-      // requirements, then we provide all of the output channels and fulfill
-      // the client's needs with dummy buffers.  These will just get tossed.
-      if (ochans < numAudioOut)
-      {
-         for (size_t i = 0; i < numAudioOut; i++)
-         {
-            if (i < ochans)
-            {
-               clientOut[i] = outbuf[i];
-            }
-            else
-            {
-               clientOut[i] = dummybuf;
-            }
-         }
-
-         // All output channels have been consumed
-         ochans = 0;
-      }
-      // Otherwise fulfill the client's needs with as many output channels as possible.
-      // After calling the client with this set, we will loop back up to process more
-      // of the input/output channels.
-      else if (ochans >= numAudioOut)
-      {
-         for (size_t i = 0; i < numAudioOut; i++, ochans--)
-         {
-            clientOut[i] = outbuf[ondx++];
-         }
-      }
-
-      // Finally call the plugin to process the block
-      len = 0;
-      const auto blockSize = mEffect.GetBlockSize();
-      for (decltype(numSamples) block = 0; block < numSamples; block += blockSize)
-      {
-         auto cnt = std::min(numSamples - block, blockSize);
-         len += mEffect.RealtimeProcess(processor, clientIn, clientOut, cnt);
-
-         for (size_t i = 0 ; i < numAudioIn; i++)
-         {
-            clientIn[i] += cnt;
-         }
-
-         for (size_t i = 0 ; i < numAudioOut; i++)
-         {
-            clientOut[i] += cnt;
-         }
-      }
-
-      // Bump to next processor
-      processor++;
+      wxMilliSleep(1);
    }
 
-   return len;
+   // Protect...
+   std::lock_guard<std::mutex> guard(mLock);
+
+   wxASSERT(mActive);
+
+   // Make sure nothing is going on
+   Suspend();
+
+   // It is now safe to clean up
+   mLatency = std::chrono::microseconds(0);
+
+   // Process master list
+   auto & states = RealtimeEffectList::Get(mProject).GetStates();
+   for (auto & state : states)
+   {
+      state->Finalize();
+   }
+
+   // And all track lists
+   for (auto leader : mGroupLeaders)
+   {
+      auto & states = RealtimeEffectList::Get(*leader).GetStates();
+      for (auto &state : states)
+      {
+         state->Finalize();
+      }
+   }
+
+   // Reset processor parameters
+   mGroupLeaders.clear();
+   mChans.clear();
+   mRates.clear();
+
+   // No longer active
+   mActive = false;
+
+   Resume();
 }
 
-bool RealtimeEffectState::IsRealtimeActive()
+int RealtimeEffectManager::GetLatency() const
 {
-   return mRealtimeSuspendCount == 0;
+   return mLatency.count();
 }
+
+
+void RealtimeEffectManager::Show(AudacityProject &project)
+{
+   // Protect...
+   std::lock_guard<std::mutex> guard(mLock);
+
+   auto & list = RealtimeEffectList::Get(project);
+   list.Show(this, XO("Master Effects"));
+}
+
+void RealtimeEffectManager::Show(Track &track, wxPoint pos)
+{
+   // Protect...
+   std::lock_guard<std::mutex> guard(mLock);
+
+   auto & list = RealtimeEffectList::Get(track);
+   list.Show(this, XO("%s Effects").Format(track.GetName()), pos);
+}
+
+bool RealtimeEffectManager::IsBypassed(const Track &track)
+{
+   return RealtimeEffectList::Get(track).IsBypassed();
+}
+
+void RealtimeEffectManager::Bypass(Track &track, bool bypass)
+{
+   RealtimeEffectList::Get(track).Bypass(bypass);
+}
+
+bool RealtimeEffectManager::HasPrefaders(int group)
+{
+   return RealtimeEffectList::Get(mProject).HasPrefaders() ||
+          RealtimeEffectList::Get(*mGroupLeaders[group]).HasPrefaders();
+}
+
+bool RealtimeEffectManager::HasPostfaders(int group)
+{
+   return RealtimeEffectList::Get(mProject).HasPostfaders() ||
+          RealtimeEffectList::Get(*mGroupLeaders[group]).HasPostfaders();
+}
+
+void RealtimeEffectManager::ProcessGroup(Track *leader, std::function<void(RealtimeEffectState &state, bool bypassed)> func)
+{
+   // Call the function for each effect on the master list
+   RealtimeEffectList::Get(mProject).ProcessGroup(func);
+
+   // Call the function for each effect on the track list
+   RealtimeEffectList::Get(*leader).ProcessGroup(func);
+}
+
+RealtimeEffectState &RealtimeEffectManager::AddState(RealtimeEffectList &states, const PluginID & id)
+{
+   wxLogDebug(wxT("AddState"));
+   // Protect...
+   std::lock_guard<std::mutex> guard(mLock);
+
+   // Block processing
+   Suspend();
+
+   auto & state = states.AddState(id);
+   
+   if (mActive)
+   {
+      state.Initialize(mRate);
+
+      for (auto &leader : mGroupLeaders)
+      {
+         auto chans = mChans[leader];
+         auto rate = mRates[leader];
+
+         state.AddProcessor(leader, chans, rate);
+      }
+   }
+
+   if (mProcessing)
+   {
+      state.ProcessStart();
+   }
+
+   ProjectHistory::Get(mProject).PushState(
+      XO("Added %s effect").Format(state.GetEffect()->GetName()),
+      XO("Added Effect"),
+      UndoPush::NONE
+   );
+
+   // Allow RealtimeProcess() to, well, process 
+   Resume();
+
+   return state;
+}
+
+void RealtimeEffectManager::RemoveState(RealtimeEffectList &states, RealtimeEffectState &state)
+{
+   wxLogDebug(wxT("RemoveState"));
+   // Protect...
+   std::lock_guard<std::mutex> guard(mLock);
+
+   // Block RealtimeProcess()
+   Suspend();
+
+   ProjectHistory::Get(mProject).PushState(
+      XO("Removed %s effect").Format(state.GetEffect()->GetName()),
+      XO("Removed Effect"),
+      UndoPush::NONE
+   );
+
+   if (mProcessing)
+   {
+      state.ProcessEnd();
+   }
+
+   if (mActive)
+   {
+      state.Finalize();
+   }
+
+   states.RemoveState(state);
+
+   // Allow RealtimeProcess() to, well, process 
+   Resume();
+}
+
+XMLTagHandler *RealtimeEffectManager::ReadXML(AudacityProject &project)
+{
+   return &RealtimeEffectList::Get(project);
+}
+
+XMLTagHandler *RealtimeEffectManager::ReadXML(Track &track)
+{
+   return &RealtimeEffectList::Get(track);
+}
+
+void RealtimeEffectManager::WriteXML(
+   XMLWriter &xmlFile, const AudacityProject &project) const
+{
+   RealtimeEffectList::Get(project).WriteXML(xmlFile);
+}
+
+void RealtimeEffectManager::WriteXML(
+   XMLWriter &xmlFile, const Track &track) const
+{
+   RealtimeEffectList::Get(track).WriteXML(xmlFile);
+}
+
+void RealtimeEffectManager::WriteXML(
+   XMLWriter &xmlFile, const RealtimeEffectList &states) const
+{
+}
+
+static const AttachedProjectObjects::RegisteredFactory manager
+{
+   [](AudacityProject &project)
+   {
+      return std::make_shared<RealtimeEffectManager>(project);
+   }
+};
+
+RealtimeEffectManager &RealtimeEffectManager::Get(AudacityProject &project)
+{
+   return project.AttachedObjects::Get<RealtimeEffectManager&>(manager);
+}
+
+const RealtimeEffectManager &RealtimeEffectManager::Get(const AudacityProject &project)
+{
+   return Get(const_cast<AudacityProject &>(project));
+}
+
+#if 0
+static ProjectFileIORegistry::WriterEntry entry {
+[](const AudacityProject &project, XMLWriter &xmlFile){
+   auto &realtimeEffectManager = RealtimeEffectManager::Get(project);
+   realtimeEffectManager.WriteXML(xmlFile, project);
+}
+};
+#endif

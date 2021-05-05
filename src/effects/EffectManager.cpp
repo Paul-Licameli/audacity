@@ -759,6 +759,35 @@ Effect *EffectManager::GetEffect(const PluginID & ID)
    return mEffects[ID];
 }
 
+std::unique_ptr<Effect> EffectManager::NewEffect(const PluginID & ID)
+{
+   // Must have a "valid" ID
+   if (ID.empty())
+   {
+      return NULL;
+   }
+
+   // If it is actually a command then refuse it (as an effect).
+   if( mCommands.find( ID ) != mCommands.end() )
+      return NULL;
+
+   // This will instantiate the effect client if it hasn't already been done
+   EffectDefinitionInterface *ident =
+      dynamic_cast<EffectDefinitionInterface *>(PluginManager::Get().GetInstance(ID));
+
+   auto effect = std::make_unique<Effect>();
+   if (effect)
+   {
+      EffectClientInterface *client = dynamic_cast<EffectClientInterface *>(ident);
+      if (client && effect->Startup(client))
+      {
+         return effect;
+      }
+   }
+
+   return nullptr;
+}
+
 AudacityCommand *EffectManager::GetAudacityCommand(const PluginID & ID)
 {
    // Must have a "valid" ID

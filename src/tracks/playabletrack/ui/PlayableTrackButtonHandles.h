@@ -74,4 +74,66 @@ public:
        const AudacityProject *pProject, const std::shared_ptr<Track> &pTrack);
 };
 
+////////////////////////////////////////////////////////////////////////////////
+
+class EffectsButtonHandle final : public ButtonHandle
+{
+   EffectsButtonHandle(const EffectsButtonHandle&) = delete;
+
+public:
+   explicit EffectsButtonHandle
+      ( const std::shared_ptr<Track> &pTrack, const wxRect &rect );
+
+   EffectsButtonHandle &operator=(const EffectsButtonHandle&) = default;
+
+   virtual ~EffectsButtonHandle();
+
+protected:
+   Result CommitChanges
+      (const wxMouseEvent &event, AudacityProject *pProject, wxWindow *pParent)
+      override;
+
+   TranslatableString Tip(
+      const wxMouseState &state, AudacityProject &) const override;
+
+   bool StopsOnKeystroke () override { return true; }
+
+public:
+   static UIHandlePtr HitTest
+      (std::weak_ptr<EffectsButtonHandle> &holder,
+       const wxMouseState &state, const wxRect &rect,
+       const AudacityProject *pProject, const std::shared_ptr<Track> &pTrack);
+};
+
+////////////////////////////////////////////////////////////////////////////////
+
+class BypassButtonHandle final : public ButtonHandle
+{
+   BypassButtonHandle(const BypassButtonHandle&) = delete;
+
+public:
+   explicit BypassButtonHandle
+      ( const std::shared_ptr<Track> &pTrack, const wxRect &rect );
+
+   BypassButtonHandle &operator=(const BypassButtonHandle&) = default;
+
+   virtual ~BypassButtonHandle();
+
+protected:
+   Result CommitChanges
+      (const wxMouseEvent &event, AudacityProject *pProject, wxWindow *pParent)
+      override;
+
+   TranslatableString Tip(
+      const wxMouseState &state, AudacityProject &) const override;
+
+   bool StopsOnKeystroke () override { return true; }
+
+public:
+   static UIHandlePtr HitTest
+      (std::weak_ptr<BypassButtonHandle> &holder,
+       const wxMouseState &state, const wxRect &rect,
+       const AudacityProject *pProject, const std::shared_ptr<Track> &pTrack);
+};
+
 #endif

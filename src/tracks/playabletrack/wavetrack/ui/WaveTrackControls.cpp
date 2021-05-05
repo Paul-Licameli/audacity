@@ -65,6 +65,14 @@ std::vector<UIHandlePtr> WaveTrackControls::HitTest
             mSoloHandle, state, rect, pProject, track)))
             return result;
 
+         if (NULL != (result = EffectsButtonHandle::HitTest(
+            mEffectsHandle, state, rect, pProject, track)))
+            return result;
+
+         if (NULL != (result = BypassButtonHandle::HitTest(
+            mBypassHandle, state, rect, pProject, track)))
+            return result;
+
          if (NULL != (result = GainSliderHandle::HitTest(
             mGainHandle, state, rect, track)))
             return result;
@@ -125,6 +133,8 @@ enum {
    OnSplitStereoMonoID,
 
    ChannelMenuID,
+
+   OnEffectsID,
 
    // Range of ids for registered items -- keep this last!
    FirstAttachedItemId,
@@ -561,9 +571,10 @@ BEGIN_POPUP_MENU(WaveTrackMenuTable)
    []( PopupMenuHandler &handler ) -> bool {
       auto &project =
          static_cast< WaveTrackMenuTable& >( handler ).mpData->project;
-      return RealtimeEffectManager::Get().RealtimeIsActive() &&
+      return RealtimeEffectManager::Get(project).IsActive() &&
          ProjectAudioIO::Get( project ).IsAudioActive();
    };
+
 
    BeginSection( "SubViews" );
       // Multi-view check mark item, if more than one track sub-view type is
@@ -955,7 +966,6 @@ void WaveTrackMenuTable::OnSplitStereoMono(wxCommandEvent &)
    mpData->result = RefreshAll | FixScrollbars;
 }
 
-//=============================================================================
 PopupMenuTable *WaveTrackControls::GetMenuExtension(Track * pTrack)
 {
    static Registry::OrderingPreferenceInitializer init{

@@ -21,574 +21,8 @@
 #include "../TrackPanelAx.h"
 #include "RealtimeEffectManager.h"
 
-#if defined(EXPERIMENTAL_EFFECTS_RACK)
-
-#include "../UndoManager.h"
-
-#include <wx/dcmemory.h>
-#include <wx/defs.h>
-#include <wx/bmpbuttn.h>
-#include <wx/button.h>
-#include <wx/frame.h>
-#include <wx/image.h>
-#include <wx/imaglist.h>
-#include <wx/settings.h>
-#include <wx/sizer.h>
-#include <wx/statline.h>
-#include <wx/stattext.h>
-#include <wx/timer.h>
-#include <wx/tglbtn.h>
-
-#include "../commands/CommandContext.h"
-#include "../Prefs.h"
-#include "../Project.h"
-#include "../widgets/wxPanelWrapper.h"
-
-#include "../../images/EffectRack/EffectRack.h"
-
-#define COL_POWER    0
-#define COL_EDITOR   1
-#define COL_UP       2
-#define COL_DOWN     3
-#define COL_FAV      4
-#define COL_REMOVE   5
-#define COL_NAME     6
-#define NUMCOLS      7
-
-#define ID_BASE      20000
-#define ID_RANGE     100
-#define ID_POWER     (ID_BASE + (COL_POWER * ID_RANGE))
-#define ID_EDITOR    (ID_BASE + (COL_EDITOR * ID_RANGE))
-#define ID_UP        (ID_BASE + (COL_UP * ID_RANGE))
-#define ID_DOWN      (ID_BASE + (COL_DOWN * ID_RANGE))
-#define ID_FAV       (ID_BASE + (COL_FAV * ID_RANGE))
-#define ID_REMOVE    (ID_BASE + (COL_REMOVE * ID_RANGE))
-#define ID_NAME      (ID_BASE + (COL_NAME * ID_RANGE))
-
-BEGIN_EVENT_TABLE(EffectRack, wxFrame)
-   EVT_CLOSE(EffectRack::OnClose)
-   EVT_TIMER(wxID_ANY, EffectRack::OnTimer)
-
-   EVT_BUTTON(wxID_APPLY, EffectRack::OnApply)
-   EVT_TOGGLEBUTTON(wxID_CLEAR, EffectRack::OnBypass)
-
-   EVT_COMMAND_RANGE(ID_REMOVE, ID_REMOVE + 99, wxEVT_COMMAND_BUTTON_CLICKED, EffectRack::OnRemove)
-   EVT_COMMAND_RANGE(ID_POWER,  ID_POWER + 99,  wxEVT_COMMAND_BUTTON_CLICKED, EffectRack::OnPower)
-   EVT_COMMAND_RANGE(ID_EDITOR, ID_EDITOR + 99, wxEVT_COMMAND_BUTTON_CLICKED, EffectRack::OnEditor)
-   EVT_COMMAND_RANGE(ID_UP,     ID_UP + 99,     wxEVT_COMMAND_BUTTON_CLICKED, EffectRack::OnUp)
-   EVT_COMMAND_RANGE(ID_DOWN,   ID_DOWN + 99,   wxEVT_COMMAND_BUTTON_CLICKED, EffectRack::OnDown)
-   EVT_COMMAND_RANGE(ID_FAV,    ID_FAV + 99,    wxEVT_COMMAND_BUTTON_CLICKED, EffectRack::OnFav)
-END_EVENT_TABLE()
-
-EffectRack::EffectRack( AudacityProject &project )
-:  wxFrame( &GetProjectFrame( project ),
-      wxID_ANY,
-      _("Effects Rack"),
-      wxDefaultPosition,
-      wxDefaultSize,
-      wxSYSTEM_MENU |
-      wxCLOSE_BOX |
-      wxCAPTION |
-      wxFRAME_NO_TASKBAR |
-      wxFRAME_FLOAT_ON_PARENT)
-, mProject{ project }
-{
-   mBypassing = false;
-   mNumEffects = 0;
-   mLastLatency = 0;
-   mTimer.SetOwner(this);
-
-   mPowerPushed = CreateBitmap(power_on_16x16_xpm, false, false);
-   mPowerRaised = CreateBitmap(power_off_16x16_xpm, true, false);
-   mSettingsPushed = CreateBitmap(settings_up_16x16_xpm, false, true);
-   mSettingsRaised = CreateBitmap(settings_down_16x16_xpm, true, true);
-   mUpDisabled = CreateBitmap(up_9x16_xpm, true, true);
-   mUpPushed = CreateBitmap(up_9x16_xpm, false, true);
-   mUpRaised = CreateBitmap(up_9x16_xpm, true, true);
-   mDownDisabled = CreateBitmap(down_9x16_xpm, true, true);
-   mDownPushed = CreateBitmap(down_9x16_xpm, false, true);
-   mDownRaised = CreateBitmap(down_9x16_xpm, true, true);
-   mFavPushed = CreateBitmap(fav_down_16x16_xpm, false, false);
-   mFavRaised = CreateBitmap(fav_up_16x16_xpm, true, false);
-   mRemovePushed = CreateBitmap(remove_16x16_xpm, false, true);
-   mRemoveRaised = CreateBitmap(remove_16x16_xpm, true, true);
-
-   {
-      auto bs = std::make_unique<wxBoxSizer>(wxVERTICAL);
-      mPanel = safenew wxPanelWrapper(this, wxID_ANY);
-      bs->Add(mPanel, 1, wxEXPAND);
-      SetSizer(bs.release());
-   }
-
-   {
-      auto bs = std::make_unique<wxBoxSizer>(wxVERTICAL);
-      {
-         auto hs = std::make_unique<wxBoxSizer>(wxHORIZONTAL);
-         wxASSERT(mPanel); // To justify safenew
-         hs->Add(safenew wxButton(mPanel, wxID_APPLY, _("&Apply")), 0, wxALIGN_LEFT | wxALIGN_CENTER_VERTICAL);
-         hs->AddStretchSpacer();
-         mLatency = safenew wxStaticText(mPanel, wxID_ANY, _("Latency: 0"));
-         hs->Add(mLatency, 0, wxALIGN_CENTER);
-         hs->AddStretchSpacer();
-         hs->Add(safenew wxToggleButton(mPanel, wxID_CLEAR, _("&Bypass")), 0, wxALIGN_RIGHT | wxALIGN_CENTER_VERTICAL);
-         bs->Add(hs.release(), 0, wxEXPAND);
-      }
-      bs->Add(safenew wxStaticLine(mPanel, wxID_ANY), 0, wxEXPAND);
-
-      {
-         auto uMainSizer = std::make_unique<wxFlexGridSizer>(7);
-         uMainSizer->AddGrowableCol(6);
-         uMainSizer->SetHGap(0);
-         uMainSizer->SetVGap(0);
-         bs->Add((mMainSizer = uMainSizer.release()), 1, wxEXPAND);
-      }
-
-      mPanel->SetSizer(bs.release());
-   }
-
-   wxString oldPath = gPrefs->GetPath();
-   gPrefs->SetPath(wxT("/EffectsRack"));
-   size_t cnt = gPrefs->GetNumberOfEntries();
-   gPrefs->SetPath(oldPath);
-
-   EffectManager & em = EffectManager::Get();
-   for (size_t i = 0; i < cnt; i++)
-   {
-      wxString slot;
-      gPrefs->Read(wxString::Format(wxT("/EffectsRack/Slot%02d"), i), &slot);
-
-      Effect *effect = em.GetEffect(slot.AfterFirst(wxT(',')));
-      if (effect)
-      {
-         Add(effect, slot.BeforeFirst(wxT(',')) == wxT("1"), true);
-      }
-   }
-
-   Fit();
-}
-
-EffectRack::~EffectRack()
-{
-   gPrefs->DeleteGroup(wxT("/EffectsRack"));
-
-   for (size_t i = 0, cnt = mEffects.size(); i < cnt; i++)
-   {
-      if (mFavState[i])
-      {
-         Effect *effect = mEffects[i];
-         gPrefs->Write(wxString::Format(wxT("/EffectsRack/Slot%02d"), i),
-                       wxString::Format(wxT("%d,%s"),
-                                        mPowerState[i],
-                                        effect->GetID()));
-      }
-   }
-}
-
-void EffectRack::Add(Effect *effect, bool active, bool favorite)
-{
-   if (mEffects.end() != std::find(mEffects.begin(), mEffects.end(), effect))
-   {
-      return;
-   }
-
-   wxBitmapButton *bb;
- 
-   wxASSERT(mPanel); // To justify safenew
-   bb = safenew wxBitmapButton(mPanel, ID_POWER + mNumEffects, mPowerRaised);
-   bb->SetBitmapSelected(mPowerRaised);
-   bb->SetName(_("Active State"));
-   bb->SetToolTip(_("Set effect active state"));
-   mPowerState.push_back(active);
-   if (active)
-   {
-      bb->SetBitmapLabel(mPowerPushed);
-      bb->SetBitmapSelected(mPowerPushed);
-   }
-   else
-   {
-      bb->SetBitmapLabel(mPowerRaised);
-      bb->SetBitmapSelected(mPowerRaised);
-   }
-   mMainSizer->Add(bb, 0, wxALIGN_LEFT | wxALIGN_CENTER_VERTICAL);
-
-   bb = safenew wxBitmapButton(mPanel, ID_EDITOR + mNumEffects, mSettingsRaised);
-   bb->SetBitmapSelected(mSettingsPushed);
-   bb->SetName(_("Show/Hide Editor"));
-   bb->SetToolTip(_("Open/close effect editor"));
-   mMainSizer->Add(bb, 0, wxALIGN_LEFT | wxALIGN_CENTER_VERTICAL);
-
-   bb = safenew wxBitmapButton(mPanel, ID_UP + mNumEffects, mUpRaised);
-   bb->SetBitmapSelected(mUpPushed);
-   bb->SetBitmapDisabled(mUpDisabled);
-   bb->SetName(_("Move Up"));
-   bb->SetToolTip(_("Move effect up in the rack"));
-   mMainSizer->Add(bb, 0, wxALIGN_LEFT | wxALIGN_CENTER_VERTICAL);
-
-   bb = safenew wxBitmapButton(mPanel, ID_DOWN + mNumEffects, mDownRaised);
-   bb->SetBitmapSelected(mDownPushed);
-   bb->SetBitmapDisabled(mDownDisabled);
-   bb->SetName(_("Move Down"));
-   bb->SetToolTip(_("Move effect down in the rack"));
-   mMainSizer->Add(bb, 0, wxALIGN_LEFT | wxALIGN_CENTER_VERTICAL);
-
-   bb = safenew wxBitmapButton(mPanel, ID_FAV + mNumEffects, mFavRaised);
-   bb->SetBitmapSelected(mFavPushed);
-   bb->SetName(_("Favorite"));
-   bb->SetToolTip(_("Mark effect as a favorite"));
-   mFavState.push_back(favorite);
-   if (favorite)
-   {
-      bb->SetBitmapLabel(mFavPushed);
-      bb->SetBitmapSelected(mFavPushed);
-   }
-   else
-   {
-      bb->SetBitmapLabel(mFavRaised);
-      bb->SetBitmapSelected(mFavRaised);
-   }
-   mMainSizer->Add(bb, 0, wxALIGN_LEFT | wxALIGN_CENTER_VERTICAL);
-
-   bb = safenew wxBitmapButton(mPanel, ID_REMOVE + mNumEffects, mRemoveRaised);
-   bb->SetBitmapSelected(mRemovePushed);
-   bb->SetName(_("Remove"));
-   bb->SetToolTip(_("Remove effect from the rack"));
-   mMainSizer->Add(bb, 0, wxALIGN_LEFT | wxALIGN_CENTER_VERTICAL);
-
-   wxStaticText *text = safenew wxStaticText(mPanel, ID_NAME + mNumEffects,
-      effect->GetName().Translation() );
-   text->SetToolTip(_("Name of the effect"));
-   mMainSizer->Add(text, 0, wxEXPAND | wxALIGN_LEFT | wxALIGN_CENTER_VERTICAL | wxALL, 5);
-
-   mMainSizer->Layout();
-   SetSize(GetMinSize());
-   Fit();
-   Update();
-
-   mEffects.push_back(effect);
-   mNumEffects++;
-
-   if (!mTimer.IsRunning())
-   {
-      mTimer.Start(1000);
-   }
-
-   if (active)
-   {
-      UpdateActive();
-   }
-}
-
-void EffectRack::OnClose(wxCloseEvent & evt)
-{
-   Show(false);
-   evt.Veto();
-}
-
-void EffectRack::OnTimer(wxTimerEvent & WXUNUSED(evt))
-{
-   int latency = RealtimeEffectManager::Get().GetRealtimeLatency();
-   if (latency != mLastLatency)
-   {
-      mLatency->SetLabel(wxString::Format(_("Latency: %4d"), latency));
-      mLatency->Refresh();
-      mLastLatency = latency;
-   }
-}
-
-void EffectRack::OnApply(wxCommandEvent & WXUNUSED(evt))
-{
-   AudacityProject *project = &mProject;
-
-   bool success = false;
-   auto state = UndoManager::Get( *project ).GetCurrentState();
-   auto cleanup = finally( [&] {
-      if(!success)
-         // This is like a rollback of state
-         ProjectHistory::Get( *project ).SetStateTo( state, false );
-   } );
-
-   for (size_t i = 0, cnt = mEffects.size(); i < cnt; i++)
-   {
-      if (mPowerState[i])
-      {
-         if (!EffectUI::DoEffect(mEffects[i]->GetID(),
-                           *project,
-                           EffectManager::kConfigured))
-            // If any effect fails (or throws), then stop.
-            return;
-      }
-   }
-
-   success = true;
-
-   // Only after all succeed, do the following.
-   for (size_t i = 0, cnt = mEffects.size(); i < cnt; i++)
-   {
-      if (mPowerState[i])
-      {
-         mPowerState[i] = false;
-
-         wxBitmapButton *btn =
-            static_cast<wxBitmapButton *>(FindWindowById(ID_POWER + i));
-         btn->SetBitmapLabel(mPowerRaised);
-         btn->SetBitmapSelected(mPowerRaised);
-      }
-   }
-
-   UpdateActive();
-}
-
-void EffectRack::OnBypass(wxCommandEvent & evt)
-{
-   mBypassing = evt.GetInt() != 0;
-   UpdateActive();
-}
-
-void EffectRack::OnPower(wxCommandEvent & evt)
-{
-   wxBitmapButton *btn =  static_cast<wxBitmapButton *>(evt.GetEventObject());
-
-   int index = GetEffectIndex(btn);
-   mPowerState[index] = !mPowerState[index];
-   if (mPowerState[index])
-   {
-      btn->SetBitmapLabel(mPowerPushed);
-      btn->SetBitmapSelected(mPowerPushed);
-   }
-   else
-   {
-      btn->SetBitmapLabel(mPowerRaised);
-      btn->SetBitmapSelected(mPowerRaised);
-   }
-
-   UpdateActive();
-}
-
-void EffectRack::OnEditor(wxCommandEvent & evt)
-{
-   wxBitmapButton *btn =  static_cast<wxBitmapButton *>(evt.GetEventObject());
-
-   evt.Skip();
-
-   int index = GetEffectIndex(btn);
-   if (index < 0)
-   {
-      return;
-   }
-
-   auto pEffect = mEffects[index];
-   pEffect->ShowInterface( *GetParent(), EffectUI::DialogFactory,
-      pEffect->IsBatchProcessing() );
-}
-
-void EffectRack::OnUp(wxCommandEvent & evt)
-{
-   wxBitmapButton *btn =  static_cast<wxBitmapButton *>(evt.GetEventObject());
-
-   evt.Skip();
-
-   int index = GetEffectIndex(btn);
-   if (index <= 0)
-   {
-      return;
-   }
-
-   MoveRowUp(index);
-}
-
-void EffectRack::OnDown(wxCommandEvent & evt)
-{
-   wxBitmapButton *btn =  static_cast<wxBitmapButton *>(evt.GetEventObject());
-
-   evt.Skip();
-
-   int index = GetEffectIndex(btn);
-   if (index < 0 || index == (mMainSizer->GetChildren().GetCount() / NUMCOLS) - 1)
-   {
-      return;
-   }
-
-   MoveRowUp(index + 1);
-}
-
-void EffectRack::OnFav(wxCommandEvent & evt)
-{
-   wxBitmapButton *btn =  static_cast<wxBitmapButton *>(evt.GetEventObject());
-
-   int index = GetEffectIndex(btn);
-   mFavState[index] = !mFavState[index];
-   if (mFavState[index])
-   {
-      btn->SetBitmapLabel(mFavPushed);
-      btn->SetBitmapSelected(mFavPushed);
-   }
-   else
-   {
-      btn->SetBitmapLabel(mFavRaised);
-      btn->SetBitmapSelected(mFavRaised);
-   }
-}
-
-void EffectRack::OnRemove(wxCommandEvent & evt)
-{
-   wxBitmapButton *btn =  static_cast<wxBitmapButton *>(evt.GetEventObject());
-
-   evt.Skip();
-
-   int index = GetEffectIndex(btn);
-   if (index < 0)
-   {
-      return;
-   }
-
-   mEffects.erase(mEffects.begin() + index);
-   mPowerState.erase(mPowerState.begin() + index);
-   mFavState.erase(mFavState.begin() + index);
-
-   if (mEffects.size() == 0)
-   {
-      if (mTimer.IsRunning())
-      {
-         mTimer.Stop();
-      }
-   }
-
-   index *= NUMCOLS;
-
-   for (int i = 0; i < NUMCOLS; i++)
-   {
-      std::unique_ptr<wxWindow> w {mMainSizer->GetItem(index)->GetWindow()};
-      mMainSizer->Detach(index);
-   }
-
-   mMainSizer->Layout();
-   Fit();
-
-   UpdateActive();
-}
-
-wxBitmap EffectRack::CreateBitmap(const char *const xpm[], bool up, bool pusher)
-{
-   wxMemoryDC dc;
-   wxBitmap pic(xpm);
-
-   wxBitmap mod(pic.GetWidth() + 6, pic.GetHeight() + 6);
-   dc.SelectObject(mod);
-#if defined( __WXGTK__ )
-   wxColour newColour = wxSystemSettings::GetColour( wxSYS_COLOUR_BACKGROUND );
-#else
-   wxColour newColour = wxSystemSettings::GetColour( wxSYS_COLOUR_3DFACE );
-#endif
-   dc.SetBackground(wxBrush(newColour));
-   dc.Clear();
-
-   int offset = 3;
-   if (pusher)
-   {
-      if (!up)
-      {
-         offset += 1;
-      }
-   }
-   dc.DrawBitmap(pic, offset, offset, true);
-
-   dc.SelectObject(wxNullBitmap);
-
-   return mod;
-}
-
-int EffectRack::GetEffectIndex(wxWindow *win)
-{
-   int col = (win->GetId() - ID_BASE) / ID_RANGE;
-   int row;
-   int cnt = mMainSizer->GetChildren().GetCount() / NUMCOLS;
-   for (row = 0; row < cnt; row++)
-   {
-      wxSizerItem *si = mMainSizer->GetItem((row * NUMCOLS) + col);
-      if (si->GetWindow() == win)
-      {
-         break;
-      }
-   }
-
-   if (row == cnt)
-   {
-      return -1;
-   }
-
-   return row;
-}
-
-void EffectRack::MoveRowUp(int row)
-{
-   Effect *effect = mEffects[row];
-   mEffects.erase(mEffects.begin() + row);
-   mEffects.insert(mEffects.begin() + row - 1, effect);
-
-   int state = mPowerState[row];
-   mPowerState.erase(mPowerState.begin() + row);
-   mPowerState.insert(mPowerState.begin() + row - 1, state);
-
-   state = mFavState[row];
-   mFavState.erase(mFavState.begin() + row);
-   mFavState.insert(mFavState.begin() + row - 1, state);
-
-   row *= NUMCOLS;
-
-   for (int i = 0; i < NUMCOLS; i++)
-   {
-      wxSizerItem *si = mMainSizer->GetItem(row + NUMCOLS - 1);
-      wxWindow *w = si->GetWindow();
-      int flags = si->GetFlag();
-      int border = si->GetBorder();
-      int prop = si->GetProportion();
-      mMainSizer->Detach(row + NUMCOLS - 1);
-      mMainSizer->Insert(row - NUMCOLS, w, prop, flags, border);
-   }
-
-   mMainSizer->Layout();
-   Refresh();
-
-   UpdateActive();
-}
-
-void EffectRack::UpdateActive()
-{
-   mActive.clear();
-
-   if (!mBypassing)
-   {
-      for (size_t i = 0, cnt = mEffects.size(); i < cnt; i++)
-      {
-         if (mPowerState[i])
-         {
-            mActive.push_back(mEffects[i]);
-         }
-      }
-   }
-
-   RealtimeEffectManager::Get().RealtimeSetEffects(
-      { mActive.begin(), mActive.end() }
-   );
-}
-
-namespace
-{
-AudacityProject::AttachedWindows::RegisteredFactory sKey{
-   []( AudacityProject &parent ) -> wxWeakRef< wxWindow > {
-      auto result = safenew EffectRack( parent );
-      result->CenterOnParent();
-      return result;
-   }
-};
-}
-
-EffectRack &EffectRack::Get( AudacityProject &project )
-{
-   return project.AttachedWindows::Get< EffectRack >( sKey );
-}
-
-#endif
+#include "../Theme.h"
+#include "../AllThemeResources.h"
 
 ///////////////////////////////////////////////////////////////////////////////
 //
@@ -682,17 +116,16 @@ static const int kOptionsID = 20005;
 static const int kUserPresetsDummyID = 20006;
 static const int kDeletePresetDummyID = 20007;
 static const int kMenuID = 20100;
-static const int kEnableID = 20101;
-static const int kPlayID = 20102;
-static const int kRewindID = 20103;
-static const int kFFwdID = 20104;
-static const int kPlaybackID = 20105;
-static const int kCaptureID = 20106;
+static const int kPlayID = 20101;
+static const int kRewindID = 20102;
+static const int kFFwdID = 20103;
+static const int kPlaybackID = 20104;
+static const int kCaptureID = 20105;
 static const int kUserPresetsID = 21000;
 static const int kDeletePresetID = 22000;
 static const int kFactoryPresetsID = 23000;
 
-BEGIN_EVENT_TABLE(EffectUIHost, wxDialogWrapper)
+BEGIN_EVENT_TABLE(EffectUIHost, ThemedDialog)
 EVT_INIT_DIALOG(EffectUIHost::OnInitDialog)
 EVT_ERASE_BACKGROUND(EffectUIHost::OnErase)
 EVT_PAINT(EffectUIHost::OnPaint)
@@ -702,7 +135,6 @@ EVT_BUTTON(wxID_CANCEL, EffectUIHost::OnCancel)
 EVT_BUTTON(wxID_HELP, EffectUIHost::OnHelp)
 EVT_BUTTON(eDebugID, EffectUIHost::OnDebug)
 EVT_BUTTON(kMenuID, EffectUIHost::OnMenu)
-EVT_CHECKBOX(kEnableID, EffectUIHost::OnEnable)
 EVT_BUTTON(kPlayID, EffectUIHost::OnPlay)
 EVT_BUTTON(kRewindID, EffectUIHost::OnRewind)
 EVT_BUTTON(kFFwdID, EffectUIHost::OnFFwd)
@@ -716,76 +148,34 @@ EVT_MENU_RANGE(kDeletePresetID, kDeletePresetID + 999, EffectUIHost::OnDeletePre
 EVT_MENU_RANGE(kFactoryPresetsID, kFactoryPresetsID + 999, EffectUIHost::OnFactoryPreset)
 END_EVENT_TABLE()
 
-EffectUIHost::EffectUIHost(wxWindow *parent,
-                           AudacityProject &project,
-                           Effect *effect,
-                           EffectUIClientInterface *client)
-:  wxDialogWrapper(parent, wxID_ANY, effect->GetName(),
-                   wxDefaultPosition, wxDefaultSize,
-                   wxDEFAULT_DIALOG_STYLE | wxRESIZE_BORDER | wxMINIMIZE_BOX | wxMAXIMIZE_BOX)
+EffectUIHost::EffectUIHost()
+:  ThemedDialog()
 {
-#if defined(__WXMAC__)
-   // Make sure the effect window actually floats above the main window
-   [ [((NSView *)GetHandle()) window] setLevel:NSFloatingWindowLevel];
-#endif
-   
-   SetName( effect->GetName() );
-   SetExtraStyle(GetExtraStyle() | wxWS_EX_VALIDATE_RECURSIVELY);
-   
-   mParent = parent;
-   mEffect = effect;
-   mCommand = NULL;
-   mClient = client;
-   
-   mProject = &project;
-   
    mInitialized = false;
    mSupportsRealtime = false;
    
    mDisableTransport = false;
    
-   mEnabled = true;
-   
    mPlayPos = 0.0;
-   mClient->SetHostUI(this);
+}
+
+EffectUIHost::EffectUIHost(wxWindow *parent,
+                           AudacityProject &project,
+                           Effect *effect,
+                           EffectUIClientInterface *client)
+:  EffectUIHost()
+{
+   Create(parent, project, client, effect, nullptr);
 }
 
 EffectUIHost::EffectUIHost(wxWindow *parent,
                            AudacityProject &project,
                            AudacityCommand *command,
                            EffectUIClientInterface *client)
-:  wxDialogWrapper(parent, wxID_ANY, XO("Some Command") /*command->GetName()*/,
-                   wxDefaultPosition, wxDefaultSize,
-                   wxDEFAULT_DIALOG_STYLE | wxRESIZE_BORDER | wxMINIMIZE_BOX | wxMAXIMIZE_BOX)
+:  EffectUIHost()
 {
-#if defined(__WXMAC__)
-   // Make sure the effect window actually floats above the main window
-   [ [((NSView *)GetHandle()) window] setLevel:NSFloatingWindowLevel];
-#endif
-   
-   //SetName( command->GetName() );
-   SetExtraStyle(wxWS_EX_VALIDATE_RECURSIVELY);
-   
-   mParent = parent;
-   mEffect = NULL;
-   mCommand = command;
-   mClient = client;
-   
-   mProject = &project;
-   
-   mInitialized = false;
-   mSupportsRealtime = false;
-   
-   mDisableTransport = false;
-   
-   mEnabled = true;
-   
-   mPlayPos = 0.0;
-   mClient->SetHostUI(this);
+   Create(parent, project, client, nullptr, command);
 }
-
-
-
 
 EffectUIHost::~EffectUIHost()
 {
@@ -793,12 +183,41 @@ EffectUIHost::~EffectUIHost()
    
    if (mClient)
    {
-      if (mNeedsResume)
-         Resume();
-      
       mClient->CloseUI();
       mClient = NULL;
    }
+}
+
+bool EffectUIHost::Create(wxWindow *parent,
+                          AudacityProject &project,
+                          EffectUIClientInterface *client,
+                          Effect *effect,
+                          AudacityCommand *command)
+{
+   mParent = parent;
+   mProject = &project;
+   mClient = client;
+   mEffect = effect;
+   mCommand = command;
+
+   if (!ThemedDialog::Create(parent, wxID_ANY, effect->GetName(),
+      wxDefaultPosition, wxDefaultSize, wxRESIZE_BORDER))
+   {
+      return false;
+   }
+
+   SetName(effect->GetName());
+
+#if defined(__WXMAC__)
+   // Make sure the effect window actually floats above the main window
+   [ [((NSView *)GetHandle()) window] setLevel:NSFloatingWindowLevel];
+#endif
+   
+   SetExtraStyle(GetExtraStyle() | wxWS_EX_VALIDATE_RECURSIVELY);
+   
+   mClient->SetHostUI(this);
+
+   return true;
 }
 
 // ============================================================================
@@ -834,6 +253,12 @@ int EffectUIHost::ShowModal()
    wxSizer *sz = mApplyBtn->GetContainingSizer();
    wxASSERT(mApplyBtn->GetParent()); // To justify safenew
    wxButton *apply = safenew wxButton(mApplyBtn->GetParent(), wxID_APPLY);
+//   if (mSupportsRealtime)
+   {
+      apply->SetForegroundColour(theTheme.Colour(clrTrackPanelText));
+      apply->SetBackgroundColour(theTheme.Colour(clrTrackInfo));
+      apply->ClearBackground();
+   }
    sz->Replace(mCloseBtn, apply);
    sz->Replace(mApplyBtn, mCloseBtn);
    sz->Layout();
@@ -849,7 +274,7 @@ int EffectUIHost::ShowModal()
    
    Layout();
    
-   return wxDialogWrapper::ShowModal();
+   return ThemedDialog::ShowModal();
 }
 
 // ============================================================================
@@ -878,6 +303,7 @@ wxPanel *EffectUIHost::BuildButtonBar(wxWindow *parent)
       false /* horizontal */,
       { -1, -1 } /* minimum size */
    };
+   S.SetThemed(true); //mSupportsRealtime);
    {
       S.SetBorder( margin );
 
@@ -978,14 +404,6 @@ wxPanel *EffectUIHost::BuildButtonBar(wxWindow *parent)
                   CreateBitmap(effect_ffwd_disabled_xpm, true, false));
                mFFwdBtn->SetBitmapPressed(CreateBitmap(effect_ffwd_xpm, false, true));
             }
-
-            S.AddSpace( 5, 5 );
-
-            mEnableCb = S.Id( kEnableID )
-               .Position(wxALIGN_CENTER | wxTOP | wxBOTTOM)
-               .Name(XO("Enable"))
-               .AddCheckBox( XXO("&Enable"), mEnabled );
-            //
          }
       }
    }
@@ -995,7 +413,7 @@ wxPanel *EffectUIHost::BuildButtonBar(wxWindow *parent)
    return bar;
 }
 
-bool EffectUIHost::Initialize()
+bool EffectUIHost::Populate(ShuttleGui &S)
 {
    {
       auto gAudioIO = AudioIO::Get();
@@ -1005,7 +423,6 @@ bool EffectUIHost::Initialize()
    }
 
    EffectPanel *w {};
-   ShuttleGui S{ this, eIsCreating };
    {
       S.StartHorizontalLay( wxEXPAND );
       {
@@ -1017,6 +434,8 @@ bool EffectUIHost::Initialize()
             mParent->GetSize().GetHeight() / 2));
 
          ShuttleGui S1{ uw.get(), eIsCreating };
+         S1.SetThemed(S.IsThemed());
+
          if (!mClient->PopulateUI(S1))
          {
             return false;
@@ -1121,8 +540,6 @@ void EffectUIHost::OnClose(wxCloseEvent & WXUNUSED(evt))
    
    Hide();
    
-   if (mNeedsResume)
-      Resume();
    mClient->CloseUI();
    mClient = NULL;
    
@@ -1337,38 +754,6 @@ void EffectUIHost::OnMenu(wxCommandEvent & WXUNUSED(evt))
    wxWindow *btn = FindWindow(kMenuID);
    wxRect r = btn->GetRect();
    btn->PopupMenu(&menu, r.GetLeft(), r.GetBottom());
-}
-
-void EffectUIHost::Resume()
-{
-   if (!mClient->ValidateUI()) {
-      // If we're previewing we should still be able to stop playback
-      // so don't disable transport buttons.
-      //   mEffect->EnableApply(false);   // currently this would also disable transport buttons.
-      // The preferred behaviour is currently undecided, so for now
-      // just disallow enabling until settings are valid.
-      mEnabled = false;
-      mEnableCb->SetValue(mEnabled);
-      return;
-   }
-   RealtimeEffectManager::Get().RealtimeResumeOne( *mEffect );
-}
-
-void EffectUIHost::OnEnable(wxCommandEvent & WXUNUSED(evt))
-{
-   mEnabled = mEnableCb->GetValue();
-   
-   if (mEnabled) {
-      Resume();
-      mNeedsResume = false;
-   }
-   else
-   {
-      RealtimeEffectManager::Get().RealtimeSuspendOne( *mEffect );
-      mNeedsResume = true;
-   }
-   
-   UpdateControls();
 }
 
 void EffectUIHost::OnPlay(wxCommandEvent & WXUNUSED(evt))
@@ -1709,7 +1094,7 @@ void EffectUIHost::UpdateControls()
    {
       // Don't allow focus to get trapped
       wxWindow *focus = FindFocus();
-      if (focus == mRewindBtn || focus == mFFwdBtn || focus == mPlayBtn || focus == mEnableCb)
+      if (focus == mRewindBtn || focus == mFFwdBtn || focus == mPlayBtn)
       {
          mCloseBtn->SetFocus();
       }
@@ -1725,7 +1110,6 @@ void EffectUIHost::UpdateControls()
    {
       mRewindBtn->Enable(!(mCapturing || mDisableTransport));
       mFFwdBtn->Enable(!(mCapturing || mDisableTransport));
-      mEnableCb->Enable(!(mCapturing || mDisableTransport));
       
       wxBitmapButton *bb;
       
@@ -1792,8 +1176,6 @@ void EffectUIHost::InitializeRealtime()
 {
    if (mSupportsRealtime && !mInitialized)
    {
-      RealtimeEffectManager::Get().RealtimeAddEffect(mEffect);
-      
       wxTheApp->Bind(EVT_AUDIOIO_PLAYBACK,
                      &EffectUIHost::OnPlayback,
                      this);
@@ -1802,6 +1184,8 @@ void EffectUIHost::InitializeRealtime()
                      &EffectUIHost::OnCapture,
                      this);
       
+      mApplyBtn->Hide();
+
       mInitialized = true;
    }
 }
@@ -1810,8 +1194,6 @@ void EffectUIHost::CleanupRealtime()
 {
    if (mSupportsRealtime && mInitialized)
    {
-      RealtimeEffectManager::Get().RealtimeRemoveEffect(mEffect);
-      
       mInitialized = false;
    }
 }
@@ -1830,10 +1212,9 @@ wxDialog *EffectUI::DialogFactory( wxWindow &parent, EffectHostInterface *pHost,
    if ( !project )
       return nullptr;
 
-   Destroy_ptr<EffectUIHost> dlg{
-      safenew EffectUIHost{ &parent, *project, pEffect, client} };
+   Destroy_ptr<EffectUIHost> dlg(safenew EffectUIHost());
    
-   if (dlg->Initialize())
+   if (dlg->Create(&parent, *project, client, pEffect, nullptr))
    {
       // release() is safe because parent will own it
       return dlg.release();
@@ -1918,12 +1299,6 @@ wxDialog *EffectUI::DialogFactory( wxWindow &parent, EffectHostInterface *pHost,
 
    em.SetSkipStateFlag( false );
    if (auto effect = em.GetEffect(ID)) {
-#if defined(EXPERIMENTAL_EFFECTS_RACK)
-      if (effect->SupportsRealtime())
-      {
-         EffectRack::Get( context.project ).Add(effect);
-      }
-#endif
       effect->SetUIFlags(flags);
       success = effect->DoEffect(
          rate,

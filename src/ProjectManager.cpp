@@ -833,7 +833,7 @@ void ProjectManager::OnCloseWindow(wxCloseEvent & event)
    window.Destroy();
 
    // Destroys this
-   pSelf.reset();
+      pSelf.reset();
 }
 
 // PRL: I preserve this handler function for an event that was never sent, but

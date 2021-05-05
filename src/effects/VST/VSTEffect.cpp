@@ -1593,12 +1593,14 @@ bool VSTEffect::RealtimeProcessEnd()
 bool VSTEffect::ShowInterface(
    wxWindow &parent, const EffectDialogFactory &factory, bool forceModal)
 {
+#if 1
    if (mDialog)
    {
       if ( mDialog->Close(true) )
          mDialog = nullptr;
       return false;
    }
+#endif
 
    // mDialog is null
    auto cleanup = valueRestorer( mDialog );
@@ -1633,6 +1635,22 @@ bool VSTEffect::ShowInterface(
    bool res = mDialog->ShowModal() != 0;
 
    return res;
+}
+
+void VSTEffect::CloseInterface()
+{
+   if (mDialog)
+   {
+      if (mDialog->Close(true))
+      {
+         mDialog = nullptr;
+      }
+   }
+}
+
+bool VSTEffect::IsInterfaceShown()
+{
+   return mDialog != nullptr;
 }
 
 bool VSTEffect::GetAutomationParameters(CommandParameters & parms)

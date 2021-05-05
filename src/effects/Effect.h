@@ -141,6 +141,8 @@ class AUDACITY_DLL_API Effect /* not final */ : public wxEvtHandler,
 
    bool ShowInterface( wxWindow &parent,
       const EffectDialogFactory &factory, bool forceModal = false) override;
+   void CloseInterface() override;
+   bool IsInterfaceShown() override;
 
    bool GetAutomationParameters(CommandParameters & parms) override;
    bool SetAutomationParameters(CommandParameters & parms) override;

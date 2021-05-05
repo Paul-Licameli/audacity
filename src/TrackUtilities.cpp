@@ -16,6 +16,7 @@
 #include "Track.h"
 #include "TrackPanelAx.h"
 #include "TrackPanel.h"
+#include "effects/RealtimeEffectManager.h"
 
 namespace TrackUtilities {
 
@@ -156,6 +157,19 @@ void DoTrackSolo(AudacityProject &project, Track *t, bool exclusive)
       }
    }
    ProjectHistory::Get( project ).ModifyState(true);
+
+   TrackFocus::Get( project ).UpdateAccessibility();
+}
+
+void DoTrackEffects(AudacityProject &project, Track *t, wxPoint pos)
+{
+   RealtimeEffectManager::Get(project).Show(*t, pos);
+}
+
+void DoTrackBypass(AudacityProject &project, Track *t)
+{
+   auto & rem = RealtimeEffectManager::Get( project );
+   rem.Bypass( *t, !rem.IsBypassed( *t ) );
 
    TrackFocus::Get( project ).UpdateAccessibility();
 }

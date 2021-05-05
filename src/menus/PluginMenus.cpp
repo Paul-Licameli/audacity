@@ -320,6 +320,9 @@ MenuTable::BaseItemPtrs PopulateEffectsMenu(
       if ( !plug->IsEnabled() ){
          ;// don't add to menus!
       }
+      else if ( plug->IsEffectRealtime() ){
+         ;// don't add to menus!
+      }
       else if (plug->IsEffectDefault()
 #ifdef EXPERIMENTAL_DA
          // Move Nyquist prompt into nyquist group.
@@ -884,8 +887,8 @@ BaseItemSharedPtr GenerateMenu()
 
 static const ReservedCommandFlag
 &IsRealtimeNotActiveFlag() { static ReservedCommandFlag flag{
-   [](const AudacityProject &){
-      return !RealtimeEffectManager::Get().RealtimeIsActive();
+   [](const AudacityProject &project){
+      return !RealtimeEffectManager::Get(project).IsActive();
    }
 }; return flag; }  //lll
 

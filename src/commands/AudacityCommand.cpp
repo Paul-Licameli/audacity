@@ -123,6 +123,20 @@ bool AudacityCommand::ShowInterface(wxWindow *parent, bool WXUNUSED(forceModal))
    return res;
 }
 
+void AudacityCommand::CloseInterface()
+{
+   if (mUIDialog)
+   {
+      if ( mUIDialog->Close(true) )
+         mUIDialog = nullptr;
+   }
+}
+
+bool AudacityCommand::IsInterfaceShown()
+{
+   return mUIDialog != nullptr;
+}
+
 wxDialog *AudacityCommand::CreateUI(wxWindow *parent, AudacityCommand * WXUNUSED(client))
 {
    Destroy_ptr<AudacityCommandDialog> dlg { safenew AudacityCommandDialog{

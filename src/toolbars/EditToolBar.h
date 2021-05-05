@@ -53,9 +53,7 @@ enum {
    ETBZoomSelID,
    ETBZoomFitID,
 
-#if defined(EXPERIMENTAL_EFFECTS_RACK)
    ETBEffectsID,
-#endif
 
    ETBNumButtons
 };

@@ -13,6 +13,7 @@
 
 class AudacityProject;
 class Track;
+class wxPoint;
 
 namespace TrackUtilities {
 
@@ -29,6 +30,10 @@ namespace TrackUtilities {
    // exclusive == true, which causes the opposite behavior.
    AUDACITY_DLL_API
    void DoTrackSolo( AudacityProject &project, Track *pTrack, bool exclusive );
+   AUDACITY_DLL_API
+   void DoTrackEffects( AudacityProject &project, Track *pTrack, wxPoint pos);
+   AUDACITY_DLL_API
+   void DoTrackBypass( AudacityProject &project, Track *pTrack);
    AUDACITY_DLL_API
    void DoRemoveTrack( AudacityProject &project, Track * toRemove );
    AUDACITY_DLL_API

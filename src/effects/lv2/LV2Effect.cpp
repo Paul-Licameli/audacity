@@ -378,7 +378,7 @@ LV2Effect::LV2Effect(const LilvPlugin *plug)
 
    mLatencyPort = -1;
    mLatencyDone = false;
-   mRolling = false;
+   mRolling = true;
    mActivated = false;
 
    mDialog = NULL;
@@ -978,11 +978,8 @@ void LV2Effect::SetSampleRate(double rate)
 {
    mSampleRate = (float) rate;
 
-   if (mMaster)
-   {
-      mMaster->SetSampleRate();
-   }
-
+   GetMaster()->SetSampleRate();
+ 
    for (size_t i = 0, cnt = mSlaves.size(); i < cnt; i++)
    {
       mSlaves[i]->SetSampleRate();
@@ -1002,10 +999,7 @@ size_t LV2Effect::SetBlockSize(size_t maxBlockSize)
       mBlockSize = mMaxBlockSize;
    }
 
-   if (mMaster)
-   {
-      mMaster->SetBlockSize();
-   }
+   GetMaster()->SetBlockSize();
 
    for (size_t i = 0, cnt = mSlaves.size(); i < cnt; i++)
    {
@@ -1025,7 +1019,7 @@ sampleCount LV2Effect::GetLatency()
    if (mUseLatency && mLatencyPort >= 0 && !mLatencyDone)
    {
       mLatencyDone = true;
-      return sampleCount(mMaster->GetLatency());
+      return sampleCount(GetMaster()->GetLatency());
    }
 
    return 0;
@@ -1182,7 +1176,7 @@ bool LV2Effect::RealtimeInitialize()
       port->mBuffer.reinit((unsigned) mBlockSize, port->mIsInput);
    }
 
-   lilv_instance_activate(mMaster->GetInstance());
+   lilv_instance_activate(GetMaster()->GetInstance());
    mActivated = true;
 
    return true;
@@ -1198,7 +1192,7 @@ bool LV2Effect::RealtimeFinalize()
 
    if (mActivated)
    {
-      lilv_instance_deactivate(mMaster->GetInstance());
+      lilv_instance_deactivate(GetMaster()->GetInstance());
       mActivated = false;
    }
 
@@ -1417,14 +1411,14 @@ bool LV2Effect::RealtimeProcessEnd()
    int o = 0;
    for (auto & port : mAudioPorts)
    {
-      lilv_instance_connect_port(mMaster->GetInstance(),
+      lilv_instance_connect_port(GetMaster()->GetInstance(),
                                  port->mIndex,
                                  (port->mIsInput ? mMasterIn[i++].get() : mMasterOut[o++].get()));
    }
 
    if (mRolling)
    {
-      lilv_instance_run(mMaster->GetInstance(), mNumSamples);
+      lilv_instance_run(GetMaster()->GetInstance(), mNumSamples);
    }
 
    for (auto & port : mAtomPorts)
@@ -1487,6 +1481,22 @@ bool LV2Effect::ShowInterface(
    bool res = mDialog->ShowModal() != 0;
 
    return res;
+}
+
+void LV2Effect::CloseInterface()
+{
+   if (mDialog)
+   {
+      if (mDialog->Close(true))
+      {
+         mDialog = nullptr;
+      }
+   }
+}
+
+bool LV2Effect::IsInterfaceShown()
+{
+   return mDialog != nullptr;
 }
 
 bool LV2Effect::GetAutomationParameters(CommandParameters &parms)
@@ -1563,13 +1573,6 @@ bool LV2Effect::PopulateUI(ShuttleGui &S)
 
    mSuilHost = NULL;
    mSuilInstance = NULL;
-
-   mMaster = InitInstance(mSampleRate);
-   if (mMaster == NULL)
-   {
-      AudacityMessageBox( XO("Couldn't instantiate effect") );
-      return false;
-   }
 
    // Determine if the GUI editor is supposed to be used or not
    mHost->GetSharedConfig(wxT("Settings"),
@@ -1657,12 +1660,6 @@ bool LV2Effect::CloseUI()
       mSuilHost = NULL;
    }
 
-   if (mMaster)
-   {
-      FreeInstance(mMaster);
-      mMaster = NULL;
-   }
-
    mUIHost = NULL;
    mParent = NULL;
    mDialog = NULL;
@@ -1742,7 +1739,7 @@ bool LV2Effect::LoadFactoryPreset(int id)
    LilvState *state = lilv_state_new_from_world(gWorld, &mURIDMapFeature, preset);
    if (state)
    {
-      lilv_state_restore(state, mMaster->GetInstance(), set_value_func, this, 0, NULL);
+      lilv_state_restore(state, GetMaster()->GetInstance(), set_value_func, this, 0, NULL);
 
       lilv_state_free(state);
 
@@ -2159,7 +2156,7 @@ bool LV2Effect::BuildFancy()
 #endif
    }
 
-   LilvInstance *instance = mMaster->GetInstance();
+   LilvInstance *instance = GetMaster()->GetInstance();
    mInstanceAccessFeature->data = lilv_instance_get_handle(instance);
    mExtensionDataFeature.data_access = lilv_instance_get_descriptor(instance)->extension_data;
 
@@ -3236,6 +3233,16 @@ void LV2Effect::SetPortValue(const char *port_symbol,
          break;
       }
    }
+}
+
+LV2Wrapper *LV2Effect::GetMaster()
+{
+   if (!mMaster)
+   {
+      mMaster = InitInstance(mSampleRate);
+   }
+
+   return mMaster;
 }
 
 #if defined(__WXGTK__)

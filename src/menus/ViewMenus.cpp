@@ -12,13 +12,10 @@
 #include "../ViewInfo.h"
 #include "../commands/CommandContext.h"
 #include "../commands/CommandManager.h"
+#include "../effects/RealtimeEffectManager.h"
 #include "../prefs/GUIPrefs.h"
 #include "../prefs/TracksPrefs.h"
 #include "../tracks/ui/TrackView.h"
-
-#ifdef EXPERIMENTAL_EFFECTS_RACK
-#include "../effects/EffectUI.h"
-#endif
 
 #include <wx/scrolbar.h>
 
@@ -353,13 +350,11 @@ void OnShowNameOverlay(const CommandContext &context)
    trackPanel.Refresh(false);
 }
 
-#if defined(EXPERIMENTAL_EFFECTS_RACK)
-void OnShowEffectsRack(const CommandContext &context )
+void OnMasterEffects( const CommandContext &context )
 {
-   auto &rack = EffectRack::Get( context.project );
-   rack.Show( !rack.IsShown() );
+   auto & effectManager = RealtimeEffectManager::Get(context.project);
+   effectManager.Show(context.project);
 }
-#endif
 
 // Not a menu item, but a listener for events
 void OnUndoPushed( wxCommandEvent &evt )
@@ -466,15 +461,9 @@ BaseItemSharedPtr ViewMenu()
             Options{}.CheckTest( wxT("/GUI/ShowTrackNameInWaveform"), false ) ),
          Command( wxT("ShowClipping"), XXO("&Show Clipping (on/off)"),
             FN(OnShowClipping), AlwaysEnabledFlag,
-            Options{}.CheckTest( wxT("/GUI/ShowClipping"), false ) )
-   #if defined(EXPERIMENTAL_EFFECTS_RACK)
-         ,
-         Command( wxT("ShowEffectsRack"), XXO("Show Effects Rack"),
-            FN(OnShowEffectsRack), AlwaysEnabledFlag,
-            Options{}.CheckTest( [](AudacityProject &project){
-               auto &rack = EffectRack::Get( project );
-               return rack.IsShown(); } ) )
-   #endif
+            Options{}.CheckTest( wxT("/GUI/ShowClipping"), false ) ),
+         Command( wxT("ShowMasterEffects"), XXO("Master Effects..."),
+            FN(OnMasterEffects), AlwaysEnabledFlag)
       )
    ) ) };
    return menu;

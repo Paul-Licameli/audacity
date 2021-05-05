@@ -1061,6 +1061,15 @@ bool NyquistEffect::ShowInterface(
    return res;
 }
 
+void NyquistEffect::CloseInterface()
+{
+}
+
+bool NyquistEffect::IsInterfaceShown()
+{
+   return false;
+}
+
 void NyquistEffect::PopulateOrExchange(ShuttleGui & S)
 {
    if (mIsPrompt)

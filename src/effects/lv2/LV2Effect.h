@@ -311,6 +311,8 @@ public:
 
    bool ShowInterface( wxWindow &parent,
       const EffectDialogFactory &factory, bool forceModal = false) override;
+   void CloseInterface() override;
+   bool IsInterfaceShown() override;
 
    bool GetAutomationParameters(CommandParameters & parms) override;
    bool SetAutomationParameters(CommandParameters & parms) override;
@@ -429,6 +431,8 @@ private:
                      const void *value,
                      uint32_t size,
                      uint32_t type);
+
+   LV2Wrapper *GetMaster();
 
 private:
  

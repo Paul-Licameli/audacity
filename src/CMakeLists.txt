@@ -481,8 +481,16 @@ list( APPEND SOURCES
       effects/Paulstretch.h
       effects/Phaser.cpp
       effects/Phaser.h
+      effects/RealtimeEffectList.cpp
+      effects/RealtimeEffectList.h
       effects/RealtimeEffectManager.cpp
       effects/RealtimeEffectManager.h
+      effects/RealtimeEffectRenderer.cpp
+      effects/RealtimeEffectRenderer.h
+      effects/RealtimeEffectState.cpp
+      effects/RealtimeEffectState.h
+      effects/RealtimeEffectUI.cpp
+      effects/RealtimeEffectUI.h
       effects/Repair.cpp
       effects/Repair.h
       effects/Repeat.cpp
@@ -916,6 +924,8 @@ list( APPEND SOURCES
       widgets/AudacityMessageBox.h
       widgets/BackedPanel.cpp
       widgets/BackedPanel.h
+      widgets/ComboBox.cpp
+      widgets/ComboBox.h
       widgets/ErrorDialog.cpp
       widgets/ErrorDialog.h
       widgets/ExpandingToolBar.cpp
@@ -973,6 +983,8 @@ list( APPEND SOURCES
          widgets/ErrorReportDialog.cpp
          widgets/ErrorReportDialog.h
       >
+      widgets/ThemedDialog.cpp
+      widgets/ThemedDialog.h
       widgets/UnwritableLocationErrorDialog.cpp
       widgets/UnwritableLocationErrorDialog.h
       widgets/Warning.cpp
