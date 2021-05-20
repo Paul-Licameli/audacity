@@ -17,7 +17,7 @@
 #include "../Project.h"
 #include "../Track.h"
 #include "../xml/XMLWriter.h"
-#include "EffectUI.h"
+//#include "EffectUI.h"
 
 #include <wx/time.h>
 
