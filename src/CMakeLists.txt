@@ -336,6 +336,8 @@ list( APPEND SOURCES
       ZoomInfo.cpp
       ZoomInfo.h
       float_cast.h
+      wxArrayStringEx.cpp
+      wxArrayStringEx.h
       wxFileNameWrapper.h
 
       # Commands
