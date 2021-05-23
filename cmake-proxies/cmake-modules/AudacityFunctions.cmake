@@ -348,7 +348,7 @@ function( audacity_module_fn NAME SOURCES IMPORT_TARGETS
       )
    else()
       set( ATTRIBUTES "shape=octagon" )
-      set_target_property_all( ${TARGET} ${DIRECTORY_PROPERTY} "${_EXEDIR}" )
+      set_target_property_all( ${TARGET} ${DIRECTORY_PROPERTY} "${_LIBRARYDIR}" )
       set_target_properties( ${TARGET}
          PROPERTIES
             PREFIX ""

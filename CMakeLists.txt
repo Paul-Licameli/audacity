@@ -264,6 +264,14 @@ if( CMAKE_SYSTEM_NAME MATCHES "Darwin" )
    set( CMAKE_MACOSX_RPATH OFF )
 endif()
 
+# Where Audacity libraries go
+if( CMAKE_SYSTEM_NAME MATCHES "Darwin|Windows" )
+   set( _LIBRARYDIR ${_EXEDIR} )
+else()
+   set( _LIBRARYDIR "${_DEST}/libraries" )
+   # But an installation step follows in libraries/CMakeLists.txt
+endif()
+
 # Add the math library (if found) to the list of required libraries
 check_library_exists( m pow "" HAVE_LIBM )
 if( HAVE_LIBM )
