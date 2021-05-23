@@ -1568,7 +1568,7 @@ bool AudacityApp::InitPart2()
 
    Bind(wxEVT_MENU_CLOSE, [=](wxMenuEvent &event)
    {
-      wxSetlocale(LC_NUMERIC, GUIPrefs::GetLocaleName());
+      wxSetlocale(LC_NUMERIC, Languages::GetLocaleName());
       event.Skip();
    });
 #endif

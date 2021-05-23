@@ -35,6 +35,25 @@ AUDACITY_DLL_API
  */
 wxString GetSystemLanguageCode(const FilePaths &pathList);
 
+AUDACITY_DLL_API
+/*!
+ @param audacityPathList paths to search for .mo files, grouped into subdirectories for the different languages
+ @param lang a language code; or if empty or "System", then default to system language.
+ @return the language code actually used which is not lang if lang cannot be found. */
+wxString SetLang( const FilePaths &audacityPathList, const wxString & lang );
+
+AUDACITY_DLL_API
+/*! @return the last language code that was set */
+wxString GetLang();
+
+AUDACITY_DLL_API
+/*! @return the last language code that was set (minus country code) */
+wxString GetLangShort();
+
+AUDACITY_DLL_API
+/*! @return a string as from setlocale() */
+wxString GetLocaleName();
+
 }
 
 #endif // __AUDACITY_LANGUAGES__
