@@ -100,7 +100,7 @@ It handles initialization and termination by subclassing wxApp.
 #include "FFT.h"
 #include "widgets/AudacityMessageBox.h"
 #include "prefs/DirectoriesPrefs.h"
-#include "prefs/GUIPrefs.h"
+#include "prefs/GUISettings.h"
 #include "tracks/ui/Scrubbing.h"
 #include "FileConfig.h"
 #include "widgets/FileHistory.h"
@@ -215,7 +215,7 @@ void PopulatePreferences()
       langCode =
          Languages::GetSystemLanguageCode(FileNames::AudacityPathList());
 
-   langCode = GUIPrefs::SetLang( langCode );
+   langCode = GUISettings::SetLang( langCode );
 
    // User requested that the preferences be completely reset
    if (resetPrefs)

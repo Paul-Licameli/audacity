@@ -286,6 +286,7 @@ list( APPEND SOURCES
       prefs/DirectoriesPrefs.h
       prefs/GUIPrefs.cpp
       prefs/GUIPrefs.h
+      prefs/GUISettings.cpp
       prefs/GUISettings.h
       prefs/ImportExportPrefs.cpp
       prefs/ImportExportPrefs.h
