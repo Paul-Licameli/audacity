@@ -28,7 +28,9 @@ extern AUDACITY_DLL_API DitherType gLowQualityDither, gHighQualityDither;
 
 #if 0
 // Moved to audacity/types.h
-typedef enum {
+// PRL:  it will be moved back here ultimately
+//! The ordering of these values with operator < agrees with the order of increasing bit width
+enum class sampleFormat : unsigned {
    int16Sample = 0x00020001,
    int24Sample = 0x00040001,
    floatSample = 0x0004000F
