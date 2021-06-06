@@ -9,8 +9,8 @@
 **********************************************************************/
 
 #include "ProjectWindows.h"
+#include "BasicUI.h"
 #include "Project.h"
-#include "widgets/wxWidgetsBasicUI.h"
 
 #include <wx/frame.h>
 
@@ -97,13 +97,27 @@ const wxFrame *FindProjectFrame( const AudacityProject *project ) {
    return ProjectWindows::Get(*project).mFrame;
 }
 
+static WindowPlacementFactory &theFactory()
+{
+   static WindowPlacementFactory sFactory;
+   return sFactory;
+}
+
+WindowPlacementFactory InstallProjectFramePlacementFactory(
+   WindowPlacementFactory newFactory)
+{
+   auto &factory = theFactory();
+   auto result = std::move(factory);
+   factory = std::move(newFactory);
+   return factory;
+}
+
 std::unique_ptr<const BasicUI::WindowPlacement>
 ProjectFramePlacement( AudacityProject *project )
 {
-   if (!project)
+   if (!project || !theFactory())
       return std::make_unique<BasicUI::WindowPlacement>();
-   return std::make_unique<wxWidgetsWindowPlacement>(
-      &GetProjectFrame(*project));
+   return theFactory()(*project);
 }
 
 void SetProjectFrame(AudacityProject &project, wxFrame &frame )

@@ -1064,10 +1064,17 @@ bool AudacityApp::OnInit()
    // Ensure we have an event loop during initialization
    wxEventLoopGuarantor eventLoop;
 
-   // Inject basic GUI services behind the facade
+   // Inject basic GUI services behind the facades
    {
       static wxWidgetsBasicUI uiServices;
       (void)BasicUI::Install(&uiServices);
+
+      auto factory = [](AudacityProject &project)
+         -> std::unique_ptr<BasicUI::WindowPlacement> {
+         return std::make_unique<wxWidgetsWindowPlacement>(
+            &GetProjectFrame(project));
+      };
+      (void)InstallProjectFramePlacementFactory(factory);
    }
 
    // Fire up SQLite

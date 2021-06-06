@@ -14,6 +14,8 @@
 #include "ClientData.h"
 #include "CellularPanel.h"
 
+#include <functional>
+
 class AudacityProject;
 class wxFrame;
 
@@ -43,6 +45,17 @@ const wxFrame *FindProjectFrame( const AudacityProject *project );
 
 AUDACITY_DLL_API void SetProjectFrame(
    AudacityProject &project, wxFrame &frame );
+
+//! Type of function that makes a WindowPlacement for dialogs, with project frame as parent
+using WindowPlacementFactory = std::function<
+   std::unique_ptr<const BasicUI::WindowPlacement>(
+      AudacityProject &project)
+>;
+
+//! Install the WindowPlacementFactory used by ProjectFramePlacement
+/*! @return the previously installed factory, if any */
+AUDACITY_DLL_API WindowPlacementFactory
+InstallProjectFramePlacementFactory(WindowPlacementFactory newFactory);
 
 //! Make a WindowPlacement object suitable for `project` (which may be null)
 /*! @post return value is not null */
