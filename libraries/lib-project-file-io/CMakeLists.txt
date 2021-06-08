@@ -12,6 +12,7 @@ set( SOURCES
    SqliteSampleBlock.cpp
 )
 set( LIBRARIES
+   lib-sentry-reporting
    lib-string-utils-interface
    lib-wave-track-interface
    lib-project-history-interface
