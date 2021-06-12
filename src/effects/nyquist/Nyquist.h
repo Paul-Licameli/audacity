@@ -105,6 +105,90 @@ private:
    TranslatableString mInitError;
 };
 
+//! Holds parameters and state for one processing of a Nyquist effect
+class AUDACITY_DLL_API NyquistContext {
+public:
+   NyquistContext(const TranslatableString &debugOutput,
+      EffectType effectType, int version, double t0, double t1,
+      const wxString &props, const wxString &perTrackProps);
+   ~NyquistContext();
+
+   //! @name interactive control of the progress of the Lisp interpreter
+   //! @{
+   void Continue();
+   void Break();
+   void Stop();
+   //! @}
+
+   void RedirectOutput();
+
+   void ClearBuffers();
+   bool BeginTrack( WaveTrack *pTrack );
+   bool ProcessOne();
+   void EndTrack( WaveTrack *pTrack );
+   bool ProcessLoop();
+
+   EffectType GetType() const { return mEffectType; }
+
+   const TranslatableString &DebugOutput() const { return mDebugOutput; } 
+private:
+   static int StaticGetCallback(float *buffer, int channel,
+                                int64_t start, int64_t len, int64_t totlen,
+                                void *userdata);
+   static int StaticPutCallback(float *buffer, int channel,
+                                int64_t start, int64_t len, int64_t totlen,
+                                void *userdata);
+   static void StaticOutputCallback(int c, void *userdata);
+   static void StaticOSCallback(void *userdata);
+
+   int GetCallback(float *buffer, int channel,
+                   int64_t start, int64_t len, int64_t totlen);
+   int PutCallback(float *buffer, int channel,
+                   int64_t start, int64_t len, int64_t totlen);
+   void OutputCallback(int c);
+   void OSCallback();
+
+   std::exception_ptr mpException {};
+   const wxString mProps;
+   const wxString mPerTrackProps;
+   unsigned          mCurNumChannels;
+   unsigned          mCount{ 0 };
+
+   bool              mFirstInGroup{ true };
+   Track             *mgtLast = nullptr;
+
+   WaveTrack         *mCurTrack[2];
+   sampleCount       mCurStart[2];
+   sampleCount       mCurLen;
+
+   const EffectType mEffectType;
+   const int mVersion;
+
+   const double mT0, mT1;
+
+   wxString          mDebugOutputStr;
+   TranslatableString mDebugOutput;
+
+   double            mProgressIn{ 0 };
+   double            mProgressOut{ 0 };
+   double            mProgressTot{ 0 };
+
+   int               mTrackIndex{ 0 };
+   bool              mStop{ false };
+   bool              mBreak{ false };
+   bool              mCont{ false };
+   bool              mRedirectOutput{ false };
+
+
+   using Buffer = std::unique_ptr<float[]>;
+   Buffer            mCurBuffer[2];
+   sampleCount       mCurBufferStart[2];
+   size_t            mCurBufferLen[2];
+
+   double            mScale;
+   Effect *const mpEffect;
+};
+
 class AUDACITY_DLL_API NyquistEffect final : public Effect
 {
 public:
@@ -153,21 +237,14 @@ public:
 
    // NyquistEffect implementation
    // For Nyquist Workbench support
-   void RedirectOutput();
    void SetCommand(const wxString &cmd);
-   void Continue();
-   void Break();
-   void Stop();
+
+   // non-null only while processing
+   NyquistContext *GetContext() const { return mpContext.get(); };
 
 private:
    static int mReentryCount;
    // NyquistEffect implementation
-
-   void ClearBuffers();
-   bool BeginTrack( WaveTrack *pTrack );
-   bool ProcessOne();
-   void EndTrack( WaveTrack *pTrack );
-   bool ProcessLoop();
 
    void BuildPromptWindow(ShuttleGui & S);
    void BuildEffectWindow(ShuttleGui & S);
@@ -185,23 +262,6 @@ private:
    static FilePaths GetNyquistSearchPath();
 
    static wxString NyquistToWxString(const char *nyqString);
-   wxString EscapeString(const wxString & inStr);
-
-   static int StaticGetCallback(float *buffer, int channel,
-                                int64_t start, int64_t len, int64_t totlen,
-                                void *userdata);
-   static int StaticPutCallback(float *buffer, int channel,
-                                int64_t start, int64_t len, int64_t totlen,
-                                void *userdata);
-   static void StaticOutputCallback(int c, void *userdata);
-   static void StaticOSCallback(void *userdata);
-
-   int GetCallback(float *buffer, int channel,
-                   int64_t start, int64_t len, int64_t totlen);
-   int PutCallback(float *buffer, int channel,
-                   int64_t start, int64_t len, int64_t totlen);
-   void OutputCallback(int c);
-   void OSCallback();
 
    void OnLoad(wxCommandEvent & evt);
    void OnSave(wxCommandEvent & evt);
@@ -220,9 +280,8 @@ private:
 
    wxString          mXlispPath;
 
-   bool              mStop;
-   bool              mBreak;
-   bool              mCont;
+
+   std::unique_ptr<NyquistContext> mpContext;
 
    bool              mFoundType;
    bool              mCompiler;
@@ -255,36 +314,16 @@ private:
    bool              mDebugButton;  // Set to false to disable Debug button.
 
    bool              mDebug;        // When true, debug window is shown.
-   bool              mRedirectOutput;
    bool              mProjectChanged;
-   wxString          mDebugOutputStr;
-   TranslatableString mDebugOutput;
 
    int               mVersion;   // Syntactic version of Nyquist plug-in (not to be confused with mReleaseVersion)
 
    //! @invariant `mpProgram != nullptr`
    std::unique_ptr <NyquistProgram> mpProgram;
 
-   unsigned          mCurNumChannels;
-   WaveTrack         *mCurTrack[2];
-   sampleCount       mCurStart[2];
-   sampleCount       mCurLen;
    sampleCount       mMaxLen;
-   int               mTrackIndex;
-   bool              mFirstInGroup;
-   Track             *mgtLast = nullptr;
    double            mOutputTime;
-   unsigned          mCount;
    unsigned          mNumSelectedChannels;
-   double            mProgressIn;
-   double            mProgressOut;
-   double            mProgressTot;
-   double            mScale;
-
-   using Buffer = std::unique_ptr<float[]>;
-   Buffer            mCurBuffer[2];
-   sampleCount       mCurBufferStart[2];
-   size_t            mCurBufferLen[2];
 
    WaveTrack        *mOutputTrack[2];
 
@@ -297,8 +336,6 @@ private:
    int               mMergeClips;
 
    wxTextCtrl *mCommandText;
-
-   std::exception_ptr mpException {};
 
    DECLARE_EVENT_TABLE()
 

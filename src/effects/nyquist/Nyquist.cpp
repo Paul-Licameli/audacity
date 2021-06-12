@@ -113,6 +113,16 @@ enum
 static const wxChar *KEY_Command = wxT("Command");
 static const wxChar *KEY_Parameters = wxT("Parameters");
 
+static wxString EscapeString(const wxString & inStr)
+{
+   wxString str = inStr;
+
+   str.Replace(LR"(\)", LR"(\\)");
+   str.Replace(LR"(")", LR"(\")");
+
+   return str;
+}
+
 ///////////////////////////////////////////////////////////////////////////////
 //
 // NyquistEffect
@@ -143,7 +153,6 @@ NyquistEffect::NyquistEffect(const FilePath &fName)
    mExternal = false;
    mCompiler = false;
    mTrace = false;
-   mRedirectOutput = false;
    mDebug = false;
    mIsSal = false;
    mAuthor = XO("n/a");
@@ -156,9 +165,6 @@ NyquistEffect::NyquistEffect(const FilePath &fName)
 
    mVersion = 4;
 
-   mStop = false;
-   mBreak = false;
-   mCont = false;
    mIsTool = false;
 
    mMaxLen = NYQ_MAX_LEN;
@@ -698,17 +704,6 @@ bool NyquistEffect::Process()
    //}
 
    mOutputTime = 0;
-   mCount = 0;
-   mProgressIn = 0;
-   mProgressOut = 0;
-   mProgressTot = 0;
-   mScale = (GetType() == EffectTypeProcess ? 0.5 : 1.0) / GetNumWaveGroups();
-
-   mStop = false;
-   mBreak = false;
-   mCont = false;
-
-   mTrackIndex = 0;
 
    // If in tool mode, then we don't do anything with the track and selection.
    const bool bOnePassTool = (GetType() == EffectTypeTool);
@@ -723,12 +718,14 @@ bool NyquistEffect::Process()
       ? 0
       : mOutputTracks->Selected< const WaveTrack >().size();
 
-   mDebugOutput = {};
+   TranslatableString debugOutput;
    if (!mHelpFile.empty() && !mHelpFileExists) {
-      mDebugOutput = XO(
+      debugOutput = XO(
 "error: File \"%s\" specified in header but not found in plug-in path.\n")
          .Format( mHelpFile );
    }
+   mpContext = std::make_unique<NyquistContext>(debugOutput);
+   auto cleanup0 = finally([&]{ mpContext.reset(); });
 
    if (mVersion >= 4)
    {
@@ -855,20 +852,23 @@ bool NyquistEffect::Process()
          XO("Nyquist Error") );
    }
 
-   success = ProcessLoop();
+   success = mpContext->ProcessLoop();
 
    if (success && !bOnePassTool && mOutputTime > 0.0) {
       mT1 = mT0 + mOutputTime;
    }
 
    // Show debug window if trace set in plug-in header and something to show.
-   mDebug = (mTrace && !mDebugOutput.Translation().empty())? true : mDebug;
+   mDebug = (mTrace && !mpContext->DebugOutput().Translation().empty())
+      ? true : mDebug;
 
-   if (mDebug && !mRedirectOutput) {
+   if (mDebug
+//       && !mRedirectOutput
+       ) {
       NyquistOutputDialog dlog(mUIParent, -1,
                                mName,
                                XO("Debug Output: "),
-                               mDebugOutput);
+                               mpContext->DebugOutput());
       dlog.CentreOnParent();
       dlog.ShowModal();
    }
@@ -1003,7 +1003,7 @@ bool NyquistEffect::TransferDataFromWindow()
 
 // NyquistEffect implementation
 
-void NyquistEffect::ClearBuffers()
+void NyquistContext::ClearBuffers()
 {
    for (size_t i = 0; i < mCurNumChannels; i++) {
       mCurBuffer[i].reset();
@@ -1011,7 +1011,8 @@ void NyquistEffect::ClearBuffers()
    }
 }
 
-bool NyquistEffect::BeginTrack(WaveTrack *pTrack)
+#if 0
+bool NyquistContext::BeginTrack(WaveTrack *pTrack)
 {
    // Prepare to accumulate more debug output in OutputCallback
    mDebugOutputStr = mDebugOutput.Translation();
@@ -1073,8 +1074,9 @@ bool NyquistEffect::BeginTrack(WaveTrack *pTrack)
 
    return true;
 }
+#endif
 
-void NyquistEffect::EndTrack(WaveTrack *pTrack)
+void NyquistContext::EndTrack(WaveTrack *pTrack)
 {
    // Guarantee release of memory when done
    ClearBuffers();
@@ -1085,7 +1087,8 @@ void NyquistEffect::EndTrack(WaveTrack *pTrack)
    mCount += mCurNumChannels;
 }
 
-bool NyquistEffect::ProcessOne()
+#if 0
+bool NyquistContext::ProcessOne()
 {
    mpException = {};
 
@@ -1695,6 +1698,7 @@ bool NyquistEffect::ProcessLoop()
 
    return true;
 }
+#endif
 
 // ============================================================================
 // NyquistEffect Implementation
@@ -1839,7 +1843,7 @@ FileNames::FileTypes NyquistProgram::ParseFileTypes(const wxString & text)
    return results;
 }
 
-void NyquistEffect::RedirectOutput()
+void NyquistContext::RedirectOutput()
 {
    mRedirectOutput = true;
 }
@@ -1853,17 +1857,28 @@ void NyquistEffect::SetCommand(const wxString &cmd)
    }
 }
 
-void NyquistEffect::Break()
+#if 0
+NyquistContext::NyquistContext()
+{
+   mScale = (GetType() == EffectTypeProcess ? 0.5 : 1.0) / GetNumWaveGroups();
+}
+#endif
+
+NyquistContext::~NyquistContext()
+{
+}
+
+void NyquistContext::Break()
 {
    mBreak = true;
 }
 
-void NyquistEffect::Continue()
+void NyquistContext::Continue()
 {
    mCont = true;
 }
 
-void NyquistEffect::Stop()
+void NyquistContext::Stop()
 {
    mStop = true;
 }
@@ -2488,15 +2503,15 @@ bool NyquistProgram::ParseCommand(const wxString & cmd)
    return ParseProgram(stream);
 }
 
-int NyquistEffect::StaticGetCallback(float *buffer, int channel,
+int NyquistContext::StaticGetCallback(float *buffer, int channel,
                                      int64_t start, int64_t len, int64_t totlen,
                                      void *userdata)
 {
-   NyquistEffect *This = (NyquistEffect *)userdata;
+   auto This = static_cast<NyquistContext*>(userdata);
    return This->GetCallback(buffer, channel, start, len, totlen);
 }
 
-int NyquistEffect::GetCallback(float *buffer, int ch,
+int NyquistContext::GetCallback(float *buffer, int ch,
                                int64_t start, int64_t len, int64_t WXUNUSED(totlen))
 {
    if (mCurBuffer[ch]) {
@@ -2547,7 +2562,7 @@ int NyquistEffect::GetCallback(float *buffer, int ch,
          mProgressIn = progress;
       }
 
-      if (TotalProgress(mProgressIn+mProgressOut+mProgressTot)) {
+      if (mpEffect->TotalProgress(mProgressIn+mProgressOut+mProgressTot)) {
          return -1;
       }
    }
@@ -2555,15 +2570,15 @@ int NyquistEffect::GetCallback(float *buffer, int ch,
    return 0;
 }
 
-int NyquistEffect::StaticPutCallback(float *buffer, int channel,
+int NyquistContext::StaticPutCallback(float *buffer, int channel,
                                      int64_t start, int64_t len, int64_t totlen,
                                      void *userdata)
 {
-   NyquistEffect *This = (NyquistEffect *)userdata;
+   auto This = static_cast<NyquistContext*>(userdata);
    return This->PutCallback(buffer, channel, start, len, totlen);
 }
 
-int NyquistEffect::PutCallback(float *buffer, int channel,
+int NyquistContext::PutCallback(float *buffer, int channel,
                                int64_t start, int64_t len, int64_t totlen)
 {
    // Don't let C++ exceptions propagate through the Nyquist library
@@ -2575,7 +2590,7 @@ int NyquistEffect::PutCallback(float *buffer, int channel,
             mProgressOut = progress;
          }
 
-         if (TotalProgress(mProgressIn+mProgressOut+mProgressTot)) {
+         if (mpEffect->TotalProgress(mProgressIn+mProgressOut+mProgressTot)) {
             return -1;
          }
       }
@@ -2586,12 +2601,13 @@ int NyquistEffect::PutCallback(float *buffer, int channel,
    }, MakeSimpleGuard( -1 ) ); // translate all exceptions into failure
 }
 
-void NyquistEffect::StaticOutputCallback(int c, void *This)
+void NyquistContext::StaticOutputCallback(int c, void *userdata)
 {
-   ((NyquistEffect *)This)->OutputCallback(c);
+   auto This = static_cast<NyquistContext*>(userdata);
+   This->OutputCallback(c);
 }
 
-void NyquistEffect::OutputCallback(int c)
+void NyquistContext::OutputCallback(int c)
 {
    // Always collect Nyquist error messages for normal plug-ins
    if (!mRedirectOutput) {
@@ -2602,12 +2618,12 @@ void NyquistEffect::OutputCallback(int c)
    std::cout << (char)c;
 }
 
-void NyquistEffect::StaticOSCallback(void *This)
+void NyquistContext::StaticOSCallback(void *This)
 {
-   ((NyquistEffect *)This)->OSCallback();
+   static_cast<NyquistContext*>(This)->OSCallback();
 }
 
-void NyquistEffect::OSCallback()
+void NyquistContext::OSCallback()
 {
    if (mStop) {
       mStop = false;

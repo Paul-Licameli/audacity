@@ -1339,7 +1339,8 @@ void NyqBench::OnGo(wxCommandEvent & e)
       EffectManager::Get().RegisterEffect(std::move(pEffect));
 
    mEffect->SetCommand(mScript->GetValue());
-   mEffect->RedirectOutput();
+   if (auto pContext = mEffect->GetContext())
+      pContext->RedirectOutput();
 
    AudacityProject *p = GetActiveProject();
    wxASSERT(p != NULL);
@@ -1365,7 +1366,8 @@ void NyqBench::OnGo(wxCommandEvent & e)
 void NyqBench::OnStop(wxCommandEvent & e)
 {
    mRunning = false;
-   mEffect->Stop();
+   if (auto pContext = mEffect->GetContext())
+      pContext->Stop();
 }
 
 void NyqBench::OnAbout(wxCommandEvent & e)
