@@ -259,6 +259,7 @@ private:
    sampleCount       mMaxLen;
    int               mTrackIndex;
    bool              mFirstInGroup;
+   Track             *mgtLast = nullptr;
    double            mOutputTime;
    unsigned          mCount;
    unsigned          mNumSelectedChannels;

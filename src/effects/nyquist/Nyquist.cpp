@@ -827,7 +827,7 @@ bool NyquistEffect::Process()
    // (we have no idea what the length of the returned audio will be, so we have
    // to handle sync-lock group behavior the "old" way).
    mFirstInGroup = true;
-   Track *gtLast = NULL;
+   mgtLast = nullptr;
 
    for (;
         bOnePassTool || pRange->first != pRange->second;
@@ -864,8 +864,8 @@ bool NyquistEffect::Process()
 
             // Check whether we're in the same group as the last selected track
             Track *gt = *TrackList::SyncLockGroup(mCurTrack[0]).first;
-            mFirstInGroup = !gtLast || (gtLast != gt);
-            gtLast = gt;
+            mFirstInGroup = !mgtLast || (mgtLast != gt);
+            mgtLast = gt;
 
             mCurStart[0] = mCurTrack[0]->TimeToLongSamples(mT0);
             auto end = mCurTrack[0]->TimeToLongSamples(mT1);
