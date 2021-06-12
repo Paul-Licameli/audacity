@@ -833,64 +833,14 @@ bool NyquistEffect::Process()
         bOnePassTool || pRange->first != pRange->second;
         (void) (!pRange || (++pRange->first, true))
    ) {
-      // Prepare to accumulate more debug output in OutputCallback
-      mDebugOutputStr = mDebugOutput.Translation();
-      mDebugOutput = Verbatim( "%s" ).Format( std::cref( mDebugOutputStr ) );
+      const auto pTrack = pRange ? *pRange->first : nullptr;
+      wxASSERT( bOnePassTool == (pTrack == nullptr) );
+      if ( !(success = BeginTrack(pTrack)) )
+         goto finish;
 
-      mCurTrack[0] = pRange ? *pRange->first : nullptr;
-      mCurNumChannels = 1;
-      if ( (mT1 >= mT0) || bOnePassTool ) {
-         if (bOnePassTool) {
-         }
-         else {
-            auto channels = TrackList::Channels(mCurTrack[0]);
-            if (channels.size() > 1) {
-               // TODO: more-than-two-channels
-               // Pay attention to consistency of mNumSelectedChannels
-               // with the running tally made by this loop!
-               mCurNumChannels = 2;
+      auto cleanup = finally([&]{ EndTrack(pTrack); });
 
-               mCurTrack[1] = * ++ channels.first;
-               if (mCurTrack[1]->GetRate() != mCurTrack[0]->GetRate()) {
-                  Effect::MessageBox(
-                     XO(
-"Sorry, cannot apply effect on stereo tracks where the tracks don't match."),
-                     wxOK | wxCENTRE );
-                  success = false;
-                  goto finish;
-               }
-               mCurStart[1] = mCurTrack[1]->TimeToLongSamples(mT0);
-            }
-
-            // Check whether we're in the same group as the last selected track
-            Track *gt = *TrackList::SyncLockGroup(mCurTrack[0]).first;
-            mFirstInGroup = !mgtLast || (mgtLast != gt);
-            mgtLast = gt;
-
-            mCurStart[0] = mCurTrack[0]->TimeToLongSamples(mT0);
-            auto end = mCurTrack[0]->TimeToLongSamples(mT1);
-            mCurLen = end - mCurStart[0];
-
-            if (mCurLen > NYQ_MAX_LEN) {
-               float hours = (float)NYQ_MAX_LEN / (44100 * 60 * 60);
-               const auto message =
-                  XO(
-"Selection too long for Nyquist code.\nMaximum allowed selection is %ld samples\n(about %.1f hours at 44100 Hz sample rate).")
-                     .Format((long)NYQ_MAX_LEN, hours);
-               Effect::MessageBox(
-                  message,
-                  wxOK | wxCENTRE,
-                  XO("Nyquist Error") );
-               success = false;
-               goto finish;
-            }
-
-            mCurLen = std::min(mCurLen, mMaxLen);
-         }
-
-         mProgressIn = 0.0;
-         mProgressOut = 0.0;
-
+      if ( (mT1 >= mT0) || !pTrack ) {
          // libnyquist breaks except in LC_NUMERIC=="C".
          //
          // Note that we must set the locale to "C" even before calling
@@ -902,6 +852,10 @@ bool NyquistEffect::Process()
          // for further info about this thread safety question.
          wxString prevlocale = wxSetlocale(LC_NUMERIC, NULL);
          wxSetlocale(LC_NUMERIC, wxString(wxT("C")));
+         auto cleanup0 = finally([&]{
+            // Reset previous locale
+            wxSetlocale(LC_NUMERIC, prevlocale);
+         });
 
          nyx_init();
          nyx_set_os_callback(StaticOSCallback, (void *)this);
@@ -953,16 +907,10 @@ bool NyquistEffect::Process()
 
          success = ProcessOne();
 
-         // Reset previous locale
-         wxSetlocale(LC_NUMERIC, prevlocale);
-
          if (!success || bOnePassTool) {
             goto finish;
          }
-         mProgressTot += mProgressIn + mProgressOut;
       }
-
-      mCount += mCurNumChannels;
    }
 
    if (mOutputTime > 0.0) {
@@ -1111,6 +1059,88 @@ bool NyquistEffect::TransferDataFromWindow()
 }
 
 // NyquistEffect implementation
+
+void NyquistEffect::ClearBuffers()
+{
+   for (size_t i = 0; i < mCurNumChannels; i++) {
+      mCurBuffer[i].reset();
+      mCurStart[i] = mCurBufferStart[i] = mCurBufferLen[i] = 0;
+   }
+}
+
+bool NyquistEffect::BeginTrack(WaveTrack *pTrack)
+{
+   // Prepare to accumulate more debug output in OutputCallback
+   mDebugOutputStr = mDebugOutput.Translation();
+   mDebugOutput = Verbatim( "%s" ).Format( std::cref( mDebugOutputStr ) );
+
+   mCurTrack[0] = pTrack;
+   mCurNumChannels = 1;
+
+   if ( (mT1 >= mT0) || !pTrack ) {
+      if (pTrack) {
+         auto channels = TrackList::Channels(mCurTrack[0]);
+         if (channels.size() > 1) {
+            // TODO: more-than-two-channels
+            // Pay attention to consistency of mNumSelectedChannels
+            // with the running tally made by this loop!
+            mCurNumChannels = 2;
+
+            mCurTrack[1] = * ++ channels.first;
+            if (mCurTrack[1]->GetRate() != mCurTrack[0]->GetRate()) {
+               Effect::MessageBox(
+                  XO(
+"Sorry, cannot apply effect on stereo tracks where the tracks don't match."),
+                  wxOK | wxCENTRE );
+               return false;
+            }
+            mCurStart[1] = mCurTrack[1]->TimeToLongSamples(mT0);
+         }
+
+         // Check whether we're in the same group as the last selected track
+         Track *gt = *TrackList::SyncLockGroup(mCurTrack[0]).first;
+         mFirstInGroup = !mgtLast || (mgtLast != gt);
+         mgtLast = gt;
+
+         mCurStart[0] = mCurTrack[0]->TimeToLongSamples(mT0);
+         auto end = mCurTrack[0]->TimeToLongSamples(mT1);
+         mCurLen = end - mCurStart[0];
+
+         if (mCurLen > NYQ_MAX_LEN) {
+            float hours = (float)NYQ_MAX_LEN / (44100 * 60 * 60);
+            const auto message =
+               XO(
+"Selection too long for Nyquist code.\nMaximum allowed selection is %ld samples\n(about %.1f hours at 44100 Hz sample rate).")
+                  .Format((long)NYQ_MAX_LEN, hours);
+            Effect::MessageBox(
+               message,
+               wxOK | wxCENTRE,
+               XO("Nyquist Error") );
+            return false;
+         }
+
+         mCurLen = std::min(mCurLen, mMaxLen);
+      }
+      mProgressIn = 0.0;
+      mProgressOut = 0.0;
+   }
+
+   // Put the fetch buffers in a clean initial state
+   ClearBuffers();
+
+   return true;
+}
+
+void NyquistEffect::EndTrack(WaveTrack *pTrack)
+{
+   // Guarantee release of memory when done
+   ClearBuffers();
+
+   if ( (mT1 >= mT0) || !pTrack ) {
+      mProgressTot += mProgressIn + mProgressOut;
+   }
+   mCount += mCurNumChannels;
+}
 
 bool NyquistEffect::ProcessOne()
 {
@@ -1388,16 +1418,6 @@ bool NyquistEffect::ProcessOne()
       cmd += mCmd;
    }
 
-   // Put the fetch buffers in a clean initial state
-   for (size_t i = 0; i < mCurNumChannels; i++)
-      mCurBuffer[i].reset();
-
-   // Guarantee release of memory when done
-   auto cleanup = finally( [&] {
-      for (size_t i = 0; i < mCurNumChannels; i++)
-         mCurBuffer[i].reset();
-   } );
-
    // Evaluate the expression, which may invoke the get callback, but often does
    // not, leaving that to delayed evaluation of the output sound
    rval = nyx_eval_expression(cmd.mb_str(wxConvUTF8));
@@ -1560,10 +1580,6 @@ bool NyquistEffect::ProcessOne()
 
       outputTrack[i] = mCurTrack[i]->EmptyCopy();
       outputTrack[i]->SetRate( rate );
-
-      // Clean the initial buffer states again for the get callbacks
-      // -- is this really needed?
-      mCurBuffer[i].reset();
    }
 
    // Now fully evaluate the sound

@@ -120,7 +120,10 @@ private:
    static int mReentryCount;
    // NyquistEffect implementation
 
+   void ClearBuffers();
+   bool BeginTrack( WaveTrack *pTrack );
    bool ProcessOne();
+   void EndTrack( WaveTrack *pTrack );
 
    void BuildPromptWindow(ShuttleGui & S);
    void BuildEffectWindow(ShuttleGui & S);
