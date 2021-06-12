@@ -881,9 +881,8 @@ bool NyquistEffect::Process()
                   message,
                   wxOK | wxCENTRE,
                   XO("Nyquist Error") );
-               if (!mProjectChanged)
-                  em.SetSkipStateFlag(true);
-               return false;
+               success = false;
+               goto finish;
             }
 
             mCurLen = std::min(mCurLen, mMaxLen);
