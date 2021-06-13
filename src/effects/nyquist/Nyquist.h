@@ -60,6 +60,9 @@ public:
    int ticks;
 };
 
+struct NyquistNameAndType {
+   
+};
 
 class AUDACITY_DLL_API NyquistEffect final : public Effect
 {
