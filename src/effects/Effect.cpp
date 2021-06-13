@@ -1787,7 +1787,7 @@ void Effect::IncludeNotSelectedPreviewTracks(bool includeNotSelected)
    mPreviewWithNotSelected = includeNotSelected;
 }
 
-bool Effect::TotalProgress(double frac, const TranslatableString &msg)
+bool Effect::TotalProgress(double frac, const TranslatableString &msg) const
 {
    auto updateResult = (mProgress ?
       mProgress->Update(frac, msg) :
@@ -1795,7 +1795,8 @@ bool Effect::TotalProgress(double frac, const TranslatableString &msg)
    return (updateResult != ProgressResult::Success);
 }
 
-bool Effect::TrackProgress(int whichTrack, double frac, const TranslatableString &msg)
+bool Effect::TrackProgress(
+   int whichTrack, double frac, const TranslatableString &msg) const
 {
    auto updateResult = (mProgress ?
       mProgress->Update(whichTrack + frac, (double) mNumTracks, msg) :
@@ -1803,7 +1804,8 @@ bool Effect::TrackProgress(int whichTrack, double frac, const TranslatableString
    return (updateResult != ProgressResult::Success);
 }
 
-bool Effect::TrackGroupProgress(int whichGroup, double frac, const TranslatableString &msg)
+bool Effect::TrackGroupProgress(
+   int whichGroup, double frac, const TranslatableString &msg) const
 {
    auto updateResult = (mProgress ?
       mProgress->Update(whichGroup + frac, (double) mNumGroups, msg) :
@@ -2250,7 +2252,7 @@ void Effect::Preview(bool dryOnly)
 }
 
 int Effect::MessageBox( const TranslatableString& message,
-   long style, const TranslatableString &titleStr)
+   long style, const TranslatableString &titleStr) const
 {
    auto title = titleStr.empty()
       ? GetName()

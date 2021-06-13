@@ -257,7 +257,7 @@ class AUDACITY_DLL_API Effect /* not final */ : public wxEvtHandler,
    enum : long { DefaultMessageBoxStyle = wxOK | wxCENTRE };
    int MessageBox(const TranslatableString& message,
                   long style = DefaultMessageBoxStyle,
-                  const TranslatableString& titleStr = {});
+                  const TranslatableString& titleStr = {}) const;
 
    static void IncEffectCounter(){ nEffectsDone++;};
 
@@ -330,17 +330,22 @@ protected:
    // you should exit immediately if this happens (cleaning up memory
    // is okay, but don't try to undo).
 
+public:
    // Pass a fraction between 0.0 and 1.0
-   bool TotalProgress(double frac, const TranslatableString & = {});
+   bool TotalProgress(
+      double frac, const TranslatableString & = {}) const;
 
    // Pass a fraction between 0.0 and 1.0, for the current track
    // (when doing one track at a time)
-   bool TrackProgress(int whichTrack, double frac, const TranslatableString & = {});
+   bool TrackProgress(
+      int whichTrack, double frac, const TranslatableString & = {}) const;
 
    // Pass a fraction between 0.0 and 1.0, for the current track group
    // (when doing stereo groups at a time)
-   bool TrackGroupProgress(int whichGroup, double frac, const TranslatableString & = {});
+   bool TrackGroupProgress(
+      int whichGroup, double frac, const TranslatableString & = {}) const;
 
+protected:
    int GetNumWaveTracks() { return mNumTracks; }
    int GetNumWaveGroups() { return mNumGroups; }
 
