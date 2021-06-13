@@ -819,105 +819,11 @@ bool NyquistEffect::Process()
          XO("Nyquist Error") );
    }
 
-   Optional<TrackIterRange<WaveTrack>> pRange;
-   if (!bOnePassTool)
-      pRange.emplace(mOutputTracks->Selected< WaveTrack >() + &Track::IsLeader);
+   success = ProcessLoop();
 
-   // Keep track of whether the current track is first selected in its sync-lock group
-   // (we have no idea what the length of the returned audio will be, so we have
-   // to handle sync-lock group behavior the "old" way).
-   mFirstInGroup = true;
-   mgtLast = nullptr;
-
-   for (;
-        bOnePassTool || pRange->first != pRange->second;
-        (void) (!pRange || (++pRange->first, true))
-   ) {
-      const auto pTrack = pRange ? *pRange->first : nullptr;
-      wxASSERT( bOnePassTool == (pTrack == nullptr) );
-      if ( !(success = BeginTrack(pTrack)) )
-         goto finish;
-
-      auto cleanup = finally([&]{ EndTrack(pTrack); });
-
-      if ( (mT1 >= mT0) || !pTrack ) {
-         // libnyquist breaks except in LC_NUMERIC=="C".
-         //
-         // Note that we must set the locale to "C" even before calling
-         // nyx_init() because otherwise some effects will not work!
-         //
-         // MB: setlocale is not thread-safe.  Should use uselocale()
-         //     if available, or fix libnyquist to be locale-independent.
-         // See also http://bugzilla.audacityteam.org/show_bug.cgi?id=642#c9
-         // for further info about this thread safety question.
-         wxString prevlocale = wxSetlocale(LC_NUMERIC, NULL);
-         wxSetlocale(LC_NUMERIC, wxString(wxT("C")));
-         auto cleanup0 = finally([&]{
-            // Reset previous locale
-            wxSetlocale(LC_NUMERIC, prevlocale);
-         });
-
-         nyx_init();
-         nyx_set_os_callback(StaticOSCallback, (void *)this);
-         nyx_capture_output(StaticOutputCallback, (void *)this);
-
-         auto cleanup = finally( [&] {
-            nyx_capture_output(NULL, (void *)NULL);
-            nyx_set_os_callback(NULL, (void *)NULL);
-            nyx_cleanup();
-         } );
-
-
-         if (mVersion >= 4)
-         {
-            mPerTrackProps = wxEmptyString;
-            wxString lowHz = wxT("nil");
-            wxString highHz = wxT("nil");
-            wxString centerHz = wxT("nil");
-            wxString bandwidth = wxT("nil");
-
-#if defined(EXPERIMENTAL_SPECTRAL_EDITING)
-            if (mF0 >= 0.0) {
-               lowHz.Printf(wxT("(float %s)"), Internat::ToString(mF0));
-            }
-
-            if (mF1 >= 0.0) {
-               highHz.Printf(wxT("(float %s)"), Internat::ToString(mF1));
-            }
-
-            if ((mF0 >= 0.0) && (mF1 >= 0.0)) {
-               centerHz.Printf(wxT("(float %s)"), Internat::ToString(sqrt(mF0 * mF1)));
-            }
-
-            if ((mF0 > 0.0) && (mF1 >= mF0)) {
-               // with very small values, bandwidth calculation may be inf.
-               // (Observed on Linux)
-               double bw = log(mF1 / mF0) / log(2.0);
-               if (!std::isinf(bw)) {
-                  bandwidth.Printf(wxT("(float %s)"), Internat::ToString(bw));
-               }
-            }
-
-#endif
-            mPerTrackProps += wxString::Format(wxT("(putprop '*SELECTION* %s 'LOW-HZ)\n"), lowHz);
-            mPerTrackProps += wxString::Format(wxT("(putprop '*SELECTION* %s 'CENTER-HZ)\n"), centerHz);
-            mPerTrackProps += wxString::Format(wxT("(putprop '*SELECTION* %s 'HIGH-HZ)\n"), highHz);
-            mPerTrackProps += wxString::Format(wxT("(putprop '*SELECTION* %s 'BANDWIDTH)\n"), bandwidth);
-         }
-
-         success = ProcessOne();
-
-         if (!success || bOnePassTool) {
-            goto finish;
-         }
-      }
-   }
-
-   if (mOutputTime > 0.0) {
+   if (success && !bOnePassTool && mOutputTime > 0.0) {
       mT1 = mT0 + mOutputTime;
    }
-
-finish:
 
    // Show debug window if trace set in plug-in header and something to show.
    mDebug = (mTrace && !mDebugOutput.Translation().empty())? true : mDebug;
@@ -1646,6 +1552,109 @@ bool NyquistEffect::ProcessOne()
    }
 
    mProjectChanged = true;
+   return true;
+}
+
+bool NyquistEffect::ProcessLoop()
+{
+   // If in tool mode, then we don't do anything with the track and selection.
+   const bool bOnePassTool = (GetType() == EffectTypeTool);
+
+   Optional<TrackIterRange<WaveTrack>> pRange;
+   if (!bOnePassTool)
+      pRange.emplace(mOutputTracks->Selected< WaveTrack >() + &Track::IsLeader);
+
+   // Keep track of whether the current track is first selected in its sync-lock group
+   // (we have no idea what the length of the returned audio will be, so we have
+   // to handle sync-lock group behavior the "old" way).
+   mFirstInGroup = true;
+   mgtLast = nullptr;
+
+   for (;
+        bOnePassTool || pRange->first != pRange->second;
+        (void) (!pRange || (++pRange->first, true))
+   ) {
+      const auto pTrack = pRange ? *pRange->first : nullptr;
+      wxASSERT( bOnePassTool == (pTrack == nullptr) );
+      if ( !BeginTrack(pTrack) )
+         return false;
+
+      auto cleanup = finally([&]{ EndTrack(pTrack); });
+
+      if ( (mT1 >= mT0) || !pTrack ) {
+         // libnyquist breaks except in LC_NUMERIC=="C".
+         //
+         // Note that we must set the locale to "C" even before calling
+         // nyx_init() because otherwise some effects will not work!
+         //
+         // MB: setlocale is not thread-safe.  Should use uselocale()
+         //     if available, or fix libnyquist to be locale-independent.
+         // See also http://bugzilla.audacityteam.org/show_bug.cgi?id=642#c9
+         // for further info about this thread safety question.
+         wxString prevlocale = wxSetlocale(LC_NUMERIC, NULL);
+         wxSetlocale(LC_NUMERIC, wxString(wxT("C")));
+         auto cleanup0 = finally([&]{
+            // Reset previous locale
+            wxSetlocale(LC_NUMERIC, prevlocale);
+         });
+
+         nyx_init();
+         nyx_set_os_callback(StaticOSCallback, (void *)this);
+         nyx_capture_output(StaticOutputCallback, (void *)this);
+
+         auto cleanup = finally( [&] {
+            nyx_capture_output(NULL, (void *)NULL);
+            nyx_set_os_callback(NULL, (void *)NULL);
+            nyx_cleanup();
+         } );
+
+
+         if (mVersion >= 4)
+         {
+            mPerTrackProps = wxEmptyString;
+            wxString lowHz = wxT("nil");
+            wxString highHz = wxT("nil");
+            wxString centerHz = wxT("nil");
+            wxString bandwidth = wxT("nil");
+
+#if defined(EXPERIMENTAL_SPECTRAL_EDITING)
+            if (mF0 >= 0.0) {
+               lowHz.Printf(wxT("(float %s)"), Internat::ToString(mF0));
+            }
+
+            if (mF1 >= 0.0) {
+               highHz.Printf(wxT("(float %s)"), Internat::ToString(mF1));
+            }
+
+            if ((mF0 >= 0.0) && (mF1 >= 0.0)) {
+               centerHz.Printf(wxT("(float %s)"), Internat::ToString(sqrt(mF0 * mF1)));
+            }
+
+            if ((mF0 > 0.0) && (mF1 >= mF0)) {
+               // with very small values, bandwidth calculation may be inf.
+               // (Observed on Linux)
+               double bw = log(mF1 / mF0) / log(2.0);
+               if (!std::isinf(bw)) {
+                  bandwidth.Printf(wxT("(float %s)"), Internat::ToString(bw));
+               }
+            }
+
+#endif
+            mPerTrackProps += wxString::Format(wxT("(putprop '*SELECTION* %s 'LOW-HZ)\n"), lowHz);
+            mPerTrackProps += wxString::Format(wxT("(putprop '*SELECTION* %s 'CENTER-HZ)\n"), centerHz);
+            mPerTrackProps += wxString::Format(wxT("(putprop '*SELECTION* %s 'HIGH-HZ)\n"), highHz);
+            mPerTrackProps += wxString::Format(wxT("(putprop '*SELECTION* %s 'BANDWIDTH)\n"), bandwidth);
+         }
+
+         if (bOnePassTool)
+            return true;
+         if (!ProcessOne())
+            return false;
+      }
+
+      EndTrack(pTrack);
+   }
+
    return true;
 }
 

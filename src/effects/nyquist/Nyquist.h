@@ -124,6 +124,7 @@ private:
    bool BeginTrack( WaveTrack *pTrack );
    bool ProcessOne();
    void EndTrack( WaveTrack *pTrack );
+   bool ProcessLoop();
 
    void BuildPromptWindow(ShuttleGui & S);
    void BuildEffectWindow(ShuttleGui & S);
