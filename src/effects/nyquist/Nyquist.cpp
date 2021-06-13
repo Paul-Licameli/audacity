@@ -1032,7 +1032,7 @@ bool NyquistContext::BeginTrack(WaveTrack *pTrack)
 
             mCurTrack[1] = * ++ channels.first;
             if (mCurTrack[1]->GetRate() != mCurTrack[0]->GetRate()) {
-               Effect::MessageBox(
+               mpEffect->MessageBox(
                   XO(
 "Sorry, cannot apply effect on stereo tracks where the tracks don't match."),
                   wxOK | wxCENTRE );
@@ -1056,7 +1056,7 @@ bool NyquistContext::BeginTrack(WaveTrack *pTrack)
                XO(
 "Selection too long for Nyquist code.\nMaximum allowed selection is %ld samples\n(about %.1f hours at 44100 Hz sample rate).")
                   .Format((long)NYQ_MAX_LEN, hours);
-            Effect::MessageBox(
+            mpEffect->MessageBox(
                message,
                wxOK | wxCENTRE,
                XO("Nyquist Error") );
@@ -1088,7 +1088,7 @@ void NyquistContext::EndTrack(WaveTrack *pTrack)
 }
 
 #if 0
-bool NyquistContext::ProcessOne()
+bool NyquistEffect::ProcessOne()
 {
    mpException = {};
 
@@ -1595,8 +1595,10 @@ bool NyquistContext::ProcessOne()
    mProjectChanged = true;
    return true;
 }
+#endif
 
-bool NyquistEffect::ProcessLoop()
+#if 0
+bool NyquistContext::ProcessLoop()
 {
    // If in tool mode, then we don't do anything with the track and selection.
    const bool bOnePassTool = (GetType() == EffectTypeTool);
@@ -1689,7 +1691,7 @@ bool NyquistEffect::ProcessLoop()
 
          if (bOnePassTool)
             return true;
-         if (!ProcessOne())
+         if (!mpEffect->ProcessOne())
             return false;
       }
 
