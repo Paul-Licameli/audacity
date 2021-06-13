@@ -64,6 +64,47 @@ struct NyquistNameAndType {
    
 };
 
+struct Tokenizer;
+
+class NyquistProgram {
+public:
+   explicit NyquistProgram(const FilePath &fname);
+
+   EffectType GetType() const { return mType; }
+   bool IsPrompt() const { return mIsPrompt; }
+   bool IsUpToDate() const{
+      return mFileName.GetModificationTime().IsLaterThan(mFileModified); }
+   const std::vector<NyqControl> &GetControls() const { return mControls; }
+   bool DefineParams( ShuttleParams &S );
+   bool GetAutomationParameters(CommandParameters & parms);
+   bool SetAutomationParameters(CommandParameters & parms, bool isBatchProcessing);
+   int SetLispVarsFromParameters(CommandParameters & parms, bool bTestOnly);
+   const TranslatableString &InitializationError() const { return mInitError; }
+   PluginPath GetPath() const;
+
+private:
+   void Parse(const FilePath &fname);
+   bool ParseCommand(const wxString & cmd);
+   bool ParseProgram(wxInputStream & stream);
+   static std::vector<EnumValueSymbol> ParseChoice(const wxString & text);
+   FileExtensions ParseFileExtensions(const wxString & text);
+   FileNames::FileType ParseFileType(const wxString & text);
+   FileNames::FileTypes ParseFileTypes(const wxString & text);
+   bool Parse(Tokenizer &tokenizer, const wxString &line, bool eof, bool first);
+
+   EffectType        mType;
+   std::vector<NyqControl>   mControls;
+   wxString          mInputCmd; // history: exactly what the user typed
+   wxString          mParameters; // The parameters of to be fed to a nested prompt
+
+   wxFileName        mFileName;  ///< Name of the Nyquist script file this effect is loaded from
+   wxDateTime        mFileModified; ///< When the script was last modified on disk
+
+   bool              mIsPrompt{ false };
+   bool              mOK{ false };
+   TranslatableString mInitError;
+};
+
 class AUDACITY_DLL_API NyquistEffect final : public Effect
 {
 public:
@@ -71,7 +112,7 @@ public:
    /** @param fName File name of the Nyquist script defining this effect. If
     * an empty string, then prompt the user for the Nyquist code to interpret.
     */
-   NyquistEffect(const wxString &fName);
+   NyquistEffect(const FilePath &fName);
    virtual ~NyquistEffect();
 
    // ComponentInterface implementation
@@ -98,7 +139,6 @@ public:
    bool DefineParams( ShuttleParams & S ) override;
    bool GetAutomationParameters(CommandParameters & parms) override;
    bool SetAutomationParameters(CommandParameters & parms) override;
-   int SetLispVarsFromParameters(CommandParameters & parms, bool bTestOnly);
 
    // Effect implementation
 
@@ -139,17 +179,13 @@ private:
    bool TransferDataFromEffectWindow();
 
    bool IsOk();
-   const TranslatableString &InitializationError() const { return mInitError; }
+   const TranslatableString &InitializationError() const
+   { return mpProgram->InitializationError(); }
 
    static FilePaths GetNyquistSearchPath();
 
    static wxString NyquistToWxString(const char *nyqString);
    wxString EscapeString(const wxString & inStr);
-   static std::vector<EnumValueSymbol> ParseChoice(const wxString & text);
-
-   FileExtensions ParseFileExtensions(const wxString & text);
-   FileNames::FileType ParseFileType(const wxString & text);
-   FileNames::FileTypes ParseFileTypes(const wxString & text);
 
    static int StaticGetCallback(float *buffer, int channel,
                                 int64_t start, int64_t len, int64_t totlen,
@@ -167,28 +203,6 @@ private:
    void OutputCallback(int c);
    void OSCallback();
 
-   void ParseFile();
-   bool ParseCommand(const wxString & cmd);
-   bool ParseProgram(wxInputStream & stream);
-   struct Tokenizer {
-      bool sl { false };
-      bool q { false };
-      int paren{ 0 };
-      wxString tok;
-      wxArrayStringEx tokens;
-
-      bool Tokenize(
-         const wxString &line, bool eof,
-         size_t trimStart, size_t trimEnd);
-   };
-   bool Parse(Tokenizer &tokenizer, const wxString &line, bool eof, bool first);
-
-   static TranslatableString UnQuoteMsgid(const wxString &s, bool allowParens = true,
-                           wxString *pExtraString = nullptr);
-   static wxString UnQuote(const wxString &s, bool allowParens = true,
-                           wxString *pExtraString = nullptr);
-   double GetCtrlValue(const wxString &s);
-
    void OnLoad(wxCommandEvent & evt);
    void OnSave(wxCommandEvent & evt);
    void OnDebug(wxCommandEvent & evt);
@@ -199,16 +213,12 @@ private:
    void OnTime(wxCommandEvent & evt);
    void OnFileButton(wxCommandEvent & evt);
 
-   void resolveFilePath(wxString & path, FileExtension extension = {});
    bool validatePath(wxString path);
    wxString ToTimeFormat(double t);
 
 private:
 
    wxString          mXlispPath;
-
-   wxFileName        mFileName;  ///< Name of the Nyquist script file this effect is loaded from
-   wxDateTime        mFileModified; ///< When the script was last modified on disk
 
    bool              mStop;
    bool              mBreak;
@@ -225,11 +235,6 @@ private:
     * the "Nyquist Effect Prompt", or "Nyquist Prompt", false for all other effects (lisp code read from
     * files)
     */
-   bool              mIsPrompt;
-   bool              mOK;
-   TranslatableString mInitError;
-   wxString          mInputCmd; // history: exactly what the user typed
-   wxString          mParameters; // The parameters of to be fed to a nested prompt
    wxString          mCmd;      // the command to be processed
    TranslatableString mName;   ///< Name of the Effect (untranslated)
    TranslatableString mPromptName; // If a prompt, we need to remember original name.
@@ -244,7 +249,6 @@ private:
    wxString          mManPage;   // ONLY use if a help page exists in the manual.
    wxString          mHelpFile;
    bool              mHelpFileExists;
-   EffectType        mType;
    EffectType        mPromptType; // If a prompt, need to remember original type.
 
    bool              mEnablePreview;
@@ -257,7 +261,9 @@ private:
    TranslatableString mDebugOutput;
 
    int               mVersion;   // Syntactic version of Nyquist plug-in (not to be confused with mReleaseVersion)
-   std::vector<NyqControl>   mControls;
+
+   //! @invariant `mpProgram != nullptr`
+   std::unique_ptr <NyquistProgram> mpProgram;
 
    unsigned          mCurNumChannels;
    WaveTrack         *mCurTrack[2];
