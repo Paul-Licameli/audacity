@@ -132,27 +132,27 @@ EffectType Effect::GetType()
    return EffectTypeNone;
 }
 
-PluginPath Effect::GetPath()
+PluginPath Effect::GetPath() const
 {
    return BUILTIN_EFFECT_PREFIX + GetSymbol().Internal();
 }
 
-ComponentInterfaceSymbol Effect::GetSymbol()
+ComponentInterfaceSymbol Effect::GetSymbol() const
 {
    return {};
 }
 
-VendorSymbol Effect::GetVendor()
+VendorSymbol Effect::GetVendor() const
 {
    return XO("Audacity");
 }
 
-wxString Effect::GetVersion()
+wxString Effect::GetVersion() const
 {
    return AUDACITY_VERSION_STRING;
 }
 
-TranslatableString Effect::GetDescription()
+TranslatableString Effect::GetDescription() const
 {
    return {};
 }

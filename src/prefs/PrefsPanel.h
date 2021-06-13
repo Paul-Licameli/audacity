@@ -95,16 +95,16 @@ class AUDACITY_DLL_API PrefsPanel /* not final */
       SetName(title);      // Provide audible label
    }
 
-   virtual ~PrefsPanel();
+   ~PrefsPanel() override;
 
    // NEW virtuals
    virtual void Preview() {} // Make tentative changes
    virtual bool Commit() = 0; // used to be called "Apply"
 
 
-   virtual PluginPath GetPath();
-   virtual VendorSymbol GetVendor();
-   virtual wxString GetVersion();
+   PluginPath GetPath() const override;
+   VendorSymbol GetVendor() const override;
+   wxString GetVersion() const override;
 
    //virtual ComponentInterfaceSymbol GetSymbol();
    //virtual wxString GetDescription();

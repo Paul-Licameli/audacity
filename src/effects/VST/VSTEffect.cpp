@@ -230,27 +230,27 @@ public:
 
    // EffectClientInterface implementation
 
-   PluginPath GetPath() override
+   PluginPath GetPath() const override
    {
       return mPath;
    }
 
-   ComponentInterfaceSymbol GetSymbol() override
+   ComponentInterfaceSymbol GetSymbol() const override
    {
       return mName;
    }
 
-   VendorSymbol GetVendor() override
+   VendorSymbol GetVendor() const override
    {
       return { mVendor };
    }
 
-   wxString GetVersion() override
+   wxString GetVersion() const override
    {
       return mVersion;
    }
 
-   TranslatableString GetDescription() override
+   TranslatableString GetDescription() const override
    {
       return mDescription;
    }
@@ -313,28 +313,28 @@ VSTEffectsModule::~VSTEffectsModule()
 // ComponentInterface implementation
 // ============================================================================
 
-PluginPath VSTEffectsModule::GetPath()
+PluginPath VSTEffectsModule::GetPath() const
 {
    return {};
 }
 
-ComponentInterfaceSymbol VSTEffectsModule::GetSymbol()
+ComponentInterfaceSymbol VSTEffectsModule::GetSymbol() const
 {
    return XO("VST Effects");
 }
 
-VendorSymbol VSTEffectsModule::GetVendor()
+VendorSymbol VSTEffectsModule::GetVendor() const
 {
    return XO("The Audacity Team");
 }
 
-wxString VSTEffectsModule::GetVersion()
+wxString VSTEffectsModule::GetVersion() const
 {
    // This "may" be different if this were to be maintained as a separate DLL
    return AUDACITY_VERSION_STRING;
 }
 
-TranslatableString VSTEffectsModule::GetDescription()
+TranslatableString VSTEffectsModule::GetDescription() const
 {
    return XO("Adds the ability to use VST effects in Audacity.");
 }
@@ -1181,22 +1181,22 @@ VSTEffect::~VSTEffect()
 // ComponentInterface Implementation
 // ============================================================================
 
-PluginPath VSTEffect::GetPath()
+PluginPath VSTEffect::GetPath() const
 {
    return mPath;
 }
 
-ComponentInterfaceSymbol VSTEffect::GetSymbol()
+ComponentInterfaceSymbol VSTEffect::GetSymbol() const
 {
    return mName;
 }
 
-VendorSymbol VSTEffect::GetVendor()
+VendorSymbol VSTEffect::GetVendor() const
 {
    return { mVendor };
 }
 
-wxString VSTEffect::GetVersion()
+wxString VSTEffect::GetVersion() const
 {
    wxString version;
 
@@ -1215,7 +1215,7 @@ wxString VSTEffect::GetVersion()
    return version;
 }
 
-TranslatableString VSTEffect::GetDescription()
+TranslatableString VSTEffect::GetDescription() const
 {
    // VST does have a product string opcode and some effects return a short
    // description, but most do not or they just return the name again.  So,

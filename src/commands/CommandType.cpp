@@ -30,10 +30,10 @@ OldStyleCommandType::~OldStyleCommandType()
 {
 }
 
-ComponentInterfaceSymbol OldStyleCommandType::GetSymbol()
+ComponentInterfaceSymbol OldStyleCommandType::GetSymbol() const
 {
    if (mSymbol.empty())
-      mSymbol = BuildName();
+      return BuildName();
    return mSymbol;
 }
 
