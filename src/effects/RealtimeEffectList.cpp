@@ -10,7 +10,6 @@
 
 #include "RealtimeEffectManager.h"
 #include "RealtimeEffectState.h"
-#include "RealtimeEffectUI.h"
 
 #include "EffectInterface.h"
 
@@ -24,8 +23,6 @@
 
 RealtimeEffectList::RealtimeEffectList(bool deleteUI)
 {
-   mUI = nullptr;
-   mDeleteUI = deleteUI;
    mBypass = false;
    mSuspend = 0;
    mPrefaders = 0;
@@ -34,10 +31,6 @@ RealtimeEffectList::RealtimeEffectList(bool deleteUI)
 
 RealtimeEffectList::~RealtimeEffectList()
 {
-   if (mDeleteUI && mUI)
-   {
-      delete mUI;
-   }
 }
 
 static const AttachedProjectObjects::RegisteredFactory masterEffects
@@ -84,10 +77,6 @@ bool RealtimeEffectList::IsBypassed() const
 void RealtimeEffectList::Bypass(bool bypass)
 {
    mBypass = bypass;
-   if (mUI)
-   {
-      mUI->Rebuild();
-   }
 }
 
 void RealtimeEffectList::Suspend()

@@ -10,7 +10,6 @@
 
 #include "RealtimeEffectList.h"
 #include "RealtimeEffectManager.h"
-#include "RealtimeEffectUI.h"
 
 #include "EffectInterface.h"
 #include "MemoryX.h"

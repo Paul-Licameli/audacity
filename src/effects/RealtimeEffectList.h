@@ -71,8 +71,6 @@ private:
    RealtimeEffectState *DoAdd(const PluginID &id = {});
 private:
    States mStates;
-   RealtimeEffectUI *mUI;
-   bool mDeleteUI;
 
    bool mBypass;
    int mSuspend;

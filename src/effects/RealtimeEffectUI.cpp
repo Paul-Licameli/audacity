@@ -285,6 +285,7 @@ void RealtimeEffectUI::OnBypass(wxCommandEvent & evt)
    AButton *btn =  static_cast<AButton *>(evt.GetEventObject());
 
    mList.Bypass(btn->IsDown());
+   Rebuild();
 
    GetParent()->Refresh();
 }

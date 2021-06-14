@@ -17,7 +17,6 @@
 
 #include "RealtimeEffectList.h"
 #include "RealtimeEffectState.h"
-#include "RealtimeEffectUI.h"
 
 class EffectClientInterface;
 

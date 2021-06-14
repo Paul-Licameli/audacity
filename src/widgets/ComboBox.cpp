@@ -43,7 +43,8 @@ ComboBox::ComboBox(wxWindow *parent,
                    long style)
 :  wxOwnerDrawnComboBox(parent, id, value, pos, size, n, choices, style)
 {
-   SetPopupControl(new ComboBoxPopup());
+   // wxWidgets will guarantee destruction of the ComboBoxPopup
+   SetPopupControl(safenew ComboBoxPopup());
 }
 
 ComboBox::ComboBox(wxWindow *parent,
