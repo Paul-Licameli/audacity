@@ -645,6 +645,11 @@ END_EVENT_TABLE()
    return gBench;
 }
 
+// Localization of Nyquist workbench is disabled.  To reenable it, define this
+// macro to expand instead as _(str) and add XX to the macros on the command
+// line of xgettext in locale/update_po_files.sh
+#define XX(str) wxT(str)
+
 NyqBench::NyqBench(wxWindow * parent)
 :  wxFrame(NULL,
            wxID_ANY,
@@ -691,54 +696,54 @@ NyqBench::NyqBench(wxWindow * parent)
    bar->Append(menu, wxT("&File"));
 
    menu = new wxMenu();
-   menu->Append(wxID_UNDO, _("&Undo\tCtrl+Z"));
-   menu->Append(wxID_REDO, _("&Redo\tCtrl+Y"));
+   menu->Append(wxID_UNDO, XX("&Undo\tCtrl+Z"));
+   menu->Append(wxID_REDO, XX("&Redo\tCtrl+Y"));
    menu->AppendSeparator();
-   menu->Append(wxID_CUT, _("Cu&t\tCtrl+X"));
-   menu->Append(wxID_COPY, _("&Copy\tCtrl+C"));
-   menu->Append(wxID_PASTE, _("&Paste\tCtrl+V"));
-   menu->Append(wxID_CLEAR, _("Cle&ar\tCtrl+L"));
+   menu->Append(wxID_CUT, XX("Cu&t\tCtrl+X"));
+   menu->Append(wxID_COPY, XX("&Copy\tCtrl+C"));
+   menu->Append(wxID_PASTE, XX("&Paste\tCtrl+V"));
+   menu->Append(wxID_CLEAR, XX("Cle&ar\tCtrl+L"));
    menu->AppendSeparator();
-   menu->Append(wxID_SELECTALL, _("Select A&ll\tCtrl+A"));
+   menu->Append(wxID_SELECTALL, XX("Select A&ll\tCtrl+A"));
    menu->AppendSeparator();
-   menu->Append(wxID_FIND, _("&Find...\tCtrl+F"));
+   menu->Append(wxID_FIND, XX("&Find...\tCtrl+F"));
    menu->AppendSeparator();
    wxMenu *sub = new wxMenu();
-   sub->Append(ID_MATCH, _("&Matching Paren\tF8"));
-   sub->Append(ID_TOP, _("&Top S-expr\tF9"));
-   sub->Append(ID_UP, _("&Higher S-expr\tF10"));
-   sub->Append(ID_PREVIOUS, _("&Previous S-expr\tF11"));
-   sub->Append(ID_NEXT, _("&Next S-expr\tF12"));
-   menu->AppendSubMenu(sub, _("&Go to"));
+   sub->Append(ID_MATCH, XX("&Matching Paren\tF8"));
+   sub->Append(ID_TOP, XX("&Top S-expr\tF9"));
+   sub->Append(ID_UP, XX("&Higher S-expr\tF10"));
+   sub->Append(ID_PREVIOUS, XX("&Previous S-expr\tF11"));
+   sub->Append(ID_NEXT, XX("&Next S-expr\tF12"));
+   menu->AppendSubMenu(sub, XX("&Go to"));
    menu->AppendSeparator();
    menu->AppendCheckItem(ID_AUTOWRAP, _T("Auto &Wrap"))->Check(mAutoWrap);
    bar->Append(menu, wxT("&Edit"));
 
    menu = new wxMenu();
-   menu->Append(ID_FONT, _("Select &Font..."));
+   menu->Append(ID_FONT, XX("Select &Font..."));
    menu->AppendSeparator();
-   menu->Append(ID_SPLITV, _("Split &Vertically"));
-   menu->Append(ID_SPLITH, _("Split &Horizontally"));
+   menu->Append(ID_SPLITV, XX("Split &Vertically"));
+   menu->Append(ID_SPLITH, XX("Split &Horizontally"));
    menu->AppendSeparator();
-   menu->AppendCheckItem(ID_TOGGLECODE, _("Show S&cript"));
-   menu->AppendCheckItem(ID_TOGGLEOUTPUT, _("Show &Output"));
+   menu->AppendCheckItem(ID_TOGGLECODE, XX("Show S&cript"));
+   menu->AppendCheckItem(ID_TOGGLEOUTPUT, XX("Show &Output"));
    menu->AppendSeparator();
    sub = new wxMenu();
-   sub->AppendRadioItem(ID_LARGEICONS, _("&Large Icons"));
-   sub->AppendRadioItem(ID_SMALLICONS, _("&Small Icons"));
-   menu->AppendSubMenu(sub, _("Toolbar"));
+   sub->AppendRadioItem(ID_LARGEICONS, XX("&Large Icons"));
+   sub->AppendRadioItem(ID_SMALLICONS, XX("&Small Icons"));
+   menu->AppendSubMenu(sub, XX("Toolbar"));
    bar->Append(menu, wxT("&View"));
 
    menu = new wxMenu();
-   menu->Append(ID_GO, _("&Go\tF5"));
-   menu->Append(ID_STOP, _("&Stop\tF6"));
+   menu->Append(ID_GO, XX("&Go\tF5"));
+   menu->Append(ID_STOP, XX("&Stop\tF6"));
    bar->Append(menu, wxT("&Run"));
 
 #if defined(__WXMAC__)
-   menu->Append(wxID_ABOUT, _("&About"));
+   menu->Append(wxID_ABOUT, XX("&About"));
 #else
    menu = new wxMenu();
-   menu->Append(wxID_ABOUT, _("&About"));
+   menu->Append(wxID_ABOUT, XX("&About"));
    bar->Append(menu, wxT("Help"));
 #endif
 
@@ -865,7 +870,7 @@ void NyqBench::PopulateOrExchange(ShuttleGui & S)
 
       mScriptBox = new wxStaticBox(scriptp,
                                    wxID_ANY,
-                                   _("Script"));
+                                   XX("Script"));
 
       scripts = new wxStaticBoxSizer(mScriptBox,
                                      wxVERTICAL);
@@ -893,7 +898,7 @@ void NyqBench::PopulateOrExchange(ShuttleGui & S)
 
       mOutputBox = new wxStaticBox(outputp,
                                    wxID_ANY,
-                                   _("Output"));
+                                   XX("Output"));
       outputs = new wxStaticBoxSizer(mOutputBox,
                                      wxVERTICAL);
       bs->Add(outputs, true, wxEXPAND);
@@ -1001,10 +1006,10 @@ void NyqBench::OnOpen(wxCommandEvent & e)
    }
 
    wxFileDialog dlog(this,
-                     _("Load Nyquist script"),
+                     XX("Load Nyquist script"),
                      mPath.GetPath(),
                      wxEmptyString,
-                     _("Nyquist scripts (*.ny)|*.ny|Lisp scripts (*.lsp)|*.lsp|All files|*"),
+                     XX("Nyquist scripts (*.ny)|*.ny|Lisp scripts (*.lsp)|*.lsp|All files|*"),
                      wxFD_OPEN | wxRESIZE_BORDER);
  
    if (dlog.ShowModal() != wxID_OK) {
@@ -1047,10 +1052,10 @@ void NyqBench::OnSaveAs(wxCommandEvent & e)
    }
  
    wxFileDialog dlog(this,
-                     _("Save Nyquist script"),
+                     XX("Save Nyquist script"),
                      mPath.GetFullPath(),
                      wxEmptyString,
-                     _("Nyquist scripts (*.ny)|*.ny|Lisp scripts (*.lsp)|*.lsp|All files|*"),
+                     XX("Nyquist scripts (*.ny)|*.ny|Lisp scripts (*.lsp)|*.lsp|All files|*"),
                      wxFD_SAVE | wxFD_OVERWRITE_PROMPT | wxRESIZE_BORDER);
  
    if (dlog.ShowModal() != wxID_OK) {
@@ -1146,7 +1151,7 @@ void NyqBench::OnFind(wxCommandEvent & e)
 
          mFindDlg = new wxFindReplaceDialog(this,
                                             &mFindData,
-                                            _("Find dialog"),
+                                            XX("Find dialog"),
                                             wxFR_NOWHOLEWORD);
          mFindDlg->Show(true);
       }
@@ -1367,12 +1372,12 @@ void NyqBench::OnAbout(wxCommandEvent & e)
 {
    wxAboutDialogInfo i;
 
-   i.AddArtist(_("Harvey Lubin (logo)"));
-   i.AddArtist(_("Tango Icon Gallery (toolbar icons)"));
-   i.AddDeveloper(_("Leland Lucius"));
-   i.SetCopyright(_("(C) 2009 by Leland Lucius"));
-   i.SetDescription(_("External Audacity module which provides a simple IDE for writing effects."));
-   i.SetName(_("Nyquist Effect Workbench"));
+   i.AddArtist(XX("Harvey Lubin (logo)"));
+   i.AddArtist(XX("Tango Icon Gallery (toolbar icons)"));
+   i.AddDeveloper(XX("Leland Lucius"));
+   i.SetCopyright(XX("(C) 2009 by Leland Lucius"));
+   i.SetDescription(XX("External Audacity module which provides a simple IDE for writing effects."));
+   i.SetName(XX("Nyquist Effect Workbench"));
    i.SetVersion(__TDATE__);
 
    wxAboutBox(i);
@@ -1553,10 +1558,10 @@ void NyqBench::OnScriptUpdate(wxUpdateUIEvent & e)
 {
    if (mScriptBox && mScript && FindFocus() == mScript) {
       wxString label = mScriptBox->GetLabel();
-      if (label == _("Script")) {
+      if (label == XX("Script")) {
          label += wxT("*");
          mScriptBox->SetLabel(label);
-         mOutputBox->SetLabel(_("Output"));
+         mOutputBox->SetLabel(XX("Output"));
       }
    }
 }
@@ -1565,10 +1570,10 @@ void NyqBench::OnOutputUpdate(wxUpdateUIEvent & e)
 {
    if (mOutputBox && mOutput && FindFocus() == mOutput) {
       wxString label = mOutputBox->GetLabel();
-      if (label == _("Output")) {
+      if (label == XX("Output")) {
          label += wxT("*");
          mOutputBox->SetLabel(label);
-         mScriptBox->SetLabel(_("Script"));
+         mScriptBox->SetLabel(XX("Script"));
       }
    }
 }
@@ -1591,13 +1596,13 @@ bool NyqBench::Validate()
 
 void NyqBench::SetWindowTitle()
 {
-   wxString name = _("Untitled");
+   wxString name = XX("Untitled");
 
    if (!mPath.GetFullPath().IsEmpty()) {
       name = mPath.GetFullName();
    }
 
-   SetTitle(_("Nyquist Effect Workbench - ") + name);
+   SetTitle(XX("Nyquist Effect Workbench - ") + name);
 }
 
 void NyqBench::RecreateToolbar(bool large)
@@ -1661,30 +1666,30 @@ void NyqBench::RecreateToolbar(bool large)
 
    tb->SetMargins(2, 2);
 
-   tb->AddTool(wxID_NEW, _("New"), mPics[0], _("New script"));
-   tb->AddTool(wxID_OPEN, _("Open"), mPics[1], _("Open script"));
-   tb->AddTool(wxID_SAVE, _("Save"), mPics[2], _("Save script"));
-   tb->AddTool(wxID_SAVEAS, _("Save As"), mPics[3], _("Save script as..."));
+   tb->AddTool(wxID_NEW, XX("New"), mPics[0], XX("New script"));
+   tb->AddTool(wxID_OPEN, XX("Open"), mPics[1], XX("Open script"));
+   tb->AddTool(wxID_SAVE, XX("Save"), mPics[2], XX("Save script"));
+   tb->AddTool(wxID_SAVEAS, XX("Save As"), mPics[3], XX("Save script as..."));
    tb->AddSeparator();
-   tb->AddTool(wxID_COPY, _("Copy"), mPics[4], _("Copy to clipboard"));
-   tb->AddTool(wxID_CUT, _("Cut"), mPics[5], _("Cut to clipboard"));
-   tb->AddTool(wxID_PASTE, _("Paste"), mPics[6], _("Paste from clipboard"));
-   tb->AddTool(wxID_CLEAR, _("Clear"), mPics[7], _("Clear selection"));
-   tb->AddTool(wxID_SELECTALL, _("Select All"), mPics[9], _("Select all text"));
+   tb->AddTool(wxID_COPY, XX("Copy"), mPics[4], XX("Copy to clipboard"));
+   tb->AddTool(wxID_CUT, XX("Cut"), mPics[5], XX("Cut to clipboard"));
+   tb->AddTool(wxID_PASTE, XX("Paste"), mPics[6], XX("Paste from clipboard"));
+   tb->AddTool(wxID_CLEAR, XX("Clear"), mPics[7], XX("Clear selection"));
+   tb->AddTool(wxID_SELECTALL, XX("Select All"), mPics[9], XX("Select all text"));
    tb->AddSeparator();
-   tb->AddTool(wxID_UNDO, _("Undo"), mPics[10], _("Undo last change"));
-   tb->AddTool(wxID_REDO, _("Redo"), mPics[11], _("Redo previous change"));
+   tb->AddTool(wxID_UNDO, XX("Undo"), mPics[10], XX("Undo last change"));
+   tb->AddTool(wxID_REDO, XX("Redo"), mPics[11], XX("Redo previous change"));
    tb->AddSeparator();
-   tb->AddTool(wxID_FIND, _("Find"), mPics[12], _("Find text"));
+   tb->AddTool(wxID_FIND, XX("Find"), mPics[12], XX("Find text"));
    tb->AddSeparator();
-   tb->AddTool(ID_MATCH, _("Match"), mPics[13], _("Go to matching paren"));
-   tb->AddTool(ID_TOP, _("Top"), mPics[14], _("Go to top S-expr"));
-   tb->AddTool(ID_UP, _("Up"), mPics[15], _("Go to higher S-expr"));
-   tb->AddTool(ID_PREVIOUS, _("Previous"), mPics[16], _("Go to previous S-expr"));
-   tb->AddTool(ID_NEXT, _("Next"), mPics[17], _("Go to next S-expr"));
+   tb->AddTool(ID_MATCH, XX("Match"), mPics[13], XX("Go to matching paren"));
+   tb->AddTool(ID_TOP, XX("Top"), mPics[14], XX("Go to top S-expr"));
+   tb->AddTool(ID_UP, XX("Up"), mPics[15], XX("Go to higher S-expr"));
+   tb->AddTool(ID_PREVIOUS, XX("Previous"), mPics[16], XX("Go to previous S-expr"));
+   tb->AddTool(ID_NEXT, XX("Next"), mPics[17], XX("Go to next S-expr"));
    tb->AddSeparator();
-   tb->AddTool(ID_GO, _("Start"), mPics[18], _("Start script"));
-   tb->AddTool(ID_STOP, _("Stop"), mPics[19], _("Stop script"));
+   tb->AddTool(ID_GO, XX("Start"), mPics[18], XX("Start script"));
+   tb->AddTool(ID_STOP, XX("Stop"), mPics[19], XX("Stop script"));
    
    tb->Realize();
 

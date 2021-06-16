@@ -198,114 +198,6 @@ msgstr ""
 msgid "2nd Experimental Command"
 msgstr ""
 
-#: modules/mod-nyq-bench/NyqBench.cpp
-msgid "&Nyquist Workbench..."
-msgstr ""
-
-#: modules/mod-nyq-bench/NyqBench.cpp
-msgid "&Undo\tCtrl+Z"
-msgstr ""
-
-#: modules/mod-nyq-bench/NyqBench.cpp
-msgid "&Redo\tCtrl+Y"
-msgstr ""
-
-#: modules/mod-nyq-bench/NyqBench.cpp
-msgid "Cu&t\tCtrl+X"
-msgstr ""
-
-#: modules/mod-nyq-bench/NyqBench.cpp
-msgid "&Copy\tCtrl+C"
-msgstr ""
-
-#: modules/mod-nyq-bench/NyqBench.cpp
-msgid "&Paste\tCtrl+V"
-msgstr ""
-
-#: modules/mod-nyq-bench/NyqBench.cpp
-msgid "Cle&ar\tCtrl+L"
-msgstr ""
-
-#: modules/mod-nyq-bench/NyqBench.cpp
-msgid "Select A&ll\tCtrl+A"
-msgstr ""
-
-#: modules/mod-nyq-bench/NyqBench.cpp
-msgid "&Find...\tCtrl+F"
-msgstr ""
-
-#: modules/mod-nyq-bench/NyqBench.cpp
-msgid "&Matching Paren\tF8"
-msgstr ""
-
-#: modules/mod-nyq-bench/NyqBench.cpp
-msgid "&Top S-expr\tF9"
-msgstr ""
-
-#: modules/mod-nyq-bench/NyqBench.cpp
-msgid "&Higher S-expr\tF10"
-msgstr ""
-
-#: modules/mod-nyq-bench/NyqBench.cpp
-msgid "&Previous S-expr\tF11"
-msgstr ""
-
-#: modules/mod-nyq-bench/NyqBench.cpp
-msgid "&Next S-expr\tF12"
-msgstr ""
-
-#: modules/mod-nyq-bench/NyqBench.cpp
-msgid "&Go to"
-msgstr ""
-
-#: modules/mod-nyq-bench/NyqBench.cpp
-msgid "Select &Font..."
-msgstr ""
-
-#: modules/mod-nyq-bench/NyqBench.cpp
-msgid "Split &Vertically"
-msgstr ""
-
-#: modules/mod-nyq-bench/NyqBench.cpp
-msgid "Split &Horizontally"
-msgstr ""
-
-#: modules/mod-nyq-bench/NyqBench.cpp
-msgid "Show S&cript"
-msgstr ""
-
-#: modules/mod-nyq-bench/NyqBench.cpp
-msgid "Show &Output"
-msgstr ""
-
-#: modules/mod-nyq-bench/NyqBench.cpp
-msgid "&Large Icons"
-msgstr ""
-
-#: modules/mod-nyq-bench/NyqBench.cpp
-msgid "&Small Icons"
-msgstr ""
-
-#: modules/mod-nyq-bench/NyqBench.cpp
-msgid "Toolbar"
-msgstr ""
-
-#: modules/mod-nyq-bench/NyqBench.cpp
-msgid "&Go\tF5"
-msgstr ""
-
-#: modules/mod-nyq-bench/NyqBench.cpp
-msgid "&Stop\tF6"
-msgstr ""
-
-#: modules/mod-nyq-bench/NyqBench.cpp
-msgid "&About"
-msgstr ""
-
-#: modules/mod-nyq-bench/NyqBench.cpp
-msgid "Script"
-msgstr ""
-
 #. i18n-hint noun
 #: modules/mod-nyq-bench/NyqBench.cpp src/Benchmark.cpp
 #: src/effects/BassTreble.cpp
@@ -314,14 +206,6 @@ msgstr ""
 
 #: modules/mod-nyq-bench/NyqBench.cpp src/effects/nyquist/Nyquist.cpp
 msgid "Load Nyquist script"
-msgstr ""
-
-#: modules/mod-nyq-bench/NyqBench.cpp
-msgid "Nyquist scripts (*.ny)|*.ny|Lisp scripts (*.lsp)|*.lsp|All files|*"
-msgstr ""
-
-#: modules/mod-nyq-bench/NyqBench.cpp
-msgid "Script was not saved."
 msgstr ""
 
 #: modules/mod-nyq-bench/NyqBench.cpp src/AudacityLogger.cpp
@@ -337,89 +221,17 @@ msgstr ""
 msgid "Save Nyquist script"
 msgstr ""
 
-#: modules/mod-nyq-bench/NyqBench.cpp
-msgid "Find dialog"
-msgstr ""
-
-#: modules/mod-nyq-bench/NyqBench.cpp
-msgid "Harvey Lubin (logo)"
-msgstr ""
-
-#: modules/mod-nyq-bench/NyqBench.cpp
-msgid "Tango Icon Gallery (toolbar icons)"
-msgstr ""
-
-#: modules/mod-nyq-bench/NyqBench.cpp
-msgid "Leland Lucius"
-msgstr ""
-
-#: modules/mod-nyq-bench/NyqBench.cpp
-msgid "(C) 2009 by Leland Lucius"
-msgstr ""
-
-#: modules/mod-nyq-bench/NyqBench.cpp
-msgid "External Audacity module which provides a simple IDE for writing effects."
-msgstr ""
-
-#: modules/mod-nyq-bench/NyqBench.cpp
-msgid "Nyquist Effect Workbench"
-msgstr ""
-
-#: modules/mod-nyq-bench/NyqBench.cpp
-msgid "No matches found"
-msgstr ""
-
-#: modules/mod-nyq-bench/NyqBench.cpp
-msgid "Code has been modified. Are you sure?"
-msgstr ""
-
-#: modules/mod-nyq-bench/NyqBench.cpp
-msgid "Untitled"
-msgstr ""
-
-#: modules/mod-nyq-bench/NyqBench.cpp
-msgid "Nyquist Effect Workbench - "
-msgstr ""
-
 #: modules/mod-nyq-bench/NyqBench.cpp src/PluginManager.cpp
 #: src/prefs/ModulePrefs.cpp
 msgid "New"
-msgstr ""
-
-#: modules/mod-nyq-bench/NyqBench.cpp
-msgid "New script"
-msgstr ""
-
-#: modules/mod-nyq-bench/NyqBench.cpp
-msgid "Open"
-msgstr ""
-
-#: modules/mod-nyq-bench/NyqBench.cpp
-msgid "Open script"
 msgstr ""
 
 #: modules/mod-nyq-bench/NyqBench.cpp src/Benchmark.cpp
 msgid "Save"
 msgstr ""
 
-#: modules/mod-nyq-bench/NyqBench.cpp
-msgid "Save script"
-msgstr ""
-
-#: modules/mod-nyq-bench/NyqBench.cpp
-msgid "Save As"
-msgstr ""
-
-#: modules/mod-nyq-bench/NyqBench.cpp
-msgid "Save script as..."
-msgstr ""
-
 #: modules/mod-nyq-bench/NyqBench.cpp src/toolbars/EditToolBar.cpp
 msgid "Copy"
-msgstr ""
-
-#: modules/mod-nyq-bench/NyqBench.cpp
-msgid "Copy to clipboard"
 msgstr ""
 
 #: modules/mod-nyq-bench/NyqBench.cpp src/menus/EditMenus.cpp
@@ -427,17 +239,9 @@ msgstr ""
 msgid "Cut"
 msgstr ""
 
-#: modules/mod-nyq-bench/NyqBench.cpp
-msgid "Cut to clipboard"
-msgstr ""
-
 #: modules/mod-nyq-bench/NyqBench.cpp src/menus/EditMenus.cpp
 #: src/toolbars/EditToolBar.cpp
 msgid "Paste"
-msgstr ""
-
-#: modules/mod-nyq-bench/NyqBench.cpp
-msgid "Paste from clipboard"
 msgstr ""
 
 #. i18n-hint verb; to empty or erase
@@ -445,16 +249,8 @@ msgstr ""
 msgid "Clear"
 msgstr ""
 
-#: modules/mod-nyq-bench/NyqBench.cpp
-msgid "Clear selection"
-msgstr ""
-
 #: modules/mod-nyq-bench/NyqBench.cpp src/menus/SelectMenus.cpp
 msgid "Select All"
-msgstr ""
-
-#: modules/mod-nyq-bench/NyqBench.cpp
-msgid "Select all text"
 msgstr ""
 
 #: modules/mod-nyq-bench/NyqBench.cpp src/toolbars/EditToolBar.cpp
@@ -462,65 +258,9 @@ msgstr ""
 msgid "Undo"
 msgstr ""
 
-#: modules/mod-nyq-bench/NyqBench.cpp
-msgid "Undo last change"
-msgstr ""
-
 #: modules/mod-nyq-bench/NyqBench.cpp src/toolbars/EditToolBar.cpp
 #: src/widgets/KeyView.cpp
 msgid "Redo"
-msgstr ""
-
-#: modules/mod-nyq-bench/NyqBench.cpp
-msgid "Redo previous change"
-msgstr ""
-
-#: modules/mod-nyq-bench/NyqBench.cpp
-msgid "Find"
-msgstr ""
-
-#: modules/mod-nyq-bench/NyqBench.cpp
-msgid "Find text"
-msgstr ""
-
-#: modules/mod-nyq-bench/NyqBench.cpp
-msgid "Match"
-msgstr ""
-
-#: modules/mod-nyq-bench/NyqBench.cpp
-msgid "Go to matching paren"
-msgstr ""
-
-#: modules/mod-nyq-bench/NyqBench.cpp
-msgid "Top"
-msgstr ""
-
-#: modules/mod-nyq-bench/NyqBench.cpp
-msgid "Go to top S-expr"
-msgstr ""
-
-#: modules/mod-nyq-bench/NyqBench.cpp
-msgid "Up"
-msgstr ""
-
-#: modules/mod-nyq-bench/NyqBench.cpp
-msgid "Go to higher S-expr"
-msgstr ""
-
-#: modules/mod-nyq-bench/NyqBench.cpp
-msgid "Previous"
-msgstr ""
-
-#: modules/mod-nyq-bench/NyqBench.cpp
-msgid "Go to previous S-expr"
-msgstr ""
-
-#: modules/mod-nyq-bench/NyqBench.cpp
-msgid "Next"
-msgstr ""
-
-#: modules/mod-nyq-bench/NyqBench.cpp
-msgid "Go to next S-expr"
 msgstr ""
 
 #. i18n-hint noun
@@ -529,17 +269,9 @@ msgstr ""
 msgid "Start"
 msgstr ""
 
-#: modules/mod-nyq-bench/NyqBench.cpp
-msgid "Start script"
-msgstr ""
-
 #: modules/mod-nyq-bench/NyqBench.cpp src/effects/EffectUI.cpp
 #: src/toolbars/ControlToolBar.cpp src/widgets/ProgressDialog.cpp
 msgid "Stop"
-msgstr ""
-
-#: modules/mod-nyq-bench/NyqBench.cpp
-msgid "Stop script"
 msgstr ""
 
 #: src/AboutDialog.cpp
