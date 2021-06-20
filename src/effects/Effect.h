@@ -222,30 +222,20 @@ class AUDACITY_DLL_API Effect /* not final */ : public wxEvtHandler,
 
    // Effect implementation
 
-   // NEW virtuals
-   virtual PluginID GetID();
+   bool Startup(EffectClientInterface *client);
+   bool GetAutomationParameters(wxString & parms);
+   bool SetAutomationParameters(const wxString & parms);
 
-   virtual bool Startup(EffectClientInterface *client);
-   virtual bool Startup();
+   RegistryPaths GetUserPresets();
+   bool HasCurrentSettings();
+   bool HasFactoryDefaults();
 
-   virtual bool GetAutomationParameters(wxString & parms);
-   virtual bool SetAutomationParameters(const wxString & parms);
+   void SetUIFlags(unsigned flags);
+   unsigned TestUIFlags(unsigned mask);
+   bool IsBatchProcessing();
+   void SetBatchProcessing(bool start);
 
-   virtual RegistryPaths GetUserPresets();
-   virtual bool HasCurrentSettings();
-   virtual bool HasFactoryDefaults();
-
-   // Name of page in the Audacity alpha manual
-   virtual wxString ManualPage();
-   // Fully qualified local help file name
-   virtual wxString HelpPage();
-
-   virtual void SetUIFlags(unsigned flags);
-   virtual unsigned TestUIFlags(unsigned mask);
-   virtual bool IsBatchProcessing();
-   virtual void SetBatchProcessing(bool start);
-
-   /* not virtual */ void SetPresetParameters( const wxArrayString * Names, const wxArrayString * Values ) {
+   void SetPresetParameters( const wxArrayString * Names, const wxArrayString * Values ) {
       if( Names ) mPresetNames = *Names;
       if( Values ) mPresetValues = *Values;
    }
@@ -254,7 +244,7 @@ class AUDACITY_DLL_API Effect /* not final */ : public wxEvtHandler,
    // have the "selected" flag set to true, which is consistent with
    // Audacity's standard UI.
    // Create a user interface only if the supplied function is not null.
-   /* not virtual */ bool DoEffect( double projectRate, TrackList *list,
+   bool DoEffect( double projectRate, TrackList *list,
       WaveTrackFactory *factory, NotifyingSelectedRegion &selectedRegion,
       // Prompt the user for input only if these arguments are both not null.
       wxWindow *pParent = nullptr,
@@ -263,9 +253,6 @@ class AUDACITY_DLL_API Effect /* not final */ : public wxEvtHandler,
    bool Delegate( Effect &delegate,
       wxWindow &parent, const EffectDialogFactory &factory );
 
-   virtual bool IsHidden();
-
-   // Nonvirtual
    // Display a message box, using effect's (translated) name as the prefix
    // for the title.
    enum : long { DefaultMessageBoxStyle = wxOK | wxCENTRE };
@@ -274,6 +261,23 @@ class AUDACITY_DLL_API Effect /* not final */ : public wxEvtHandler,
                   const TranslatableString& titleStr = {});
 
    static void IncEffectCounter(){ nEffectsDone++;};
+
+ protected:
+   bool EnableApply(bool enable = true);
+   bool EnablePreview(bool enable = true);
+   void EnableDebug(bool enable = true);
+
+ public:
+   // NEW virtuals
+   virtual PluginID GetID();
+   virtual bool Startup();
+
+   // Name of page in the Audacity alpha manual
+   virtual wxString ManualPage();
+   // Fully qualified local help file name
+   virtual wxString HelpPage();
+
+   virtual bool IsHidden();
 
 //
 // protected virtual methods
@@ -300,7 +304,6 @@ protected:
    virtual bool ProcessPass();
    virtual bool InitPass1();
    virtual bool InitPass2();
-   virtual int GetPass();
 
    // clean up any temporary memory, needed only per invocation of the
    // effect, after either successful or failed or exception-aborted processing.
@@ -316,11 +319,8 @@ protected:
    virtual void Preview(bool dryOnly);
 
    virtual void PopulateOrExchange(ShuttleGui & S);
-   virtual bool TransferDataToWindow() /* not override */;
-   virtual bool TransferDataFromWindow() /* not override */;
-   virtual bool EnableApply(bool enable = true);
-   virtual bool EnablePreview(bool enable = true);
-   virtual void EnableDebug(bool enable = true);
+   virtual bool TransferDataToWindow();
+   virtual bool TransferDataFromWindow();
 
    // No more virtuals!
 

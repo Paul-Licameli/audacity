@@ -1342,11 +1342,6 @@ bool Effect::Init()
    return true;
 }
 
-int Effect::GetPass()
-{
-   return mPass;
-}
-
 bool Effect::InitPass1()
 {
    return true;
