@@ -21,7 +21,7 @@ effects.
 
 #include "EffectManager.h"
 
-#include "Effect.h"
+#include "EffectHost.h"
 
 #include <algorithm>
 #include <wx/tokenzr.h>
