@@ -81,10 +81,13 @@ auto Effect::SetVetoDialogHook( VetoDialogHook hook )
    return result;
 }
 
+EffectHost::EffectHost(EffectClientInterface &client)
+: mClient{ client }
+{
+}
+
 Effect::Effect()
 {
-   mClient = NULL;
-
    mTracks = NULL;
    mT0 = 0.0;
    mT1 = 0.0;
@@ -119,6 +122,8 @@ Effect::Effect()
    mIsBatch = false;
 }
 
+EffectHost::~EffectHost() = default;
+
 Effect::~Effect()
 {
    if (mUIDialog)
@@ -129,319 +134,331 @@ Effect::~Effect()
 
 // EffectDefinitionInterface implementation
 
+EffectType EffectHost::GetType()
+{
+   return mClient.GetType();
+}
+
 EffectType Effect::GetType()
 {
-   if (mClient)
-   {
-      return mClient->GetType();
-   }
-
    return EffectTypeNone;
+}
+
+PluginPath EffectHost::GetPath()
+{
+   return mClient.GetPath();
 }
 
 PluginPath Effect::GetPath()
 {
-   if (mClient)
-   {
-      return mClient->GetPath();
-   }
-
    return BUILTIN_EFFECT_PREFIX + GetSymbol().Internal();
+}
+
+ComponentInterfaceSymbol EffectHost::GetSymbol()
+{
+   return mClient.GetSymbol();
 }
 
 ComponentInterfaceSymbol Effect::GetSymbol()
 {
-   if (mClient)
-   {
-      return mClient->GetSymbol();
-   }
-
    return {};
+}
+
+VendorSymbol EffectHost::GetVendor()
+{
+   return mClient.GetVendor();
 }
 
 VendorSymbol Effect::GetVendor()
 {
-   if (mClient)
-   {
-      return mClient->GetVendor();
-   }
-
    return XO("Audacity");
+}
+
+wxString EffectHost::GetVersion()
+{
+   return mClient.GetVersion();
 }
 
 wxString Effect::GetVersion()
 {
-   if (mClient)
-   {
-      return mClient->GetVersion();
-   }
-
    return AUDACITY_VERSION_STRING;
+}
+
+TranslatableString EffectHost::GetDescription()
+{
+   return mClient.GetDescription();
 }
 
 TranslatableString Effect::GetDescription()
 {
-   if (mClient)
-   {
-      return mClient->GetDescription();
-   }
-
    return {};
+}
+
+EffectFamilySymbol EffectHost::GetFamily()
+{
+   return mClient.GetFamily();
 }
 
 EffectFamilySymbol Effect::GetFamily()
 {
-   if (mClient)
-   {
-      return mClient->GetFamily();
-   }
-
    // Unusually, the internal and visible strings differ for the built-in
    // effect family.
    return { wxT("Audacity"), XO("Built-in") };
 }
 
+bool EffectHost::IsInteractive()
+{
+   return mClient.IsInteractive();
+}
+
 bool Effect::IsInteractive()
 {
-   if (mClient)
-   {
-      return mClient->IsInteractive();
-   }
-
    return true;
+}
+
+bool EffectHost::IsDefault()
+{
+   return mClient.IsDefault();
 }
 
 bool Effect::IsDefault()
 {
-   if (mClient)
-   {
-      return mClient->IsDefault();
-   }
-
    return true;
+}
+
+bool EffectHost::SupportsRealtime()
+{
+   return mClient.SupportsRealtime();
 }
 
 bool Effect::SupportsRealtime()
 {
-   if (mClient)
-   {
-      return mClient->SupportsRealtime();
-   }
-
    return false;
+}
+
+bool EffectHost::SupportsAutomation()
+{
+   return mClient.SupportsAutomation();
 }
 
 bool Effect::SupportsAutomation()
 {
-   if (mClient)
-   {
-      return mClient->SupportsAutomation();
-   }
-
    return true;
 }
 
 // EffectClientInterface implementation
 
+bool EffectHost::SetHost(EffectHostInterface *host)
+{
+   return mClient.SetHost(host);
+}
+
 bool Effect::SetHost(EffectHostInterface *host)
 {
-   if (mClient)
-   {
-      return mClient->SetHost(host);
-   }
-
    return true;
+}
+
+unsigned EffectHost::GetAudioInCount()
+{
+   return mClient.GetAudioInCount();
 }
 
 unsigned Effect::GetAudioInCount()
 {
-   if (mClient)
-   {
-      return mClient->GetAudioInCount();
-   }
-
    return 0;
+}
+
+unsigned EffectHost::GetAudioOutCount()
+{
+   return mClient.GetAudioOutCount();
 }
 
 unsigned Effect::GetAudioOutCount()
 {
-   if (mClient)
-   {
-      return mClient->GetAudioOutCount();
-   }
-
    return 0;
+}
+
+int EffectHost::GetMidiInCount()
+{
+   return mClient.GetMidiInCount();
 }
 
 int Effect::GetMidiInCount()
 {
-   if (mClient)
-   {
-      return mClient->GetMidiInCount();
-   }
-
    return 0;
+}
+
+int EffectHost::GetMidiOutCount()
+{
+   return mClient.GetMidiOutCount();
 }
 
 int Effect::GetMidiOutCount()
 {
-   if (mClient)
-   {
-      return mClient->GetMidiOutCount();
-   }
-
    return 0;
+}
+
+void EffectHost::SetSampleRate(double rate)
+{
+   mClient.SetSampleRate(rate);
+   Effect::SetSampleRate(rate);
 }
 
 void Effect::SetSampleRate(double rate)
 {
-   if (mClient)
-   {
-      mClient->SetSampleRate(rate);
-   }
-
    mSampleRate = rate;
+}
+
+size_t EffectHost::SetBlockSize(size_t maxBlockSize)
+{
+   return mClient.SetBlockSize(maxBlockSize);
 }
 
 size_t Effect::SetBlockSize(size_t maxBlockSize)
 {
-   if (mClient)
-   {
-      return mClient->SetBlockSize(maxBlockSize);
-   }
-
    mBlockSize = maxBlockSize;
 
    return mBlockSize;
 }
 
+size_t EffectHost::GetBlockSize() const
+{
+   return mClient.GetBlockSize();
+}
+
 size_t Effect::GetBlockSize() const
 {
-   if (mClient)
-   {
-      return mClient->GetBlockSize();
-   }
-
    return mBlockSize;
+}
+
+sampleCount EffectHost::GetLatency()
+{
+   return mClient.GetLatency();
 }
 
 sampleCount Effect::GetLatency()
 {
-   if (mClient)
-   {
-      return mClient->GetLatency();
-   }
-
    return 0;
+}
+
+size_t EffectHost::GetTailSize()
+{
+   return mClient.GetTailSize();
 }
 
 size_t Effect::GetTailSize()
 {
-   if (mClient)
-   {
-      return mClient->GetTailSize();
-   }
-
    return 0;
+}
+
+bool EffectHost::IsReady()
+{
+   return mClient.IsReady();
 }
 
 bool Effect::IsReady()
 {
-   if (mClient)
-   {
-      return mClient->IsReady();
-   }
-
    return true;
+}
+
+bool EffectHost::ProcessInitialize(sampleCount totalLen, ChannelNames chanMap)
+{
+   return mClient.ProcessInitialize(totalLen, chanMap);
 }
 
 bool Effect::ProcessInitialize(sampleCount totalLen, ChannelNames chanMap)
 {
-   if (mClient)
-   {
-      return mClient->ProcessInitialize(totalLen, chanMap);
-   }
-
    return true;
+}
+
+bool EffectHost::ProcessFinalize()
+{
+   return mClient.ProcessFinalize();
 }
 
 bool Effect::ProcessFinalize()
 {
-   if (mClient)
-   {
-      return mClient->ProcessFinalize();
-   }
-
    return true;
+}
+
+size_t EffectHost::ProcessBlock(float **inBlock, float **outBlock, size_t blockLen)
+{
+   return mClient.ProcessBlock(inBlock, outBlock, blockLen);
 }
 
 size_t Effect::ProcessBlock(float **inBlock, float **outBlock, size_t blockLen)
 {
-   if (mClient)
-   {
-      return mClient->ProcessBlock(inBlock, outBlock, blockLen);
-   }
-
    return 0;
+}
+
+bool EffectHost::RealtimeInitialize()
+{
+   mBlockSize = mClient.SetBlockSize(512);
+   return mClient.RealtimeInitialize();
 }
 
 bool Effect::RealtimeInitialize()
 {
-   if (mClient)
-   {
-      mBlockSize = mClient->SetBlockSize(512);
-      return mClient->RealtimeInitialize();
-   }
-
    mBlockSize = 512;
-
    return false;
+}
+
+bool EffectHost::RealtimeAddProcessor(unsigned numChannels, float sampleRate)
+{
+   return mClient.RealtimeAddProcessor(numChannels, sampleRate);
 }
 
 bool Effect::RealtimeAddProcessor(unsigned numChannels, float sampleRate)
 {
-   if (mClient)
-   {
-      return mClient->RealtimeAddProcessor(numChannels, sampleRate);
-   }
-
    return true;
+}
+
+bool EffectHost::RealtimeFinalize()
+{
+   return mClient.RealtimeFinalize();
 }
 
 bool Effect::RealtimeFinalize()
 {
-   if (mClient)
-   {
-      return mClient->RealtimeFinalize();
-   }
-
    return false;
+}
+
+bool EffectHost::RealtimeSuspend()
+{
+   return mClient.RealtimeSuspend();
 }
 
 bool Effect::RealtimeSuspend()
 {
-   if (mClient)
-      return mClient->RealtimeSuspend();
-
    return true;
+}
+
+bool EffectHost::RealtimeResume()
+{
+   return mClient.RealtimeResume();
 }
 
 bool Effect::RealtimeResume()
 {
-   if (mClient)
-      return mClient->RealtimeResume();
-
    return true;
+}
+
+bool EffectHost::RealtimeProcessStart()
+{
+   return mClient.RealtimeProcessStart();
 }
 
 bool Effect::RealtimeProcessStart()
 {
-   if (mClient)
-   {
-      return mClient->RealtimeProcessStart();
-   }
-
    return true;
+}
+
+size_t EffectHost::RealtimeProcess(int group,
+                                    float **inbuf,
+                                    float **outbuf,
+                                    size_t numSamples)
+{
+   return mClient.RealtimeProcess(group, inbuf, outbuf, numSamples);
 }
 
 size_t Effect::RealtimeProcess(int group,
@@ -449,22 +466,31 @@ size_t Effect::RealtimeProcess(int group,
                                     float **outbuf,
                                     size_t numSamples)
 {
-   if (mClient)
-   {
-      return mClient->RealtimeProcess(group, inbuf, outbuf, numSamples);
-   }
-
    return 0;
+}
+
+bool EffectHost::RealtimeProcessEnd()
+{
+   return mClient.RealtimeProcessEnd();
 }
 
 bool Effect::RealtimeProcessEnd()
 {
-   if (mClient)
-   {
-      return mClient->RealtimeProcessEnd();
-   }
-
    return true;
+}
+
+auto EffectHost::DoShowClientInterface(wxWindow &parent,
+   const EffectDialogFactory &factory, bool forceModal) -> ShowInterfaceResult
+{
+   return mClient.ShowInterface(parent, factory, forceModal)
+      ? ShowInterfaceResult::Success
+      : ShowInterfaceResult::Failure;
+}
+
+auto Effect::DoShowClientInterface(wxWindow &parent,
+   const EffectDialogFactory &factory, bool forceModal) -> ShowInterfaceResult
+{
+   return ShowInterfaceResult::Skip;
 }
 
 bool Effect::ShowInterface(wxWindow &parent,
@@ -482,9 +508,13 @@ bool Effect::ShowInterface(wxWindow &parent,
       return false;
    }
 
-   if (mClient)
-   {
-      return mClient->ShowInterface(parent, factory, forceModal);
+   switch( DoShowClientInterface(parent, factory, forceModal) ) {
+   case ShowInterfaceResult::Success:
+      return true;
+   case ShowInterfaceResult::Failure:
+      return false;
+   default:
+      break;
    }
 
    // mUIDialog is null
@@ -520,33 +550,33 @@ bool Effect::ShowInterface(wxWindow &parent,
    return res;
 }
 
+bool EffectHost::GetAutomationParameters(CommandParameters & parms)
+{
+   return mClient.GetAutomationParameters(parms);
+}
+
 bool Effect::GetAutomationParameters(CommandParameters & parms)
 {
-   if (mClient)
-   {
-      return mClient->GetAutomationParameters(parms);
-   }
-
    return true;
+}
+
+bool EffectHost::SetAutomationParameters(CommandParameters & parms)
+{
+   return mClient.SetAutomationParameters(parms);
 }
 
 bool Effect::SetAutomationParameters(CommandParameters & parms)
 {
-   if (mClient)
-   {
-      return mClient->SetAutomationParameters(parms);
-   }
-
    return true;
+}
+
+bool EffectHost::LoadUserPreset(const RegistryPath & name)
+{
+   return mClient.LoadUserPreset(name);
 }
 
 bool Effect::LoadUserPreset(const RegistryPath & name)
 {
-   if (mClient)
-   {
-      return mClient->LoadUserPreset(name);
-   }
-
    wxString parms;
    if (!GetPrivateConfig(name, wxT("Parameters"), parms))
    {
@@ -556,13 +586,13 @@ bool Effect::LoadUserPreset(const RegistryPath & name)
    return SetAutomationParameters(parms);
 }
 
+bool EffectHost::SaveUserPreset(const RegistryPath & name)
+{
+   return mClient.SaveUserPreset(name);
+}
+
 bool Effect::SaveUserPreset(const RegistryPath & name)
 {
-   if (mClient)
-   {
-      return mClient->SaveUserPreset(name);
-   }
-
    wxString parms;
    if (!GetAutomationParameters(parms))
    {
@@ -572,33 +602,33 @@ bool Effect::SaveUserPreset(const RegistryPath & name)
    return SetPrivateConfig(name, wxT("Parameters"), parms);
 }
 
+RegistryPaths EffectHost::GetFactoryPresets()
+{
+   return mClient.GetFactoryPresets();
+}
+
 RegistryPaths Effect::GetFactoryPresets()
 {
-   if (mClient)
-   {
-      return mClient->GetFactoryPresets();
-   }
-
    return {};
+}
+
+bool EffectHost::LoadFactoryPreset(int id)
+{
+   return mClient.LoadFactoryPreset(id);
 }
 
 bool Effect::LoadFactoryPreset(int id)
 {
-   if (mClient)
-   {
-      return mClient->LoadFactoryPreset(id);
-   }
-
    return true;
+}
+
+bool EffectHost::LoadFactoryDefaults()
+{
+   return mClient.LoadFactoryDefaults();
 }
 
 bool Effect::LoadFactoryDefaults()
 {
-   if (mClient)
-   {
-      return mClient->LoadFactoryDefaults();
-   }
-
    return LoadUserPreset(GetFactoryDefaultsGroup());
 }
 
@@ -1010,29 +1040,28 @@ bool Effect::RemovePrivateConfig(const RegistryPath & group, const RegistryPath 
 
 // Effect implementation
 
+PluginID EffectHost::GetID()
+{
+   return PluginManager::GetID(&mClient);
+}
+
 PluginID Effect::GetID()
 {
-   if (mClient)
-   {
-      return PluginManager::GetID(mClient);
-   }
-
    return PluginManager::GetID(this);
 }
 
-bool Effect::Startup(EffectClientInterface *client)
+bool EffectHost::Startup()
 {
-   // Let destructor know we need to be shutdown
-   mClient = client;
-
    // Set host so client startup can use our services
-   if (!SetHost(this))
-   {
+   if (!mClient.SetHost(this))
       // Bail if the client startup fails
-      mClient = NULL;
       return false;
-   }
 
+   return Effect::Startup();
+}
+
+bool Effect::Startup()
+{
    mNumAudioIn = GetAudioInCount();
    mNumAudioOut = GetAudioOutCount();
 
@@ -1045,11 +1074,6 @@ bool Effect::Startup(EffectClientInterface *client)
    }
    LoadUserPreset(GetCurrentSettingsGroup());
 
-   return Startup();
-}
-
-bool Effect::Startup()
-{
    return true;
 }
 

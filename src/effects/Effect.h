@@ -222,7 +222,6 @@ class AUDACITY_DLL_API Effect /* not final */ : public wxEvtHandler,
 
    // Effect implementation
 
-   bool Startup(EffectClientInterface *client);
    bool GetAutomationParameters(wxString & parms);
    bool SetAutomationParameters(const wxString & parms);
 
@@ -286,6 +285,9 @@ class AUDACITY_DLL_API Effect /* not final */ : public wxEvtHandler,
 // do its processing.
 //
 protected:
+   enum class ShowInterfaceResult{ Success, Failure, Skip };
+   virtual ShowInterfaceResult DoShowClientInterface(wxWindow &parent,
+      const EffectDialogFactory &factory, bool forceModal);
 
    // Called once each time an effect is called.  Perform any initialization;
    // make sure that the effect can be performed on the selected tracks and
@@ -522,13 +524,14 @@ private:
    int mNumGroups;
 
    // For client driver
-   EffectClientInterface *mClient;
    size_t mNumAudioIn;
    size_t mNumAudioOut;
 
    size_t mBufferSize;
-   size_t mBlockSize;
    unsigned mNumChannels;
+
+protected:
+   size_t mBlockSize;
 
 public:
    const static wxString kUserPresetIdent;
@@ -537,6 +540,87 @@ public:
    const static wxString kFactoryDefaultsIdent;
 
    friend class EffectUIHost;
+};
+
+class EffectHost final : public Effect
+{
+public:
+   explicit EffectHost(EffectClientInterface &client);
+   ~EffectHost() override;
+
+   PluginID GetID() override;
+   bool Startup() override;
+
+   // EffectDefinitionInterface implementation
+
+   EffectType GetType() override;
+   EffectFamilySymbol GetFamily() override;
+   bool IsInteractive() override;
+   bool IsDefault() override;
+   bool SupportsRealtime() override;
+   bool SupportsAutomation() override;
+
+   // ComponentInterface implementation
+
+   PluginPath GetPath() override;
+
+   ComponentInterfaceSymbol GetSymbol() override;
+
+   VendorSymbol GetVendor() override;
+   wxString GetVersion() override;
+   TranslatableString GetDescription() override;
+
+   // EffectClientInterface implementation
+
+   bool SetHost(EffectHostInterface *host) override;
+   
+   unsigned GetAudioInCount() override;
+   unsigned GetAudioOutCount() override;
+
+   int GetMidiInCount() override;
+   int GetMidiOutCount() override;
+
+   sampleCount GetLatency() override;
+   size_t GetTailSize() override;
+
+   void SetSampleRate(double rate) override;
+   size_t SetBlockSize(size_t maxBlockSize) override;
+   size_t GetBlockSize() const override;
+
+   bool IsReady() override;
+   bool ProcessInitialize(sampleCount totalLen, ChannelNames chanMap = NULL) override;
+   bool ProcessFinalize() override;
+   size_t ProcessBlock(float **inBlock, float **outBlock, size_t blockLen) override;
+
+   bool RealtimeInitialize() override;
+   bool RealtimeAddProcessor(unsigned numChannels, float sampleRate) override;
+   bool RealtimeFinalize() override;
+   bool RealtimeSuspend() override;
+   bool RealtimeResume() override;
+   bool RealtimeProcessStart() override;
+   size_t RealtimeProcess(int group,
+                                       float **inbuf,
+                                       float **outbuf,
+                                       size_t numSamples) override;
+   bool RealtimeProcessEnd() override;
+
+   bool GetAutomationParameters(CommandParameters & parms) override;
+   bool SetAutomationParameters(CommandParameters & parms) override;
+
+   bool LoadUserPreset(const RegistryPath & name) override;
+   bool SaveUserPreset(const RegistryPath & name) override;
+
+   RegistryPaths GetFactoryPresets() override;
+   bool LoadFactoryPreset(int id) override;
+   bool LoadFactoryDefaults() override;
+
+protected:
+   ShowInterfaceResult DoShowClientInterface(wxWindow &parent,
+      const EffectDialogFactory &factory, bool forceModal) override;
+
+private:
+   // For client driver
+   EffectClientInterface &mClient;
 };
 
 // FIXME:
