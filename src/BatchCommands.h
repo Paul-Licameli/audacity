@@ -17,6 +17,7 @@
 #include "export/Export.h"
 #include "commands/CommandFlag.h"
 #include "ComponentInterface.h" // for ComponentInterfaceSymbol
+#include "PluginInterface.h"
 
 class wxArrayString;
 class Effect;

@@ -11,6 +11,7 @@ set( LIBRARIES
    lib-basic-ui
    lib-preferences
    lib-exceptions
+   lib-math
 )
 
 if ( ${_OPT}has_networking )
